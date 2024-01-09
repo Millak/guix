@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
@@ -1135,38 +1135,28 @@ optimize toolbar for portrait / landscape
 (define-public python-reportlab
   (package
     (name "python-reportlab")
-    (version "3.5.42")
+    (version "4.0.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "reportlab" version))
               (sha256
                (base32
-                "0i17qgm7gzy7pzp240mkpsx9rn8rr67jh5npp5bylv3sd41g48cw"))))
+                "0lq8fibbgp7bfasxjf33s4hzqr405y655bkxggxmjxqsga0lb68n"))))
     (build-system python-build-system)
     (arguments
-     '(;; FIXME: There is one test failure, building the pdf manual from source,
-       ;; but it does not cause the build to fail.
-       #:test-target "tests"
-       #:configure-flags (list "--use-system-libart")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-target "tests"
+      #:configure-flags '(list "--no-download-t1-files")
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'find-libraries
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libart (assoc-ref inputs "libart-lgpl"))
-                   (freetype (assoc-ref inputs "freetype"))
-                   (dlt1 (assoc-ref inputs "font-curve-files")))
+             (let ((dlt1 (assoc-ref inputs "font-curve-files")))
                (substitute* "setup.py"
-                 (("/usr/include/libart-\\*")
-                  (string-append libart "/include/libart-2.0"))
-                 (("/usr/include/freetype2")
-                  (string-append freetype "/include"))
                  (("http://www.reportlab.com/ftp/pfbfer-20180109.zip")
-                  (string-append "file://" dlt1)))
-               #t))))))
+                  (string-append "file://" dlt1)))))))))
     (inputs
-     `(("freetype" ,freetype)
-       ("libart-lgpl" ,libart-lgpl)
-       ("font-curve-files"
+     `(("font-curve-files"
         ,(origin
            (method url-fetch)
            (uri "http://www.reportlab.com/ftp/pfbfer-20180109.zip")
@@ -1174,7 +1164,7 @@ optimize toolbar for portrait / landscape
             (base32
              "1v0gy4mbx02ys96ssx89420y0njknlrxs2bx64bv4rp8a0al66w5"))))))
     (propagated-inputs
-     (list python-pillow))
+     (list python-chardet python-pillow))
     (home-page "https://www.reportlab.com")
     (synopsis "Python library for generating PDFs and graphics")
     (description "This is the ReportLab PDF Toolkit.  It allows rapid creation
