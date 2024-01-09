@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
@@ -1290,40 +1290,46 @@ utilities for data translation and processing.")
 (define-public python-cartopy
   (package
     (name "python-cartopy")
-    ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.21.1")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "02i5rjhvrsi3vgj8kfsdx77g1xl59jh2a671qqqj4n682abn9mc9"))))
-    (build-system python-build-system)
+        (base32 "0jdv92az0b7qxdvalh29kasw3knsl570cz7q3vql67ck400zj05k"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "cartopy"
-                       ;; These tests require online data.
-                       "-m" "not natural_earth and not network"
-                       "-k"
-                       (string-append
-                         ;; This one too but it's not marked as such.
-                         "not test_gridliner_labels_bbox_style"
-                         ;; Those tests fail with proj 9.2.0
-                         ;; https://github.com/SciTools/cartopy/issues/2145
-                         " and not test_epsg"
-                         " and not test_default"
-                         " and not test_eccentric_globe"
-                         " and not test_ellipsoid_transform"
-                         " and not test_eccentric_globe"))))))))
+     (list
+      #:test-flags
+      '(list
+        "--pyargs" "cartopy"
+        ;; These tests require online data.
+        "-m" "not natural_earth and not network"
+        "-k"
+        (string-append
+         ;; This one too but it's not marked as such.
+         "not test_gridliner_labels_bbox_style"
+         ;; Accuracy problems
+         " and not test_single_spole"
+         " and not test_single_npole"
+         ;; Incomplete shapefile definition
+         " and not test_gshhs"
+         " and not test_geometry"
+         " and not test_record"
+         " and not test_bounds"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We don't want to create an entrypoint for
+         ;; tools/cartopy_feature_download.py, because that file is not
+         ;; installed.
+         (add-after 'unpack 'remove-endpoint
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^feature_download = .*") "")))))))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
-           python-pykdtree
+           python-packaging
            python-pyproj
            python-pyshp
            python-scipy
@@ -1331,10 +1337,12 @@ utilities for data translation and processing.")
     (inputs
      (list geos))
     (native-inputs
-     (list python-cython
-           python-flufl-lock
+     (list python-coveralls
+           python-cython
            python-pytest
-           python-pytest-mpl))
+           python-pytest-cov
+           python-pytest-mpl
+           python-pytest-xdist))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
     (synopsis "Cartographic library for visualisation")
     (description
