@@ -4199,7 +4199,7 @@ Actions for the Lightning suite of libraries.")
 (define-public python-captum
   (package
     (name "python-captum")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4208,7 +4208,7 @@ Actions for the Lightning suite of libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h4n91ivhjxm6wj0vgqpfss2dmq4sjcp0appd08cd5naisabjyb5"))))
+                "0bgfwnlsi50hbmknn7qljiy93fi6ggwz3k7yk9kj7s37mhzaylym"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4218,7 +4218,8 @@ Actions for the Lightning suite of libraries.")
              ;; accuracy problems.
              "not test_softmax_classification_batch_multi_target\
  and not test_softmax_classification_batch_zero_baseline")))
-    (propagated-inputs (list python-matplotlib python-numpy python-pytorch))
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pytorch python-tqdm))
     (native-inputs (list jupyter
                          python-annoy
                          python-black
