@@ -322,26 +322,14 @@ look up the development dependencs for the given crate."
   ;; If no matching non-yanked version has been found and allow-yanked? is #t,
   ;; also consider yanked packages.
   (define (find-crate-version crate range)
-    (let* ((semver-range (string->semver-range range))
-           (versions
-            (sort
-             (filter (lambda (entry)
-                       (and
-                         (or allow-yanked?
-                             (not (crate-version-yanked? (second entry))))
-                         (semver-range-contains? semver-range (first entry))))
-                     (map (lambda (ver)
-                            (list (string->semver (crate-version-number ver))
-                                  ver))
-                          (crate-versions crate)))
-             (match-lambda* (((semver ver) ...)
-                             (match-let (((yanked1 yanked2)
-                                          (map crate-version-yanked? ver)))
-                               (or (and yanked1 (not yanked2))
-                                   (and (eq? yanked1 yanked2)
-                                        (apply semver<? semver)))))))))
-      (and (not (null-list? versions))
-           (second (last versions)))))
+    (let ((semver-range (string->semver-range range))
+          (versions     (nonyanked-crate-versions crate)))
+      (or (and (not (null-list? versions))
+               (max-crate-version-of-semver semver-range versions))
+          (and allow-yanked?
+               (not (null-list? (crate-versions crate)))
+               (max-crate-version-of-semver semver-range
+                                            (crate-versions crate))))))
 
   ;; If no non-yanked existing package version was found, check the upstream
   ;; versions.  If a non-yanked upsteam version exists, use it instead,
