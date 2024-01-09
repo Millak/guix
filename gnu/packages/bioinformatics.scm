@@ -17907,7 +17907,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
 (define-public cnvkit
   (package
     (name "cnvkit")
-    (version "0.9.9")
+    (version "0.9.10")
     (source
      (origin
        (method git-fetch)
@@ -17916,17 +17916,8 @@ polymorphisms) and indels with respect to a reference genome and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q4l7jhr1k135an3n9aa9wsid5lk6fwxb0hcldrr6v6y76zi4gj1"))))
+        (base32 "0r303pqjg70zpxa564bavbfj99c6di0dafgqqwx2vh4vfsiif94q"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; See upstream commit eee0f6eaec57d5c6e58142d661979f3aacc5f76a
-         (add-after 'unpack 'compatibility
-           (lambda _
-             (substitute* "setup.py"
-               (("'joblib.*") "")))))))
     (propagated-inputs
      (list python-biopython
            python-future
@@ -17941,6 +17932,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
            python-scipy
            ;; R packages
            r-dnacopy))
+    (inputs (list r-minimal)) ;for tests
     (home-page "https://cnvkit.readthedocs.org/")
     (synopsis "Copy number variant detection from targeted DNA sequencing")
     (description
