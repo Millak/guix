@@ -20799,6 +20799,11 @@ aligner.")
        '(list "-k" "not test_perfect_fit and not test_perfect_fit_2d")
        #:phases
        #~(modify-phases %standard-phases
+           (add-after 'unpack 'matplotlib-compatibility
+             (lambda _
+               (substitute* "scvelo/settings.py"
+                 (("warnings.filterwarnings\\(\"ignore\", category=cbook.mplDeprecation\\)")
+                  ""))))
            ;; Numba needs a writable dir to cache functions.
            (add-before 'check 'set-numba-cache-dir
              (lambda _
