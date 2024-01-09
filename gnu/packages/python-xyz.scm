@@ -731,6 +731,7 @@ and variables you'll need already imported and created.
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #false ;there are none
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'remove-invalid-syntax
