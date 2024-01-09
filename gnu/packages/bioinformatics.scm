@@ -5800,6 +5800,8 @@ Illumina paired-end data (for CASAVA 1.8+).")
                (base32
                 "124kdg7168nbh4a5wisfws1fgkd89dd4js9v6dml2lvgclbv4mjg"))))
     (build-system pyproject-build-system)
+    ;; This contains two test data files but no way to run the tests.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list python-biopython python-matplotlib python-pandas
            python-scipy python-seaborn))
