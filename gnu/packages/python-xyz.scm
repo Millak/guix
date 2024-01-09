@@ -1406,30 +1406,29 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
 (define-public python-pint
   (package
     (name "python-pint")
-    (version "0.22")
+    (version "0.23")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pint" version))
               (sha256
                (base32
-                "0cs4lsvngrkfzpnrmxcwz728m47y0xbw1knksz51cc6gpdm9y4rd"))))
+                "1d69dqs0j907x4hgz2k8f3zjzhgs9zvlw2k0gi955g3dc28rnl71"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; This single test tries to write to $HOME/.cache/pint.
-     (list #:test-flags #~'("-k" "not test_auto")))
+     (list
+      #:test-flags
+      '(list "-k" (string-append
+                   ;; This test tries to write to $HOME/.cache/pint.
+                   "not test_auto"
+                   ;; Fails with "Group USCSLengthInternational already
+                   ;; present in registry"
+                   " and not test_load_definitions_stage_2"))))
     (native-inputs
-     (list python-dask
-           python-distributed
-           python-importlib-metadata
-           python-pytest                ;for pytest-subtests
-           python-pytest-cov
-           python-pytest-mpl
-           python-pytest-subtests
-           python-setuptools-scm
-           python-sparse
-           python-uncertainties
-           python-xarray))
-    (propagated-inputs (list python-typing-extensions))
+     (list python-pytest python-pytest-benchmark python-pytest-cov
+           python-pytest-mpl python-pytest-subtests))
+    (propagated-inputs
+     (list python-typing-extensions
+           python-uncertainties))
     (home-page "https://github.com/hgrecco/pint")
     (synopsis "Physical quantities module")
     (description
