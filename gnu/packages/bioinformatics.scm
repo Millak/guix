@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -13184,6 +13184,7 @@ applications for tackling some common problems in a user-friendly way.")
                  (invoke "python3" "test/test_all.py")))))))
       (native-inputs
        (list `(,glib "bin") ;for gtester
+             glib
              pkg-config))
       (inputs
        ;; TODO: add Chimera for visualization
