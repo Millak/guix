@@ -16917,55 +16917,26 @@ fasta subsequences.")
 (define-public python-cooler
   (package
     (name "python-cooler")
-    (version "0.8.11")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cooler" version))
        (sha256
         (base32
-         "1i96fmpsimj4wrx51rxn8lw2gqxf5a2pvrj5rwdd6ivnm3pmhyrn"))))
-    (build-system python-build-system)
+         "0capn4jj3mkxfwcc65cg644zvrv4sqr2wxr0ylx5w767jx3yb7p2"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; cooler requests cytoolz<0.11.  It only uses cytoolz for "compose",
-         ;; which composes two functions.
-         (add-after 'unpack 'use-recent-cytoolz
-           (lambda _
-             (substitute* '("requirements.txt"
-                            "cooler.egg-info/requires.txt")
-               (("cytoolz.*<.*0.11") "cytoolz"))))
-         ;; This version of flake8 just won't work with this version of
-         ;; pytest, because of dependency pinning.
-         (add-after 'unpack 'do-not-use-flake8
-           (lambda _
-             (substitute* "setup.cfg"
-               (("addopts = --flake8") "addopts = "))))
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* "tests/test_create.py"
-              (("def test_roundtrip")
-                 (string-append "@pytest.mark.skip(reason=\"requires network "
-                                "access to genome.ucsc.edu\")\n"
-                                "def test_roundtrip")))
-             (substitute* "tests/test_util.py"
-               (("def test_fetch_chromsizes")
-                (string-append "@pytest.mark.skip(reason=\"requires network "
-                               "access to genome.ucsc.edu\")\n"
-                               "def test_fetch_chromsizes"))
-               ;; See https://github.com/open2c/cooler/issues/287
-               (("skipif\\(six.PY2, reason=\"Scipy on Py2 is too old\"")
-                "skip(reason=\"Scipy is too new\""))
-             ;; This test depends on ipytree, which contains a lot of minified
-             ;; JavaScript.
-             (substitute* "tests/test_fileops.py"
-               (("def test_print_trees")
-                "def _test_print_trees"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "-v")))))))
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; These tests download files from the internet.
+              "not test_fetch_chromsizes"
+              " and not test_roundtrip"
+              ;; This test depends on ipytree, which contains a lot of
+              ;; minified JavaScript.
+              " and not test_print_trees"))))
     (propagated-inputs
      (list python-asciitree
            python-biopython
@@ -16981,12 +16952,13 @@ fasta subsequences.")
            python-pysam
            python-pyyaml
            python-scipy
-           python-simplejson
-           python-six
-           python-sparse))
+           python-simplejson))
     (native-inputs
-     (list python-codecov python-mock python-pytest python-pytest-cov
-           python-pytest-flake8))
+     (list python-coverage
+           python-hatchling
+           python-isort
+           python-pytest
+           python-pytest-cov))
     ;; Almost all the projects of the Mirnylab are moved under Open2C umbrella
     (home-page "https://github.com/open2c/cooler")
     (synopsis "Sparse binary format for genomic interaction matrices")
