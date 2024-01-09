@@ -1921,6 +1921,8 @@ biological activities from omics data within a unified framework.")
                (base32
                 "1bhyxqjk44bmyd26m1smapf68wyf7252kk65i27k50dd3kswgnd6"))))
     (build-system pyproject-build-system)
+    ;; There are no tests.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list python-docopt
            python-importlib-metadata
