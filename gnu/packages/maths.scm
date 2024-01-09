@@ -3487,8 +3487,20 @@ September 2004}")
                           '("configure.log" "make.log" "gmake.log"
                             "test.log" "error.log" "RDict.db"
                             "PETScBuildInternal.cmake"
+                            "configure-hash"
                             ;; Once installed, should uninstall with Guix
                             "uninstall.py")))))
+          (add-after 'clean-install 'clear-reference-to-compiler
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Do not retain a reference to GCC and other build only inputs.
+              (let ((out (assoc-ref outputs "out")))
+              (substitute* (string-append out "/lib/petsc/conf/petscvariables")
+                (("([[:graph:]]+)/bin/gcc") "gcc")
+                (("([[:graph:]]+)/bin/g\\+\\+") "g++")
+                (("([[:graph:]]+)/bin/make") "make")
+                (("([[:graph:]]+)/bin/diff") "diff")
+                (("([[:graph:]]+)/bin/sed") "sed")
+                (("([[:graph:]]+)/bin/gfortran") "gfortran")))))
           (add-after 'install 'move-examples
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
