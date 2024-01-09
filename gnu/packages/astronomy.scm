@@ -12,6 +12,7 @@
 ;;; Copyright © 2023 Iliya Tikhonenko <tikhonenko@mpe.mpg.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2140,9 +2141,24 @@ of astronomical sources.")
                                   " and not test_czml_custom_packet"
                                   " and not test_czml_ground_station"
                                   " and not test_czml_groundtrack"
-                                  " and not test_czml_preamble"))
+                                  " and not test_czml_preamble"
+                                  ;; This fails with "ufunc 'isfinite' not
+                                  ;; supported for the input types"
+                                  " and not test_porkchop_plotting"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'matplotlib-compatibility
+            (lambda _
+              (substitute* "src/poliastro/plotting/static.py"
+                (("import numpy as np.*" m)
+                 (string-append m "\
+import itertools\n"))
+                (("( +)self._ax = ax.*" m indent)
+                 (string-append m indent
+                                "\
+self.colors = itertools.cycle(plt.rcParams[\"axes.prop_cycle\"].by_key()[\"color\"])\n"))
+                (("color = next\\(self._ax._get_lines.prop_cycler\\)\\[\"color\"\\]")
+                 "color = next(self.colors)"))))
           ;; NOTE: Tests take about 7-10 minutes to pass.
           (add-before 'check 'prepare-test-environment
             (lambda _
