@@ -20356,11 +20356,11 @@ translates between different variant encodings.")
       (license license:asl2.0))))
 
 (define-public r-signac
-  (let ((commit "af4142724b72574d957f7fe3d422ed5828ec3ad0")
+  (let ((commit "8ecdde291676102bb3b503f48926c993354b5471")
         (revision "1"))
     (package
       (name "r-signac")
-      (version (git-version "1.9.0" revision commit))
+      (version (git-version "1.12.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -20369,7 +20369,7 @@ translates between different variant encodings.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ps0lp1dcy20r6lakil6ih81m04r0s6fnirvfjf01sfs0gsyddww"))))
+                  "0idkcqb1i13m164nxbdwgs3vflw0cxzm2ir84aw0i811vx9lqz8c"))))
       (properties `((upstream-name . "Signac")))
       (build-system r-build-system)
       (inputs (list zlib))
