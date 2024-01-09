@@ -1928,16 +1928,14 @@ standard feature selection algorithms.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX This requires pytest lazy_fixture
-             (delete-file "tests/test_multilabel_classification.py")
-             ;; Requires tensorflow
-             (delete-file "tests/test_frameworks.py")
+      #:test-flags
+      ;; This test fails because the newer version of scikit learn returns one
+      ;; more classification result than expected.  This should be harmless.
+      '(list "-k" "not test_aux_inputs"
+             ;; Requires Tensorflow
+             "--ignore=tests/test_frameworks.py"
              ;; Tries to download datasets from the internet at runtime.
-             (delete-file "tests/test_dataset.py"))))))
+             "--ignore=tests/test_dataset.py")))
     (propagated-inputs
      (list python-numpy
            python-pandas
@@ -1946,6 +1944,7 @@ standard feature selection algorithms.")
            python-tqdm))
     (native-inputs
      (list python-pytest
+           python-pytest-lazy-fixture
            python-pytorch
            python-torchvision))
     (home-page "https://cleanlab.ai")
