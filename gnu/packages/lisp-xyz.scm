@@ -6134,6 +6134,38 @@ BTCPay, Paypal, and Stripe.")
 (define-public ecl-lisp-pay
   (sbcl-package->ecl-package sbcl-lisp-pay))
 
+(define-public sbcl-stripe
+  (let ((commit "b59631d21d63e101de6eb96b56941471504ba644")
+        (revision "0"))
+    (package
+      (name "sbcl-stripe")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atlas-engineer/stripe")
+               (commit commit)))
+         (file-name (git-file-name "cl-stripe" version))
+         (sha256
+          (base32 "00sfq2f6dnpwa6pf7rgw5hazbwx4yf1g0jrkfz9h4kq5zyxwk1cy"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-dexador
+             sbcl-golden-utils
+             sbcl-local-time
+             sbcl-yason))
+      (home-page "https://github.com/atlas-engineer/stripe")
+      (synopsis "Stripe payment API client for Common Lisp")
+      (description "A client for the Stripe payment API.")
+      (license license:expat))))
+
+(define-public cl-stripe
+  (sbcl-package->cl-source-package sbcl-stripe))
+
+(define-public ecl-stripe
+  (sbcl-package->ecl-package sbcl-stripe))
+
 (define-public sbcl-drakma
   (package
     (name "sbcl-drakma")
