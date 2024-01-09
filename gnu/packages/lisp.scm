@@ -447,6 +447,7 @@ an interpreter, a compiler, a debugger, and much more.")
                            version "-source.tar.bz2"))
        (sha256
         (base32 "0xhpdnsg8idzxkn20iw8gd2rk470d7vc22vrp5clq9fj117vgn43"))
+       (patches (search-patches "sbcl-fix-ppc64-build.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
