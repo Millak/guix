@@ -394,7 +394,7 @@ jami account used as part of the jami configuration are left *unspecified*."
    (description "Provisioning test for the jami service.")
    (value (run-jami-test #:provisioning? #t))))
 
-;;; Thi test verifies that <jami-account> values can be left unspecified
+;;; This test verifies that <jami-account> values can be left unspecified
 ;;; without causing any issue (see: https://issues.guix.gnu.org/56799).
 (define %test-jami-provisioning-partial
   (system-test
