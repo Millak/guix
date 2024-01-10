@@ -17007,18 +17007,19 @@ applications.")
 (define-public python-click-default-group
   (package
     (name "python-click-default-group")
-    (version "1.2.2")
+    (version "1.2.4")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "click-default-group" version))
+              (uri (pypi-uri "click_default_group" version))
               (sha256
                (base32
-                "015r78jk8gznfw0dphpwaqcx5mhg5822b55w5xbb6i7sin70wmnr"))))
-    (build-system python-build-system)
-    (arguments
-      `(#:tests? #f)) ; no target
+                "07i5w47lbihcb3cvs08vynz725z9skvhhzrarnk6qi8dxjckqgzb"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
     (propagated-inputs
      (list python-click))
+    (native-inputs
+     (list python-flit-core python-pytest))
     (synopsis "Extends click.Group")
     (description "This package extends click.Group to invoke a command without
 explicit subcommand name.")
