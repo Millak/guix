@@ -157,6 +157,25 @@ descriptions can discover new relationships between genes and disease, and new
 functions for previous uncharacteried genes and alleles.")
     (license license:artistic2.0)))
 
+(define-public r-jaspar2020
+  (package
+    (name "r-jaspar2020")
+    (version "0.99.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "JASPAR2020" version 'annotation))
+       (sha256
+        (base32 "0nrp63z7q2ivv5h87f7inpp2qll2dfgj4227l4rbnzii38a2vfdr"))))
+    (properties `((upstream-name . "JASPAR2020")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://jaspar.elixir.no/")
+    (synopsis "Data package for JASPAR database (version 2020)")
+    (description "Data package for JASPAR2020.  To explore these databases,
+utilize the TFBSTools package (version 1.23.1 or higher).")
+    (license license:gpl2)))
+
 (define-public r-mafh5-gnomad-v3-1-2-grch38
   (package
     (name "r-mafh5-gnomad-v3-1-2-grch38")
