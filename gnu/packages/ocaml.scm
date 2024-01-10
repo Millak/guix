@@ -6468,6 +6468,30 @@ variant types.")
 string conversion.")
     (license license:asl2.0)))
 
+(define-public ocaml-ppx-stable-witness
+  (package
+    (name "ocaml-ppx-stable-witness")
+    (version "0.16.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/janestreet/ppx_stable_witness")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1ppmazy1vw0j44z1p60ln6fddz414zmyrqkpi54w6cr93giqsl2v"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-base ocaml-ppxlib))
+    (properties `((upstream-name . "ppx_stable_witness")))
+    (home-page "https://github.com/janestreet/ppx_stable_witness")
+    (synopsis "Mark a type as stable across versions")
+    (description "This ppx extension is used for deriving a witness that a
+type is intended to be stable.  In this context, stable means that the
+serialization format will never change.  This allows programs running at
+different versions of the code to safely communicate.")
+    (license license:expat)))
+
 (define-public ocaml-bin-prot
   (package
     (name "ocaml-bin-prot")
