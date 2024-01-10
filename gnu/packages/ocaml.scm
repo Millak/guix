@@ -2028,6 +2028,25 @@ defines its own algebra which some might find easier to work with and reason
 about.")
     (license license:expat)))
 
+(define-public dune-ordering
+  (package
+    (inherit dune)
+    (name "dune-ordering")
+    (source (origin
+              (inherit (package-source dune))
+              (modules '((guix build utils)))
+              (snippet
+                `(begin
+                   (delete-file-recursively "vendor/pp")
+                   (delete-file-recursively "vendor/csexp")))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "ordering"
+       ;; Tests have a cyclic dependency on stdune
+       #:tests? #f))
+    (synopsis "Dune element ordering")
+    (description "This library represents element ordering in OCaml.")))
+
 (define-public ocaml-csexp
   (package
     (name "ocaml-csexp")
