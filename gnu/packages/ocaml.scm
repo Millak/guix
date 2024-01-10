@@ -2087,6 +2087,19 @@ about.")
 dune packages.  However, it is not meant for public consumption and provides
 no stability guarantee.")))
 
+(define-public dune-site
+  (package
+    (inherit dune-ordering)
+    (name "dune-site")
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "dune-site"
+       #:tests? #f))
+    (propagated-inputs (list dune-private-libs))
+    (synopsis "Location information embedder")
+    (description "This library helps embed location information inside
+executables and libraries")))
+
 (define-public ocaml-csexp
   (package
     (name "ocaml-csexp")
