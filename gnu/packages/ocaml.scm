@@ -780,7 +780,7 @@ repository-wide uninstallability checks.")
        ,#~(list "build" "--lib-dir"
                 (string-append #$output "/lib/ocaml/site-lib"))))
     (native-inputs
-     (list ocaml-findlib ocamlbuild ocaml-topkg opam))
+     (list ocaml-findlib ocamlbuild ocaml-topkg opam-installer))
     (home-page "https://erratique.ch/software/down")
     (synopsis "OCaml toplevel (REPL) upgrade")
     (description "Down is an unintrusive user experience upgrade for the
@@ -846,9 +846,9 @@ the opam file format.")
     ;; With static-linking exception
     (license license:lgpl2.1+)))
 
-(define-public opam
+(define ocaml-opam-core
   (package
-    (name "opam")
+    (name "ocaml-opam-core")
     (version "2.1.3")
     (source (origin
               (method git-fetch)
@@ -860,32 +860,151 @@ the opam file format.")
                (base32
                 "1mw535zsw7xlvpgwnk1dan76z3f7lh5imlg0s6kdyhfg0iqisjd7"))))
     (build-system dune-build-system)
+    (arguments `(#:package "opam-core"
+                 ;; tests are run with the opam package
+                 #:tests? #f
+                 #:phases
+                 (modify-phases %standard-phases
+                   (add-before 'build 'pre-build
+                     (lambda* (#:key inputs make-flags #:allow-other-keys)
+                       (let ((bash (assoc-ref inputs "bash"))
+                             (bwrap (search-input-file inputs "/bin/bwrap")))
+                         (substitute* "src/core/opamSystem.ml"
+                           (("\"/bin/sh\"")
+                            (string-append "\"" bash "/bin/sh\""))
+                           (("getconf")
+                            (which "getconf")))))))))
+    (propagated-inputs
+     (list ocaml-graph
+           ocaml-re
+           ocaml-cppo))
+    (inputs (list bubblewrap))
+    (home-page "https://opam.ocamlpro.com/")
+    (synopsis "Package manager for OCaml")
+    (description
+     "OPAM is a tool to manage OCaml packages.  It supports multiple
+simultaneous compiler installations, flexible package constraints, and a
+Git-friendly development workflow.")
+    ;; The 'LICENSE' file waives some requirements compared to LGPLv3.
+    (license license:lgpl3)))
+
+(define ocaml-opam-format
+  (package
+    (inherit ocaml-opam-core)
+    (name "ocaml-opam-format")
+    (inputs '())
+    (propagated-inputs (list ocaml-opam-core
+                             ocaml-opam-file-format
+                             ocaml-re))
+    (arguments `(#:package "opam-format"
+                 ;; tests are run with the opam package
+                 #:tests? #f
+                 #:phases %standard-phases))))
+
+(define-public opam-installer
+  (package
+    (inherit ocaml-opam-core)
+    (name "opam-installer")
+    (native-inputs (list ocaml-opam-format
+                         ocaml-cmdliner))
+    (inputs '())
+    (propagated-inputs '())
+    (arguments `(#:package "opam-installer"
+                 ;; requires all of opam
+                 #:tests? #f))
+    (synopsis "Tool for installing OCaml packages")
+    (description "@var{opam-installer} is a tool for installing OCaml packages
+based on @code{.install} files defined by the OPAM package manager.  It is
+useful for installing OCaml packages without requiring the entirety of
+OPAM.")
+    (properties
+     ;; opam-installer is used as a tool and not as a library, we can use the
+     ;; OCaml 4.14 compiled opam until opam is compatible with OCaml 5.0.
+     `((ocaml5.0-variant . ,(delay opam-installer))))))
+
+(define ocaml-opam-repository
+  (package
+    (inherit ocaml-opam-core)
+    (name "ocaml-opam-repository")
+    (inputs '())
+    (propagated-inputs (list ocaml-opam-format))
+    (arguments `(#:package "opam-repository"
+                 ;; tests are run with the opam package
+                 #:tests? #f
+                 #:phases %standard-phases))))
+
+(define ocaml-opam-state
+  (package
+    (inherit ocaml-opam-core)
+    (name "ocaml-opam-state")
+    (arguments `(#:package "opam-state"
+                 ;; tests are run with the opam package
+                 #:tests? #f
+                 #:phases
+                 (modify-phases %standard-phases
+                   (add-before 'build 'pre-build
+                     (lambda* (#:key inputs make-flags #:allow-other-keys)
+                       (let ((bwrap (search-input-file inputs "/bin/bwrap")))
+                         ;; Use bwrap from the store directly.
+                         (substitute* "src/state/shellscripts/bwrap.sh"
+                           (("-v bwrap") (string-append "-v " bwrap))
+                           (("exec bwrap") (string-append "exec " bwrap))
+                           ;; Mount /gnu and /run/current-system in the
+                           ;; isolated environment when building with opam.
+                           ;; This is necessary for packages to find external
+                           ;; dependencies, such as a C compiler, make, etc...
+                           (("^add_sys_mounts /usr")
+                            (string-append "add_sys_mounts "
+                                           (%store-directory)
+                                           " /run/current-system /usr")))))))))
+    (inputs (list bubblewrap))
+    (propagated-inputs (list ocaml-opam-repository))))
+
+(define ocaml-opam-solver
+  (package
+    (inherit ocaml-opam-core)
+    (name "ocaml-opam-solver")
+    (inputs '())
+    (propagated-inputs (list ocaml-opam-format
+                             ocaml-mccs
+                             ocaml-dose3))
+    (arguments `(#:package "opam-solver"
+                 ;; tests are run with the opam package
+                 #:tests? #f
+                 #:phases %standard-phases))))
+
+(define ocaml-opam-client
+  (package
+    (inherit ocaml-opam-core)
+    (name "ocaml-opam-client")
+    (arguments `(#:package "opam-client"
+                 ;; tests are run with the opam package
+                 #:tests? #f
+                 #:phases
+                 (modify-phases %standard-phases
+                   (add-before 'build 'pre-build
+                     (lambda* (#:key inputs make-flags #:allow-other-keys)
+                       (let ((bwrap (search-input-file inputs "/bin/bwrap")))
+                         (substitute* "src/client/opamInitDefaults.ml"
+                           (("\"bwrap\"") (string-append "\"" bwrap "\"")))))))))
+    (inputs (list bubblewrap))
+    (propagated-inputs
+     (list ocaml-opam-state
+           ocaml-opam-solver
+           ocaml-opam-repository
+           ocaml-base64
+           ocaml-re
+           ocaml-cmdliner))))
+
+(define-public opam
+  (package
+    (inherit ocaml-opam-core)
+    (name "opam")
+    (build-system dune-build-system)
     (arguments
-     `(#:phases
+     `(#:package "opam"
+       #:phases
        (modify-phases %standard-phases
-         (add-before 'build 'pre-build
-           (lambda* (#:key inputs make-flags #:allow-other-keys)
-             (let ((bash (assoc-ref inputs "bash"))
-                   (bwrap (search-input-file inputs "/bin/bwrap")))
-               (substitute* "src/core/opamSystem.ml"
-                 (("\"/bin/sh\"")
-                  (string-append "\"" bash "/bin/sh\""))
-                 (("getconf")
-                  (which "getconf")))
-               ;; Use bwrap from the store directly.
-               (substitute* "src/state/shellscripts/bwrap.sh"
-                 (("-v bwrap") (string-append "-v " bwrap))
-                 (("exec bwrap") (string-append "exec " bwrap))
-                 ;; Mount /gnu and /run/current-system in the
-                 ;; isolated environment when building with opam.
-                 ;; This is necessary for packages to find external
-                 ;; dependencies, such as a C compiler, make, etc...
-                 (("^add_sys_mounts /usr")
-                  (string-append "add_sys_mounts "
-                                 (%store-directory)
-                                 " /run/current-system /usr")))
-               (substitute* "src/client/opamInitDefaults.ml"
-                 (("\"bwrap\"") (string-append "\"" bwrap "\""))))))
          (add-before 'check 'prepare-checks
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Opam tests need to run an isolated environment from a writable
@@ -966,22 +1085,11 @@ name = Guix Builder")
                                            "0j9abisx3ifzm66ci3p45mngmz4f0fx7yd9jjxrz3f8w5jffc9ii"))
          ("opam-repo-f372039d" ,(opam-repo "f372039db86a970ef3e662adbfe0d4f5cd980701"
                                            "0ld7fcry6ss6fmrpswvr6bikgx299w97h0gwrjjh7kd7rydsjdws")))))
-    (inputs
-     (list ocaml ncurses curl bubblewrap ocaml-cmdliner ocaml-dose3
-           ocaml-mccs ocaml-opam-file-format ocaml-re))
+    (inputs (list ocaml-opam-client))
     (properties
      ;; OPAM is used as a tool and not as a library, we can use the OCaml 4.14
      ;; compiled opam until opam is compatible with OCaml 5.0.
-     `((ocaml5.0-variant . ,(delay opam))))
-    (home-page "https://opam.ocamlpro.com/")
-    (synopsis "Package manager for OCaml")
-    (description
-     "OPAM is a tool to manage OCaml packages.  It supports multiple
-simultaneous compiler installations, flexible package constraints, and a
-Git-friendly development workflow.")
-
-    ;; The 'LICENSE' file waives some requirements compared to LGPLv3.
-    (license license:lgpl3)))
+     `((ocaml5.0-variant . ,(delay opam))))))
 
 (define-public ocaml-opam-monorepo
   (package
@@ -2072,7 +2180,7 @@ defined in this library.")
                 "11ycfk0prqvifm9jca2308gw8a6cjb1hqlgfslbji2cqpan09kpq"))))
     (build-system ocaml-build-system)
     (native-inputs
-     (list opam ocamlbuild))
+     (list opam-installer ocamlbuild))
     (propagated-inputs
      `(("result" ,ocaml-result)))
     (arguments
@@ -2102,7 +2210,7 @@ creation and publication procedures.")
                 "0h2mjyzhay1p4k7n0mzaa7hlc7875kiy6m1i3r1n03j6hddpzahi"))))
     (build-system ocaml-build-system)
     (native-inputs
-     (list opam ocamlbuild))
+     (list opam-installer ocamlbuild))
     (propagated-inputs
      `(("topkg" ,ocaml-topkg)))
     (arguments
@@ -2190,7 +2298,7 @@ manipulate such data.")
                 "1ss4w3qxsfp51d88r0j7dzqs05dbb1xdx11hn1jl9cvd03ma0g9z"))))
     (build-system ocaml-build-system)
     (native-inputs
-     (list ocamlbuild opam))
+     (list ocamlbuild opam-installer))
     (propagated-inputs
      `(("topkg" ,ocaml-topkg)))
     (arguments
@@ -2305,13 +2413,13 @@ most of the POSIX and GNU conventions.")
                   "0q8j2in2473xh7k4hfgnppv9qy77f2ih89yp6yhpbp92ba021yzi"))))
     (build-system ocaml-build-system)
     (native-inputs
-     `(("ocamlbuild" ,ocamlbuild)
-       ("opam" ,opam)
-       ("topkg" ,ocaml-topkg)))
+     (list ocamlbuild
+           opam-installer
+           ocaml-topkg))
     (propagated-inputs
-     `(("cmdliner" ,ocaml-cmdliner)
-       ("ocaml-stdlib-shims" ,ocaml-stdlib-shims)
-       ("ocaml-uchar" ,ocaml-uchar)))
+     (list ocaml-cmdliner
+           ocaml-stdlib-shims
+           ocaml-uchar))
     (arguments `(#:tests? #f
                  #:build-flags (list "build" "--with-base-unix" "true"
                                      "--with-cmdliner" "true")
@@ -2337,9 +2445,9 @@ functions.")
                   "1ykhg9gd3iy7zsgyiy2p9b1wkpqg9irw5pvcqs3sphq71iir4ml6"))))
     (build-system ocaml-build-system)
     (native-inputs
-     `(("ocamlbuild" ,ocamlbuild)
-       ("opam" ,opam)
-       ("topkg" ,ocaml-topkg)))
+     (list ocamlbuild
+           opam-installer
+           ocaml-topkg))
     (arguments
      `(#:tests? #f
        #:build-flags (list "build")
@@ -2540,7 +2648,7 @@ maintained.  The @code{Pycaml} module provides a signature close to
                   "16cg4byj8lfbbw96dhh8sks5y9n1c3fshz7f2p8m7wgisqax7bf4"))))
     (build-system ocaml-build-system)
     (native-inputs
-     (list ocamlbuild opam ocaml-topkg))
+     (list ocamlbuild opam-installer ocaml-topkg))
     (arguments
      `(#:tests? #f
        #:build-flags (list "build")
@@ -2664,7 +2772,7 @@ architectures.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
-    (native-inputs (list ocaml-topkg ocamlbuild opam))
+    (native-inputs (list ocaml-topkg ocamlbuild opam-installer))
     (home-page "https://erratique.ch/software/hmap")
     (synopsis "Heterogeneous value maps for OCaml")
     (description
@@ -3108,7 +3216,7 @@ ocaml lwt.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list ocamlbuild opam))
+     (list ocamlbuild opam-installer))
     (propagated-inputs
      `(("fmt" ,ocaml-fmt)
        ("lwt" ,ocaml-lwt)
@@ -3142,7 +3250,7 @@ message report is decoupled from logging and is handled by a reporter.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list ocamlbuild opam))
+     (list ocamlbuild opam-installer))
     (propagated-inputs
      `(("topkg" ,ocaml-topkg)
        ("astring" ,ocaml-astring)))
@@ -3172,7 +3280,7 @@ file system and is independent from any system library.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list ocamlbuild opam))
+     (list ocamlbuild opam-installer))
     (propagated-inputs
      `(("topkg" ,ocaml-topkg)
        ("astring" ,ocaml-astring)
@@ -3246,7 +3354,7 @@ does not require additional C libraries.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list ocamlbuild ocaml-topkg opam))
+     (list ocamlbuild ocaml-topkg opam-installer))
     (home-page "https://erratique.ch/software/xmlm")
     (synopsis "Streaming XML codec for OCaml")
     (description "Xmlm is a streaming codec to decode and encode the XML data
@@ -3366,7 +3474,7 @@ and consumable.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list ocamlbuild opam))
+     (list ocamlbuild opam-installer))
     (home-page "https://github.com/ocaml/uchar")
     (synopsis "Compatibility library for OCaml's Uchar module")
     (description "The uchar package provides a compatibility library for the
@@ -3392,9 +3500,9 @@ and consumable.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     `(("ocamlbuild" ,ocamlbuild)
-       ("opam" ,opam)
-       ("topkg" ,ocaml-topkg)))
+     (list ocamlbuild
+           opam-installer
+           ocaml-topkg))
     (propagated-inputs
      `(("uchar" ,ocaml-uchar)
        ("cmdliner" ,ocaml-cmdliner)))
@@ -3439,7 +3547,7 @@ string values and to directly encode characters in OCaml Buffer.t values.")
              #t)))))
     (native-inputs
      `(("ocamlbuild" ,ocamlbuild)
-       ("opam" ,opam)
+       ("opam-installer" ,opam-installer)
        ("topkg" ,ocaml-topkg)
        ;; Test data is otherwise downloaded with curl
        ("NormalizationTest.txt"
@@ -3480,9 +3588,9 @@ without a complete in-memory representation.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     `(("ocamlbuild" ,ocamlbuild)
-       ("opam" ,opam)
-       ("topkg" ,ocaml-topkg)))
+     (list ocamlbuild
+           opam-installer
+           ocaml-topkg))
     (propagated-inputs
      `(("uutf" ,ocaml-uutf)
        ("cmdliner" ,ocaml-cmdliner)))
@@ -3900,7 +4008,7 @@ epoch.")
        #:phases (modify-phases %standard-phases
                   (delete 'configure))))
     (propagated-inputs (list ocaml-result js-of-ocaml))
-    (native-inputs (list ocaml-findlib ocamlbuild ocaml-topkg opam))
+    (native-inputs (list ocaml-findlib ocamlbuild ocaml-topkg opam-installer))
     (home-page "https://erratique.ch/software/ptime")
     (synopsis "POSIX time for OCaml")
     (description
@@ -4770,7 +4878,7 @@ tool and piqi-ocaml.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list ocamlbuild opam))
+     (list ocamlbuild opam-installer))
     (propagated-inputs
      `(("cmdliner" ,ocaml-cmdliner)
        ("topkg" ,ocaml-topkg)))
@@ -5306,12 +5414,8 @@ without writing or generating any C!")
               ;; Guix doesn't have cc, but it has gcc
               (("\"cc\"") "\"gcc\""))
             #t)))))
-   (inputs
-    `(("topkg" ,ocaml-topkg)
-      ("opam" ,opam)))
-   (native-inputs
-    `(("astring" ,ocaml-astring)
-      ("ocamlbuild" ,ocamlbuild)))
+   (inputs (list ocaml-topkg opam-installer))
+   (native-inputs (list ocaml-astring ocamlbuild))
    (synopsis "OCamlbuild plugin for C stubs")
    (description "Ocb-stubblr is about ten lines of code that you need to
 repeat over, over, over and over again if you are using ocamlbuild to build
@@ -5339,7 +5443,7 @@ OCaml projects that contain C stubs.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list ocamlbuild ocaml-astring opam pkg-config))
+     (list ocamlbuild ocaml-astring opam-installer pkg-config))
     (inputs
      `(("topkg" ,ocaml-topkg)
        ("sdl2" ,sdl2)
@@ -8106,7 +8210,7 @@ client chooses the concrete timeline.")
     (propagated-inputs
      (list ocaml-xmlm))
     (native-inputs
-     (list opam ocaml-findlib ocamlbuild ocaml-topkg))
+     (list opam-installer ocaml-findlib ocamlbuild ocaml-topkg))
     (home-page "https://erratique.ch/software/uucd")
     (synopsis "Unicode character database decoder for OCaml")
     (description "Uucd is an OCaml module to decode the data of the Unicode
@@ -8134,7 +8238,7 @@ representations can be extracted.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list opam
+     (list opam-installer
            ocaml-findlib
            ocamlbuild
            ocaml-topkg
@@ -8168,7 +8272,7 @@ selection of character properties of the Unicode character database.")
     (propagated-inputs
      (list ocaml-uucp ocaml-uutf ocaml-cmdliner))
     (native-inputs
-     (list opam ocaml-findlib ocamlbuild ocaml-topkg))
+     (list opam-installer ocaml-findlib ocamlbuild ocaml-topkg))
     (home-page "https://erratique.ch/software/uuseg")
     (synopsis "Unicode text segmentation for OCaml")
     (description "Uuseg is an OCaml library for segmenting Unicode text.  It
@@ -8629,8 +8733,7 @@ browsers and Node.js.")
              (invoke "./build.sh")))
          ;; XXX: The tests are already run in the build.sh script.
          (delete 'check))))
-    (native-inputs
-     `(("opam" ,opam)))
+    (native-inputs (list opam-installer))
     (home-page "https://github.com/stedolan/ocaml-afl-persistent")
     (synopsis "Use afl-fuzz in persistent mode")
     (description
