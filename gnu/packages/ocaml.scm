@@ -5490,7 +5490,7 @@ developed in other systems.  In particular, it enjoys a minimalistic syntax.")
 (define-public ocaml-jst-config
   (package
     (name "ocaml-jst-config")
-    (version "0.15.1")
+    (version "0.16.0")
     (source
       (origin
         (method git-fetch)
@@ -5500,7 +5500,7 @@ developed in other systems.  In particular, it enjoys a minimalistic syntax.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1yp5p63clvaxmkf7vlasgyapxc31x29c154pyq63n0fvi2fpf4y3"))))
+          "01419gk2w2r1xqz11rw1glngi8fi6gq9sh79c06vasrk6vxriy0s"))))
     (build-system dune-build-system)
     (arguments '(#:tests? #f))           ; no tests
     (propagated-inputs
