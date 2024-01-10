@@ -335,7 +335,15 @@ logic, also known as grey logic.")
                ;; These are for compatibility with more recent versions of
                ;; numpy and scikit-learn.
                (search-patches "python-scikit-optimize-1148.patch"
-                               "python-scikit-optimize-1150.patch"))))
+                               "python-scikit-optimize-1150.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Since scikit-learn 1.3 max_features no longer supports
+               ;; 'auto', which is identical to 'sqrt'
+               '(substitute* '("skopt/learning/forest.py"
+                               "skopt/learning/tests/test_forest.py")
+                  (("max_features=['\"]auto['\"]")
+                   "max_features='sqrt'")))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-joblib
