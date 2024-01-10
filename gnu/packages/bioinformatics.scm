@@ -17147,7 +17147,18 @@ the HiCExplorer and pyGenomeTracks packages.")
                                "general/test_hicHyperoptDetectLoopsHiCCUPS.py"
                                "general/test_hicAggregateContacts.py"
                                "general/test_hicInterIntraTAD.py")
-                  (("^memory =.*") "memory = 1\n"))))))))
+                  (("^memory =.*") "memory = 1\n")))))
+          ;; This is fixed in version 3.7.3, but we cannot upgrade yet as we
+          ;; don't have Pandas 2.
+          (add-after 'unpack 'scipy-compatibility
+            (lambda _
+              (substitute* "hicexplorer/hicAverageRegions.py"
+                (("from scipy.sparse import csr_matrix, save_npz, lil_matrix")
+                 "from scipy.sparse import csr_matrix, save_npz, lil_matrix, coo_matrix")
+                (("summed_matrix = np.array\\(summed_matrix\\)")
+                 "summed_matrix = coo_matrix(summed_matrix)")
+                (("data = summed_matrix\\[np.nonzero\\(summed_matrix\\)\\]")
+                 "data = summed_matrix.toarray()[np.nonzero(summed_matrix)]")))))))
     (propagated-inputs
      (list python-biopython
            python-cleanlab-1
