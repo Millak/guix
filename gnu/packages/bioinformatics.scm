@@ -17017,7 +17017,7 @@ includes operations like compartment, insulation or peak calling.")
 (define-public python-hicmatrix
   (package
     (name "python-hicmatrix")
-    (version "16")
+    (version "17.1")
       (source
         (origin
           ;;Pypi sources do not contain any test
@@ -17028,16 +17028,8 @@ includes operations like compartment, insulation or peak calling.")
           (file-name (git-file-name name version))
           (sha256
             (base32
-             "00b9l62j4knrsdp7l3pawi9cqcsl09diycbhmmnar850bzssmq4f"))))
+             "14gq7r9b64ff56l5f8h8zc2i2y3xri646jl0anb74japqxrwvlna"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'remove-invalid-syntax
-           (lambda _
-             (substitute* "setup.py"
-               ((".\\*\"") "\"")))))))
     (propagated-inputs
      (list python-cooler
            python-intervaltree
