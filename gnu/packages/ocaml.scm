@@ -2622,10 +2622,10 @@ syntactic tools.")
        (method git-fetch)
        (uri (git-reference
               (url home-page)
-              (commit version)))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "054ca6071bfkdbm5vlmnk6ic43561xl9igv87zgkbq4qry16a7s7"))))
+        (base32 "1m0i9qdazmziswfw1bz4m1x9mlzqyv336vbrss0c21am4im9n6k6"))))
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-ppx-sexp-conv ocaml-ctypes ocaml-bos))
     (native-inputs (list ocaml-fmt
@@ -2643,6 +2643,31 @@ format.  It is intended to be interoperable with the @code{Ezjsonm}
 JSON handling library, if the simple common subset of Yaml is used.  Anchors and
 other advanced Yaml features are not implemented in the JSON compatibility
 layer.")
+    (license license:isc)))
+
+(define-public ocaml-ppx-deriving-yaml
+  (package
+    (name "ocaml-ppx-deriving-yaml")
+    (version "0.2.1")
+    (home-page "https://github.com/patricoferris/ppx_deriving_yaml")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cxcqgvyl4ykyl86mf2d4ka6frnq51m1yqy0z5v6vdxkixllf9jd"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-ppxlib ocaml-ppx-deriving ocaml-yaml
+                             ocaml-odoc))
+    (native-inputs (list ocaml-alcotest ocaml-bos ocaml-mdx ocaml-ezjsonm))
+    (properties `((upstream-name . "ppx_deriving_yaml")))
+    (synopsis "Yaml PPX Deriver")
+    (description
+     "This package contains @code{deriving} conversion functions to and from
+yaml for OCaml types.")
     (license license:isc)))
 
 (define-public ocaml-parmap
