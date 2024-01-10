@@ -280,14 +280,14 @@ and triple stores.")
 (define-public serd
   (package
     (name "serd")
-    (version "0.30.16")
+    (version "0.32.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/serd-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0ilimkczibiwwvc12i14b8zi6ng42hjf9j907g8dik8rlmnlh3zm"))))
+               "18cwj8xxsaq6iw45kcljbhrral0cqvav80p4mdv2l7g0d2a6ks6i"))))
     (build-system meson-build-system)
     (native-inputs (list python-minimal))
     (home-page "https://drobilla.net/software/serd.html")
