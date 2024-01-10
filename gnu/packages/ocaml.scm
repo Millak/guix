@@ -2468,7 +2468,7 @@ immutability.")
 (define-public ocaml-alcotest
   (package
     (name "ocaml-alcotest")
-    (version "1.6.0")
+    (version "1.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2477,7 +2477,7 @@ immutability.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "195612n7p8y5ba6n19glql7qffl8n3aqkl9nrlln5lb9739gpv4w"))))
+                "0v01vciihd12r30pc4dai70s15p38gy990b4842sn16pvl0ab1az"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "alcotest"
