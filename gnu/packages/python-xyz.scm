@@ -1426,7 +1426,8 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
                    " and not test_load_definitions_stage_2"))))
     (native-inputs
      (list python-pytest python-pytest-benchmark python-pytest-cov
-           python-pytest-mpl python-pytest-subtests))
+           python-pytest-mpl python-pytest-subtests
+           python-setuptools-scm))
     (propagated-inputs
      (list python-typing-extensions
            python-uncertainties))
