@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
@@ -2273,8 +2273,10 @@ exec " gcc "/bin/" program
 
        ,@(substitute-keyword-arguments (package-arguments binutils)
            ((#:configure-flags cf)
-            `(cons ,(string-append "--target=" (boot-triplet))
-                   ,cf)))))
+            `(append (list ,(string-append "--target=" (boot-triplet))
+                           "--disable-gprofng")   ;requires Bison
+                     ,cf)))))
+    (native-inputs '())                           ;no Bison
     (inputs (%boot0-inputs))))
 
 (define libstdc++-boot0
@@ -3146,27 +3148,6 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
     ("gcc" ,gcc-boot0-wrapped)
     ,@(fold alist-delete (%boot1-inputs) '("libc" "gcc" "linux-libre-headers"))))
 
-(define binutils-final
-  (package
-    (inherit binutils)
-    (source (bootstrap-origin (package-source binutils)))
-    (arguments
-     `(#:guile ,%bootstrap-guile
-       #:implicit-inputs? #f
-       #:allowed-references
-       ,@(match (%current-system)
-         ((? target-powerpc?)
-          `(("out" ,glibc-final ,static-bash-for-glibc)))
-         (_
-          `(("out" ,glibc-final))))
-       ,@(package-arguments binutils)))
-    (inputs
-     (match (%current-system)
-       ((? target-powerpc?)
-        `(("bash" ,static-bash-for-glibc)
-          ,@(%boot2-inputs)))
-       (_ (%boot2-inputs))))))
-
 (define libstdc++
   ;; Intermediate libstdc++ that will allow us to build the final GCC
   ;; (remember that GCC-BOOT0 cannot build libstdc++.)
@@ -3195,6 +3176,38 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
       (outputs '("out"))
       (inputs (%boot2-inputs))
       (synopsis "GNU C++ standard library (intermediate)"))))
+
+(define binutils-final
+  (package
+    (inherit binutils)
+    (source (bootstrap-origin (package-source binutils)))
+    (arguments
+     `(#:guile ,%bootstrap-guile
+       #:implicit-inputs? #f
+       #:allowed-references
+       ("out"
+        ,glibc-final
+        ,(this-package-native-input "libstdc++")
+        ,@(if (target-powerpc? (%current-system))
+              (list static-bash-for-glibc)
+              '()))
+
+       ,@(substitute-keyword-arguments (package-arguments binutils)
+           ((#:configure-flags flags #~'())
+            ;; For gprofng, tell the build system where to look for libstdc++.
+            #~(append #$flags
+                      (list (string-append
+                             "LDFLAGS=-L"
+                             #$(this-package-native-input "libstdc++")
+                             "/lib")))))))
+    (native-inputs (list bison-boot0
+                         libstdc++))              ;for gprofng
+    (inputs
+     (match (%current-system)
+       ((? target-powerpc?)
+        `(("bash" ,static-bash-for-glibc)
+          ,@(%boot2-inputs)))
+       (_ (%boot2-inputs))))))
 
 (define zlib-final
   ;; Zlib used by GCC-FINAL.

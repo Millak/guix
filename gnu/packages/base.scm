@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -634,14 +634,14 @@ change.  GNU make offers many powerful extensions over the standard utility.")
 (define-public binutils
   (package
    (name "binutils")
-   (version "2.38")
+   (version "2.41")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/binutils/binutils-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "1y0fb4qgxaxfyf81x9fqq9w5609mkah0b7wm1f7ab9kpy0fcf3h7"))
+       (base32 "02xkm9xgcrqhln742636nm43yzrpjkhqj0z64h03gf7pab0bxi54"))
       (patches (search-patches "binutils-loongson-workaround.patch"))))
    (build-system gnu-build-system)
    (arguments
@@ -672,16 +672,11 @@ change.  GNU make offers many powerful extensions over the standard utility.")
                           "--enable-lto"
                           "--enable-separate-code"
                           "--enable-threads")
-      ;; XXX: binutils 2.38 was released without generated manuals:
-      ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=28909>.  To avoid
-      ;; a circular dependency on texinfo, prevent the build system from
-      ;; creating the manuals by calling "true" instead of "makeinfo" ...
+
+      ;; For some reason, the build machinery insists on rebuilding .info
+      ;; files, even though they're already provided by the tarball.
       #:make-flags '("MAKEINFO=true")))
-
-   ;; ... and "hide" this package such that users who install binutils get
-   ;; the version with documentation defined below.
-   (properties '((hidden? . #t)))
-
+   (native-inputs (list bison))                   ;needed to build 'gprofng'
    (synopsis "Binary utilities: bfd gas gprof ld")
    (description
     "GNU Binutils is a collection of tools for working with binary files.
@@ -692,16 +687,6 @@ the strings in a binary file, and utilities for working with archives.  The
 included.")
    (license gpl3+)
    (home-page "https://www.gnu.org/software/binutils/")))
-
-(define-public binutils+documentation
-  (package/inherit binutils
-    (native-inputs
-     (list texinfo))
-    (arguments
-     (substitute-keyword-arguments (package-arguments binutils)
-       ((#:make-flags flags ''())
-        ''())))
-    (properties '())))
 
 ;; FIXME: ath9k-firmware-htc-binutils.patch do not apply on 2.34 because of a
 ;; big refactoring of xtensa-modules.c (commit 567607c11fbf7105 upstream).
@@ -721,10 +706,11 @@ included.")
    (arguments
     (substitute-keyword-arguments (package-arguments binutils)
       ((#:make-flags _ ''()) ''())))
+   (native-inputs '())
    (properties '())))
 
 (define-public binutils-gold
-  (package/inherit binutils+documentation
+  (package/inherit binutils
     (name "binutils-gold")
     (arguments
      (substitute-keyword-arguments (package-arguments binutils)
@@ -745,7 +731,8 @@ included.")
                      (substitute* "gold/Makefile.in"
                        ((" testsuite") " ")))))
                '())))))
-    (native-inputs (list bc))))
+    (native-inputs (modify-inputs (package-native-inputs binutils)
+                     (append bc)))))
 
 (define* (make-ld-wrapper name #:key
                           (target (const #f))
