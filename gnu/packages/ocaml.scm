@@ -3391,7 +3391,7 @@ and consumable.")
 (define-public ocaml-sedlex
   (package
     (name "ocaml-sedlex")
-    (version "2.5")
+    (version "2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3400,7 +3400,7 @@ and consumable.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "062a5dvrzvb81l3a9phljrhxfw9nlb61q341q0a6xn65hll3z2wy"))))
+                "1z8mmk1idh9hjhh2b9rp5b1h8kmzcxhagqkw0pvxn6ykx1brskq1"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -6239,7 +6239,7 @@ the OCaml code.")
 (define-public ocaml-ppxlib
   (package
     (name "ocaml-ppxlib")
-    (version "0.25.1")
+    (version "0.28.0")
     (home-page "https://github.com/ocaml-ppx/ppxlib")
     (source
      (origin
@@ -6250,7 +6250,7 @@ the OCaml code.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1402fzv5mg5grf3hb82fqsdkzxk07yfp9hvjh33dzjwjsqfhx3wi"))))
+         "0alwn1bnc228z6ivj7dpcszrylbg1z3img8vrcihaa9crbx3xxcb"))))
     (build-system dune-build-system)
     (arguments
      `(#:phases
@@ -6394,7 +6394,7 @@ new record values.")
 (define-public ocaml-ppx-sexp-conv
   (package
     (name "ocaml-ppx-sexp-conv")
-    (version "0.15.0")
+    (version "0.15.1")
     (home-page "https://github.com/janestreet/ppx_sexp_conv")
     (source
      (origin
@@ -6405,7 +6405,7 @@ new record values.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fyf7hgxprn7pj58rmmrfpv938a0avpzvvk6wzihpmfm6whgbdm8"))))
+         "163kn5gv1va84s1ysa1fm40fw3hm9xm3788qsvxmm4l3gij2g29m"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-ppxlib))
@@ -7769,7 +7769,7 @@ combinators.")
 (define-public ocaml-bisect-ppx
   (package
     (name "ocaml-bisect-ppx")
-    (version "2.8.1")
+    (version "2.8.3")
     (source
      (origin
        (method git-fetch)
@@ -7779,7 +7779,7 @@ combinators.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0562rwwnhqlf5alxl1wd1n0xs0k4aamxafrh8bbmh5yl3i5rxrx4"))))
+         "1albx01qvr4fax4wkdmy0dd21q0fd9ixsgsvnr1z32ngj9nyi9fy"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-ppxlib ocaml-cmdliner))
