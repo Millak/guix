@@ -1226,7 +1226,9 @@ new Date();"))
                 "1prvqy0ysz0999wrhsrbz6vrknpqfihl9l74l16ph93g89dqi5ia"))
               (modules '((guix build utils)))
               (snippet
-               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
+               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
+              (patches (search-patches
+                        "openjdk-currency-time-bomb2.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
