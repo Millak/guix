@@ -1648,6 +1648,22 @@ to be accepted by Jenkins.")
     ;; with OCaml linking exception
     (license license:gpl3+)))
 
+(define-public ocaml-junit-alcotest
+  (package
+    (inherit ocaml-junit)
+    (name "ocaml-junit-alcotest")
+    (propagated-inputs (list ocaml-odoc ocaml-alcotest ocaml-junit))
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "junit_alcotest"
+       #:tests? #f)); tests fail
+    (properties `((upstream-name . "junit_alcotest")))
+    (synopsis "JUnit XML reports generation for alcotest tests")
+    (description "This package generates JUnit XML reports from ocaml-alcotest
+test suites.")
+    ;; with OCaml linking exception
+    (license license:gpl3+)))
+
 (define-public camlzip
   (package
     (name "camlzip")
