@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2018-2020, 2023 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016-2022 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2016-2024 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Peter Kreye <kreyepr@gmail.com>
@@ -2001,6 +2001,32 @@ config.h files for instance.  Among other things, dune-configurator allows one t
     (inherit ocaml5.0-dune-bootstrap)
     (propagated-inputs
      (list ocaml5.0-dune-configurator))))
+
+(define-public ocaml-pp
+  (package
+    (name "ocaml-pp")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ocaml-dune/pp")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ylwb8lbjzj1prnal3c5p404dvh7bv4s19cvgrplnd7s46lvnj50"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-odoc))
+    (native-inputs (list ocaml-ppx-expect))
+    (home-page "https://github.com/ocaml-dune/pp")
+    (synopsis "Pretty-printing library")
+    (description
+     "This library provides an alternative to the @code{Format} module of the OCaml
+standard library.  Pp uses the same concepts of boxes and break hints, and the
+final rendering is done to formatter from the @code{Format} module.  However it
+defines its own algebra which some might find easier to work with and reason
+about.")
+    (license license:expat)))
 
 (define-public ocaml-csexp
   (package
