@@ -2025,41 +2025,22 @@ audio/video codec library.")
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg)
        ((#:configure-flags _ '())
+        ;; The base configure flags preserved from ffmpeg appear first.
         #~(list "--disable-static"
                 "--enable-shared"
                 "--disable-stripping"
-                ;; The following variables are configure flags used by
-                ;; ffmpeg-jami.  They're from the
-                ;; jami/daemon/contrib/src/ffmpeg/rules.mak file.  We try to
-                ;; keep it as close to the official Jami package as possible,
-                ;; to provide all the codecs and extra features that are
-                ;; expected (see:
+
+                ;; Extra Guix-added flags that make sense for this custom
+                ;; package; these could be contributed upstream.
+                "--disable-doc"
+
+                ;; The following flags are those specified by Jami.
+                ;; They're from the jami/daemon/contrib/src/ffmpeg/rules.mak
+                ;; file.  We try to keep it as close to the official Jami
+                ;; package as possible, to provide all the codecs and extra
+                ;; features that are expected (see:
                 ;; https://review.jami.net/plugins/gitiles/jami-daemon/+/
                 ;; refs/heads/master/contrib/src/ffmpeg/rules.mak).
-                ;; An exception are the ffnvcodec-related switches, which is
-                ;; not packaged in Guix and would not work with Mesa.
-                #$@(if (string-contains (%current-system) "linux")
-                       '("--enable-pic"
-                         "--extra-cxxflags=-fPIC"
-                         "--extra-cflags=-fPIC"
-                         "--target-os=linux"
-                         "--enable-indev=v4l2"
-                         "--enable-indev=xcbgrab"
-                         "--enable-vdpau"
-                         "--enable-hwaccel=h264_vdpau"
-                         "--enable-hwaccel=mpeg4_vdpau"
-                         "--enable-vaapi"
-                         "--enable-hwaccel=h264_vaapi"
-                         "--enable-hwaccel=mpeg4_vaapi"
-                         "--enable-hwaccel=h263_vaapi"
-                         "--enable-hwaccel=vp8_vaapi"
-                         "--enable-hwaccel=mjpeg_vaapi"
-                         "--enable-hwaccel=hevc_vaapi"
-                         "--enable-encoder=h264_vaapi"
-                         "--enable-encoder=vp8_vaapi"
-                         "--enable-encoder=mjpeg_vaapi"
-                         "--enable-encoder=hevc_vaapi")
-                       '())
                 "--disable-everything"
                 "--enable-zlib"
                 "--enable-gpl"
@@ -2068,6 +2049,7 @@ audio/video codec library.")
                 "--disable-filters"
                 "--disable-programs"
                 "--disable-postproc"
+
                 "--disable-protocols"
                 "--enable-protocol=crypto"
                 "--enable-protocol=file"
@@ -2083,17 +2065,18 @@ audio/video codec library.")
                 "--disable-muxers"
                 "--enable-muxer=rtp"
                 "--enable-muxer=g722"
+                "--enable-muxer=g723_1"
                 "--enable-muxer=g726"
                 "--enable-muxer=g726le"
                 "--enable-muxer=h263"
                 "--enable-muxer=h264"
                 "--enable-muxer=hevc"
                 "--enable-muxer=matroska"
-                "--enable-muxer=wav"
                 "--enable-muxer=webm"
                 "--enable-muxer=ogg"
                 "--enable-muxer=pcm_s16be"
                 "--enable-muxer=pcm_s16le"
+                "--enable-muxer=wav"
                 "--enable-demuxer=rtp"
                 "--enable-demuxer=mjpeg"
                 "--enable-demuxer=mjpeg_2000"
@@ -2193,18 +2176,6 @@ audio/video codec library.")
                 "--enable-encoder=pcm_s32le"
                 "--enable-encoder=pcm_s64le"
 
-                "--enable-decoder=pcm_s16be"
-                "--enable-decoder=pcm_s16be_planar"
-                "--enable-decoder=pcm_s16le_planar"
-                "--enable-decoder=pcm_s24be"
-                "--enable-decoder=pcm_s24le_planar"
-                "--enable-decoder=pcm_s32be"
-                "--enable-decoder=pcm_s32le_planar"
-                "--enable-decoder=pcm_s64be"
-                "--enable-decoder=pcm_s8"
-                "--enable-decoder=pcm_s8_planar"
-                "--enable-decoder=pcm_u16be"
-
                 ;; Encoders/decoders for images.
                 "--enable-encoder=gif"
                 "--enable-decoder=gif"
@@ -2231,6 +2202,20 @@ audio/video codec library.")
                 "--enable-filter=transpose"
                 "--enable-filter=pad"
 
+                ;; Decoders for ringtones and audio streaming.
+                "--enable-decoder=pcm_s16be"
+                "--enable-decoder=pcm_s16be_planar"
+                "--enable-decoder=pcm_s16le_planar"
+                "--enable-decoder=pcm_s24be"
+                "--enable-decoder=pcm_s24le_planar"
+                "--enable-decoder=pcm_s32be"
+                "--enable-decoder=pcm_s32le_planar"
+                "--enable-decoder=pcm_s64be"
+                "--enable-decoder=pcm_s8"
+                "--enable-decoder=pcm_s8_planar"
+                "--enable-decoder=pcm_u16be"
+
+                ;; More filters.
                 "--enable-filter=afir"
                 "--enable-filter=split"
                 "--enable-filter=drawbox"
@@ -2244,7 +2229,35 @@ audio/video codec library.")
                 "--enable-filter=lut"
                 "--enable-filter=negate"
                 "--enable-filter=colorkey"
-                "--enable-filter=transpose"))))))
+                "--enable-filter=transpose"
+
+                "--enable-libfreetype"
+
+                #$@(if (string-contains (%current-system) "linux")
+                       ;; Leave out the '--enable-cuvid' ... '--enable-encoder=hevc_nvenc'
+                       ;; flags, as there's no support for ffnvcodec in Guix;
+                       ;; it would not work with Mesa anyway.
+                       '("--enable-pic"
+                         "--extra-cxxflags=-fPIC"
+                         "--extra-cflags=-fPIC"
+                         "--target-os=linux"
+                         "--enable-indev=v4l2"
+                         "--enable-indev=xcbgrab"
+                         "--enable-vdpau"
+                         "--enable-hwaccel=h264_vdpau"
+                         "--enable-hwaccel=mpeg4_vdpau"
+                         "--enable-vaapi"
+                         "--enable-hwaccel=h264_vaapi"
+                         "--enable-hwaccel=mpeg4_vaapi"
+                         "--enable-hwaccel=h263_vaapi"
+                         "--enable-hwaccel=vp8_vaapi"
+                         "--enable-hwaccel=mjpeg_vaapi"
+                         "--enable-hwaccel=hevc_vaapi"
+                         "--enable-encoder=h264_vaapi"
+                         "--enable-encoder=vp8_vaapi"
+                         "--enable-encoder=mjpeg_vaapi"
+                         "--enable-encoder=hevc_vaapi")
+                       '())))))))
 
 (define-public ffmpegthumbnailer
   (package
