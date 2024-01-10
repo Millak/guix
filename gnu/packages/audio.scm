@@ -3731,7 +3731,6 @@ input/output.")
                (base32
                 "1rm1mkzmqr8k818xxpm69f5jp1fnxjglj3l5ngcysfmq1psgm0lr"))))
     (build-system meson-build-system)
-    (arguments `(#:tests? #f))          ;no check target
     (propagated-inputs
      ;; In Requires of sratom-0.pc.
      (list lv2 serd sord))
