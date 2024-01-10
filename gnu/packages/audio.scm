@@ -3041,14 +3041,14 @@ frequencies.  This data is then formatted to MIDI and written to disk.")
 (define-public lilv
   (package
     (name "lilv")
-    (version "0.24.20")
+    (version "0.24.22")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/lilv-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1g7f29i0jajswyg67k7hdnmyqk32fmmxw6xppf9fm1mjp2wq5c2g"))))
+               "1wwzkz91zv0cj8dkr7aqsryznihhbkhwaplv81ik7j4zwp84kybn"))))
     (build-system meson-build-system)
     (arguments
      (list
