@@ -100,13 +100,14 @@
 
 (define-public icedtea-7
   (let* ((version "2.6.13")
-         (drop (lambda (name hash)
+         (drop (lambda* (name hash #:optional (patches '()))
                  (origin
                    (method url-fetch)
                    (uri (string-append
                          "http://icedtea.classpath.org/download/drops"
                          "/icedtea7/" version "/" name ".tar.bz2"))
-                   (sha256 (base32 hash))))))
+                   (sha256 (base32 hash))
+                   (patches patches)))))
     (package
       (name "icedtea")
       (version version)
@@ -614,7 +615,8 @@
                  "110j7jlz47x2gg6f7653x12mssan5kvj9l9h1m1c8c92drfxbqyk"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "0d1mca38ksxvdskp9im3pp7fdijhj1n3lwq9w13r9s4v3qyskgdd"))
+                 "0d1mca38ksxvdskp9im3pp7fdijhj1n3lwq9w13r9s4v3qyskgdd"
+                 (search-patches "jdk-currency-time-bomb.patch")))
          ("langtools-drop"
           ,(drop "langtools"
                  "0nq5236fzxn3p6x8cgncl56mzcmsj07q9gymysnws4c8byc6n0qj"))
@@ -687,13 +689,14 @@ IcedTea build harness.")
 
 (define-public icedtea-8
   (let* ((version "3.19.0")
-         (drop (lambda (name hash)
+         (drop (lambda* (name hash #:optional (patches '()))
                  (origin
                    (method url-fetch)
                    (uri (string-append
                          "http://icedtea.classpath.org/download/drops"
                          "/icedtea8/" version "/" name ".tar.xz"))
-                   (sha256 (base32 hash))))))
+                   (sha256 (base32 hash))
+                   (patches patches)))))
     (package (inherit icedtea-7)
       (version "3.19.0")
       (source (origin
@@ -839,7 +842,8 @@ new Date();"))
                  "1pc0pv4v2mn2mjc0vp19d94v2150xigyhxsmckqasy647zcm6w0r"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "1742lcm55l8zhi522x83v65ccr0rd6511q9rj7crw44x3ymdrhrv"))
+                 "1742lcm55l8zhi522x83v65ccr0rd6511q9rj7crw44x3ymdrhrv"
+                 (search-patches "jdk-currency-time-bomb2.patch")))
          ("langtools-drop"
           ,(drop "langtools"
                  "08iz7p2xcddlphipf6gahyabr5cawlnydap12p1n4f0md069b50b"))
