@@ -31,6 +31,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
@@ -51,10 +52,10 @@
   #:use-module (guix utils)
   #:use-module ((srfi srfi-1) #:hide (zip)))
 
-(define-public coq-core
+(define-public coq
   (package
-    (name "coq-core")
-    (version "8.16.1")
+    (name "coq")
+    (version "8.17.1")
     (source
      (origin
        (method git-fetch)
@@ -64,28 +65,35 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ljpqhh5lfsim29fcfp2xfcvm3j84pf1mb0gnpdr8vcqqw7mqwpf"))
-       (patches (search-patches "coq-fix-envvars.patch"))))
+         "0gg6hizq0i08lk741b579cbswhy6qvkh6inc3d3i5a2af98psq63"))))
     (native-search-paths
      (list (search-path-specification
             (variable "COQPATH")
-            (files (list "lib/ocaml/site-lib/coq/user-contrib"
-                         "lib/coq/user-contrib")))
-           (search-path-specification
-            (variable "COQLIBPATH")
-            (files (list "lib/ocaml/site-lib/coq")))
-           (search-path-specification
-            (variable "COQCORELIB")
-            (files (list "lib/ocaml/site-lib/coq-core"))
-            (separator #f))))
+            (files (list "lib/coq/user-contrib")))))
     (build-system dune-build-system)
+    (arguments
+     (list
+      #:package "coq-core,coq-stdlib,coq"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (coqlib (string-append out "/lib/ocaml/site-lib/coq/")))
+                (invoke "./configure" "-prefix" out
+                        "-libdir" coqlib))))
+          (add-before 'build 'make-dunestrap
+            (lambda _ (invoke "make" "dunestrap")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (libdir (string-append out "/lib/ocaml/site-lib")))
+                (invoke "dune" "install" "--prefix" out
+                        "--libdir" libdir "coq" "coq-core" "coq-stdlib")))))))
     (inputs
      (list gmp ocaml-zarith))
     (native-inputs
      (list ocaml-ounit2 which))
-    (arguments
-     `(#:package "coq-core"
-       #:test-target "."))
     (properties '((upstream-name . "coq"))) ; also for inherited packages
     (home-page "https://coq.inria.fr")
     (synopsis "Proof assistant for higher-order logic")
@@ -96,39 +104,6 @@ It is developed using Objective Caml and Camlp5.")
     ;; The source code is distributed under lgpl2.1.
     ;; Some of the documentation is distributed under opl1.0+.
     (license (list license:lgpl2.1 license:opl1.0+))))
-
-(define-public coq-stdlib
-  (package
-    (inherit coq-core)
-    (name "coq-stdlib")
-    (arguments
-     `(#:package "coq-stdlib"
-       #:test-target "."
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-dune
-           (lambda _
-             (substitute* "user-contrib/Ltac2/dune"
-               (("coq-core.plugins.ltac2")
-                (string-join
-                  (map (lambda (plugin) (string-append "coq-core.plugins." plugin))
-                       '("ltac2" "number_string_notation" "tauto" "cc"
-                         "firstorder"))
-                  " "))))))))
-    (inputs
-     (list coq-core gmp ocaml-zarith))
-    (native-inputs '())))
-
-(define-public coq
-  (package
-    (inherit coq-core)
-    (name "coq")
-    (arguments
-     `(#:package "coq"
-       #:test-target "."))
-    (propagated-inputs
-     (list coq-core coq-stdlib))
-    (native-inputs '())))
 
 (define-public coq-ide-server
   (package
@@ -148,7 +123,7 @@ It is developed using Objective Caml and Camlp5.")
      `(#:tests? #f
        #:package "coqide"))
     (propagated-inputs
-     (list coq coq-ide-server))
+     (list coq coq-ide-server zlib))
     (inputs
      (list lablgtk3 ocaml-lablgtk3-sourceview3))))
 
@@ -582,16 +557,16 @@ uses Ltac to synthesize the substitution operation.")
 (define-public coq-equations
   (package
     (name "coq-equations")
-    (version "1.3")
+    (version "1.3-8.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/mattam82/Coq-Equations")
-                    (commit (string-append "v" version "-8.16"))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08f756vgdd1wklkarg0b93j4n5mhkqm5ixxrhyb23dcv2dwhc8yg"))))
+                "0g68h4c1ijpphixvl9wkd7sibds38v4236dpvvh194j5ii42vnn8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq camlp5))
@@ -743,7 +718,7 @@ for goals involving set operations.
                                          "/lib/coq/user-contrib"))
        #:phases (modify-phases %standard-phases
                   (delete 'configure))))
-    (inputs (list coq coq-stdlib coq-mathcomp which))
+    (inputs (list coq coq coq-mathcomp which))
     (synopsis "Finite sets and finite types for coq-mathcomp")
     (description
      "This library is an extension of coq-mathcomp which supports finite sets
@@ -774,7 +749,7 @@ subsume notations for finite sets.")
        ;; by the packaged project in the future.
        #:tests? #f
        #:make-flags ,#~(list (string-append "COQBIN="
-                                            #$(this-package-input "coq-core")
+                                            #$(this-package-input "coq")
                                             "/bin/")
                              (string-append "COQMF_COQLIB="
                                             (assoc-ref %outputs "out")
@@ -784,7 +759,7 @@ subsume notations for finite sets.")
                                             "/lib/coq/user-contrib"))
        #:phases (modify-phases %standard-phases
                   (delete 'configure))))
-    (propagated-inputs (list coq coq-core coq-mathcomp which))
+    (propagated-inputs (list coq coq-mathcomp which))
     (home-page "https://math-comp.github.io/")
     (synopsis "Small library to do epsilon - N reasoning")
     (description

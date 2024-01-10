@@ -1056,7 +1056,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
-  %D%/packages/patches/coq-fix-envvars.patch			\
   %D%/packages/patches/cppcheck-disable-char-signedness-test.patch	\
   %D%/packages/patches/cpuinfo-system-libraries.patch		\
   %D%/packages/patches/cpulimit-with-glib-2.32.patch		\
