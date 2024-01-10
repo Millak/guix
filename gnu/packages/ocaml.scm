@@ -2060,6 +2060,19 @@ about.")
     (synopsis "Dune dynamic types")
     (description "This library represents dynamic types in OCaml.")))
 
+(define-public dune-stdune
+  (package
+    (inherit dune-ordering)
+    (name "dune-stdune")
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "stdune"
+       ;; Tests have a cyclic dependency on itself
+       #:tests? #f))
+    (propagated-inputs (list dune-dyn ocaml-pp))
+    (synopsis "Unstable standard library from Dune")
+    (description "This library implements the standard functions used by Dune.")))
+
 (define-public ocaml-csexp
   (package
     (name "ocaml-csexp")
