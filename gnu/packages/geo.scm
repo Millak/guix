@@ -1493,13 +1493,13 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public python-metpy
   (package
     (name "python-metpy")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MetPy" version))
               (sha256
                (base32
-                "1is6rradl97k04hf27dhzla4y4j98hibran3rbz6xh226q1r9vmb"))))
+                "125nb1bmkqpdf19fq0mbbgzdjczn46lr9yqi7zgn6k62dzjm1gm7"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Too many of the tests in the files below require online data.
@@ -1522,7 +1522,23 @@ to create databases that are optimized for rendering/tile/map-services.")
                     " and not test_zoom_xarray"
                     " and not test_parse_wpc_surface_bulletin"
                     " and not test_add_timestamp_xarray"
-                    " and not test_parse_wpc_surface_bulletin_highres"))))
+                    " and not test_parse_wpc_surface_bulletin_highres"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-version-check
+           (lambda _
+             (substitute* "src/metpy/testing.py"
+               (("^( +)match = pattern.*" m indent)
+                (string-append indent "\
+version_spec = re.sub('[()]', '', version_spec)\n" m)))))
+         ;; The deprecation warning from python-future's use of imp breaks the
+         ;; tests.
+         (add-after 'unpack 'hide-imp-deprecation-warnings
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("\"ignore:numpy.ndarray size changed:RuntimeWarning\"," m)
+                (string-append m "
+\"ignore:the imp module is deprecated\","))))))))
     (propagated-inputs (list python-importlib-resources
                              python-matplotlib
                              python-numpy
@@ -1533,8 +1549,8 @@ to create databases that are optimized for rendering/tile/map-services.")
                              python-scipy
                              python-traitlets
                              python-xarray))
-    (native-inputs (list python-cartopy python-netcdf4 python-pytest
-                         python-pytest-mpl python-shapely))
+    (native-inputs (list python-netcdf4 python-packaging python-pytest
+                         python-pytest-mpl))
     (home-page "https://github.com/Unidata/MetPy")
     (synopsis "Collection of tools to deal with weather data")
     (description "MetPy is a collection of tools in Python for reading,
