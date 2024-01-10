@@ -2047,6 +2047,19 @@ about.")
     (synopsis "Dune element ordering")
     (description "This library represents element ordering in OCaml.")))
 
+(define-public dune-dyn
+  (package
+    (inherit dune-ordering)
+    (name "dune-dyn")
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "dyn"
+       ;; Tests have a cyclic dependency on stdune
+       #:tests? #f))
+    (propagated-inputs (list ocaml-pp dune-ordering))
+    (synopsis "Dune dynamic types")
+    (description "This library represents dynamic types in OCaml.")))
+
 (define-public ocaml-csexp
   (package
     (name "ocaml-csexp")
