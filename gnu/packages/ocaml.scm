@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2023 Csepp <raingloom@riseup.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Arnaud DABY-SEESARAM <ds-ac@nanein.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6210,6 +6211,34 @@ on type definitions, and a set of useful plugins for common tasks.")
 ppx_deriving and ppx_type_conv to inter-operate gracefully when linked
 as part of the same ocaml-migrate-parsetree driver.")
     (license license:bsd-3)))
+
+(define-public ocaml-ppx-deriving-yojson
+  (package
+    (name "ocaml-ppx-deriving-yojson")
+    (version "3.7.0")
+    (home-page "https://github.com/ocaml-ppx/ppx_deriving_yojson")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nazam6zlzm9ngyyr1q7s1vmw162fnrvsn8r6bsn5lnpaygv28ly"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+      (list ocaml-yojson
+            ocaml-result
+            ocaml-ppx-deriving
+            ocaml-ppxlib))
+    (native-inputs (list ocaml-ounit))
+    (properties `((upstream-name . "ppx_deriving_yojson")))
+    (synopsis "JSON codec generator for OCaml")
+    (description
+     "Ppx_deriving_yojson is a ppx_deriving plugin that provides a JSON codec
+generator.")
+    (license license:expat)))
 
 (define-public ocaml-cinaps
   ;; The commit removes the unused dependency of ocaml-ppx-jane. We need to
