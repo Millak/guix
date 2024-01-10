@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Nikolai Merinov <nikolai.merinov@member.fsf.org>
-;;; Copyright © 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
@@ -121,27 +121,28 @@
 
 ;;; Note: mrustc's only purpose is to be able to bootstap Rust; it's designed
 ;;; to be used in source form.
-(define %mrustc-commit "597593aba86fa2edbea80c6e09f0b1b2a480722d")
+(define %mrustc-commit "b6754f574f8846eb842feba4ccbeeecb10bdfacc")
 (define %mrustc-source
-  (let* ((version "0.10")
+  (let* ((version "0.10.1")
          (commit %mrustc-commit)
-         (revision "2")
+         (revision "1")
          (name "mrustc"))
     (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/thepowersgang/mrustc")
-            (commit commit)))
-      (file-name (git-file-name name (git-version version revision commit)))
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
       (sha256
        (base32
-        "09rvm3zgx1d86gippl8qzh13m641ynbw9q0zsc90g0h1khd3z3b6"))
+        "0rqiif7rb5hg6ik3i1flldj311f014q4n9z8wb50cs8kspjz32di"))
       (modules '((guix build utils)))
       (snippet
        '(begin
           ;; Drastically reduces memory and build time requirements
           ;; by disabling debug by default.
           (substitute* (find-files "." "Makefile")
+            (("LINKFLAGS := -g") "LINKFLAGS :=")
             (("-g ") "")))))))
 
 ;;; Rust 1.54 is special in that it is built with mrustc, which shortens the
@@ -260,11 +261,6 @@
                    (("\\$\\(MINICARGO\\) \\$\\(RUSTC_SRC_DL\\)")
                     "$(MINICARGO)"))
                  (substitute* "run_rustc/Makefile"
-                   (("[$]Vtime ")
-                    "$V ")
-                   ;; Unlock the number of parallel jobs for cargo.
-                   (("-j [[:digit:]]+ ")
-                    "")
                    ;; Patch the shebang of a generated wrapper for rustc
                    (("#!/bin/sh")
                     (string-append "#!" (which "sh"))))
