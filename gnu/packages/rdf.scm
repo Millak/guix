@@ -44,6 +44,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gnupg)
@@ -304,21 +305,21 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 (define-public sord
   (package
     (name "sord")
-    (version "0.16.14")
+    (version "0.16.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/sord-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "06vkqk3dnn15zdnzklahib2pvbfspy2zcrnvhmxnw8fbbxyxj3r2"))))
+               "1l2zjz6gypxbf1z32zyqkljdcn9mz452djc4xq1dlhv1fmnqfzr5"))))
     (build-system meson-build-system)
     (inputs
      (list pcre))
     (native-inputs
      (list pkg-config))
     (propagated-inputs
-     (list serd))                 ; required by sord-0.pc
+     (list serd zix))                 ;required by sord-0.pc
     (home-page "https://drobilla.net/software/sord.html")
     (synopsis "C library for storing RDF data in memory")
     (description
