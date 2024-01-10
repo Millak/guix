@@ -37,12 +37,14 @@
   #:use-module (guix utils)
   #:use-module (guix base32)
   #:use-module ((guix download) #:select (download-to-store url-fetch))
-  #:use-module ((guix import utils) #:select (factorize-uri))
+  #:use-module ((guix import utils)
+                #:select (factorize-uri recursive-import))
   #:use-module (guix import json)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module (guix derivations)
   #:export (cpan->guix-package
+            cpan-recursive-import
             metacpan-url->mirror-url
             %cpan-updater
 
@@ -284,35 +286,39 @@ in RELEASE, a <cpan-release> record."
                                             upstream-input-downstream-name)
                                    inputs)))))))
 
-  (let ((tarball (with-store store
+  (let* ((tarball (with-store store
                    (download-to-store store source-url)))
-        (inputs (cpan-module-inputs release)))
-    `(package
-       (name ,(cpan-name->downstream-name name))
-       (version ,version)
-       (source (origin
-                 (method url-fetch)
-                 (uri (string-append ,@(factorize-uri source-url version)))
-                 (sha256
-                  (base32
-                   ,(bytevector->nix-base32-string (file-sha256 tarball))))))
-       (build-system perl-build-system)
-       ,@(maybe-inputs 'native-inputs
-                       (filter (upstream-input-type-predicate 'native)
-                               inputs))
-       ,@(maybe-inputs 'propagated-inputs
-                       (filter (upstream-input-type-predicate 'propagated)
-                               inputs))
-       (home-page ,(cpan-home name))
-       (synopsis ,(cpan-release-abstract release))
-       (description fill-in-yourself!)
-       (license ,(string->license (cpan-release-license release))))))
+         (inputs (cpan-module-inputs release))
+         (sexp
+           `(package
+              (name ,(cpan-name->downstream-name name))
+              (version ,version)
+              (source (origin
+                        (method url-fetch)
+                        (uri (string-append ,@(factorize-uri source-url version)))
+                        (sha256
+                          (base32
+                            ,(bytevector->nix-base32-string (file-sha256 tarball))))))
+              (build-system perl-build-system)
+              ,@(maybe-inputs 'native-inputs
+                              (filter (upstream-input-type-predicate 'native)
+                                      inputs))
+              ,@(maybe-inputs 'propagated-inputs
+                              (filter (upstream-input-type-predicate 'propagated)
+                                      inputs))
+              (home-page ,(cpan-home name))
+              (synopsis ,(cpan-release-abstract release))
+              (description fill-in-yourself!)
+              (license ,(string->license (cpan-release-license release))))))
+    (values sexp (map upstream-input-name inputs))))
 
-(define (cpan->guix-package module-name)
+(define* (cpan->guix-package module-name #:key version #:allow-other-keys)
   "Fetch the metadata for PACKAGE-NAME from metacpan.org, and return the
 `package' s-expression corresponding to that package, or #f on failure."
   (let ((release (cpan-fetch (module->name module-name))))
-    (and=> release cpan-module->sexp)))
+    (if release
+        (cpan-module->sexp release)
+        (values #f '()))))
 
 (define cpan-package?
   (let ((cpan-rx (make-regexp (string-append "("
@@ -356,6 +362,11 @@ in RELEASE, a <cpan-release> record."
         (version version)
         (urls (list url))
         (inputs (cpan-module-inputs release)))))))
+
+(define* (cpan-recursive-import package-name)
+  (recursive-import package-name
+                    #:repo->guix-package cpan->guix-package
+                    #:guix-name (compose cpan-name->downstream-name module->name)))
 
 (define %cpan-updater
   (upstream-updater

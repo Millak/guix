@@ -44,6 +44,8 @@ Import and convert the CPAN package for PACKAGE-NAME.\n"))
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
+  -r, --recursive        import missing packages recursively"))
+  (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
   (show-bug-report-information))
@@ -54,6 +56,9 @@ Import and convert the CPAN package for PACKAGE-NAME.\n"))
                  (lambda args
                    (show-help)
                    (exit 0)))
+         (option '(#\r "recursive") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'recursive #t result)))
          (option '(#\V "version") #f #f
                  (lambda args
                    (show-version-and-exit "guix import cpan")))
@@ -78,11 +83,20 @@ Import and convert the CPAN package for PACKAGE-NAME.\n"))
                            (reverse opts))))
     (match args
       ((package-name)
-       (let ((sexp (cpan->guix-package package-name)))
-         (unless sexp
-           (leave (G_ "failed to download meta-data for package '~a'~%")
-                  package-name))
-         sexp))
+       (let ((sexp
+               (if (assoc-ref opts 'recursive)
+                 (map (match-lambda
+                        ((and ('package ('name name) . rest) pkg)
+                         `(define-public ,(string->symbol name)
+                                         ,pkg))
+                        (_ #f))
+                      (cpan-recursive-import package-name))
+                 (let ((sexp (cpan->guix-package package-name)))
+                   sexp))))
+             (unless sexp
+               (leave (G_ "failed to download meta-data for package '~a'~%")
+                      package-name))
+             sexp))
       (()
        (leave (G_ "too few arguments~%")))
       ((many ...)
