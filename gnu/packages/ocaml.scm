@@ -2073,6 +2073,20 @@ about.")
     (synopsis "Unstable standard library from Dune")
     (description "This library implements the standard functions used by Dune.")))
 
+(define-public dune-private-libs
+  (package
+    (inherit dune-ordering)
+    (name "dune-private-libs")
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "dune-private-libs"
+       #:tests? #f))
+    (native-inputs (list dune-stdune ocaml-ppx-expect ocaml-ppx-inline-test))
+    (synopsis "Private libraries of Dune")
+    (description "This package contains code that is shared between various
+dune packages.  However, it is not meant for public consumption and provides
+no stability guarantee.")))
+
 (define-public ocaml-csexp
   (package
     (name "ocaml-csexp")
