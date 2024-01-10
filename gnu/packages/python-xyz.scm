@@ -21201,6 +21201,26 @@ multitouch applications.")
 Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
 
+(define-public python-asyncinject
+  (package
+    (name "python-asyncinject")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asyncinject" version))
+       (sha256
+        (base32 "0x57idiy19lzyn32klgm06r223z8gr2aqqk91gysbshq7jg8g3pf"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-pytest-asyncio))
+    (home-page "https://github.com/simonw/asyncinject")
+    (synopsis
+     "Run async workflows using pytest-fixtures-style dependency injection")
+    (description
+     "This package lets you run asynchronous workflows using
+pytest-fixtures-style dependency injection.")
+    (license license:asl2.0)))
+
 (define-public python-asynckivy
   (package
     (name "python-asynckivy")
