@@ -1716,7 +1716,7 @@ full_split, cut, rcut, etc..")
 (define-public dune-bootstrap
   (package
     (name "dune")
-    (version "3.6.1")
+    (version "3.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1725,7 +1725,7 @@ full_split, cut, rcut, etc..")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gv851wxbv5ln20429nj7p92spzxgw8vngg9z94q39aawn6q8lx6"))))
+                "12k8k2964s1z05mj71f9imwyvk0jyh5h6mpw4hpyr2d73iw53ink"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; require odoc
@@ -1742,9 +1742,10 @@ full_split, cut, rcut, etc..")
              #t)))))
     (home-page "https://github.com/ocaml/dune")
     (synopsis "OCaml build system")
-    (description "Dune is a build system that was designed to simplify the
-release of Jane Street packages.  It reads metadata from @file{dune} files
-following a very simple s-expression syntax.")
+    (description "Dune is a build system for OCaml.  It provides a consistent
+experience and takes care of the low-level details of OCaml compilation.
+Descriptions of projects, libraries and executables are provided in
+@file{dune} files following an s-expression syntax.")
     (properties '((hidden? . #t)))
     (license license:expat)))
 
