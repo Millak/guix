@@ -26,7 +26,7 @@
 ;;; Copyright © 2021-2024 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021, 2022, 2023 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
-;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2021, 2024 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2021, 2022, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
@@ -1067,6 +1067,42 @@ options, e.g., by looking up an external key/value store
 
 (define-public ecl-clingon
   (sbcl-package->ecl-package sbcl-clingon))
+
+(define-public sbcl-command-line-args
+  (package
+    (name "sbcl-command-line-args")
+    (version "0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~whereiseveryone/command-line-args")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-command-line-args" version))
+       (sha256
+        (base32 "01p52zxr1b49c15ichlc3zadd1mrmwxzria53j949ayl2j6k8w1b"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     '(#:asd-systems '("whereiseveryone.command-line-args")))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cl-str
+           sbcl-serapeum
+           sbcl-trivia))
+    (home-page "https://git.sr.ht/~whereiseveryone/command-line-args")
+    (synopsis "Automatically generate command line interfaces")
+    (description "Command-Line-Args provides a main macro (@code{command})
+that wraps a @code{defun} form and creates a new function that parses the
+command line arguments.  It has support for command-line options, positional,
+and variadic arguments.  It also generates a basic help message.  The
+interface is meant to be easy and non-intrusive.")
+    (license license:agpl3+)))
+
+(define-public cl-command-line-args
+  (sbcl-package->cl-source-package sbcl-command-line-args))
+
+(define-public ecl-command-line-args
+  (sbcl-package->ecl-package sbcl-command-line-args))
 
 (define-public sbcl-cl-irc
   (let ((commit "963823537c7bfcda2edd4c44d172192da6722175")
