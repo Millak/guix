@@ -4379,7 +4379,7 @@ multitude of other network protocols (FTP/SMTP/RTSP/etc).")
 (define-public ocaml-base64
   (package
     (name "ocaml-base64")
-    (version "3.5.0")
+    (version "3.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4388,7 +4388,7 @@ multitude of other network protocols (FTP/SMTP/RTSP/etc).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "068hwdbpl7vx9jjpxdc6a10zqd8xa55j3xx7ga6fnwrlfsbs2pjj"))))
+                "1jq349jp663hq51a941afr2y4yyh34r19zsxla73ks9bywj4mm2q"))))
     (build-system dune-build-system)
     (native-inputs
      (list ocaml-alcotest ocaml-bos ocaml-rresult))
