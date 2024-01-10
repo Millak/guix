@@ -6010,7 +6010,7 @@ parsexp_io.")
 (define-public ocaml-sexplib
   (package
     (name "ocaml-sexplib")
-    (version "0.15.1")
+    (version "0.16.0")
     (home-page "https://github.com/janestreet/sexplib")
     (source (origin
               (method git-fetch)
@@ -6020,7 +6020,7 @@ parsexp_io.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gcvcc0jw6pb69wwfjnaqz1jk5simap2kdb7g43v7v7mksg8sh9f"))))
+                "0hl0zf2cgjivvlsrf85f5lg4xprcgbz7qg2z51k838y7k2121k78"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-num ocaml-parsexp ocaml-sexplib0))
