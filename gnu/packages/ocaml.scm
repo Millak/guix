@@ -2670,6 +2670,31 @@ layer.")
 yaml for OCaml types.")
     (license license:isc)))
 
+(define-public ocaml-ppx-import
+  (package
+    (name "ocaml-ppx-import")
+    (version "1.10.0")
+    (home-page "https://github.com/ocaml-ppx/ppx_import")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06srfd6whfwkmjvl6m61kvc65fb7j9b25bhfr1mp338zm87smv5p"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-ppx-deriving ocaml-ppxlib
+                             ocaml-ppx-sexp-conv))
+    (native-inputs (list ocaml-ounit ocaml-sexplib0))
+    (properties `((upstream-name . "ppx_import")))
+    (synopsis "Extension for importing declarations from interface files.")
+    (description
+     "Ppx-import is a syntax extension for importing declarations from
+interface files.")
+    (license license:expat)))
+
 (define-public ocaml-parmap
   (package
     (name "ocaml-parmap")
