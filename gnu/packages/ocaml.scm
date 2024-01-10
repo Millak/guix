@@ -714,7 +714,7 @@ underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
 (define-public ocaml-dose3
   (package
     (name "ocaml-dose3")
-    (version "5.0.1")
+    (version "7.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -723,29 +723,16 @@ underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dxkw37gj8z45kd0dnrlfgpj8yycq0dphs8kjm9kvq9xc8rikxp3"))
-              (patches
-               (search-patches
-                "ocaml-dose3-add-unix-dependency.patch"
-                "ocaml-dose3-Fix-for-ocaml-4.06.patch"
-                "ocaml-dose3-dont-make-printconf.patch"
-                "ocaml-dose3-Install-mli-cmx-etc.patch"))))
-    (build-system ocaml-build-system)
-    (arguments
-     `(#:tests? #f                      ;the test suite requires python 2
-       #:configure-flags
-       ,#~(list (string-append "SHELL="
-                               #+(file-append (canonical-package bash-minimal)
-                                              "/bin/sh")))
-       #:make-flags
-       ,#~(list (string-append "LIBDIR=" #$output "/lib/ocaml/site-lib"))))
-    (propagated-inputs
-     (list ocaml-graph ocaml-cudf ocaml-extlib ocaml-re))
-    (native-inputs
-     (list perl
-           ocaml-extlib
-           ocamlbuild
-           ocaml-cppo))
+                "0hcjh68svicap7j9bghgkp49xa12qhxa1pygmrgc9qwm0m4dhirb"))))
+    (build-system dune-build-system)
+    (arguments `(#:package "dose3"))
+    (propagated-inputs (list ocaml-extlib
+                             ocaml-base64-boot
+                             ocaml-cudf
+                             ocaml-graph
+                             ocaml-re
+                             ocaml-stdlib-shims))
+    (native-inputs (list ocaml-ounit))
     (home-page "https://www.mancoosi.org/software/")
     (synopsis "Package distribution management framework")
     (description "Dose3 is a framework made of several OCaml libraries for
@@ -850,7 +837,7 @@ the opam file format.")
 (define ocaml-opam-core
   (package
     (name "ocaml-opam-core")
-    (version "2.1.3")
+    (version "2.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -859,7 +846,7 @@ the opam file format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mw535zsw7xlvpgwnk1dan76z3f7lh5imlg0s6kdyhfg0iqisjd7"))))
+                "0ckd87rcmcz11iyhhm5qnmy27jbdffx6n1fr06hvrqqrzi00jljh"))))
     (build-system dune-build-system)
     (arguments `(#:package "opam-core"
                  ;; tests are run with the opam package
@@ -1038,7 +1025,10 @@ name = Guix Builder")
                (("diff opamroot-versions.test opamroot-versions.out") "run true")
                ;; Disable a failing test, probably because the repository we
                ;; replaced is not as expected
-               (("diff opamrt-big-upgrade.test opamrt-big-upgrade.out") "run true"))
+               (("diff opamrt-big-upgrade.test opamrt-big-upgrade.out") "run true")
+               ;; Disable a failing test because of missing sandboxing
+               ;; functionality
+               (("diff init.test init.out") "run true"))
              (substitute* "tests/reftests/dune"
                ;; Because of our changes to the previous file, we cannot check
                ;; it can be regenerated
@@ -1074,18 +1064,42 @@ name = Guix Builder")
          ("which" ,which)
 
          ;; Data for tests
-         ("opam-repo-009e00fa" ,(opam-repo "009e00fa86300d11c311309a2544e5c6c3eb8de2"
-                                           "1wwy0rwrsjf4q10j1rh1dazk32fbzhzy6f7zl6qmndidx9b1bq7w"))
-         ("opam-repo-7090735c" ,(opam-repo "7090735c9d1dd2dc481c4128c5ef4d3667238f15"
-                                           "1bccsgjhlp64lmvfjfn6viywf3x73ji75myg9ssf1ij1fkmabn0z"))
-         ("opam-repo-a5d7cdc0" ,(opam-repo "a5d7cdc0c91452b0aef4fa71c331ee5237f6dddd"
-                                           "0z7kawqisy07088p5xjxwpvmvzlbj1d9cgdipsj90yx7nc5qh369"))
-         ("opam-repo-ad4dd344" ,(opam-repo "ad4dd344fe5cd1cab49ced49d6758a9844549fb4"
-                                           "1a1qj47kj8xjdnc4zc50ijrix1kym1n7k20n3viki80a7518baw8"))
-         ("opam-repo-c1d23f0e" ,(opam-repo "c1d23f0e17ec83a036ebfbad1c78311b898a2ca0"
-                                           "0j9abisx3ifzm66ci3p45mngmz4f0fx7yd9jjxrz3f8w5jffc9ii"))
-         ("opam-repo-f372039d" ,(opam-repo "f372039db86a970ef3e662adbfe0d4f5cd980701"
-                                           "0ld7fcry6ss6fmrpswvr6bikgx299w97h0gwrjjh7kd7rydsjdws")))))
+         ("opam-repo-0070613707"
+          ,(opam-repo "00706137074d536d2019d2d222fbe1bea929deda"
+                      "1gv1vvmfscj7wirfv6qncp8pf81wygnpzjwd0lyqcxm7g8r8lb4w"))
+         ("opam-repo-009e00fa"
+          ,(opam-repo "009e00fa86300d11c311309a2544e5c6c3eb8de2"
+                      "1wwy0rwrsjf4q10j1rh1dazk32fbzhzy6f7zl6qmndidx9b1bq7w"))
+         ("opam-repo-7090735c"
+          ,(opam-repo "7090735c9d1dd2dc481c4128c5ef4d3667238f15"
+                      "1bccsgjhlp64lmvfjfn6viywf3x73ji75myg9ssf1ij1fkmabn0z"))
+         ("opam-repo-a5d7cdc0"
+          ,(opam-repo "a5d7cdc0c91452b0aef4fa71c331ee5237f6dddd"
+                      "0z7kawqisy07088p5xjxwpvmvzlbj1d9cgdipsj90yx7nc5qh369"))
+         ("opam-repo-ad4dd344"
+          ,(opam-repo "ad4dd344fe5cd1cab49ced49d6758a9844549fb4"
+                      "1a1qj47kj8xjdnc4zc50ijrix1kym1n7k20n3viki80a7518baw8"))
+         ("opam-repo-c1842d168d"
+          ,(opam-repo "c1842d168de956caf06d7ac8588e65020d7594d8"
+                      "142y1ac7sprygyh91shcp0zcyfxjjkshi9g44qgg4rx60rbsbhai"))
+         ("opam-repo-c1d23f0e"
+          ,(opam-repo "c1d23f0e17ec83a036ebfbad1c78311b898a2ca0"
+                      "0j9abisx3ifzm66ci3p45mngmz4f0fx7yd9jjxrz3f8w5jffc9ii"))
+         ("opam-repo-f372039d"
+          ,(opam-repo "f372039db86a970ef3e662adbfe0d4f5cd980701"
+                      "0ld7fcry6ss6fmrpswvr6bikgx299w97h0gwrjjh7kd7rydsjdws"))
+         ("opam-repo-11ea1cb"
+          ,(opam-repo "11ea1cb6f2418b1f8a6679e4422771a04c9c3655"
+                      "1s4p0wfn3bx97yvm8xvj3yhzv2pz0jwml68g2ybv37hj9mpbrsq0"))
+         ("opam-repo-297366c"
+          ,(opam-repo "297366cd01c3aaf29b967bf0b34ccc7989d4d5b3"
+                      "1ysg69gys37nc2cxivs2ikh6xp0gj85if4rcrr874mqb9z12dm0j"))
+         ("opam-repo-3235916"
+          ,(opam-repo "3235916a162a59d7c82dac3fe24214975d48f1aa"
+                      "1yf73rv2n740a4s9g7a9k4j91b4k7al88nwnw9cdw0k2ncbmr486"))
+         ("opam-repo-de897adf36c4230dfea812f40c98223b31c4521a"
+          ,(opam-repo "de897adf36c4230dfea812f40c98223b31c4521a"
+                      "1m18x9gcwnbar8yv9sbfz8a3qpw412fp9cf4d6fb7syn0p0h96jw")))))
     (inputs (list ocaml-opam-client))
     (properties
      ;; OPAM is used as a tool and not as a library, we can use the OCaml 4.14
@@ -4390,14 +4404,21 @@ multitude of other network protocols (FTP/SMTP/RTSP/etc).")
                (base32
                 "1jq349jp663hq51a941afr2y4yyh34r19zsxla73ks9bywj4mm2q"))))
     (build-system dune-build-system)
-    (native-inputs
-     (list ocaml-alcotest ocaml-bos ocaml-rresult))
+    (native-inputs (list ocaml-alcotest ocaml-bos ocaml-rresult))
     (home-page "https://github.com/mirage/ocaml-base64")
     (synopsis "Base64 encoding for OCaml")
     (description "Base64 is a group of similar binary-to-text encoding schemes
 that represent binary data in an ASCII string format by translating it into a
 radix-64 representation.  It is specified in RFC 4648.")
     (license license:isc)))
+
+;; A variant without tests that is used to prevent a cyclic dependency when
+;; compiling ocaml-dose3.
+(define ocaml-base64-boot
+  (package
+    (inherit ocaml-base64)
+    (arguments `(#:tests? #f))
+    (native-inputs '())))
 
 (define-public ocamlify
   (package
@@ -5120,27 +5141,22 @@ and 4 (random based) according to RFC 4122.")
 (define-public ocaml-graph
   (package
     (name "ocaml-graph")
-    (version "1.8.8")
+    (version "2.0.0")
+    (home-page "https://github.com/backtracking/ocamlgraph/")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "http://ocamlgraph.lri.fr/download/"
-                                  "ocamlgraph-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url home-page)
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m9g16wrrr86gw4fz2fazrh8nkqms0n863w7ndcvrmyafgxvxsnr"))))
-    (build-system ocaml-build-system)
-    (arguments
-     `(#:install-target "install-findlib"
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-shell
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CONFIG_SHELL"
-                     (search-input-file inputs "/bin/sh")))))))
-    (inputs (list lablgtk))
+                "1gjrsyyamvvn2rd9n9yjx6hsglhw0dbm4cgazq0dpx0bbr4inwc3"))))
+    (build-system dune-build-system)
+    (arguments `(#:package "ocamlgraph"))
+    (propagated-inputs (list ocaml-stdlib-shims))
+    (native-inputs (list ocaml-graphics))
     (properties `((upstream-name . "ocamlgraph")))
-    (home-page "https://ocamlgraph.lri.fr/")
     (synopsis "Graph library for OCaml")
     (description "OCamlgraph is a generic graph library for OCaml.")
     (license license:lgpl2.1)))

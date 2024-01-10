@@ -1729,10 +1729,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/nvi-db4.patch				\
   %D%/packages/patches/nyacc-binary-literals.patch		\
   %D%/packages/patches/obs-modules-location.patch		\
-  %D%/packages/patches/ocaml-dose3-add-unix-dependency.patch	\
-  %D%/packages/patches/ocaml-dose3-Fix-for-ocaml-4.06.patch	\
-  %D%/packages/patches/ocaml-dose3-dont-make-printconf.patch	\
-  %D%/packages/patches/ocaml-dose3-Install-mli-cmx-etc.patch	\
   %D%/packages/patches/ocaml-multiple-definitions.patch		\
   %D%/packages/patches/ocaml-4.07-dynamically-allocate-signal-stack.patch	\
   %D%/packages/patches/ocaml-4.09-dynamically-allocate-signal-stack.patch	\
