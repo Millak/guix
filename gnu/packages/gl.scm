@@ -421,6 +421,9 @@ svga,swrast,virgl,zink")))
                      ;; When cross compiling, we use cmake to find llvm, not
                      ;; llvm-config, because llvm-config cannot be executed
                      ;; see https://github.com/llvm/llvm-project/issues/58984
+                     (substitute* "meson.build"
+                       (("method : host_machine\\.system.*")
+                        "method : 'cmake',\n"))
                      (setenv "CMAKE"
                              (search-input-file
                               native-inputs "/bin/cmake")))))
