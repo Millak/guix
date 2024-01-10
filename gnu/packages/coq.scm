@@ -542,35 +542,31 @@ Coq proof assistant.")
     (license license:cecill-c)))
 
 (define-public coq-autosubst
-  ;; Latest commit on that branch, where work on supporting coq 8.6 and
-  ;; more recent versions of coq happen.
-  (let ((branch "coq86-devel")
-        (commit "fa6ef30664511ffa659cbcf3c962715cbee03572"))
-    (package
-      (name "coq-autosubst")
-      (version (git-version "1" branch commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "git://github.com/uds-psl/autosubst")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32 "1cl0bp96bk6lplbl7n5c703vd3gvbs5mvf2qrf8q333kkqd7jqq4"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f
+  (package
+    (name "coq-autosubst")
+    (version "1.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/coq-community/autosubst")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0qk72r6cqxwhqqkl2kmryhw365w3l2016qii1q1sk3md7zq46jcz"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f
        #:make-flags (list (string-append "COQLIBINSTALL="
                                          (assoc-ref %outputs "out")
                                          "/lib/coq/user-contrib"))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))))
-      (native-inputs
-       (list coq))
-      (home-page "https://www.ps.uni-saarland.de/autosubst/")
-      (synopsis "Coq library for parallel de Bruijn substitutions")
-      (description "Formalizing syntactic theories with variable binders is
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (native-inputs
+     (list coq))
+    (home-page "https://www.ps.uni-saarland.de/autosubst/")
+    (synopsis "Coq library for parallel de Bruijn substitutions")
+    (description "Formalizing syntactic theories with variable binders is
 not easy.  Autosubst is a library for the Coq proof assistant to
 automate this process.  Given an inductive definition of syntactic objects in
 de Bruijn representation augmented with binding annotations, Autosubst
@@ -581,7 +577,7 @@ usage of substitution lemmas unnecessary.  The tactic is based on our current
 work on a decision procedure for the equational theory of an extension of the
 sigma-calculus by Abadi et al.  The library is completely written in Coq and
 uses Ltac to synthesize the substitution operation.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public coq-equations
   (package
