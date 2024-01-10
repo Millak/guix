@@ -7142,7 +7142,7 @@ verification tool.")
 (define-public ocaml-ppx-bin-prot
   (package
     (name "ocaml-ppx-bin-prot")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
       (origin
         (method git-fetch)
@@ -7151,7 +7151,7 @@ verification tool.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1280wsls061fmvmdysjqn3lv4mnkyg400jnjf4jyfr14s33h1ad5"))))
+          (base32 "091l1gvgbibrqzy9a31vz03wzfs7z5zmk5ldl5yvg742x7idmmwj"))))
     (build-system dune-build-system)
     (arguments
      ;; Cyclic dependency with ocaml-ppx-jane
