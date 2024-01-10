@@ -3405,9 +3405,10 @@ declaratively, to be used in other frameworks.  Typical scenarios include
 testing frameworks, mocking libraries and UI validation rules.")
     (license license:bsd-2)))
 
-(define java-hamcrest-parent-pom
+(define-public java-hamcrest-parent-pom
   (package
     (inherit java-hamcrest-core)
+    (properties '((hidden? . #t)))
     (name "java-hamcrest-parent-pom")
     (propagated-inputs '())
     (native-inputs '())
@@ -4965,7 +4966,7 @@ transformations and analysis algorithms allow easily assembling custom
 complex transformations and code analysis tools.")
     (license license:bsd-3)))
 
-(define java-org-ow2-parent-pom-1.3
+(define-public java-org-ow2-parent-pom-1.3
   (package
     (name "java-org-ow2-parent-pom")
     (version "1.3")
@@ -4989,12 +4990,14 @@ complex transformations and code analysis tools.")
     (synopsis "Ow2.org parent pom")
     (description "This package contains the parent pom for projects from ow2.org,
 including java-asm.")
+    (properties '((hidden? . #t)))
     (license license:lgpl2.1+)))
 
-(define java-asm-bootstrap
+(define-public java-asm-bootstrap
   (package
     (inherit java-asm)
     (name "java-asm-bootstrap")
+    (properties '((hidden? . #t)))
     (arguments
      (substitute-keyword-arguments (package-arguments java-asm)
        ((#:tests? _) #f)))
