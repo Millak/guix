@@ -1618,6 +1618,36 @@ to JUnit and other XUnit testing frameworks.")
 other XUnit testing frameworks.")
     (license license:expat)))
 
+(define-public ocaml-junit
+  (package
+    (name "ocaml-junit")
+    (version "2.0.2")
+    (home-page "https://github.com/Khady/ocaml-junit")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cam7zzarrh9p1l5m3ba3h5rkh9mhark8j37rjgw35a66qd0gds1"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "junit"
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'dune-subst
+                    (lambda _
+                      (invoke "dune" "subst") #t)))))
+    (properties `((upstream-name . "junit")))
+    (propagated-inputs (list ocaml-ounit ocaml-ptime ocaml-tyxml ocaml-odoc))
+    (synopsis "JUnit XML reports generation library")
+    (description "Ocaml-junit is a package for the creation of JUnit XML
+reports.  It provides a typed API to produce valid reports.  They are supposed
+to be accepted by Jenkins.")
+    ;; with OCaml linking exception
+    (license license:gpl3+)))
+
 (define-public camlzip
   (package
     (name "camlzip")
