@@ -3722,14 +3722,14 @@ input/output.")
 (define-public sratom
   (package
     (name "sratom")
-    (version "0.6.14")
+    (version "0.6.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/sratom-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1rm1mkzmqr8k818xxpm69f5jp1fnxjglj3l5ngcysfmq1psgm0lr"))))
+                "1i12wcnv52r05zr5wjmpvbsvbjbm3hkv8frral2kvrc326cmghbi"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; In Requires of sratom-0.pc.
