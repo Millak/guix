@@ -513,17 +513,13 @@ ar = \"" binutils "/bin/ar" "\"
                  `("LIBRARY_PATH" ":"
                    suffix (,(string-append libc "/lib"))))))))))
     (native-inputs
-     `(("cmake" ,cmake-minimal)
-       ("pkg-config" ,pkg-config)       ; For "cargo"
+     `(("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
        ("rustc-bootstrap" ,rust-bootstrap)
-       ("cargo-bootstrap" ,rust-bootstrap "cargo")
-       ("which" ,which)))
+       ("cargo-bootstrap" ,rust-bootstrap "cargo")))
     (inputs
      `(("llvm" ,llvm-13)
-       ("openssl" ,openssl)
-       ("libssh2" ,libssh2)             ; For "cargo"
-       ("libcurl" ,curl)))              ; For "cargo"
+       ("openssl" ,openssl)))
     ;; rustc invokes gcc, so we need to set its search paths accordingly.
     ;; Note: duplicate its value here to cope with circular dependencies among
     ;; modules (see <https://bugs.gnu.org/31392>).
@@ -1073,6 +1069,9 @@ exec -a \"$0\" \"~a\" \"$@\""
                                               "/lib/rustlib/src/rust/library")
                                (string-append bin "/.rust-analyzer-real"))))
                    (chmod (string-append bin "/rust-analyzer") #o755))))))))
+      (inputs
+       (modify-inputs (package-inputs base-rust)
+                      (prepend curl)))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
