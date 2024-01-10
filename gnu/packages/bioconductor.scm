@@ -5639,6 +5639,35 @@ identification of cells from empty droplets, removal of barcode-swapped
 pseudo-cells, and downsampling of the count matrix.")
     (license license:gpl3)))
 
+;; This is a CRAN package, but it depends on r-limma from Bioconductor.
+(define-public r-dsb
+  (package
+    (name "r-dsb")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dsb" version))
+       (sha256
+        (base32 "1xzhd4q04c1vql49r6m4zskpx7f5hkl5hmdgr3gsbxb73xfs51v2"))))
+    (properties `((upstream-name . "dsb")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-limma r-magrittr r-mclust))
+    (native-inputs (list r-knitr r-rmarkdown))
+    (home-page "https://github.com/niaid/dsb")
+    (synopsis
+     "Normalize & denoise droplet single cell protein data (CITE-Seq)")
+    (description
+     "R-dsb improves protein expression analysis in droplet-based single-cell
+studies.  The package specifically addresses noise in raw protein UMI counts
+from methods like CITE-seq.  It identifies and removes two main sources of
+noise—protein-specific noise from unbound antibodies and droplet/cell-specific
+noise.  The package is applicable to various methods, including CITE-seq,
+REAP-seq, ASAP-seq, TEA-seq, and Mission Bioplatform data.  Check the vignette
+for tutorials on integrating dsb with Seurat and Bioconductor, and using dsb
+in Python.")
+    (license license:cc0)))
+
 (define-public r-dss
   (package
     (name "r-dss")
