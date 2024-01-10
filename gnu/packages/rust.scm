@@ -177,14 +177,11 @@
                   (max-silent-time . 18000))) ;5 hours (for armel)
     (build-system gnu-build-system)
     (inputs
-     `(("libcurl" ,curl)
-       ("llvm" ,llvm-13)
+     `(("llvm" ,llvm-13)
        ("openssl" ,openssl-1.1)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("pkg-config" ,pkg-config)
+     `(("pkg-config" ,pkg-config)
        ;; Required for the libstd sources.
        ("mrustc-source" ,%mrustc-source)))
     (arguments
