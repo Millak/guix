@@ -2612,6 +2612,39 @@ simple (yet expressive) query language to select the tests to run.")
 syntactic tools.")
     (license license:expat)))
 
+(define-public ocaml-yaml
+  (package
+    (name "ocaml-yaml")
+    (version "3.2.0")
+    (home-page "https://github.com/avsm/ocaml-yaml")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "054ca6071bfkdbm5vlmnk6ic43561xl9igv87zgkbq4qry16a7s7"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-ppx-sexp-conv ocaml-ctypes ocaml-bos))
+    (native-inputs (list ocaml-fmt
+                         ocaml-sexplib
+                         ocaml-logs
+                         ocaml-mdx
+                         ocaml-alcotest
+                         ocaml-crowbar
+                         ocaml-junit-alcotest
+                         ocaml-ezjsonm))
+    (synopsis "Parse and generate YAML 1.1/1.2 files")
+    (description
+     "This package is an OCaml library to parse and generate the YAML file
+format.  It is intended to be interoperable with the @code{Ezjsonm}
+JSON handling library, if the simple common subset of Yaml is used.  Anchors and
+other advanced Yaml features are not implemented in the JSON compatibility
+layer.")
+    (license license:isc)))
+
 (define-public ocaml-parmap
   (package
     (name "ocaml-parmap")
