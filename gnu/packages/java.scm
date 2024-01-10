@@ -873,9 +873,8 @@ new Date();"))
                                  (changeset "jdk-9+181")))
               (file-name (hg-file-name name version))
               (modules '((guix build utils)))
-              (snippet `(begin
-                          (for-each delete-file
-                                    (find-files "." ".*.(bin|exe|jar)$"))))
+              (snippet '(for-each delete-file
+                                  (find-files "." ".*.(bin|exe|jar)$")))
               (sha256
                (base32
                 "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))
@@ -916,8 +915,7 @@ new Date();"))
              ;; This file was "fixed" by patch-source-shebangs, but it requires
              ;; this exact first line.
              (substitute* "jdk/make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
-             #t))
+               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; TODO: unbundle libpng and lcms
@@ -933,14 +931,12 @@ new Date();"))
                      "--disable-hotspot-gtest"
                      "--with-giflib=system"
                      "--with-libjpeg=system"
-                     (string-append "--prefix=" (assoc-ref outputs "out")))
-             #t))
+                     (string-append "--prefix=" (assoc-ref outputs "out")))))
          (add-before 'build 'write-source-revision-file
            (lambda _
              (with-output-to-file ".src-rev"
                (lambda _
-                 (display ,version)))
-             #t))
+                 (display ,version)))))
          (replace 'build
            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
              (apply invoke "make"
@@ -983,8 +979,7 @@ new Date();"))
                               "warning: failed to substitute: ~a~%"
                               file))))
                 (find-files "."
-                            "\\.c$|\\.h$"))
-               #t)))
+                            "\\.c$|\\.h$")))))
            ;; By default OpenJDK only generates an empty keystore.  In order to
            ;; be able to use certificates in Java programs we need to generate a
            ;; keystore from a set of certificates.  For convenience we use the
@@ -1078,8 +1073,7 @@ new Date();"))
                (symlink (string-append lib-jdk "/server/libjvm.so")
                         (string-append lib-jdk "/libjvm.so"))
                (symlink (string-append lib-out "/server/libjvm.so")
-                        (string-append lib-out "/libjvm.so")))
-             #t))
+                        (string-append lib-out "/libjvm.so")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -1089,8 +1083,7 @@ new Date();"))
                                             #:directories? #t))))
                (copy-recursively (string-append images "/images/jdk") jdk)
                (copy-recursively (string-append images "/images/jre") out)
-               (copy-recursively (string-append images "/images/docs") doc))
-             #t))
+               (copy-recursively (string-append images "/images/docs") doc))))
          (add-after 'install 'strip-zip-timestamps
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (zip)
@@ -1107,8 +1100,7 @@ new Date();"))
                            (with-directory-excursion dir
                              (let ((files (find-files "." ".*" #:directories? #t)))
                                (apply invoke "zip" "-0" "-X" zip files)))))
-                       (find-files (assoc-ref outputs "doc") ".*.zip$"))
-             #t)))))
+                       (find-files (assoc-ref outputs "doc") ".*.zip$")))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cups" ,cups)
