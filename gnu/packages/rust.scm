@@ -46,7 +46,6 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
-  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mingw)
@@ -1233,8 +1232,7 @@ ar = \"" (search-input-file inputs (string-append "/bin/" ,(ar-for-target target
                                  (cross-binutils target)
                                  (if (string=? "i686-w64-mingw32" target)
                                      mingw-w64-i686-winpthreads
-                                     mingw-w64-x86_64-winpthreads)
-                                 libunwind))
+                                     mingw-w64-x86_64-winpthreads)))
          (modify-inputs (package-native-inputs base-rust)
                         (prepend (cross-gcc target
                                             #:libc (cross-libc target))
