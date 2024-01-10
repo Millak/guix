@@ -5037,6 +5037,11 @@ necessary set of rewriters.")
                 ;; We don't have a monolithic llvm
                 (substitute* "oasis/llvm.setup.ml.in"
                   (("llvm_static = \"true\"") "true"))
+                ;; Package update removed Make_binable, which was an alias
+                ;; for Make_binable_without_uuid
+                (substitute* (find-files "." ".")
+                  (("Utils.Make_binable1\\(") "Utils.Make_binable1_without_uuid(")
+                  (("Utils.Make_binable\\(") "Utils.Make_binable_without_uuid("))
                 (invoke "./configure" "--prefix"
                         (assoc-ref outputs "out")
                         "--libdir"
@@ -6495,7 +6500,7 @@ different versions of the code to safely communicate.")
 (define-public ocaml-bin-prot
   (package
     (name "ocaml-bin-prot")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
       (origin
         (method git-fetch)
@@ -6504,7 +6509,7 @@ different versions of the code to safely communicate.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1qfqglscc25wwnjx7byqmjcnjww1msnr8940gyg8h93wdq43fjnh"))))
+          (base32 "1ybs0152ilgr8sa1hqnc2jj0gbvg855ixl3c5b2pjbnk7blhqnd8"))))
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base
@@ -6513,6 +6518,7 @@ different versions of the code to safely communicate.")
             ocaml-ppx-fields-conv
             ocaml-ppx-optcomp
             ocaml-ppx-sexp-conv
+            ocaml-ppx-stable-witness
             ocaml-ppx-variants-conv))
     (properties `((upstream-name . "bin_prot")))
     (home-page "https://github.com/janestreet/bin_prot")
