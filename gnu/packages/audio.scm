@@ -3641,33 +3641,33 @@ filters using the so-called @emph{window method}.")
 (define-public rubberband
   (package
     (name "rubberband")
-    (version "1.8.2")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri
-               (string-append "https://bitbucket.org/breakfastquay/rubberband/get/v"
-                              version
-                              ".tar.bz2"))
-              (file-name (string-append name "-" version ".tar.bz2"))
+               (string-append "https://breakfastquay.com/files/releases/"
+                              "rubberband-" version ".tar.bz2"))
               (sha256
                (base32
-                "0462fmjnfqpv2qi0s6ny42drqarkr0xy9lw8frjmfgzyzl5n9294"))))
-    (build-system gnu-build-system)
+                "0v2pbv4jnzv3rr2qr71skwncy2p263ngmhn37aqqb7zgp3i8kvyr"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-jni-installation
-           ;; ‘make install’ unconditionally installs librubberband-jni.so,
-           ;; which is never built by ‘make all’.  Skip it.
-           (lambda _
-             (substitute* "Makefile.in"
-               ((".*cp -f \\$\\(JNI_TARGET\\).*") ""))
-             #t)))))
+     (list
+      #:configure-flags
+      '(list "-Dresampler=libsamplerate"
+             "-Dfft=fftw"                  ;To avoid using bundled version
+             "-Ddefault_library=shared"))) ;Don't build static library
     (inputs
-     (list ladspa libsamplerate vamp))
+     (list fftw ladspa libsamplerate lv2 vamp))
     (native-inputs
      (list pkg-config))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))
+           (search-path-specification
+            (variable "LADSPA_PATH")
+            (files '("lib/ladspa")))))
     (home-page "https://breakfastquay.com/rubberband/")
     (synopsis "Audio time-stretching and pitch-shifting library")
     (description
