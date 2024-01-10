@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -164,8 +164,10 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages telephony)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages upnp)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
@@ -1414,39 +1416,50 @@ files contain direct mappings of the abstractions provided by the ØMQ C API.")
     (license license:expat)))
 
 (define-public libnatpmp
-  (package
-    (name "libnatpmp")
-    (version "20230423")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://miniupnp.free.fr/files/"
-                    name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0w7wvf4yi8qv659dg9d3ndqvh3bqhgm21gd135spwhq6hhnfv106"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)) ; no tests
-       #:make-flags
-       (let* ((target ,(%current-target-system))
-              (gcc (if target
-                       (string-append target "-gcc")
-                       "gcc")))
-         (list
-          (string-append "CC=" gcc)
-          (string-append "INSTALLPREFIX=" (assoc-ref %outputs "out"))
-          (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")))))
-    (home-page "http://miniupnp.free.fr/libnatpmp.html")
-    (synopsis "C library implementing NAT-PMP")
-    (description
-     "@code{libnatpmp} is a portable and asynchronous implementation of
+  ;; Install the latest commit as it provides a pkg-config (.pc) file.
+  (let ((base-version "20230423")
+        (commit "6a850fd2bd9b08e6edc886382a1dbae2a7df55ec")
+        (revision "0"))
+    (package
+      (name "libnatpmp")
+      (version (git-version base-version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/miniupnp/libnatpmp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "18hf9a3i3mncl3w80nzi1684iac3by86bv0hgmbm1v2w8gbfjyw0"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-build-system
+              ;; Have CMake install the natpmp_declspec.h missing header file
+              ;; that is referenced by natpmp.h (see:
+              ;; https://github.com/miniupnp/libnatpmp/issues/41).
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("install\\(FILES natpmp.h")
+                   "install(FILES natpmp.h natpmp_declspec.h"))))
+            (add-after 'unpack 'fix-version
+              (lambda _
+                (with-output-to-file "VERSION"
+                  (lambda ()
+                    (display #$base-version))))))))
+      (native-inputs (list which))
+      (home-page "https://miniupnp.tuxfamily.org/libnatpmp.html")
+      (synopsis "C library implementing NAT-PMP")
+      (description
+       "@code{libnatpmp} is a portable and asynchronous implementation of
 the Network Address Translation - Port Mapping Protocol (NAT-PMP)
 written in the C programming language.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public librdkafka
   (package
@@ -3382,14 +3395,14 @@ eight bytes) tools
 (define-public asio
   (package
     (name "asio")
-    (version "1.22.2")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asio/asio/"
                            version " (Stable)/asio-" version ".tar.bz2"))
        (sha256
-        (base32 "0v5w9j4a02j2rkc7mrdj3ms0kfpqbgq2ipkixlz2l0p8xs0vfsvp"))))
+        (base32 "0cp2c4v0kz0ln4bays0s3fr1mcxl527ay2lp7s14qbxx38vc5pfh"))))
     (build-system gnu-build-system)
     (inputs
      (list boost openssl))
@@ -3701,61 +3714,103 @@ communication over HTTP.")
     (license license:agpl3+)))
 
 (define-public restinio
-  ;; Temporarily use an unreleased commit, which includes fixes to be able to
-  ;; run the test suite in the resolver-less Guix build environment.
-  (let ((revision "0")
-        (commit "eda471ec3a2815965ca02ec93a1124a342b7601d"))
-    (package
-      (name "restinio")
-      (version (git-version "0.6.18" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Stiffstream/restinio")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0f4w7714r0ic7csgxydw2vzfh35ssk34pns9jycmc08dzc3r7whb"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
-                                  "-DRESTINIO_INSTALL=ON"
-                                  "-DRESTINIO_TEST=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'change-directory
-              (lambda _
-                (chdir "dev"))))))
-      (native-inputs
-       (list catch2
-             clara
-             json-dto))
-      (inputs
-       (list openssl
-             sobjectizer))
-      (propagated-inputs
-       ;; These are all #include'd by restinio's .hpp header files.
-       (list asio
-             fmt
-             http-parser
-             pcre
-             pcre2
-             zlib))
-      (home-page "https://stiffstream.com/en/products/restinio.html")
-      (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
-      (description "RESTinio is a header-only C++14 library that gives you an embedded
+  (package
+    (name "restinio")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06p9gcnzgynsgfxxa1lk58pq5755px7sn00x2xh21qjnspwld1sy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DRESTINIO_INSTALL=ON"
+              "-DRESTINIO_TEST=ON"
+              "-DRESTINIO_DEP_LLHTTP=system"
+              "-DRESTINIO_DEP_FMT=system"
+              "-DRESTINIO_DEP_EXPECTED_LITE=system"
+              "-DRESTINIO_DEP_CATCH2=system"
+              ;; No support to use a system provided so_5
+              ;; (see:
+              ;; https://github.com/Stiffstream/restinio/issues/207).
+              "-DRESTINIO_WITH_SOBJECTIZER=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev")))
+          (add-after 'change-directory 'use-system-catch2
+            ;; It's not currently possible to select a system-provided catch2,
+            ;; so patch the build system (see:
+            ;; https://github.com/Stiffstream/restinio/issues/208).
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(catch2\\)")
+                 "find_package(Catch2 REQUIRED)")))))))
+    (native-inputs
+     (list catch2-3
+           expected-lite
+           json-dto))
+    (inputs
+     (list openssl
+           sobjectizer))
+    (propagated-inputs
+     ;; These are all #include'd by restinio's .hpp header files.
+     (list asio
+           fmt
+           llhttp
+           pcre
+           pcre2
+           zlib))
+    (home-page "https://stiffstream.com/en/products/restinio.html")
+    (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
+    (description "RESTinio is a header-only C++14 library that gives you an embedded
 HTTP/Websocket server.  It is based on standalone version of ASIO
 and targeted primarily for asynchronous processing of HTTP-requests.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
+
+(define-public restinio-0.6
+  (package
+    (inherit restinio)
+    (name "restinio")
+    (version "0.6.19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qrb1qr075r5059w984c4slgpsiwv94j6fmi9naa5l48dbi1p7jz"))))
+    (arguments
+     (list
+      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                "-DRESTINIO_INSTALL=ON"
+                                "-DRESTINIO_TEST=ON"
+                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev"))))))
+    (native-inputs (list catch2 clara json-dto))
+    ;; These are all #include'd by restinio's .hpp header files.
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs restinio)
+       (replace "llhttp" http-parser)))))
 
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.4.12")
+    (version "3.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3764,7 +3819,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yji5pziqxfvyfizk3fn9j59bqlfdwfa1a0y9jjfknb2mmlwwb9w"))))
+                "15jx62fm1frbbvpkxysvvwz1a8d605xi53aacf0bvp4mb1dzpddn"))))
     (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
@@ -3792,6 +3847,14 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (substitute* "tests/Makefile.am"
                 (("\\bdhtrunnertester\\.(h|cpp)\\b")
                  ""))))
+          (add-after 'unupack 'relax-test-timeouts
+            (lambda _
+              ;; At least the 'test_send_json' has been seen to fail
+              ;; non-deterministically, but it seems hard to reproducible that
+              ;; failure.
+              (substitute* "tests/httptester.cpp"
+                (("std::chrono::seconds\\(10)")
+                 "std::chrono::seconds(30)"))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
@@ -3835,8 +3898,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            fmt
            readline))
     (propagated-inputs
-     (list msgpack                      ;included in several installed headers
-           restinio                     ;included in opendht/http.h
+     (list msgpack-cxx                  ;included in several installed headers
+           restinio-0.6                 ;included in opendht/http.h
            ;; The following are listed in the 'Requires.private' field of
            ;; opendht.pc:
            argon2
@@ -3879,6 +3942,60 @@ library (get, put, etc.) with text values.
 A very simple IM client working over the DHT.
 @end table")
     (license license:gpl3+)))
+
+(define-public dhtnet
+  ;; There is no tag nor release; use the latest available commit.
+  (let ((revision "0")
+        (commit "8b6e99fd34f150fde5f21f3a57e0e9f28174c70c"))
+    (package
+      (name "dhtnet")
+      ;; The base version is taken from the CMakeLists.txt file.
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/savoirfairelinux/dhtnet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yhygsimcl9j6hbww1b77am1kgbcriczslcrfb838nbfh18n1780"))))
+      (outputs (list "out" "debug"))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DBUILD_DEPENDENCIES=OFF"
+                                  "-DBUILD_SHARED_LIBS=ON"
+                                  "-DBUILD_TESTING=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'delete-problematic-tests
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  ;; The connectionManager test currently segfaults (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/18).
+                  ((".*tests_connectionManager.*") "")
+                  ;; The fileutils test fail, asserting an unexpected returned
+                  ;; value for the removeAll call when the directory to be
+                  ;; removed is missing (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/17).
+                  ((".*tests_fileutils.*") "")))))))
+      (native-inputs (list cppunit pkg-config))
+      ;; This library depends on the Jami fork of pjproject that adds ICE
+      ;; support.
+      (inputs
+       (list asio
+             fmt
+             msgpack-cxx
+             opendht
+             libupnp
+             pjproject-jami
+             readline))
+      (home-page "https://github.com/savoirfairelinux/dhtnet/")
+      (synopsis "OpenDHT network library for C++")
+      (description "The @code{dhtnet} is a C++ library providing abstractions
+for interacting with an OpenDHT distributed network.")
+      (license license:gpl3+))))
 
 (define-public frrouting
   (package
@@ -4445,36 +4562,32 @@ QUIC protocol.")
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
     (propagated-inputs
-     (let ((p (package-input-rewriting
-               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
-               #:deep? #true)))
-       (cons go-golang-org-x-sys-0.8
-             (map p
-                  (list go-golang-zx2c4-com-wireguard
-                        go-golang-org-x-text
-                        go-golang-org-x-net
-                        go-golang-org-x-crypto
-                        go-golang-org-x-tools
-                        go-netns
-                        go-netlink
-                        go-github-com-bits-and-blooms-bitset
-                        go-github-com-bits-and-blooms-bloom
-                        go-github-com-quic-go-quic-go
-                        go-github-com-hjson-hjson-go
-                        go-github-com-olekukonko-tablewriter
-                        go-github-com-mitchellh-mapstructure
-                        go-github-com-mattn-go-runewidth
-                        go-github-com-mattn-go-isatty
-                        go-github-com-mattn-go-colorable
-                        go-github-com-kardianos-minwinsvc
-                        go-github-com-hjson-hjson-go
-                        go-github-com-hashicorp-go-syslog
-                        go-github-com-gologme-log
-                        go-github-com-fatih-color
-                        go-github-com-cheggaaa-pb-v3
-                        go-github-com-vividcortex-ewma
-                        go-github-com-arceliar-phony
-                        go-github-com-arceliar-ironwood)))))
+     (list go-golang-zx2c4-com-wireguard
+           go-golang-org-x-text
+           go-golang-org-x-net
+           go-golang-org-x-crypto
+           go-golang-org-x-tools
+           go-golang-org-x-sys
+           go-netns
+           go-netlink
+           go-github-com-bits-and-blooms-bitset
+           go-github-com-bits-and-blooms-bloom
+           go-github-com-quic-go-quic-go
+           go-github-com-hjson-hjson-go
+           go-github-com-olekukonko-tablewriter
+           go-github-com-mitchellh-mapstructure
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-colorable
+           go-github-com-kardianos-minwinsvc
+           go-github-com-hjson-hjson-go
+           go-github-com-hashicorp-go-syslog
+           go-github-com-gologme-log
+           go-github-com-fatih-color
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-vividcortex-ewma
+           go-github-com-arceliar-phony
+           go-github-com-arceliar-ironwood))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")

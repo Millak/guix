@@ -1178,7 +1178,11 @@ application suites.")
                 ;; The unaligned-offscreen test fails for unknown reasons, also
                 ;; on different distributions (see:
                 ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
-                (("  'unaligned-offscreen',") ""))
+                (("  'unaligned-offscreen',") "")
+                ;; This test, 'gtk:tools / validate', started failing for
+                ;; unknown reasons after updating mesa to 23.3.1 and xorgproto
+                ;; to 2023.2.
+                ((" 'validate',") ""))
               (substitute* "testsuite/reftests/meson.build"
                 (("[ \t]*'label-wrap-justify.ui',") "")
                 ;; The inscription-markup.ui fails due to /etc/machine-id

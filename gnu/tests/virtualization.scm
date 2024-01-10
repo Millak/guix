@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -277,6 +277,7 @@
               (let ((session (make-session #:user "test"
                                            #:port 10022
                                            #:host "localhost"
+                                           #:timeout 120
                                            #:log-verbosity 'rare)))
                 (match (connect! session)
                   ('ok

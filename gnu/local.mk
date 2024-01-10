@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
@@ -62,6 +62,7 @@
 # Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 # Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
+# Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 #
 # This file is part of GNU Guix.
 #
@@ -1092,6 +1093,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/doxygen-hurd.patch			\
   %D%/packages/patches/dstat-fix-crash-when-specifying-delay.patch	\
   %D%/packages/patches/dstat-skip-devices-without-io.patch	\
+  %D%/packages/patches/dtc-meson-cell-overflow.patch		\
   %D%/packages/patches/dune-common-skip-failing-tests.patch	\
   %D%/packages/patches/dune-grid-add-missing-include-cassert.patch	\
   %D%/packages/patches/dune-istl-fix-solver-playground.patch	\
@@ -1111,7 +1113,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-elpy-dup-test-name.patch		\
   %D%/packages/patches/emacs-exec-path.patch			\
-  %D%/packages/patches/emacs-ess-fix-obsolete-function-alias.patch	\
   %D%/packages/patches/emacs-git-email-missing-parens.patch	\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
@@ -1166,6 +1167,13 @@ dist_patch_DATA =						\
   %D%/packages/patches/fenics-dolfin-demo-init.patch		\
   %D%/packages/patches/fenics-dolfin-boost.patch		\
   %D%/packages/patches/fenics-dolfin-config-slepc.patch		\
+  %D%/packages/patches/ffmpeg-jami-change-RTCP-ratio.patch	\
+  %D%/packages/patches/ffmpeg-jami-rtp_ext_abs_send_time.patch	\
+  %D%/packages/patches/ffmpeg-jami-libopusdec-enable-FEC.patch	\
+  %D%/packages/patches/ffmpeg-jami-libopusenc-enable-FEC.patch	\
+  %D%/packages/patches/ffmpeg-jami-libopusenc-reload-packet-loss-at-encode.patch \
+  %D%/packages/patches/ffmpeg-jami-remove-mjpeg-log.patch	\
+  %D%/packages/patches/ffmpeg-jami-screen-sharing-x11-fix.patch	\
   %D%/packages/patches/fifengine-boost-compat.patch		\
   %D%/packages/patches/fifengine-swig-compat.patch		\
   %D%/packages/patches/fifo-map-fix-flags-for-gcc.patch		\
@@ -1384,6 +1392,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-fibers-fd-finalizer-leak.patch	\
   %D%/packages/patches/guile-fibers-wait-for-io-readiness.patch \
   %D%/packages/patches/guile-fibers-libevent-32-bit.patch	\
+  %D%/packages/patches/guile-fibers-libevent-timeout.patch	\
   %D%/packages/patches/guile-fix-invalid-unicode-handling.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-git-adjust-for-libgit2-1.2.0.patch \
@@ -1458,6 +1467,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/itk-snap-alt-glibc-compat.patch		\
   %D%/packages/patches/jami-disable-integration-tests.patch	\
   %D%/packages/patches/jami-libjami-headers-search.patch	\
+  %D%/packages/patches/jami-qml-tests-discovery.patch		\
+  %D%/packages/patches/jami-skip-tests-requiring-internet.patch	\
+  %D%/packages/patches/jami-unbundle-dependencies.patch		\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
@@ -1548,6 +1560,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgnome-encoding.patch			\
   %D%/packages/patches/libgnomeui-utf8.patch			\
   %D%/packages/patches/libgrss-CVE-2016-2001.patch		\
+  %D%/packages/patches/libjami-ac-config-files.patch		\
   %D%/packages/patches/libjxr-fix-function-signature.patch	\
   %D%/packages/patches/libjxr-fix-typos.patch			\
   %D%/packages/patches/libofa-ftbfs-1.diff		\
@@ -1776,6 +1789,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-poppler-qt5-fix-build.patch	\
+  %D%/packages/patches/python-pyreadstat-link-libiconv.patch	\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
   %D%/packages/patches/python-pytorch2-system-libraries.patch	\
   %D%/packages/patches/python-sip-include-dirs.patch	\
@@ -1783,6 +1797,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-sphinx-prompt-docutils-0.19.patch	\
   %D%/packages/patches/python-telingo-fix-comparison.patch	\
   %D%/packages/patches/python-typeguard-python3.10.patch	\
+  %D%/packages/patches/python-uqbar-python3.10.patch	        \
   %D%/packages/patches/python-wxwidgets-type-errors.patch	\
   %D%/packages/patches/qtdeclarative-5-disable-qmlcache.patch	\
   %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\

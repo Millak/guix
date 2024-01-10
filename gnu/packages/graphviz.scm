@@ -195,7 +195,7 @@ structure and layout algorithms.")
 (define-public python-uqbar
   (package
     (name "python-uqbar")
-    (version "0.5.6")
+    (version "0.5.9")
     (source
      (origin
        (method git-fetch)
@@ -205,18 +205,12 @@ structure and layout algorithms.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ml3x2mf7nlnvrh9lari5yk0sz2mmg39jwsbjxnpzhnw4kcwpdrs"))))
+         "0c573nzpm51qgz2g296f8pw8ys0i3r6daynxk06zagk5l5fgw9ar"))
+       (patches (search-patches "python-uqbar-python3.10.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "setup.py"
-               ;; Latest versions of sphink-rtd-theme require npm to build.
-               (("sphinx-rtd-theme >= 0.5.0") "sphinx-rtd-theme >= 0.2.4")
-               (("black") "black >= 19.10b0"))
-             #t))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?

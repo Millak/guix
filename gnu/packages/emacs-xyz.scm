@@ -2017,6 +2017,27 @@ Apprentice and Sourcerer.")
 theme but now takes more inspiration from the Nano theme.")
     (license license:gpl3+)))
 
+(define-public emacs-adwaita-dark-theme
+  ;; Version 1.1.1 isn't tagged upstream.
+  (package
+    (name "emacs-adwaita-dark-theme")
+    (version "1.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/jessieh/adwaita-dark-theme")
+                    (commit "057c39313341907b35c68d2179226886a0c276fd")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g7hyg2hfvn24gaw4lca4g8lw10q2wg9nfrgl7pfdggz202m027c"))))
+    (build-system emacs-build-system)
+    (home-page "https://gitlab.com/jessieh/adwaita-dark-theme")
+    (synopsis "Adwaita-inspired dark color scheme for Emacs")
+    (description
+     "This package provides an Adwaita-inspired dark color scheme for Emacs.")
+    (license license:gpl2+)))
+
 (define-public emacs-treepy
   (package
     (name "emacs-treepy")
@@ -10105,13 +10126,20 @@ constants and units into an Emacs buffer.")
        (sha256
         (base32 "0kq40g46s8kgiafrhdq99h79rz9h5fvgz59k7ralmf86bl4sdmdb"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-spurious-require
+                 (lambda _
+                   (substitute* "tagedit.el"
+                     (("\\(require 'assoc\\)") "")))))))
     (propagated-inputs
-     (list emacs-s emacs-dash))
+     (list emacs-dash emacs-s))
     (home-page "https://github.com/magnars/tagedit")
-    (synopsis "Some paredit-like features for html-mode")
+    (synopsis "Some Paredit-like features for HTML mode")
     (description
-     "This package provides a collection of paredit-like functions for editing
-in @code{html-mode}.")
+     "This package provides a collection of Paredit-like functions for editing
+in HTML mode.")
     (license license:gpl3+)))
 
 (define-public emacs-slime
@@ -11387,6 +11415,30 @@ package provides a light and a dark variant.")
        "This package provides Emacs highlighting using Ethan Schoonover’s
 Solarized color scheme.")
       (license license:expat))))
+
+(define-public emacs-color-identifiers-mode
+  (let ((commit "a26d00d898e0a3295cb7da9323046397223ea1fe")
+        (revision "0"))
+    (package
+      (name "emacs-color-identifiers-mode")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ankurdave/color-identifiers-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kky827f922ziiwasrfnv97vqdf62fp9yml36x1fjsm2h6qw0c8v"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-dash))
+      (home-page "https://github.com/ankurdave/color-identifiers-mode")
+      (synopsis "Minor mode for coloring identifiers based on their names")
+      (description
+       "This package provides an Emacs minor mode to highlight each source
+code identifier uniquely based on its name.")
+      (license license:gpl3+))))
 
 (define-public emacs-poet-theme
   (let ((commit "16eb694f0755c04c4db98614d0eca1199fddad70")
@@ -29880,14 +29932,14 @@ buffer and launches Magit from the status buffer for the project at point.")
 (define-public emacs-repology
   (package
     (name "emacs-repology")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "repology-" version ".tar"))
        (sha256
-        (base32 "1ngx23b7dilyps20nznrrn867kbxyn6nryf4p1sy5m576hkw18kn"))))
+        (base32 "0l53wl0bk8rnqwsjdh1hwvkvbay080l10bslcj3scn42bgbi59j1"))))
     (build-system emacs-build-system)
     (arguments
      (list

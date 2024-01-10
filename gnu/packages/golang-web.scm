@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -870,7 +871,7 @@ protocol.")
 (define-public go-github-com-hjson-hjson-go
   (package
     (name "go-github-com-hjson-hjson-go")
-    (version "3.1.0")
+    (version "4.3.1")
     (source
      (origin
        (method git-fetch)
@@ -879,7 +880,7 @@ protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dfdiahimg6z9idg8jiqxwnlwjnmasbjccx8gnag49cz4yfqskaz"))))
+        (base32 "138vmbnrwzxf64cia27k407clrydvs2jx927dlv6ziydiqyvy7m3"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/hjson/hjson-go"))

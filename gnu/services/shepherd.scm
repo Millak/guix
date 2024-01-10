@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2016, 2018-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -183,7 +183,6 @@ DEFAULT is given, use it as the service's default value."
 (define %default-modules
   ;; Default set of modules visible in a service's file.
   `((shepherd service)
-    (oop goops)
     ((guix build utils) #:hide (delete))
     (guix build syscalls)))
 
@@ -300,10 +299,10 @@ stored."
                  #~(begin
                      (use-modules #$@(shepherd-service-modules service))
 
-                     (make <service>
-                       #:docstring '#$(shepherd-service-documentation service)
-                       #:provides '#$(shepherd-service-provision service)
-                       #:requires '#$(shepherd-service-requirement service)
+                     (service
+                      '#$(shepherd-service-provision service)
+                       #:documentation '#$(shepherd-service-documentation service)
+                       #:requirement '#$(shepherd-service-requirement service)
 
                        ;; The 'one-shot?' slot is new in Shepherd 0.6.0.
                        ;; Older versions ignore it.
@@ -313,7 +312,7 @@ stored."
                        #:start #$(shepherd-service-start service)
                        #:stop #$(shepherd-service-stop service)
                        #:actions
-                       (make-actions
+                       (actions
                         #$@(map (match-lambda
                                   (($ <shepherd-action> name proc doc)
                                    #~(#$name #$doc #$proc)))
@@ -338,7 +337,6 @@ and return the resulting '.go' file. SHEPHERD is used as shepherd package."
 
                          ;; Do the same as the Shepherd's 'load-in-user-module'.
                          (let ((env (make-fresh-user-module)))
-                           (module-use! env (resolve-interface '(oop goops)))
                            (module-use! env (resolve-interface '(shepherd service)))
                            (with-target #$(or target #~%host-type)
                              (lambda _
@@ -371,17 +369,6 @@ as shepherd package."
           (use-modules (srfi srfi-34)
                        (system repl error-handling))
 
-          (define (call-with-file file flags proc)
-            (let ((port #f))
-              (dynamic-wind
-                (lambda ()
-                  (set! port (open file flags)))
-                (lambda ()
-                  (proc port))
-                (lambda ()
-                  (close-port port)
-                  (set! port #f)))))
-
           ;; There's code run from shepherd that uses 'call-with-input-file' &
           ;; co.--e.g., the 'urandom-seed' service.  Starting from Shepherd
           ;; 0.9.2, users need to make sure not to leak non-close-on-exec file
@@ -389,12 +376,12 @@ as shepherd package."
           ;; standard bindings with O_CLOEXEC variants.
           (set! call-with-input-file
                 (lambda (file proc)
-                  (call-with-file file (logior O_RDONLY O_CLOEXEC)
-                                  proc)))
+                  (call-with-port (open file (logior O_RDONLY O_CLOEXEC))
+                    proc)))
           (set! call-with-output-file
                 (lambda (file proc)
-                  (call-with-file file (logior O_WRONLY O_CREAT O_CLOEXEC)
-                                  proc)))
+                  (call-with-port (open file (logior O_WRONLY O_CREAT O_CLOEXEC))
+                    proc)))
 
           ;; Specify the default environment visible to all the services.
           ;; Without this statement, all the environment variables of PID 1
@@ -412,25 +399,17 @@ as shepherd package."
           ;; than a kernel panic.
           (call-with-error-handling
             (lambda ()
-              (apply register-services
-                     (parameterize ((current-warning-port
-                                     (%make-void-port "w")))
-                       (map load-compiled '#$(map scm->go files))))))
+              (register-services
+               (parameterize ((current-warning-port
+                               (%make-void-port "w")))
+                 (map load-compiled '#$(map scm->go files))))))
 
           (format #t "starting services...~%")
           (let ((services-to-start
                  '#$(append-map shepherd-service-provision
                                 (filter shepherd-service-auto-start?
                                         services))))
-            (if (defined? 'start-in-the-background)
-                (start-in-the-background services-to-start)
-                (for-each (lambda (service)       ;pre-0.9.0 compatibility
-                            (guard (c ((service-error? c)
-                                       (format (current-error-port)
-                                               "failed to start service '~a'~%"
-                                               service)))
-                              (start service)))
-                          services-to-start))
+            (start-in-the-background services-to-start)
 
             ;; Hang up stdin.  At this point, we assume that 'start' methods
             ;; that required user interaction on the console (e.g.,

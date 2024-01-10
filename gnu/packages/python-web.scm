@@ -60,6 +60,7 @@
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,6 +201,38 @@ scripting Launchpad via its the web service API.")
     (description "This Python package provides a self-contained, easily
 reusable library for parsing, manipulating, and generating URIs.")
     (license license:lgpl3)))
+
+(define-public python-portend
+  (package
+    (name "python-portend")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "portend" version))
+       (sha256
+        (base32 "0wpvixicc3d0lack65554mvdrrckkn18p1xcgiv9v5cwq59a6l2j"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (propagated-inputs (list python-tempora))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been packaged.
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/portend")
+    (synopsis "Monitor TCP ports for bound or unbound states")
+    (description
+     "@code{python-portend} can be used to monitor TCP ports for bound or
+unbound states.  For example, waiting for a port to be occupied or freed
+within a set timeout.  @code{python-portend} can also be used directly from
+the command line.")
+    (license license:expat)))
 
 (define-public python-prawcore
   (package
@@ -2594,6 +2627,32 @@ your Web app.")
       "WebOb provides wrappers around the WSGI request environment, and an
 object to help create WSGI responses.")
     (license license:expat)))
+
+(define-public python-zc-lockfile
+  (package
+    (name "python-zc-lockfile")
+    (version "3.0.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zc.lockfile" version))
+       (sha256
+        (base32 "1v41irj7azaag3f14xyviv3l8mvap74v5p3q274k68vakrnyxcmd"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "zope-testrunner" "--test-path=src")
+                          (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testing python-zope-testrunner))
+    (home-page "https://github.com/zopefoundation/zc.lockfile")
+    (synopsis "Interprocess locks using lock files")
+    (description
+     "This package provides an implementation of interprocess locks using lock
+files.  These locks can also be used to mediate access to other files.")
+    (license license:zpl2.1)))
 
 (define-public python-zope-event
   (package

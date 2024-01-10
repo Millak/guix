@@ -1034,6 +1034,9 @@ variable defined below.  It requires guile-json to be installed."
                 (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
                 (setenv "MOZ_BUILD_DATE" #$%icecat-build-id) ; avoid timestamp
 
+                ;; WM_CLASS (default is "$MOZ_APP_NAME-$MOZ_UPDATE_CHANNEL").
+                (setenv "MOZ_APP_REMOTINGNAME" "Icecat")
+
                 ;; XXX TODO: Fix this to work on systems other than x86_64-linux.
                 (setenv "GUIX_PYTHONPATH"
                         (string-append (getcwd)
@@ -1126,7 +1129,7 @@ variable defined below.  It requires guile-json to be installed."
                   (("NewWindow")        "new-window")
                   (("NewPrivateWindow") "new-private-window")
                   (("StartupNotify=true")
-                   "StartupNotify=true\nStartupWMClass=Navigator"))
+                   "StartupNotify=true\nStartupWMClass=Icecat"))
                 (install-file desktop-file applications))))
           (add-after 'install-desktop-entry 'install-icons
             (lambda _

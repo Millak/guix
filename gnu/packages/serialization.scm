@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -219,8 +220,60 @@ such as compact binary encodings, XML, or JSON.")
      (list doxygen gcc-10
            (package-source cereal)))))
 
-(define-public msgpack
+(define-public msgpack-c
   (package
+    (name "msgpack-c")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append
+         "https://github.com/msgpack/msgpack-c/releases/download/"
+         "c-" version "/" name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fmf08babfsjq5qkgw034wk2nw6mayxp1qlkm7h55p2jqvigam1n"))
+       (snippet
+        '(let ((p (open-file "msgpack-c.pc.in" "a")))
+           (display "Requires: zlib\n" p)
+           (close-output-port p)))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DMSGPACK_BUILD_TESTS=ON")))
+    (native-inputs (list googletest))
+    (propagated-inputs (list zlib))  ;zbuffer.h includes zlib.h
+    (home-page "https://www.msgpack.org")
+    (synopsis "Binary serialization library")
+    (description "Msgpack is a library for C that implements binary
+serialization.")
+    (license license:boost1.0)))
+
+(define-public msgpack-cxx
+  (package
+    (inherit msgpack-c)
+    (name "msgpack-cxx")
+    (version "6.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append
+         "https://github.com/msgpack/msgpack-c/releases/download/"
+         "cpp-" version "/" name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rrrf3nskcv994z3pbq6a5z2021piz118rccmm1y7zlf7klygv93"))))
+    (build-system cmake-build-system)
+    (propagated-inputs (list boost zlib)) ;included in headers
+    (description "Msgpack is a library for C++ that implements binary
+serialization.")))
+
+;;; The msgpack package was split into msgpack-c and msgpack-cxx starting from
+;;; version 4.0.0.
+(define-public msgpack
+  (deprecated-package "msgpack" msgpack-c))
+
+(define-public msgpack-3
+  (package
+    (inherit msgpack-c)
     (name "msgpack")
     (version "3.3.0")
     (source
@@ -234,23 +287,13 @@ such as compact binary encodings, XML, or JSON.")
         '(let ((p (open-file "msgpack.pc.in" "a")))
            (display
             (string-append "Requires: " "zlib" "\n") p)
-           (close-output-port p)
-           #t))
+           (close-output-port p)))
        (sha256
         (base32 "0yzhq50ijvwrfkr97knhvn54lj3f4hr3zy39yq8wpf6xll94s4bf"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list googletest-1.8 pkg-config))
-    (propagated-inputs
-     (list zlib)) ;; Msgpack installs two headers (zbuffer.h,
-    ;; zbuffer.hpp) which #include <zlib.h>.  However, 'guix gc --references'
-    ;; does not detect a store reference to zlib since these headers are not
-    ;; compiled.
-    (home-page "https://www.msgpack.org")
-    (synopsis "Binary serialization library")
+    (native-inputs (list googletest-1.8))
     (description "Msgpack is a library for C/C++ that implements binary
-serialization.")
-    (license license:boost1.0)))
+serialization.  This is the legacy version that predates the split into C and
+C++ specific packages.")))
 
 (define-public libmpack
   (package

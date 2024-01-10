@@ -1486,7 +1486,7 @@ includes a compiler as well as an interpreter.")
 
 (define-public s7-bootstrap
   ;; Need s7-bootstrap to build libc_s7.so (for the REPL) and run tests
-  (let ((commit "a5b4bb49f8bcd7c33ae2366065fc8c254b734460") ;no releases
+  (let ((commit "618de30e0f9851515724245e3ebbfa1be4de6906") ;no releases
         (revision "0"))
     (hidden-package
      (package
@@ -1500,7 +1500,7 @@ includes a compiler as well as an interpreter.")
                  (file-name (git-file-name name version))
                  (sha256
                   (base32
-                   "03n1axdlypzmbgzrhlwfqwa1xiw36hi25j2hwc7vw77mz90cd9f8"))))
+                   "0kh1f49g24ppjpr16v1nc9lr7pvr5nzb82bpw8c6q8ll7pqalqaf"))))
        (build-system gnu-build-system)
        (arguments
         (list #:tests? #f ;no tests in bootstrap

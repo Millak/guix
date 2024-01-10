@@ -3959,11 +3959,11 @@ packages.")
       (license license:bsd-3))))
 
 (define-public go-golang-org-x-sys
-  (let ((commit "b60007cc4e6f966b1c542e343d026d06723e5653")
+  (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
         (revision "0"))
     (package
       (name "go-golang-org-x-sys")
-      (version (git-version "0.4.0" revision commit))
+      (version (git-version "0.8.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3972,7 +3972,7 @@ packages.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0fr2d6fnpbqx6n89sg9lsinqkdaw49y068kqj2g0cxlhbh69hzii"))))
+                  "1p81niiin8dwyrjl2xsc95136w3vdw4kmj0w3mlh0vh5v134s4xq"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -3988,24 +3988,6 @@ packages.")
 support for low-level interaction with the operating system.")
       (home-page "https://go.googlesource.com/sys")
       (license license:bsd-3))))
-
-;; XXX: This version is required for "go-github-com-quic-go-qtls-go1-20".
-(define-public go-golang-org-x-sys-0.8
-  (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
-        (revision "0"))
-    (package
-      (inherit go-golang-org-x-sys)
-      (name "go-golang-org-x-sys")
-      (version (git-version "0.8.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://go.googlesource.com/sys")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1p81niiin8dwyrjl2xsc95136w3vdw4kmj0w3mlh0vh5v134s4xq")))))))
 
 (define-public go-golang-org-x-text
   (package
@@ -7269,7 +7251,7 @@ implementation of generics.")
       #:import-path "github.com/quic-go/qtls-go1-20"
       #:go go-1.20))
     (propagated-inputs (list go-golang-org-x-crypto
-                             go-golang-org-x-sys-0.8))
+                             go-golang-org-x-sys))
     (synopsis "TLS 1.3 for QUIC")
     (description
      "Go standard library TLS 1.3 implementation, modified for QUIC.  For
@@ -7330,21 +7312,17 @@ the Go standard library}.")
            #:tests? #f
            #:go go-1.20))
     (propagated-inputs
-     (let ((p (package-input-rewriting
-               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
-               #:deep? #true)))
-       (cons go-golang-org-x-sys-0.8
-             (map p
-                  (list go-github-com-quic-go-qtls-go1-20
-                        go-github-com-quic-go-qpack
-                        go-golang-org-x-crypto
-                        go-github-com-cheekybits-genny
-                        go-github-com-marten-seemann-chacha20
-                        go-github-com-golang-protobuf-proto
-                        go-golang-org-x-crypto
-                        go-golang-org-x-exp
-                        go-golang-org-x-net
-                        go-golang-org-x-sync)))))
+     (list go-github-com-quic-go-qtls-go1-20
+           go-github-com-quic-go-qpack
+           go-golang-org-x-crypto
+           go-github-com-cheekybits-genny
+           go-github-com-marten-seemann-chacha20
+           go-github-com-golang-protobuf-proto
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-sync))
     (synopsis "QUIC in Go")
     (description "This package provides a Go language implementation of the QUIC
 network protocol.")

@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -854,6 +854,75 @@ your calls and messages.")
     (description "PJProject provides an implementation of the Session
 Initiation Protocol (SIP) and a multimedia framework.")
     (license license:gpl2+)))
+
+(define-public pjproject-jami
+  (let ((commit "d044ad6c5b4221648c555da16196804e4721299c")
+        (revision "0"))
+    (package
+      (inherit pjproject)
+      (name "pjproject-jami")
+      ;; The version is taken from
+      ;; <https://raw.githubusercontent.com/savoirfairelinux/pjproject/master/version.mak>.
+      (version (git-version "2.13.1" revision commit))
+      (source (origin
+                (inherit (package-source pjproject))
+                ;; The Jami development team regularly issues patches to
+                ;; pjproject to extend the its functionality and fix bugs;
+                ;; they are submitted for inclusion upstream but larger
+                ;; patches take time to be reviewed and merged, hence this
+                ;; forked repository.
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/savoirfairelinux/pjproject")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0z4d7wdpa2mlaygb283k0j8n3l6q68gn0xqd62b5ngqvkhlaf775"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pjproject)
+         ((#:configure-flags _ ''())
+          ;; This package is tailored for DhtNet; see how it is built for its
+          ;; CI in
+          ;; <https://git.jami.net/savoirfairelinux/dhtnet/-/raw/master/Dockerfile>.
+          #~(list
+             ;; Some flags preserved flags from parent package.
+             "--with-external-srtp"
+             #$@(if (string-contains (or (%current-system)
+                                         (%current-target-system)) "linux")
+                    #~("--enable-epoll")
+                    #~())
+             "--with-gnutls"            ;disable OpenSSL checks
+             ;; -DNDEBUG is set to prevent pjproject from raising
+             ;; assertions that aren't critical, crashing
+             ;; applications as the result.
+             "CFLAGS=-DNDEBUG"
+             ;; Specify a runpath reference to itself, which is missing and
+             ;; causes the validate-runpath phase to fail.
+             (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+             "--enable-shared"
+             "--disable-libyuv"         ;TODO: add missing package
+
+             ;; These flags are specific to DhtNet.
+             "--disable-sound"
+             "--enable-video"
+             "--enable-ext-sound"
+             "--disable-speex-aec"
+             "--disable-g711-codec"
+             "--disable-l16-codec"
+             "--disable-gsm-codec"
+             "--disable-g722-codec"
+             "--disable-g7221-codec"
+             "--disable-speex-codec"
+             "--disable-ilbc-codec"
+             "--disable-opencore-amr"
+             "--disable-silk"
+             "--disable-sdl"
+             "--disable-ffmpeg"
+             "--disable-v4l2"
+             "--disable-openh264"
+             "--disable-resample"
+             "--disable-libwebrtc")))))))
 
 (define-public libtgvoip
   (package

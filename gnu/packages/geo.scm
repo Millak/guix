@@ -3228,3 +3228,31 @@ For maps, it can uses its own \"binfile\" map format, or Garmin map
 file format, and data from OpenStreetMap, Garmin maps, Marco Polo
 Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
     (license license:gpl2)))
+
+(define-public laszip
+  (package
+    (name "laszip")
+    (version "3.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LASzip/LASzip")
+             (commit "3.4.3")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09lcsgxwv0jq50fhsgfhx0npbf1zcwn3hbnq6q78fshqksbxmz7m"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DLASZIP_BUILD_STATIC=NO")
+      #:build-type "Release"
+      ;; No tests.
+      #:tests? #f))
+    (home-page "https://laszip.org/")
+    (synopsis "Compression library for LAS files")
+    (description
+     "LASzip is a library for compressing @code{LAS} files and uncompressing
+@code{LAZ} files.  The @code{LAS} format is a file format designed for the
+interchange and archiving of lidar point cloud data.")
+    (license license:asl2.0)))

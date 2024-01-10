@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +43,7 @@
             image-format
             image-platform
             image-size
+            image-max-layers
             image-operating-system
             image-partition-table-type
             image-partitions
@@ -170,6 +172,8 @@ that is not in SET, mentioning FIELD in the error message."
   (size               image-size  ;size in bytes as integer
                       (default 'guess)
                       (sanitize validate-size))
+  (max-layers         image-max-layers  ;number of layers as integer
+                      (default #false))
   (operating-system   image-operating-system)  ;<operating-system>
   (partition-table-type image-partition-table-type ; 'mbr or 'gpt
                       (default 'mbr)

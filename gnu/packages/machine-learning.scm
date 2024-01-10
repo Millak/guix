@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -812,6 +813,94 @@ SentencePiece allows us to make a purely end-to-end system that does not
 depend on language-specific pre- or post-processing.")
     (license license:asl2.0)))
 
+(define-public python-hopcroftkarp
+  ;; This commit fixes a broken import, but has not been released to PyPI.
+  (let ((commit "2846e1dd3265d95d2bddb0cf4190b830cbb4efe6")
+        (revision "1"))
+    (package
+      (name "python-hopcroftkarp")
+      (version (git-version "1.2.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sofiatolaosebikan/hopcroftkarp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "018ilrp41fcclmb5lsml3aijwbmhbq3m7wy65hr1fryj0avic8fr"))))
+      (build-system pyproject-build-system)
+      (home-page "https://github.com/sofiatolaosebikan/hopcroftkarp")
+      (synopsis "Implementation of the Hopcroft-Karp algorithm")
+      (description
+       "This package implements the Hopcroft-Karp algorithm, producing a maximum
+cardinality matching from a bipartite graph.")
+      (license license:gpl3))))
+
+(define-public python-persim
+  (package
+    (name "python-persim")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "persim" version))
+       (sha256
+        (base32 "0q8wfakx8q4h3ryvw8cba0v6z7xn9139qkrzs3mi1ggyzacnx9d7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-deprecated
+                             python-hopcroftkarp
+                             python-joblib
+                             python-matplotlib
+                             python-numpy
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov))
+    (home-page "https://persim.scikit-tda.org")
+    (synopsis "Tools for analyzing persistence diagrams in Python")
+    (description
+     "This package includes a variety of tools used to analyze persistence diagrams.
+It currently houses implementations of
+@itemize
+@item Persistence images
+@item Persistence landscapes
+@item Bottleneck distance
+@item Modified Gromov–Hausdorff distance
+@item Sliced Wasserstein kernel
+@item Heat kernel
+@item Diagram plotting
+@end itemize
+")
+    (license license:expat))) ; MIT License
+
+(define-public python-ripser
+  (package
+    (name "python-ripser")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ripser" version))
+       (sha256
+        (base32 "1575nwsn6b29z7w1mjk23ri83bxq2b4ld979hpgm174642a3x6vs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-persim python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://ripser.scikit-tda.org")
+    (synopsis "Persistent homology library for Python")
+    (description
+     "This package implements a variety of persistent homology algorithms.  It
+provides an interface for
+@itemize
+@item computing persistence cohomology of sparse and dense data sets
+@item visualizing persistence diagrams
+@item computing lowerstar filtrations on images
+@item computing representative cochains
+@end itemize
+")
+    (license license:expat))) ; MIT License
+
 (define-public python-sacrebleu
   (package
     (name "python-sacrebleu")
@@ -1151,6 +1240,11 @@ in terms of new algorithms.")
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      ;; Does this difference really matter?
+                      (substitute* "requirements.txt"
+                        (("3.20.1") "3.20.2"))))
                   (add-before 'build 'pass-cmake-arguments
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; Pass options to the CMake-based build process.
@@ -1235,7 +1329,13 @@ operators and standard data types.")
                '(begin
                   (delete-file-recursively "third_party")
                   (substitute* "onnx/backend/test/runner/__init__.py"
-                    (("urlretrieve\\(.*") "raise unittest.SkipTest('Skipping download')\n"))))))))
+                    (("urlretrieve\\(.*") "raise unittest.SkipTest('Skipping download')\n"))))))
+    (arguments
+     ;; reuse build system tweaks
+     (substitute-keyword-arguments (package-arguments onnx)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'relax-requirements)))))))
 
 (define-public python-onnx
   ;; This used to be called "python-onnx" because it provided nothing but
@@ -1262,7 +1362,12 @@ operators and standard data types.")
               (modules '((guix build utils)))
               (snippet '(delete-file-recursively "third_party"))))
     (build-system python-build-system)
-    (arguments (package-arguments onnx))          ;reuse build system tweaks
+    (arguments
+     ;; reuse build system tweaks
+     (substitute-keyword-arguments (package-arguments onnx)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'relax-requirements)))))
     (native-inputs
      (list cmake python-pytest python-pytest-runner python-nbval
            python-coverage))

@@ -47,6 +47,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -602,10 +603,10 @@ It allows the specification of behaviour scenarios using a given-when-then
 pattern.")
       (license license:apsl2))))
 
-(define-public catch2-3.3
+(define-public catch2-3
   (package
     (name "catch2")
-    (version "3.4.0")
+    (version "3.5.1")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -615,7 +616,7 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gdfsva6mnd66px85fmm3s65h8qzqnmgbmws2i3nygfav1y8d88f"))))
+                "0p7rk01n4qfnnm1bgakllyqi83n1kbpz11gh65z1vspfz58hs9iv"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1415,6 +1416,30 @@ following improvements:
 distributed testing in both @code{load} and @code{each} modes.  It also
 supports coverage of subprocesses.")
   (license license:expat)))
+
+(define-public python-pytest-dotenv
+  (package
+    (name "python-pytest-dotenv")
+    (version "0.5.2")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quiqua/pytest-dotenv")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bdxwaak5clhsd63b9q65nf2amqqv5hfn7dskfakyldxsqnnh0y6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dotenv))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/quiqua/pytest-dotenv")
+    (synopsis "Automatically detect and load a .env file before running tests")
+    (description
+     "This Pytest plugin automatically detects and loads environment variables
+from a .env file before running tests.")
+    (license license:expat)))
 
 (define-public python-pytest-httpserver
   (package

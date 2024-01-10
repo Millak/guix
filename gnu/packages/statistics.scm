@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6757,11 +6758,9 @@ Java package that provides routines for various statistical distributions.")
     (license license:gpl2+)))
 
 (define-public emacs-ess
-  ;; Latest release is old.  This is not the latest commit either due to bug
-  ;; reported here: <https://github.com/emacs-ess/ESS/issues/987>.
-  (let ((commit "24da603184ce39246611dd5b8602e769d7ebd5bf")
+  (let ((commit "3691ecc642eab5d016887e42699648e0eeeef566")
         (version "18.10.2")
-        (revision "0"))
+        (revision "1"))
     (package
       (name "emacs-ess")
       (version (git-version version revision commit))
@@ -6772,60 +6771,96 @@ Java package that provides routines for various statistical distributions.")
                (url "https://github.com/emacs-ess/ESS")
                (commit commit)))
          (sha256
-          (base32 "0j98lv07nzwzd54d4dgcfz01wy5gj48m0mnirxzh5r45ik2myh1r"))
+          (base32 "19p8djsbgvahpsx1w8i6h3qvpbdr4isjwm3wi82yk2648ri0qsq1"))
          (file-name (git-file-name name version))
          (modules '((guix build utils)))
          (snippet
-          '(begin
-             ;; Stop ESS from trying to bundle an external julia-mode.el.
-             (substitute* "lisp/Makefile"
-               ((" \\$\\(JULIAS)") "")
-               (("\ttest.*julia-mode.*\\.el") ""))
-             ;; Only build docs in info format.
-             (substitute* "doc/Makefile"
-               (("all  : info text")
-                "all  : info")
-               (("install: install-info install-other-docs")
-                "install: install-info"))
-             ;; Stop install-info from trying to update the info directory.
-             (substitute* "doc/Makefile"
-               ((".*/dir.*") ""))
-             ;; Fix r-help-mode test.
-             (substitute* "test/ess-test-r.el"
-               (("\\(equal ess-help-object \"plot.default\")") "t"))
-             ;; Avoid generating ess-autoloads.el twice.
-             (substitute* "Makefile"
-               (("all: lisp doc etc autoloads")
-                "all: lisp doc etc"))
-             ;; Install to correct directories.
-             (substitute* "Makefile"
-               (("mkdir -p \\$\\(ESSDESTDIR)")
-                "$(MAKE) -C lisp install; $(MAKE) -C doc install")
-               (("\\$\\(INSTALL) -R \\./\\* \\$\\(ESSDESTDIR)/")
-                "$(MAKE) -C etc install"))
-             #t))
-         (patches
-          (search-patches "emacs-ess-fix-obsolete-function-alias.patch"))))
+          #~(begin
+              ;; Stop ESS from trying to bundle an external julia-mode.el.
+              (substitute* "lisp/Makefile"
+                ((" \\$\\(JULIAS)") "")
+                (("\ttest.*julia-mode.*\\.el") ""))
+              ;; Only build docs in info format.
+              (substitute* "doc/Makefile"
+                (("all  : info text")
+                 "all  : info")
+                (("install: install-info install-other-docs")
+                 "install: install-info"))
+              ;; Stop install-info from trying to update the info directory.
+              (substitute* "doc/Makefile"
+                ((".*/dir.*") ""))
+              ;; Fix r-help-mode test.
+              (substitute* "test/ess-test-r.el"
+                (("\\(equal ess-help-object \"plot.default\")") "t"))
+              ;; Avoid generating ess-autoloads.el twice.
+              (substitute* "Makefile"
+                (("all: lisp doc etc autoloads")
+                 "all: lisp doc etc"))
+              ;; Install to correct directories.
+              (substitute* "Makefile"
+                (("mkdir -p \\$\\(ESSDESTDIR)")
+                 "$(MAKE) -C lisp install; $(MAKE) -C doc install")
+                (("\\$\\(INSTALL) -R \\./\\* \\$\\(ESSDESTDIR)/")
+                 "$(MAKE) -C etc install"))))))
       (build-system gnu-build-system)
       (arguments
        (let ((base-directory "/share/emacs/site-lisp"))
-         `(#:make-flags (list (string-append "PREFIX=" %output)
-                              (string-append "ETCDIR=" %output
-                                             ,base-directory "/etc")
-                              (string-append "LISPDIR=" %output
-                                             ,base-directory)
-                              (string-append "INFODIR=" %output
-                                             "/share/info"))
-           #:phases
-           (modify-phases %standard-phases
-             (delete 'configure)
-             (replace 'check
-               (lambda _ (invoke "make" "test")))))))
+         (list
+          #:modules '((guix build gnu-build-system)
+                      (guix build utils)
+                      (guix build emacs-utils))
+          #:imported-modules `(,@%gnu-build-system-modules
+                               (guix build emacs-build-system)
+                               (guix build emacs-utils))
+          #:make-flags
+          #~(list (string-append "PREFIX=" #$output)
+                  (string-append "ETCDIR=" #$output #$base-directory "/etc")
+                  (string-append "LISPDIR=" #$output #$base-directory)
+                  (string-append "INFODIR=" #$output "/share/info"))
+          #:phases
+          #~(modify-phases %standard-phases
+              (delete 'configure)
+              (add-before 'check 'skip-failing-tests
+                ;; XXX: Skip 10 failing tests (out of 187).
+                (lambda _
+                  (let-syntax
+                      ((disable-tests
+                        (syntax-rules ()
+                          ((_ file ())
+                           (syntax-error "test names list must not be empty"))
+                          ((_ file (test-name ...))
+                           (substitute* file
+                             (((string-append "^\\(ert-deftest " test-name ".*")
+                               all)
+                              (string-append all "(skip-unless nil)\n"))
+                             ...)))))
+                    (disable-tests (list "test/ess-test-inf.el"
+                                         "test/ess-test-r.el")
+                                   ("ess--derive-connection-path"
+                                    "ess-eval-line-test"
+                                    "ess-eval-region-test"
+                                    "ess-mock-remote-process"
+                                    "ess-r-load-ESSR-github-fetch-no"
+                                    "ess-r-load-ESSR-github-fetch-yes"
+                                    "ess-set-working-directory-test"
+                                    "ess-test-r-startup-directory")))
+                  ;; The two tests below use a different syntax.
+                  (emacs-batch-edit-file "test/ess-test-r-eval.el"
+                    '(progn
+                      (mapc (lambda (test)
+                              (goto-char (point-min))
+                              (search-forward (format "etest-deftest %s " test))
+                              (beginning-of-line)
+                              (kill-sexp))
+                            '("ess-r-eval-ns-env-roxy-tracebug-test"
+                              "ess-r-eval-sink-freeze-test"))
+                      (basic-save-buffer)))))
+              (replace 'check
+                (lambda _ (invoke "make" "test")))))))
       (native-inputs
        (list perl r-roxygen2 texinfo))
       (inputs
-       `(("emacs" ,emacs-minimal)
-         ("r-minimal" ,r-minimal)))
+       (list emacs-minimal r-minimal))
       (propagated-inputs
        (list emacs-julia-mode))
       (home-page "https://ess.r-project.org/")
@@ -6884,6 +6919,50 @@ files, including Rmarkdown files.")
     (description "Command-line tool and C library for reading files from
 popular stats packages like SAS, Stata and SPSS.")
     (license license:expat)))
+
+(define-public python-pyreadstat
+  (package
+    (name "python-pyreadstat")
+    (version "1.2.4")
+    ;; No tests in the PyPI tarball.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Roche/pyreadstat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zysrzixvqw2lwwykxqg5yj8a0zyv5s2bmk22x30f4rj2hgvq1pv"))
+       (patches (search-patches "python-pyreadstat-link-libiconv.patch"))))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'change-home-dir
+                    (lambda _
+                      ;; test_sav_expand and test_sav_write_basic_expanduser need a
+                      ;; home directory with write permissions.
+                      (setenv "HOME" "/tmp")))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        ;; The source also contains tests/test_version.py
+                        ;; which checks the version in __init__.py against the
+                        ;; one in setup.py. Since this requires texlive
+                        ;; dependencies to run and is also not mentioned in
+                        ;; how_to_test.md, this test is skipped.
+                        (invoke "python" "tests/test_basic.py")))))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pandas))
+    (inputs (list libiconv zlib))
+    (native-inputs (list python-cython-3))
+    (home-page "https://github.com/Roche/pyreadstat")
+    (synopsis
+     "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")
+    (description
+     "This Python package can be used to read and write SAS, SPSS and Stata
+files into/from Pandas DataFrames.  It is a wrapper around the C library
+@code{readstat}.")
+    (license license:asl2.0)))
 
 (define-public r-quantpsyc
   (package

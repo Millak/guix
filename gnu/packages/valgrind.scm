@@ -39,7 +39,7 @@
 (define-public valgrind
   (package
     (name "valgrind")
-    (version "3.20.0")
+    (version "3.22.0")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/pub/valgrind"
@@ -48,7 +48,7 @@
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))))
+                "0k1ddnzxfpbng2sp5r31jjxsmp35g977rx6a8jcp4prcvmddn4f8"))))
     (build-system gnu-build-system)
     (outputs '("doc"                              ;16 MB
                "out"))

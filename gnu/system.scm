@@ -803,9 +803,7 @@ bookkeeping."
           %boot-service
           %hurd-startup-service
           %activation-service
-          (service shepherd-root-service-type
-                   (shepherd-configuration
-                    (shepherd shepherd-0.8)))     ;no Fibers
+          (service shepherd-root-service-type)
 
           (service user-processes-service-type)
           (account-service (append (operating-system-accounts os)
