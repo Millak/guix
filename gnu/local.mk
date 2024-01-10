@@ -1305,6 +1305,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-6-fix-isl-includes.patch	\
   %D%/packages/patches/gcc-6-fix-buffer-size.patch	\
   %D%/packages/patches/gcc-6-libsanitizer-mode-size.patch	\
+  %D%/packages/patches/gcc-7-libsanitizer-fsconfig-command.patch \
   %D%/packages/patches/gcc-7-libsanitizer-mode-size.patch	\
   %D%/packages/patches/gcc-libvtv-runpath.patch			\
   %D%/packages/patches/gcc-strmov-store-file-names.patch	\
