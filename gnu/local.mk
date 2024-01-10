@@ -7,7 +7,7 @@
 # Copyright © 2016, 2017, 2018 Kei Kebreau <kkebreau@posteo.net>
 # Copyright © 2016, 2017 Rene Saavedra <rennes@openmailbox.org>
 # Copyright © 2016 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+# Copyright © 2016-2024 Ricardo Wurmus <rekado@elephly.net>
 # Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -1743,6 +1743,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openboardview-use-system-mpc.patch	\
   %D%/packages/patches/openbox-python3.patch			\
   %D%/packages/patches/opencolorio-fix-build-with-gcc11.patch	\
+  %D%/patches/openjdk-currency-time-bomb.patch			\
   %D%/packages/patches/openjdk-9-pointer-comparison.patch       \
   %D%/packages/patches/openjdk-9-setsignalhandler.patch         \
   %D%/packages/patches/openjdk-10-idlj-reproducibility.patch	\

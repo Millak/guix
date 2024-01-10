@@ -880,7 +880,8 @@ new Date();"))
                (base32
                 "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))
               (patches (search-patches "openjdk-9-pointer-comparison.patch"
-                                       "openjdk-9-setsignalhandler.patch"))))
+                                       "openjdk-9-setsignalhandler.patch"
+                                       "openjdk-currency-time-bomb.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
