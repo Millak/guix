@@ -5221,7 +5221,7 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "0.64.2")
+    (version "1.0a7")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -5230,7 +5230,7 @@ mechanism of @code{dogpile}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c8ajdaraynrjvsb8xxxnkb7zgm5fwq60qczaz00n465ki80j4h3"))))
+                "1wwdx2xqkxygbww1nzpr6h702ims6zcxpjskh8fldn1kby591qgg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5269,6 +5269,7 @@ mechanism of @code{dogpile}.")
      (list python-aiofiles
            python-asgi-csrf
            python-asgiref
+           python-asyncinject
            python-click
            python-click-default-group
            python-httpx
@@ -5280,6 +5281,7 @@ mechanism of @code{dogpile}.")
            python-pint
            python-pluggy
            python-pyyaml
+           python-sqlite-utils
            python-uvicorn))
     (native-inputs
      (list python-beautifulsoup4
