@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -447,7 +447,9 @@ an interpreter, a compiler, a debugger, and much more.")
                            version "-source.tar.bz2"))
        (sha256
         (base32 "0xhpdnsg8idzxkn20iw8gd2rk470d7vc22vrp5clq9fj117vgn43"))
-       (patches (search-patches "sbcl-fix-ppc64-build.patch"))
+       ;; TODO: Remove these patches when updating to sbcl > 2.4.0.
+       (patches (search-patches "sbcl-fix-ppc64-build.patch"
+                                "sbcl-fix-riscv-build.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
