@@ -1154,7 +1154,8 @@ new Date();"))
               (patches (search-patches
                         "openjdk-10-idlj-reproducibility.patch"
                         "openjdk-10-pointer-comparison.patch"
-                        "openjdk-10-setsignalhandler.patch"))))
+                        "openjdk-10-setsignalhandler.patch"
+                        "openjdk-currency-time-bomb2.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk9)
        ((#:phases phases)
