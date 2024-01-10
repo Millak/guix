@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -3051,15 +3051,14 @@ frequencies.  This data is then formatted to MIDI and written to disk.")
                "1g7f29i0jajswyg67k7hdnmyqk32fmmxw6xppf9fm1mjp2wq5c2g"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'full-store-path-to-shared-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion "bindings/python"
-               (substitute* "lilv.py"
-                 (("liblilv-0.so") (string-append (assoc-ref outputs "out")
-                                                  "/lib/liblilv-0.so")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'full-store-path-to-shared-library
+            (lambda _
+              (with-directory-excursion "bindings/python"
+                (substitute* "lilv.py"
+                  (("liblilv-0.so") (string-append #$output "/lib/liblilv-0.so")))))))))
     ;; Required by lilv-0.pc.
     (propagated-inputs
      (list lv2 serd sord sratom))
