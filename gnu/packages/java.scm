@@ -1177,8 +1177,7 @@ new Date();"))
                ;; This file was "fixed" by patch-source-shebangs, but it requires
                ;; this exact first line.
                (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
-               #t))
+                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))
            (replace 'configure
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (invoke "bash" "./configure"
