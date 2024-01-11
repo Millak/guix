@@ -575,6 +575,65 @@ and intuitive.  It aims to be the fundamental high-level building block for
 doing practical, real world data analysis in Python.")
     (license license:bsd-3)))
 
+(define-public python-pandas-stubs
+  (package
+    (name "python-pandas-stubs")
+    ;; The versioning follows that of Pandas and uses the date of the
+    ;; python-pandas-stubs release. This is the latest version of
+    ;; python-pandas-stubs for python-pandas 1.4.4.
+    (version "1.4.4.220919")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pandas-dev/pandas-stubs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14fhj1y71akwl41ws7cpazsbq5b8wf4rwaydqq2h39q7gylpcp99"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'prepare-x
+                    (lambda _
+                      (system "Xvfb &")
+                      (setenv "DISPLAY" ":0")
+                      ;; xsel needs to write a log file.
+                      (setenv "HOME"
+                              (getcwd)))))))
+    (propagated-inputs (list python-types-pytz))
+    ;; Add python-fastparquet to native inputs once it has been packaged. Its
+    ;; tests will be skipped for now.
+    (native-inputs (list python-lxml
+                         python-matplotlib
+                         python-pandas
+                         python-poetry-core
+                         python-pyarrow
+                         python-pyreadstat
+                         python-pytest
+                         python-scipy
+                         python-sqlalchemy
+                         python-tables
+                         python-tabulate
+                         python-xarray
+                         ;; Needed to test clipboard support.
+                         which
+                         xclip
+                         xorg-server-for-tests
+                         xsel))
+    (home-page "https://pandas.pydata.org")
+    (synopsis "Type annotations for pandas")
+    (description
+     "This package contains public type stubs for @code{python-pandas},
+following the convention of providing stubs in a separate package, as
+specified in @acronym{PEP, Python Enhancement Proposal} 561.  The stubs cover
+the most typical use cases of @code{python-pandas}.  In general, these stubs
+are narrower than what is possibly allowed by @code{python-pandas}, but follow
+a convention of suggesting best recommended practices for using
+@code{python-pandas}.")
+    (license license:bsd-3)))
+
 (define-public python-pythran
   (package
     (name "python-pythran")
