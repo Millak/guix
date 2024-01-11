@@ -645,37 +645,37 @@ change.  GNU make offers many powerful extensions over the standard utility.")
       (patches (search-patches "binutils-loongson-workaround.patch"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:out-of-source? #t   ;recommended in the README
-      #:configure-flags '(;; Add `-static-libgcc' to not retain a dependency
-                          ;; on GCC when bootstrapping.
-                          "LDFLAGS=-static-libgcc"
+    (list #:out-of-source? #t ;recommended in the README
+          #:configure-flags #~'(;; Add `-static-libgcc' to not retain a dependency
+                                ;; on GCC when bootstrapping.
+                                "LDFLAGS=-static-libgcc"
 
-                          ;; Turn on --enable-new-dtags by default to make the
-                          ;; linker set RUNPATH instead of RPATH on binaries.
-                          ;; This is important because RUNPATH can be overriden
-                          ;; using LD_LIBRARY_PATH at runtime.
-                          "--enable-new-dtags"
+                                ;; Turn on --enable-new-dtags by default to make the
+                                ;; linker set RUNPATH instead of RPATH on binaries.
+                                ;; This is important because RUNPATH can be overriden
+                                ;; using LD_LIBRARY_PATH at runtime.
+                                "--enable-new-dtags"
 
-                          ;; Don't search under /usr/lib & co.
-                          "--with-lib-path=/no-ld-lib-path"
+                                ;; Don't search under /usr/lib & co.
+                                "--with-lib-path=/no-ld-lib-path"
 
-                          ;; Install BFD.  It ends up in a hidden directory,
-                          ;; but it's here.
-                          "--enable-install-libbfd"
+                                ;; Install BFD.  It ends up in a hidden directory,
+                                ;; but it's here.
+                                "--enable-install-libbfd"
 
-                          ;; Make sure 'ar' and 'ranlib' produce archives in a
-                          ;; deterministic fashion.
-                          "--enable-deterministic-archives"
+                                ;; Make sure 'ar' and 'ranlib' produce archives in a
+                                ;; deterministic fashion.
+                                "--enable-deterministic-archives"
 
-                          "--enable-64-bit-bfd"
-                          "--enable-compressed-debug-sections=all"
-                          "--enable-lto"
-                          "--enable-separate-code"
-                          "--enable-threads")
+                                "--enable-64-bit-bfd"
+                                "--enable-compressed-debug-sections=all"
+                                "--enable-lto"
+                                "--enable-separate-code"
+                                "--enable-threads")
 
-      ;; For some reason, the build machinery insists on rebuilding .info
-      ;; files, even though they're already provided by the tarball.
-      #:make-flags '("MAKEINFO=true")))
+          ;; For some reason, the build machinery insists on rebuilding .info
+          ;; files, even though they're already provided by the tarball.
+          #:make-flags #~'("MAKEINFO=true")))
    (native-inputs (list bison))                   ;needed to build 'gprofng'
    (synopsis "Binary utilities: bfd gas gprof ld")
    (description
@@ -705,7 +705,7 @@ included.")
              (patches '())))
    (arguments
     (substitute-keyword-arguments (package-arguments binutils)
-      ((#:make-flags _ ''()) ''())))
+      ((#:make-flags _ #~'()) #~'())))
    (native-inputs '())
    (properties '())))
 
@@ -715,22 +715,22 @@ included.")
     (arguments
      (substitute-keyword-arguments (package-arguments binutils)
        ((#:configure-flags flags)
-        `(cons* "--enable-gold=default"
-                (delete "LDFLAGS=-static-libgcc" ,flags)))
+        #~(cons* "--enable-gold=default"
+                 (delete "LDFLAGS=-static-libgcc" #$flags)))
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
+        #~(modify-phases #$phases
            (add-after 'patch-source-shebangs 'patch-more-shebangs
              (lambda _
                (substitute* "gold/Makefile.in"
                  (("/bin/sh") (which "sh")))))
            ;; Multiple failing tests on some architectures in the gold testsuite.
-           ,@(if (or (target-arm?)
-                     (target-ppc32?))
-               '((add-after 'unpack 'skip-gold-testsuite
-                   (lambda _
-                     (substitute* "gold/Makefile.in"
-                       ((" testsuite") " ")))))
-               '())))))
+           #$(if (or (target-arm?)
+                      (target-ppc32?))
+                 #~(add-after 'unpack 'skip-gold-testsuite
+                     (lambda _
+                       (substitute* "gold/Makefile.in"
+                         ((" testsuite") " "))))
+                 #t)))))
     (native-inputs (modify-inputs (package-native-inputs binutils)
                      (append bc)))))
 

@@ -746,16 +746,17 @@ with a layered architecture of JTAG interface and TAP support.")
                     "0w0dff3s7wv2d9m78a4jhckiik58q38wx6wpbba5hzbs4yxz35ck"))
                   (patches '())))
         (arguments
-         `(;; FIXME: For some reason there are many test failures.  It's not
-           ;; obvious how to fix the failures.
-           #:tests? #f
-           #:phases
-           (modify-phases %standard-phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "binutils") #t)))
-           ,@(substitute-keyword-arguments (package-arguments xbinutils)
-               ((#:configure-flags flags)
-                `(cons "--disable-werror" ,flags)))))
+         (list
+          ;; FIXME: For some reason there are many test failures.  It's not
+          ;; obvious how to fix the failures.
+          #:tests? #f
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "binutils") #t))
+              #$@(substitute-keyword-arguments (package-arguments xbinutils)
+                   ((#:configure-flags flags)
+                    #~(cons "--disable-werror" #$flags))))))
         (native-inputs
          `(("bison" ,bison)
            ("flex" ,flex)

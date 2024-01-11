@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2018, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2018, 2020, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2019, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
@@ -127,7 +127,7 @@
                         ;; to pick up native libs instead of target ones.  In
                         ;; practice the RUNPATH of target libs only refers to
                         ;; target libs, not native libs, so this is safe.
-                        `(cons "--with-sysroot=/" ,flags)))))))
+                        #~(cons "--with-sysroot=/" #$flags)))))))
 
     ;; For xtensa-ath9k-elf, apply Qualcomm's patch.
     (cross (cond ((string=? target "xtensa-ath9k-elf")
