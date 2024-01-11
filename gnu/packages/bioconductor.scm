@@ -59,6 +59,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
@@ -17756,9 +17757,31 @@ of the analyses while minimizing technical noise.")
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "1r2slhzrp3gf45k5gknqgj3vjz7p0rx2yjzrbp020inj82fp4mgi"))))
+         "1r2slhzrp3gf45k5gknqgj3vjz7p0rx2yjzrbp020inj82fp4mgi"))
+       ;; Remove bundled boost sources
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "src/boost"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle
+            (lambda _
+              (substitute* "src/Makevars.in"
+                (("\\$\\(USERLIB\\): \\$\\{boost_fs_objs\\}")
+                 "$(USERLIB):")
+                (("\\$\\{cytolib_objs\\} \\$\\{boost_fs_objs\\} \\$\\{boost_sys_objs\\}")
+                 "${cytolib_objs}")
+                (("PKG_CPPFLAGS =")
+                 "PKG_CPPFLAGS = -lboost_filesystem")
+                #;
+                (("^BOOSTFSLIB.*")
+                 (string-append "BOOSTFSLIB="
+                                #$(this-package-input "boost") "/libboost_filesystem.so\n"))))))))
+    (inputs (list boost openblas protobuf zlib))
     (native-inputs
      (list r-knitr))
     (propagated-inputs
