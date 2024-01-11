@@ -3033,13 +3033,13 @@ time-of-day values, based on the @code{difftime} class.")
 (define-public r-readr
   (package
     (name "r-readr")
-    (version "2.1.4")
+    (version "2.1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "readr" version))
               (sha256
                (base32
-                "03gbzf29kdvf4rdqgdq2jm7c9ifjla3qzpiyqzw1x9jgijj4y54q"))))
+                "02p1jjal73j39r49ba4jlvbx8bdqmm96nsdp47igyv54w1gmm9hg"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -3048,9 +3048,9 @@ time-of-day values, based on the @code{difftime} class.")
            r-crayon
            r-hms
            r-lifecycle
-           r-tibble
            r-r6
            r-rlang
+           r-tibble
            r-tzdb
            r-vroom))
     (native-inputs
