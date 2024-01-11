@@ -1309,10 +1309,26 @@ variables into the markdown template")
                 (substitute* "tests/test_bugs.py"
                   (("def test_change_user") "def _do_not_test_change_user")
                   (("def test_lost_connection") "def _do_not_test_lost_connection")
-                  (("def test_kill_query") "def _do_not_test_kill_query"))
+                  (("def test_kill_query") "def _do_not_test_kill_query")
+                  ;; These all fail because of expired certificates.
+                  (("def test_cext_verify_server_certificate")
+                   "def _do_not_test_cext_verify_server_certificate")
+                  (("def test_pure_verify_server_certificate")
+                   "def _do_not_test_pure_verify_server_certificate")
+                  (("def test_verify_server_name_cext_cnx")
+                   "def _do_not_test_verify_server_name_cext_cnx")
+                  (("def test_verify_server_name_pure_cnx")
+                   "def _do_not_test_verify_server_name_pure_cnx"))
                 (substitute* "tests/test_connection.py"
                   (("def test_allow_local_infile_in_path")
-                   "def _do_not_test_allow_local_infile_in_path"))
+                   "def _do_not_test_allow_local_infile_in_path")
+                  ;; This fails because of expired certificates.
+                  (("def test_connect_with_unix_socket")
+                   "def _do_not_test_connect_with_unix_socket"))
+                (substitute* "tests/test_mysqlx_connection.py"
+                  ;; This fails because of expired certificates.
+                  (("def test_ssl_connection")
+                   "def _do_not_test_ssl_connection"))
                 (substitute* "tests/test_constants.py"
                   (("def test_deprecated")
                    "def _do_not_test_deprecated"))
