@@ -27053,7 +27053,8 @@ parentdir_prefix = dask-
           (add-before 'check 'pre-check
             (lambda _ (chdir "/tmp"))))))
     (propagated-inputs
-     (list python-cloudpickle
+     (list python-click ;needed at runtime
+           python-cloudpickle
            python-fsspec
            python-importlib-metadata ;needed at runtime for dask/_compatibility.py
            python-numpy
@@ -27063,8 +27064,7 @@ parentdir_prefix = dask-
            python-toolz
            python-pyyaml))
     (native-inputs
-     (list python-click
-           python-importlib-metadata
+     (list python-importlib-metadata
            python-pytest python-pytest-runner python-pytest-rerunfailures
            python-versioneer))
     (home-page "https://github.com/dask/dask/")
