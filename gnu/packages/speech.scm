@@ -76,6 +76,7 @@
      ;; There numerous issues with the testsuite.
      ;; Enable all of them once they are fixed in upstream.
      `(#:tests? #f
+       #:parallel-build? #f
        #:configure-flags
        (list
         "--enable-shared"
