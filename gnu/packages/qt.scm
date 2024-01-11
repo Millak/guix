@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -113,6 +113,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
@@ -5042,7 +5043,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "11.0.1")
+    (version "12.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5056,7 +5057,6 @@ including @i{fix-its} for automatic refactoring.")
                            ;; Remove bundled libraries, where supported.
                            ;; TODO: package and unbundle litehtml
                            '("src/libs/3rdparty/yaml-cpp"
-                             "tests/unit/unittest/3rdparty"
                              ;; Marketplace recommends nonfree extensions;
                              ;; remove it.
                              "src/plugins/marketplace"))
@@ -5066,7 +5066,7 @@ including @i{fix-its} for automatic refactoring.")
                             ((".*marketplace/marketplace.qbs.*") ""))))
               (sha256
                (base32
-                "0j90dv9micqsvj4r7iqd11szixr0mlpna4w5s2lnyqckjs6a0mm6"))))
+                "04h35za3gliai5djxwmzqrbih2g26lcv68pp4wvljkdwkcjsscvb"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -5135,6 +5135,7 @@ including @i{fix-its} for automatic refactoring.")
                                       '("bin/clang-tidy"
                                         "bin/clazy-standalone"
                                         "bin/gdb"
+                                        "bin/kcachegrind"
                                         "bin/valgrind")))))))))
     (native-inputs
      (list googletest
@@ -5151,6 +5152,7 @@ including @i{fix-its} for automatic refactoring.")
            clazy
            elfutils
            gdb
+           kcachegrind
            libxkbcommon
            llvm
            qt5compat
