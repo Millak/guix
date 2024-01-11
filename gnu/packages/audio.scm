@@ -3662,7 +3662,9 @@ filters using the so-called @emph{window method}.")
              "-Dfft=fftw"                  ;To avoid using bundled version
              "-Ddefault_library=shared"))) ;Don't build static library
     (inputs
-     (list fftw ladspa libsamplerate lv2 vamp))
+     (list ladspa lv2 vamp))
+    (propagated-inputs
+     (list fftw libsamplerate)) ;required by rubberband.pc
     (native-inputs
      (list pkg-config))
     (native-search-paths
