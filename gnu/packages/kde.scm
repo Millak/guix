@@ -1362,14 +1362,14 @@ timers for each task can be started, stopped, changed, or looped.")
 (define-public kcachegrind
   (package
     (name "kcachegrind")
-    (version "23.04.3")
+    (version "23.08.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kcachegrind-" version ".tar.xz"))
               (sha256
                (base32
-                "175bag1mfidp7bdsjb3zinib76jy8h881rqxgmkn90gmv4fqy62b"))))
+                "011bsb9yxrjmazqs1s6fvzvga4mlhjpdvkifbxblqavwp3ipmwbw"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules perl python qttools-5 kdoctools))
