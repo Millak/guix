@@ -597,7 +597,7 @@ layers."
 
             (let-keywords '#$extra-options #f
                           ((image-tag #f)
-                           (entry-point-argument #f)
+                           (entry-point-argument '())
                            (max-layers #f))
 
               (build-docker-image #$output
