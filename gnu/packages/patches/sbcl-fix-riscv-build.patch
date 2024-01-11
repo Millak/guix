@@ -1,0 +1,19 @@
+commit b286d92af7468164c155c70d38213211b296fdfe
+Author: Douglas Katzman <dougk@google.com>
+Date:   Wed Jan 10 11:46:55 2024 -0500
+
+    Fix riscv build
+
+diff --git a/src/compiler/riscv/float.lisp b/src/compiler/riscv/float.lisp
+index ce46d24ac..a16380293 100644
+--- a/src/compiler/riscv/float.lisp
++++ b/src/compiler/riscv/float.lisp
+@@ -578,7 +578,7 @@
+   (:results (res :scs (double-reg)))
+   (:arg-types signed-num)
+   (:result-types double-float)
+-  (:translate make-double-float)
++  (:translate %make-double-float)
+   (:policy :fast-safe)
+   (:generator 2
+     (inst fmvx-> :double res bits)))

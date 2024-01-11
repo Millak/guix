@@ -20,7 +20,7 @@
 # Copyright © 2018, 2019, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Stefan Stefanović <stefanx2ovic@gmail.com>
 # Copyright © 2018, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-# Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+# Copyright © 2019, 2020, 2021, 2022, 2044 Guillaume Le Vaillant <glv@posteo.net>
 # Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 # Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 # Copyright © 2019 Evan Straw <evan.straw99@gmail.com>
@@ -2007,6 +2007,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-burgled-batteries3-fix-signals.patch	\
   %D%/packages/patches/sbcl-clml-fix-types.patch		\
   %D%/packages/patches/sbcl-eazy-gnuplot-skip-path-check.patch	\
+  %D%/packages/patches/sbcl-fix-ppc64-build.patch		\
+  %D%/packages/patches/sbcl-fix-riscv-build.patch		\
   %D%/packages/patches/sbcl-png-fix-sbcl-compatibility.patch	\
   %D%/packages/patches/scalapack-gcc-10-compilation.patch	\
   %D%/packages/patches/scheme48-tests.patch			\
