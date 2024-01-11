@@ -964,8 +964,8 @@ guix --version
 export GUIX_BUILD_OPTIONS=--no-grafts
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.6G \\
-  mkpart primary 1.6G 2.0G \\
+  mkpart primary ext2 3M 2G \\
+  mkpart primary 2G 2.4G \\
   set 1 boot on \\
   set 1 bios_grub on
 
@@ -1033,7 +1033,9 @@ launched as a shepherd service."
                                               %encrypted-home-os-source
                                               #:script
                                               %encrypted-home-installation-script
-                                              #:packages (list cpio)))
+                                              #:packages (list cpio)
+                                              #:target-size
+                                              (* 3000 MiB)))
                          (command (qemu-command* images)))
       (run-basic-test %encrypted-home-os command "encrypted-home-os"
                       #:initialization enter-luks-passphrase-for-home)))))
@@ -1090,7 +1092,9 @@ unlock done using a key file")
                                               %encrypted-home-os-key-file-source
                                               #:script
                                               %encrypted-home-installation-script
-                                              #:packages (list cpio)))
+                                              #:packages (list cpio)
+                                              #:target-size
+                                              (* 3000 MiB)))
                          (command (qemu-command* images)))
       (run-basic-test %encrypted-home-os-key-file
                       command "encrypted-home-os-key-file")))))
