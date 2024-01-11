@@ -290,16 +290,17 @@ automatically pruning objects to maintain the constraints.")
 (define-public r-castor
   (package
     (name "r-castor")
-    (version "1.7.11")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "castor" version))
               (sha256
                (base32
-                "1cxjgwbsacjcc10qdch6pndjxqnk20hhamxqg0lckszvkyb67yn3"))))
+                "0caw206hndfzypj33w6npvppdc5hhq1q71wriqd0ck9f238rfi3c"))))
     (properties `((upstream-name . "castor")))
     (build-system r-build-system)
-    (propagated-inputs (list r-matrix r-naturalsort r-rcpp r-rspectra))
+    (propagated-inputs (list r-jsonlite r-matrix r-naturalsort r-rcpp
+                             r-rspectra))
     (home-page "https://cran.r-project.org/package=castor")
     (synopsis "Efficient phylogenetics on large trees")
     (description
