@@ -16137,13 +16137,13 @@ handle data from simple random samples as well as complex surveys.")
 (define-public r-tarchetypes
   (package
     (name "r-tarchetypes")
-    (version "0.7.10")
+    (version "0.7.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tarchetypes" version))
               (sha256
                (base32
-                "14k9p98yv5vgpi1bxngqzmaibdx9h7wyn8k1hw5imvlg4cbwm675"))))
+                "1iqrz27n8ndazx97ngqbz5yz5ppyimpbxam30zgdwnnzf963s5ym"))))
     (properties `((upstream-name . "tarchetypes")))
     (build-system r-build-system)
     (propagated-inputs (list r-digest
