@@ -7132,29 +7132,19 @@ the @code{BasicRouter}.")
 (define-public python-sanic-testing
   (package
     (name "python-sanic-testing")
-    (version "22.3.0")
+    (version "23.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic-testing" version))
        (sha256
-        (base32 "1vkgi9d3xyik507j4jy9s74mkl81hgx3c2d5y3aa1av9h6wjjivp"))))
-    (build-system python-build-system)
+        (base32 "0gqkzv90sbj9rw7yfly9c58lq9dq30g5hhcgjl3ihzjb66vm571b"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; PyPi sources does not contain tests, recursive dependency on
      ;; python-sanic.
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'loosen-requirements
-                 (lambda _
-                   ;; Don't place an upper boundary on httpx version.
-                   ;; https://github.com/sanic-org/sanic-testing/pull/39
-                   (substitute* "setup.py"
-                     (("httpx>=0\\.18,<0\\.23")
-                      "httpx>=0.18")))))))
-    (propagated-inputs (list python-httpx python-sanic-bootstrap
-                             python-websockets))
+     (list #:tests? #f))
+    (propagated-inputs (list python-httpx python-sanic-bootstrap))
     (home-page "https://github.com/sanic-org/sanic-testing/")
     (synopsis "Test clients for Sanic")
     (description "Internal package for @code{python-sanic}, which is
