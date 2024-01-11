@@ -31133,18 +31133,19 @@ machine learning, visually representing text and text analyses, and more.")
 (define-public r-topicmodels
   (package
     (name "r-topicmodels")
-    (version "0.2-15")
+    (version "0.2-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "topicmodels" version))
        (sha256
         (base32
-         "1l3pmz6n0sd57bf3d16m9766285d2pmndmv36rf5pffpwiw0zdbi"))))
-    (properties `((upstream-name . "topicmodels")))
+         "01g9avk0ldqnz15n8112vad31c1n7r6rih5dh6x3383vvmjrqp0d"))))
+    (properties
+     '((upstream-name . "topicmodels")
+       (updater-extra-inputs . ("gsl"))))
     (build-system r-build-system)
-    (inputs
-     (list gsl))
+    (inputs (list gsl))
     (propagated-inputs
      (list r-modeltools r-slam r-tm))
     (home-page "https://cran.r-project.org/package=topicmodels")
