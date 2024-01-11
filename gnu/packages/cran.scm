@@ -39766,14 +39766,14 @@ monitoring, Auto Scaling for automatically scaling resources, and more.")
 (define-public r-paws-networking
   (package
     (name "r-paws-networking")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.networking" version))
        (sha256
         (base32
-         "1imq29nxy5hxz2vlijdj2jl0lllvm3plb3jwpvsx1wlcvhpz0in3"))))
+         "0qs6bp0vlbazxir9jmdcnazh90yrvhrw6k9046id73hw1j7h5zaf"))))
     (properties
      `((upstream-name . "paws.networking")))
     (build-system r-build-system)
