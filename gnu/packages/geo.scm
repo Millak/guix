@@ -939,14 +939,14 @@ pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "0.13.2")
+    (version "0.14.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "0s59jjk02l1zajz95n1c7fr3fyj44wzxn569q2y7f34042f6vdg5"))))
+            "1nycf79nzris058lz1fyg0byj874wxq33an3y74zvybnhdxxawbf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -955,6 +955,8 @@ pyproj, Rtree, and Shapely.")
          ;; Test files are missing
          "--ignore=geopandas/tests/test_overlay.py"
          "--ignore=geopandas/io/tests/test_file.py"
+         ;; Number of open figures changed during test
+         "-k" "not test_pandas_kind"
          ;; Disable tests that require internet access.
          "-m" "not web")))
     (propagated-inputs
