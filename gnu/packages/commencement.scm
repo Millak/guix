@@ -937,27 +937,28 @@ MesCC-Tools), and finally M2-Planet.")
     (native-inputs (%boot-tcc-inputs))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:tests? #f                      ; runtest: command not found
-       #:parallel-build? #f
-       #:strip-binaries? #f             ; no strip yet
-       #:configure-flags
-       (let ((cppflags (string-append " -D __GLIBC_MINOR__=6"
-                                      " -D MES_BOOTSTRAP=1"))
-             (bash (assoc-ref %build-inputs "bash")))
-         `(,(string-append "CONFIG_SHELL=" bash "/bin/sh")
-           ,(string-append "CPPFLAGS=" cppflags)
-           "AR=tcc -ar"
-           "CXX=false"
-           "RANLIB=true"
-           ,(string-append "CC=tcc" cppflags)
-           "--disable-nls"
-           "--disable-shared"
-           "--disable-werror"
-           "--build=i686-unknown-linux-gnu"
-           "--host=i686-unknown-linux-gnu"
-           "--with-sysroot=/"))))))
+     (list #:implicit-inputs? #f
+           #:guile %bootstrap-guile
+           #:tests? #f ; runtest: command not found
+           #:parallel-build? #f
+           #:strip-binaries? #f ; no strip yet
+           #:configure-flags
+           #~(let ((cppflags (string-append
+                              " -D __GLIBC_MINOR__=6"
+                              " -D MES_BOOTSTRAP=1"))
+                   (bash (assoc-ref %build-inputs "bash")))
+               `(,(string-append "CONFIG_SHELL=" bash "/bin/sh")
+                 ,(string-append "CPPFLAGS=" cppflags)
+                 "AR=tcc -ar"
+                 "CXX=false"
+                 "RANLIB=true"
+                 ,(string-append "CC=tcc" cppflags)
+                 "--disable-nls"
+                 "--disable-shared"
+                 "--disable-werror"
+                 "--build=i686-unknown-linux-gnu"
+                 "--host=i686-unknown-linux-gnu"
+                 "--with-sysroot=/"))))))
 
 (define gcc-core-mesboot0
   ;; Gcc-2.95.3 is the most recent GCC that is supported by what the Mes C
@@ -1266,14 +1267,13 @@ ac_cv_c_float_format='IEEE (little-endian)'
     (arguments
      (substitute-keyword-arguments (package-arguments binutils-mesboot0)
        ((#:configure-flags configure-flags)
-        '(let ((out (assoc-ref %outputs "out")))
-           `("--disable-nls"
-             "--disable-shared"
-             "--disable-werror"
-             "--build=i686-unknown-linux-gnu"
-             "--host=i686-unknown-linux-gnu"
-             "--with-sysroot=/"
-             ,(string-append "--prefix=" out))))))))
+        #~(let ((out (assoc-ref %outputs "out")))
+            `("--disable-nls" "--disable-shared"
+              "--disable-werror"
+              "--build=i686-unknown-linux-gnu"
+              "--host=i686-unknown-linux-gnu"
+              "--with-sysroot=/"
+              ,(string-append "--prefix=" out))))))))
 
 (define gnu-make-mesboot
   (package
@@ -2249,33 +2249,39 @@ exec " gcc "/bin/" program
     (source (bootstrap-origin (package-source binutils)))
     (name "binutils-cross-boot0")
     (arguments
-     `(#:guile ,%bootstrap-guile
-       #:implicit-inputs? #f
+     (append (list #:guile %bootstrap-guile
+                   #:implicit-inputs? #f
 
-       #:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (ice-9 ftw))                    ; for 'scandir'
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'add-symlinks
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; The cross-gcc invokes 'as', 'ld', etc, without the
-                      ;; triplet prefix, so add symlinks.
-                      (let ((out (assoc-ref outputs "out"))
-                            (triplet-prefix (string-append ,(boot-triplet) "-")))
-                        (define (has-triplet-prefix? name)
-                          (string-prefix? triplet-prefix name))
-                        (define (remove-triplet-prefix name)
-                          (substring name (string-length triplet-prefix)))
-                        (with-directory-excursion (string-append out "/bin")
-                          (for-each (lambda (name)
-                                      (symlink name (remove-triplet-prefix name)))
-                                    (scandir "." has-triplet-prefix?)))))))
+                   #:modules '((guix build gnu-build-system)
+                               (guix build utils)
+                               (ice-9 ftw)) ; for 'scandir'
+                   #:phases
+                   #~(modify-phases %standard-phases
+                       (add-after 'install 'add-symlinks
+                         (lambda* (#:key outputs #:allow-other-keys)
+                           ;; The cross-gcc invokes 'as', 'ld', etc, without the
+                           ;; triplet prefix, so add symlinks.
+                           (let ((out (assoc-ref outputs "out"))
+                                 (triplet-prefix (string-append #$(boot-triplet)
+                                                                "-")))
+                             (define (has-triplet-prefix? name)
+                               (string-prefix? triplet-prefix name))
+                             (define (remove-triplet-prefix name)
+                               (substring name
+                                          (string-length triplet-prefix)))
 
-       ,@(substitute-keyword-arguments (package-arguments binutils)
-           ((#:configure-flags cf)
-            `(append (list ,(string-append "--target=" (boot-triplet))
-                           "--disable-gprofng")   ;requires Bison
-                     ,cf)))))
+                             (with-directory-excursion (string-append out "/bin")
+                               (for-each (lambda (name)
+                                           (symlink name
+                                                    (remove-triplet-prefix name)))
+                                         (scandir "."
+                                                  has-triplet-prefix?))))))))
+             (substitute-keyword-arguments (package-arguments binutils)
+               ((#:configure-flags cf)
+                #~(append (list #$(string-append "--target="
+                                                 (boot-triplet))
+                                "--disable-gprofng") ;requires Bison
+                          #$cf)))))
     (native-inputs '())                           ;no Bison
     (inputs (%boot0-inputs))))
 
@@ -3182,24 +3188,22 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
     (inherit binutils)
     (source (bootstrap-origin (package-source binutils)))
     (arguments
-     `(#:guile ,%bootstrap-guile
-       #:implicit-inputs? #f
-       #:allowed-references
-       ("out"
-        ,glibc-final
-        ,(this-package-native-input "libstdc++")
-        ,@(if (target-powerpc? (%current-system))
-              (list static-bash-for-glibc)
-              '()))
-
-       ,@(substitute-keyword-arguments (package-arguments binutils)
-           ((#:configure-flags flags #~'())
-            ;; For gprofng, tell the build system where to look for libstdc++.
-            #~(append #$flags
-                      (list (string-append
-                             "LDFLAGS=-L"
-                             #$(this-package-native-input "libstdc++")
-                             "/lib")))))))
+     (append (list #:guile %bootstrap-guile
+                   #:implicit-inputs? #f
+                   #:allowed-references `("out" ,glibc-final
+                                          ,(this-package-native-input
+                                            "libstdc++")
+                                          ,@(if (target-powerpc? (%current-system))
+                                                (list static-bash-for-glibc)
+                                                '())))
+             (substitute-keyword-arguments (package-arguments binutils)
+               ((#:configure-flags flags #~'())
+                ;; For gprofng, tell the build system where to look for libstdc++.
+                #~(append #$flags
+                          (list (string-append "LDFLAGS=-L"
+                                               #$(this-package-native-input
+                                                  "libstdc++")
+                                               "/lib")))))))
     (native-inputs (list bison-boot0
                          libstdc++))              ;for gprofng
     (inputs
