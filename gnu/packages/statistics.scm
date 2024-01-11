@@ -1431,13 +1431,13 @@ R/DBMS implementations.")
 (define-public r-bh
   (package
     (name "r-bh")
-    (version "1.81.0-1")
+    (version "1.84.0-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "BH" version))
               (sha256
                (base32
-                "0r7zjxpbm2paliplprwf9769a57clqaiskiiadiy10gissnqn77m"))))
+                "1b7igvvy9f13l969a26j2bdzib2laq3m4w1x0xsxjb2pbxsn1dkg"))))
     (build-system r-build-system)
     (home-page "https://github.com/eddelbuettel/bh")
     (synopsis "R package providing subset of Boost headers")
