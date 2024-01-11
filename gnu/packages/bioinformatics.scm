@@ -2462,6 +2462,7 @@ operations:
        (sha256
         (base32 "16mfdqmp0j6g3h26h59334w9lqb4qihqrlzwvgznj0fiqs1rkxn2"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
     (propagated-inputs (list python-click python-numpy python-pandas
                              python-parabam python-pysam))
     (home-page "https://github.com/cancerit/telomerecat")
