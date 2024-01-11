@@ -634,6 +634,81 @@ a convention of suggesting best recommended practices for using
 @code{python-pandas}.")
     (license license:bsd-3)))
 
+(define-public python-pandera
+  (package
+    (name "python-pandera")
+    (version "0.17.2")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/unionai-oss/pandera")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mnqk583z90k1n0z3lfa4rd0ng40v7hqfk7phz5gjmxlzfjbxa1x"))
+       (modules '((guix build utils)))
+       ;; These tests require PySpark. We need to remove the entire directory,
+       ;; since the conftest.py in this directory contains a PySpark import.
+       ;; (See: https://github.com/pytest-dev/pytest/issues/7452)
+       (snippet '(delete-file-recursively "tests/pyspark"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags '(list "-k"
+                          (string-append
+                           ;; Needs python-pandas >= 1.5
+                           "not test_python_std_list_dict_generics"
+                           " and not test_python_std_list_dict_empty_and_none"
+                           " and not test_pandas_modules_importable"))))
+    ;; Pandera comes with a lot of extras. We test as many as possible, but do
+    ;; not include all of them in the propagated-inputs. Currently, we have to
+    ;; skip the pyspark and io tests due to missing packages python-pyspark
+    ;; and python-frictionless.
+    (propagated-inputs (list python-hypothesis ;strategies extra
+                             python-multimethod
+                             python-numpy
+                             python-packaging
+                             python-pandas
+                             python-pandas-stubs ;mypy extra
+                             python-pydantic
+                             python-scipy ;hypotheses extra
+                             python-typeguard-4
+                             python-typing-inspect
+                             python-wrapt))
+    (native-inputs (list python-dask ;dask extra
+                         python-fastapi ;fastapi extra
+                         python-geopandas ;geopandas extra
+                         python-modin ;modin extra
+                         python-pyarrow ;needed to run fastapi tests
+                         python-pytest
+                         python-pytest-asyncio
+                         python-sphinx
+                         python-uvicorn)) ;needed to run fastapi tests
+    (home-page "https://github.com/unionai-oss/pandera")
+    (synopsis "Perform data validation on dataframe-like objects")
+    (description
+     "@code{python-pandera} provides a flexible and expressive API for
+performing data validation on dataframe-like objects to make data processing
+pipelines more readable and robust.  Dataframes contain information that
+@code{python-pandera} explicitly validates at runtime.  This is useful in
+production-critical data pipelines or reproducible research settings.  With
+@code{python-pandera}, you can:
+
+@itemize
+@item Define a schema once and use it to validate different dataframe types.
+@item Check the types and properties of columns.
+@item Perform more complex statistical validation like hypothesis testing.
+@item Seamlessly integrate with existing data pipelines via function decorators.
+@item Define dataframe models with the class-based API with pydantic-style syntax.
+@item Synthesize data from schema objects for property-based testing.
+@item Lazily validate dataframes so that all validation rules are executed.
+@item Integrate with a rich ecosystem of tools like @code{python-pydantic},
+@code{python-fastapi} and @code{python-mypy}.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-pythran
   (package
     (name "python-pythran")
