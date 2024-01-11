@@ -11171,6 +11171,65 @@ single-cell data.")
        "This package is designed to streamline scATAC analyses in R.")
       (license license:gpl2+))))
 
+(define-public r-azimuth
+  (let ((commit "243ee5db80fcbffa3452c944254a325a3da2ef9e")
+        (revision "1"))
+    (package
+      (name "r-azimuth")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/satijalab/azimuth")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0vs4813kf2cv2j1z800ihwk62bw4dgmwgkd47rln58581chv39zm"))))
+      (properties `((upstream-name . "Azimuth")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-bsgenome-hsapiens-ucsc-hg38
+                               r-dt
+                               r-ensdb-hsapiens-v86
+                               r-future
+                               r-ggplot2
+                               r-glmgampoi
+                               r-googlesheets4
+                               r-hdf5r
+                               r-htmltools
+                               r-httr
+                               r-jaspar2020
+                               r-jsonlite
+                               r-matrix
+                               r-patchwork
+                               r-plotly
+                               r-presto
+                               r-rcpp
+                               r-rlang
+                               r-scales
+                               r-seurat
+                               r-seuratdata
+                               r-seuratdisk
+                               r-seuratobject
+                               r-shiny
+                               r-shinybs
+                               r-shinydashboard
+                               r-shinyjs
+                               r-signac
+                               r-stringr
+                               r-tfbstools
+                               r-withr))
+      (home-page "https://github.com/satijalab/azimuth")
+      (synopsis
+       "Shiny app showcasing a single-cell data query-reference mapping algorithm")
+      (description "Azimuth utilizes an annotated reference dataset.  It
+automates the processing, analysis, and interpretation.  This applies
+specifically to new single-cell RNA-seq or ATAC-seq experiments.  Azimuth
+leverages a reference-based mapping pipeline that inputs acounts matrix and
+performs normalization, visualization, cell annotation, and differential
+expression.")
+      (license license:gpl3))))
+
 (define-public r-icellnet
   ;; v1.0 tagged in 2020, last commit contains many fixes.
   ;; DESCRIPTION says Version: 0.0.0.9000.
