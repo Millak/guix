@@ -8356,20 +8356,20 @@ similar to finite mixture models.")
 (define-public r-rpostgresql
   (package
     (name "r-rpostgresql")
-    (version "0.7-5")
+    (version "0.7-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPostgreSQL" version))
        (sha256
         (base32
-         "18czy93l9dg321pbvrfmlwrjahpbkiw0sll4pkkqm55xapp02m3b"))))
-    (properties `((upstream-name . "RPostgreSQL")))
+         "0b1dmx5pcd4v1xg25ihxilkga3zdblb1xy896ik5fdkaidq3jn9q"))))
+    (properties
+     '((upstream-name . "RPostgreSQL")
+       (updater-extra-inputs . ("postgresql"))))
     (build-system r-build-system)
-    (inputs
-     (list postgresql))
-    (propagated-inputs
-     (list r-dbi))
+    (inputs (list postgresql))
+    (propagated-inputs (list r-dbi))
     (home-page "https://github.com/tomoakin/RPostgreSQL")
     (synopsis "R interface to the PostgreSQL database system")
     (description
