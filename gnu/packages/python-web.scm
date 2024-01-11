@@ -7155,69 +7155,85 @@ applications.")
 (define-public python-sanic
   (package
     (name "python-sanic")
-    ;; We provide the latest LTS version of python-sanic.
-    (version "21.12.1")
+    (version "23.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic" version))
        (sha256
         (base32
-         "0b8mcd1q9qkwcv2qz8nlyaacs0bp7a1l31sdq2m8hhkxykzfq5bg"))))
-    (build-system python-build-system)
+         "115vnir4qijv89139g5h0i4l0n4w3bgh1ickgnk8xidxsa0wla15"))))
+    (build-system pyproject-build-system)
     (arguments
       (list
+       #:test-flags
+       '(list "-k"
+              (string-append
+               ;; PyPi sources lack examples module.
+               "not test_gunicorn_"
+               ;; Does not expect brotli and reordered headers.
+               " and not test_raw_headers"
+               ;; These look like buggy testcases.
+               " and not test_zero_downtime"
+               " and not test_non_default_uvloop_config_raises_warning"
+               " and not test_listeners_triggered"
+               " and not test_keep_alive_connection_context"
+               " and not test_keep_alive_client_timeout"
+               ;; Unclear why they fail since core-updates merge.
+               " and not test_missing_sni"
+               " and not test_no_matching_cert"
+               " and not test_wildcards"
+               ;; These tests fail because subprotocols appear to be
+               ;; parameterized as None
+               " and not test_websocket_route_with_subprotocols"
+               ;; AF_UNIX path too long
+               " and not test_setup_and_teardown_unix"
+               " and not test_configure_socket"
+               ;; Freezes
+               " and not test_server_run_with_repl"))
        #:phases
-         #~(modify-phases %standard-phases
+       #~(modify-phases %standard-phases
            (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
+             (lambda* (#:key tests? test-flags #:allow-other-keys)
                (when tests?
-                 (invoke "pytest" "-vv" "./tests" "-k"
-                         (string-append
-                           ;; PyPi sources lack examples module.
-                           "not test_gunicorn_"
-                           ;; Does not expect brotli and reordered headers.
-                           " and not test_raw_headers"
-                           ;; These look like buggy testcases.
-                           " and not test_zero_downtime"
-                           " and not test_non_default_uvloop_config_raises_warning"
-                           " and not test_listeners_triggered"
-                           " and not test_keep_alive_connection_context"
-                           " and not test_keep_alive_client_timeout"
-                           ;; Unclear why they fail since core-updates merge.
-                           " and not test_missing_sni"
-                           " and not test_no_matching_cert"
-                           " and not test_wildcards"))))))))
+                 (apply invoke "pytest" "-vv" "./tests"
+                        test-flags)))))))
     (propagated-inputs
      (list python-aiofiles
+           python-aioquic
+           python-html5tagger
            python-httptools
            python-multidict
            python-sanic-routing
+           python-tracerite
+           python-typing-extensions
            python-ujson
            python-uvloop
            python-websockets))
     (native-inputs
-     (list gunicorn
-           python-bandit
+     (list python-bandit
            python-beautifulsoup4
            python-chardet
-           python-isort
+           python-coverage
+           python-cryptography
+           python-docutils
+           python-mypy
+           python-pygments
            python-pytest
            python-pytest-benchmark
            python-pytest-sanic
-           python-pytest-sugar
-           python-pytest-asyncio
            python-sanic-testing
+           python-slotscheck
+           python-towncrier
+           python-tox
+           python-types-ujson
            python-uvicorn))
-    (home-page
-     "https://github.com/sanic-org/sanic/")
-    (synopsis
-     "Async Python web server/framework")
+    (home-page "https://github.com/sanic-org/sanic/")
+    (synopsis "Async Python web server/framework")
     (description
-     "Sanic is a Python web server and web framework
-that's written to go fast.  It allows the usage of the
-@code{async/await} syntax added in Python 3.5, which makes
-your code non-blocking and speedy.")
+     "Sanic is a Python web server and web framework that's written to go
+fast.  It allows the usage of the @code{async/await} syntax added in Python
+3.5, which makes your code non-blocking and speedy.")
     (license license:expat)))
 
 (define-public python-sanic-bootstrap
