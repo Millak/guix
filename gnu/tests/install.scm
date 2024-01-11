@@ -755,7 +755,7 @@ parted --script /dev/vdb mklabel gpt \\
   set 1 boot on \\
   set 1 bios_grub on
 echo -n " %luks-passphrase " | \\
-  cryptsetup luksFormat --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb2 -
+  cryptsetup luksFormat -i 1 --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb2 -
 echo -n " %luks-passphrase " | \\
   cryptsetup open --type luks --key-file - /dev/vdb2 the-root-device
 mkfs.ext4 -L my-root /dev/mapper/the-root-device
@@ -970,7 +970,7 @@ parted --script /dev/vdb mklabel gpt \\
   set 1 bios_grub on
 
 echo -n " %luks-passphrase " | \\
-  cryptsetup luksFormat --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb3 -
+  cryptsetup luksFormat -i 1 --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb3 -
 echo -n " %luks-passphrase " | \\
   cryptsetup open --type luks --key-file - /dev/vdb3 the-home-device
 
@@ -1155,7 +1155,7 @@ parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 50M 1.6G \\
   set 1 boot on \\
   set 1 bios_grub on
-echo -n \"~a\" | cryptsetup luksFormat --uuid=\"~a\" -q /dev/vdb3 -
+echo -n \"~a\" | cryptsetup luksFormat -i 1 --uuid=\"~a\" -q /dev/vdb3 -
 echo -n \"~a\" | cryptsetup open --type luks --key-file - /dev/vdb3 root
 mkfs.ext4 -L my-root /dev/mapper/root
 mkfs.ext4 -L my-boot /dev/vdb2
