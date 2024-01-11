@@ -212,14 +212,6 @@
              "OUTDIR_SUF=")           ;do not add version suffix to output dir
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-reference-to-cc
-           ;; This prevents errors like 'error: linker `cc` not found' when
-           ;; "cc" is not found on PATH.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gcc (assoc-ref inputs "gcc")))
-               (substitute* (find-files "." "^link.rs$")
-                 (("\"cc\".as_ref")
-                  (format #f "~s.as_ref" (string-append gcc "/bin/gcc")))))))
          (add-after 'unpack 'setup-mrustc-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "mrustc-source") "../mrustc")
@@ -244,7 +236,9 @@
                     (string-append "LLVM_CONFIG := " llvm "/bin/llvm-config\n")))
                  (substitute* "minicargo.mk"
                    ;; Do not try to fetch sources from the Internet.
-                   (("@curl.*") ""))
+                   (("@curl.*") "")
+                   (("\\$\\(MINICARGO\\) \\$\\(RUSTC_SRC_DL\\)")
+                    "$(MINICARGO)"))
                  (substitute* "Makefile"
                    ;; Patch date and git obtained version information.
                    ((" -D VERSION_GIT_FULLHASH=.*")
@@ -256,10 +250,6 @@
                      " -D VERSION_BUILDTIME="
                      "\"\\\"Thu, 01 Jan 1970 00:00:01 +0000\\\"\""
                      " -D VERSION_GIT_ISDIRTY=0\n")))
-                 (substitute* "minicargo.mk"
-                   ;; Do not try to fetch sources from the Internet.
-                   (("\\$\\(MINICARGO\\) \\$\\(RUSTC_SRC_DL\\)")
-                    "$(MINICARGO)"))
                  (substitute* "run_rustc/Makefile"
                    ;; Patch the shebang of a generated wrapper for rustc
                    (("#!/bin/sh")
@@ -268,7 +258,7 @@
                    (("#!/bin/sh")
                     (string-append "#!" (which "sh"))))))))
          (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums
-           (lambda* _
+           (lambda _
              (substitute* "Cargo.lock"
                (("(checksum = )\".*\"" all name)
                 (string-append name "\"" ,%cargo-reference-hash "\"")))
@@ -292,10 +282,9 @@
          (delete 'patch-generated-file-shebangs)
          (replace 'build
            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-             (let* ((src-root (getcwd))
-                    (job-count (if parallel-build?
-                                   (parallel-job-count)
-                                   1)))
+             (let ((job-count (if parallel-build?
+                                  (parallel-job-count)
+                                  1)))
                ;; Adapted from:
                ;; https://github.com/dtolnay/bootstrap/blob/master/build-1.54.0.sh.
                (chdir "../mrustc")
