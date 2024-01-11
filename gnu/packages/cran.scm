@@ -39645,14 +39645,14 @@ and more.")
 (define-public r-paws-application-integration
   (package
     (name "r-paws-application-integration")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.application.integration" version))
        (sha256
         (base32
-         "0hilnczvamdv3bi1v6hdki05h8qqh0wlgvh5ilh09113005fpz98"))))
+         "1sgzp0yr1jsmbyzyk26m762rhpxb89wrwqqvrrw3xr1ib0cg06ah"))))
     (properties
      `((upstream-name . "paws.application.integration")))
     (build-system r-build-system)
