@@ -480,71 +480,73 @@ tissue-specificity metrics for gene expression.")
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "1.4.4")
+    (version "1.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas" version))
        (sha256
-        (base32 "0ryv66s9cvd27q6a985vv556k2qlnlrdna2z7qc7bdhphrrhsv5b"))))
-    (build-system python-build-system)
+        (base32 "1cdhngylzh352wx5s3sjyznn7a6kmjqcfg97hgqm5h3yb9zgv8vl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (guix build python-build-system)
-                  (ice-9 ftw)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enable-parallel-build
-           (lambda _
-             (substitute* "setup.py"
-               (("\"-j\", type=int, default=1")
-                (format #f "\"-j\", type=int, default=~a"
-                        (parallel-job-count))))))
-         (add-after 'unpack 'patch-which
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((which (assoc-ref inputs "which")))
-               (substitute* "pandas/io/clipboard/__init__.py"
-                 (("^WHICH_CMD = .*")
-                  (string-append "WHICH_CMD = \"" which "\"\n"))))))
-         (add-before 'check 'prepare-x
-           (lambda _
-             (system "Xvfb &")
-             (setenv "DISPLAY" ":0")
-             ;; xsel needs to write a log file.
-             (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (let ((build-directory
-                    (string-append
-                     (getcwd) "/build/"
-                     (first (scandir "build"
-                                     (cut string-prefix? "lib." <>))))))
+     (list
+      #:test-flags
+      '(list "--pyargs" "pandas"
+             "-n" (number->string (parallel-job-count))
+             "-m" "not slow and not network and not db"
+             "-k"
+             (string-append
+              ;; TODO: Missing input
+              "not TestS3"
+              " and not s3"
+              ;; No module named 'pandas.io.sas._sas'
+              " and not test_read_expands_user_home_dir"
+              " and not test_read_non_existent"
+              ;; Unknown failures
+              " and not test_switch_options"
+              ;; Crashes
+              " and not test_bytes_exceed_2gb"
+              ;; get_subplotspec() returns None; possibly related to
+              ;; https://github.com/pandas-dev/pandas/issues/54577
+              " and not test_plain_axes"
+              ;; This test fails when run with pytest-xdist
+              ;; (see https://github.com/pandas-dev/pandas/issues/39096).
+              " and not test_memory_usage"))
+      #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-build-system
+             (lambda _
                (substitute* "pyproject.toml"
                  ;; Not all data files are distributed with the tarball.
-                 (("--strict-data-files ") ""))
-               (with-directory-excursion build-directory
-                 (when tests?
-                   (invoke "pytest" "-vv" "pandas" "--skip-slow"
-                           "--skip-network"
-                           "-n" (number->string (parallel-job-count))
-                           "-k"
-                           (string-append
-                            ;; These test access the internet (see:
-                            ;; https://github.com/pandas-dev/pandas/issues/45085).:
-                            ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
-                            ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
-                            "not test_wrong_url"
-                            ;; TODO: Missing input
-                            " and not TestS3"
-                            " and not s3"
-                            ;; This test fails when run with pytest-xdist
-                            ;; (see:
-                            ;; https://github.com/pandas-dev/pandas/issues/39096).
-                            " and not test_memory_usage"))))))))))
+                 (("--strict-data-files ") "")
+                 ;; Unknown property "asyncio_mode"
+                 (("asyncio_mode = \"strict\"") ""))))
+           (add-after 'unpack 'patch-which
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "pandas/io/clipboard/__init__.py"
+                 (("^WHICH_CMD = .*")
+                  (string-append "WHICH_CMD = \""
+                                 (search-input-file inputs "/bin/which")
+                                 "\"\n")))))
+           (add-before 'check 'prepare-x
+             (lambda _
+               (system "Xvfb &")
+               (setenv "DISPLAY" ":0")
+               ;; xsel needs to write a log file.
+               (setenv "HOME" "/tmp")))
+           ;; The compiled libraries are only in the output at this point,
+           ;; but they are needed to run tests.
+           ;; FIXME: This should be handled by the pyargs pytest argument,
+           ;; but is not for some reason.
+           (add-before 'check 'pre-check
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (copy-recursively
+                (string-append (site-packages inputs outputs)
+                               "/pandas/_libs")
+                "pandas/_libs"))))))
     (propagated-inputs
      (list python-jinja2
+           python-matplotlib
            python-numpy
            python-openpyxl
            python-pytz
@@ -554,7 +556,7 @@ tissue-specificity metrics for gene expression.")
     (inputs
      (list which xclip xsel))
     (native-inputs
-     (list python-cython
+     (list python-cython-0.29.35
            python-beautifulsoup4
            python-lxml
            python-html5lib
