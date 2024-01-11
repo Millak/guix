@@ -2267,9 +2267,9 @@ LLVM."))))
                  "-DLLVM_BUILD_LLVM_DYLIB=ON"
                  "-DLLVM_LINK_LLVM_DYLIB=ON"))
          ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (delete 'shared-lib-workaround)
-             (delete 'install-opt-viewer))))))))
+          #~(modify-phases #$phases
+              (delete 'shared-lib-workaround)
+              (delete 'install-opt-viewer))))))))
 
 (define clang-cling-runtime
   (let ((base clang-runtime-9))
