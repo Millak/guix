@@ -5,7 +5,7 @@
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019-2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -7111,14 +7111,14 @@ as a Python package.")
 (define-public python-sanic-routing
   (package
     (name "python-sanic-routing")
-    (version "0.7.2")
+    (version "23.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic-routing" version))
        (sha256
-        (base32 "0k9paln0jd4sc2bklp977c82n29pk12wiv726siplkh57y5yi70k"))))
-    (build-system python-build-system)
+        (base32 "014bhkharcgyprdvlk7wjxhjp1pr0cva1nwj4f2qrr23qiidrjhx"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; PyPi sources does not contain tests, recursive dependency on
      ;; python-sanic.
