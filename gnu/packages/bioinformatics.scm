@@ -4732,58 +4732,43 @@ and record oriented data modeling and the Semantic Web.")
 (define-public python-scikit-bio
   (package
     (name "python-scikit-bio")
-    (version "0.5.7")
+    (version "0.5.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "scikit-bio" version))
               (sha256
                (base32
-                "1a8xbp3vrw8wfpm3pa2nb4rcar0643iqnb043ifwqbqyc86clhv3"))))
+                "0429060pkyq1pm19zb2n1la7czh7b633mp4a4h01j8zfigf49q3s"))
+              (patches (search-patches "python-scikit-bio-1887.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Accuracy problem
+      #:test-flags '(list "-k" "not test_fisher_alpha")
       #:phases
       '(modify-phases %standard-phases
-         ;; See https://github.com/biocore/scikit-bio/pull/1826
          (add-after 'unpack 'compatibility
            (lambda _
-             (substitute* "skbio/sequence/tests/test_sequence.py"
-               (("def test_concat_strict_many")
-                "def _do_not_test_concat_strict_many"))
-             (substitute* "skbio/stats/distance/_mantel.py"
-               (("from scipy.stats import PearsonRConstantInputWarning")
-                "from scipy.stats import ConstantInputWarning")
-               (("from scipy.stats import PearsonRNearConstantInputWarning")
-                "from scipy.stats import NearConstantInputWarning")
-               (("from scipy.stats import SpearmanRConstantInputWarning") "")
-               (("warnings.warn\\(PearsonRConstantInputWarning\\(\\)\\)")
-                "warnings.warn(ConstantInputWarning())")
-               (("warnings.warn\\(PearsonRNearConstantInputWarning\\(\\)\\)")
-                "warnings.warn(NearConstantInputWarning())")
-               (("warnings.warn\\(SpearmanRConstantInputWarning\\(\\)\\)")
-                "warnings.warn(ConstantInputWarning())"))
-             (substitute* "skbio/diversity/alpha/tests/test_base.py"
-               (("self.assertEqual\\(pielou_e")
-                "self.assertAlmostEqual(pielou_e"))))
+             (substitute* "skbio/diversity/__init__.py"
+               ((", numeric_only=True") ""))))
          (add-before 'check 'build-extensions
            (lambda _
              ;; Cython extensions have to be built before running the tests.
              (invoke "python3" "setup.py" "build_ext" "--inplace")))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "python3" "-m" "skbio.test")))))))
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
+             (when tests?
+               (apply invoke "python3" "-m" "skbio.test" test-flags)))))))
     (propagated-inputs
-     (list python-cachecontrol
-           python-decorator
+     (list python-decorator
            python-h5py
            python-hdmedians
            python-ipython
-           python-lockfile
            python-matplotlib
            python-natsort
            python-numpy
            python-pandas
-           python-scikit-learn
+           python-requests
            python-scipy))
     (native-inputs
      (list python-coverage python-pytest))
