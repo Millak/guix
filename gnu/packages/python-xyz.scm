@@ -833,6 +833,7 @@ features of the Python's built-in dict.")
                (base32
                 "05zf0xn7ab40dan213fwbp1z4rybih8dphf9mzb2ddmbafxq41mv"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
     (propagated-inputs (list python-matplotlib python-numpy))
     (home-page "https://github.com/Phlya/adjustText")
     (synopsis "Adjust text position in matplotlib plots to minimize overlaps")
