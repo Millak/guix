@@ -80,9 +80,9 @@
     (name (string-append (package-name p) "-cross-" target))
     (arguments
      (substitute-keyword-arguments (package-arguments p)
-       ((#:configure-flags flags ''())
-        `(cons ,(string-append "--target=" target)
-               ,flags))))))
+       ((#:configure-flags flags #~'())
+        #~(cons #$(string-append "--target=" target)
+                #$flags))))))
 
 (define (contains-keyword? args)
   "Check if ARGS contains a keyword object."
