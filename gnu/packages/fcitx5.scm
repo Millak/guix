@@ -140,7 +140,7 @@ client.")
 (define-public fcitx5-lua
   (package
     (name "fcitx5-lua")
-    (version "5.0.11")
+    (version "5.0.12")
     (source
      (origin
        (method url-fetch)
@@ -148,7 +148,7 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5-lua/fcitx5-lua-"
              version ".tar.xz"))
        (sha256
-        (base32 "1hc1vhaycfp9bjvch7qrvza5gdimr30rvwavbwqd27lrh36910yc"))))
+        (base32 "00kh0qzpzkfsnfh55lrpjpi5zs82vwpc9pb1n6f61gpgpiqxh7z4"))))
     (build-system cmake-build-system)
     (arguments
      (list
