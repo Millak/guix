@@ -831,18 +831,21 @@ multiple deep learning frameworks.")
 (define-public python-xarray
   (package
     (name "python-xarray")
-    (version "2023.6.0")
+    (version "2023.12.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "xarray" version))
               (sha256
                (base32
-                "1339fz5gxkizq02h6vn19546x9p4c3nd9ipzpcg39h7gwhg26yi6"))))
+                "0cyldwchcrmbm1y7l1ry70kk8zdh7frxci3c6iwf4iyyj34dnra5"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; This needs a more recent version of python-hypothesis
+     (list #:test-flags '(list "--ignore=xarray/tests/test_strategies.py")))
     (native-inputs
      (list python-setuptools-scm python-pytest))
     (propagated-inputs
-     (list python-numpy python-pandas))
+     (list python-numpy python-packaging python-pandas))
     (home-page "https://github.com/pydata/xarray")
     (synopsis "N-D labeled arrays and datasets")
     (description "Xarray (formerly xray) makes working with labelled
