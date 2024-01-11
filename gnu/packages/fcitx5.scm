@@ -88,7 +88,7 @@ client.")
 (define-public fcitx5
   (package
     (name "fcitx5")
-    (version "5.1.5")
+    (version "5.1.6")
     (source
      (origin
        (method url-fetch)
@@ -96,7 +96,7 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5/fcitx5-"
              version "_dict.tar.xz"))
        (sha256
-        (base32 "108a8561wh01vl5gqp2rnmnrh9qq3v8md3410dw46lx705a1wy4r"))))
+        (base32 "1p2yhm26nn36bjbjy8hc33ldcb8762k28853ksaq8z80959xx8lj"))))
     (arguments
      (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF")))
     (build-system cmake-build-system)
@@ -114,6 +114,7 @@ client.")
        ("json-c" ,json-c)
        ("libevent" ,libevent)
        ("libuuid" ,util-linux "lib")
+       ("libuv" ,libuv)
        ("libxcb" ,libxcb)
        ("libxkbcommon" ,libxkbcommon)
        ("libxkbfile" ,libxkbfile)
