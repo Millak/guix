@@ -26499,14 +26499,14 @@ on graphs of millions of nodes (as long as they can fit in memory).")
 (define-public r-patchwork
   (package
     (name "r-patchwork")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "patchwork" version))
        (sha256
         (base32
-         "07npkbalfl2d9aix02m2srxgmd8ymar6v0x65ighg3nq9d7l4xp9"))))
+         "18b83gsv8idi5d062m9dvb46r7kxda97sa72pzllshhcaq9ylcfc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-ggplot2 r-gtable r-rlang))
