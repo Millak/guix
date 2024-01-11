@@ -41070,6 +41070,55 @@ This option in enabled by default.  In some cases involving the
 @code{u-boot} bootloader, where the device tree has already been loaded
 in RAM, it can be handy to disable the option by setting it to
 @code{#f}.
+
+@item @code{extra-initrd} (default: @code{#f})
+File name of an additional initrd to load during the boot.  It may or
+may not point to a file in the store, but the main use case is for
+out-of-store files containing secrets.
+
+In order to be able to provide decryption keys for the LUKS device, they
+need to be available in the initial ram disk.  However they cannot be
+stored inside the usual initrd, since it is stored in the store and
+being a world-readable (as files in the store are) is not a desired
+property for a initrd containing decryption keys.  You can therefore use
+this field to instruct GRUB to also load a manually created initrd not
+stored in the store.
+
+For any use case not involving secrets, you should use regular initrd
+(@pxref{operating-system Reference, @code{initrd}}) instead.
+
+Suitable image can be created for example like this:
+
+@example
+echo /key-file.bin | cpio -oH newc >/key-file.cpio
+chmod 0000 /key-file.cpio
+@end example
+
+After it is created, you can use it in this manner:
+
+@lisp
+;; Operating system with encrypted boot partition
+(operating-system
+  ...
+  (bootloader (bootloader-configuration
+               (bootloader grub-efi-bootloader)
+               (targets '("/boot/efi"))
+               ;; Load the initrd with a key file
+               (extra-initrd "/key-file.cpio")))
+  (mapped-devices
+   (list (mapped-device
+          (source (uuid "12345678-1234-1234-1234-123456789abc"))
+          (target "my-root")
+          (type (luks-device-mapping-with-options
+                 ;; And use it to unlock the root device
+                 #:key-file "/key-file.bin"))))))
+@end lisp
+
+Be careful when using this option, since pointing to a file that is not
+readable by the grub while booting will cause the boot to fail and
+require a manual edit of the initrd line in the grub menu.
+
+Currently only supported by GRUB.
 @end table
 
 @end deftp
