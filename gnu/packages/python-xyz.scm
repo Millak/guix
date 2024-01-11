@@ -25318,6 +25318,24 @@ based on the CPython 2.7 and 3.7 parsers.")
 with PEP 484 argument (and return) type annotations.")
     (license license:expat)))
 
+(define-public python-typeguard-4
+  (package
+    (inherit python-typeguard)
+    (name "python-typeguard")
+    ;; This is the latest version we can use, because python-typeguard >=
+    ;; 4.0.1 requires python-typing-extensions >= 4.7.0.
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typeguard" version))
+       (sha256
+        (base32 "11yrc7pv2fajmicwiyc92sb5gphlw3zbxww8f2prrsh6rgdv6kqr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '())
+    (propagated-inputs (list python-typing-extensions))))
+
 (define-public bpython
   (package
     (name "bpython")
