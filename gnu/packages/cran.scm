@@ -31434,14 +31434,14 @@ perform @dfn{exploratory mediation} (XMed).")
 (define-public r-stanheaders
   (package
     (name "r-stanheaders")
-    (version "2.26.28")
+    (version "2.32.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "StanHeaders" version))
        (sha256
         (base32
-         "1s1xgvn5c1vjikm1dx9g0qm2k8m24clylgp7zssmfhx6sfb8v2lk"))))
+         "0wqps6xy2xypxsg3p3grdiw67a0xla3vh9x9hcf2ln03yhgkn4jl"))))
     (properties `((upstream-name . "StanHeaders")))
     (build-system r-build-system)
     (inputs (list pandoc))
