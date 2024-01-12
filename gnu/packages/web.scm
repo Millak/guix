@@ -2168,7 +2168,16 @@ changes, and much more.")
                (base32
                 "07w1aq8y8wld43wmbk2q8134p3bfkp2vma78mmsfgw2jn1bh3xhd"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--enable-nss")))
+    (arguments
+     (list
+      #:configure-flags ''("--enable-nss")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-C-unicode-locale
+            (lambda _
+              (substitute* "tests/commontest.c"
+                (("en_US\\.UTF-8")
+                 "C.UTF-8")))))))
     (native-inputs (list pkg-config))
     (propagated-inputs
      (list curl nss))
