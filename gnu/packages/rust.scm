@@ -46,6 +46,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mingw)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
@@ -833,6 +835,38 @@ safety and thread safety guarantees.")
       (inherit base-rust)
       (properties (alist-delete 'hidden? (package-properties base-rust)))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/openssl-src/openssl"
+                         "vendor/tikv-jemalloc-sys/jemalloc"
+                         ;; These are referenced by the cargo output
+                         ;; so we unbundle them.
+                         "vendor/curl-sys/curl"
+                         "vendor/curl-sys-0.4.63+curl-8.1.2/curl"
+                         "vendor/libffi-sys/libffi"
+                         "vendor/libnghttp2-sys/nghttp2"
+                         "vendor/libz-sys/src/zlib"))
+             ;; Use the packaged nghttp2
+             (delete-file "vendor/libnghttp2-sys/build.rs")
+             (with-output-to-file "vendor/libnghttp2-sys/build.rs"
+               (lambda _
+                 (format #t "fn main() {~@
+                         println!(\"cargo:rustc-link-lib=nghttp2\");~@
+                         }~%")))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* "vendor/tempfile/Cargo.toml"
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\"")))))))
       (arguments
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
@@ -1054,7 +1088,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                    (chmod (string-append bin "/rust-analyzer") #o755))))))))
       (inputs
        (modify-inputs (package-inputs base-rust)
-                      (prepend curl)))
+                      (prepend curl libffi `(,nghttp2 "lib") zlib)))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
