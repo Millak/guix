@@ -1510,8 +1510,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "e4af682452580298b34681d37818a16771a17c66")
-        (revision "93"))
+  (let ((commit "c4c4f5ae043562276b11c2bd1174d3e24bedcd6e")
+        (revision "94"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1522,7 +1522,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1i8x9nfpvg832lxwbpjl1kadldpkcnjlxdxl4c5jqx2hz680ylf3"))
+                  "1212iskqlxgpyib1p7p1204a0kxmpxqyjv6q0pkypx6jg7f4lmjx"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1606,9 +1606,9 @@ environments.")
              guile-prometheus
              guile-fibers
              guile-lib
-             (first (assoc-ref (package-native-inputs guix) "guile"))))
+             guile-next))
       (inputs
-       (list (first (assoc-ref (package-native-inputs guix) "guile"))
+       (list guile-next
              sqlite
              bash-minimal
              (libc-utf8-locales-for-target)
@@ -1648,9 +1648,9 @@ outputs of those builds.")
            guix
            guile-prometheus
            guile-lib
-           (first (assoc-ref (package-native-inputs guix) "guile"))))
+           guile-next))
     (inputs
-     (list (first (assoc-ref (package-native-inputs guix) "guile"))
+     (list guile-next
            bash-minimal
            (libc-utf8-locales-for-target)))
     (propagated-inputs
