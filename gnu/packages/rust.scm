@@ -57,6 +57,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix search-paths)
   #:use-module (guix download)
   #:use-module (guix memoization)
   #:use-module (guix git-download)
@@ -508,18 +509,8 @@ ar = \"" binutils "/bin/ar" "\"
      `(("llvm" ,llvm-13)
        ("openssl" ,openssl)))
     ;; rustc invokes gcc, so we need to set its search paths accordingly.
-    ;; Note: duplicate its value here to cope with circular dependencies among
-    ;; modules (see <https://bugs.gnu.org/31392>).
     (native-search-paths
-     (list (search-path-specification
-            (variable "C_INCLUDE_PATH")
-            (files '("include")))
-           (search-path-specification
-            (variable "CPLUS_INCLUDE_PATH")
-            (files '("include/c++" "include")))
-           (search-path-specification
-            (variable "LIBRARY_PATH")
-            (files '("lib" "lib64")))))
+      %gcc-search-paths)
     (supported-systems (delete "i586-gnu" %supported-systems))
     (synopsis "Compiler for the Rust programming language")
     (description "Rust is a systems programming language that provides memory
