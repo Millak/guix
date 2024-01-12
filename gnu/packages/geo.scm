@@ -2233,7 +2233,7 @@ data.")
 (define-public qmapshack
   (package
     (name "qmapshack")
-    (version "1.16.1")
+    (version "1.17.1")
     (source
      (origin
        (method git-fetch)
@@ -2242,7 +2242,7 @@ data.")
              (commit (string-append "V_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "184fqmsfzr3b333ssizjk6gvv7mncmygq8dj5r7rsvs5md26z2ys"))))
+        (base32 "1ckadklk67dp1pvkacfkr8379g2pwk73q85jfzm8viclcqmfvb62"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config qttools-5))
