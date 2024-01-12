@@ -3868,6 +3868,64 @@ Either represents the concept of values which are either correct (Right)
 or errors (Left).")
       (license license:expat))))
 
+(define-public guile-srfi-197
+  ;; There is minor fix to the documention after the final tag, so use
+  ;; the newest commit instead.
+  (let ((commit "d31b8be86460bf837cccf2737a1b9b9c01788573")
+        (revision "0"))
+    (package
+      (name "guile-srfi-197")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/scheme-requests-for-implementation/srfi-197")
+               (commit commit)))
+         (sha256
+          (base32
+           "1c1jjzqgavjwfzs352wssdbjga5ymv4g3lkl0zxhjw7pfrr5xx1m"))
+         (file-name (git-file-name name version))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "src"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'create-module
+              (lambda _
+                (use-modules (ice-9 textual-ports))
+                (mkdir-p "src/srfi")
+                (call-with-output-file "src/srfi/srfi-197.scm"
+                  (lambda (port)
+                    (write '(define-module (srfi srfi-197)
+                              #:use-module (scheme base)
+                              #:export (chain
+                                        chain-and
+                                        chain-when
+                                        chain-lambda
+                                        nest
+                                        nest-reverse))
+                           port)
+                    (call-with-input-file "srfi-197-syntax-case.scm"
+                      (lambda (in-port)
+                        (display (get-string-all in-port) port)))))))
+            (add-after 'install 'check-installed
+              (lambda _
+                (define-values (scm go) (target-guile-scm+go #$output))
+                (invoke "guile" "-L" scm "-C" go
+                        "--use-srfi=197" "./test.scm"))))))
+      (native-inputs
+       (list guile-3.0))
+      (home-page "https://srfi.schemers.org/srfi-197/")
+      (synopsis "Pipeline operators for Guile")
+      (description
+       "This library provides a reference implementation for SRFI-197.  This
+SRFI defines a family of chain and nest pipeline operators, which can rewrite
+nested expressions like @code{(a b (c d (e f g)))} as a sequence of
+operations: @code{(chain g (e f _) (c d _) (a b _))}.")
+      (license license:expat))))
+
 (define-public guile-srfi-232
   (package
     (name "guile-srfi-232")
