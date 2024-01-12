@@ -20,6 +20,7 @@
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 SeerLite <seerlite@disroot.org>
+;;; Copyright © 2024 Aleksandr Vityazev <avityazew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2091,7 +2092,7 @@ associated with their name."))
             (call-with-output-file exe
               (lambda (port)
                 (format port "#!~a
- MOZ_ENABLE_WAYLAND=1 exec ~a $@"
+ MOZ_ENABLE_WAYLAND=1 exec ~a \"$@\""
                         #$(file-append bash-minimal "/bin/bash")
                         #$(file-append icedove "/bin/icedove"))))
             (chmod exe #o555)
