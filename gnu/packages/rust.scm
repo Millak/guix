@@ -535,14 +535,14 @@ safety and thread safety guarantees.")
     (package
       (inherit base-rust)
       (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:validate-runpath? _ #t)
-          #t)
+       (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:validate-runpath?)
+                                  (package-arguments base-rust))
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'add-cc-shim-to-path)
              (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums
-               (lambda* _
+               (lambda _
                  (substitute* "Cargo.lock"
                    (("(checksum = )\".*\"" all name)
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
