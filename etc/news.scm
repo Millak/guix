@@ -29,7 +29,7 @@
 
  (entry (commit "519e1e3eb88ec532fc83ebb742d9919269b57c87")
         (title
-         (de "Neues Option @samp{--max-layers=N} für den Befehl @command{guix pack}")
+         (de "Neue Option @samp{--max-layers=N} für den Befehl @command{guix pack}")
          (en "New @samp{--max-layers=N} option for the @command{guix pack} command")
          (ru "Новая опция @samp{--max-layers=N} для @command{guix pack} команды"))
         (body
@@ -46,7 +46,7 @@ guix pack --format=docker --max-layers=N --symlink=/usr/bin/hello=bin/hello hell
 @end example
 
 @command{guix system image} kann jetzt geschichtete Docker-Abbilder erzeugen,
-indem Sie @code{--max-layers=N}.
+indem Sie @code{--max-layers=N} übergeben.
 
 Siehe @command{info \"(guix.de) Aufruf von guix pack\"} und
 @command{info \"(guix.de) Systemabbilder\"} für weitere Informationen.")
