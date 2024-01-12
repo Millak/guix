@@ -16571,36 +16571,34 @@ million cells.")
 (define-public python-bbknn
   (package
     (name "python-bbknn")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bbknn" version))
        (sha256
         (base32
-         "0q11xdmjr2kf6f179a6kjizj3lllfrq743gslgw67qyzimvrrnhn"))))
-    (build-system python-build-system)
+         "06q43cpi7wi6f2d2jqs8f9rbd94pg1hh7978gm92mi9gvzbaj08w"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; no tests are included
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f                       ;no tests are included
+      #:phases
+      '(modify-phases %standard-phases
          ;; Numba needs a writable dir to cache functions.
          (add-before 'check 'set-numba-cache-dir
            (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp")))
-         (add-after 'unpack 'do-not-fail-to-find-sklearn
-           (lambda _
-             ;; XXX: I have no idea why it cannot seem to find sklearn.
-             (substitute* "setup.py"
-               (("'sklearn'") "")))))))
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
      (list python-annoy
            python-cython
            python-numpy
            python-pandas
+           python-pynndescent
            python-scikit-learn
            python-scipy
            python-umap-learn))
+    (native-inputs (list python-flit-core))
     (home-page "https://github.com/Teichlab/bbknn")
     (synopsis "Batch balanced KNN")
     (description "BBKNN is a batch effect removal tool that can be directly
