@@ -160,7 +160,9 @@
        (snippet
         '(begin
            (for-each delete-file-recursively
-                     '("src/llvm-project"))
+                     '("src/llvm-project"
+                       "vendor/openssl-src/openssl"
+                       "vendor/tikv-jemalloc-sys/jemalloc"))
            ;; Remove vendored dynamically linked libraries.
            ;; find . -not -type d -executable -exec file {} \+ | grep ELF
            (delete-file "vendor/vte/vim10m_match")
@@ -168,7 +170,7 @@
            ;; Also remove the bundled (mostly Windows) libraries.
            ;; find vendor -not -type d -exec file {} \+ | grep PE32
            (for-each delete-file
-                     (find-files "vendor" ".*\\.(a|dll|exe|lib)$"))))
+                     (find-files "vendor" "\\.(a|dll|exe|lib)$"))))
        (patches (search-patches "rustc-1.54.0-src.patch"))
        (patch-flags '("-p0"))))         ;default is -p1
     (outputs '("out" "cargo"))
@@ -365,6 +367,7 @@ safety and thread safety guarantees.")
         '(begin
            (for-each delete-file-recursively
                      '("src/llvm-project"
+                       "vendor/openssl-src/openssl"
                        "vendor/tikv-jemalloc-sys/jemalloc"))
            ;; Remove vendored dynamically linked libraries.
            ;; find . -not -type d -executable -exec file {} \+ | grep ELF
@@ -373,7 +376,7 @@ safety and thread safety guarantees.")
            ;; Also remove the bundled (mostly Windows) libraries.
            ;; find vendor -not -type d -exec file {} \+ | grep PE32
            (for-each delete-file
-                     (find-files "vendor" ".*\\.(a|dll|exe|lib)$"))
+                     (find-files "vendor" "\\.(a|dll|exe|lib)$"))
            ;; Add support for riscv64-linux.
            (substitute* "vendor/tikv-jemallocator/src/lib.rs"
              (("    target_arch = \"s390x\"," all)
@@ -609,6 +612,7 @@ safety and thread safety guarantees.")
            '(begin
               (for-each delete-file-recursively
                         '("src/llvm-project"
+                          "vendor/openssl-src/openssl"
                           "vendor/tikv-jemalloc-sys/jemalloc"))
               ;; Remove vendored dynamically linked libraries.
               ;; find . -not -type d -executable -exec file {} \+ | grep ELF
@@ -616,7 +620,7 @@ safety and thread safety guarantees.")
               (delete-file "vendor/vte/vim10m_table")
               ;; Also remove the bundled (mostly Windows) libraries.
               (for-each delete-file
-                        (find-files "vendor" ".*\\.(a|dll|exe|lib)$")))))))))
+                        (find-files "vendor" "\\.(a|dll|exe|lib)$")))))))))
 
 (define-public rust-1.62
   (rust-bootstrapped-package
@@ -693,6 +697,7 @@ safety and thread safety guarantees.")
            '(begin
               (for-each delete-file-recursively
                         '("src/llvm-project"
+                          "vendor/openssl-src/openssl"
                           "vendor/tikv-jemalloc-sys/jemalloc"))
               ;; Also remove the bundled (mostly Windows) libraries.
               (for-each delete-file
@@ -747,6 +752,7 @@ safety and thread safety guarantees.")
            '(begin
               (for-each delete-file-recursively
                         '("src/llvm-project"
+                          "vendor/openssl-src/openssl"
                           "vendor/tikv-jemalloc-sys/jemalloc"))
               ;; Remove vendored dynamically linked libraries.
               ;; find . -not -type d -executable -exec file {} \+ | grep ELF
@@ -771,6 +777,7 @@ safety and thread safety guarantees.")
           '(begin
              (for-each delete-file-recursively
                        '("src/llvm-project"
+                         "vendor/openssl-src/openssl"
                          "vendor/tikv-jemalloc-sys/jemalloc"))
              ;; Remove vendored dynamically linked libraries.
              ;; find . -not -type d -executable -exec file {} \+ | grep ELF
@@ -794,6 +801,7 @@ safety and thread safety guarantees.")
           '(begin
              (for-each delete-file-recursively
                        '("src/llvm-project"
+                         "vendor/openssl-src/openssl"
                          "vendor/tikv-jemalloc-sys/jemalloc"))
              ;; Remove vendored dynamically linked libraries.
              ;; find . -not -type d -executable -exec file {} \+ | grep ELF
