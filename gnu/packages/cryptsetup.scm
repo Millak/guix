@@ -30,12 +30,13 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages web))
 
 (define-public cryptsetup
   (package
    (name "cryptsetup")
-   (version "2.3.7")
+   (version "2.6.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/linux/utils/cryptsetup/v"
@@ -43,7 +44,7 @@
                                 "/cryptsetup-" version ".tar.xz"))
             (sha256
              (base32
-              "1a97rvi6arsj8dikh1qsvixx9rizm89k155q2ypifqlqllr530v1"))))
+              "14s6vbb9llpgnhmv0badxxzhi73jp4vyvp8swk4bjah7l5jys3a1"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags
@@ -54,12 +55,16 @@
        "--with-crypto_backend=gcrypt"
        ;; GRUB 2.06 supports LUKS2, but does it reliably support all set-ups…?
        "--with-default-luks-format=LUKS1"
+       ;; External tokens would need an env variable to work on Guix, and we
+       ;; don't have users for it yet.
+       "--disable-external-tokens"
+       "--disable-ssh-token"
        ;; libgcrypt is not found otherwise when cross-compiling.
        ;; <https://issues.guix.gnu.org/63864>
        (string-append "--with-libgcrypt-prefix="
                       (assoc-ref %build-inputs "libgcrypt")))))
    (native-inputs
-    (list pkg-config))
+    (list pkg-config ruby-asciidoctor))
    (inputs
     (list argon2
           json-c
