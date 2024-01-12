@@ -51,40 +51,42 @@
        ;; We don't need to install the source code for end-user applications.
        #:install-source? #f))
     (native-inputs
-     (list go-github-com-masterminds-sprig
-           go-github-com-masterminds-goutils
-           go-github-com-masterminds-semver
-           go-github-com-google-uuid
-           go-github-com-huandu-xstrings
-           go-github-com-imdario-mergo
-           go-github-com-mitchellh-reflectwalk
-           go-github-com-mitchellh-copystructure
+     (list go-etcd-io-bbolt
+           go-github-com-alecthomas-chroma
+           go-github-com-aymerick-douceur
            go-github-com-bmatcuk-doublestar
            go-github-com-charmbracelet-glamour
-           go-github-com-alecthomas-chroma
+           go-github-com-chris-ramon-douceur
            go-github-com-coreos-go-semver
            go-github-com-danwakefield-fnmatch
            go-github-com-dlclark-regexp2
-           go-github-go-git
+           go-github-com-godbus-dbus
            go-github-com-google-go-github
            go-github-com-google-go-querystring
-           go-github-com-google-renameio
-           go-github-com-microcosm-cc-bluemonday
-           go-github-com-aymerick-douceur
-           go-github-com-chris-ramon-douceur
-           go-github-com-gorilla-css
-           go-github-com-muesli-reflow-ansi
-           go-github-com-muesli-reflow-wordwrap
-           go-github-com-muesli-reflow-indent
-           go-github-com-muesli-reflow-padding
-           go-github-com-muesli-termenv
            go-github-com-google-goterm
+           go-github-com-google-renameio
+           go-github-com-google-uuid
+           go-github-com-gorilla-css
+           go-github-com-huandu-xstrings
+           go-github-com-imdario-mergo
            go-github-com-lucasb-eyer-go-colorful
+           go-github-com-masterminds-goutils
+           go-github-com-masterminds-semver
+           go-github-com-masterminds-sprig
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-runewidth
+           go-github-com-microcosm-cc-bluemonday
+           go-github-com-mitchellh-copystructure
+           go-github-com-mitchellh-reflectwalk
+           go-github-com-muesli-reflow-ansi
+           go-github-com-muesli-reflow-indent
+           go-github-com-muesli-reflow-padding
+           go-github-com-muesli-reflow-wordwrap
+           go-github-com-muesli-termenv
            go-github-com-olekukonko-tablewriter
            go-github-com-pelletier-go-toml
            go-github-com-pkg-diff
+           go-github-com-rogpeppe-go-internal
            go-github-com-sergi-go-diff
            go-github-com-spf13-cobra
            go-github-com-spf13-viper
@@ -94,12 +96,10 @@
            go-github-com-twpayne-go-xdg
            go-github-com-yuin-goldmark
            go-github-com-zalando-go-keyring
-           go-github-com-godbus-dbus
-           go-etcd-io-bbolt
+           go-github-go-git
            go-golang-org-x-crypto
            go-golang-org-x-net
            go-golang-org-x-oauth2
-           go-github-com-rogpeppe-go-internal
            go-gopkg-in-errgo-fmt-errors))
     (home-page "https://www.chezmoi.io/")
     (synopsis "Personal configuration files manager")
