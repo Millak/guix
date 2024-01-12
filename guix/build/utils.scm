@@ -432,32 +432,38 @@ name."
                            (log (current-output-port))
                            (follow-symlinks? #f)
                            (copy-file copy-file)
-                           keep-mtime? keep-permissions?)
-  "Copy SOURCE directory to DESTINATION.  Follow symlinks if FOLLOW-SYMLINKS?
-is true; otherwise, just preserve them.  Call COPY-FILE to copy regular files.
-When KEEP-MTIME? is true, keep the modification time of the files in SOURCE on
-those of DESTINATION.  When KEEP-PERMISSIONS? is true, preserve file
-permissions.  Write verbose output to the LOG port."
+                           keep-mtime? keep-permissions?
+                           (select? (const #t)))
+  "Copy SOURCE directory to DESTINATION.  Follow symlinks if FOLLOW-SYMLINKS?  is
+true; otherwise, just preserve them.  Call COPY-FILE to copy regular files.  When
+KEEP-MTIME? is true, keep the modification time of the files in SOURCE on those of
+DESTINATION.  When KEEP-PERMISSIONS? is true, preserve file permissions.  Write
+verbose output to the LOG port. Call (SELECT?  FILE STAT) for each entry in source,
+where FILE is the entry's absolute file name and STAT is the result of 'lstat' (or
+'stat' if FOLLOW-SYMLINKS? is true); exclude entries for which SELECT? does not
+return true."
   (define strip-source
     (let ((len (string-length source)))
       (lambda (file)
         (substring file len))))
 
-  (file-system-fold (const #t)                    ; enter?
+  (file-system-fold (lambda (file stat result)    ; enter?
+                      (select? file stat))
                     (lambda (file stat result)    ; leaf
                       (let ((dest (string-append destination
                                                  (strip-source file))))
-                        (format log "`~a' -> `~a'~%" file dest)
-                        (case (stat:type stat)
-                          ((symlink)
-                           (let ((target (readlink file)))
-                             (symlink target dest)))
-                          (else
-                           (copy-file file dest)
-                           (when keep-permissions?
-                             (chmod dest (stat:perms stat)))))
-                        (when keep-mtime?
-                          (set-file-time dest stat))))
+                        (when (select? file stat)
+                          (format log "`~a' -> `~a'~%" file dest)
+                          (case (stat:type stat)
+                            ((symlink)
+                             (let ((target (readlink file)))
+                               (symlink target dest)))
+                            (else
+                             (copy-file file dest)
+                             (when keep-permissions?
+                               (chmod dest (stat:perms stat)))))
+                          (when keep-mtime?
+                            (set-file-time dest stat)))))
                     (lambda (dir stat result)     ; down
                       (let ((target (string-append destination
                                                    (strip-source dir))))
