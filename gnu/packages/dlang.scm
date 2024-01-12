@@ -6,7 +6,7 @@
 ;;; Copyright © 2017, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2021-2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
 ;;;
@@ -617,3 +617,35 @@ needed.")
     (synopsis "D binding and OO wrapper of GTK+")
     (description "This package provides bindings to GTK+ for D.")
     (license license:lgpl2.1)))
+
+(define-public d-demangler
+  (package
+    (name "d-demangler")
+    (version "0.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lievenhey/d_demangler")
+                    (commit (string-append "version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13lbbxlaa1mffjs57xchl1g6kyr5lxi0z5x7snyvym0knslxwx2g"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           "d_demangle")
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'install
+                     (lambda _
+                       (install-file "libd_demangle.so"
+                                     (string-append #$output "/lib")))))))
+    (native-inputs (list dmd))
+    (home-page "https://github.com/lievenhey/d_demangler")
+    (synopsis "Utility to demangle D symbols")
+    (description "@command{d_demangle} is a small utility that can be used to
+demangle D symbols.  A shared library is also provided.")
+    (license license:gpl3+)))
