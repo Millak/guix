@@ -9230,6 +9230,39 @@ also add custom data, viewing options, and passwords to PDF files.  It can
 retrieve text and metadata from PDFs as well as merge entire files together.")
     (license license:bsd-3)))
 
+(define-public python-pdf2image
+  (package
+    (name "python-pdf2image")
+    (version "1.17.0")
+    ;; No tests in the PyPI tarball.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Belval/pdf2image")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xd8q939zqa8flfcdhbgyadiwqb8sgnd42cbr6n1l2jl9fnix45v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; The following excluded tests assume hardcoded binary paths to
+     ;; /usr/bin/pdftoppm and /usr/bin/pdftocairo.
+     '(#:test-flags '("--exclude=^test_use_poppler_path$"
+                      "--exclude=^test_use_poppler_path_with_trailing_slash$")))
+    (propagated-inputs (list python-pillow))
+    (inputs (list poppler))
+    (native-inputs (list python-nose which))
+    (home-page "https://github.com/Belval/pdf2image")
+    (synopsis
+     "Python wrapper around @command{pdftoppm} and @command{pdftocairo}")
+    (description
+     "This package provides a Python API wrapping the @command{pdftoppm} and
+@command{pdftocairo} command line tools.  It can convert @file{PDF} files to a
+Python list with elements of type @code{PIL.Image} (from the
+@code{python-pillow} library).")
+    (license license:expat)))
+
 (define-public python-pikepdf
   (package
     (name "python-pikepdf")
