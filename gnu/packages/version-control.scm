@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 John D. Boy <jboy@bius.moe>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
@@ -275,12 +275,12 @@ Python 3.3 and later, rather than on Python 2.")
       #:make-flags
       #~(list "V=1"                     ;more verbose compilation
               (string-append "SHELL_PATH="
-                             #$(this-package-native-input "bash-minimal")
+                             #+(this-package-native-input "bash-minimal")
                              "/bin/sh")
 
               ;; Tests require a bash with completion support.
               (string-append "TEST_SHELL_PATH="
-                             #$(this-package-native-input "bash")
+                             #+(this-package-native-input "bash")
                              "/bin/bash")
 
               ;; By default 'make install' creates hard links for
