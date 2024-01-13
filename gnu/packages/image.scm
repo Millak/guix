@@ -639,6 +639,32 @@ maximum quality factor.")
    (license license:gpl3+)
    (home-page "https://www.kokkonen.net/tjko/projects.html#jpegoptim")))
 
+(define-public tgif
+  (package
+    (name "tgif")
+    (version "4.2.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "mirror://sourceforge/tgif/tgif/"
+               version "/tgif-QPL-" version ".tar.gz"))
+        (sha256
+          (base32 "1fk7qnqjmrr390bclwqrvlmh77bcl28hdn4vfdqydrpsrbzfj91g"))))
+    (build-system gnu-build-system)
+    (inputs
+      (list libx11
+            libxext
+            libxt
+            libxmu
+            zlib))
+    (home-page "http://bourbon.usc.edu/tgif/")
+    (synopsis "Xlib based interactive 2-D drawing tool")
+    (description
+      "Tgif (pronounced t-g-i-f) is an Xlib based interactive 2-D drawing tool
+(using vector graphics) under X11.")
+    (license license:qpl)))
+
 (define-public libicns
   (package
     (name "libicns")
