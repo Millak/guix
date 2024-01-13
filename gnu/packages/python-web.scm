@@ -2392,15 +2392,14 @@ RFC6455, regardless of your programming paradigm.")
     (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
     (propagated-inputs
-     (list python-h11
+     (list python-exceptiongroup
+           python-h11
            python-h2
            python-priority
-           python-toml
-           python-typing-extensions
+           python-tomli
            python-wsproto))
     (native-inputs
      (list python-hypothesis
-           python-mock
            python-poetry-core
            python-pytest
            python-pytest-asyncio
