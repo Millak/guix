@@ -1790,7 +1790,7 @@ track stocks, currencies and cryptocurrencies.")
     ;; Note to maintainer: VLS must be built with a Vala toolchain the same
     ;; version or newer. Therefore when you update this package you may need
     ;; to update Vala too.
-    (version "0.48.3")
+    (version "0.48.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1798,7 +1798,7 @@ track stocks, currencies and cryptocurrencies.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1gnvc91gdp3wj9r3r3xxfr09f9lw39cfypn2q5f0443dhhmp059j"))))
+               (base32 "1ini6nd5yim6mql13b9mb15gs02gm08x7zphd0vlv9jxl2646pjn"))))
     (build-system meson-build-system)
     (arguments '(#:glib-or-gtk? #t))
     (inputs
