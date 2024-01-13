@@ -3300,16 +3300,21 @@ than Python’s urllib2 library.")
   (package
     (name "python-requests-kerberos")
     (version "0.14.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "requests-kerberos" version))
-              (sha256
-               (base32
-                "1lbgjs779cjxhz07lfl9dbyp3qfh8a3ir2393042wfg518jd3afd"))))
-    (build-system python-build-system)
+    ;; No tests in the PyPI tarball.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/requests/requests-kerberos")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s30pcnlir3j2jmf7yh065f294cf3x0x5i3ldskn8mm0a3657mv3"))))
+    (build-system pyproject-build-system)
      (propagated-inputs (list python-cryptography
                               python-pyspnego
                               python-requests))
+    (native-inputs (list python-pytest python-pytest-mock))
     (home-page "https://github.com/requests/requests-kerberos")
     (synopsis "Kerberos authentication handler for python-requests")
     (description "This package provides a Kerberos authentication handler for
