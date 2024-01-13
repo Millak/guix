@@ -400,6 +400,35 @@ Jupytext are:
 ")
     (license license:expat)))
 
+(define-public python-concurrent-log-handler
+  (package
+    (name "python-concurrent-log-handler")
+    (version "0.9.25")
+    ;; No tests in the PyPI tarball.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Preston-Landers/concurrent-log-handler")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jp4zkm0idfdsrq3jzb52iqfkh6xzm7sacz1sa34ffnkyqdk3xzh"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-portalocker))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page "https://github.com/Preston-Landers/concurrent-log-handler")
+    (synopsis
+     "Additional log handler for Python's standard @code{logging} package")
+    (description
+     "This package provides an additional log handler for Python's standard
+@code{logging} package (PEP 282).  This handler will write log events to a log
+file which is rotated when the log file reaches a certain size.  Multiple
+processes can safely write to the same log file concurrently and rotated logs
+can be gzipped if desired.  An optional threaded queue logging handler is
+provided to perform logging in the background.")
+    (license license:asl2.0)))
+
 (define-public python-logzero
   (package
     (name "python-logzero")
