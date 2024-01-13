@@ -702,6 +702,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "sharlatanus@gmail.com")
   go lisp python science)
 
+(define-member (person "Vivien Kraus"
+                       "vivien@planete-kraus.eu")
+  gnome)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
