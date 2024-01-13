@@ -19500,6 +19500,25 @@ and pluralizes English words, and transforms strings from CamelCase to
 underscored string.")
     (license license:expat)))
 
+(define-public python-krb5
+  (package
+    (name "python-krb5")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "krb5" version))
+       (sha256
+        (base32 "1jivws8dsscsmyqngbc71r4qw8qmn98pqmhylz01r5dd1ljfw9bi"))))
+    (build-system pyproject-build-system)
+    (inputs (list mit-krb5))
+    (native-inputs (list python-cython python-k5test python-pytest))
+    (home-page "https://github.com/jborean93/pykrb5")
+    (synopsis "Kerberos API bindings for Python")
+    (description "This library provides Python functions that wraps the
+Kerberos 5 C API.")
+    (license license:expat)))
+
 (define-public python-pylev
   (package
     (name "python-pylev")
