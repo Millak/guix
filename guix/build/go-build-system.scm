@@ -6,6 +6,8 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2024 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2024 Picnoir <picnoir@alternativebit.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,7 +92,6 @@
 ;; * Use Go modules [4]
 ;; * Re-use compiled packages [5]
 ;; * Avoid the go-inputs hack
-;; * Stop needing remove-go-references (-trimpath ? )
 ;; * Remove module packages, only offering the full Git repos? This is
 ;; more idiomatic, I think, because Go downloads Git repos, not modules.
 ;; What are the trade-offs?
@@ -266,6 +267,7 @@ unpacking."
               ;; Respectively, strip the symbol table and debug
               ;; information, and the DWARF symbol table.
               "-ldflags=-s -w"
+              "-trimpath"
               `(,@build-flags ,import-path)))
     (lambda (key . args)
       (display (string-append "Building '" import-path "' failed.\n"
@@ -305,58 +307,6 @@ the standard install-license-files phase to first enter the correct directory."
                                                     unpack-path))
     (apply (assoc-ref gnu:%standard-phases 'install-license-files) args)))
 
-(define* (remove-store-reference file file-name
-                                  #:optional (store (%store-directory)))
-  "Remove from FILE occurrences of FILE-NAME in STORE; return #t when FILE-NAME
-is encountered in FILE, #f otherwise. This implementation reads FILE one byte at
-a time, which is slow. Instead, we should use the Boyer-Moore string search
-algorithm; there is an example in (guix build grafts)."
-  (define pattern
-    (string-take file-name
-                 (+ 34 (string-length (%store-directory)))))
-
-  (with-fluids ((%default-port-encoding #f))
-    (with-atomic-file-replacement file
-      (lambda (in out)
-        ;; We cannot use `regexp-exec' here because it cannot deal with
-        ;; strings containing NUL characters.
-        (format #t "removing references to `~a' from `~a'...~%" file-name file)
-        (setvbuf in 'block 65536)
-        (setvbuf out 'block 65536)
-        (fold-port-matches (lambda (match result)
-                             (put-bytevector out (string->utf8 store))
-                             (put-u8 out (char->integer #\/))
-                             (put-bytevector out
-                                             (string->utf8
-                                              "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-"))
-                             #t)
-                           #f
-                           pattern
-                           in
-                           (lambda (char result)
-                             (put-u8 out (char->integer char))
-                             result))))))
-
-(define* (remove-go-references #:key allow-go-reference?
-                               inputs outputs #:allow-other-keys)
-  "Remove any references to the Go compiler from the compiled Go executable
-files in OUTPUTS."
-;; We remove this spurious reference to save bandwidth when installing Go
-;; executables. It would be better to not embed the reference in the first
-;; place, but I'm not sure how to do that. The subject was discussed at:
-;; <https://lists.gnu.org/archive/html/guix-devel/2017-10/msg00207.html>
-  (if allow-go-reference?
-    #t
-    (let ((go (assoc-ref inputs "go"))
-          (bin "/bin"))
-      (for-each (lambda (output)
-                  (when (file-exists? (string-append (cdr output)
-                                                     bin))
-                    (for-each (lambda (file)
-                                (remove-store-reference file go))
-                              (find-files (string-append (cdr output) bin)))))
-                outputs)
-      #t)))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
@@ -368,8 +318,7 @@ files in OUTPUTS."
     (replace 'build build)
     (replace 'check check)
     (replace 'install install)
-    (replace 'install-license-files install-license-files)
-    (add-after 'install 'remove-go-references remove-go-references)))
+    (replace 'install-license-files install-license-files)))
 
 (define* (go-build #:key inputs (phases %standard-phases)
                       #:allow-other-keys #:rest args)
