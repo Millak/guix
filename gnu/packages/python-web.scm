@@ -2380,32 +2380,30 @@ RFC6455, regardless of your programming paradigm.")
   (package
     (name "hypercorn")
     (version "0.14.4")
-    (source (origin
-              (method git-fetch) ;PyPI does not have tests
-              (uri (git-reference
-                    (url "https://github.com/pgjones/hypercorn")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zyf5b8959sd12ycmqzvsb8746i3gn76rz55gxvix5cwj672m7yx"))))
+    (source
+     (origin
+       (method git-fetch) ;PyPI does not have tests
+       (uri (git-reference
+             (url "https://github.com/pgjones/hypercorn")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zyf5b8959sd12ycmqzvsb8746i3gn76rz55gxvix5cwj672m7yx"))))
     (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
-    (propagated-inputs
-     (list python-exceptiongroup
-           python-h11
-           python-h2
-           python-priority
-           python-tomli
-           python-wsproto))
-    (native-inputs
-     (list python-hypothesis
-           python-poetry-core
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-cov
-           python-pytest-trio
-           python-trio))
+    (propagated-inputs (list python-exceptiongroup
+                             python-h11
+                             python-h2
+                             python-priority
+                             python-tomli
+                             python-wsproto))
+    (native-inputs (list python-hypothesis
+                         python-poetry-core
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-pytest-trio
+                         python-trio))
     (home-page "https://gitlab.com/pgjones/hypercorn/")
     (synopsis "ASGI Server based on Hyper libraries")
     (description
