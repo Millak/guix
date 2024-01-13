@@ -1277,7 +1277,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public stellarium
   (package
     (name "stellarium")
-    (version "23.3")
+    (version "23.4")
     (source
      (origin
        (method git-fetch)
@@ -1286,7 +1286,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15kl8kn5fmmppbm93w5ki7lpjn09lhyhn245v3jc335xifcwd2vd"))))
+        (base32 "11l3lql3cxj7s7q7n74qd4rhbjy374b4c0lpm0dr8s85mfrq6fmc"))))
     (build-system cmake-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
@@ -1312,6 +1312,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            gpsd
            indi
            libnova
+           nlopt
            openssl
            qtbase-5
            qtcharts
