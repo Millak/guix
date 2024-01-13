@@ -108,6 +108,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix deprecation)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
 (define-public pict
@@ -621,7 +622,14 @@ pattern.")
     (arguments
      (list
       #:configure-flags
-      #~(list "-DCATCH_DEVELOPMENT_BUILD=ON"
+      #~(list #$@(match (%current-system)
+                   ((or "x86_64-linux" "i686-linux")
+                    ;; Tests fail on i686-linux without SSE2 for floats, see
+                    ;; upstream report
+                    ;; <https://github.com/catchorg/Catch2/issues/2796>.
+                    '("-DCMAKE_CXX_FLAGS=-msse2 -mfpmath=sse"))
+                   (_ '()))
+              "-DCATCH_DEVELOPMENT_BUILD=ON"
               "-DCATCH_ENABLE_WERROR=OFF"
               "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list python-wrapper))
