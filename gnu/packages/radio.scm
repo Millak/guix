@@ -2534,7 +2534,7 @@ transmissions.")
 (define-public dsdcc
   (package
     (name "dsdcc")
-    (version "1.9.3")
+    (version "1.9.5")
     (source
      (origin
        (method git-fetch)
@@ -2543,7 +2543,7 @@ transmissions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jgzpv4d6ckd0sdq6438rjh3m6knj6gx63627fajch74hxrvclzj"))))
+        (base32 "1rb9r1m4rfi9x5x4h5frpl65xmk5p2bqyfisnrv6nbmnsgds9h0c"))))
     (build-system cmake-build-system)
     (inputs
      (list mbelib serialdv))
