@@ -130,10 +130,8 @@ communication.")
     (license gpl2+)))
 
 (define-public hurd-headers
-  ;; This commit is now slightly behind 0.9.git20220818 as this one needs a
-  ;; newer glibc
-  (let ((revision "2")
-        (commit "v0.9.git20230216"))
+  (let ((revision "3")
+        (commit "v0.9.git20230520"))
     (package
       (name "hurd-headers")
       (version commit)
@@ -144,7 +142,7 @@ communication.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0jm1dnqkx4kdwmby0z5w0yqp9m5qp4hbxd4jxlyhiqm8nkw9mkvv"))
+                  "1m0lgk0741f3scib87130w1spc598zbz7gcc946wi7mg97h8d53m"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (native-inputs
