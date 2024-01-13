@@ -3307,8 +3307,9 @@ than Python’s urllib2 library.")
                (base32
                 "1lbgjs779cjxhz07lfl9dbyp3qfh8a3ir2393042wfg518jd3afd"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-cryptography python-pyspnego
-                             python-requests))
+     (propagated-inputs (list python-cryptography
+                              python-pyspnego
+                              python-requests))
     (home-page "https://github.com/requests/requests-kerberos")
     (synopsis "Kerberos authentication handler for python-requests")
     (description "This package provides a Kerberos authentication handler for
