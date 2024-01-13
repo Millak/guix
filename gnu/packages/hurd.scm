@@ -3,7 +3,7 @@
 ;;; Copyright © 2018, 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2022, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2022, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
@@ -59,7 +59,7 @@
 (define-public gnumach-headers
   (package
     (name "gnumach-headers")
-    (version "1.8+git20221224") ;; This is an upstream tag
+    (version "1.8+git20230410") ;; This is an upstream tag
     (source
      (origin
        (method git-fetch)
@@ -69,7 +69,7 @@
        (file-name (git-file-name "gnumach" version))
        (sha256
         (base32
-         "0f49zqxf64ds75rmskizpybl2mw7sxs05k59gjp3pgspvr87w7gs"))))
+         "1s09256g2ny46idrn8frzs7r51la9ni45bmglmswlsmz9ii7dpi4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
