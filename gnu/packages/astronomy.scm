@@ -2440,13 +2440,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "5.0.1")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1r4phc91k527kvpa2jd1d417x97wqyrm3ydayr9hshwz1k5v5ngf"))))
+        (base32 "07rfdj4v29kcb718sgjfsagazvnl11r01ciqjvazr5x3yadfqrwk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2456,7 +2456,9 @@ orbits described in TLE files.")
                     ;; It struggles to find python-opencsv package info with
                     ;; 'importlib.metadata'
                     "not test_main_nonexisting_module"
-                    " and not test_main_stdlib_module"))
+                    " and not test_main_stdlib_module")
+              ;; Requries SpicePy not packed in Guix yet.
+              "--ignore=sunpy/coordinates/tests/test_spice.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'writable-compiler
@@ -2464,7 +2466,11 @@ orbits described in TLE files.")
               (make-file-writable "sunpy/_compiler.c")))
           (add-before 'check 'prepare-test-environment
             (lambda _
-              (setenv "HOME" "/tmp"))))))
+              (setenv "HOME" "/tmp")
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+python_files = test_*.py"))))))))
     (native-inputs
      (list opencv ; For tests, includes OpenCV-Python
            python-aiohttp
@@ -2501,6 +2507,7 @@ orbits described in TLE files.")
            python-scikit-image
            python-scipy
            python-semantic-version
+           ;; python-spiceypy ; Not packed yet in Guix, long jorney.
            python-sqlalchemy
            python-tqdm
            python-zeep))
