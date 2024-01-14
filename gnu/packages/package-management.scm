@@ -12,7 +12,7 @@
 ;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -483,6 +483,7 @@ $(prefix)/etc/openrc\n")))
                        ("guile-zstd" ,guile-zstd)
                        ("guile-ssh" ,guile-ssh)
                        ("guile-git" ,guile-git)
+                       ("guile-semver" ,guile-semver)
 
                        ;; XXX: Keep the development inputs here even though
                        ;; they're unnecessary, just so that 'guix environment
