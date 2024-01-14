@@ -5496,6 +5496,66 @@ using a short read-capability.")
     (home-page "https://codeberg.org/eris/guile-eris")
     (license license:gpl3+)))
 
+(define-public guile-rsv
+  (let ((commit "41b04c85eef31d4d51001c6d66e8fd339fcc614c")
+        (revision "1"))
+    (package
+      (name "guile-rsv")
+      (version (git-version "0.2.0" revision commit))
+      (home-page "https://codeberg.org/kakafarm/guile-rsv/")
+      (source
+       (origin
+         (uri (git-reference (url home-page) (commit commit)))
+         (method git-fetch)
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1w9jbkpmh13zrxkj915nm3l537smm0jsrdzrzcxylb6w59vqpw6l"))))
+      (inputs (list guile-3.0 bash))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'install 'link-and-wrap-executable
+                       (lambda _
+                         (let* ((bin (string-append #$output "/bin"))
+                                ;; bin directory for PATH.
+                                (site-version (target-guile-effective-version))
+                                (scm (string-append "/share/guile/site/"
+                                                    site-version))
+                                (go (string-append "/lib/guile/" site-version
+                                                   "/site-ccache")))
+                           (mkdir-p bin)
+                           (for-each (lambda (command-name)
+                                       (let ((source-script (string-append #$output
+                                                                           scm "/"
+                                                                           command-name
+                                                                           ".scm"))
+                                             (target-command (string-append
+                                                              bin "/"
+                                                              command-name)))
+                                         (symlink source-script target-command)
+                                         (wrap-program target-command
+                                           #:sh (which "bash")
+                                           `("GUILE_LOAD_PATH" prefix
+                                             (,(string-append #$output scm)))
+                                           `("GUILE_LOAD_COMPILED_PATH" prefix
+                                             (,(string-append #$output go))))))
+                                     (list "scm2rsv" "rsv2scm"))))))))
+      (synopsis "Reading and writing @acronym{RSV, rows of string values} data format")
+      (description
+       "R7RS-small Scheme library for reading and writing @acronym{RSV, rows
+of string values} data format, a very simple binary format for storing tables
+of strings.  It is a competitor for CSV (Comma Seperated Values) and TSV (Tab
+Separated Values).  Its main benefit is that the strings are represented as
+Unicode encoded as UTF-8, and the value and row separators are byte values
+that are never used in UTF-8, so the strings do not need any error prone
+escaping and thus can be written and read verbatim.
+
+The RSV format is specified in
+@url{https://github.com/Stenway/RSV-Specification}.")
+      (license license:gpl3+))))
+
 (define-public guile-r6rs-protobuf
   (package
     (name "guile-r6rs-protobuf")
