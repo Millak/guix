@@ -3634,7 +3634,7 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
     (inputs
      (list kmod libnl ncurses pciutils zlib))
     (home-page "https://01.org/powertop/")
-    (synopsis "Analyze power consumption on Intel-based laptops")
+    (synopsis "Analyze power consumption on x86-based laptops")
     (description
      "PowerTOP is a Linux tool to diagnose issues with power consumption and
 power management.  In addition to being a diagnostic tool, PowerTOP also has
