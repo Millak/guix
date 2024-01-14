@@ -53634,8 +53634,32 @@ ecosystem.")
 extension to python.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pyo3-macros-backend-0.20
+  (package
+    (name "rust-pyo3-macros-backend")
+    (version "0.20.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-macros-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07w8x1wxm1ksx72jb0w1p2ssmg9zh95dsv4xmxyq4iqqhpa11j8g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Code generation for PyO3")
+    (description
+     "This package provides code generation backends for PyO3.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pyo3-macros-backend-0.19
   (package
+    (inherit rust-pyo3-macros-backend-0.20)
     (name "rust-pyo3-macros-backend")
     (version "0.19.2")
     (source (origin
@@ -53645,17 +53669,11 @@ extension to python.")
               (sha256
                (base32
                 "0dlm4pg29hjmlqx15gcy9cmnabvc8ycy60hcvjg8hm62flhw2zcl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Code generation for PyO3")
-    (description
-     "This package provides code generation backends for PyO3.")
-    (license license:asl2.0)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-pyo3-macros-backend-0.18
   (package
