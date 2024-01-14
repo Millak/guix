@@ -3080,7 +3080,7 @@ standard astronomy libraries:
 (define-public libxisf
   (package
     (name "libxisf")
-    (version "0.2.10")
+    (version "0.2.11")
     (source
      (origin
        (method git-fetch)
@@ -3089,7 +3089,7 @@ standard astronomy libraries:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q5qipn8887yhrk9pmi4fksxxmqas3w2aw2p194yhzkjapxk2k9h"))))
+        (base32 "02lnlsdg7f6pbcfk9amzh2k42wsb19d97yp2jq122lzivx9inwn1"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
