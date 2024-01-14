@@ -2704,6 +2704,55 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-specutils
+  (package
+    (name "python-specutils")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "specutils" version))
+       (sha256
+        (base32 "10nq00q71cyj0p74g3kyzb4hrwkbvhsd6m5zvxifc035rfnvc2qv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disabling test requiring access to download
+      ;; <https://datacenter.iers.org/data/9/finals2000A.all>.
+      ;; XXX: Check if test data may be packed as standalone package.
+      #:test-flags #~(list "-k" "not test_create_spectral_axis")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list ;; python-stdatamodels ; cycle with python-synphot, optional.
+           python-asdf
+           python-asdf-astropy
+           python-gwcs
+           python-ndcube
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-matplotlib
+           python-pytest-astropy
+           python-semantic-version
+           python-setuptools-scm
+           python-spectral-cube))
+    (home-page "https://specutils.readthedocs.io/")
+    (synopsis "Package for spectroscopic astronomical data")
+    (description
+     "@code{specutils} is a Python package for representing, loading, manipulating,
+and analyzing astronomical spectroscopic data.  The generic data containers and
+accompanying modules provide a toolbox that the astronomical community can use
+to build more domain-specific packages.  For more details about the underlying
+principles,
+see @url{https://github.com/astropy/astropy-APEs/blob/main/APE13.rst, APE13}.")
+    (license license:bsd-3)))
+
 (define-public python-spherical-geometry
   (package
     (name "python-spherical-geometry")
