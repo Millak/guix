@@ -35533,21 +35533,22 @@ source audio format.")
 (define-public rust-lexical-parse-float-0.8
   (package
     (name "rust-lexical-parse-float")
-    (version "0.8.2")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lexical-parse-float" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03mzjx8k2jzv2vbl1xb589p9zfs5i2m23vcmm6fjsxps0k86dl5l"))))
+        (base32 "0py0gp8hlzcrlvjqmqlpl2v1as65iiqxq2xsabxvhc01pmg3lfv8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; unresolved import `quickcheck`
        #:cargo-inputs
        (("rust-lexical-parse-integer" ,rust-lexical-parse-integer-0.8)
         ("rust-lexical-util" ,rust-lexical-util-0.8)
-        ("rust-static-assertions" ,rust-static-assertions-1))))
+        ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-0.10))))
     (home-page "https://github.com/Alexhuszagh/rust-lexical")
     (synopsis "Efficient parsing of floats from strings")
     (description
