@@ -2006,6 +2006,28 @@ mapping by using a Python callback.  Switching to using an array allowed the
 code to be greatly simplified.")
     (license license:bsd-3)))
 
+(define-public python-dust-extinction
+  (package
+    (name "python-dust-extinction")
+    (version "1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dust_extinction" version))
+       (sha256
+        (base32 "14zy6kyrfi4ash7qg1k3im1zzgr2r7rnaggzk0ar3jlfmsii743k"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy python-scipy))
+    (native-inputs
+     (list python-pytest-astropy))
+    (home-page "http://dust-extinction.readthedocs.io/")
+    (synopsis "Interstellar Dust Extinction Models")
+    (description
+     "This package provides astronomical interstellar dust extinction curves
+implemented using the astropy.modeling framework.")
+    (license license:bsd-3)))
+
 (define-public python-ephem
   (package
     (name "python-ephem")
