@@ -14,7 +14,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2019, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2017, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -181,6 +181,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
@@ -7385,6 +7386,63 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
     (description
      "Pydantic enforces type hints at runtime, and provides user friendly
 errors when data is invalid.")
+    (license license:expat)))
+
+(define-public python-pydantic-core
+  (package
+    (name "python-pydantic-core")
+    (version "2.14.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydantic_core" version))
+       (sha256
+        (base32 "0j79pd6ixapsiwsigsxzmvbrpmdr7f7c4l9sl7xl6a1pjp9w3l0z"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'prepare-python-module 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install)))
+      #:cargo-inputs
+      `(("rust-ahash" ,rust-ahash-0.8)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-enum-dispatch" ,rust-enum-dispatch-0.3)
+        ("rust-idna" ,rust-idna-0.4)
+        ("rust-jiter" ,rust-jiter-0.0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.20)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-strum" ,rust-strum-0.25)
+        ("rust-strum-macros" ,rust-strum-macros-0.25)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-speedate" ,rust-speedate-0.13)
+        ("rust-url" ,rust-url-2)
+        ("rust-uuid" ,rust-uuid-1)
+        ("rust-version-check" ,rust-version-check-0.9))
+      #:cargo-development-inputs
+      `(("rust-pyo3" ,rust-pyo3-0.20))
+      #:install-source? #false))
+    (native-inputs
+     (list maturin python-wrapper))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/pydantic/pydantic-core")
+    (synopsis "Core validation logic for pydantic")
+    (description "This package provides the core functionality for pydantic
+validation and serialization.")
     (license license:expat)))
 
 (define-public python-pydantic-cli
