@@ -35479,23 +35479,23 @@ source audio format.")
 (define-public rust-lexical-core-0.8
   (package
     (name "rust-lexical-core")
-    (version "0.8.2")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lexical-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1152ll9xa7v4jz2mjvz0048gy32yg39mzgjaps89h0any7c2cfba"))))
+        (base32 "0ihf0x3vrk25fq3bv9q35m0xax0wmvwkh0j0pjm2yk4ddvh5vpic"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-lexical-parse-float" ,rust-lexical-parse-float-0.8)
         ("rust-lexical-parse-integer" ,rust-lexical-parse-integer-0.8)
         ("rust-lexical-util" ,rust-lexical-util-0.8)
         ("rust-lexical-write-float" ,rust-lexical-write-float-0.8)
-        ("rust-lexical-write-integer" ,rust-lexical-write-integer-0.8))))
+        ("rust-lexical-write-integer" ,rust-lexical-write-integer-0.8))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5))))
     (home-page
      "https://github.com/Alexhuszagh/rust-lexical/tree/master/lexical-core")
     (synopsis "Lexical, to- and from-string conversion routines")
