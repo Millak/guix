@@ -22128,16 +22128,14 @@ signing, and verification in pure Rust.")
 (define-public rust-either-1
   (package
     (name "rust-either")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "either" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "15z70yaivlkpx27vzv99ibf8d2x5jp24yn69y0xi20w86v4c3rch"))))
+        (base32 "01qy3anr7jal5lpc20791vxrw0nl6vksb5j7x56q2fycgcyy8sm2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
