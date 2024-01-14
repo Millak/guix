@@ -35651,18 +35651,17 @@ source audio format.")
 (define-public rust-lexical-6
   (package
     (name "rust-lexical")
-    (version "6.0.1")
+    (version "6.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lexical" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y8v2s8g2hjinwf5hbm1ncbazw9q4qbp111q2mwacq6hi0grhkn3"))))
+        (base32 "1xk8g6k17ml0sjyx388qck9zqhxjfyzjqx1l6c0ggzj3zlvgpbn7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-lexical-core" ,rust-lexical-core-0.8))))
     (home-page "https://github.com/Alexhuszagh/rust-lexical")
     (synopsis "Lexical, to- and from-string conversion routines")
