@@ -12650,6 +12650,26 @@ diagnostics easy and relatively painless for everyone!")
     (description "Core instrumentation library for @code{CodSpeed}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-codspeed-bencher-compat-2
+  (package
+    (name "rust-codspeed-bencher-compat")
+    (version "2.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "codspeed-bencher-compat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17nmj0yzyyv6450yshs1f2qa0n7d9wwzkcc5ixjkiy63dww2ivpy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bencher" ,rust-bencher-0.1)
+                       ("rust-codspeed" ,rust-codspeed-2))))
+    (home-page "https://codspeed.io")
+    (synopsis "Bencher compatibility layer for CodSpeed")
+    (description "Bencher compatibility layer for @code{CodSpeed}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-coitrees-0.2
   (package
     (name "rust-coitrees")
