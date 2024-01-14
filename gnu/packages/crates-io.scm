@@ -35603,17 +35603,17 @@ source audio format.")
 (define-public rust-lexical-write-float-0.8
   (package
     (name "rust-lexical-write-float")
-    (version "0.8.2")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lexical-write-float" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xn5dpdmld2nvj7jvz3xrvjjbrnsh4jhymjimax7labvija8clcb"))))
+        (base32 "0qk825l0csvnksh9sywb51996cjc2bylq6rxjaiha7sqqjhvmjmc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t     ; Cut the dependency chain.
        #:cargo-inputs
        (("rust-lexical-util" ,rust-lexical-util-0.8)
         ("rust-lexical-write-integer" ,rust-lexical-write-integer-0.8)
