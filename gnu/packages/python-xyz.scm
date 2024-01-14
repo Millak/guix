@@ -6230,6 +6230,25 @@ important tasks for becoming a daemon process:
     ;; Only setup.py is gpl3+, everything else is apache 2.0 licensed.
     (license (list license:asl2.0 license:gpl3+))))
 
+(define-public python-annotated-types
+  (package
+    (name "python-annotated-types")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "annotated_types" version))
+       (sha256
+        (base32 "0paaz0i4xqk335ji5w887i2bhgm2krnzr6by4sfgsgz50zl3jcsn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (home-page "https://github.com/annotated-types/annotated-types")
+    (synopsis "Reusable constraint types to use with typing.Annotated")
+    (description "Reusable constraint types to use with typing.Annotated")
+    (license license:expat)))
+
 (define-public python-anytree
   (package
     (name "python-anytree")
