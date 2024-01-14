@@ -8638,7 +8638,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.6")
+    (version "2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8646,7 +8646,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "1j0bgnixffz2lv5xgp5c88hl146c1vyk1988gyd70mhgyl9700jy"))))
+                "17cg07md6zac0j6ivawysy41jbk3a1ql3q794q1y0k01x8z23q5n"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
