@@ -1823,50 +1823,51 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
 (define-public deja-dup
   (package
     (name "deja-dup")
-    (version "43.4")
+    (version "45.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.gnome.org/World/deja-dup/-/archive/"
                                   version "/deja-dup-" version ".tar.bz2"))
               (sha256
                (base32
-                "1mr2g009w0zm5rj8dg1k77c7zdwylih2yszm8vh8wkw6al6bzfh3"))))
+                "000cwy1haiglkvn5plmhrs2a1fhpcpw6z4mdzck7ybmky795amza"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       (list
-        ;; Otherwise, the RUNPATH will lack the final path component.
-        (string-append "-Dc_link_args=-Wl,-rpath="
-                       (assoc-ref %outputs "out") "/lib/deja-dup"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python")))
-               (substitute* '("libdeja/duplicity/DuplicityInstance.vala"
-                              "libdeja/tests/scripts/instance-error.test")
-                 (("/bin/rm")
-                  (which "rm")))
-               (substitute* "libdeja/tests/runner.vala"
-                 (("/bin/sh")
-                  (which "sh")))
-               (substitute* "libdeja/tests/scripts/instance-error.test"
-                 (("`which python3`")
-                  (string-append python "/bin/python3"))))))
-         (add-after 'unpack 'patch-libgpg-error
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libgpg-error (assoc-ref inputs "libgpg-error")))
-               (substitute* "meson.build"
-                 (("(gpgerror_libs = ).*" _ var)
-                  (format #f "~a '-L~a/lib -lgpg-error'\n" var libgpg-error))))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Add duplicity to the search path
-             (wrap-program (string-append (assoc-ref outputs "out")
-                                          "/bin/deja-dup")
-               `("PATH" ":" prefix
-                 (,(string-append (assoc-ref inputs "duplicity") "/bin")))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final path component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        (assoc-ref %outputs "out") "/lib/deja-dup"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python (assoc-ref inputs "python")))
+                (substitute* '("libdeja/duplicity/DuplicityInstance.vala"
+                               "libdeja/tests/scripts/instance-error.test")
+                  (("/bin/rm")
+                   (which "rm")))
+                (substitute* "libdeja/tests/runner.vala"
+                  (("/bin/sh")
+                   (which "sh")))
+                (substitute* "libdeja/tests/scripts/instance-error.test"
+                  (("`which python3`")
+                   (string-append python "/bin/python3"))))))
+          (add-after 'unpack 'patch-libgpg-error
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libgpg-error (assoc-ref inputs "libgpg-error")))
+                (substitute* "meson.build"
+                  (("(gpgerror_libs = ).*" _ var)
+                   (format #f "~a '-L~a/lib -lgpg-error'\n" var libgpg-error))))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Add duplicity to the search path
+              (wrap-program (string-append (assoc-ref outputs "out")
+                                           "/bin/deja-dup")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "/bin/duplicity"))))))))))
     (inputs
      (list bash-minimal
            duplicity
