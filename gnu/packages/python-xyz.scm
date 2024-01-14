@@ -7407,6 +7407,44 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 errors when data is invalid.")
     (license license:expat)))
 
+(define-public python-pydantic-2
+  (package
+    (inherit python-pydantic)
+    (name "python-pydantic")
+    (version "2.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydantic" version))
+       (sha256
+        (base32 "0yiz75zp93x6x2czm772cz5pzn00i703irncjwb99c1m4p35gvxk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+       #:test-flags #~(list "--ignore=tests/test_docs.py"   ; no pytest_examples
+                            ;; need python-email-validator >= 2.0.0
+                            "-k not test_fastapi_startup_perf")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'check 'pre-check
+             (lambda _
+               ;; Remove the addopts from pyproject.toml, it breaks the 'check phase.
+               (substitute* "pyproject.toml"
+                 (("'--benchmark") "#'--benchmark")))))))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-fancy-pypi-readme
+           python-cloudpickle
+           python-dirty-equals
+           python-faker
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-annotated-types
+           python-pydantic-core
+           python-typing-extensions))))
+
 (define-public python-pydantic-core
   (package
     (name "python-pydantic-core")
