@@ -521,14 +521,14 @@ IOCP and Async I/O abstractions.")
 (define-public rust-python3-dll-a-0.2
   (package
     (name "rust-python3-dll-a")
-    (version "0.2.6")
+    (version "0.2.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "python3-dll-a" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1a676r8xlbkijdagywwz838rbdnc9h28lgmx1ccvyqj9h9rbs5d9"))))
+                "0grlz344xq435qgs5mic0yz1p643qh3h1m11lw4zms1b87a7rw6m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;Windows-like targets only
