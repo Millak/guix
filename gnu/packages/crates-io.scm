@@ -33694,8 +33694,28 @@ whether or not a given path points to an executable file.")
 stream runs in a TTY.")
     (license license:expat)))
 
+(define-public rust-iso8601-0.4
+  (package
+    (name "rust-iso8601")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iso8601" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15nfg6d4qlniw4gk7039s5y07lzgr1dp9snsw63lsxarnyz4zfg5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-7))))
+    (home-page "https://github.com/badboy/iso8601")
+    (synopsis "Parsing ISO8601 dates using nom")
+    (description "Parsing ISO8601 dates using nom.")
+    (license license:expat)))
+
 (define-public rust-iso8601-0.3
   (package
+    (inherit rust-iso8601-0.4)
     (name "rust-iso8601")
     (version "0.3.0")
     (source
@@ -33707,13 +33727,8 @@ stream runs in a TTY.")
         (sha256
          (base32
           "0vvn6f9gv2295ik77nvaz99wzbwz1bmasrd787sz6d9mlwa6ks23"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nom" ,rust-nom-4))))
-    (home-page "https://github.com/badboy/iso8601")
-    (synopsis "Parsing ISO8601 dates using nom")
-    (description "Parsing ISO8601 dates using nom.")
-    (license license:expat)))
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-4))))))
 
 (define-public rust-isolang-2
   (package
