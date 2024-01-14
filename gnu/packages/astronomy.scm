@@ -1859,13 +1859,13 @@ attempting to maintain ISTP compliance
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "11.17.13")
+    (version "11.17.14")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "crds" version))
               (sha256
                (base32
-                "0jcvyiq3z2kbd8g33gk5r99rvhn9i50lz7ngqibdafh390dz5zhc"))))
+                "1z9lrwrb07s9kn28nammjx75qb0ky7srd9i40dnkmm9zsaqz5jfm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1897,14 +1897,14 @@ attempting to maintain ISTP compliance
     (description
      "CRDS is a package used for working with astronomical reference files for
 the HST and JWST telescopes.  CRDS is useful for performing various operations
-on reference files or reference file assignment rules.  CRDS is used to assign,
-check, and compare reference files and rules, and also to predict those datasets
-which should potentially be reprocessed due to changes in reference files or
-assignment rules.  CRDS has versioned rules which define the assignment of
-references for each type and instrument configuration.  CRDS has web sites
-corresponding to each project (http://hst-crds.stsci.edu or
-https://jwst-crds.stsci.edu/) which record information about reference files and
-provide related services.")
+on reference files or reference file assignment rules.  CRDS is used to
+assign, check, and compare reference files and rules, and also to predict
+those datasets which should potentially be reprocessed due to changes in
+reference files or assignment rules.  CRDS has versioned rules which define
+the assignment of references for each type and instrument configuration.  CRDS
+has web sites corresponding to each project @url{http://hst-crds.stsci.edu} or
+@url{https://jwst-crds.stsci.edu/} which record information about reference
+files and provide related services.")
     (license license:bsd-3)))
 
 (define-public python-czml3
