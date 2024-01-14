@@ -3196,6 +3196,8 @@ Mercator, Mollweide, Peters, polyconic, orthographic and rectangular.")
     (license license:gpl2+)))
 
 (define-public gpredict
+  ;; The latest tag, 2.3, has no major difference with 2.2.1 and is dated for
+  ;; 2018. Additionally, there is some activity on the master branch.
   (package
     (name "gpredict")
     (version "2.2.1")
@@ -3222,14 +3224,32 @@ Mercator, Mollweide, Peters, polyconic, orthographic and rectangular.")
      (list gettext-minimal intltool pkg-config))
     (inputs
      (list curl glib goocanvas gtk+))
-    (home-page "http://gpredict.oz9aec.net/index.php")
+    (home-page "https://oz9aec.dk/gpredict/")
     (synopsis "Satellite tracking and orbit prediction application")
     (description
      "Gpredict is a real-time satellite tracking and orbit prediction
 application.  It can track a large number of satellites and display their
 position and other data in lists, tables, maps, and polar plots (radar view).
 Gpredict can also predict the time of future passes for a satellite, and
-provide you with detailed information about each pass.")
+provide you with detailed information about each pass.
+
+Some core features of Gpredict include:
+
+@itemize
+@item Tracking of a large number of satellites only limited by the physical
+memory and processing power of the computer
+@item Display the tracking data in lists, maps, polar plots and any
+combination of these
+@item Have many modules open at the same either in a notebook or in their own
+windows.  The modules can also run in full-screen mode
+@item You can use many ground stations
+@item Predict upcoming passes
+@item Gpredict can run in real-time, simulated real-time (fast forward and
+backward), and manual time control
+@item Detailed information both the real time and non-real time modes
+@item Doppler tuning of radios via Hamlib rigctld
+@item Antenna rotator control via Hamlib rotctld
+@end itemize")
     (license license:gpl2+)))
 
 (define-public sgp4
