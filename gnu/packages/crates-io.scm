@@ -35558,20 +35558,20 @@ source audio format.")
 (define-public rust-lexical-parse-integer-0.8
   (package
     (name "rust-lexical-parse-integer")
-    (version "0.8.0")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lexical-parse-integer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1b2kxprq3636x3j1qy68202q7yzsmq5c7h9w7m7zrh4cvanjpjgj"))))
+        (base32 "1sayji3mpvb2xsjq56qcq3whfz8px9a6fxk5v7v15hyhbr4982bd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-lexical-util" ,rust-lexical-util-0.8)
-        ("rust-static-assertions" ,rust-static-assertions-1))))
+        ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-0.10))))
     (home-page "https://github.com/Alexhuszagh/rust-lexical")
     (synopsis "Efficient parsing of integers from strings")
     (description
