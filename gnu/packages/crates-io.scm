@@ -35627,20 +35627,21 @@ source audio format.")
 (define-public rust-lexical-write-integer-0.8
   (package
     (name "rust-lexical-write-integer")
-    (version "0.8.0")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lexical-write-integer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vsn3zg2hyqnyapwmzb2aw0w5f53ad6s6n46xyazsh0f5r4mdsgc"))))
+        (base32 "0ii4hmvqrg6pd4j9y1pkhkp0nw2wpivjzmljh6v6ca22yk8z7dp1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; unresolved import `quickcheck`
        #:cargo-inputs
        (("rust-lexical-util" ,rust-lexical-util-0.8)
-        ("rust-static-assertions" ,rust-static-assertions-1))))
+        ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-0.10))))
     (home-page "https://github.com/Alexhuszagh/rust-lexical")
     (synopsis "Efficient formatting of integers to strings")
     (description
