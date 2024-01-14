@@ -35581,19 +35581,20 @@ source audio format.")
 (define-public rust-lexical-util-0.8
   (package
     (name "rust-lexical-util")
-    (version "0.8.1")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lexical-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14g224mm2li0q6jnnqh92dzx3zjyflji3i8dz4xf6vp1mb66kxkg"))))
+        (base32 "1z73qkv7yxhsbc4aiginn1dqmsj8jarkrdlyxc88g2gz2vzvjmaj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; unresolved import `quickcheck`
        #:cargo-inputs
-       (("rust-static-assertions" ,rust-static-assertions-1))))
+       (("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-0.10))))
     (home-page "https://github.com/Alexhuszagh/rust-lexical")
     (synopsis "Shared utilities for lexical crate")
     (description "This package provides shared utilities for lexical crate.")
