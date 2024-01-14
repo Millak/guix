@@ -2775,13 +2775,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.4.4")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "031ldihdmsdrwz4wl49bfk2bxmzbp1i3kidrw46xz936765zmnc0"))))
+        (base32 "0r1a9f476f8ivhrwbcny3rnj9s4plaps6p36c22w73g546d476b7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2796,16 +2796,19 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list opencv ;Provides OpenCV-Python
+           python-asdf-3.0
            python-astropy
+           python-gwcs
            python-numpy
            python-scipy))
     (native-inputs
-     (list python-cython
+     (list python-cython-3
            python-psutil
            python-pytest
            python-pytest-cov
            python-pytest-doctestplus
            python-pytest-openfiles
+           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stcal")
     (synopsis "STScI tools and algorithms used in calibration pipelines")
