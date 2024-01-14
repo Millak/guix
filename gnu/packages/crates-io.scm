@@ -12628,6 +12628,28 @@ diagnostics easy and relatively painless for everyone!")
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-unindent" ,rust-unindent-0.1))))))
 
+(define-public rust-codspeed-2
+  (package
+    (name "rust-codspeed")
+    (version "2.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "codspeed" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16s95jrih19llp4m8rgmymvan0misfcnzc8gb57ynm35rd6spd0f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-colored" ,rust-colored-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://codspeed.io")
+    (synopsis "Core instrumentation library for CodSpeed")
+    (description "Core instrumentation library for @code{CodSpeed}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-coitrees-0.2
   (package
     (name "rust-coitrees")
