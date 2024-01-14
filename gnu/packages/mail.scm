@@ -2237,7 +2237,21 @@ facilities for checking incoming mail.")
            "--sysconfdir=/etc"
            "--with-lucene"
            "--with-moduledir=/usr/lib/dovecot"
-           "--with-sqlite")
+           "--with-sqlite"
+           #$@(if (%current-target-system)
+                  ;; Detection is disabled when cross compiling.
+                  #~("i_cv_epoll_works=yes"
+                     "i_cv_posix_fallocate_works=yes"
+                     ;; Set it to 32 instead of 40 to be safe.
+                     "i_cv_gmtime_max_time_t=32"
+                     ;; XXX: Would 'no' make more sense?
+                     "i_cv_mmap_plays_with_write=yes"
+                     "i_cv_fd_passing=yes"
+                     "i_cv_c99_vsnprintf=yes"
+                     "lib_cv_va_copy=yes"
+                     "lib_cv___va_copy=yes"
+                     "lib_cv_va_val_copy=no")
+                  #~()))
        ;; The -rdynamic linker flag is needed for the backtrace() function to
        ;; have symbol names rather than just addresses.  Dovecot's tests rely
        ;; on this, see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=962630.
