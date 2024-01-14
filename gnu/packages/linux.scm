@@ -604,21 +604,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.336")
-(define-public linux-libre-4.14-gnu-revision "gnu1")
-(define deblob-scripts-4.14
-  (linux-libre-deblob-scripts
-   linux-libre-4.14-version
-   linux-libre-4.14-gnu-revision
-   (base32 "1vbgykwzf7j0yjqcwn747cfhwj0rgw3s9h627q94wb9a19x9p0fr")
-   (base32 "1ir96bbhw77xw6lmsnh42gi130nnzjklpgfyd46pxmqckrpydcvx")))
-(define-public linux-libre-4.14-pristine-source
-  (let ((version linux-libre-4.14-version)
-        (hash (base32 "075nawgvln7ds32cmgg7042qfsf85nzizhc1h0rp8s8wjyvzs808")))
-    (make-linux-libre-source version
-                             (%upstream-linux-source version hash)
-                             deblob-scripts-4.14)))
-
 (define %boot-logo-patch
   ;; Linux-Libre boot logo featuring Freedo and a gnu.
   (origin
@@ -688,10 +673,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (source-with-patches linux-libre-4.19-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
-(define-public linux-libre-4.14-source
-  (source-with-patches linux-libre-4.14-pristine-source
-                       (list %boot-logo-patch)))
 
 
 ;;;
@@ -805,11 +786,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-4.19-version
                              linux-libre-4.19-gnu-revision
                              linux-libre-4.19-source))
-
-(define-public linux-libre-headers-4.14
-  (make-linux-libre-headers* linux-libre-4.14-version
-                             linux-libre-4.14-gnu-revision
-                             linux-libre-4.14-source))
 
 ;; The following package is used in the early bootstrap, and thus must be kept
 ;; stable and with minimal build requirements.
@@ -1182,14 +1158,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-4.14
-  (make-linux-libre* linux-libre-4.14-version
-                     linux-libre-4.14-gnu-revision
-                     linux-libre-4.14-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "powerpc64le-linux")
-                     #:configuration-file kernel-config))
-
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
 ;; Linux-Libre.
 ;; Reference: <https://www.kernel.org/category/releases.html>
@@ -1252,14 +1220,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      #:defconfig "multi_v7_defconfig"
                      #:extra-version "arm-generic"))
 
-(define-public linux-libre-arm-generic-4.14
-  (make-linux-libre* linux-libre-4.14-version
-                     linux-libre-4.14-gnu-revision
-                     linux-libre-4.14-source
-                     '("armhf-linux")
-                     #:defconfig "multi_v7_defconfig"
-                     #:extra-version "arm-generic"))
-
 (define-public linux-libre-arm-omap2plus
   (make-linux-libre* linux-libre-version
                      linux-libre-gnu-revision
@@ -1272,14 +1232,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
   (make-linux-libre* linux-libre-4.19-version
                      linux-libre-4.19-gnu-revision
                      linux-libre-4.19-source
-                     '("armhf-linux")
-                     #:defconfig "omap2plus_defconfig"
-                     #:extra-version "arm-omap2plus"))
-
-(define-public linux-libre-arm-omap2plus-4.14
-  (make-linux-libre* linux-libre-4.14-version
-                     linux-libre-4.14-gnu-revision
-                     linux-libre-4.14-source
                      '("armhf-linux")
                      #:defconfig "omap2plus_defconfig"
                      #:extra-version "arm-omap2plus"))
