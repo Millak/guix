@@ -727,7 +727,7 @@ transformed into common image formats for display or printing.")
 (define-public python-graph-tool
   (package
     (name "python-graph-tool")
-    (version "2.57")
+    (version "2.58")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -735,7 +735,7 @@ transformed into common image formats for display or printing.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0wmvzx509lvigja6cfxh45r4b7wns64vmik0x4rz4y4fnxrhw2m2"))))
+                "05vsk2600wn790hk7gr2f0609bzcslyhhv9x157n43vxy4y6r8vj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules (,@%gnu-build-system-modules

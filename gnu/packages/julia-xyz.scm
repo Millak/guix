@@ -2314,7 +2314,7 @@ using finite difference.")
 (define-public julia-fitsio
   (package
     (name "julia-fitsio")
-    (version "0.17.0")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -2323,7 +2323,7 @@ using finite difference.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10w7cdb2cvcwpkcfdz2fwl4ji5rfdv8w9msc9gfd8d34k58bk8c5"))))
+        (base32 "1mvrr13qvzdpqdp01hzqqyx84cxagyvjwkbizsp3xaabckg48pnz"))))
     (build-system julia-build-system)
     (native-inputs
      (list julia-aqua julia-orderedcollections))

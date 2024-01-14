@@ -1,4 +1,7 @@
-Upstream status: https://review.jami.net/c/jami-client-qt/+/24273.
+It was applied, then reverted (by mistake?) in 4d2c55348bc014.
+
+It's been resubmitted here:
+https://lists.gnu.org/archive/html/jami/2024-01/msg00005.html
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 8d71b84b..36729698 100644

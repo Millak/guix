@@ -60,6 +60,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix memoization)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -1057,7 +1058,10 @@ exec -a \"$0\" \"~a\" \"$@\""
                             (package-native-inputs base-rust))))))
 
 (define*-public (make-rust-sysroot target)
-  (let ((base-rust rust))
+  (make-rust-sysroot/implementation target rust))
+
+(define make-rust-sysroot/implementation
+  (mlambda (target base-rust)
     (package
       (inherit base-rust)
       (name (string-append "rust-sysroot-for-" target))

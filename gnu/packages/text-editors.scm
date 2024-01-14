@@ -30,6 +30,7 @@
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -213,7 +214,7 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2022.10.31")
+    (version "2023.08.05")
     (source
      (origin
        (method url-fetch)
@@ -221,7 +222,7 @@ based command language.")
                            "releases/download/v" version "/"
                            "kakoune-" version ".tar.bz2"))
        (sha256
-        (base32 "12z5wka649xycclbs94bfy2yyln2172dz0zycxsxr384r5i7ncgv"))))
+        (base32 "0p6skjrfygg7hakl8v95pd17q9pjmid9p8nnw86m1lyx18g1ai9y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

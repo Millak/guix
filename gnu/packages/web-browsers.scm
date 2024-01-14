@@ -587,7 +587,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "3.10.0")
+    (version "3.11.0")
     (source
      (origin
        (method git-fetch)
@@ -596,7 +596,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "1rz2082kk3fdvszqmi3fgndrq205vbxl3i0x4qyli0jy3lpvjin8"))
+         "0hzkpk8kshw7afz3pryi99xz2vg3v676day0mgji3hvaazfan39p"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments

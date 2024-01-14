@@ -157,8 +157,8 @@ randomly altered.
     (license license:gpl3)))
 
 (define-public aocommon
-  (let ((commit "7329a075271edab8f6264db649e81e62b2b6ae5e")
-        (revision "1"))
+  (let ((commit "9272ea36693a7ce7aa3524a9e212a60a509c3b8a")
+        (revision "2"))
     (package
       (name "aocommon")
       (version (git-version "0.0.0" revision commit))
@@ -169,7 +169,7 @@ randomly altered.
                (url "https://gitlab.com/aroffringa/aocommon")
                (commit commit)))
          (sha256
-          (base32 "0qcfax6pbzs0yigy0x8xibrkk539wm2pbvjsb4lh50fybir02nix"))
+          (base32 "0klcrrlkc4sjpr83m2gnwb65lg798rydyvrlpangf7np1qg4zbk5"))
          (file-name (git-file-name name version))))
       (build-system copy-build-system)
       (arguments
@@ -186,7 +186,7 @@ reused in several astronomical applications, such as @code{wsclean},
 (define-public calceph
   (package
     (name "calceph")
-    (version  "3.5.3")
+    (version  "3.5.4")
     (source
      (origin
        (method url-fetch)
@@ -194,7 +194,7 @@ reused in several astronomical applications, such as @code{wsclean},
              "https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-"
              version ".tar.gz"))
        (sha256
-        (base32 "12apl806h8qx1kq74malq3828jqapwfi27cn05pvvxfiq7gfpllx"))))
+        (base32 "1d95k62926p6h43qh9pxbpa5wm8rby5la9pqq3k6sdyg4gl39a69"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gfortran))
@@ -278,7 +278,7 @@ rendering of the atmosphere model and examine its properties.
 (define-public aoflagger
   (package
     (name "aoflagger")
-    (version "3.2.0")
+    (version "3.4.0")
     (source
      (origin
        (method git-fetch)
@@ -286,16 +286,15 @@ rendering of the atmosphere model and examine its properties.
              (url "https://gitlab.com/aroffringa/aoflagger")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1dcbfrbiybhpbypna2xhddx1wk7yifh38ha2r6p5rzsikzwlsin1"))
+        (base32 "0dxmcy04cayhs4s2z41wls1dnmg9hkffvlqcmc660idqziffvv1g"))
        (patches
         (search-patches "aoflagger-use-system-provided-pybind11.patch"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      (list
-      ;; XXX: Tests require external files download from
+      ;; Tests require external files download from
       ;; https://www.astron.nl/citt/ci_data/aoflagger/
-      ;; FIXME: runtest is not found
       #:tests? #f
       #:configure-flags
       #~(list (string-append "-DCASACORE_ROOT_DIR="
@@ -452,7 +451,7 @@ with namespaces, exception handling, and member template functions.")
 (define-public cfitsio
   (package
     (name "cfitsio")
-    (version "4.2.0")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
@@ -460,7 +459,7 @@ with namespaces, exception handling, and member template functions.")
              "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
-        (base32 "128qsv2q0f0g714ahlsixiikvvbwxi9bg9q9pcr5cd3f7wdkv9gb"))))
+        (base32 "1gk2a07ypmc8rcngakcarprznq7hi3xr9szfv3hy2yv80ppci9s7"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -758,14 +757,14 @@ corrections.")
 (define-public wcslib
   (package
     (name "wcslib")
-    (version "8.1")
+    (version "8.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))
+        (base32 "0cvqppjf7gk0f3rs9cc46h5fffv2l8ylrb234r9fbx0px0525632"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "C/flexed")))))
@@ -970,7 +969,7 @@ programs for the manipulation and analysis of astronomical data.")
 (define-public phd2
   (package
     (name "phd2")
-    (version "2.6.11")
+    (version "2.6.12")
     (source
      (origin
        (method git-fetch)
@@ -979,7 +978,7 @@ programs for the manipulation and analysis of astronomical data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n87xsv9gzrwk1ygws4vw397ffq40xybp5b3c3bd5kcmff0avaw9"))
+        (base32 "16695vyczl861fz5qinp23wqn6hzv5h1aspz9x21x67w0a3smbmy"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -1121,7 +1120,7 @@ image formats.")
 (define-public splash
   (package
     (name "splash")
-    (version "3.9.0")
+    (version "3.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1129,7 +1128,7 @@ image formats.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "19r5j4jrxhp3gf865ns59vvfnn5a303dqgmb8y2kgcsx26fci1hs"))
+                "1cyg7my2lbpai81nfnlj0r7pvral3kjn31dcq2p4982d2xg0dj87"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1572,13 +1571,13 @@ astronomy and astrophysics.")
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
-    (version "1.0.0")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy_healpix" version))
        (sha256
-        (base32 "18zfmdv0vs0yawirq8c2mpjxx7bvy66z0rlcyc1n6s0fl5ifz0pl"))))
+        (base32 "0fij80ws16xzbph8z9v27w54dnc3vry8fk9p3mvxrglnjgnscvq5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1847,13 +1846,13 @@ attempting to maintain ISTP compliance
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "11.17.9")
+    (version "11.17.13")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "crds" version))
               (sha256
                (base32
-                "0ha7ibs5lmqs9pcr546jyxzgrmx1xyqps7fsp220rvlsbsisdgm0"))))
+                "0jcvyiq3z2kbd8g33gk5r99rvhn9i50lz7ngqibdafh390dz5zhc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1929,13 +1928,13 @@ Cesium.")
 (define-public python-drms
   (package
     (name "python-drms")
-    (version "0.6.4")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "drms" version))
        (sha256
-        (base32 "0mkrmr55fgca441z7hvsyri6x9cjsh0sfas3hrj0k1k10k8vszbw"))))
+        (base32 "0smc39nndxqbznjcpnylsag1sc2ksfjhxh4dwiqbki8q6v5ahx84"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-astropy
@@ -1955,7 +1954,7 @@ used with local NetDRMS sites.")
 (define-public python-drizzle
   (package
     (name "python-drizzle")
-    (version "1.14.3")
+    (version "1.14.4")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have the test data sets
@@ -1964,7 +1963,7 @@ used with local NetDRMS sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04gncwg76yivcaq7rwgsw5k8w4h3c4wcrjcamb53h0d5s820z7dl"))))
+        (base32 "01zsq1r3p9lig0aik01szncd7nbmyi561mhi1n44yjhh7d86fp8y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2041,13 +2040,13 @@ of dates.")
 (define-public python-mpl-animators
   (package
     (name "python-mpl-animators")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mpl_animators" version))
        (sha256
-        (base32 "12kjmj7rn3pk9ly82h5s5hn0kl3kxkr7bgkz9zr9k59pir8z1r8b"))))
+        (base32 "078dshs383ny182dac0spg7z0iilcwa0fnwv1vizsr6p1d3ar98b"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
@@ -2067,13 +2066,13 @@ the easy construction of interactive matplotlib widget based animations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "0gjvrmcb10lyqx3h9521zqskqngd5xcp3l9h2b02mk1p7q54mzdy"))))
+        (base32 "148zhdxhlcgj6dxyzaz78bzxw1q44qa9q9sfdqbfbla0s0w2jaay"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2092,11 +2091,22 @@ the easy construction of interactive matplotlib widget based animations.")
               (make-file-writable "photutils/_compiler.c")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
-     (list python-astropy python-numpy))
+     (list python-astropy
+           python-bottleneck
+           python-gwcs
+           python-matplotlib
+           python-numpy
+           python-rasterio
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-shapely
+           python-tqdm))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-pytest-astropy
+           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
     (synopsis "Source detection and photometry")
@@ -2266,30 +2276,34 @@ Virtual observatory (VO) using Python.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "08wsg9kxnki5pz8gdp81bq06jdmsip382fl02rvnr96cvzr7wf3m"))))
-    (build-system python-build-system)
+        (base32 "09401pz7926zlci7cznd78hmv9947f6jxyy2afqdqc1xaccpzcq2"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:test-target "pytest"
-       #:phases
-       (modify-phases %standard-phases
-         ;; This doctest requires online data.
-         (add-after 'unpack 'delete-doctest
-           (lambda _ (delete-file "docs/masks.rst")))
-         ;; This file is opened in both install and check phases.
-         (add-before 'install 'writable-compiler
-           (lambda _ (make-file-writable "regions/_compiler.c")))
-         (add-before 'check 'writable-compiler
-           (lambda _ (make-file-writable "regions/_compiler.c")))
-         (add-before 'check 'writable-home
-           (lambda _  (setenv "HOME" (getcwd)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This file is opened in both install and check phases.
+          ;; XXX: Check if it is still required.
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "regions/_compiler.c")))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (make-file-writable "regions/_compiler.c")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
-     (list python-astropy python-numpy))
+     (list python-astropy
+           python-h5py
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-shapely))
     (native-inputs
      (list python-cython
            python-extension-helpers
@@ -2305,13 +2319,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "1cjdfv7wd4c0ia63vqakxf9w8hd5dfz6jzi520scd37rliy1xgld"))))
+        (base32 "1qkjbx8xsawhi1gjzqimais3crvkwgbzy1pr51x6anjjln88rgll"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2533,13 +2547,13 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
 (define-public python-spectral-cube
   (package
     (name "python-spectral-cube")
-    (version "0.6.3")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "spectral-cube" version))
        (sha256
-        (base32 "10q76rsgf9w4j7y68mfa870bpxf06m6kqvivj4340jmgnsrfy1zg"))))
+        (base32 "0cqxgmk46gv2qa2kls8fph105lgwbwf13hvizh6w85mzgypyp740"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-astropy
@@ -2587,9 +2601,7 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 (define-public python-spherical-geometry
   (package
     (name "python-spherical-geometry")
-    ;; XXX: Can't be updated to the latest see:
-    ;; https://github.com/spacetelescope/spherical_geometry/issues/227
-    (version "1.2.22")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2598,7 +2610,7 @@ of axis order, spatial projections, and spectral units that exist in the wild.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kzcncqir4v7nhk9lxj9gxr32p3krkaqa58y2i4kksgxxy24qw4z"))))
+        (base32 "172f81h42jq6mv3gpx497z2nkhkx11w4pzmcqljcicri2zqj1m6g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2612,18 +2624,23 @@ of axis order, spatial projections, and spectral units that exist in the wild.
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
               ;; Use our own libraries in place of bundles.
               (setenv "USE_SYSTEM_QD" "1")))
-          (add-before 'check 'build-extensions
+          (add-before 'check 'prepare-test-environment
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (invoke "python" "setup.py" "build_ext" "--inplace")
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+python_files = test_*.py"))))))))
     (native-inputs
      (list python-pytest
+           python-pytest-astropy-header
            python-setuptools-scm))
     (inputs
      (list qd))
     (propagated-inputs
      (list python-astropy
            python-numpy))
-    (home-page "https://github.com/spacetelescope/tweakwcs")
+    (home-page "https://github.com/spacetelescope/spherical_geometry")
     (synopsis "Python astronimical package for handling spherical polygons")
     (description
      "The @code{spherical_geometry} library is a Python package for handling
@@ -2663,18 +2680,24 @@ Science Institute} image array manipulation functions.")
 (define-public python-stsci-imagestats
   (package
     (name "python-stsci-imagestats")
-    (version "1.6.3")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stsci.imagestats" version))
               (sha256
                (base32
-                "14457izlbnks84dyza75ib3nvx2w8nhlqm9vc1zb7hbhknb5gjvw"))))
+                "01jqqrhcna0ghin48bbcza57d12371ny4l4pqws89irwdhd8xr0r"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ;No tests
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-setuptools-scm))
+    (native-inputs (list python-pytest python-setuptools-scm))
     (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
     (synopsis "Compute sigma-clipped statistics on data arrays")
     (description
@@ -2764,13 +2787,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "1.8.3")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "0265xa9nrp6qp1z7v9kmnd3c8jc0dad2vzin657clk3rrsj2qll5"))))
+        (base32 "16hwhvd8bqm1cmkgcn1v43hp2cvf094fz954rxb6jv2xx6csic15"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2834,13 +2857,13 @@ implementing calibration pipeline software.")
 (define-public python-stsynphot
   (package
     (name "python-stsynphot")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stsynphot" version))
               (sha256
                (base32
-                "0qkdh47j84v7fzri7bmi1jcmggdqq0a8byamfm73d8mbz86v8sn4"))))
+                "15m3vy39mc7rh1mrxs8d2bs0bx5vv632m6wg8n15fqjzhadqy7j5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2984,7 +3007,7 @@ low quality ones")
 (define-public libpasastro
   (package
     (name "libpasastro")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -2993,7 +3016,7 @@ low quality ones")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h92p9ph3zi4w8krny1azd9wgwna2nf07ims983jcky1chkfm0is"))))
+        (base32 "1na3gyb3nzb5gdgccs1653j2gnz6w3v1mqzhyhkx3yqw8bs3q5x0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -3394,13 +3417,13 @@ Moon position, etc.")
 (define-public python-jplephem
   (package
     (name "python-jplephem")
-    (version "2.20")
+    (version "2.21")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jplephem" version))
        (sha256
-        (base32 "1yp1l3n07849411099f976ps0pyv8jk8k5l9da9nhv54ir86v65v"))))
+        (base32 "0mcdhb22vwbyavcnkcwchj0cxnxsvaw5563v464ipwlm0rhln69l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3538,7 +3561,7 @@ functions, so that they can be called with scalar or array inputs.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "1.4.2")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have not prebuit version.
@@ -3547,7 +3570,7 @@ functions, so that they can be called with scalar or array inputs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lwjs8vf3pc4a64c93fa5k6r276g1c60722swns2r10ig1s4wk0a"))
+        (base32 "175i99zwnnwglndr71paiadrx3xq3icxjgdqfv3xxpyn7fx4dzab"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -3562,6 +3585,7 @@ functions, so that they can be called with scalar or array inputs.")
                            ;;    https://github.com/pynbody/pynbody/blob/ \
                            ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
                            ;;    .github/workflows/build-test.yaml#L41
+                           "--ignore=tests/copy_on_access_test.py"
                            "--ignore=tests/gravity_test.py"
                            "--ignore=tests/adaptahop_test.py"
                            "--ignore=tests/ahf_halos_test.py"
@@ -3717,13 +3741,13 @@ datetime object.")
 (define-public python-synphot
   (package
     (name "python-synphot")
-    (version "1.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "synphot" version))
-              (sha256
-               (base32
-                "10kcdg2gqmi1w2hsjx9hfizwbff3kll10s68hys13nzh4i8b7cc4"))))
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "synphot" version))
+       (sha256
+        (base32 "0a54bfrx9aar66040324sw9qdjz5lg67y28sjsxhyv9h3gppc7c0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3742,9 +3766,16 @@ datetime object.")
                 (lambda (port)
                   (format port "[pytest]
 python_files = test_*.py"))))))))
-    (propagated-inputs (list python-astropy python-numpy python-scipy))
-    (native-inputs (list python-pytest python-pytest-astropy
-                         python-setuptools-scm))
+    (propagated-inputs
+     (list ;; python-dust-extinction ; XXX: Not packed yet, optional.
+           ;; python-specutils       ; XXX: Not packed yet, optional.
+           python-astropy
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/synphot_refactor")
     (synopsis "Synthetic photometry using Astropy")
     (description
@@ -3756,13 +3787,13 @@ of the old packages.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.3")
+    (version "0.8.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "tweakwcs" version))
               (sha256
                (base32
-                "09bd8b77rpn641cwmkhcyzx43xkx3va83wdcb47wcqqa7qgx9f1m"))))
+                "15gc2rc2isx3va6wbn4k1hi5qh49gq15cgbb2qqkbznd7f7d5ifv"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-astropy
                              python-gwcs
@@ -4037,13 +4068,13 @@ install an implementation package such as asdf-astropy.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf-astropy" version))
        (sha256
-        (base32 "1difb2y1hlalbhrw8znwmmc0vzgg44zfsay98lpllb7y0536fas6"))))
+        (base32 "061y7r1d2fqlr8a6gyaffqa3z5m0ymljahhvxzcb71355xkqig7v"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -4097,13 +4128,13 @@ install an implementation package such as gwcs.")
 (define-public python-gwcs
   (package
     (name "python-gwcs")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gwcs" version))
        (sha256
-        (base32 "1f3h41aq4nwcl6k80jb9s8shn2mhvz32mx9qhcm1xmcqrflqyf52"))))
+        (base32 "1vhvs0mcwrw0128q9pd9v21wl173lspj5rvygqr19ljncralbx73"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-jsonschema
@@ -4163,13 +4194,13 @@ Grace Roman Space Telescope.")
 (define-public python-radio-beam
   (package
     (name "python-radio-beam")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "radio-beam" version))
        (sha256
-        (base32 "19c6gmm1wvyp5nn1yfbzl428rkysdq273j2yaarxpivv7cwj7qjk"))))
+        (base32 "0dg6vqdhmzh47awdkkcbf455gw6if2qwxyhcqbq2dkhbwsx680gc"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-astropy

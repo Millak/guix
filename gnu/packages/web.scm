@@ -46,7 +46,7 @@
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
@@ -6620,6 +6620,28 @@ allocations, it does not buffer data, it can be interrupted at anytime.
 Depending on your architecture, it only requires about 40 bytes of data per
 message stream (in a web server that is per connection).")
       (license license:expat))))
+
+(define-public llhttp
+  (package
+    (name "llhttp")
+    (version "9.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nodejs/llhttp")
+                    (commit (string-append "release/v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nkv64c5fs8x6n5f9f6g28w5hvg776p55cwa0f82ni548nx279s1"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;FIXME: tests depend on node-mocha
+    (home-page "https://github.com/nodejs/llhttp")
+    (synopsis "Port of http_parser to llparse")
+    (description "@code{llparse} is a port of @code{http_parser} to
+@code{llparse} which aims making it more maintainable, verifiable and
+efficient where possible.")
+    (license license:expat)))
 
 (define-public python-httpretty
   (package

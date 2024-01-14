@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
@@ -23,10 +23,10 @@
 ;;; Copyright © 2020-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
-;;; Copyright © 2021, 2022, 2023 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2021-2024 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021, 2022, 2023 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
-;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2021, 2024 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2021, 2022, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
@@ -168,29 +168,30 @@
   (sbcl-package->ecl-package sbcl-alexandria-plus))
 
 (define-public sbcl-alexandria
-  (package
-   (name "sbcl-alexandria")
-   (version "1.4")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://gitlab.common-lisp.net/alexandria/alexandria.git")
-           (commit (string-append "v" version))))
-     (sha256
-      (base32
-       "0r1adhvf98h0104vq14q7y99h0hsa8wqwqw92h7ghrjxmsvz2z6l"))
-     (file-name (git-file-name name version))))
-   (build-system asdf-build-system/sbcl)
-   (native-inputs
-    (list sbcl-rt))
-   (synopsis "Collection of portable utilities for Common Lisp")
-   (description
-    "Alexandria is a collection of portable utilities.  It does not contain
+  (let ((commit "009b7e532071d9777bdbd63b82d776555da95916")
+        (revision "0"))
+    (package
+      (name "sbcl-alexandria")
+      (version (git-version "1.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/alexandria/alexandria.git")
+               (commit commit)))
+         (file-name (git-file-name "cl-alexandria" version))
+         (sha256
+          (base32 "0pdj779j3nwzn8f1661vf00rrjrbks1xgiq0rvwjw6qyxsfqfnl9"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rt))
+      (synopsis "Collection of portable utilities for Common Lisp")
+      (description
+       "Alexandria is a collection of portable utilities.  It does not contain
 conceptual extensions to Common Lisp.  It is conservative in scope, and
 portable between implementations.")
-   (home-page "https://common-lisp.net/project/alexandria/")
-   (license license:public-domain)))
+      (home-page "https://common-lisp.net/project/alexandria/")
+      (license license:public-domain))))
 
 (define-public cl-alexandria
   (sbcl-package->cl-source-package sbcl-alexandria))
@@ -1067,6 +1068,42 @@ options, e.g., by looking up an external key/value store
 (define-public ecl-clingon
   (sbcl-package->ecl-package sbcl-clingon))
 
+(define-public sbcl-command-line-args
+  (package
+    (name "sbcl-command-line-args")
+    (version "0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~whereiseveryone/command-line-args")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-command-line-args" version))
+       (sha256
+        (base32 "01p52zxr1b49c15ichlc3zadd1mrmwxzria53j949ayl2j6k8w1b"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     '(#:asd-systems '("whereiseveryone.command-line-args")))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-cl-str
+           sbcl-serapeum
+           sbcl-trivia))
+    (home-page "https://git.sr.ht/~whereiseveryone/command-line-args")
+    (synopsis "Automatically generate command line interfaces")
+    (description "Command-Line-Args provides a main macro (@code{command})
+that wraps a @code{defun} form and creates a new function that parses the
+command line arguments.  It has support for command-line options, positional,
+and variadic arguments.  It also generates a basic help message.  The
+interface is meant to be easy and non-intrusive.")
+    (license license:agpl3+)))
+
+(define-public cl-command-line-args
+  (sbcl-package->cl-source-package sbcl-command-line-args))
+
+(define-public ecl-command-line-args
+  (sbcl-package->ecl-package sbcl-command-line-args))
+
 (define-public sbcl-cl-irc
   (let ((commit "963823537c7bfcda2edd4c44d172192da6722175")
         (revision "0"))
@@ -1280,14 +1317,14 @@ timeouts.")
 (define-public sbcl-bordeaux-threads
   (package
     (name "sbcl-bordeaux-threads")
-    (version "0.9.2")
+    (version "0.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/sionescu/bordeaux-threads")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "0d9sd7pm91yhln95z8nclhn6n4l5b2cp3pxpggpmpv7rsq84ssmh"))
+               (base32 "0pp3w5hsph47sqagr4j2pbg3ddb29jx93zg8kvxsp2c4flp0qz0f"))
               (file-name (git-file-name "cl-bordeaux-threads" version))))
     (inputs (list sbcl-alexandria
                   sbcl-global-vars
@@ -1299,16 +1336,6 @@ timeouts.")
      (list
        #:phases
        #~(modify-phases %standard-phases
-           (add-after 'unpack 'silence-deprecation-warning
-             (lambda _
-               ;; The deprecation warning for APIv1 makes the build of some
-               ;; of the dependents of bordeaux-threads fail because they
-               ;; interpret it as an error instead of a simple indication.
-               ;; Let's silence this warning for now.
-               (substitute* (cons* "apiv1/default-implementations.lisp"
-                                   (find-files "apiv1" "impl-.*\\.lisp"))
-                 (("\\(warn \"Bordeaux-Threads APIv1 is deprecated\\. Please migrate to APIv2\\.\"\\)")
-                  ""))))
            (add-after 'unpack 'adjust-test-sleep
              (lambda _
                ;; 0.001 is too short for some slower machines.
@@ -1360,35 +1387,37 @@ thin compatibility layer for gray streams.")
   (sbcl-package->ecl-package sbcl-trivial-gray-streams))
 
 (define-public sbcl-flexi-streams
-  (package
-    (name "sbcl-flexi-streams")
-    (version "1.0.19")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edicl/flexi-streams")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "flexi-streams" version))
-       (sha256
-        (base32 "0v7lh4nrldzczd4mwylvmxfdxk7wfsli24iv1axd6mkb833llr70"))))
-    (build-system asdf-build-system/sbcl)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
-    (inputs `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)))
-    (synopsis "Implementation of virtual bivalent streams for Common Lisp")
-    (description "Flexi-streams is an implementation of \"virtual\" bivalent
+  (let ((commit "74a1027311371a57258eba1bc908e050f5702277")
+        (revision "0"))
+    (package
+      (name "sbcl-flexi-streams")
+      (version (git-version "1.0.19" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/edicl/flexi-streams")
+               (commit commit)))
+         (file-name (git-file-name "cl-flexi-streams" version))
+         (sha256
+          (base32 "04azqvz11s8dngy49bjl19hrfn0ip1b7m0szm4hlppq364msil7b"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'make-git-checkout-writable
+                   (lambda _
+                     (for-each make-file-writable (find-files ".")))))))
+      (inputs
+       (list sbcl-trivial-gray-streams))
+      (synopsis "Implementation of virtual bivalent streams for Common Lisp")
+      (description "Flexi-streams is an implementation of \"virtual\" bivalent
 streams that can be layered atop real binary or bivalent streams and that can
 be used to read and write character data in various single- or multi-octet
 encodings which can be changed on the fly.  It also supplies in-memory binary
 streams which are similar to string streams.")
-    (home-page "http://weitz.de/flexi-streams/")
-    (license license:bsd-3)))
+      (home-page "http://weitz.de/flexi-streams/")
+      (license license:bsd-3))))
 
 (define-public cl-flexi-streams
   (sbcl-package->cl-source-package sbcl-flexi-streams))
@@ -4843,27 +4872,29 @@ precisely controls the behavior of the parser via Common Lisp restarts.")
   (sbcl-package->ecl-package sbcl-unix-opts))
 
 (define-public sbcl-trivial-garbage
-  (package
-    (name "sbcl-trivial-garbage")
-    (version "0.21")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/trivial-garbage/trivial-garbage")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "trivial-garbage" version))
-       (sha256
-        (base32 "0122jicfg7pca1wxw8zak1n92h5friqy60988ns0ysksj3fphw9n"))))
-    (build-system asdf-build-system/sbcl)
-    (native-inputs
-     (list sbcl-rt))
-    (home-page "https://common-lisp.net/project/trivial-garbage/")
-    (synopsis "Portable GC-related APIs for Common Lisp")
-    (description "@command{trivial-garbage} provides a portable API to
+  (let ((commit "3474f6414b73d4e3aa2d5c53080f4247a34f6380")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-garbage")
+      (version (git-version "0.21" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/trivial-garbage/trivial-garbage")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-garbage" version))
+         (sha256
+          (base32 "0rfwxvwg0kpcaa0hsi035yrkfdfks4bq8d9azmrww2f0rmv9g6sd"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rt))
+      (home-page "https://common-lisp.net/project/trivial-garbage/")
+      (synopsis "Portable GC-related APIs for Common Lisp")
+      (description "@command{trivial-garbage} provides a portable API to
 finalizers, weak hash-tables and weak pointers on all major implementations of
 the Common Lisp programming language.")
-    (license license:public-domain)))
+      (license license:public-domain))))
 
 (define-public cl-trivial-garbage
   (sbcl-package->cl-source-package sbcl-trivial-garbage))
@@ -5108,39 +5139,40 @@ WebKit browsing engine.")
   (sbcl-package->ecl-package sbcl-cl-webkit))
 
 (define-public sbcl-lparallel
-  (package
-    (name "sbcl-lparallel")
-    (version "2.8.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lmj/lparallel/")
-             (commit (string-append "lparallel-" version))))
-       (file-name (git-file-name "lparallel" version))
-       (sha256
-        (base32
-         "0g0aylrbbrqsz0ahmwhvnk4cmc2931fllbpcfgzsprwnqqd7vwq9"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("trivial-garbage" ,sbcl-trivial-garbage)))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dependency
-           ;; lparallel loads a SBCL specific system in its asd file. This is
-           ;; not carried over into the fasl which is generated. In order for
-           ;; it to be carried over, it needs to be listed as a dependency.
-           (lambda _
-             (substitute* "lparallel.asd"
-               ((":depends-on \\(:alexandria" all)
-                (string-append all " #+sbcl :sb-cltl2"))))))))
-    (home-page "https://lparallel.org/")
-    (synopsis "Parallelism for Common Lisp")
-    (description
-     "@command{lparallel} is a library for parallel programming in Common
+  (let ((commit "80fc2952a074776abd343d6b5d3ab157f0e1df7a")
+        (revision "1"))
+    (package
+      (name "sbcl-lparallel")
+      (version (git-version "2.8.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sharplispers/lparallel/")
+               (commit commit)))
+         (file-name (git-file-name "cl-lparallel" version))
+         (sha256
+          (base32 "0nv2dx8cl25g68icqhw95yr5mygm86lcjzmzijql51na1p60g6y9"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-trivial-garbage))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-dependency
+             ;; lparallel loads a SBCL specific system in its asd file. This is
+             ;; not carried over into the fasl which is generated. In order for
+             ;; it to be carried over, it needs to be listed as a dependency.
+             (lambda _
+               (substitute* "lparallel.asd"
+                 ((":depends-on \\(:alexandria" all)
+                  (string-append all " #+sbcl :sb-cltl2"))))))))
+      (home-page "https://lparallel.org/")
+      (synopsis "Parallelism for Common Lisp")
+      (description
+       "@command{lparallel} is a library for parallel programming in Common
 Lisp, featuring:
 
 @itemize
@@ -5155,17 +5187,13 @@ Lisp, featuring:
 @item task killing by category,
 @item integrated timeouts.
 @end itemize\n")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public cl-lparallel
   (sbcl-package->cl-source-package sbcl-lparallel))
 
 (define-public ecl-lparallel
-  (package
-    (inherit (sbcl-package->ecl-package sbcl-lparallel))
-    (arguments
-     ;; TODO: Find why the tests get stuck forever; disable them for now.
-     `(#:tests? #f))))
+  (sbcl-package->ecl-package sbcl-lparallel))
 
 (define-public sbcl-cl-markup
   (let ((commit "e0eb7debf4bdff98d1f49d0f811321a6a637b390"))
@@ -6133,6 +6161,38 @@ BTCPay, Paypal, and Stripe.")
 
 (define-public ecl-lisp-pay
   (sbcl-package->ecl-package sbcl-lisp-pay))
+
+(define-public sbcl-stripe
+  (let ((commit "b59631d21d63e101de6eb96b56941471504ba644")
+        (revision "0"))
+    (package
+      (name "sbcl-stripe")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atlas-engineer/stripe")
+               (commit commit)))
+         (file-name (git-file-name "cl-stripe" version))
+         (sha256
+          (base32 "00sfq2f6dnpwa6pf7rgw5hazbwx4yf1g0jrkfz9h4kq5zyxwk1cy"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-dexador
+             sbcl-golden-utils
+             sbcl-local-time
+             sbcl-yason))
+      (home-page "https://github.com/atlas-engineer/stripe")
+      (synopsis "Stripe payment API client for Common Lisp")
+      (description "A client for the Stripe payment API.")
+      (license license:expat))))
+
+(define-public cl-stripe
+  (sbcl-package->cl-source-package sbcl-stripe))
+
+(define-public ecl-stripe
+  (sbcl-package->ecl-package sbcl-stripe))
 
 (define-public sbcl-drakma
   (package
@@ -16336,8 +16396,8 @@ directly.")
   (sbcl-package->ecl-package sbcl-custom-hash-table))
 
 (define-public sbcl-concurrent-hash-tables
-  (let ((commit "1b9f0b5da54fece4f42296e1bdacfcec0c370a5a")
-        (revision "0"))
+  (let ((commit "6ad539b8970ff94b1e1369b59065ed7d0660904c")
+        (revision "1"))
     (package
       (name "sbcl-concurrent-hash-tables")
       (version (git-version "0.0.0" revision commit))
@@ -16349,7 +16409,7 @@ directly.")
                (commit commit)))
          (file-name (git-file-name "cl-concurrent-hash-tables" version))
          (sha256
-          (base32 "03g24ycr1ngzg8bv10iwp1bmnldz5bxbfdqrzhfxhicpibh49r96"))))
+          (base32 "0wgbv3wl33rlfbywmjag0gk7igzfksmib30r8cbnd5n47ic09iip"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-atomics sbcl-bordeaux-threads))
@@ -26292,43 +26352,45 @@ extra features like type inference.")
   (sbcl-package->cl-source-package sbcl-nclasses))
 
 (define-public sbcl-prompter
-  (package
-    (name "sbcl-prompter")
-    (version "0.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/atlas-engineer/prompter")
-             (commit version)))
-       (file-name (git-file-name "cl-prompter" version))
-       (sha256
-        (base32
-         "008bq36siza9qwmz6b1pvpm53lxmzryahnhy372l18gl3180in03"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list
-      sbcl-alexandria
-      sbcl-calispel
-      sbcl-cl-containers
-      sbcl-cl-str
-      sbcl-closer-mop
-      sbcl-lparallel
-      sbcl-moptilities
-      sbcl-nclasses
-      sbcl-serapeum
-      sbcl-trivial-package-local-nicknames))
-    (native-inputs
-     (list sbcl-lisp-unit2))
-    (home-page "https://github.com/atlas-engineer/prompter")
-    (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
-    (description
-     "This prompter library is heavily inspired by Emacs' minibuffer and
+  (let ((commit "7890ed5d02e70aba01ceb964c6ee4f40776e7dc0")
+        (revision "0"))
+    (package
+      (name "sbcl-prompter")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atlas-engineer/prompter")
+               (commit commit)))
+         (file-name (git-file-name "cl-prompter" version))
+         (sha256
+          (base32
+           "0r15a6cagyp5x8aqx92ln2anni737h73bdshkvpzrac04ajss4md"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list
+        sbcl-alexandria
+        sbcl-calispel
+        sbcl-cl-containers
+        sbcl-cl-str
+        sbcl-closer-mop
+        sbcl-lparallel
+        sbcl-moptilities
+        sbcl-nclasses
+        sbcl-serapeum
+        sbcl-trivial-package-local-nicknames))
+      (native-inputs
+       (list sbcl-lisp-unit2))
+      (home-page "https://github.com/atlas-engineer/prompter")
+      (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
+      (description
+       "This prompter library is heavily inspired by Emacs' minibuffer and
 Helm (@url{https://emacs-helm.github.io/helm/}).  It only deals with the
 backend side of things, it does not handle any display.  Features include
 asynchronous suggestion computation, multiple sources, actions and resumable
 prompters.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public cl-prompter
   (sbcl-package->cl-source-package sbcl-prompter))

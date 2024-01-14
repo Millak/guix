@@ -55,9 +55,12 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ninja)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -71,6 +74,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -631,7 +635,7 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
 (define-public dtc
   (package
     (name "dtc")
-    (version "1.6.1")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -639,42 +643,56 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                     "dtc-" version ".tar.gz"))
               (sha256
                (base32
-                "0xm38h31jb29xfh2sfyk48d8wdfq4b8lmb412zx9vjr35izjb9iq"))))
-    (build-system gnu-build-system)
+                "0cij9399snpn672pdbda8qbxljdkfg068kvv3g5811rz6yslx124"))
+              (patches
+               (search-patches "dtc-meson-cell-overflow.patch"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:modules `(,@%gnu-build-system-modules (srfi srfi-26))
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
-              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
-              (string-append "PREFIX=" #$output)
-              (string-append "SETUP_PREFIX=" #$output)
-              "INSTALL=install")
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pkg-config
+          (add-after 'unpack 'preparations
             (lambda _
-              (substitute* '("Makefile"
-                             "tests/run_tests.sh")
-                (("pkg-config")
-                 #$(pkg-config-for-target)))))
-          (delete 'configure)           ;no configure script
-          (add-before 'build 'install-doc
+              ;; The version string is usually derived via setuptools-scm, but
+              ;; without the git metadata available this fails.
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+
+              ;; Needed by setup.py.
+              (setenv "DESTDIR" "/")
+
+              ;; Native gcc needed by run_test.sh.
+              (setenv "CC" "gcc")
+
+              ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib"))))
+          (add-after 'unpack 'install-doc
             (lambda _
               (with-directory-excursion "Documentation"
                 (for-each (cut install-file <> (string-append
                                                 #$output "/share/doc/dtc/"))
                           '("dts-format.txt"
                             "dt-object-internal.txt"
-                            "manual.txt"))))))))
+                            "manual.txt")))))
+          (add-after 'unpack 'patch-pkg-config
+            (lambda _
+              (substitute* '("tests/run_tests.sh")
+                (("pkg-config")
+                 #$(pkg-config-for-target))))))))
     (native-inputs
      (append
       (list bison
             flex
             libyaml
+            ninja
             pkg-config
-            swig)
+            python
+            python-setuptools-scm
+            swig
+            which)
       (if (member (%current-system) (package-supported-systems valgrind))
           (list valgrind)
           '())))

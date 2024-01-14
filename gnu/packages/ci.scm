@@ -6,6 +6,7 @@
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -172,7 +173,7 @@ intended as a replacement for Hydra.")
 (define-public laminar
   (package
     (name "laminar")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -181,7 +182,7 @@ intended as a replacement for Hydra.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1sg0kccp3nczkn2vxcsqv10vyvmjnhpaykc1nfhh55jyda4xzf9w"))))
+               "0ya5nzl1qf11if564xd49l8ajxyish7pbn875js4f153z775d3ks"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; TODO Can't build tests

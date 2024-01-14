@@ -59,6 +59,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
@@ -156,6 +157,25 @@ supporting functional genomics in disease context.  Accurate disease
 descriptions can discover new relationships between genes and disease, and new
 functions for previous uncharacteried genes and alleles.")
     (license license:artistic2.0)))
+
+(define-public r-jaspar2020
+  (package
+    (name "r-jaspar2020")
+    (version "0.99.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "JASPAR2020" version 'annotation))
+       (sha256
+        (base32 "0nrp63z7q2ivv5h87f7inpp2qll2dfgj4227l4rbnzii38a2vfdr"))))
+    (properties `((upstream-name . "JASPAR2020")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://jaspar.elixir.no/")
+    (synopsis "Data package for JASPAR database (version 2020)")
+    (description "Data package for JASPAR2020.  To explore these databases,
+utilize the TFBSTools package (version 1.23.1 or higher).")
+    (license license:gpl2)))
 
 (define-public r-mafh5-gnomad-v3-1-2-grch38
   (package
@@ -1126,6 +1146,46 @@ Ensembl.")
     (description "This package exposes an annotation database generated from
 Ensembl.")
     (license license:artistic2.0)))
+
+(define-public r-escape
+  (package
+    (name "r-escape")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "escape" version))
+       (sha256
+        (base32 "0bmin69ax7l5x3a0k9mv183277a0hl4znx02y79v2ilkgqkdm7fn"))))
+    (properties `((upstream-name . "escape")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocparallel
+                             r-broom
+                             r-data-table
+                             r-dplyr
+                             r-ggplot2
+                             r-ggridges
+                             r-gseabase
+                             r-gsva
+                             r-matrix
+                             r-matrixgenerics
+                             r-msigdbr
+                             r-patchwork
+                             r-reshape2
+                             r-rlang
+                             r-singlecellexperiment
+                             r-stringr
+                             r-summarizedexperiment
+                             r-ucell))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/escape")
+    (synopsis "Single cell analysis platform for enrichment")
+    (description
+     "R-escape streamlines gene set enrichment analysis for single-cell RNA
+sequencing.  Using raw count information, Seurat objects, or
+@code{SingleCellExperiment} format, users can perform and visualize GSEA
+across individual cells.")
+    (license license:gpl2)))
 
 (define-public r-snplocs-hsapiens-dbsnp144-grch37
   (package
@@ -5599,6 +5659,35 @@ identification of cells from empty droplets, removal of barcode-swapped
 pseudo-cells, and downsampling of the count matrix.")
     (license license:gpl3)))
 
+;; This is a CRAN package, but it depends on r-limma from Bioconductor.
+(define-public r-dsb
+  (package
+    (name "r-dsb")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dsb" version))
+       (sha256
+        (base32 "1xzhd4q04c1vql49r6m4zskpx7f5hkl5hmdgr3gsbxb73xfs51v2"))))
+    (properties `((upstream-name . "dsb")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-limma r-magrittr r-mclust))
+    (native-inputs (list r-knitr r-rmarkdown))
+    (home-page "https://github.com/niaid/dsb")
+    (synopsis
+     "Normalize & denoise droplet single cell protein data (CITE-Seq)")
+    (description
+     "R-dsb improves protein expression analysis in droplet-based single-cell
+studies.  The package specifically addresses noise in raw protein UMI counts
+from methods like CITE-seq.  It identifies and removes two main sources of
+noise—protein-specific noise from unbound antibodies and droplet/cell-specific
+noise.  The package is applicable to various methods, including CITE-seq,
+REAP-seq, ASAP-seq, TEA-seq, and Mission Bioplatform data.  Check the vignette
+for tutorials on integrating dsb with Seurat and Bioconductor, and using dsb
+in Python.")
+    (license license:cc0)))
+
 (define-public r-dss
   (package
     (name "r-dss")
@@ -7324,13 +7413,13 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "4.0.5")
+    (version "4.0.6")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "16cghh83v14jdq5n6xkm3jxj87n6l6zrxjgqdwb2ffgc26vkpb7w"))))
+                "0vksak7rv0agar0gplpj2fcp3183l3iyvbqjmx64c7dwpzjh3lb5"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7668,13 +7757,13 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.38.0")
+    (version "1.38.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "06xa3dcdk6jprvpyvr3pfbv6qv8xrqw2n6rrfp8q8qizx3ifj431"))))
+                "0y54kdgb77xqni46pgff1by2ska2jaxfcpq6gk86wb2rym37wlxj"))))
     (properties
      `((upstream-name . "GenomicAlignments")))
     (build-system r-build-system)
@@ -13131,14 +13220,14 @@ accessiblity for new Bioconductor users is hopefully increased.")
 (define-public r-inspect
   (package
     (name "r-inspect")
-    (version "1.31.0")
+    (version "1.32.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "INSPEcT" version))
        (sha256
         (base32
-         "0c7bw9cnav41vals2scv2gh5mj5nx2mgzagdb8g99sprdqv5924n"))))
+         "04znack6p50cmc2qyk4hf45m6v70p0bv7h3xs87j0x0h4mb920ch"))))
     (properties `((upstream-name . "INSPEcT")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13147,7 +13236,6 @@ accessiblity for new Bioconductor users is hopefully increased.")
            r-biocparallel
            r-deseq2
            r-desolve
-           r-gdata
            r-genomeinfodb
            r-genomicalignments
            r-genomicfeatures
@@ -13156,6 +13244,7 @@ accessiblity for new Bioconductor users is hopefully increased.")
            r-kernsmooth
            r-plgem
            r-proc
+           r-readxl
            r-rootsolve
            r-rsamtools
            r-rtracklayer
@@ -13229,14 +13318,14 @@ samples.")
 (define-public r-biocneighbors
   (package
     (name "r-biocneighbors")
-    (version "1.20.1")
+    (version "1.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocNeighbors" version))
        (sha256
         (base32
-         "0w7hd6w0lmj1jaaq9zd5gwnnpkzcr0byqm5q584wjg4xgvsb981j"))))
+         "0lvsw920i75di5pwq7yvk8wcxp01wrh7863xmwbrmk5jrvl3y4h4"))))
     (properties `((upstream-name . "BiocNeighbors")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17668,9 +17757,31 @@ of the analyses while minimizing technical noise.")
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "1r2slhzrp3gf45k5gknqgj3vjz7p0rx2yjzrbp020inj82fp4mgi"))))
+         "1r2slhzrp3gf45k5gknqgj3vjz7p0rx2yjzrbp020inj82fp4mgi"))
+       ;; Remove bundled boost sources
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "src/boost"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle
+            (lambda _
+              (substitute* "src/Makevars.in"
+                (("\\$\\(USERLIB\\): \\$\\{boost_fs_objs\\}")
+                 "$(USERLIB):")
+                (("\\$\\{cytolib_objs\\} \\$\\{boost_fs_objs\\} \\$\\{boost_sys_objs\\}")
+                 "${cytolib_objs}")
+                (("PKG_CPPFLAGS =")
+                 "PKG_CPPFLAGS = -lboost_filesystem")
+                #;
+                (("^BOOSTFSLIB.*")
+                 (string-append "BOOSTFSLIB="
+                                #$(this-package-input "boost") "/libboost_filesystem.so\n"))))))))
+    (inputs (list boost openblas protobuf zlib))
     (native-inputs
      (list r-knitr))
     (propagated-inputs
@@ -21322,13 +21433,13 @@ libraries.")
 (define-public r-singler
   (package
     (name "r-singler")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SingleR" version))
        (sha256
-        (base32 "0s7m3qdbgrqaq93k6rvyj34h36kdjvppn9ilflrcaa5w498fzfhf"))))
+        (base32 "0zlv45diasff5ipxp99dddswclrzzdcmkqp278fm2cj7aibvb3sd"))))
     (properties `((upstream-name . "SingleR")))
     (build-system r-build-system)
     (propagated-inputs

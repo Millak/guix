@@ -769,7 +769,7 @@ is based on Vim's builtin plugin support.")
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.9.4")
+    (version "0.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -778,7 +778,7 @@ is based on Vim's builtin plugin support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wj1p5x88s58f22crdyzwlfiqgnwlqdkbw4wxllf0v5hg16gbnhp"))))
+                "1j3z7jay0m6g06v04falrzr062g07xr4svbrc3hywlqi2h6rrvk5"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules
@@ -884,6 +884,14 @@ refactor Vim in order to:
      '(#:tests? #false ;no tests
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'help-cmake-find-msgpack-c
+           (lambda _
+             ;; Patch the build system so that it can find the modern
+             ;; 'msgpack-c' named pkg-config file (see:
+             ;; https://github.com/jeanguyomarch/eovim/issues/73).
+             (substitute* "cmake/Modules/FindMsgPack.cmake"
+               (("MSGPACK QUIET msgpack")
+                "MSGPACK QUIET msgpack-c msgpack"))))
          (add-after 'configure 'reference-nvim
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((nvim (search-input-file inputs "/bin/nvim")))
@@ -894,10 +902,8 @@ refactor Vim in order to:
                   (string-append start nvim))))))
          (add-before 'build 'set-home
            (lambda _ (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list efl msgpack neovim))
+    (native-inputs (list pkg-config))
+    (inputs (list efl msgpack-c neovim))
     (home-page "https://github.com/jeanguyomarch/eovim/")
     (synopsis "EFL GUI for Neovim")
     (description "Graphical Neovim interface based on the @acronym{EFL, Enlightenment

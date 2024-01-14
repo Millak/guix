@@ -1289,10 +1289,8 @@ that can be displayed terminal.")
         (base32
          "0x5c31yq7ansmiy20a0qf59wagba9v3pq97mlkxrqxn4n1gcc6vi"))))
     (build-system gnu-build-system)
-    (inputs
-     (list libevent libssh msgpack ncurses))
-    (native-inputs
-     (list autoconf automake pkg-config))
+    (inputs (list libevent libssh msgpack-3 ncurses))
+    (native-inputs (list autoconf automake pkg-config))
     (home-page "https://tmate.io/")
     (synopsis "Terminal sharing application")
     (description "tmate is a terminal sharing application that allows you to

@@ -2232,7 +2232,7 @@ data.")
 (define-public qmapshack
   (package
     (name "qmapshack")
-    (version "1.16.1")
+    (version "1.17.1")
     (source
      (origin
        (method git-fetch)
@@ -2241,7 +2241,7 @@ data.")
              (commit (string-append "V_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "184fqmsfzr3b333ssizjk6gvv7mncmygq8dj5r7rsvs5md26z2ys"))))
+        (base32 "1ckadklk67dp1pvkacfkr8379g2pwk73q85jfzm8viclcqmfvb62"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config qttools-5))
@@ -3227,3 +3227,31 @@ For maps, it can uses its own \"binfile\" map format, or Garmin map
 file format, and data from OpenStreetMap, Garmin maps, Marco Polo
 Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
     (license license:gpl2)))
+
+(define-public laszip
+  (package
+    (name "laszip")
+    (version "3.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LASzip/LASzip")
+             (commit "3.4.3")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09lcsgxwv0jq50fhsgfhx0npbf1zcwn3hbnq6q78fshqksbxmz7m"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DLASZIP_BUILD_STATIC=NO")
+      #:build-type "Release"
+      ;; No tests.
+      #:tests? #f))
+    (home-page "https://laszip.org/")
+    (synopsis "Compression library for LAS files")
+    (description
+     "LASzip is a library for compressing @code{LAS} files and uncompressing
+@code{LAZ} files.  The @code{LAS} format is a file format designed for the
+interchange and archiving of lidar point cloud data.")
+    (license license:asl2.0)))

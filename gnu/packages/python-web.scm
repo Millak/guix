@@ -5,7 +5,7 @@
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019-2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -60,6 +60,7 @@
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,6 +201,38 @@ scripting Launchpad via its the web service API.")
     (description "This Python package provides a self-contained, easily
 reusable library for parsing, manipulating, and generating URIs.")
     (license license:lgpl3)))
+
+(define-public python-portend
+  (package
+    (name "python-portend")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "portend" version))
+       (sha256
+        (base32 "0wpvixicc3d0lack65554mvdrrckkn18p1xcgiv9v5cwq59a6l2j"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (propagated-inputs (list python-tempora))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been packaged.
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/portend")
+    (synopsis "Monitor TCP ports for bound or unbound states")
+    (description
+     "@code{python-portend} can be used to monitor TCP ports for bound or
+unbound states.  For example, waiting for a port to be occupied or freed
+within a set timeout.  @code{python-portend} can also be used directly from
+the command line.")
+    (license license:expat)))
 
 (define-public python-prawcore
   (package
@@ -2594,6 +2627,32 @@ your Web app.")
       "WebOb provides wrappers around the WSGI request environment, and an
 object to help create WSGI responses.")
     (license license:expat)))
+
+(define-public python-zc-lockfile
+  (package
+    (name "python-zc-lockfile")
+    (version "3.0.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zc.lockfile" version))
+       (sha256
+        (base32 "1v41irj7azaag3f14xyviv3l8mvap74v5p3q274k68vakrnyxcmd"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "zope-testrunner" "--test-path=src")
+                          (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testing python-zope-testrunner))
+    (home-page "https://github.com/zopefoundation/zc.lockfile")
+    (synopsis "Interprocess locks using lock files")
+    (description
+     "This package provides an implementation of interprocess locks using lock
+files.  These locks can also be used to mediate access to other files.")
+    (license license:zpl2.1)))
 
 (define-public python-zope-event
   (package
@@ -7052,14 +7111,14 @@ as a Python package.")
 (define-public python-sanic-routing
   (package
     (name "python-sanic-routing")
-    (version "0.7.2")
+    (version "23.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic-routing" version))
        (sha256
-        (base32 "0k9paln0jd4sc2bklp977c82n29pk12wiv726siplkh57y5yi70k"))))
-    (build-system python-build-system)
+        (base32 "014bhkharcgyprdvlk7wjxhjp1pr0cva1nwj4f2qrr23qiidrjhx"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; PyPi sources does not contain tests, recursive dependency on
      ;; python-sanic.
@@ -7073,29 +7132,19 @@ the @code{BasicRouter}.")
 (define-public python-sanic-testing
   (package
     (name "python-sanic-testing")
-    (version "22.3.0")
+    (version "23.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic-testing" version))
        (sha256
-        (base32 "1vkgi9d3xyik507j4jy9s74mkl81hgx3c2d5y3aa1av9h6wjjivp"))))
-    (build-system python-build-system)
+        (base32 "0gqkzv90sbj9rw7yfly9c58lq9dq30g5hhcgjl3ihzjb66vm571b"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; PyPi sources does not contain tests, recursive dependency on
      ;; python-sanic.
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'loosen-requirements
-                 (lambda _
-                   ;; Don't place an upper boundary on httpx version.
-                   ;; https://github.com/sanic-org/sanic-testing/pull/39
-                   (substitute* "setup.py"
-                     (("httpx>=0\\.18,<0\\.23")
-                      "httpx>=0.18")))))))
-    (propagated-inputs (list python-httpx python-sanic-bootstrap
-                             python-websockets))
+     (list #:tests? #f))
+    (propagated-inputs (list python-httpx python-sanic-bootstrap))
     (home-page "https://github.com/sanic-org/sanic-testing/")
     (synopsis "Test clients for Sanic")
     (description "Internal package for @code{python-sanic}, which is
@@ -7106,69 +7155,85 @@ applications.")
 (define-public python-sanic
   (package
     (name "python-sanic")
-    ;; We provide the latest LTS version of python-sanic.
-    (version "21.12.1")
+    (version "23.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic" version))
        (sha256
         (base32
-         "0b8mcd1q9qkwcv2qz8nlyaacs0bp7a1l31sdq2m8hhkxykzfq5bg"))))
-    (build-system python-build-system)
+         "115vnir4qijv89139g5h0i4l0n4w3bgh1ickgnk8xidxsa0wla15"))))
+    (build-system pyproject-build-system)
     (arguments
       (list
+       #:test-flags
+       '(list "-k"
+              (string-append
+               ;; PyPi sources lack examples module.
+               "not test_gunicorn_"
+               ;; Does not expect brotli and reordered headers.
+               " and not test_raw_headers"
+               ;; These look like buggy testcases.
+               " and not test_zero_downtime"
+               " and not test_non_default_uvloop_config_raises_warning"
+               " and not test_listeners_triggered"
+               " and not test_keep_alive_connection_context"
+               " and not test_keep_alive_client_timeout"
+               ;; Unclear why they fail since core-updates merge.
+               " and not test_missing_sni"
+               " and not test_no_matching_cert"
+               " and not test_wildcards"
+               ;; These tests fail because subprotocols appear to be
+               ;; parameterized as None
+               " and not test_websocket_route_with_subprotocols"
+               ;; AF_UNIX path too long
+               " and not test_setup_and_teardown_unix"
+               " and not test_configure_socket"
+               ;; Freezes
+               " and not test_server_run_with_repl"))
        #:phases
-         #~(modify-phases %standard-phases
+       #~(modify-phases %standard-phases
            (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
+             (lambda* (#:key tests? test-flags #:allow-other-keys)
                (when tests?
-                 (invoke "pytest" "-vv" "./tests" "-k"
-                         (string-append
-                           ;; PyPi sources lack examples module.
-                           "not test_gunicorn_"
-                           ;; Does not expect brotli and reordered headers.
-                           " and not test_raw_headers"
-                           ;; These look like buggy testcases.
-                           " and not test_zero_downtime"
-                           " and not test_non_default_uvloop_config_raises_warning"
-                           " and not test_listeners_triggered"
-                           " and not test_keep_alive_connection_context"
-                           " and not test_keep_alive_client_timeout"
-                           ;; Unclear why they fail since core-updates merge.
-                           " and not test_missing_sni"
-                           " and not test_no_matching_cert"
-                           " and not test_wildcards"))))))))
+                 (apply invoke "pytest" "-vv" "./tests"
+                        test-flags)))))))
     (propagated-inputs
      (list python-aiofiles
+           python-aioquic
+           python-html5tagger
            python-httptools
            python-multidict
            python-sanic-routing
+           python-tracerite
+           python-typing-extensions
            python-ujson
            python-uvloop
            python-websockets))
     (native-inputs
-     (list gunicorn
-           python-bandit
+     (list python-bandit
            python-beautifulsoup4
            python-chardet
-           python-isort
+           python-coverage
+           python-cryptography
+           python-docutils
+           python-mypy
+           python-pygments
            python-pytest
            python-pytest-benchmark
            python-pytest-sanic
-           python-pytest-sugar
-           python-pytest-asyncio
            python-sanic-testing
+           python-slotscheck
+           python-towncrier
+           python-tox
+           python-types-ujson
            python-uvicorn))
-    (home-page
-     "https://github.com/sanic-org/sanic/")
-    (synopsis
-     "Async Python web server/framework")
+    (home-page "https://github.com/sanic-org/sanic/")
+    (synopsis "Async Python web server/framework")
     (description
-     "Sanic is a Python web server and web framework
-that's written to go fast.  It allows the usage of the
-@code{async/await} syntax added in Python 3.5, which makes
-your code non-blocking and speedy.")
+     "Sanic is a Python web server and web framework that's written to go
+fast.  It allows the usage of the @code{async/await} syntax added in Python
+3.5, which makes your code non-blocking and speedy.")
     (license license:expat)))
 
 (define-public python-sanic-bootstrap

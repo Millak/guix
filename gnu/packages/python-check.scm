@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -2140,20 +2140,29 @@ help in debugging failures and optimizing the scheduler to improve speed.")
               (method url-fetch)
               (uri (pypi-uri "pytest-sanic" version))
               (sha256
-                (base32
-                  "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
+               (base32
+                "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
+    ;; We don't use pyproject-build-system because that would require
+    ;; poetry.masonry.
     (build-system python-build-system)
     (arguments
      ;; Tests depend on python-sanic.
-     `(#:tests? #f))
+     (list
+      #:tests? #f
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("websockets.*<11.0")
+                "websockets<12.0")))))))
     (propagated-inputs
-      (list python-httpx python-async-generator python-pytest
-            python-websockets))
-    (home-page
-      "https://github.com/yunstanford/pytest-sanic")
+     (list python-httpx python-async-generator python-pytest
+           python-websockets))
+    (home-page "https://github.com/yunstanford/pytest-sanic")
     (synopsis "Pytest plugin for Sanic")
-    (description "A pytest plugin for Sanic.  It helps you to test your
-code asynchronously.")
+    (description "This package provides a pytest plugin for Sanic.  It helps
+you to test your code asynchronously.")
     (license license:expat)))
 
 (define-public python-allpairspy

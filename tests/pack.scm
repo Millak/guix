@@ -2,6 +2,7 @@
 ;;; Copyright © 2017-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix utils)
+  #:use-module ((guix build utils) #:select (%store-directory))
   #:use-module (gnu packages)
   #:use-module ((gnu packages base) #:select (libc-utf8-locales-for-target))
   #:use-module (gnu packages bootstrap)
@@ -248,6 +250,54 @@
                                     (string=? (string-append #$profile "/bin/guile")
                                               (pk 'guilelink (readlink "bin/Guile"))))
                            (mkdir #$output)))))))
+      (built-derivations (list check))))
+
+  (unless store (test-skip 1))
+  (test-assertm "docker-layered-image + localstatedir"
+    (mlet* %store-monad
+        ((guile (set-guile-for-build (default-guile)))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
+         (tarball (docker-image "docker-pack" profile
+                                #:symlinks '(("/bin/Guile" -> "bin/guile"))
+                                #:localstatedir? #t
+                                #:max-layers 100))
+         (check (gexp->derivation
+                 "check-tarball"
+                 (with-imported-modules '((guix build utils))
+                   #~(begin
+                       (use-modules (guix build utils)
+                                    (ice-9 match))
+
+                       (define bin
+                         (string-append "." #$profile "/bin"))
+
+                       (define store
+                         (string-append "." #$(%store-directory)))
+
+                       (setenv "PATH" (string-append #$%tar-bootstrap "/bin"))
+                       (mkdir "base")
+                       (with-directory-excursion "base"
+                         (invoke "tar" "xvf" #$tarball))
+
+                       (match (find-files "base" "layer.tar")
+                         ((layers ...)
+                          (for-each (lambda (layer)
+                                      (invoke "tar" "xvf" layer)
+                                      (invoke "chmod" "--recursive" "u+w" store))
+                                    layers)))
+
+                       (when
+                           (and (file-exists? (string-append bin "/guile"))
+                                (file-exists? "var/guix/db/db.sqlite")
+                                (file-is-directory? "tmp")
+                                (string=? (string-append #$%bootstrap-guile "/bin")
+                                          (readlink bin))
+                                (string=? (string-append #$profile "/bin/guile")
+                                          (readlink "bin/Guile")))
+                         (mkdir #$output)))))))
       (built-derivations (list check))))
 
   (unless store (test-skip 1))

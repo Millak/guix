@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gnupg)
@@ -279,25 +281,17 @@ and triple stores.")
 (define-public serd
   (package
     (name "serd")
-    (version "0.30.16")
+    (version "0.32.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/serd-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0ilimkczibiwwvc12i14b8zi6ng42hjf9j907g8dik8rlmnlh3zm"))))
+               "18cwj8xxsaq6iw45kcljbhrral0cqvav80p4mdv2l7g0d2a6ks6i"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-ldflags
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
-    (home-page "https://drobilla.net/software/serd/")
+    (native-inputs (list python-minimal))
+    (home-page "https://drobilla.net/software/serd.html")
     (synopsis "Library for RDF syntax supporting Turtle and NTriples")
     (description
      "Serd is a lightweight C library for RDF syntax which supports reading
@@ -311,31 +305,22 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 (define-public sord
   (package
     (name "sord")
-    (version "0.16.14")
+    (version "0.16.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/sord-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "06vkqk3dnn15zdnzklahib2pvbfspy2zcrnvhmxnw8fbbxyxj3r2"))))
+               "1l2zjz6gypxbf1z32zyqkljdcn9mz452djc4xq1dlhv1fmnqfzr5"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-ldflags
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (inputs
      (list pcre))
     (native-inputs
      (list pkg-config))
     (propagated-inputs
-     (list serd))                 ; required by sord-0.pc
-    (home-page "https://drobilla.net/software/sord/")
+     (list serd zix))                 ;required by sord-0.pc
+    (home-page "https://drobilla.net/software/sord.html")
     (synopsis "C library for storing RDF data in memory")
     (description
      "Sord is a lightweight C library for storing RDF data in memory.")

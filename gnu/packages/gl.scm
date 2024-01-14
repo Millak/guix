@@ -18,7 +18,7 @@
 ;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +62,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
+  #:use-module (gnu packages cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
@@ -294,7 +295,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "23.2.1")
+    (version "23.3.2")
     (source
       (origin
         (method url-fetch)
@@ -304,7 +305,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   "mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "1k61pgw0vcjrlb4299q98cy7iqmk2r7jmb5ika91z01dzhb0dpk4"))))
+          "1p4swrbmz3kb1805kdj973hf8virgmix4m9qprmcb2bgl4gviz1w"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -338,7 +339,8 @@ also known as DXTn or DXTC) for Mesa.")
             python-wrapper
             (@ (gnu packages base) which)
             (if (%current-target-system)
-              (list pkg-config-for-build
+              (list cmake-minimal-cross
+                    pkg-config-for-build
                     wayland
                     wayland-protocols)
               '())))
@@ -351,16 +353,16 @@ also known as DXTn or DXTC) for Mesa.")
              ((target-aarch64?)
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
-panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((target-arm32?)
               ;; Freedreno FTBFS when built on a 64-bit machine.
               '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,\
-r300,r600,swrast,tegra,v3d,vc4,virgl"))
+r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl,zink"))
              (else
               '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
-svga,swrast,virgl")))
+svga,swrast,virgl,zink")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio
          "-Dplatforms=x11,wayland"
@@ -415,10 +417,16 @@ svga,swrast,virgl")))
        #~(modify-phases %standard-phases
          #$@(if (%current-target-system)
               #~((add-after 'unpack 'fix-cross-compiling
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     ;; It isn't a problem to use the host's llvm-config.
-                     (setenv "LLVM_CONFIG"
-                             (search-input-file inputs "/bin/llvm-config")))))
+                   (lambda* (#:key native-inputs #:allow-other-keys)
+                     ;; When cross compiling, we use cmake to find llvm, not
+                     ;; llvm-config, because llvm-config cannot be executed
+                     ;; see https://github.com/llvm/llvm-project/issues/58984
+                     (substitute* "meson.build"
+                       (("method : host_machine\\.system.*")
+                        "method : 'cmake',\n"))
+                     (setenv "CMAKE"
+                             (search-input-file
+                              native-inputs "/bin/cmake")))))
               #~())
          (add-after 'unpack 'disable-failing-test
            (lambda _

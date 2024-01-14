@@ -31,6 +31,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix memoization)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -283,21 +284,27 @@ driver.")
                          `(,glib "bin")
                          help2man
                          gettext-minimal))
-    (inputs (list bash-completion
-                  libgudev
-                  libxmlb
-                  sqlite
-                  polkit
-                  eudev
-                  libelf
-                  tpm2-tss
-                  cairo
-                  efivar
-                  pango
-                  protobuf-c
-                  mingw-w64-tools
-                  libsmbios
-                  gnu-efi))
+    (inputs (append
+             (list bash-completion
+                   libgudev
+                   libxmlb
+                   sqlite
+                   polkit
+                   eudev
+                   libelf
+                   tpm2-tss
+                   cairo
+                   efivar
+                   pango
+                   protobuf-c
+                   mingw-w64-tools
+                   gnu-efi)
+             (if (supported-package? libsmbios
+                                     (or (and=> (%current-target-system)
+                                                platform-target->system)
+                                         (%current-system)))
+                 (list libsmbios)
+                 '())))
     ;; In Requires of fwupd*.pc.
     (propagated-inputs (list curl
                              gcab
@@ -875,7 +882,7 @@ Executables included are:
   (let ((toolchain-ver "GCC5"))
     (package
       (name "ovmf")
-      (version "202308")
+      (version "202311")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -886,7 +893,7 @@ Executables included are:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "04rnfnaqr2c7ayplj7ib730zp1snw157zx5rmykz5hz1zz2vb20j"))))
+                  "136dl5cxpjpg37whzlqq7jrrjsgybmwrgkbbmks8xaixqmzwhbw0"))))
       (build-system gnu-build-system)
       (arguments
        (list

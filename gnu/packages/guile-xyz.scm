@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
@@ -816,7 +816,8 @@ tables.")
                (base32
                 "0wvdi4l58f9a5c9wi3cdc9l1bniscsixb6w2zj86mch7j7j814lc"))
               (patches
-               (search-patches "guile-fibers-libevent-32-bit.patch"))))
+               (search-patches "guile-fibers-libevent-32-bit.patch"
+                               "guile-fibers-libevent-timeout.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -1837,6 +1838,33 @@ written in pure Scheme by using Guile's foreign function interface.")
      "Guile-XOSD provides Guile bindings for @code{libxosd},
 @uref{http://sourceforge.net/projects/libxosd/, the X On Screen Display
 library}.")
+    (license license:gpl3+)))
+
+(define-public guile-yamlpp
+  (package
+    (name "guile-yamlpp")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/yorgath/guile-yamlpp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14mlqi7hw7pi9scwk1g432issnqcn185pd8na2plijxq55cy0iq7"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list guile-3.0 yaml-cpp))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUILE_EXTENSIONS_PATH")
+            (files (list "lib/guile/3.0")))))
+    (home-page "https://gitlab.com/yorgath/guile-yamlpp")
+    (synopsis "Guile YAML reader/writer based on @code{yaml-cpp}")
+    (description
+     "A module for GNU Guile to read and write YAML files.  It works using
+bindings to the @code{yaml-cpp} C++ library.")
     (license license:gpl3+)))
 
 (define-public guile-dbi
@@ -3838,6 +3866,64 @@ object Nothing (which has no payload); an Either object is either a Right
 object or a Left object.  Maybe represents the concept of optional values;
 Either represents the concept of values which are either correct (Right)
 or errors (Left).")
+      (license license:expat))))
+
+(define-public guile-srfi-197
+  ;; There is minor fix to the documention after the final tag, so use
+  ;; the newest commit instead.
+  (let ((commit "d31b8be86460bf837cccf2737a1b9b9c01788573")
+        (revision "0"))
+    (package
+      (name "guile-srfi-197")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/scheme-requests-for-implementation/srfi-197")
+               (commit commit)))
+         (sha256
+          (base32
+           "1c1jjzqgavjwfzs352wssdbjga5ymv4g3lkl0zxhjw7pfrr5xx1m"))
+         (file-name (git-file-name name version))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "src"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'create-module
+              (lambda _
+                (use-modules (ice-9 textual-ports))
+                (mkdir-p "src/srfi")
+                (call-with-output-file "src/srfi/srfi-197.scm"
+                  (lambda (port)
+                    (write '(define-module (srfi srfi-197)
+                              #:use-module (scheme base)
+                              #:export (chain
+                                        chain-and
+                                        chain-when
+                                        chain-lambda
+                                        nest
+                                        nest-reverse))
+                           port)
+                    (call-with-input-file "srfi-197-syntax-case.scm"
+                      (lambda (in-port)
+                        (display (get-string-all in-port) port)))))))
+            (add-after 'install 'check-installed
+              (lambda _
+                (define-values (scm go) (target-guile-scm+go #$output))
+                (invoke "guile" "-L" scm "-C" go
+                        "--use-srfi=197" "./test.scm"))))))
+      (native-inputs
+       (list guile-3.0))
+      (home-page "https://srfi.schemers.org/srfi-197/")
+      (synopsis "Pipeline operators for Guile")
+      (description
+       "This library provides a reference implementation for SRFI-197.  This
+SRFI defines a family of chain and nest pipeline operators, which can rewrite
+nested expressions like @code{(a b (c d (e f g)))} as a sequence of
+operations: @code{(chain g (e f _) (c d _) (a b _))}.")
       (license license:expat))))
 
 (define-public guile-srfi-232

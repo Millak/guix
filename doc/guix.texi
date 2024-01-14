@@ -56,7 +56,7 @@ Copyright @copyright{} 2017 Andy Wingo@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2023 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
-Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*
+Copyright @copyright{} 2018, 2021, 2023 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
@@ -122,6 +122,7 @@ Copyright @copyright{} 2023 Felix Lechner@*
 Copyright @copyright{} 2023 Foundation Devices, Inc.@*
 Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2023 Saku Laesvuori@*
+Copyright @copyright{} 2023 Graham James Addis@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -2935,7 +2936,7 @@ Boot the USB installation image in an VM:
 qemu-system-x86_64 -m 1024 -smp 1 -enable-kvm \
   -nic user,model=virtio-net-pci -boot menu=on,order=d \
   -drive file=guix-system.img \
-  -drive media=cdrom,file=guix-system-install-@value{VERSION}.@var{system}.iso
+  -drive media=cdrom,readonly=on,file=guix-system-install-@value{VERSION}.@var{system}.iso
 @end example
 
 @code{-enable-kvm} is optional, but significantly improves performance,
@@ -7406,7 +7407,7 @@ execution engines listed above by setting the
 @env{GUIX_EXECUTION_ENGINE} environment variable accordingly.
 @end quotation
 
-@cindex entry point, for Docker images
+@cindex entry point, for Docker and Singularity images
 @item --entry-point=@var{command}
 Use @var{command} as the @dfn{entry point} of the resulting pack, if the pack
 format supports it---currently @code{docker} and @code{squashfs} (Singularity)
@@ -7428,6 +7429,41 @@ arguments will spawn @code{bin/guile}:
 docker load -i pack.tar.gz
 docker run @var{image-id}
 @end example
+
+@cindex entry point arguments, for docker images
+@item --entry-point-argument=@var{command}
+@itemx -A @var{command}
+Use @var{command} as an argument to @dfn{entry point} of the resulting pack.
+This option is only valid in conjunction with @code{--entry-point} and can
+appear multiple times on the command line.
+
+@example
+guix pack -f docker --entry-point=bin/guile --entry-point-argument="--help" guile
+@end example
+
+@cindex maximum layers argument, for docker images
+@item --max-layers=@code{n}
+Specifies the maximum number of Docker image layers allowed when
+building an image.
+
+@example
+guix pack -f docker --max-layers=100 guile
+@end example
+
+This option allows you to limit the number of layers in a Docker image.
+Docker images are comprised of multiple layers, and each layer adds to
+the overall size and complexity of the image.  By setting a maximum
+number of layers, you can control the following effects:
+
+@itemize
+@item Disk Usage:
+Increasing the number of layers can help optimize the disk space
+required to store multiple images built with a similar package graph.
+
+@item Pulling:
+When transferring images between different nodes or systems, having more
+layers can reduce the time required to pull the image.
+@end itemize
 
 @item --expression=@var{expr}
 @itemx -e @var{expr}
@@ -14549,6 +14585,13 @@ Additional options include:
 Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
+@item --recursive-dev-dependencies
+If @option{--recursive-dev-dependencies} is specified, also the recursively
+imported packages contain their development dependencies, which are recursively
+imported as well.
+@item --allow-yanked
+If no non-yanked version of a crate is available, use the latest yanked
+version instead instead of aborting.
 @end table
 
 @item elm
@@ -17567,7 +17610,7 @@ mounted.}.
 
 @findex file-system-label
 File system labels are created using the @code{file-system-label}
-procedure, UUIDs are created using @code{uuid}, and @file{/dev} node are
+procedure, UUIDs are created using @code{uuid}, and @file{/dev} nodes are
 plain strings.  Here's an example of a file system referred to by its
 label, as shown by the @command{e2label} command:
 
@@ -43503,7 +43546,7 @@ utilizing the configuration mechanism described in the previous chapter
 (@pxref{Defining Services}), but for user's dotfiles and packages.  It
 works both on Guix System and foreign distros and allows users to
 declare all the packages and services that should be installed and
-configured for the user.  Once a user has written a file containing
+configured for the user.  Once a user has written a file containing a
 @code{home-environment} record, such a configuration can be
 @dfn{instantiated} by an unprivileged user with the @command{guix home}
 command (@pxref{Invoking guix home}).
@@ -43826,8 +43869,8 @@ be used here, too.  Make sure that modules containing the specified
 packages are imported with @code{use-modules}.  To find a package or
 information about its module use @command{guix search} (@pxref{Invoking
 guix package}).  Alternatively, @code{specification->package} can be
-used to get the package record from string without importing related
-module.
+used to get the package record from a string without importing its
+related module.
 @end defvar
 
 There are few more essential services, but users are not expected to
@@ -45278,25 +45321,25 @@ PulseAudio clients to use PipeWire transparently.
 
 @node Mail Home Services
 @subsection Mail Home Services
- 
+
 The @code{(gnu home services mail)} module provides services that help
 you set up the tools to work with emails in your home environment.
- 
+
 @cindex msmtp
 @uref{https://marlam.de/msmtp, MSMTP} is a @acronym{SMTP, Simple Mail
 Transfer Protocol} client.  It sends mail to a predefined SMTP server
 that takes care of proper delivery.
- 
+
 The service reference is given below.
- 
+
 @defvar home-msmtp-service-type
 This is the service type for @command{msmtp}.  Its value must be a
 @code{home-msmtp-configuration}, as shown below.  It provides the
 @file{~/.config/msmtp/config} file.
- 
+
 As an example, here is how you would configure @code{msmtp} for a single
 account:
- 
+
 @lisp
 (service home-msmtp-service-type
          (home-msmtp-configuration
@@ -45314,101 +45357,101 @@ account:
 @end defvar
 
 @c %start of fragment
- 
+
 @deftp {Data Type} home-msmtp-configuration
 Available @code{home-msmtp-configuration} fields are:
- 
+
 @table @asis
 @item @code{defaults} (type: msmtp-configuration)
 The configuration that will be set as default for all accounts.
- 
+
 @item @code{accounts} (default: @code{'()}) (type: list-of-msmtp-accounts)
 A list of @code{msmtp-account} records which contain information about
 all your accounts.
- 
+
 @item @code{default-account} (type: maybe-string)
 Set the default account.
- 
+
 @item @code{extra-content} (default: @code{""}) (type: string)
 Extra content appended as-is to the configuration file.  Run
 @command{man msmtp} for more information about the configuration file
 format.
- 
+
 @end table
- 
+
 @end deftp
- 
-@c %end of fragment
- 
-@c %start of fragment
- 
-@deftp {Data Type} msmtp-account
-Available @code{msmtp-account} fields are:
- 
-@table @asis
-@item @code{name} (type: string)
-The unique name of the account.
- 
-@item @code{configuration} (type: msmtp-configuration)
-The configuration for this given account.
- 
-@end table
- 
-@end deftp
- 
+
 @c %end of fragment
 
 @c %start of fragment
- 
+
+@deftp {Data Type} msmtp-account
+Available @code{msmtp-account} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+The unique name of the account.
+
+@item @code{configuration} (type: msmtp-configuration)
+The configuration for this given account.
+
+@end table
+
+@end deftp
+
+@c %end of fragment
+
+@c %start of fragment
+
 @deftp {Data Type} msmtp-configuration
 Available @code{msmtp-configuration} fields are:
- 
+
 @table @asis
 @item @code{auth?} (type: maybe-boolean)
 Enable or disable authentication.
- 
+
 @item @code{tls?} (type: maybe-boolean)
 Enable or disable TLS (also known as SSL) for secured connections.
- 
+
 @item @code{tls-starttls?} (type: maybe-boolean)
 Choose the TLS variant: start TLS from within the session (‘on’,
 default), or tunnel the session through TLS (‘off’).
- 
+
 @item @code{tls-trust-file} (type: maybe-string)
 Activate server certificate verification using a list of trusted
 Certification Authorities (CAs).
- 
+
 @item @code{log-file} (type: maybe-string)
 Enable logging to the specified file.  An empty argument disables
 logging.  The file name ‘-’ directs the log information to standard
 output.
- 
+
 @item @code{host} (type: maybe-string)
 The SMTP server to send the mail to.
- 
+
 @item @code{port} (type: maybe-integer)
 The port that the SMTP server listens on.  The default is 25 ("smtp"),
 unless TLS without STARTTLS is used, in which case it is 465 ("smtps").
- 
+
 @item @code{user} (type: maybe-string)
 Set the user name for authentication.
- 
+
 @item @code{from} (type: maybe-string)
 Set the envelope-from address.
- 
+
 @item @code{password-eval} (type: maybe-string)
 Set the password for authentication to the output (stdout) of the
 command cmd.
- 
+
 @item @code{extra-content} (default: @code{""}) (type: string)
 Extra content appended as-is to the configuration block.  Run
 @command{man msmtp} for more information about the configuration file
 format.
- 
+
 @end table
- 
+
 @end deftp
- 
+
 @c %end of fragment
 
 @node Messaging Home Services

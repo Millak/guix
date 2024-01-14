@@ -371,7 +371,23 @@ please install the @code{flyer-composer-gui} package.")))
                  (setenv "PKG_CONFIG" #$(pkg-config-for-target))))))))
    (synopsis "PDF rendering library")
    (description
-    "Poppler is a PDF rendering library based on the xpdf-3.0 code base.")
+    "Poppler is a PDF rendering library based on the xpdf-3.0 code base.
+Poppler gives access to the following binary programs:
+@itemize
+@item pdfattach
+@item pdfdetach
+@item pdffonts
+@item pdfimages
+@item pdfinfo
+@item pdfseparate
+@item pdfsig
+@item pdftocairo
+@item pdftohtml
+@item pdftoppm
+@item pdftops
+@item pdftotext
+@item pdfunite
+@end itemize")
    (license license:gpl2+)
    (home-page "https://poppler.freedesktop.org/")))
 

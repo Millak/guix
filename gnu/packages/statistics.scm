@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1430,13 +1431,13 @@ R/DBMS implementations.")
 (define-public r-bh
   (package
     (name "r-bh")
-    (version "1.81.0-1")
+    (version "1.84.0-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "BH" version))
               (sha256
                (base32
-                "0r7zjxpbm2paliplprwf9769a57clqaiskiiadiy10gissnqn77m"))))
+                "1b7igvvy9f13l969a26j2bdzib2laq3m4w1x0xsxjb2pbxsn1dkg"))))
     (build-system r-build-system)
     (home-page "https://github.com/eddelbuettel/bh")
     (synopsis "R package providing subset of Boost headers")
@@ -1781,13 +1782,13 @@ defined in different packages.")
 (define-public r-rlang
   (package
     (name "r-rlang")
-    (version "1.1.2")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlang" version))
               (sha256
                (base32
-                "14l0dz36wav2jbz0dd3w34va68lrhr7fgd9dqf1v4nawdvff23ia"))))
+                "02mz53g8lk26yi0js6qq57ijhl1mw7xm82vwbwzbvi62bm5l58r4"))))
     (build-system r-build-system)
     (home-page "http://rlang.tidyverse.org")
     (synopsis "Functions for base types, core R and Tidyverse features")
@@ -3032,13 +3033,13 @@ time-of-day values, based on the @code{difftime} class.")
 (define-public r-readr
   (package
     (name "r-readr")
-    (version "2.1.4")
+    (version "2.1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "readr" version))
               (sha256
                (base32
-                "03gbzf29kdvf4rdqgdq2jm7c9ifjla3qzpiyqzw1x9jgijj4y54q"))))
+                "02p1jjal73j39r49ba4jlvbx8bdqmm96nsdp47igyv54w1gmm9hg"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -3047,9 +3048,9 @@ time-of-day values, based on the @code{difftime} class.")
            r-crayon
            r-hms
            r-lifecycle
-           r-tibble
            r-r6
            r-rlang
+           r-tibble
            r-tzdb
            r-vroom))
     (native-inputs
@@ -3372,13 +3373,13 @@ engine (version 3.8.8.2) is included.")
 (define-public r-rcurl
   (package
     (name "r-rcurl")
-    (version "1.98-1.13")
+    (version "1.98-1.14")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RCurl" version))
               (sha256
                (base32
-                "01pkmip1sllislmp34c25i9m9mlrid9b48xfjbf93sml55ijz985"))))
+                "1kq3ydvm7hvy8pxk9iy13pkq5mxyxqlx4mpjsadzl7a7jj32gbgf"))))
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
@@ -3392,10 +3393,8 @@ engine (version 3.8.8.2) is included.")
 certs = Sys.getenv(\"CURL_CA_BUNDLE\")
 if (certs != \"\") { .opts = merge.list(.opts, list(cainfo=certs)) }
 " m))))))))
-    (native-inputs
-     (list libxml2))
     (inputs
-     (list curl))
+     (list curl libxml2))
     (propagated-inputs
      (list r-bitops))
     (home-page "https://www.omegahat.net/RCurl")
@@ -4181,13 +4180,13 @@ computation, bagged clustering, naive Bayes classifier, and more.")
 (define-public r-bigmemory-sri
   (package
     (name "r-bigmemory-sri")
-    (version "0.1.6")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigmemory.sri" version))
        (sha256
-        (base32 "03468ak0lgd9m0f7synxms2zzr8f7n2nm1gmhcraj3nfcv4nmyiv"))))
+        (base32 "0wbpk3naipl0ab3wnixnp2n874kazrapv1c31fi3cxm19b94x6h2"))))
     (properties
      `((upstream-name . "bigmemory.sri")))
     (build-system r-build-system)
@@ -4201,14 +4200,14 @@ bigmemory and synchronicity packages.")
 (define-public r-synchronicity
   (package
     (name "r-synchronicity")
-    (version "1.3.5")
+    (version "1.3.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "synchronicity" version))
        (sha256
         (base32
-         "1kgsk64aifjm3mfj102y3va7x1abypq2zi0cqbnjhl8fqyzp69hx"))))
+         "12svf4xzb9s3m1h2ddqgl6q2v57ifsj2p80j8cg2k0543a43pww2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-bigmemory-sri r-rcpp r-uuid))
@@ -4223,14 +4222,14 @@ message passing.")
 (define-public r-bigmemory
   (package
     (name "r-bigmemory")
-    (version "4.6.1")
+    (version "4.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigmemory" version))
        (sha256
         (base32
-         "0hainqkm7cs8gjm42vkpdrr0284smsbwdfackp34yv7dhxy1avmm"))))
+         "0b80c2nsgphgr3cnvf75a0z3bzqx4q1a4dplq0h2izc71mn5fgzy"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-bigmemory-sri r-rcpp r-uuid))
@@ -6918,6 +6917,50 @@ files, including Rmarkdown files.")
     (description "Command-line tool and C library for reading files from
 popular stats packages like SAS, Stata and SPSS.")
     (license license:expat)))
+
+(define-public python-pyreadstat
+  (package
+    (name "python-pyreadstat")
+    (version "1.2.4")
+    ;; No tests in the PyPI tarball.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Roche/pyreadstat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zysrzixvqw2lwwykxqg5yj8a0zyv5s2bmk22x30f4rj2hgvq1pv"))
+       (patches (search-patches "python-pyreadstat-link-libiconv.patch"))))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'change-home-dir
+                    (lambda _
+                      ;; test_sav_expand and test_sav_write_basic_expanduser need a
+                      ;; home directory with write permissions.
+                      (setenv "HOME" "/tmp")))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        ;; The source also contains tests/test_version.py
+                        ;; which checks the version in __init__.py against the
+                        ;; one in setup.py. Since this requires texlive
+                        ;; dependencies to run and is also not mentioned in
+                        ;; how_to_test.md, this test is skipped.
+                        (invoke "python" "tests/test_basic.py")))))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pandas))
+    (inputs (list libiconv zlib))
+    (native-inputs (list python-cython-3))
+    (home-page "https://github.com/Roche/pyreadstat")
+    (synopsis
+     "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")
+    (description
+     "This Python package can be used to read and write SAS, SPSS and Stata
+files into/from Pandas DataFrames.  It is a wrapper around the C library
+@code{readstat}.")
+    (license license:asl2.0)))
 
 (define-public r-quantpsyc
   (package

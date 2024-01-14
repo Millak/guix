@@ -53,6 +53,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -598,14 +599,27 @@ Browser.")
                 (substitute*
                     "toolkit/locales/en-US/toolkit/about/aboutAddons.ftl"
                   (("addons.mozilla.org") "gnuzilla.gnu.org"))))
-            (add-after 'install 'deploy-assets
+            (add-before 'build 'add-bridges ;see deploy.sh
               (lambda _
+                (let ((port (open-file
+                             "browser/app/profile/000-tor-browser.js" "a")))
+                  (display
+                   "#include ../../../tools/torbrowser/bridges.js" port)
+                  (newline port)
+                  (close port))))
+            (add-after 'install 'deploy-assets
+              (lambda* (#:key inputs #:allow-other-keys)
                 (let ((assets #$(this-package-input "torbrowser-assets"))
                       (lib (in-vicinity #$output "lib/torbrowser"))
                       (tor #$(this-package-input "tor-client")))
                   ;; TorBrowser/Data/Tor/torrc-defaults
                   (copy-recursively (in-vicinity assets "TorBrowser")
                                     (in-vicinity lib "TorBrowser"))
+                  (substitute*
+                      (in-vicinity lib "TorBrowser/Data/Tor/torrc-defaults")
+                    (("exec ./TorBrowser/Tor/PluggableTransports/lyrebird")
+                     (string-append
+                      "exec " (search-input-file inputs "bin/lyrebird"))))
                   ;; The geoip and geoip6 files are in the same directory as
                   ;; torrc-defaults.  (See TorProcess.sys.mjs.)
                   (mkdir-p (in-vicinity lib "TorBrowser/Data/Tor"))
@@ -755,6 +769,7 @@ Browser.")
     (inputs
      (modify-inputs (package-inputs icecat-minimal)
        (append bash-minimal
+               go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
                tor-client
                torbrowser-assets)))
     (propagated-inputs

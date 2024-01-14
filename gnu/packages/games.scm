@@ -6,7 +6,7 @@
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2014, 2015, 2016, 2024 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2014, 2015, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
@@ -4118,7 +4118,8 @@ Widgets, and allows users to create more.")
                                   "fifengine/tar.gz/" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (patches (search-patches "fifengine-swig-compat.patch"
-                                       "fifengine-boost-compat.patch"))
+                                       "fifengine-boost-compat.patch"
+                                       "fifengine-python-3.9-compat.patch"))
               (sha256
                (base32
                 "1y4grw25cq5iqlg05rnbyxw1njl11ypidnlsm3qy4sm3xxdvb0p8"))))
@@ -4453,7 +4454,9 @@ also available.")
               (sha256
                (base32
                 "1n747p7h0qp48szgp262swg0xh8kxy1bw8ag1qczs4i26hyzs5x4"))
-              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"))))
+              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"
+                                       "unknown-horizons-python-3.9.patch"
+                                       "unknown-horizons-python-3.10.patch"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -4573,16 +4576,16 @@ falling, themeable graphics and sounds, and replays.")
 (define-public wesnoth
   (package
     (name "wesnoth")
-    (version "1.16.9")
+    (version "1.16.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wesnoth/wesnoth")
                     (commit version)))
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "06gfgkg8f98jsj9vnbglw5lqflqzf0229n6wf3xl12carjzgaq9g"))))
+                "0z0y2il4xq8fdj20fwfggpf6286hb099jh1kdywap9rlrybq142d"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;no test target

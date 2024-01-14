@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -439,14 +439,17 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.3.7")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1xwr1pnwd3xj375ainlad7mm479rk2mrks8dc6d92cash3xl90b9"))
+        (base32 "0xhpdnsg8idzxkn20iw8gd2rk470d7vc22vrp5clq9fj117vgn43"))
+       ;; TODO: Remove these patches when updating to sbcl > 2.4.0.
+       (patches (search-patches "sbcl-fix-ppc64-build.patch"
+                                "sbcl-fix-riscv-build.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1485,7 +1488,7 @@ includes a compiler as well as an interpreter.")
 
 (define-public s7-bootstrap
   ;; Need s7-bootstrap to build libc_s7.so (for the REPL) and run tests
-  (let ((commit "a5b4bb49f8bcd7c33ae2366065fc8c254b734460") ;no releases
+  (let ((commit "618de30e0f9851515724245e3ebbfa1be4de6906") ;no releases
         (revision "0"))
     (hidden-package
      (package
@@ -1499,7 +1502,7 @@ includes a compiler as well as an interpreter.")
                  (file-name (git-file-name name version))
                  (sha256
                   (base32
-                   "03n1axdlypzmbgzrhlwfqwa1xiw36hi25j2hwc7vw77mz90cd9f8"))))
+                   "0kh1f49g24ppjpr16v1nc9lr7pvr5nzb82bpw8c6q8ll7pqalqaf"))))
        (build-system gnu-build-system)
        (arguments
         (list #:tests? #f ;no tests in bootstrap

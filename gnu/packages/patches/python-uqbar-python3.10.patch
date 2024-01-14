@@ -1,0 +1,23 @@
+Since Python 3.10 the output of a CLI program created with argparse
+uses "options" instead of "optional arguments". This behaviour breaks
+the tests in python-uqbar.
+
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -84,7 +84,7 @@ def test_call_help():
+ 
+         speak like a cat
+ 
+-        optional arguments:
++        options:
+           -h, --help  show this help message and exit
+           --version   show program's version number and exit
+           --loud      be adamant
+@@ -101,6 +101,6 @@ def test_help():
+         """
+         usage: vox-aggregator [-h] [--version] {help,list,birds,mammals} ...
+ 
+-        optional arguments:
++        options:
+           -h, --help            show this help message and exit
+           --version             show program's version number and exit

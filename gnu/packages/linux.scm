@@ -494,7 +494,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.6-version "6.6.9")
+(define-public linux-libre-6.6-version "6.6.10")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
@@ -504,7 +504,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0kavbby960k7wg355p3hjb9v1c4gnk8dv3lkfhpz44ayhv7kihg5")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "1cs8ym3yq9czjx6sbxpmn16l6a577mc4c1ff7nk1p2gw1jpnbg4f")))
+        (hash (base32 "0v2l0l90w7scv7bxkxxjgqnay0fjh678k9gdlgycgbh9q7j2grly")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
@@ -512,7 +512,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.70")
+(define-public linux-libre-6.1-version "6.1.71")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -522,82 +522,82 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1jg2v1nxd6i5x536vmd1l14xhpzrcimpmjfipb1zkrwil102y25f")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "1vxgardfm2fi4c7zkxpljqicllfqqnp835a9lyb7dh2nchk6a4zd")))
+        (hash (base32 "0hghnwsa282js9hy4krhdbgrb4khjzslr05zgvjx9zzragfp9xrd")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.145")
+(define-public linux-libre-5.15-version "5.15.146")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
    (base32 "18ac30kxg2mf2f6gk3p935hzhz2qs110jy4xwk21kblnnkskbxj8")
-   (base32 "1idjrn2w8jrixj8ifkk1awxyyq5042nc4p2mld4rda96azlnp948")))
+   (base32 "14pw0yl0yxdgcdp01rpi91ylil9irwzxfq04kfvn3gg2abaq37bn")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "086nssif66s86wkixz4yb7xilz1k49g32l0ib28r8fjzc23rv95j")))
+        (hash (base32 "14nijbspmzd4r38l8cpl4vn9dhawzcfnhyc0gnaxl2m8l9gpm02s")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.205")
+(define-public linux-libre-5.10-version "5.10.206")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
    (base32 "1b33rkn32b923025iiz4xzxiy8y5ii9j5qk4021mg575890rl4ch")
-   (base32 "0xrrnmb5kcc5r21bdm24aq0fnkk1imn367c1cxlj78b6l6gigx4b")))
+   (base32 "0zmmqj5gyiy2q81f199c29b14isfiqbvl87y72k14yy0q5398276")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0qw8g0h4k0b4dyvspbj51cwr68ihwjzsi2b2261ipy3l1nl1fln5")))
+        (hash (base32 "0ns8qxcrxj9i76b93xcghl002l8vbkg7ksd435sikig62qr62gf4")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.265")
+(define-public linux-libre-5.4-version "5.4.266")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
    linux-libre-5.4-gnu-revision
    (base32 "0xg5cz82k2cb0ikxvwv1hp5c3h377jkb5sd6aszvsk7hnabhk62v")
-   (base32 "0sw67b2pk3lng4y67diqqnhxaggnp3nbkx8dxc5fs27rinfxr4m1")))
+   (base32 "08wn4rjrmi8asmdkg92xbbm6v0sw44kackp69agbw57zy6fp2zys")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "05cvvwjiznn7hfd02qklklalg0chahvh5v18w64lcva6kzj9kbjd")))
+        (hash (base32 "1dmcn9i3nvf1gldm1a32gnl5ybwbk2lizb3wa4gc06g7dxz2y1ys")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.303")
+(define-public linux-libre-4.19-version "4.19.304")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
    linux-libre-4.19-version
    linux-libre-4.19-gnu-revision
    (base32 "0pjal2cc2f99cvw8r4icb4l24j41k48jkj6bqk7pcahzcgx33ycb")
-   (base32 "1425mhkfxn18vxn05bb4h3li7x1jl7l1hf1zi8xhnqv3wa31h9wl")))
+   (base32 "07j33w4pq319gaypfsym6v0i2xqc5jagm47nxyy2010zn8k6y8kd")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0dlbl47xs7z4yf9cxbxqzd7zs1f9070jr6ck231wgppa6lwwwb82")))
+        (hash (base32 "165mljr8v1cf4vf4a4b44hx089rprkssvi2azq5wbxxg3basbind")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.334")
+(define-public linux-libre-4.14-version "4.14.335")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
    linux-libre-4.14-version
    linux-libre-4.14-gnu-revision
    (base32 "1vbgykwzf7j0yjqcwn747cfhwj0rgw3s9h627q94wb9a19x9p0fr")
-   (base32 "1faagsj4i31z2bp83hflx3q9vrddjnn37a3ah2b47iaplva7z1nd")))
+   (base32 "1ir96bbhw77xw6lmsnh42gi130nnzjklpgfyd46pxmqckrpydcvx")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0iaaqdkszmfarvjfszc9rf7y9zsv3w82934xmvmzmsbiz86547ca")))
+        (hash (base32 "0aa0xi1sn4rw9ichgmvxp0s9hsi6rfzhzd9wgbvzvc90md2qfs19")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -7520,15 +7520,16 @@ running boot option, and more.")
 (define-public sysstat
   (package
     (name "sysstat")
-    (version "12.4.4")
+    (version "12.7.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://pagesperso-orange.fr/sebastien.godard/"
+       (uri (string-append "https://sysstat.github.io/sysstat-packages/"
                            "sysstat-" version ".tar.xz"))
        (sha256
-        (base32 "091xjip7l52dxal8dsfh5chksr4g9gclnssw3hjjxy84kr3yf4lm"))))
+        (base32 "0ssdrm3k0fclq5b5i0aznfwdkbac9l9cf88idaq3pls9lm040rjp"))))
     (build-system gnu-build-system)
+    (native-inputs (list gettext-minimal))
     (arguments
      `(#:tests? #f                      ; no test suite.
        ;; Without this flag, it tries to install the man pages with group 'root'
@@ -7545,7 +7546,7 @@ running boot option, and more.")
              (substitute* "Makefile"
                (("mkdir -p \\$\\(DESTDIR\\)\\$\\(SA_DIR\\)")
                 "")))))))
-    (home-page "http://sebastien.godard.pagesperso-orange.fr/")
+    (home-page "https://sysstat.github.io")
     (synopsis "Performance monitoring tools for Linux")
     (description "The sysstat utilities are a collection of performance
 monitoring tools for Linux.  These include @code{mpstat}, @code{iostat},
@@ -9490,7 +9491,7 @@ tools for managing PipeWire.")
 (define-public ell
   (package
     (name "ell")
-    (version "0.59")
+    (version "0.61")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9499,7 +9500,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11xlkdvw7pyd9idq1zsnl946dry9aksnz29wbpzxqjc97xhhd5xq"))))
+                "1lkjf24ap40wk747z1iv8ds8z40alc5x8rzsgczjj1707x2ik6mj"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests launch dbus-daemon instances that all try to bind to

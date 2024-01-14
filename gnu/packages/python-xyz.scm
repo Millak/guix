@@ -145,7 +145,7 @@
 ;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
-;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2253,25 +2253,21 @@ library.")
     (version "3.8.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "h5py" version))
-      (sha256
-       (base32
-        "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
+       (method url-fetch)
+       (uri (pypi-uri "h5py" version))
+       (sha256
+        (base32 "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-hdf5-paths
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "HDF5_DIR" (assoc-ref inputs "hdf5")))))))
-    (propagated-inputs
-     (list python-six python-numpy))
-    (inputs
-     (list hdf5-1.10))
-    (native-inputs
-     (list python-cython python-pkgconfig pkg-config))
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-hdf5-paths
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (setenv "HDF5_DIR"
+                              (assoc-ref inputs "hdf5")))))))
+    (propagated-inputs (list python-six python-numpy))
+    (inputs (list hdf5-1.10))
+    (native-inputs (list pkg-config python-cython python-ipython
+                         python-pkgconfig python-pytest))
     (home-page "https://www.h5py.org/")
     (synopsis "Read and write HDF5 files from Python")
     (description
@@ -2281,6 +2277,30 @@ complete wrapping of the HDF5 API, while the high-level component supports
 access to HDF5 files, datasets and groups using established Python and NumPy
 concepts.")
     (license license:bsd-3)))
+
+(define-public python-hdf5storage
+  (package
+    (name "python-hdf5storage")
+    (version "0.1.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hdf5storage" version))
+       (sha256
+        (base32 "11pgxsqap9l7jsf52649q9mpj8a0w6p9im929lpr9s26ynnnn6ks"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-h5py python-numpy))
+    (native-inputs (list python-nose))
+    (home-page "https://github.com/frejanordsiek/hdf5storage")
+    (synopsis "Read and write Python data types from and to HDF5 files")
+    (description
+     "This Python package provides high-level utilities to read and write a
+variety of Python types from and to @acronym{HDF5, Hierarchical Data Format}
+formatted files.  This package also provides support for MATLAB MAT v7.3
+formatted files, which are HDF5 files with a different extension and some
+extra metadata.  Because HDF5 and MAT files might need to be read from
+untrusted sources, pickling is avoided in this package.")
+    (license license:bsd-2)))
 
 (define-public python-hjson
   ;; Using commit from master branch as the PyPI version does not contain
@@ -2577,18 +2597,18 @@ conventions and aliases in the same expression.")
        (uri (pypi-uri "Wand" version))
        (sha256
         (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'find-magickwand
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "MAGICK_HOME" (assoc-ref inputs "imagemagick"))
-             (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-lib-path
+            (lambda _
+              (substitute* "wand/api.py"
+                (("os\\.environ\\.get\\('MAGICK_HOME'\\)")
+                 (string-append "\"" #$(this-package-input "imagemagick") "\""))
+                (("os\\.environ\\.get\\('WAND_MAGICK_LIBRARY_SUFFIX'\\)")
+                 "\".Q16\"")))))))
     (native-inputs
      (list python-pytest))
     (inputs
@@ -10377,6 +10397,67 @@ finding unresolved symbols in Python code and their corresponding imports.")
 class constructs.")
     (license license:expat)))
 
+(define-public python-jaraco-collections
+  (package
+    (name "python-jaraco-collections")
+    (version "5.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.collections" version))
+       (sha256
+        (base32 "0s7y3jr7c173k38pck1b17kxnvx2fl0qh9m9gdf64pr9kz8fi00n"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (propagated-inputs (list python-jaraco-text))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
+    ;; packaged.
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/jaraco.collections")
+    (synopsis "Provides various collection objects")
+    (description
+     "This package provides models and classes to supplement the
+standard library @code{collections} module.  Examples include
+@itemize
+@item
+RangeMap: A mapping that accepts a range of values for keys.
+@item
+Projection: A subset over an existing mapping.
+@item
+KeyTransformingDict: Generalized mapping with keys transformed by a function.
+@item
+FoldedCaseKeyedDict: A dict whose string keys are case-insensitive.
+@item
+BijectiveMap: A map where keys map to values and values back to their keys.
+@item
+ItemsAsAttributes: A mapping mix-in exposing items as attributes.
+@item
+IdentityOverrideMap: A map whose keys map by default to themselves unless overridden.
+@item
+FrozenDict: A hashable, immutable map.
+@item
+Enumeration: An object whose keys are enumerated.
+@item
+Everything: A container that contains all things.
+@item
+Least, Greatest: Objects that are always less than or greater than any other.
+@item
+pop_all: Return all items from the mutable sequence and remove them from that sequence.
+@item
+DictStack: A stack of dicts, great for sharing scopes.
+@item
+WeightedLookup: A specialized RangeMap for selecting an item by weights.
+@end itemize")
+    (license license:expat)))
+
 ;;; Variant used to break a cycle with python-pytest-enabler.
 (define-public python-jaraco-context-bootstrap
   (hidden-package
@@ -10539,6 +10620,41 @@ releases.")
     (home-page "https://github.com/jaraco/jaraco.test")
     (synopsis "Testing support by jaraco")
     (description "This package provides testing support by jaraco.")
+    (license license:expat)))
+
+(define-public python-jaraco-text
+  (package
+    (name "python-jaraco-text")
+    (version "3.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.text" version))
+       (sha256
+        (base32 "0b2rmx0sa61f75lkkr4nfaj3mkgmn3x9c1akpwarfbmksk42b7iq"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (propagated-inputs (list python-autocommand python-inflect
+                             python-jaraco-context python-jaraco-functools
+                             python-more-itertools))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
+    ;; packaged.
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/jaraco.text")
+    (synopsis "Provides various routines for text manipulation")
+    (description
+     "This package provides handy routines for dealing with text,
+such as wrapping, substitution, trimming, stripping, prefix and suffix
+removal, line continuation, indentation, comment processing, identifier
+processing, values parsing, case insensitive comparison, and more.")
     (license license:expat)))
 
 (define-public python-simplegeneric
@@ -31694,6 +31810,30 @@ graph can be output for rendering by GraphViz or yEd.")
     (description "This library provides an efficient mechanism for overloading
 function implementations based on the types of the arguments.")
     (license license:bsd-3)))
+
+(define-public python-multimethod
+  (package
+    (name "python-multimethod")
+    (version "1.10")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coady/multimethod")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07xv92q7f4bkp6dzkqvcv0zxr11729qdak4s3ldmbhdwgsf44g5h"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/coady/multimethod")
+    (synopsis "Python support for multiple argument dispatching")
+    (description
+     "This package provides a decorator for adding multiple argument
+dispatching to functions.  The decorator creates a multimethod object as
+needed and registers the function with its annotations.")
+    (license license:asl2.0)))
 
 (define-public python-logical-unification
   (package

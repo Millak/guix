@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2020, 2021, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1374,6 +1374,7 @@ Mathematics (GLM) library to Python.")
                 "test_shutdown"
                 "test_shutdown_localcluster"
                 "test_teardown_failure_doesnt_crash_scheduler"
+                "test_tell_workers_when_peers_have_left"
                 "test_threadpoolworkers_pick_correct_ioloop"
                 "test_tls_listen_connect"
                 "test_tls_temporary_credentials_functional"

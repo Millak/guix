@@ -171,7 +171,7 @@
   (parallel-hooks                  guix-build-coordinator-configuration-parallel-hooks
                                    (default '()))
   (guile                           guix-build-coordinator-configuration-guile
-                                   (default guile-3.0-latest))
+                                   (default guile-next))
   (extra-environment-variables
    guix-build-coordinator-configuration-extra-environment-variables
    (default '())))
@@ -246,7 +246,7 @@
                                                    client-communication-uri-string
                                                    (hooks '())
                                                    (parallel-hooks '())
-                                                   (guile guile-3.0))
+                                                   (guile guile-next))
   (program-file
    "start-guix-build-coordinator"
    (with-extensions (cons guix-build-coordinator-package

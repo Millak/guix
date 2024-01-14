@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -912,42 +913,17 @@ Library.")
        (base32
         "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))))
     (arguments
-     ;; TODO(core-updates): Unconditionally use quasiquote
-     `(#:configure-flags
-       ,#~(#$(if (%current-target-system)
-                 #~quasiquote
-                 #~quote)
-           ;; These options are required for cross-compiling LLVM according to
-           ;; https://llvm.org/docs/HowToCrossCompileLLVM.html.
-           (#$@(if (%current-target-system)
-                   #~(,(string-append "-DLLVM_TABLEGEN="
-                                      #+(file-append this-package
-                                                     "/bin/llvm-tblgen"))
-                      #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
-                                       (%current-target-system))
-                      #$(string-append "-DLLVM_TARGET_ARCH="
-                                       (system->llvm-target-arch))
-                      #$(string-append "-DLLVM_TARGETS_TO_BUILD="
-                                       (system->llvm-target)))
-                   #~())
-            "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
-            "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
-            "-DBUILD_SHARED_LIBS:BOOL=TRUE"
-            "-DLLVM_ENABLE_FFI:BOOL=TRUE"
-            "-DLLVM_ENABLE_RTTI:BOOL=TRUE" ; For some third-party utilities
-            "-DLLVM_INSTALL_UTILS=ON")) ; Needed for rustc.
-       ;; Don't use '-g' during the build, to save space.
-       #:build-type "Release"
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (assoc "config" (package-native-inputs this-package))
-            `((add-after 'unpack 'update-config
-                (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                  (let ((config.guess (search-input-file
-                                        (or inputs native-inputs)
-                                        "/bin/config.guess")))
-                    (copy-file config.guess "cmake/config.guess")))))
-            '())
+     (substitute-keyword-arguments (package-arguments llvm-13)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+           #$@(if (assoc "config" (package-native-inputs this-package))
+                #~((add-after 'unpack 'update-config
+                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                       (let ((config.guess (search-input-file
+                                             (or inputs native-inputs)
+                                             "/bin/config.guess")))
+                         (copy-file config.guess "cmake/config.guess")))))
+                #~())
          (add-before 'build 'shared-lib-workaround
            ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
            ;; doesn't seem to get the correct rpath to be able to run
@@ -955,18 +931,7 @@ Library.")
            ;; workaround.
            (lambda _
              (setenv "LD_LIBRARY_PATH"
-                     (string-append (getcwd) "/lib"))
-             #t))
-         (add-after 'install 'install-opt-viewer
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (opt-viewer-out (assoc-ref outputs "opt-viewer"))
-                    (opt-viewer-share-dir (string-append opt-viewer-out "/share"))
-                    (opt-viewer-dir (string-append opt-viewer-share-dir "/opt-viewer")))
-               (mkdir-p opt-viewer-share-dir)
-               (rename-file (string-append out "/share/opt-viewer")
-                            opt-viewer-dir))
-             #t)))))))
+                     (string-append (getcwd) "/lib"))))))))))
 
 (define-public clang-runtime-12
   (clang-runtime-from-llvm
@@ -1140,7 +1105,7 @@ Library.")
      (if (target-riscv64?)
        (substitute-keyword-arguments (package-arguments llvm-10)
          ((#:phases phases)
-          `(modify-phases ,phases
+          #~(modify-phases #$phases
              (add-after 'unpack 'patch-dsymutil-link
                (lambda _
                  (substitute* "tools/dsymutil/CMakeLists.txt"
@@ -2169,20 +2134,31 @@ using @code{clang-rename}.")))
               ;; AMDGPU is needed by the vulkan drivers.
               #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                (system->llvm-target) ";AMDGPU")
+              #$@(if (%current-target-system)
+                     '("-DBUILD_SHARED_LIBS:BOOL=TRUE"
+                       "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+                    '())
               ;; Skipping tools and utils decreases the output by ~100 MiB.
               "-DLLVM_BUILD_TOOLS=NO"
-              (remove (cut string-match
-                           "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*" <>)
+              (remove
+               (cut string-match
+                    #$(if (%current-target-system)
+                          "-DLLVM_(LINK_LLVM_DYLIB|TARGETS_TO_BUILD|INSTALL_UTILS).*"
+                          "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*") <>)
                       #$cf)))
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
-              (add-after 'install 'delete-static-libraries
-                ;; If these are just relocated then llvm-config can't find them.
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (for-each delete-file
-                            (find-files (string-append
-                                          (assoc-ref outputs "out") "/lib")
-                                        "\\.a$"))))
+              #$@(if (%current-target-system)
+                     '()
+                     #~((add-after 'install 'delete-static-libraries
+                          ;; If these are just relocated then llvm-config
+                          ;; can't find them.
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (for-each delete-file
+                                      (find-files
+                                       (string-append
+                                        (assoc-ref outputs "out") "/lib")
+                                       "\\.a$"))))))
               ;; llvm-config is how mesa and others find the various
               ;; libraries and headers they use.
               (add-after 'install 'build-and-install-llvm-config
@@ -2291,9 +2267,9 @@ LLVM."))))
                  "-DLLVM_BUILD_LLVM_DYLIB=ON"
                  "-DLLVM_LINK_LLVM_DYLIB=ON"))
          ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (delete 'shared-lib-workaround)
-             (delete 'install-opt-viewer))))))))
+          #~(modify-phases #$phases
+              (delete 'shared-lib-workaround)
+              (delete 'install-opt-viewer))))))))
 
 (define clang-cling-runtime
   (let ((base clang-runtime-9))

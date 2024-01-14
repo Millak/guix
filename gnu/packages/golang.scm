@@ -41,7 +41,8 @@
 ;;; Copyright © 2022 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2559,6 +2560,77 @@ translated keywords and acts.")
 Go.")
     (license license:cc0)))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kmdpxrbnxnpsi7dkgk85z005vjyj74b3wxxqrf68wg3svy69620"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib"))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib")
+    (synopsis "Go pluggable transports library")
+    (description "GoPtLib is a library for writing Tor pluggable transports in
+Go.")
+    (license license:cc0)))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
+                    (commit (string-append "lyrebird-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rifg5kgqp4c3b44j48fjmx00m00ai7fa4gaqrgphiqs1fc5586s"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
+       #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"
+       #:go ,go-1.20
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'substitutions
+           (lambda _
+             (with-directory-excursion
+                 "src/gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
+               (for-each
+                (lambda (file)
+                  (substitute* file
+                    (("edwards25519-extra.git") "edwards25519-extra")))
+                (list "common/ntor/ntor_test.go"
+                      "internal/x25519ell2/x25519ell2.go"))
+               (substitute* "internal/x25519ell2/x25519ell2.go"
+                 (("gitlab.com/yawning/obfs4.git")
+                  "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"))))))))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519
+           go-github-com-dchest-siphash
+           go-github-com-refraction-networking-utls
+           go-gitlab-com-yawning-edwards25519-extra
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
+    (synopsis "Look-like nothing obfuscation protocol")
+    (description "This is a look-like nothing obfuscation protocol that
+incorporates ideas and concepts from Philipp Winter's ScrambleSuit protocol.")
+    (license (list license:bsd-2 license:bsd-3))))
+
 (define-public go-github-com-sevlyar-go-daemon
   (package
     (name "go-github-com-sevlyar-go-daemon")
@@ -3673,6 +3745,42 @@ for the Go language.")
     (home-page "https://go.googlesource.com/crypto/")
     (license license:bsd-3)))
 
+(define-public go-github-com-refraction-networking-utls
+  (package
+    (name "go-github-com-refraction-networking-utls")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/refraction-networking/utls")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1iywar5vqsml4b177k2nkcxmjm8mw92g3p112yjsrpmikiwpwpyw"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/refraction-networking/utls"
+       #:go ,go-1.20
+       #:tests? #f))                    ;requires internet access
+    (propagated-inputs
+     (list go-github-com-andybalholm-brotli
+           go-github-com-cloudflare-circl
+           go-github-com-gaukas-godicttls
+           go-github-com-klauspost-compress
+           go-github-com-quic-go-quic-go
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/refraction-networking/utls")
+    (synopsis "Fork of the Go standard TLS library, providing low-level access
+to the ClientHello for mimicry purposes")
+    (description "uTLS is a fork of “crypto/tls”, which provides ClientHello
+fingerprinting resistance, low-level access to handshake, fake session tickets
+and some other features.  Handshake is still performed by “crypto/tls”, this
+library merely changes ClientHello part of it and provides low-level access.")
+    (license license:bsd-3)))
+
 (define-public govulncheck
   (package
     (name "govulncheck")
@@ -3959,11 +4067,11 @@ packages.")
       (license license:bsd-3))))
 
 (define-public go-golang-org-x-sys
-  (let ((commit "b60007cc4e6f966b1c542e343d026d06723e5653")
+  (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
         (revision "0"))
     (package
       (name "go-golang-org-x-sys")
-      (version (git-version "0.4.0" revision commit))
+      (version (git-version "0.8.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3972,7 +4080,7 @@ packages.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0fr2d6fnpbqx6n89sg9lsinqkdaw49y068kqj2g0cxlhbh69hzii"))))
+                  "1p81niiin8dwyrjl2xsc95136w3vdw4kmj0w3mlh0vh5v134s4xq"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -3988,24 +4096,6 @@ packages.")
 support for low-level interaction with the operating system.")
       (home-page "https://go.googlesource.com/sys")
       (license license:bsd-3))))
-
-;; XXX: This version is required for "go-github-com-quic-go-qtls-go1-20".
-(define-public go-golang-org-x-sys-0.8
-  (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
-        (revision "0"))
-    (package
-      (inherit go-golang-org-x-sys)
-      (name "go-golang-org-x-sys")
-      (version (git-version "0.8.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://go.googlesource.com/sys")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1p81niiin8dwyrjl2xsc95136w3vdw4kmj0w3mlh0vh5v134s4xq")))))))
 
 (define-public go-golang-org-x-text
   (package
@@ -5854,6 +5944,35 @@ Architecture Processors\" by J. Guilford et al.")
       (description "Various cryptographic utilities used by IPFS")
       (license license:expat))))
 
+(define-public go-github-com-cloudflare-circl
+  (package
+    (name "go-github-com-cloudflare-circl")
+    (version "1.3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cloudflare/circl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05hk5svprcjrj6k4mg4kd732pnb658llqv04z6xrcl5v77jda2kd"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/cloudflare/circl"))
+    (propagated-inputs
+     (list go-github-com-bwesterb-go-ristretto
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://blog.cloudflare.com/introducing-circl")
+    (synopsis "Cloudflare Interoperable Reusable Cryptographic Library")
+    (description "CIRCL (Cloudflare Interoperable, Reusable Cryptographic
+Library) is a collection of cryptographic primitives written in Go.  The goal
+of this library is to be used as a tool for experimental deployment of
+cryptographic algorithms targeting Post-Quantum (PQ) and Elliptic Curve
+Cryptography (ECC).")
+    (license license:bsd-3)))
+
 (define-public go-github-com-mr-tron-base58
   (let ((commit "d724c80ecac7b49e4e562d58b2b4f4ee4ed8c312")
         (revision "0"))
@@ -7269,13 +7388,36 @@ implementation of generics.")
       #:import-path "github.com/quic-go/qtls-go1-20"
       #:go go-1.20))
     (propagated-inputs (list go-golang-org-x-crypto
-                             go-golang-org-x-sys-0.8))
+                             go-golang-org-x-sys))
     (synopsis "TLS 1.3 for QUIC")
     (description
      "Go standard library TLS 1.3 implementation, modified for QUIC.  For
 Go 1.20.")
     (home-page "https://github.com/quic-go/qtls-go1-20")
     (license license:expat)))
+
+(define-public go-github-com-gaukas-godicttls
+  (package
+    (name "go-github-com-gaukas-godicttls")
+    (version "0.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gaukas/godicttls")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0n9i0b9nbwq7ms36r34kfc346prrif78hhp55gmbkvlgvsc3m2af"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/gaukas/godicttls"))
+    (home-page "https://github.com/gaukas/godicttls")
+    (synopsis "dictionary for TLS")
+    (description "This package provides a dictionary for TLS written in Go
+providing bidirectional mapping values to their names, plus enum convenience
+for values.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-quic-go-qpack
   (package
@@ -7330,21 +7472,17 @@ the Go standard library}.")
            #:tests? #f
            #:go go-1.20))
     (propagated-inputs
-     (let ((p (package-input-rewriting
-               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
-               #:deep? #true)))
-       (cons go-golang-org-x-sys-0.8
-             (map p
-                  (list go-github-com-quic-go-qtls-go1-20
-                        go-github-com-quic-go-qpack
-                        go-golang-org-x-crypto
-                        go-github-com-cheekybits-genny
-                        go-github-com-marten-seemann-chacha20
-                        go-github-com-golang-protobuf-proto
-                        go-golang-org-x-crypto
-                        go-golang-org-x-exp
-                        go-golang-org-x-net
-                        go-golang-org-x-sync)))))
+     (list go-github-com-quic-go-qtls-go1-20
+           go-github-com-quic-go-qpack
+           go-golang-org-x-crypto
+           go-github-com-cheekybits-genny
+           go-github-com-marten-seemann-chacha20
+           go-github-com-golang-protobuf-proto
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-sync))
     (synopsis "QUIC in Go")
     (description "This package provides a Go language implementation of the QUIC
 network protocol.")
@@ -9026,7 +9164,20 @@ size of the terminal.")
                 "1idq8d13rp1hx2a1xak31fwl9fmi09p2x4ymvzl7aj850saw5w0z"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/charmbracelet/glamour"))
+     (list #:import-path "github.com/charmbracelet/glamour"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tests
+                 (lambda _
+                   ;; Some tests fail due to different number of '^[0m' symbols at
+                   ;; the beginning and the end of paragraphs.  To fix that we
+                   ;; re-generate 'readme.test' so the test output will match the
+                   ;; 'readme.test' contents.
+                   (chmod "src/github.com/charmbracelet/glamour/testdata/readme.test"
+                          #o644)
+                   (substitute* "src/github.com/charmbracelet/glamour/glamour_test.go"
+                     (("	generate = false")
+                      "	generate = true")))))))
     (native-inputs
      (list go-github-com-alecthomas-chroma
            go-github-com-danwakefield-fnmatch
@@ -9918,6 +10069,94 @@ composability.")
      "This package implements the edwards25519 elliptic curve in Go, exposing
 the necessary APIs to build a wide array of higher-level primitives.")
     (license license:bsd-3)))
+
+(define-public go-gitlab-com-yawning-edwards25519-extra
+  (let ((commit "2149dcafc266f66d2487f45b156f6397f9c4760b")
+        (revision "0"))
+    (package
+      (name "go-gitlab-com-yawning-edwards25519-extra")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/yawning/edwards25519-extra")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08mz1qyi8ig515hh5blnzxhiwsav564ah7mzyhvmr6i48ndhhv98"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:unpack-path "gitlab.com/yawning/edwards25519-extra"
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'build
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'build)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
+           (replace 'check
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'check)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
+           (replace 'install
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'install)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf")))))))
+      (propagated-inputs (list go-golang-org-x-crypto
+                               go-filippo-io-edwards25519))
+      (home-page "https://gitlab.com/yawning/edwards25519-extra")
+      (synopsis "edwards25519-extra")
+      (description
+       "This package provides extensions to the Go standard library's Ed25519 and
+curve25519 implementations, primarily extracted from
+@@url{https://github.com/oasisprotocol/curve25519-voi,curve25519-voi}.  This
+package is intended for interoperability with the standard library and the
+@@url{https://filippo.io/edwards25519,edwards25519} package as much as possible.")
+      (license license:bsd-3))))
+
+(define-public go-github-com-bwesterb-go-ristretto
+  (package
+    (name "go-github-com-bwesterb-go-ristretto")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bwesterb/go-ristretto")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h508v790wk6g8jq0gh18296xl87vmgc4fhwnac7mk6i5g3mz6v4"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "github.com/bwesterb/go-ristretto"
+       #:import-path "github.com/bwesterb/go-ristretto/edwards25519"))
+    (home-page "https://github.com/bwesterb/go-ristretto")
+    (synopsis "operations on the Ristretto prime-order group")
+    (description "This is a pure Go implementation of the group operations on
+the Ristretto prime-order group built from Edwards25519.")
+    (license license:expat)))
 
 (define-public go-github-com-rogpeppe-go-internal
   (package
@@ -11790,6 +12029,56 @@ implementation.")
      "@code{shlex} implements a simple lexer which splits input into tokens
 using shell-style rules for quoting and commenting.")
     (license license:asl2.0)))
+
+(define-public go-github-com-google-btree
+  (package
+    (name "go-github-com-google-btree")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/btree")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cqa8ck26p3wqz877hcvmfss17xm8wcbwd68shxv795ppahpdd9b"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/btree"))
+    (home-page "https://github.com/google/btree")
+    (synopsis "Simple, ordered, in-memory data structure for Go programs")
+    (description
+     "This package provides an in-memory B-Tree implementation for Go, useful as an
+ordered, mutable data structure.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-peterbourgon-diskv
+  (package
+    (name "go-github-com-peterbourgon-diskv")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/peterbourgon/diskv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pdy8f7bkm65gx4vknwcvfa619hknflqxkdlvmf427k2mzm91gmh"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/peterbourgon/diskv"
+       #:go ,go-1.18))
+    (propagated-inputs (list go-github-com-google-btree))
+    (home-page "https://github.com/peterbourgon/diskv")
+    (synopsis "Disk-backed key-value store")
+    (description
+     "Diskv (disk-vee) is a simple, persistent key-value store written in the Go
+language.  It starts with a simple API for storing arbitrary data on a filesystem by
+key, and builds several layers of performance-enhancing abstraction on top.  The end
+result is a conceptually simple, but highly performant, disk-backed storage system.")
+    (license license:expat)))
 
 (define-public go-github-com-disintegration-imaging
   (package
