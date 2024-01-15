@@ -1449,6 +1449,25 @@ bindings to the C++ random forest implementation, ranger, using Cython.")
 library in pure Python.")
     (license license:expat)))
 
+(define-public python-nr-stream
+  (package
+    (name "python-nr-stream")
+    (version "1.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nr_stream" version))
+       (sha256
+        (base32 "0rag4vbjnalkyfcarx6yipn11ih2hmc3pfldava4c6n6pz31c0pb"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/NiklasRosenstein/python-nr.stream")
+    (synopsis "Stream and Optional classes for Python")
+    (description "This package provides a @code{Stream} and @code{Optional}
+class.")
+    (license license:expat)))
+
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
