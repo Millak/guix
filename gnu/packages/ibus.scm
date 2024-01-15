@@ -182,7 +182,7 @@
               (rename-file
                (string-append #$output "/share/gtk-doc")
                (string-append #$output:doc "/share/gtk-doc"))))
-          (add-after 'wrap-program 'wrap-with-additional-paths
+          (add-after 'glib-or-gtk-wrap 'wrap-with-additional-paths
             (lambda* (#:key outputs #:allow-other-keys)
               ;; Make sure 'ibus-setup' runs with the correct GI_TYPELIB_PATH.
               (wrap-program (search-input-file outputs "bin/ibus-setup")
