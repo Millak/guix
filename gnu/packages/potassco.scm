@@ -2,6 +2,7 @@
 ;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -429,7 +430,7 @@ logic programs based on clingo.")
 (define-public python-clingraph
   (package
     (name "python-clingraph")
-    (version "1.1.0")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -438,7 +439,7 @@ logic programs based on clingo.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bdhli20nw9qnyxmpisgz7m97d7bwx6lbmxy9bgqvm6mipprnv3n"))))
+                "16q54rkwr84byzy27795rl9z08kcyxsg7lfk017yr8p5axh9a9rr"))))
     (build-system pyproject-build-system)
     (inputs (list dot2tex graphviz))
     (propagated-inputs (list python-clingo
