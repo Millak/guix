@@ -7643,7 +7643,7 @@ color scales, and color space conversion easy.  It has support for:
     (native-inputs
      (list python-pytest python-pytest-mock))
     (propagated-inputs
-     (list python-cryptography python-gssapi python-ruamel.yaml))
+     (list python-cryptography python-gssapi python-krb5 python-ruamel.yaml))
     (home-page "https://github.com/jborean93/pyspnego")
     (synopsis "Python SPNEGO library")
     (description "The @code{pyspnego} Python library handles Negotiate, NTLM,
