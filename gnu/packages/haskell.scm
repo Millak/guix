@@ -1444,8 +1444,7 @@ interactive environment for the functional language Haskell.")
                 (sha256
                  (base32
                   "18b7ln4gx2vy62jpv3z5slv3zfxmxnmkgajznks15zglddwd24sz"))
-                (patches (search-patches "ghc-9.2-glibc-2.33-link-order.patch"
-                                         "ghc-9.2-cabal-support-package-path.patch"))))
+                (patches (search-patches "ghc-9.2-cabal-support-package-path.patch"))))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)
