@@ -78,6 +78,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4395,13 +4396,13 @@ time.")
 (define-public python-evdev
   (package
     (name "python-evdev")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "evdev" version))
        (sha256
-        (base32 "0kb3636yaw9l8xi8s184w0r0n9ic5dw3b8hx048jf9fpzss4kimi"))))
+        (base32 "1rig85aq6k7y75m3bm7gjpd2gljspwwf8wb0vpkpcif8yxsb2csv"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ;no rule for tests
