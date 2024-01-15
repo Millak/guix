@@ -59160,23 +59160,21 @@ can handle huge texts and memory-incoherent edits with ease.")
 (define-public rust-rsa-0.9
   (package
     (name "rust-rsa")
-    (version "0.9.2")
+    (version "0.9.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rsa" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1a762gzj9xl14n8gmclsz8kcwp958nd1k05nnhqsdh93gns3pd3a"))))
+                "1z0d1aavfm0v4pv8jqmqhhvvhvblla1ydzlvwykpc3mkzhj523jx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-const-oid" ,rust-const-oid-0.9)
+       (("rust-const-oid" ,rust-const-oid-0.9)
         ("rust-digest" ,rust-digest-0.10)
         ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
         ("rust-num-integer" ,rust-num-integer-0.1)
-        ("rust-num-iter" ,rust-num-iter-0.1)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-pkcs1" ,rust-pkcs1-0.7)
         ("rust-pkcs8" ,rust-pkcs8-0.10)
