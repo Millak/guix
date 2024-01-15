@@ -3945,14 +3945,15 @@ datetime object.")
                   (format port "[pytest]
 python_files = test_*.py"))))))))
     (propagated-inputs
-     (list ;; python-dust-extinction ; XXX: Not packed yet, optional.
-           ;; python-specutils       ; XXX: Not packed yet, optional.
-           python-astropy
+     (list python-astropy
+           python-dust-extinction
            python-numpy
-           python-scipy))
+           python-scipy
+           python-specutils ))
     (native-inputs
      (list python-pytest
            python-pytest-astropy
+           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/synphot_refactor")
     (synopsis "Synthetic photometry using Astropy")
