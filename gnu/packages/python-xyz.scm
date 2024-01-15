@@ -536,6 +536,51 @@ workspaces.
 @end itemize")
     (license license:gpl3+)))
 
+(define-public python-databind-core
+  (package
+    (name "python-databind-core")
+    (version "4.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "databind.core" version))
+       (sha256
+        (base32 "130hr19kbzizx9n2q7cwfzfk20ii3cqmqjrzb16psnafll303k2d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-name
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((sitedir (site-packages inputs outputs))
+                     (dist-info
+                      (string-append sitedir "/databind_core-" #$version ".dist-info")))
+                (substitute* (string-append dist-info "/METADATA")
+                  (("Name: databind-core")
+                   "Name: databind.core"))
+                (substitute* (string-append dist-info "/RECORD")
+                  (("databind_core") "databind.core"))
+                (rename-file dist-info
+                             (string-append sitedir
+                                            "/databind.core-"
+                                            #$version ".dist-info"))))))))
+    (propagated-inputs
+     (list python-deprecated
+           python-nr-date
+           python-nr-stream
+           python-typeapi
+           python-typing-extensions))
+    (native-inputs
+     (list python-poetry-core python-pytest))
+    (home-page "https://niklasrosenstein.github.io/python-databind/core/")
+    (synopsis
+     "Library for de-/serializing Python dataclasses")
+    (description
+     "Databind is a library inspired by jackson-databind to de-/serialize
+Python dataclasses.")
+    (license license:expat)))
+
 (define-public python-fire
   (package
     (name "python-fire")
