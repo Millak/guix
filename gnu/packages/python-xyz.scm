@@ -581,6 +581,47 @@ workspaces.
 Python dataclasses.")
     (license license:expat)))
 
+(define-public python-databind-json
+  (package
+    (name "python-databind-json")
+    (version "4.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "databind.json" version))
+       (sha256
+        (base32 "1lm864d7arfq0pw64hyc83bwn1z94wjg7a22q1xf0qkjynqs70gg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-name
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((sitedir (site-packages inputs outputs))
+                     (dist-info
+                      (string-append sitedir "/databind_json-" #$version ".dist-info")))
+                (substitute* (string-append dist-info "/METADATA")
+                  (("Name: databind-json")
+                   "Name: databind.json"))
+                (substitute* (string-append dist-info "/RECORD")
+                  (("databind_json") "databind.json"))
+                (rename-file dist-info
+                             (string-append sitedir
+                                            "/databind.json-"
+                                            #$version ".dist-info"))))))))
+    (propagated-inputs
+     (list python-databind-core python-nr-date
+           python-typeapi python-typing-extensions))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://niklasrosenstein.github.io/python-databind/json/")
+    (synopsis
+     "De-/serialize Python dataclasses to or from JSON payloads")
+    (description
+     "The @code{databind.json} package implements the de-/serialization to or
+from JSON payloads using the @code{databind.core} framework.")
+    (license license:expat)))
+
 (define-public python-fire
   (package
     (name "python-fire")
