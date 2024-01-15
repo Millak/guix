@@ -182,7 +182,10 @@
                   (max-silent-time . 18000))) ;5 hours (for armel)
     (build-system gnu-build-system)
     (inputs
-     `(("llvm" ,llvm-13)
+     `(,@(if (target-ppc64le?)
+             `(("clang" ,clang-13))
+             `())
+       ("llvm" ,llvm-13)
        ("openssl" ,openssl-1.1)
        ("zlib" ,zlib)))
     (native-inputs
@@ -200,6 +203,7 @@
        #:validate-runpath? #f
        ;; Most of the build is single-threaded. This also improves the
        ;; build time on machines with "only" 8GB of RAM.
+       ;; ppc64le regularly sees race conditions between various dependant crates.
        #:parallel-build? ,(target-x86-64?)
        #:make-flags
        (list ,(string-append "RUSTC_TARGET="
@@ -217,6 +221,15 @@
              "OUTDIR_SUF=")           ;do not add version suffix to output dir
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-ppc64le?)
+               `((add-after 'unpack 'patch-sources-for-newer-llvm
+                   (lambda _
+                     ;; Adjust some sources for llvm-13, see llvm commit
+                     ;; acce401068e78a8c5dc9e06802111ffad3da763f
+                     (substitute* (find-files "." "powerpc64le_unknown_linux_gnu.rs")
+                       (("e-m:e-i64:64-n32:64-v256:256:256-v512:512:512")
+                        "e-m:e-i64:64-n32:64-S128-v256:256:256-v512:512:512")))))
+               '())
          (add-after 'unpack 'setup-mrustc-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "mrustc-source") "../mrustc")
@@ -275,8 +288,11 @@
                (setenv "CARGO_HOME" cargo-home))))
          (replace 'configure
            (lambda _
-             (setenv "CC" "gcc")
-             (setenv "CXX" "g++")
+             ,@(if (target-ppc64le?)
+                   `((setenv "CC" "clang")
+                     (setenv "CXX" "clang++"))
+                   `((setenv "CC" "gcc")
+                     (setenv "CXX" "g++")))
              ;; The Guix LLVM package installs only shared libraries.
              (setenv "LLVM_LINK_SHARED" "1")
              ;; rustc still insists on having 'cc' on PATH in some places
@@ -308,9 +324,18 @@
                (display "Building LIBS...\n")
                (apply invoke "make" "-f" "minicargo.mk" "LIBS" make-flags)
 
+               ;; The psm crate FTBFS on ppc64le with gcc.
                (display "Building rustc...\n")
                (apply invoke "make" "-f" "minicargo.mk" "output/rustc"
                       make-flags)
+
+               ;; We can to continue the build with gcc after building rustc.
+               ;; librustc_driver.so undefined reference to
+               ;; `llvm::cfg::Update<llvm::BasicBlock*>::dump() const'
+               ,@(if (target-ppc64le?)
+                     `((setenv "CC" "gcc")
+                       (setenv "CXX" "g++"))
+                     `())
 
                (display "Building cargo...\n")
                (apply invoke "make" "-f" "minicargo.mk" "output/cargo"
