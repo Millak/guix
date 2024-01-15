@@ -70769,19 +70769,17 @@ inspired by Python's subprocess module, with Rust-specific extensions.")
 (define-public rust-subtle-2
   (package
     (name "rust-subtle")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "subtle" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "00b6jzh9gzb0h9n25g06nqr90z3xzqppfhhb260s1hjhh4pg7pkb"))))
+        (base32 "1g2yjs7gffgmdvkkq0wrrh0pxds3q0dv6dhkw9cdpbib656xdkc1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs (("rust-rand" ,rust-rand-0.7))))
+     `(#:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))
     (home-page "https://dalek.rs/")
     (synopsis
      "Pure-Rust traits and utilities for cryptographic implementations")
