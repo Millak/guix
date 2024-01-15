@@ -24135,58 +24135,6 @@ profiling, and getting datetime-aware @acronym{UTC, Coordinated Universal
 Time} values as well as an event scheduler.")
     (license license:expat)))
 
-(define-public python-activepapers
-  (package
-    (name "python-activepapers")
-    (version "0.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ActivePapers.Py" version))
-       (sha256
-        (base32
-         "12wkhjh90ffipjzv10swndp2xv9hd7xrxvg6v0n4n3i411pj4xb8"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:modules ((ice-9 ftw)
-                  (srfi srfi-1)
-                  (guix build utils)
-                  (guix build python-build-system))
-
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-python2-code
-           (lambda _
-             (for-each delete-file
-                       '("lib/activepapers/builtins2.py"
-                         "lib/activepapers/standardlib2.py"
-                         "lib/activepapers/utility2.py"))))
-         (replace 'check
-           (lambda _
-             ;; Deactivate the test cases that download files
-             (setenv "NO_NETWORK_ACCESS" "1")
-             ;; For some strange reason, some tests fail if nosetests runs all
-             ;; test modules in a single execution. They pass if each test
-             ;; module is run individually.
-             (for-each (lambda (filename)
-                         (invoke "nosetests"
-                                 (string-append "tests/" filename)))
-                       (scandir "tests"
-                                (lambda (filename)
-                                  (string-suffix? ".py" filename)))))))))
-    (native-inputs
-     (list python-tempdir python-nose))
-    (propagated-inputs
-     (list python-h5py))
-    (home-page "https://www.activepapers.org/")
-    (synopsis "Executable papers for scientific computing")
-    (description
-     "ActivePapers is a tool for working with executable papers, which
-combine data, code, and documentation in single-file packages,
-suitable for publication as supplementary material or on repositories
-such as figshare or Zenodo.")
-    (license license:bsd-3)))
-
 (define-public python-semver
   (package
     (name "python-semver")
