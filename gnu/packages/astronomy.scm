@@ -572,6 +572,17 @@ Main features:
                ;; Do not test examples
                (("testspaths = astroML doc examples")
                 "testspaths = astroML"))))
+         (add-after 'unpack 'matplotlib-compatibility
+           (lambda _
+             (substitute* "astroML/plotting/tools.py"
+               (("^( *)ax.(lines|patches|tables|artists|images).clear.*" _ indent type)
+                (string-append indent "for art in ax." type ":\n"
+                               indent "  art.remove()\n")))))
+         ;; See commit e1c779de1f0ce4cb499dbda6c23d14f76b98e430
+         (add-after 'unpack 'scipy-compatibility
+           (lambda _
+             (substitute* "astroML/dimensionality/iterative_pca.py"
+               (("sym_pos=True") "assume_a=\"pos\""))))
          (add-before 'check 'pre-check
            ;; Some tests need this
            (lambda _
