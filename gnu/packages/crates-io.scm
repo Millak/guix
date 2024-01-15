@@ -75873,14 +75873,14 @@ tinyobjloader.")
 (define-public rust-tokio-1
   (package
     (name "rust-tokio")
-    (version "1.32.0")
+    (version "1.35.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yck1349q23l22bgxcbqd3wkaffw2vmkf7z26m3wgmkcxmvn1v8p"))))
+        (base32 "01613rkziqp812a288ga65aqygs254wgajdi57v8brivjkx4x6y8"))))
     (build-system cargo-build-system)
     (arguments
      (list #:tests? #f  ; unresolved imports `crate::runtime::task`
@@ -75904,7 +75904,7 @@ tinyobjloader.")
              ("rust-loom" ,rust-loom-0.7)
              ("rust-mio-aio" ,rust-mio-aio-0.7)
              ("rust-mockall" ,rust-mockall-0.11)
-             ("rust-nix" ,rust-nix-0.26)
+             ("rust-nix" ,rust-nix-0.27)
              ("rust-rand" ,rust-rand-0.8)
              ("rust-socket2" ,rust-socket2-0.5)
              ("rust-tempfile" ,rust-tempfile-3)
