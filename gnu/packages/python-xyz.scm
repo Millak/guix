@@ -1429,6 +1429,26 @@ generator MkDocs.")
 bindings to the C++ random forest implementation, ranger, using Cython.")
     (license license:gpl3+)))
 
+(define-public python-nr-date
+  (package
+    (name "python-nr-date")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nr_date" version))
+       (sha256
+        (base32 "1rnjyykjp41mqz6h1vx18jblq97gi5m5x7dgasyaihnd7fhswhq6"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (propagated-inputs (list python-dataclasses))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/NiklasRosenstein/python-nr.date")
+    (synopsis "Fast, regex-based date parsing library in plain Python")
+    (description "This package provides a fast, regex-based date parsing
+library in pure Python.")
+    (license license:expat)))
+
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
