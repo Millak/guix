@@ -87,7 +87,7 @@ contains the archive keys used for that.")
 (define-public debian-ports-archive-keyring
   (package
     (name "debian-ports-archive-keyring")
-    (version "2023.02.01")
+    (version "2024.01.05")
     (source
       (origin
         (method url-fetch)
@@ -96,7 +96,7 @@ contains the archive keys used for that.")
                             "/debian-ports-archive-keyring_" version ".tar.xz"))
         (sha256
          (base32
-          "1xq7i6plgfbf4drqdmmk1yija48x11jmhnk2av3cajn2cdhkw73s"))))
+          "010yaxc6ngq4ygh7mjyz2bk3w8ialxzya1bqwc7knavaixz9gfpp"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f              ; No test suite.
