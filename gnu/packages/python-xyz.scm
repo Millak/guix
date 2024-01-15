@@ -622,6 +622,31 @@ Python dataclasses.")
 from JSON payloads using the @code{databind.core} framework.")
     (license license:expat)))
 
+(define-public python-docspec
+  (package
+    (name "python-docspec")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "docspec" version))
+       (sha256
+        (base32 "1zqmdrc6k8pprra8p3wpzq2ml2gph1cfjmsyg07f8b8fvizffm28"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
+    (propagated-inputs
+     (list python-databind-core
+           python-databind-json
+           python-deprecated))
+    (native-inputs
+     (list python-poetry-core))
+    (home-page "https://github.com/NiklasRosenstein/python-docspec")
+    (synopsis "Represent API documentation of programming languages")
+    (description
+     "Docspec is a JSON object specification for representing API
+documentation of programming languages.")
+    (license license:expat)))
+
 (define-public python-fire
   (package
     (name "python-fire")
