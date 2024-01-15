@@ -64492,14 +64492,14 @@ commonly used by Ruby on Rails via Rack.")
 (define-public rust-serde-repr-0.1
   (package
     (name "rust-serde-repr")
-    (version "0.1.16")
+    (version "0.1.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_repr" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "005x2q9x6cdqp312mjhggbzd6vkg8r0abcg0biz0z9dkmpgy29c7"))))
+        (base32 "1nyzz7ph9nwmjrx6f7s37m9y7y5gc10f4vjxnqkgfgcxbsa6nbhb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
