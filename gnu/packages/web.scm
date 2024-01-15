@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
@@ -8193,13 +8193,14 @@ compressed JSON header blocks.
                     (guile    (assoc-ref inputs "guile"))
                     (gcrypt   (assoc-ref inputs "guile-gcrypt"))
                     (git      (assoc-ref inputs "guile-git"))
+                    (gnutls   (assoc-ref inputs "guile-gnutls"))
                     (bs       (assoc-ref inputs "guile-bytestructures"))
                     (json     (assoc-ref inputs "guile-json"))
                     (zlib     (assoc-ref inputs "guile-zlib"))
                     (syntax   (assoc-ref inputs "guile-syntax-highlight"))
                     (guile-cm (assoc-ref inputs
                                          "guile-commonmark"))
-                    (deps (list guile gcrypt git bs zlib guile-cm
+                    (deps (list guile gcrypt git gnutls bs zlib guile-cm
                                 syntax guix json))
                     (effective
                      (read-line
@@ -8231,6 +8232,7 @@ compressed JSON header blocks.
            guile-commonmark
            guile-json-4
            guile-syntax-highlight
+           guile-gnutls    ;used to connect to https://disarchive.guix.gnu.org
            bash-minimal))
     (home-page "https://github.com/UMCUGenetics/hpcguix-web")
     (synopsis "Web interface for cluster deployments of Guix")
