@@ -27992,6 +27992,42 @@ format.")
 access the system cron automatically and simply using a direct API.")
     (license license:lgpl3+)))
 
+(define-public python-apscheduler
+  (package
+    (name "python-apscheduler")
+    (version "3.10.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "APScheduler" version))
+              (sha256
+               (base32
+                "0jpg9jyx95jafkq0hz6sx7r4l2z5gc599ivb9278kgnr4wdhgpz6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytz
+                             python-six
+                             python-tzlocal))
+    (native-inputs (list python-mock
+                         python-twisted
+                         python-gevent
+                         python-setuptools-scm
+                         python-sqlalchemy
+                         python-pyside-6
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-pytest-tornado5))
+    (home-page "https://github.com/agronholm/apscheduler")
+    (synopsis "Task scheduling library for Python")
+    (description "Advanced Python Scheduler (APScheduler) is a Python library
+that lets you schedule your Python code to be executed later, either just once
+or periodically.
+
+You can add new jobs or remove old ones on the fly as you please.  If you store
+your jobs in a database, they will also survive scheduler restarts and maintain
+their state.  When the scheduler is restarted, it will then run all the jobs it
+should have run while it was offline.")
+    (license license:expat)))
+
 (define-public python-pylzma
   (package
     (name "python-pylzma")
