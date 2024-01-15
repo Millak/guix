@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
@@ -388,6 +388,8 @@ Report the availability of substitutes.\n"))
   -m, --manifest=MANIFEST
                          look up substitutes for packages specified in MANIFEST"))
   (display (G_ "
+  -e, --expression=EXPR  build the object EXPR evaluates to"))
+  (display (G_ "
   -c, --coverage[=COUNT]
                          show substitute coverage for packages with at least
                          COUNT dependents"))
@@ -426,6 +428,9 @@ Report the availability of substitutes.\n"))
          (option '(#\m "manifest") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'manifest arg result)))
+         (option '(#\e "expression") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'expression arg result)))
          (option '(#\c "coverage") #f #t
                  (lambda (opt name arg result)
                    (alist-cons 'coverage
@@ -611,6 +616,8 @@ SERVER.  Display information for packages with at least THRESHOLD dependents."
           (base  (filter-map (match-lambda
                                (('argument . spec)
                                 (specification->package spec))
+                               (('expression . str)
+                                (read/eval-package-expression str))
                                (_
                                 #f))
                              opts)))

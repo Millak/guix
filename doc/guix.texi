@@ -22,7 +22,7 @@
 @set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
-Copyright @copyright{} 2012-2023 Ludovic Courtès@*
+Copyright @copyright{} 2012-2024 Ludovic Courtès@*
 Copyright @copyright{} 2013, 2014, 2016 Andreas Enge@*
 Copyright @copyright{} 2013 Nikita Karetnikov@*
 Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
@@ -16743,6 +16743,20 @@ guix package}).
 
 This option can be repeated several times, in which case the manifests
 are concatenated.
+
+@item --expression=@var{expr}
+@itemx -e @var{expr}
+Consider the package @var{expr} evaluates to.
+
+A typical use case for this option is specifying a package that is
+hidden and thus cannot be referred to in the usual way, as in this
+example:
+
+@example
+guix weather -e '(@@@@ (gnu packages rust) rust-bootstrap)'
+@end example
+
+This option can be repeated.
 
 @item --coverage[=@var{count}]
 @itemx -c [@var{count}]
