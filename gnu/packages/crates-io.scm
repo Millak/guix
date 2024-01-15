@@ -36,7 +36,7 @@
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
-;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
+;;; Copyright © 2023, 2024 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2023 Daniel Ziltener <dziltener@lyrion.ch>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -23344,14 +23344,14 @@ compact sets of enums.")
 (define-public rust-env-logger-0.10
   (package
     (name "rust-env-logger")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "env_logger" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w797qgkrmqdacsbc0j6yvpnmvfc9lx6k8fm79rndkxci5mapkc5"))))
+        (base32 "1kmy9xmfjaqfvd4wkxr1f7d16ld3h9b487vqs2q9r0s8f3kg7cwm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
