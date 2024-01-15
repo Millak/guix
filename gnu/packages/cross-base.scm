@@ -231,8 +231,7 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
 
                    (remove
                      (lambda (flag)
-                       (or (and #$libc
-                                (string-prefix? "--enable-languages" flag))
+                       (or (string-prefix? "--enable-languages" flag)
                            (and #$libc
                                 #$(target-avr? target)
                                 (string-prefix? "--with-native-system-header-dir"
