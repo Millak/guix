@@ -68195,14 +68195,14 @@ benchmarking.")
 (define-public rust-socket2-0.5
   (package
     (name "rust-socket2")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "socket2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17lqx8w2b3nysrkdbdz8y7fkikz5v77c052q57lxwajmxchfhca0"))))
+        (base32 "1sgq315f1njky114ip7wcy83qlphv9qclprfjwvxcpfblmcsqpvv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
