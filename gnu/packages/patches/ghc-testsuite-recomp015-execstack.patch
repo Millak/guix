@@ -1,0 +1,10 @@
+--- a/testsuite/tests/driver/recomp015/Makefile   2024-01-13 16:22:42.643106725 +0100
++++ b/testsuite/tests/driver/recomp015/Makefile   2024-01-13 16:23:18.406867917 +0100
+@@ -26,6 +26,7 @@
+ 	# number of sections)
+ 	'$(TEST_HC)' $(TEST_HC_OPTS) Generate.hs
+ 	./Generate > ManySections.s
++	echo '.section .note.GNU-stack,"",@progbits' > ManySections.s
+ 	echo 'main = putStrLn "Running main..."' > Main.hs
+ 	'$(TEST_HC)' $(TEST_HC_OPTS) -c ManySections.s
+ 	'$(TEST_HC)' $(TEST_HC_OPTS) --make -O Main.hs ManySections.o
