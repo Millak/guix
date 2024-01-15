@@ -21104,6 +21104,26 @@ JSON) codec.")
      ;; number of files with other licenses.
      (list license:gpl2+ license:asl2.0 license:lgpl2.1+ license:cc-by-sa3.0))))
 
+(define-public python-namex
+  (package
+    (name "python-namex")
+    (version "0.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "namex" version))
+       (sha256
+        (base32 "16ynrq245c3nywv476izrc4bcacm9gxjzgr67ng91g929ny6bfl4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
+    (home-page "https://github.com/fchollet/namex")
+    (synopsis
+     "Separate implementation and public API surface of Python packages")
+    (description
+     "This package provides a simple utility to separate the
+implementation of your Python package and its public API surface.")
+    (license license:asl2.0)))
+
 (define-public python-natsort
   (package
     (name "python-natsort")
