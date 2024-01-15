@@ -1,0 +1,33 @@
+From d61f742876bdf2cd32e76f7bca389106ad99a316 Mon Sep 17 00:00:00 2001
+From: Ben Gamari <ben@smart-cactus.org>
+Date: Tue, 3 May 2022 12:40:43 -0400
+Subject: [PATCH] rts/ghc.mk: Only build StgCRunAsm.S when it is needed
+
+Previously the make build system unconditionally included StgCRunAsm.S
+in the link, meaning that the RTS would require an execstack
+unnecessarily.
+
+Fixes #21478.
+---
+ rts/ghc.mk | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/rts/ghc.mk b/rts/ghc.mk
+index 36a82f9f2c8..0e56515a569 100644
+--- a/rts/ghc.mk
++++ b/rts/ghc.mk
+@@ -57,8 +57,11 @@ ifneq "$(PORTING_HOST)" "YES"
+ 
+ # unregisterised builds use the mini interpreter
+ ifneq "$(GhcUnregisterised)" "YES"
++# use StgCRunAsm.S on ppc, ppc64, s390x, and riscv64
++ifneq "$(findstring $(TargetArch_CPP), ppc)$(findstring $(TargetArch_CPP), ppc64)$(findstring $(TargetArch_CPP), s390x)$(findstring $(TargetArch_CPP), riscv64)" ""
+ rts_S_SRCS += rts/StgCRunAsm.S
+ endif
++endif
+ 
+ # select adjustor implementation. This much match the logic in rts.cabal.in.
+ ifneq "$(CLEANING)" "YES"
+-- 
+GitLab
+
