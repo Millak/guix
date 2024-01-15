@@ -2231,37 +2231,38 @@ facilities for checking incoming mail.")
            zlib
            `(,zstd "lib")))
     (arguments
-     `(#:configure-flags '("--sysconfdir=/etc"
-                           "--localstatedir=/var"
-                           "--with-sqlite"  ; not auto-detected
-                           "--with-lucene"
-                           "--with-moduledir=/usr/lib/dovecot") ; not auto-detected
+     (list
+       #:configure-flags
+       #~'("--localstatedir=/var"
+           "--sysconfdir=/etc"
+           "--with-lucene"
+           "--with-moduledir=/usr/lib/dovecot"
+           "--with-sqlite")
        ;; The -rdynamic linker flag is needed for the backtrace() function to
        ;; have symbol names rather than just addresses.  Dovecot's tests rely
        ;; on this, see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=962630.
-       #:make-flags (list "LDFLAGS=-rdynamic")
+       #:make-flags #~'("LDFLAGS=-rdynamic")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-file-names
-           (lambda _
-             (substitute* "src/lib-program-client/test-program-client-local.c"
-               (("(/bin/| )cat") (which "cat"))
-               (("/bin/echo") (which "echo"))
-               (("/bin/false") (which "false"))
-               (("/bin/sh") (which "bash"))
-               (("head") (which "head"))
-               (("sleep") (which "sleep")))
-             (substitute* (list "src/lib-smtp/test-bin/sendmail-exit-1.sh"
-                                "src/lib-smtp/test-bin/sendmail-success.sh")
-               (("cat") (which "cat")))))
-         (replace 'install
-           (lambda* (#:key outputs make-flags #:allow-other-keys)
-             ;; The .la files don't like having the moduledir moved.
-             (for-each delete-file (find-files "." "\\.la"))
-             ;; Simple hack to avoid installing a trivial README in /etc.
-             (apply invoke "make" "install" "sysconfdir=/tmp/bogus"
-                    (string-append "moduledir=" (assoc-ref outputs "out") "/lib/dovecot")
-                    make-flags))))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-file-names
+             (lambda _
+               (substitute* "src/lib-program-client/test-program-client-local.c"
+                 (("(/bin/| )cat") (which "cat"))
+                 (("/bin/echo") (which "echo"))
+                 (("/bin/false") (which "false"))
+                 (("/bin/sh") (which "bash"))
+                 (("head") (which "head"))
+                 (("sleep") (which "sleep")))
+               (substitute* (find-files "src/lib-smtp/test-bin")
+                 (("cat") (which "cat")))))
+           (replace 'install
+             (lambda* (#:key make-flags #:allow-other-keys)
+               ;; The .la files don't like having the moduledir moved.
+               (for-each delete-file (find-files "." "\\.la"))
+               ;; Simple hack to avoid installing a trivial README in /etc.
+               (apply invoke "make" "install" "sysconfdir=/tmp/bogus"
+                      (string-append "moduledir=" #$output "/lib/dovecot")
+                      make-flags))))))
     (home-page "https://www.dovecot.org")
     (synopsis "Secure POP3/IMAP server")
     (description
