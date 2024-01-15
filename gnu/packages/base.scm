@@ -1423,6 +1423,7 @@ to the @code{share/locale} sub-directory of this package.")
                                                            normalized)))))
                              locales))))
              (delete 'install)
+             (delete 'install-utf8-c-locale)
              (delete 'move-static-libs)))
          ((#:configure-flags flags)
           `(append ,flags
