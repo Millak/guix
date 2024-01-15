@@ -84987,14 +84987,14 @@ crate.")
 (define-public rust-zeroize-1
   (package
     (name "rust-zeroize")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zeroize" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ndar43r58zbmasjhrhgas168vxb4i0rwbkcnszhjybwpbqmc29a"))))
+        (base32 "0bfvby7k9pdp6623p98yz2irqnamcyzpn7zh20nqmdn68b0lwnsj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
