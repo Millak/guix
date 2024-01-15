@@ -724,13 +724,13 @@ included.")
                (substitute* "gold/Makefile.in"
                  (("/bin/sh") (which "sh")))))
            ;; Multiple failing tests on some architectures in the gold testsuite.
-           #$(if (or (target-arm?)
+           #$@(if (or (target-arm?)
                       (target-ppc32?))
-                 #~(add-after 'unpack 'skip-gold-testsuite
-                     (lambda _
-                       (substitute* "gold/Makefile.in"
-                         ((" testsuite") " "))))
-                 #t)))))
+                  #~((add-after 'unpack 'skip-gold-testsuite
+                       (lambda _
+                         (substitute* "gold/Makefile.in"
+                           ((" testsuite") " ")))))
+                  #~())))))
     (native-inputs (modify-inputs (package-native-inputs binutils)
                      (append bc)))))
 
