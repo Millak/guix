@@ -19979,6 +19979,36 @@ feels like an AST.")
      (arguments '(#:tests? #f))
      (native-inputs '()))))
 
+(define-public python-typeapi
+  (package
+    (name "python-typeapi")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typeapi" version))
+       (sha256
+        (base32 "1652fc04gn6nkw8izim0g7v586f64fla6clinp5xq9rf739w3cs9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^docs =.*") "docs = []\n")))))))
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://pypi.org/project/typeapi/")
+    (synopsis "Type hints")
+    (description "The typeapi package provides an object-oriented interface
+for introspecting PEP484 type hints at runtime, including forward references
+that make use of the more recent PEP585 and PEP604 type hint features in
+Python versions that don't natively support them.")
+    (license license:expat)))
+
 (define-public python-typing-inspect
   (package
     (name "python-typing-inspect")
