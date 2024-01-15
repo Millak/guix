@@ -4355,7 +4355,7 @@ There are several such multiple-output packages in the GNU distribution.
 Other conventional output names include @code{lib} for libraries and
 possibly header files, @code{bin} for stand-alone programs, and
 @code{debug} for debugging information (@pxref{Installing Debugging
-Files}).  The outputs of a packages are listed in the third column of
+Files}).  The outputs of a package are listed in the third column of
 the output of @command{guix package --list-available} (@pxref{Invoking
 guix package}).
 
@@ -5003,7 +5003,8 @@ environment} command to spawn an environment in a container running
 @command{guile} (@command{guix environment} has since been subsumed by
 @command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
 DeLorean@footnote{If you don't know what a DeLorean is, consider
-traveling back to the 1980's.}!  The first @command{guix time-machine}
+traveling back to the 1980's. (@uref{https://www.imdb.com/title/tt0088763/,
+Back to the Future (1985)})}!  The first @command{guix time-machine}
 invocation can be expensive: it may have to download or even build a
 large number of packages; the result is cached though and subsequent
 commands targeting the same commit are almost instantaneous.
@@ -7162,7 +7163,7 @@ What if the recipient of your pack does not have root privileges on
 their machine, and thus cannot unpack it in the root file system?  In
 that case, you will want to use the @option{--relocatable} option (see
 below).  This option produces @dfn{relocatable binaries}, meaning they
-they can be placed anywhere in the file system hierarchy: in the example
+can be placed anywhere in the file system hierarchy: in the example
 above, users can unpack your tarball in their home directory and
 directly run @file{./opt/gnu/bin/guile}.
 
@@ -10194,8 +10195,8 @@ It also generates font metrics (i.e., @file{.tfm} files) out of Metafont
 files whenever possible.  Likewise, it can also create TeX formats
 (i.e., @file{.fmt} files) listed in the @code{#:create-formats}
 argument, and generate a symbolic link from @file{bin/} directory to any
-script located in located in @file{texmf-dist/scripts/}, provided its
-file name is listed in @code{#:link-scripts} argument.
+script located in @file{texmf-dist/scripts/}, provided its file name is
+listed in @code{#:link-scripts} argument.
 
 The build system adds @code{texlive-bin} from @code{(gnu packages tex)}
 to the native inputs.  It can be overridden with the
@@ -13916,8 +13917,8 @@ happen because the daemon runs builds in containers where, unlike in our
 environment above, network access is missing, @file{/bin/sh} does not
 exist, etc. (@pxref{Build Environment Setup}).
 
-In such cases, you may need to run inspect the build process from within
-a container similar to the one the build daemon creates:
+In such cases, you may need to inspect the build process from within a
+container similar to the one the build daemon creates:
 
 @example
 $ guix build -K foo
@@ -14295,8 +14296,7 @@ should be checked closely.  If Perl is available in the store, then the
 @code{corelist} utility will be used to filter core modules out of the
 list of dependencies.
 
-The command command below imports metadata for the Acme::Boolean Perl
-module:
+The command below imports metadata for the Acme::Boolean Perl module:
 
 @example
 guix import cpan Acme::Boolean
@@ -15689,7 +15689,7 @@ Coreutils}).
 
 When the given packages are @emph{not} in the store, @command{guix size}
 reports information based on the available substitutes
-(@pxref{Substitutes}).  This makes it possible it to profile disk usage of
+(@pxref{Substitutes}).  This makes it possible to profile the disk usage of
 store items that are not even on disk, only available remotely.
 
 You can also specify several package names:
@@ -16793,7 +16793,7 @@ ChildCommand: guix offload x86_64-linux 7200 1 28800
 @end example
 
 In this example we see that @command{guix-daemon} has three clients:
-@command{guix environment}, @command{guix publish}, and the Cuirass continuous
+@command{guix shell}, @command{guix publish}, and the Cuirass continuous
 integration tool; their process identifier (PID) is given by the
 @code{ClientPID} field.  The @code{SessionPID} field gives the PID of the
 @command{guix-daemon} sub-process of this particular session.
@@ -19956,7 +19956,7 @@ in users, including:
 Special variation of @code{pam-mount} to mount @code{XDG_RUNTIME_DIR}
 @end itemize
 
-Here is example of switching from @code{mingetty-service-type} to
+Here is an example of switching from @code{mingetty-service-type} to
 @code{greetd-service-type}, and how different terminals could be:
 
 @lisp
@@ -20921,8 +20921,7 @@ package, which allows NetworkManager to manage VPNs @i{via} OpenVPN.
 This is the service type to run @url{https://01.org/connman,Connman},
 a network connection manager.
 
-Its value must be an
-@code{connman-configuration} record as in this example:
+Its value must be a @code{connman-configuration} record as in this example:
 
 @lisp
 (service connman-service-type
@@ -21150,7 +21149,7 @@ The WiFi channel to use.
 @item @code{driver} (default: @code{"nl80211"})
 The driver interface type.  @code{"nl80211"} is used with all Linux
 mac80211 drivers.  Use @code{"none"} if building hostapd as a standalone
-RADIUS server that does # not control any wireless/wired driver.
+RADIUS server that does not control any wireless/wired driver.
 
 @item @code{extra-settings} (default: @code{""})
 Extra settings to append as-is to the hostapd configuration file.  See
@@ -22412,7 +22411,7 @@ private keys in it}.  See the output of @code{yggdrasil -genconf} for a
 quick overview of valid keys and their default values.
 
 @item @code{autoconf?} (default: @code{#f})
-Whether to use automatic mode.  Enabling it makes Yggdrasil use adynamic IP
+Whether to use automatic mode.  Enabling it makes Yggdrasil use a dynamic IP
 and peer with IPv6 neighbors.
 
 @item @code{log-level} (default: @code{'info})
@@ -24926,7 +24925,7 @@ List of possible UUIDs:
 @code{671b10b5-42c0-4696-9227-eb28d1b049d6}: BlueZ Experimental Simultaneous Central and Peripheral,
 
 @item
-@code{"15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
+@code{15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
 
 @item
 @code{330859bc-7506-492d-9370-9a6f0614037f}: BlueZ Experimental Bluetooth Quality Report,
@@ -25588,7 +25587,7 @@ Data type representing the configuration for the
 @code{postgresql-service-type}.
 
 @table @asis
-@item @code{postgresql}
+@item @code{postgresql} (default: @code{postgresql-10})
 PostgreSQL package to use for the service.
 
 @item @code{port} (default: @code{5432})
@@ -31071,7 +31070,7 @@ the configuration.
                   (httpd-virtualhost
                     "*:80"
                     (list (string-join '("ServerName www.example.com"
-                                          "DocumentRoot /srv/http/www.example.com")
+                                         "DocumentRoot /srv/http/www.example.com")
                                        "\n")))))
 @end lisp
 @end defvar
@@ -35149,6 +35148,7 @@ Owner of the @command{mympd} process.
 
 The default @code{%mympd-user} is a system user with the name ``mympd'',
 who is a part of the group @var{group} (see below).
+
 @item @code{group} (default: @code{%mympd-group}) (type: user-group)
 Owner group of the @command{mympd} process.
 
@@ -40258,7 +40258,7 @@ Backend to use to detect changes in the @code{log-path}.  The default is
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package.
 
 @item @code{max-retry} (type: maybe-integer)
-The number of failures before a host get banned (e.g.  @code{(max-retry
+The number of failures before a host gets banned (e.g.  @code{(max-retry
 5)}).
 
 @item @code{max-matches} (type: maybe-integer)
@@ -41219,7 +41219,7 @@ Of course, these options can be combined:
 '("console=com0" "noide")
 @end lisp
 
-+@item @code{multiboot-modules} (default: @code{'()})
+@item @code{multiboot-modules} (default: @code{'()})
 The list of commands for loading Multiboot modules.  For example:
 
 @lisp
@@ -44638,19 +44638,19 @@ running on this machine, then it @emph{may} take this file into account:
 this is what @command{sshd} does by default, but be aware that it can
 also be configured to ignore it.
 
-@item @code{add-keys-to-agent} (default: @code{``no''})
+@item @code{add-keys-to-agent} (default: @code{no})
 This string specifies whether keys should be automatically added to a
-running ssh-agent.  If this option is set to @code{``yes''} and a key is
+running ssh-agent.  If this option is set to @code{yes} and a key is
 loaded from a file, the key and its passphrase are added to the agent
 with the default lifetime, as if by @code{ssh-add}.  If this option is
-set to @code{``ask''}, @code{ssh} will require confirmation.  If this
-option is set to @code{``confirm''}, each use of the key must be
-confirmed.  If this option is set to @code{``no''}, no keys are added to
+set to @code{ask}, @code{ssh} will require confirmation.  If this
+option is set to @code{confirm}, each use of the key must be
+confirmed.  If this option is set to @code{no}, no keys are added to
 the agent.  Alternately, this option may be specified as a time interval
 to specify the key's lifetime in @code{ssh-agent}, after which it will
-automatically be removed.  The argument must be @code{``no''},
-@code{``yes''}, @code{``confirm''} (optionally followed by a time
-interval), @code{``ask''} or a time interval.
+automatically be removed.  The argument must be @code{no},
+@code{yes}, @code{confirm} (optionally followed by a time
+interval), @code{ask} or a time interval.
 @end table
 @end deftp
 
@@ -46726,7 +46726,7 @@ missing.
 @node Separate Debug Info
 @section Separate Debug Info
 
-The problem with debugging information is that is takes up a fair amount
+The problem with debugging information is that it takes up a fair amount
 of disk space.  For example, debugging information for the GNU C Library
 weighs in at more than 60 MiB@.  Thus, as a user, keeping all the
 debugging info of all the installed programs is usually not an option.
@@ -47209,7 +47209,7 @@ traditional bootstrap of the rest of the Guix System.
 @c ./pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' | sed -re 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' > doc/images/gcc-core-mesboot0-graph.dot
 @image{images/gcc-core-mesboot0-graph,6in,,Dependency graph of gcc-core-mesboot0}
 
-Work is ongoing to to bring these bootstraps to the @code{arm-linux} and
+Work is ongoing to bring these bootstraps to the @code{arm-linux} and
 @code{aarch64-linux} architectures and to the Hurd.
 
 If you are interested, join us on @samp{#bootstrappable} on the Libera.Chat
@@ -47380,7 +47380,7 @@ bootstrap GCC with a sequence of assemblers, interpreters, and compilers
 of increasing complexity, which could be built from source starting from
 a simple and auditable assembler.
 
-Our first major achievement is the replacement of of GCC, the GNU C Library
+Our first major achievement is the replacement of GCC, the GNU C Library
 and Binutils by MesCC-Tools (a simple hex linker and macro assembler) and Mes
 (@pxref{Top, GNU Mes Reference Manual,, mes, GNU Mes}, a Scheme interpreter
 and C compiler in Scheme).  Neither MesCC-Tools nor Mes can be fully
