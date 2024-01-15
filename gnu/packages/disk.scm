@@ -273,8 +273,6 @@ tmpfs/ramfs filesystems.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-locales-and-python
             (lambda _
-              (substitute* "tests/t0251-gpt-unicode.sh"
-                (("C.UTF-8") "en_US.utf8")) ;not in Glibc locales
               (substitute* "tests/msdos-overlap"
                 (("/usr/bin/python") (which "python"))))))))
     (inputs
