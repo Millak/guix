@@ -3036,8 +3036,11 @@ implementing calibration pipeline software.")
                              python-numpy
                              python-scipy
                              python-synphot))
-    (native-inputs (list python-pytest python-pytest-astropy
-                         python-pytest-astropy-header python-setuptools-scm))
+    (native-inputs (list python-pytest
+                         python-pytest-astropy
+                         python-pytest-astropy-header
+                         python-semantic-version
+                         python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stsynphot_refactor")
     (synopsis "Synthetic photometry using Astropy for HST and JWST")
     (description
