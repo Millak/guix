@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -189,7 +189,7 @@ contains the archive keys used for that.")
 (define-public debootstrap
   (package
     (name "debootstrap")
-    (version "1.0.132")
+    (version "1.0.134")
     (source
       (origin
         (method git-fetch)
@@ -198,7 +198,7 @@ contains the archive keys used for that.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1l6mc3i2wqfhmhj85x9qiiqchqp9br6gg54hv1xs08h8xndmfchf"))))
+         (base32 "0k9gi6gn8qlqs81r2q1hx5wfyax3nvpkk450girdra7dh54iidr4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -210,9 +210,7 @@ contains the archive keys used for that.")
                (let ((debian #$(this-package-input "debian-archive-keyring"))
                      (ubuntu #$(this-package-input "ubuntu-keyring")))
                  (substitute* "Makefile"
-                   (("/usr") "")
-                   (("-o root -g root") "")
-                   (("chown root.*") "\n"))
+                   (("/usr") ""))
                  (substitute* '("scripts/etch"
                                 "scripts/potato"
                                 "scripts/sarge"
