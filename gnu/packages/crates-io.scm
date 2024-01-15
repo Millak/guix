@@ -68615,14 +68615,14 @@ SPIR-V.")
 (define-public rust-spki-0.7
   (package
     (name "rust-spki")
-    (version "0.7.2")
+    (version "0.7.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "spki" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0jhq00sv4w3psdi6li3vjjmspc6z2d9b1wc1srbljircy1p9j7lx"))))
+                "17fj8k5fmx4w9mp27l970clrh5qa7r5sjdvbsln987xhb34dc7nr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
