@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
@@ -122,6 +123,36 @@ is standardized in RFC 7539.")
       (description "This repository contains Go packages related to
 cryptographic standards that are not included in the Go standard library.")
       (license license:asl2.0))))
+
+(define-public go-github-com-emersion-go-pgpmail
+  (package
+    (name "go-github-com-emersion-go-pgpmail")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/go-pgpmail")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ar26b0apw5bxn58qfn1a79cxigbmrqm1irh1rb7x57fydihc7wm"))))
+    (build-system go-build-system)
+    (arguments
+     (list ;; tests don't support our version of protonmail/go-crypto; see
+      ;; <https://github.com/emersion/go-pgpmail/issues/12>
+      #:tests? #f
+      #:import-path "github.com/emersion/go-pgpmail"))
+    (propagated-inputs
+     (list go-github-com-emersion-go-message
+           go-github-com-protonmail-go-crypto
+           go-golang-org-x-crypto
+           go-golang-org-x-text))
+    (home-page "https://github.com/emersion/go-pgpmail")
+    (synopsis "PGP mail encryption for Go")
+    (description "The pgpmail package implements PGP encryption for e-mail
+messages.")
+    (license license:expat)))
 
 (define-public go-github-com-gaukas-godicttls
   (package
