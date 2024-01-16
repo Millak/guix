@@ -5,6 +5,7 @@
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,6 +92,36 @@ primitives.")
 Bernstein.  The most common ChaCha variant is ChaCha20 (20 rounds).  ChaCha20
 is standardized in RFC 7539.")
       (license license:expat))))
+
+(define-public go-github-com-aperturerobotics-jacobsa-crypto
+  (let ((commit "b1eb679742a8deed015a4406384eea6bd985d08a")
+        (revision "0"))
+    (package
+      (name "go-github-com-aperturerobotics-jacobsa-crypto")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aperturerobotics/jacobsa-crypto")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16dxigj8m6q18xqsy72iq287rh4fw0y0b9yqlw0qkclb8379n1z2"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/aperturerobotics/jacobsa-crypto"
+             ;; Source-only package.
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; Source-only package.
+                 (delete 'build))))
+      (home-page "https://github.com/aperturerobotics/jacobsa-crypto")
+      (synopsis "Cryptography missing from the Go standard library")
+      (description "This repository contains Go packages related to
+cryptographic standards that are not included in the Go standard library.")
+      (license license:asl2.0))))
 
 (define-public go-github-com-gaukas-godicttls
   (package
