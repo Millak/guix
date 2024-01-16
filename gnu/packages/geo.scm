@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
@@ -1495,13 +1495,13 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public python-metpy
   (package
     (name "python-metpy")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MetPy" version))
               (sha256
                (base32
-                "125nb1bmkqpdf19fq0mbbgzdjczn46lr9yqi7zgn6k62dzjm1gm7"))))
+                "1pzzanar797wkn6ljs47vni1fwli570d5qsiw1kpw0j1xymcmfsm"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Too many of the tests in the files below require online data.
