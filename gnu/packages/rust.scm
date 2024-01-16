@@ -657,6 +657,27 @@ safety and thread safety guarantees.")
       (source
        (origin
          (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/openssl-src/openssl"
+                         "vendor/tikv-jemalloc-sys/jemalloc"))
+             ;; ERROR: could not find native static library
+             ;; `rustix_outline_powerpc64`, perhaps an -L flag is missing?
+             ;; Adjust rustix to always build with cc.
+             (substitute* "src/bootstrap/Cargo.lock"
+               (("\"errno\",") "\"cc\",\n \"errno\","))
+             ;; Add a dependency on the the 'cc' feature of rustix.
+             (substitute* "vendor/fd-lock/Cargo.toml"
+               (("\"fs\"") "\"fs\", \"cc\""))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             (delete-file "vendor/vte/vim10m_match")
+             (delete-file "vendor/vte/vim10m_table")
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))))
          (patches (search-patches "rust-1.64-fix-riscv64-bootstrap.patch"))
          (patch-flags '("-p1" "--reverse"))))
       (arguments
