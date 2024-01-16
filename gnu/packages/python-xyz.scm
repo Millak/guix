@@ -14066,6 +14066,24 @@ almost any existing Python modules, and an easy way for outside developers to
 add functionality and customization to your projects with their own plugins.")
     (license license:expat)))
 
+(define-public python-strenum
+  (package
+    (name "python-strenum")
+    (version "0.4.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "StrEnum" version))
+       (sha256
+        (base32 "1zrfr1shin5wyfnfxc7jpk013594wasrp4ni9l70fhjlf2mvb3w7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none.
+    (home-page "https://github.com/irgeek/StrEnum")
+    (synopsis "Enum that inherits from str")
+    (description "StrEnum is a Python @code{enum.Enum} that inherits from
+@code{str} to complement @code{enum.IntEnum} in the standard library.")
+    (license license:expat)))
+
 (define-public python-pysendfile
   (package
     (name "python-pysendfile")
