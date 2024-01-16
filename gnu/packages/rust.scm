@@ -815,6 +815,26 @@ safety and thread safety guarantees.")
            rust-1.70 "1.71.1" "0bj79syjap1kgpg9pc0r4jxc0zkxwm6phjf3digsfafms580vabg")))
     (package
       (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/openssl-src/openssl"
+                         "vendor/tikv-jemalloc-sys/jemalloc"))
+             ;; Adjust rustix to always build with cc.
+             (substitute* '("Cargo.lock"
+                            "src/tools/cargo/Cargo.lock")
+               (("\"errno\",") "\"cc\",\n \"errno\","))
+             ;; Add a dependency on the the 'cc' feature of rustix.
+             (substitute* '("vendor/is-terminal/Cargo.toml"
+                            "vendor/is-terminal-0.4.6/Cargo.toml")
+               (("\"termios\"") "\"termios\", \"cc\""))
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))))))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
