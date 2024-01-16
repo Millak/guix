@@ -1579,6 +1579,48 @@ library in pure Python.")
 class.")
     (license license:expat)))
 
+(define-public python-nr-util
+  (package
+    (name "python-nr-util")
+    (version "0.8.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nr.util" version))
+       (sha256
+        (base32 "1x0l4811dskwrk83l2xzdcldx2iazlrx5wxkg41jz7fr6ch9qm54"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^config =.*") "config = []\n"))))
+          (add-after 'install 'fix-name
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((sitedir (site-packages inputs outputs))
+                     (dist-info
+                      (string-append sitedir "/nr_util-" #$version ".dist-info")))
+                (substitute* (string-append dist-info "/METADATA")
+                  (("Name: nr-util")
+                   "Name: nr.util"))
+                (substitute* (string-append dist-info "/RECORD")
+                  (("nr_util") "nr.util"))
+                (rename-file dist-info
+                             (string-append sitedir
+                                            "/nr.util-"
+                                            #$version ".dist-info"))))))))
+    (propagated-inputs (list python-deprecated python-typing-extensions))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/NiklasRosenstein/python-nr.util")
+    (synopsis "General purpose Python utility library")
+    (description "This package provides a general purpose Python utility
+library.")
+    (license license:expat)))
+
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
