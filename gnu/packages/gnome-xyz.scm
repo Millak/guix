@@ -953,7 +953,7 @@ certain elements or change animation speeds.")
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "56")
+    (version "56") ;Compatible with GNOME 44
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -965,22 +965,24 @@ certain elements or change animation speeds.")
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "INSTALLBASE="
-                                         (assoc-ref %outputs "out")
-                                         "/share/gnome-shell/extensions")
-                          (string-append "VERSION="
-                                         ,(package-version
-                                           gnome-shell-extension-dash-to-panel)))
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "INSTALLBASE="
+                                          #$output
+                                          "/share/gnome-shell/extensions")
+                           (string-append "VERSION="
+                                          #$version))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (delete 'configure))))
+       #~(modify-phases %standard-phases
+           (delete 'bootstrap)
+           (delete 'configure))))
     (native-inputs
-     (list intltool pkg-config))
+     (list
+      `(,glib "bin")
+      intltool
+      pkg-config))
     (propagated-inputs
-     (list glib
-           `(,glib "bin")))
+     (list glib))
     (synopsis "Icon taskbar for GNOME Shell")
     (description "This extension moves the dash into the gnome main
 panel so that the application launchers and system tray are combined
