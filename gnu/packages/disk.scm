@@ -1201,22 +1201,23 @@ to create devices with respective mappings for the ATARAID sets discovered.")
            python-wrapper
            util-linux))
     (inputs
-     (list btrfs-progs
-           cryptsetup
-           dosfstools
-           dmraid
-           eudev
-           glib
-           kmod
-           libbytesize
-           libyaml
-           lvm2
-           mdadm
-           ndctl
-           nss
-           parted
-           volume-key
-           xfsprogs))
+     (append
+      (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (list btrfs-progs
+            dosfstools
+            dmraid
+            eudev
+            glib
+            kmod
+            libbytesize
+            libyaml
+            lvm2
+            mdadm
+            ndctl
+            nss
+            parted
+            volume-key
+            xfsprogs)))
     (home-page "https://github.com/storaged-project/libblockdev")
     (synopsis "Library for manipulating block devices")
     (description
