@@ -8268,6 +8268,10 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
               (delete-file-recursively "tests/book-migration")
               (substitute* "tests/CMakeLists.txt"
                 (("add_subdirectory\\(book-migration\\)") ""))))
+          (add-after 'unpack 'patch-locale-in-test
+            (lambda _
+              (substitute* "tests/libebook/client/test-book-client-custom-summary.c"
+                (("en_US\\.UTF-8") "C.UTF-8"))))
           (add-after 'unpack 'patch-paths
             (lambda _
               (substitute* '("tests/test-server-utils/e-test-server-utils.c"
