@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -127,6 +128,28 @@ is standardized in RFC 7539.")
       (synopsis "PKI based identities for use in go-libp2p")
       (description "PKI based identities for use in @command{go-libp2p}.")
       (license license:expat))))
+
+(define-public go-github-com-marten-seemann-chacha20
+  (package
+    (name "go-github-com-marten-seemann-chacha20")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/marten-seemann/chacha20")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x1j4cvbap45zk962qkjalc1h3axhzzdy9cdzhcjmprmm1ql4gjm"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/marten-seemann/chacha20"))
+    (home-page "https://github.com/marten-seemann/chacha20")
+    (synopsis "ChaCha20 in Go")
+    (description "This package is an external copy of the Go standard
+library's internal ChaCha20 package.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-multiformats-go-multihash
   (let ((commit "97cdb562a04c6ef66d8ed40cd62f8fbcddd396d6")
