@@ -13,6 +13,7 @@
 # Copyright © 2022 Prafulla Giri <prafulla.giri@protonmail.com>
 # Copyright © 2023 Andrew Tropin <andrew@trop.in>
 # Copyright © 2020 David A. Redick <david.a.redick@gmail.com>
+# Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -641,6 +642,10 @@ GUIX_PROFILE="$HOME/.guix-home/profile"
 GUIX_LOCPATH="$GUIX_PROFILE/lib/locale:${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
 
 export GUIX_LOCPATH
+
+# Make Guix modules available
+export GUILE_LOAD_PATH="$_GUIX_PROFILE/share/guile/site/3.0${GUILE_LOAD_PATH:+:}$GUILE_LOAD_PATH"
+export GUILE_LOAD_COMPILED_PATH="$_GUIX_PROFILE/lib/guile/3.0/site-ccache${GUILE_LOAD_COMPILED_PATH:+:}$GUILE_LOAD_COMPILED_PATH"
 
 EOF
 }
