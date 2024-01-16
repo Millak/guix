@@ -763,6 +763,15 @@ safety and thread safety guarantees.")
                         '("src/llvm-project"
                           "vendor/openssl-src/openssl"
                           "vendor/tikv-jemalloc-sys/jemalloc"))
+              ;; Adjust rustix to always build with cc.
+              (substitute* '("Cargo.lock"
+                             "src/bootstrap/Cargo.lock")
+                (("\"errno\",") "\"cc\",\n \"errno\","))
+              ;; Add a dependency on the the 'cc' feature of rustix.
+              (substitute* "vendor/fd-lock/Cargo.toml"
+                (("\"fs\"") "\"fs\", \"cc\""))
+              (substitute* "vendor/is-terminal/Cargo.toml"
+                (("\"termios\"") "\"termios\", \"cc\""))
               ;; Also remove the bundled (mostly Windows) libraries.
               (for-each delete-file
                         (find-files "vendor" "\\.(a|dll|exe|lib)$")))))))))
