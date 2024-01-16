@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015-2017, 2019-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -400,7 +400,8 @@ empty list when the FIELD cannot be found."
 ;; The field for system dependencies is often abused to specify non-package
 ;; dependencies (such as c++11).  This list is used to ignore them.
 (define invalid-packages
-  (list "c++"
+  (list "build-essential"
+        "c++"
         "c++11"
         "c++14"
         "c++17"
@@ -435,11 +436,17 @@ empty list when the FIELD cannot be found."
     ("libjpeg" "libjpeg-turbo")
     ("liblz4" "lz4")
     ("liblzma" "xz")
+    ("libssl-dev" "openssl")
+    ("libssl_dev" "openssl")
     ("libzstd" "zstd")
     ("libxml2-devel" "libxml2")
+    ("libxml2-dev" "libxml2")
     ("libz" "zlib")
+    ("libz-dev" "zlib")
     ("mariadb-devel" "mariadb")
     ("mysql56_dev" "mariadb")
+    ("openssl-devel" "openssl")
+    ("openssl@1.1" "openssl-1.1")
     ("pandoc-citeproc" "pandoc")
     ("python3" "python-3")
     ("sqlite3" "sqlite")
@@ -450,6 +457,7 @@ empty list when the FIELD cannot be found."
     ("x11" "libx11")
     ("xml2" "libxml2")
     ("zlib-devel" "zlib")
+    ("zlib1g-dev" "zlib")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
