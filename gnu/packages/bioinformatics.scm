@@ -2651,6 +2651,7 @@ alignments and perform the following operations:
                (base32
                 "15m6ffks4zwpp1ycwk6n02py6mw2yh7qr0vhpc178b91gldr97ia"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
     (propagated-inputs (list python-pandas))
     (home-page "https://github.com/alexomics/read-paf")
     (synopsis "Minimap2 PAF file reader")
