@@ -1655,29 +1655,6 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}
 .")
     (license license:bsd-2)))
 
-(define-public go-github-com-rfjakob-eme
-  (package
-    (name "go-github-com-rfjakob-eme")
-    (version "1.1.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rfjakob/eme")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yrbhvy0337mf12fp8p4sy8ry8r3w2qfdf8val5hj07p2lri0cqk"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/rfjakob/eme"))
-    (home-page "https://github.com/rfjakob/eme")
-    (synopsis "EME for Go")
-    (description
-     "EME (ECB-Mix-ECB or, clearer, Encrypt-Mix-Encrypt) is a wide-block encryption
-mode developed by Halevi and Rogaway.")
-    (license license:expat)))
-
 (define-public go-github-com-schachmat-ingo
   (package
     (name "go-github-com-schachmat-ingo")
