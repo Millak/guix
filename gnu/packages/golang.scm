@@ -3667,42 +3667,6 @@ for the Go language.")
     (home-page "https://go.googlesource.com/crypto/")
     (license license:bsd-3)))
 
-(define-public go-github-com-refraction-networking-utls
-  (package
-    (name "go-github-com-refraction-networking-utls")
-    (version "1.6.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/refraction-networking/utls")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1iywar5vqsml4b177k2nkcxmjm8mw92g3p112yjsrpmikiwpwpyw"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/refraction-networking/utls"
-       #:go ,go-1.20
-       #:tests? #f))                    ;requires internet access
-    (propagated-inputs
-     (list go-github-com-andybalholm-brotli
-           go-github-com-cloudflare-circl
-           go-github-com-gaukas-godicttls
-           go-github-com-klauspost-compress
-           go-github-com-quic-go-quic-go
-           go-golang-org-x-crypto
-           go-golang-org-x-net
-           go-golang-org-x-sys))
-    (home-page "https://github.com/refraction-networking/utls")
-    (synopsis "Fork of the Go standard TLS library, providing low-level access
-to the ClientHello for mimicry purposes")
-    (description "uTLS is a fork of “crypto/tls”, which provides ClientHello
-fingerprinting resistance, low-level access to handshake, fake session tickets
-and some other features.  Handshake is still performed by “crypto/tls”, this
-library merely changes ClientHello part of it and provides low-level access.")
-    (license license:bsd-3)))
-
 (define-public govulncheck
   (package
     (name "govulncheck")
