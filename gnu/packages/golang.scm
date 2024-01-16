@@ -5868,34 +5868,6 @@ implementations are described in \"Fast SHA-256 Implementations on Intel
 Architecture Processors\" by J. Guilford et al.")
     (license license:asl2.0)))
 
-(define-public go-github-com-libp2p-go-libp2p-crypto
-  (let ((commit "7240b40a3ddc47c4d17c15baabcbe45e5219171b")
-        (revision "0"))
-    (package
-      (name "go-github-com-libp2p-go-libp2p-crypto")
-      (version (git-version "2.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/libp2p/go-libp2p-crypto")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0qwpy57qv5143l9dlfwfvpqsxdd2i4zwnawx1w4pmgxxim3nw1wb"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/libp2p/go-libp2p-crypto"))
-      (native-inputs
-       (list go-golang-org-x-crypto go-github-com-btcsuite-btcd-btcec
-             go-github-com-gogo-protobuf go-github-com-minio-sha256-simd))
-      (home-page
-       "https://github.com/libp2p/go-libp2p-crypto")
-      (synopsis "Various cryptographic utilities used by IPFS")
-      (description "Various cryptographic utilities used by IPFS")
-      (license license:expat))))
-
 (define-public go-github-com-cloudflare-circl
   (package
     (name "go-github-com-cloudflare-circl")
