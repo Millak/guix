@@ -786,6 +786,22 @@ safety and thread safety guarantees.")
      (source
       (origin
         (inherit (package-source base-rust))
+        (snippet
+         '(begin
+            (for-each delete-file-recursively
+                      '("src/llvm-project"
+                        "vendor/openssl-src/openssl"
+                        "vendor/tikv-jemalloc-sys/jemalloc"))
+             ;; Adjust rustix to always build with cc.
+             (substitute* "Cargo.lock"
+               (("\"errno\",") "\"cc\",\n \"errno\","))
+            ;; Add a dependency on the the 'cc' feature of rustix.
+            (substitute* '("vendor/is-terminal/Cargo.toml"
+                           "vendor/is-terminal-0.4.4/Cargo.toml")
+              (("\"termios\"") "\"termios\", \"cc\""))
+            ;; Also remove the bundled (mostly Windows) libraries.
+            (for-each delete-file
+                      (find-files "vendor" "\\.(a|dll|exe|lib)$"))))
         ;; Rust 1.70 adds the rustix library which depends on the vendored
         ;; fd-lock crate.  The fd-lock crate uses Outline assembly which expects
         ;; a precompiled static library.  Enabling the "cc" feature tells the
