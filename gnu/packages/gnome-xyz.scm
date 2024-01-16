@@ -722,7 +722,7 @@ easier to keep track of applications running in the background.")
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "73")
+    (version "79")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -731,23 +731,25 @@ easier to keep track of applications running in the background.")
                                            version))))
               (sha256
                (base32
-                "1l0isbrgfc8v46l1yc5l4myz7qnlxzyfyiifipp86z9d79d8klzw"))
+                "0fsfhgpg8441x28jzhjspb9i9c5502c2fcgdvfggcsmz0sf3v95y"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
-       #:make-flags (list (string-append "INSTALLBASE="
-                                         (assoc-ref %outputs "out")
-                                         "/share/gnome-shell/extensions"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (delete 'configure))))
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "INSTALLBASE="
+                                          #$output
+                                          "/share/gnome-shell/extensions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("sassc" ,sassc)))
+     (list
+      `(,glib "bin")
+      intltool
+      pkg-config
+      sassc))
     (propagated-inputs
      (list glib))
     (synopsis "Transforms GNOME's dash into a dock")
