@@ -8484,20 +8484,20 @@ to the user's query of interest.")
 (define-public samtools
   (package
     (name "samtools")
-    (version "1.14")
+    (version "1.19")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "mirror://sourceforge/samtools/samtools/"
-                       version "/samtools-" version ".tar.bz2"))
+        (string-append "https://github.com/samtools/samtools"
+                       "/releases/download/" version
+                       "/samtools-" version ".tar.bz2"))
        (sha256
         (base32
-         "0x3xdda78ac5vx66b3jdsv9sfhyz4npl4znl1zbaf3lbm6xdlhck"))
+         "10wby07w33rfypy4kf73v9wwnbyh0lrazbsmrgrvcl88w8c3nszs"))
        (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; Delete bundled htslib.
-                   (delete-file-recursively "htslib-1.14")))))
+       ;; Delete bundled htslib.
+       (snippet '(delete-file-recursively "htslib-1.19"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--with-ncurses")
