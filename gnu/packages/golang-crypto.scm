@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
@@ -114,6 +114,29 @@ is standardized in RFC 7539.")
 providing bidirectional mapping values to their names, plus enum convenience
 for values.")
     (license license:bsd-3)))
+
+(define-public go-github-com-jcmturner-aescts-v2
+  (package
+    (name "go-github-com-jcmturner-aescts-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jcmturner/aescts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yrdiisdhcqfs8jpicc30dfmbqzxhkmbayn902xrgwkndky8w7l1"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jcmturner/aescts/v2"))
+    (propagated-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/jcmturner/aescts")
+    (synopsis "Encrypt and decrypt data in Go using AES CipherText Stealing")
+    (description "This package provides AES Cipher Block Chaining CipherText
+Stealing encryption and decryption methods.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-libp2p-go-libp2p-crypto
   (let ((commit "7240b40a3ddc47c4d17c15baabcbe45e5219171b")

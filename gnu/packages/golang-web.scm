@@ -47,6 +47,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
 
