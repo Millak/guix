@@ -412,6 +412,7 @@ empty list when the FIELD cannot be found."
         "linux"
         "libR"
         "none"
+        "rtools"
         "unix"
         "windows"
         "xcode"
@@ -429,6 +430,9 @@ empty list when the FIELD cannot be found."
     ("freetype2" "freetype")
     ("gettext" "gnu-gettext")
     ("gmake" "gnu-make")
+    ("h5py" "python-h5py")
+    ("hmmer3" "hmmer")
+    ("leidenalg" "python-leidenalg")
     ("libarchive-devel" "libarchive")
     ("libarchive_dev" "libarchive")
     ("libbz2" "bzip2")
@@ -445,10 +449,17 @@ empty list when the FIELD cannot be found."
     ("libz-dev" "zlib")
     ("mariadb-devel" "mariadb")
     ("mysql56_dev" "mariadb")
+    ("nodejs" "node")
+    ("numpy" "python-numpy")
     ("openssl-devel" "openssl")
     ("openssl@1.1" "openssl-1.1")
+    ("pandas" "python-pandas")
     ("pandoc-citeproc" "pandoc")
     ("python3" "python-3")
+    ("pytorch" "python-pytorch")
+    ("scikit-learn" "python-scikit-learn")
+    ("scipy" "python-scipy")
+    ("sklearn" "python-scikit-learn")
     ("sqlite3" "sqlite")
     ("svn" "subversion")
     ("tcl/tk" "tcl")
