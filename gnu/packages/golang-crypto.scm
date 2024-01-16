@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,6 +67,29 @@
       (synopsis "Multihash implementation in Go")
       (description "Multihash implementation in Go.")
       (license license:expat))))
+
+(define-public go-github-com-riobard-go-bloom
+  (let ((commit "cdc8013cb5b3eb0efebec85f0e904efccac42df9")
+        (revision "0"))
+    (package
+      (name "go-github-com-riobard-go-bloom")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/riobard/go-bloom")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "10a8ixh6zw52df2imxrzgxi82zc1j5hqnv5smjp818qwdn1a1rhj"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "github.com/riobard/go-bloom"))
+      (home-page "https://github.com/riobard/go-bloom")
+      (synopsis "Bloom filter in Go")
+      (description "Go-Bloom implements bloom filter using double hashing.")
+      (license license:asl2.0))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
