@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
@@ -2202,13 +2202,13 @@ discrete, and conditional dimensions.")
 (define-public python-deepxde
   (package
     (name "python-deepxde")
-    (version "1.10.0")
+    (version "1.10.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "DeepXDE" version))
               (sha256
                (base32
-                "0fdxrjrm7l19yx6n8vaklxlhwzx0bw9n08vp8idikzdifybz5gij"))))
+                "1lgn4sa9bnmhsccddb9vjz7nsvdnccxqkvv7xssxmfb413dpg1mz"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests
