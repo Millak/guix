@@ -12,7 +12,8 @@
 ;;; Copyright © 2021, 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
-;;;
+;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
+;;
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -582,26 +583,25 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "1e358401ecdf1963e5799de19ab69111e82e5ebc")
-        (revision "0"))
     (package
       (name "bcachefs-tools")
-      (version (git-version "1.2" revision commit))
+      (version "1.4.1")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://evilpiepirate.org/git/bcachefs-tools.git")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0bflgqb3q9jikyyrv6hywv6m1fapzzn874hlhf86pn6abxrlf5fa"))))
+          (base32 "0axwbckqrw1v3v50nzhpkvpyjbjwy3rq5bv23db84x3xia497apq"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
              #~(list (string-append "VERSION=" #$version) ; ‘v…-nogit’ otherwise
                      (string-append "PREFIX=" #$output)
                      "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
+                     "PKGCONFIG_UDEVRULESDIR=$(PREFIX)/lib/udev/rules.d"
                      (string-append "CC=" #$(cc-for-target))
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
                      ;; ‘This will be less of an option in the future, as more
@@ -667,6 +667,7 @@ from a mounted file system.")
              `(,zstd "lib")
 
              ;; Only for mount.bcachefs.sh.
+             bash-minimal
              coreutils-minimal
              gawk
              util-linux))
@@ -683,7 +684,7 @@ multiple block devices for replication and/or performance, similar to RAID.
 In addition, bcachefs provides all the functionality of bcache, a block-layer
 caching system, and lets you assign different roles to each device based on its
 performance and other characteristics.")
-      (license license:gpl2+))))
+      (license license:gpl2+)))
 
 (define-public bcachefs-tools/static
   (package
