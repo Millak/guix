@@ -6058,41 +6058,6 @@ Reference algorithm has been slightly hacked as to support the streaming mode
 required by Go's standard Hash interface.")
     (license license:bsd-3)))
 
-(define-public go-github-com-libp2p-go-libp2p-peer
-  (let ((commit "993d742bc29dcf4894b7730ba610fd78900be76c")
-        (revision "0"))
-    (package
-      (name "go-github-com-libp2p-go-libp2p-peer")
-      (version (git-version "2.3.8" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/libp2p/go-libp2p-peer")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1h96qjdi0i1wbr0jliap2903mycphas3ny0zdrm77yca9plcnphh"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/libp2p/go-libp2p-peer"))
-      (native-inputs
-       (list go-github-com-libp2p-go-libp2p-crypto
-             go-github-com-gogo-protobuf
-             go-github-com-minio-sha256-simd
-             go-github-com-minio-blake2b-simd
-             go-github-com-btcsuite-btcd-btcec
-             go-github-com-mr-tron-base58
-             go-github-com-multiformats-go-multihash
-             go-github-com-gxed-hashland-keccakpg
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
-      (home-page "https://github.com/libp2p/go-libp2p-peer")
-      (synopsis "PKI based identities for use in go-libp2p")
-      (description "PKI based identities for use in @command{go-libp2p}.")
-      (license license:expat))))
-
 (define-public go-github-com-libp2p-go-libp2p-protocol
   (let ((commit "b29f3d97e3a2fb8b29c5d04290e6cb5c5018004b")
         (revision "0"))
