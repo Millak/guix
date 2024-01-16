@@ -1039,12 +1039,13 @@ and its highly optimized now for efficient performance.")
     (native-inputs
      (list pkg-config swig python-3))           ; used to generate the Python bindings
     (inputs
-     `(("cryptsetup" ,cryptsetup)
-       ("nss" ,nss)
-       ("libblkid" ,util-linux "lib")
-       ("lvm2" ,lvm2)                   ; for "-ldevmapper"
-       ("glib" ,glib)
-       ("gpgme" ,gpgme)))
+     (append
+      (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (cons lvm2 (libdevmapper-propagated-inputs))
+      (list nss
+            (list util-linux "lib")
+            glib
+            gpgme)))
     (arguments
      `(#:tests? #f ; not sure how tests are supposed to pass, even when run manually
        #:phases
