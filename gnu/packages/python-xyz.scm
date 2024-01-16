@@ -7210,6 +7210,51 @@ errors when data is invalid.")
 Interfaces} via data models provided in the JSON format.")
     (license license:expat)))
 
+(define-public python-pydoc-markdown
+  (package
+    (name "python-pydoc-markdown")
+    (version "4.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydoc_markdown" version))
+       (sha256
+        (base32 "02vzlrd18r8wi0b64vq2gnbhaadysg9rnbylf9sf2v9q65z94v7v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This is probably not a good idea, but it wants a rather old
+         ;; version of docstring-parser.
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("docstring-parser = .*")
+                "docstring-parser = \"^0\"\n")))))))
+    (propagated-inputs (list python-click
+                             python-databind-core
+                             python-databind-json
+                             python-docspec
+                             python-docspec-python
+                             python-docstring-parser
+                             python-jinja2
+                             python-nr-util
+                             python-pyyaml
+                             python-requests
+                             python-tomli
+                             python-tomli-w
+                             python-watchdog
+                             python-yapf))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://pypi.org/project/pydoc-markdown/")
+    (synopsis "Create Python API documentation in Markdown format")
+    (description "Pydoc-Markdown is a tool to create Python API documentation
+in Markdown format.  Instead of executing your Python code like so many other
+documentation tools, it parses it using docspec instead.")
+    (license license:expat)))
+
 (define-public python-pydocstyle
   (package
     (name "python-pydocstyle")
