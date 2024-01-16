@@ -3891,31 +3891,6 @@ developed by the Go team.  It provides IDE features to any LSP-compatible
 editor.")
     (license license:bsd-3)))
 
-(define-public go-github-com-pquerna-cachecontrol
-  (package
-    (name "go-github-com-pquerna-cachecontrol")
-    (version "0.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pquerna/cachecontrol")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0d5zgv2w0sinh9m41pw3n015zzyabk7awgwwga7nmhjz452c9r5n"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/pquerna/cachecontrol"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/pquerna/cachecontrol")
-    (synopsis "Golang HTTP Cache-Control Parser and Interpretation")
-    (description
-     "This package implements RFC 7234 Hypertext Transfer Protocol (HTTP/1.1):
-Caching.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
