@@ -2296,13 +2296,13 @@ building design matrices.")
 (define-public python-mapie
   (package
     (name "python-mapie")
-    (version "0.7.0")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MAPIE" version))
               (sha256
                (base32
-                "1nvi547avvwrck1n7rf5jh7d0ml6jaqjs2p59iwcq2a5xjmdsmsc"))))
+                "185nnsl6ag2xzkfxpmc86d9dd8wf2v87b2psan10sma399fbqd0x"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pandas python-pytest))
     (propagated-inputs (list python-numpy python-scikit-learn))
