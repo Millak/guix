@@ -868,7 +868,10 @@ safety and thread safety guarantees.")
               ;; Also remove the bundled (mostly Windows) libraries.
               (for-each delete-file
                         (find-files "vendor" "\\.(a|dll|exe|lib)$"))
-              ;; Adjust rustc_driver to explicitly use rustix with libc backend.
+              ;; Adjust some crates to explicitly use rustix with the libc backend.
+              (substitute* '("vendor/is-terminal/Cargo.toml"
+                             "vendor/is-terminal-0.4.7/Cargo.toml")
+                (("\"termios\"") "\"termios\", \"use-libc\""))
               (substitute* "compiler/rustc_driver/Cargo.toml"
                 (("rustix = \"=0.37.11\"")
                  (string-append "rustix = { version = \"=0.37.11\","
