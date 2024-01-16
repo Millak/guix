@@ -22,7 +22,7 @@
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -906,6 +906,34 @@ sessions, flash messages, custom backends, and more.")
     (description "Gorilla WebSocket is a Go implementation of the WebSocket
 protocol.")
     (license license:bsd-2)))
+
+(define-public go-github-com-gregjones-httpcache
+  (let ((commit "901d90724c7919163f472a9812253fb26761123d")
+        (revision "0"))
+    (package
+      (name "go-github-com-gregjones-httpcache")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gregjones/httpcache")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05r0xq51vfb55di11m7iv19341d73f7in33vq1ihcqs1nffdwiq0"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/gregjones/httpcache"))
+      (home-page "https://github.com/gregjones/httpcache")
+      (synopsis "Transport for @code{http.Client} that will cache responses")
+      (description
+       "Package @code{httpcache} provides a @code{http.RoundTripper}
+implementation that works as a mostly @url{https://tools.ietf.org/html/rfc7234, RFC 7234}
+compliant cache for HTTP responses.  It is only suitable for use as a
+\"private\" cache (i.e. for a web-browser or an API-client and not for a
+shared proxy).")
+      (license license:expat))))
 
 (define-public go-github-com-hjson-hjson-go
   (package
