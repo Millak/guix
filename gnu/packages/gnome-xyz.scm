@@ -541,7 +541,7 @@ copy, move, delete, or edit your files.")
 (define-public gnome-shell-extension-unite-shell
   (package
     (name "gnome-shell-extension-unite-shell")
-    (version "69")
+    (version "72") ;Listed as compatible on extensions.gnome.org
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -550,7 +550,7 @@ copy, move, delete, or edit your files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10yh6ylyp43ykcza180iak08wfypay3raqf3p0vrj9ngm98qzq70"))))
+                "006m54ribfbqij0p3zzglzqjw1rbvw0f9468j7p6zdaf43vdvhgc"))))
     (build-system copy-build-system)
     (native-inputs (list `(,glib "bin") gettext-minimal))
     (inputs (list xprop))
