@@ -1,0 +1,45 @@
+From ada6a999e4f5cca21a2133e449f4576dbe9a64d2 Mon Sep 17 00:00:00 2001
+From: Isaac Dadzie <4581114+idadzie@users.noreply.github.com>
+Date: Fri, 4 Feb 2022 21:18:37 +0000
+Subject: [PATCH] Add support for black 22.1.0
+
+Make changes to support black 22.1.0, which changed the return type
+of 'find_project_root' to a tuple.
+
+Resolves: #40
+---
+ pyls_black/plugin.py | 8 +++++++-
+ setup.cfg            | 2 +-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/pyls_black/plugin.py b/pyls_black/plugin.py
+index dc5d482..e4f4d98 100644
+--- a/pyls_black/plugin.py
++++ b/pyls_black/plugin.py
+@@ -73,7 +73,13 @@ def load_config(filename: str) -> Dict:
+ 
+     root = black.find_project_root((filename,))
+ 
+-    pyproject_filename = root / "pyproject.toml"
++    # Note: find_project_root returns a tuple in 22.1.0+
++    try:
++        # Keeping this to not break backward compatibility.
++        pyproject_filename = root / "pyproject.toml"
++    except TypeError:
++        _root, _ = root
++        pyproject_filename = _root / "pyproject.toml"
+ 
+     if not pyproject_filename.is_file():
+         return defaults
+diff --git a/setup.cfg b/setup.cfg
+index 036cec2..57fbe4f 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -1,6 +1,6 @@
+ [metadata]
+ name = pyls-black
+-version = 0.4.7
++version = 0.4.8
+ author = Rupert Bedford
+ author_email = rupert@rupertb.com
+ description = Black plugin for the Python Language Server
