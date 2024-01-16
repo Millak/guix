@@ -647,6 +647,36 @@ from JSON payloads using the @code{databind.core} framework.")
 documentation of programming languages.")
     (license license:expat)))
 
+(define-public python-docspec-python
+  (package
+    (name "python-docspec-python")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "docspec_python" version))
+       (sha256
+        (base32 "0n8m52vxmlvkj7p5jmd4rfdks65rrp4q4vzak44y6kbg9l5qa6y4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false  ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             ;; We don't have black 23.
+             (substitute* "pyproject.toml"
+               (("23.1.0") "22.3.0")))))))
+    (propagated-inputs (list python-black python-docspec python-nr-util))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/NiklasRosenstein/docspec/")
+    (synopsis "Produce docspec data from Python source code")
+    (description
+     "This package provides a parser based on @code{lib2to3} producing
+@code{docspec} data from Python source code.")
+    (license license:expat)))
+
 (define-public python-fire
   (package
     (name "python-fire")
