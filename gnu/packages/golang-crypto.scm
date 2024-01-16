@@ -3,6 +3,7 @@
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -254,6 +255,33 @@ the Go standard library's TLS 1.3 implementation.")
       (synopsis "Multihash implementation in Go")
       (description "Multihash implementation in Go.")
       (license license:expat))))
+
+(define-public go-github-com-quic-go-qtls-go1-20
+  (package
+    (name "go-github-com-quic-go-qtls-go1-20")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/qtls-go1-20")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fl3yv1w8cygag3lav45vvzb4k9i72p92x13wcq0xn13wxirzirn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/quic-go/qtls-go1-20"
+      #:go go-1.20))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/quic-go/qtls-go1-20")
+    (synopsis "TLS 1.3 for QUIC")
+    (description "Go standard library TLS 1.3 implementation, modified for
+QUIC.  For Go 1.20.")
+    (license license:expat)))
 
 (define-public go-github-com-refraction-networking-utls
   (package
