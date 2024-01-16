@@ -24628,15 +24628,19 @@ such as lines length, trailing spaces, indentation, etc.")
 (define-public python-yapf
   (package
     (name "python-yapf")
-    (version "0.29.0")
+    (version "0.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yapf" version))
        (sha256
         (base32
-         "1pj3xzblmbssshi889b6n9hwqbjpabw6j0fimlng2sshd3226bki"))))
-    (build-system python-build-system)
+         "06vxqski7qss2h2iy4fd04czym0cwjrzkaab9h03wzpg6xfhixd3"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-importlib-metadata python-platformdirs python-tomli))
+    (native-inputs
+     (list python-pytest))
     (home-page "https://github.com/google/yapf")
     (synopsis "Formatter for Python code")
     (description "YAPF is a formatter for Python code.  It's based off of
