@@ -1892,7 +1892,8 @@ audio/video codec library.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "14xadxm1yaamp216nq09xwasxg5g133v86dbb33mdg5di1zrlhdg"))))
+               "14xadxm1yaamp216nq09xwasxg5g133v86dbb33mdg5di1zrlhdg"))
+             (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
     (inputs (modify-inputs (package-inputs ffmpeg)
               (replace "sdl2" sdl2-2.0)))
     (arguments
