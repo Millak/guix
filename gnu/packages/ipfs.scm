@@ -30,6 +30,7 @@
   #:use-module (guix build-system go)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages python)
   #:use-module (gnu packages shells)

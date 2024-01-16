@@ -81,6 +81,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages mail)
@@ -6135,37 +6136,6 @@ MurmurHash revision (aka MurmurHash3).
 Reference algorithm has been slightly hacked as to support the streaming mode
 required by Go's standard Hash interface.")
     (license license:bsd-3)))
-
-(define-public go-github-com-multiformats-go-multihash
-  (let ((commit "97cdb562a04c6ef66d8ed40cd62f8fbcddd396d6")
-        (revision "0"))
-    (package
-      (name "go-github-com-multiformats-go-multihash")
-      (version (git-version "1.0.8" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiformats/go-multihash")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "02wd9akrwy4y5m0nig9m24p14bjjgb4n1djydrq8cm4yhbvjrrk0"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/multiformats/go-multihash"))
-      (native-inputs
-       (list go-github-com-mr-tron-base58
-             go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
-      (home-page "https://github.com/multiformats/go-multihash")
-      (synopsis "Multihash implementation in Go")
-      (description "Multihash implementation in Go.")
-      (license license:expat))))
 
 (define-public go-github-com-libp2p-go-libp2p-peer
   (let ((commit "993d742bc29dcf4894b7730ba610fd78900be76c")
