@@ -61,6 +61,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
@@ -649,7 +650,7 @@ that caches clipboard history.")
 (define-public gnome-shell-extension-customize-ibus
   (package
     (name "gnome-shell-extension-customize-ibus")
-    (version "82")
+    (version "86")
     (source
      (origin
        (method git-fetch)
@@ -658,21 +659,23 @@ that caches clipboard history.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00brnyahphl4ql9yh74wpb9kmzyb4b5k4rkw40hvxvqw4qwgs24r"))))
+        (base32 "1psnbhqbqrp68dri0q98y7ikwz9z3701lcy8vvgixb2bh71y7519"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "VERSION=" ,version)
-             (string-append "INSTALLBASE=" (assoc-ref %outputs "out")
-                            "/share/gnome-shell/extensions"))
+     (list
+      #:make-flags
+       #~(list (string-append "VERSION=" #$version)
+               (string-append "INSTALLBASE=" #$output
+                              "/share/gnome-shell/extensions"))
        #:tests? #f ; No test target
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (delete 'bootstrap)
          (delete 'configure))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")))
+     (list gettext-minimal `(,glib "bin")))
+    (propagated-inputs
+     (list ibus))
     (home-page "https://github.com/openSUSE/Customize-IBus")
     (synopsis "GNOME Shell Extension for IBus Customization")
     (description "Customize IBus provides full customization of appearance,
