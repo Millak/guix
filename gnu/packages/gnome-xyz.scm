@@ -603,7 +603,7 @@ GNOME Shell.")
 (define-public gnome-shell-extension-clipboard-indicator
   (package
     (name "gnome-shell-extension-clipboard-indicator")
-    (version "42")
+    (version "47")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -615,7 +615,7 @@ GNOME Shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wf2k33pbwjdf8i4y3aw32fgvjbh751qh7504lwhnl02rcq5dc88"))
+                "00v0v454y6hblzsx06aaysxbs6aky89vnkf7ydzxrddns24c2wix"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove pre-compiled settings schemas and translations from
@@ -628,15 +628,16 @@ GNOME Shell.")
                             (find-files "locale" "\\.mo$"))))))
     (build-system copy-build-system)
     (arguments
-     '(#:install-plan
-       '(("." "share/gnome-shell/extensions/clipboard-indicator@tudmotu.com"
-          #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.mo$" "\\.xml$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
+     (list
+      #:install-plan
+      #~'(("." "share/gnome-shell/extensions/clipboard-indicator@tudmotu.com"
+           #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.mo$" "\\.xml$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "schemas"
+                (invoke "glib-compile-schemas" ".")))))))
     (native-inputs
      (list `(,glib "bin") gettext-minimal))
     (home-page "https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator")
