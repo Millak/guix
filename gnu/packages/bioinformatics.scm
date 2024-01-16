@@ -7184,7 +7184,7 @@ name/ID compression and quality score compression derived from fqzcomp.")
 (define-public htslib
   (package
     (name "htslib")
-    (version "1.16")
+    (version "1.19")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7192,7 +7192,7 @@ name/ID compression and quality score compression derived from fqzcomp.")
                     version "/htslib-" version ".tar.bz2"))
               (sha256
                (base32
-                "093r1n4s134k50m9a925yn95gyi90ps5dlgc6gq4qwvkzxx7qsv0"))
+                "0dh79lwpspwwfbkmllrrhbk8nkvlfc5b5ib4d0xg5ld79w6c8lc7"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
