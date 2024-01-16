@@ -91,6 +91,13 @@ block integrity kernel modules.")
    (license license:gpl2)
    (home-page "https://gitlab.com/cryptsetup/cryptsetup")))
 
+(define-public (libcryptsetup-propagated-inputs)
+  (list argon2
+        json-c
+        libgcrypt
+        lvm2
+        `(,util-linux "lib")))
+
 (define (static-library library)
   "Return a variant of package LIBRARY that provides static libraries ('.a'
 files).  This assumes LIBRARY uses Libtool."
