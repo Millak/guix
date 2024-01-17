@@ -270,7 +270,7 @@ bioconductor package NAME, or #F if the package is unknown."
             ;; of the URLs is the /Archive CRAN URL.
             (any (cut download-to-store store <>) urls)))))))))
 
-(define (fetch-description-from-tarball url)
+(define* (fetch-description-from-tarball url #:key (download download))
   "Fetch the tarball at URL, extra its 'DESCRIPTION' file, parse it, and
 return the resulting alist."
   (match (download url)
@@ -288,7 +288,7 @@ return the resulting alist."
                 (call-with-input-file (string-append dir "/DESCRIPTION")
                   read-string)))))))))
 
-(define* (fetch-description repository name #:optional version)
+(define* (fetch-description repository name #:optional version replacement-download)
   "Return an alist of the contents of the DESCRIPTION file for the R package
 NAME at VERSION in the given REPOSITORY, or #f in case of failure.  NAME is
 case-sensitive."
@@ -310,7 +310,9 @@ from ~a: ~a (~a)~%")
                              (string-append "mirror://cran/src/contrib/Archive/"
                                             name "/"
                                             name "_" version ".tar.gz"))))
-             (fetch-description-from-tarball urls))
+             (fetch-description-from-tarball
+              urls #:download (or replacement-download
+                                  download)))
            (let* ((url    (string-append %cran-url name "/DESCRIPTION"))
                   (port   (http-fetch url))
                   (result (description->alist (read-string port))))
@@ -327,7 +329,9 @@ from ~a: ~a (~a)~%")
                 ;; TODO: Honor VERSION.
                 (version (latest-bioconductor-package-version name type))
                 (url     (car (bioconductor-uri name version type)))
-                (meta    (fetch-description-from-tarball url)))
+                (meta    (fetch-description-from-tarball
+                          url #:download (or replacement-download
+                                             download))))
        (if (boolean? type)
            meta
            (cons `(bioconductor-type . ,type) meta))))
