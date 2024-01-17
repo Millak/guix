@@ -30,6 +30,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -365,7 +366,7 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
 (define-public xsnow
   (package
     (name "xsnow")
-    (version "3.4.2")
+    (version "3.7.7")
     (source
      (origin
        (method url-fetch)
@@ -373,7 +374,7 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
              "https://www.ratrabbit.nl/downloads/xsnow/xsnow-"
              version ".tar.gz"))
        (sha256
-        (base32 "17pxc955jgkjan8ax0lw3b3sibw7aikc7p9qbxsp0w7g7jkxf666"))))
+        (base32 "1wiwlqbc6lfcq69hln8mxsms327sjbdpv0mmkfi9j2xrcgmw41bs"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -386,9 +387,11 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
                 (string-append prefix "bin")))
              #t)))))
     (inputs
-     (list gtk+ libx11 libxpm libxt libxml2))
+     (list gsl libx11 libxpm libxt libxml2))
     (native-inputs
      (list pkg-config))
+    (propagated-inputs
+     (list gdk-pixbuf gtk+))
     (home-page "https://www.ratrabbit.nl/ratrabbit/xsnow/index.html")
     (synopsis "Let it snow on the desktop")
     (description "@code{Xsnow} animates snowfall and Santa with reindeer on
