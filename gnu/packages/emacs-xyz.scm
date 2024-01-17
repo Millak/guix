@@ -8001,6 +8001,27 @@ Also included are keybindings for spec files and Dired buffers, as well as
 snippets for yasnippet.")
       (license license:gpl3+))))
 
+(define-public emacs-vhdl-mode
+  (package
+    (name "emacs-vhdl-mode")
+    (version "3.39.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://iis-people.ee.ethz.ch/~zimmi/emacs/vhdl-mode-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1yvh4gyig8hgf5pahajjgsgp4jpzwgmlprwzsfybqxrcfza6f3yq"))))
+    (build-system emacs-build-system)
+    (home-page "https://iis-people.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html")
+    (synopsis "Major mode for VHDL programming language")
+    (description
+     "This Emacs package provides a mode for the VHDL programming language.
+It tracks the latest version of the same @code{vhdl-mode} package included
+with Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-mode-line-bell
   (package
     (name "emacs-mode-line-bell")
