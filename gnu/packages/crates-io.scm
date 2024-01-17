@@ -32808,14 +32808,14 @@ let} expressions.")
 (define-public rust-ignore-0.4
   (package
     (name "rust-ignore")
-    (version "0.4.21")
+    (version "0.4.22")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ignore" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q3hs8ak1dsng3a0adxn2ysjdspazgdkmmm0mgl7h6l4mssd2ykl"))))
+        (base32 "1wcaqpi6djqgi1brghrdyw4d5qgnwzhqrqyn4mar4vp677gi0s5l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
