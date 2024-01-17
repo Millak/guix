@@ -231,6 +231,18 @@ similar to Go's standard library @code{json} and @code{xml} package.")
 using socket activation from Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-coreos-go-systemd-daemon
+  (package
+    (inherit go-github-com-coreos-go-systemd-activation)
+    (name "go-github-com-coreos-go-systemd-daemon")
+    (arguments
+     '(#:import-path "github.com/coreos/go-systemd/daemon"
+       #:unpack-path "github.com/coreos/go-systemd"))
+    (home-page "https://github.com/coreos/go-systemd")
+    (synopsis "Go bindings to systemd for notifications")
+    (description "Go bindings to systemd for notifying the daemon of service
+status changes")))
+
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
     (name "go-github-com-cyberdelia-go-metrics-graphite")
