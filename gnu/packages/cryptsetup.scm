@@ -23,6 +23,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages gnupg)
@@ -116,56 +117,59 @@ files).  This assumes LIBRARY uses Libtool."
     (inherit cryptsetup)
     (name "cryptsetup-static")
     (arguments
-     '(#:configure-flags '("--disable-shared"
-                           "--enable-static-cryptsetup"
+     (substitute-keyword-arguments (package-arguments cryptsetup)
+       ((#:configure-flags flags ''())
+        `(cons* "--disable-shared"
+                "--enable-static-cryptsetup"
 
-                           "--disable-veritysetup"
-                           "--disable-cryptsetup-reencrypt"
-                           "--disable-integritysetup"
-
-                           ;; The default is OpenSSL which provides better PBKDF performance.
-                           "--with-crypto_backend=gcrypt"
-
-                           "--disable-blkid"
-                           ;; 'libdevmapper.a' pulls in libpthread, libudev and libm.
-                           "LIBS=-ludev -pthread -lm")
-
-       #:allowed-references ()                  ;this should be self-contained
-
-       #:modules ((ice-9 ftw)
-                  (ice-9 match)
-                  (guix build utils)
-                  (guix build gnu-build-system))
-
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'remove-cruft
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Remove everything except the 'cryptsetup' command.
-                      (let ((out (assoc-ref outputs "out")))
-                        (with-directory-excursion out
-                          (let ((dirs (scandir "."
-                                               (match-lambda
-                                                 ((or "." "..") #f)
-                                                 (_ #t)))))
-                            (for-each delete-file-recursively
-                                      (delete "sbin" dirs))
-                            (for-each (lambda (file)
-                                        (rename-file (string-append file
-                                                                    ".static")
-                                                     file)
-                                        (remove-store-references file))
-                                      '("sbin/cryptsetup"))
-                            #t))))))))
+                "--disable-veritysetup"
+                "--disable-integritysetup"
+                ;; Bypass broken pkg-config paths for the static output of
+                ;; util-linux.  Only blkid is located through pkg-config, not
+                ;; uuid.
+                (format #f "BLKID_CFLAGS=-I~a"
+                        (search-input-directory %build-inputs "include/blkid"))
+                (format #f "BLKID_LIBS=-L~a -lblkid"
+                        (dirname (search-input-file %build-inputs "lib/libblkid.a")))
+                ,flags))
+       ((#:allowed-references refs '())
+        '())
+       ((#:modules modules '())
+        '((ice-9 ftw)
+          (ice-9 match)
+          (guix build utils)
+          (guix build gnu-build-system)))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'remove-cruft
+              (lambda* (#:key outputs #:allow-other-keys)
+                ;; Remove everything except the 'cryptsetup' command.
+                (let ((out (assoc-ref outputs "out")))
+                  (with-directory-excursion out
+                    (let ((dirs (scandir "."
+                                         (match-lambda
+                                           ((or "." "..") #f)
+                                           (_ #t)))))
+                      (for-each delete-file-recursively
+                                (delete "sbin" dirs))
+                      (for-each (lambda (file)
+                                  (rename-file (string-append file
+                                                              ".static")
+                                               file)
+                                  (remove-store-references file))
+                                '("sbin/cryptsetup"))
+                      #t)))))))))
     (inputs
      (let ((libgcrypt-static
             (package
               (inherit (static-library libgcrypt))
               (propagated-inputs
                `(("libgpg-error-host" ,(static-library libgpg-error)))))))
-       `(("json-c" ,json-c-0.13)
+       `(("argon2" ,(static-library argon2))
+         ("json-c" ,(static-library json-c-0.13))
          ("libgcrypt" ,libgcrypt-static)
          ("lvm2" ,lvm2-static)
          ("util-linux" ,util-linux "static")
          ("util-linux" ,util-linux "lib")
-         ("popt" ,popt))))
+         ("popt" ,(static-library popt)))))
     (synopsis "Hard disk encryption tool (statically linked)")))
