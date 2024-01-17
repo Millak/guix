@@ -16450,19 +16450,18 @@ message passing.")
 (define-public rust-crossbeam-utils-0.8
   (package
     (name "rust-crossbeam-utils")
-    (version "0.8.17")
+    (version "0.8.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13y7wh993i7q71kg6wcfj65w3rlmizzrz7cqgz1l9whlgw9rcvf0"))))
+        (base32 "0iakrb1b8fjqrag7wphl94d10irhbh2fw1g444xslsywqyn3p3i4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-loom" ,rust-loom-0.7))
+       (("rust-loom" ,rust-loom-0.7))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.8))))
     (home-page
