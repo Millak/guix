@@ -287,6 +287,34 @@ can limit either their total size or the age of the oldest object (or both),
 automatically pruning objects to maintain the constraints.")
     (license license:expat)))
 
+(define-public r-caic4
+  (package
+    (name "r-caic4")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cAIC4" version))
+       (sha256
+        (base32 "1qg73g0g029wkzpmp0fgvyfz8p1k3x38yqx0404cpb3dxj4n4hcg"))))
+    (properties `((upstream-name . "cAIC4")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lme4
+                             r-matrix
+                             r-mgcv
+                             r-mvtnorm
+                             r-nlme
+                             r-rlrsim))
+    (home-page "https://cran.r-project.org/package=cAIC4")
+    (synopsis "Conditional AIC for lme4 and nlme")
+    (description
+     "This package estimates conditional Akaike information in mixed-effect
+models.  These models are fitted using @code{(g)lmer()} from lme4,
+@code{lme()} from nlme, and @code{gamm()} from mgcv.  The provided functions
+facilitate the computation of the conditional Akaike information for model
+evaluation.")
+    (license license:gpl2+)))
+
 (define-public r-castor
   (package
     (name "r-castor")
