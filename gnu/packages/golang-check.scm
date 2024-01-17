@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -377,6 +378,38 @@ messages automatically.")
      "Ginkgo is a Behaviour-Driven Development testing framework for Go.  It
 builds on top of Go's builtin @code{testing} library and is complemented by the
 Gomega matcher library.")
+    (license license:expat)))
+
+(define-public go-github.com-smartystreets-assertions
+  (package
+    (name "go-github.com-smartystreets-assertions")
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smartystreets/assertions")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0flf3fb6fsw3bk1viva0fzrzw87djaj1mqvrx2gzg1ssn7xzfrzr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smartystreets/assertions"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (unless
+                  ;; The tests fail when run with gccgo.
+                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                (apply (assoc-ref %standard-phases 'check) args)))))))
+    (native-inputs
+     (list go-github.com-smartystreets-gunit))
+    (home-page "https://github.com/smartystreets/assertions")
+    (synopsis "Assertions for testing with Go")
+    (description "The @code{assertions} package provides convenient assertion
+functions for writing tests in Go.")
     (license license:expat)))
 
 (define-public go-github.com-smartystreets-gunit
