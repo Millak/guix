@@ -11,11 +11,12 @@
 ;;; Copyright © 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
-;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Jack Hill <jackhill@jackhill.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,35 @@
 ;;;
 ;;; Code:
 
+(define-public go-filippo-io-age
+  (package
+    (name "go-filippo-io-age")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FiloSottile/age")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k1dv1jkr72qpk5g363mhrg9hnf5c9qgv4l16l13m4yh08jp271d"))))
+    (build-system go-build-system)
+    (arguments `(#:import-path "filippo.io/age"))
+    (inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-crypto
+           go-filippo-io-edwards25519))
+    (home-page "https://filippo.io/age")
+    (synopsis "Secure file encryption tool, format, and Go library")
+    (description
+     "This package implements file encryption according to the
+@{age-encryption.org/v1, https://age-encryption.org/v1} specification.
+It features small explicit keys, no configuration options, and Unix-style
+composability.")
+    (license license:bsd-3)))
+
 (define-public go-filippo-io-edwards25519
   (package
     (name "go-filippo-io-edwards25519")

@@ -9397,35 +9397,6 @@ configuration languages, but other uses may be possible too.")
     (description "This package implements a low-level key/value store in Go.")
     (license license:expat)))
 
-(define-public go-filippo-io-age
-  (package
-    (name "go-filippo-io-age")
-    (version "1.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/FiloSottile/age")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1k1dv1jkr72qpk5g363mhrg9hnf5c9qgv4l16l13m4yh08jp271d"))))
-    (build-system go-build-system)
-    (arguments `(#:import-path "filippo.io/age"))
-    (inputs
-     (list go-golang-org-x-sys
-           go-golang-org-x-term
-           go-golang-org-x-crypto
-           go-filippo-io-edwards25519))
-    (home-page "https://filippo.io/age")
-    (synopsis "Secure file encryption tool, format, and Go library")
-    (description
-     "This package implements file encryption according to the
-@{age-encryption.org/v1, https://age-encryption.org/v1} specification.
-It features small explicit keys, no configuration options, and Unix-style
-composability.")
-    (license license:bsd-3)))
-
 (define-public age
   (package
     (inherit go-filippo-io-age)
