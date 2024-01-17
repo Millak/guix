@@ -16210,18 +16210,17 @@ criterion.")
 (define-public rust-crossbeam-channel-0.5
   (package
     (name "rust-crossbeam-channel")
-    (version "0.5.9")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-channel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m822cimkki4861c3pg4lbxbym28ml4739y39bn4mwzd4qlj9hql"))))
+        (base32 "16v48qdflpw3hgdik70bhsj7hympna79q7ci47rw0mlgnxsw2v8p"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
-                       ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
+     `(#:cargo-inputs (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
        #:cargo-development-inputs (("rust-num-cpus" ,rust-num-cpus-1)
                                    ("rust-rand" ,rust-rand-0.8)
                                    ("rust-signal-hook" ,rust-signal-hook-0.3))))
