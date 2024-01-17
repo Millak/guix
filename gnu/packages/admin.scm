@@ -629,7 +629,7 @@ services.")
      "daemonize runs a command as a Unix daemon.  It will close all open file
 descriptors, change working directory of the process to the root filesystem,
 reset its umask, run in the background, ignore I/O signals, handle
-@code{SIGCLD}, etc.  Most programs that are designed to be run as daemons do
+@code{SIGCHLD}, etc.  Most programs that are designed to be run as daemons do
 that work for themselves.  However, you’ll occasionally run across one that
 does not.  When you must run a daemon program that does not properly make
 itself into a true Unix daemon, you can use daemonize to force it to run as a
