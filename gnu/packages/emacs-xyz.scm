@@ -90,7 +90,7 @@
 ;;; Copyright © 2020 Jonathan Rostran <rostranjj@gmail.com>
 ;;; Copyright © 2020, 2021 Noah Evans <noah@nevans.me>
 ;;; Copyright © 2020 Brit Butler <brit@kingcons.io>
-;;; Copyright © 2021, 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2021, 2022, 2024 Aleksandr Vityazev <avityazev@disroot>
 ;;; Copyright © 2021 Yurii Kholodkov <urist.mckorobochka@gmail.com>
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -26825,6 +26825,29 @@ Dumb Jump performs best with The Silver Searcher @command{ag} or ripgrep
     (description
      "This package provides an Emacs minor mode for highlighting
 device tree files.")
+    (license license:gpl3+)))
+
+(define-public emacs-devicetree-ts-mode
+  (package
+    (name "emacs-devicetree-ts-mode")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~akagi/devicetree-ts-mode")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1aif25hqs9i1aax331s4p8b59kxrq584ynfnh640p43jzmqf5p3d"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list tree-sitter-devicetree))
+    (home-page "https://sr.ht/~akagi/devicetree-ts-mode")
+    (synopsis "Tree-sitter major mode for editing DTS files")
+    (description "This package provides tree-sitter major mode
+for editing Devicetree files.")
     (license license:gpl3+)))
 
 (define-public emacs-daemons
