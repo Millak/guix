@@ -298,6 +298,20 @@ logind API.")))
     (description "Go bindings to systemd for registering
 machines/containers.")))
 
+(define-public go-github-com-coreos-go-systemd-unit
+  (package
+    (inherit go-github-com-coreos-go-systemd-activation)
+    (name "go-github-com-coreos-go-systemd-unit")
+    (arguments
+     '(#:tests? #f ;Tests require D-Bus daemon running.
+       #:import-path "github.com/coreos/go-systemd/unit"
+       #:unpack-path "github.com/coreos/go-systemd"))
+    (native-inputs (list go-github-com-godbus-dbus))
+    (home-page "https://github.com/coreos/go-systemd")
+    (synopsis "Go bindings to systemd for working with unit files")
+    (description "Go bindings to systemd for (de)serialization and comparison
+of unit files.")))
+
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
     (name "go-github-com-cyberdelia-go-metrics-graphite")
