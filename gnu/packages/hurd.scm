@@ -134,7 +134,7 @@ communication.")
         (commit "v0.9.git20230520"))
     (package
       (name "hurd-headers")
-      (version commit)
+      (version (string-drop commit 1))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -310,7 +310,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
       (sha256
        (base32
         "0ygk7jm4jmhpvh0zzi5bk638242z7sbcab2i57fkb4y2mmdkjjbw"))
-      (file-name (git-file-name "dde" commit)))))
+      (file-name (git-file-name "dde" (string-take commit 7))))))
 
 (define %import-from-dde
   (list "libmachdevdde" "libddekit" "libdde_linux26"))
@@ -656,7 +656,7 @@ in userland processes thanks to the DDE layer.")
                 (sha256
                  (base32
                   "0fv0k52qqcg3nq9012hibgsamvsd7mnvn2ikdasmzjhsp8qh5q3r"))
-                (file-name (git-file-name name commit))))
+                (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
        (list
