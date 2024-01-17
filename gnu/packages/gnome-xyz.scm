@@ -1183,7 +1183,7 @@ position when the mouse is moved rapidly.")
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "22")
+    (version "40")
     (source
      (origin
        (method git-fetch)
@@ -1192,25 +1192,26 @@ position when the mouse is moved rapidly.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "185xrf330d9bflmk0l61cnzlylnppb2v4yz6v6ygkk4zpwyil8np"))
+         "16n6ilszdn67835clqlr4flna69x9k00k5qrm55765dv2ny9jdcq"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "burn-my-windows@schneegans.github.com")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$" "\\.gresource$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-resources
-           (lambda _
-             (invoke "make" "resources/burn-my-windows.gresource")))
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
+     (list
+      #:install-plan
+      #~'(("." #$(string-append
+                  "share/gnome-shell/extensions/"
+                  "burn-my-windows@schneegans.github.com")
+           #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                             "\\.xml$" "\\.compiled$" "\\.gresource$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-resources
+            (lambda _
+              (invoke "make" "resources/burn-my-windows.gresource")))
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "schemas"
+                (invoke "glib-compile-schemas" ".")))))))
     (native-inputs
      (list `(,glib "bin")))  ; for glib-compile-resources
     (home-page "https://github.com/Schneegans/Burn-My-Windows")
