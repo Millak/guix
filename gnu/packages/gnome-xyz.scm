@@ -1253,37 +1253,6 @@ in the status menu below the volume slider.  Various active ports like HDMI,
 Speakers etc. of the same device are also displayed for selection.")
     (license license:gpl3+)))
 
-(define-public gnome-shell-extension-transparent-window
-  (let ((commit "cc9bc70c192dd565fa6f1d1b28d9a20f99684f2a")
-        (revision "45"))
-    (package
-      (name "gnome-shell-extension-transparent-window")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url (string-append "https://github.com/pbxqdown/"
-                                   "gnome-shell-extension-transparent-window"))
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1f9iqqjpmmylqz0ws8cy5rs475bwzi7jy44q9ip44ig2acz2wxzp"))))
-      (build-system copy-build-system)
-      (arguments
-       (list
-        #:install-plan
-        #~'(("."
-             #$(string-append "/share/gnome-shell/extensions"
-                              "/transparent-window@pbxqdown.github.com")))))
-      (home-page
-       "https://github.com/pbxqdown/gnome-shell-extension-transparent-window")
-      (synopsis "Change the opacity of windows in GNOME Shell")
-      (description "This extension adds keybindings to change the opacity
-of windows.")
-      (license license:expat))))
-
 (define-public gnome-shell-extension-vitals
   (package
     (name "gnome-shell-extension-vitals")
