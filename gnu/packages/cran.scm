@@ -34212,14 +34212,14 @@ matrix calculations that are common in statistics, such as quadratic forms.")
 (define-public r-spatstat-data
   (package
     (name "r-spatstat-data")
-    (version "3.0-3")
+    (version "3.0-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.data" version))
        (sha256
         (base32
-         "0fxd266rza07s73fj1n4rd4i7x1bv1ll36iikxzjhnlh3vjc0hkn"))))
+         "1s0ns5nhgigfn3d9rdy3f4ymnwj1w71v26iphkhwxddm9qzk80yi"))))
     (properties `((upstream-name . "spatstat.data")))
     (build-system r-build-system)
     (propagated-inputs
