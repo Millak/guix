@@ -1296,7 +1296,7 @@ into dataclasses.")
      (list python-numpy))
     (native-inputs
      (list cmake
-           meson-python/newer
+           meson-python
            pkg-config
            pybind11
            python-pytest
