@@ -2440,14 +2440,14 @@ scale-sensitive information.")
 (define-public r-ggvenndiagram
   (package
     (name "r-ggvenndiagram")
-    (version "1.4.9")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggVennDiagram" version))
        (sha256
         (base32
-         "1nf4prkpciy1q1ix7chy0ymk5d3dlxxb53c29pg6yjp3py0hiw2h"))))
+         "0ngvvmz2mxh4v98wg3xqpmz1p1cpk3qsdvszcjzb1yhhway211a5"))))
     (properties `((upstream-name . "ggVennDiagram")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2456,7 +2456,8 @@ scale-sensitive information.")
            r-forcats
            r-ggplot2
            r-tibble
-           r-tidyr))
+           r-venn
+           r-yulab-utils))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/gaospecial/ggVennDiagram")
     (synopsis "Implementention of the Venn diagram using ggplot2")
