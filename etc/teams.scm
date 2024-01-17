@@ -706,6 +706,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "vivien@planete-kraus.eu")
   gnome)
 
+(define-member (person "Wilko Meyer"
+                       "w@wmeyer.eu")
+  kernel)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
