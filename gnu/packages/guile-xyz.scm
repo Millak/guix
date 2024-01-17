@@ -824,16 +824,26 @@ tables.")
            #~(list "GUILE_AUTO_COMPILE=0")
            #:phases
            (if (target-x86-64?)
-             #~%standard-phases
-             #~(modify-phases %standard-phases
-                 (add-before 'check 'disable-some-tests
-                   (lambda _
-                     ;; This test can take more than an hour on some systems.
-                     (substitute* "tests/basic.scm"
-                       ((".*spawn-fiber loop-to-1e4.*") ""))
-                     ;; These tests can take more than an hour and/or segfault.
-                     (substitute* "Makefile"
-                       (("tests/speedup.scm") ""))))))))
+               #~%standard-phases
+               #~(modify-phases %standard-phases
+                   (add-before 'check 'disable-some-tests
+                     (lambda _
+                       ;; This test can take more than an hour on some systems.
+                       (substitute* "tests/basic.scm"
+                         ((".*spawn-fiber loop-to-1e4.*") ""))
+
+                       ;; These tests can take more than an hour and/or segfault.
+                       (substitute* "Makefile"
+                         (("tests/speedup.scm") ""))
+
+                       (when #$(target-aarch64?)
+                         ;; The tests below have issues on aarch64 systems.
+                         ;; They pass on an Apple M1 but take a very long time
+                         ;; on a Hetzner aarch64 VM.  Skip them.
+                         (substitute* "tests/basic.scm"
+                           ((".*spawn-fiber-chain 5000000.*") ""))
+                         (substitute* "tests/channels.scm"
+                           ((".*assert-run-fibers-terminates .*pingpong.*") "")))))))))
     (native-inputs
      (list texinfo pkg-config autoconf-2.71 automake libtool
            guile-3.0            ;for 'guild compile
