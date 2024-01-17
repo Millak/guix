@@ -1910,6 +1910,27 @@ similar rank-based tests for equal probability distributions due to Neuhauser
 WebAssembly engine.")
     (license license:expat)))
 
+(define-public r-venn
+  (package
+    (name "r-venn")
+    (version "1.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "venn" version))
+       (sha256
+        (base32 "07bjv0m21gljdr3sj1z9rp6xhgxspah9j1m3a8rskvlwv6dvd1pd"))))
+    (properties `((upstream-name . "venn")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-admisc))
+    (home-page "https://github.com/dusadrian/venn")
+    (synopsis "Draw Venn diagrams")
+    (description
+     "This package provides a close to zero dependency package to draw and
+display Venn diagrams up to 7 sets, and any Boolean union of set
+intersections.")
+    (license license:gpl3+)))
+
 (define-public r-rvenn
   (package
     (name "r-rvenn")
