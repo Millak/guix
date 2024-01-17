@@ -18247,13 +18247,13 @@ validation.  It can be run in parallel to save computation time.")
 (define-public r-ks
   (package
     (name "r-ks")
-    (version "1.14.1")
+    (version "1.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ks" version))
        (sha256
-        (base32 "0vf7vqaq6bhi4rrggmd56wzxx40j846g66yxvvbnihqjyhxgahs5"))))
+        (base32 "1jrzh1syq6jdqpp5xmb25hqsk07bpbn6caqhp9mw5zpsdi3k14gi"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fnn
@@ -18264,7 +18264,6 @@ validation.  It can be run in parallel to save computation time.")
            r-mgcv
            r-multicool
            r-mvtnorm
-           r-plot3d
            r-pracma))
     (home-page "https://www.mvstat.net/tduong/")
     (synopsis "Kernel smoothing")
