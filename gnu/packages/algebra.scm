@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -936,7 +936,7 @@ algorithms from the FORTRAN library MINPACK.")
 (define-public symengine
   (package
     (name "symengine")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method git-fetch)
@@ -945,7 +945,7 @@ algorithms from the FORTRAN library MINPACK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "105rnnf33vx2n03wwv4962az7bfzgsn1gx6a6wyakmyrfdkb07jc"))))
+        (base32 "0j6vd72hjj9fnsw5iiykmkrw8vyjcyyycgib2zxlmlzi6sj4618b"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
