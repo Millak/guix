@@ -293,8 +293,7 @@ files and generates build instructions for the Ninja build system.")
 (define-public meson
   (package
     (name "meson")
-    (replacement meson/newer)
-    (version "1.1.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mesonbuild/meson/"
@@ -302,7 +301,7 @@ files and generates build instructions for the Ninja build system.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "17w2zymmvrffhfpqsaj7qcbjwgv9iaawcpzhz2gnhlvcrm26qqfr"))))
+                "1x9rnrbwvzhnzmz4zqag44w06khks8wckcajxsbr8m4760akmnxi"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;disabled to avoid extra dependencies
@@ -329,19 +328,6 @@ Autoconf/Automake/make combo.  Build specifications, also known as @dfn{Meson
 files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
-
-(define-public meson/newer
-  (package
-    (inherit meson)
-    (version "1.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mesonbuild/meson/"
-                                  "releases/download/" version  "/meson-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1x9rnrbwvzhnzmz4zqag44w06khks8wckcajxsbr8m4760akmnxi"))))))
 
 (define-public meson-python
   (package
@@ -395,13 +381,6 @@ resembles Python.")
     (synopsis "Meson-based build backend for Python")
     (description "Meson-python is a PEP 517 build backend for Meson projects.")
     (license license:expat)))
-
-(define-public meson-python/newer
-  (package
-    (inherit meson-python)
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs meson-python)
-       (replace "meson" meson/newer)))))
 
 (define-public premake4
   (package

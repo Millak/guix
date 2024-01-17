@@ -1081,7 +1081,7 @@ doing practical, real world data analysis in Python.")
     (inputs
      (list which xclip xsel))
     (native-inputs
-     (list meson-python/newer
+     (list meson-python
            python-beautifulsoup4
            python-cython-0.29.35
            python-html5lib

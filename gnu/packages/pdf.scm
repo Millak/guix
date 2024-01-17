@@ -134,8 +134,7 @@
                (base32 "0kp1dcww5zl04wnbqbi8vjzpc5qgr8gr8rcx0s6s4xbjnzvqqw8d"))))
     (build-system meson-build-system)
     (arguments
-     (list #:meson meson/newer
-           #:configure-flags #~(list "-Dcpp_std=c++23")
+     (list #:configure-flags #~(list "-Dcpp_std=c++23")
            #:test-options '(list "plainc")
            #:phases
            #~(modify-phases %standard-phases
