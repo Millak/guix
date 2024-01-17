@@ -651,7 +651,7 @@ true daemon.")
         "0m1fd7l85ckb7bq4c5c3g257bkjglm8gq7x42pkmpp87fkknc94n"))))
    (build-system cmake-build-system)
    (arguments '(#:tests? #f)) ; There are no tests.
-   (native-inputs `(("gettext" ,gettext-minimal)))
+   (native-inputs (list gettext-minimal))
    (home-page "https://projects.gw-computing.net/projects/dfc")
    (synopsis "Display file system space usage using graphs and colors")
    (description
