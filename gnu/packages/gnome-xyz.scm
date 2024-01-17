@@ -906,7 +906,7 @@ currently focused application in the top panel of the GNOME shell.")
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "22.0")
+    (version "26.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -915,36 +915,37 @@ currently focused application in the top panel of the GNOME shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r4rflppcp05kwhzmh07dzi7znc4kch4nc8mzw61arj3qsfq2qqj"))))
+                "0dvq2mb04b557g9nz4pm90x2c2jc1dwwbg2is1gkx38yk0dsj6r3"))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("src"
-          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection"
-          #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.ui$"))
-         ("locale"
-          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'drop-executable-bits
-           (lambda _
-             (for-each
-              (lambda (file)
-                (let ((stat (lstat file)))
-                  (chmod file (logand (stat:mode stat) (lognot #o111)))))
-              (find-files "." #:directories? #f))))
-         (add-before 'install 'build
-           (lambda _
-             (invoke "glib-compile-schemas" "src/schemas")
-             (for-each
-              (lambda (file)
-                (let* ((base (basename file))
-                       (noext (substring base 0 (- (string-length base) 3)))
-                       (dest (string-append "locale/" noext "/LC_MESSAGES/"))
-                       (out (string-append dest "just-perfection.mo")))
-                  (mkdir-p dest)
-                  (invoke "msgfmt" "-c" file "-o" out)))
-              (find-files "po" "\\.po$")))))))
+     (list
+      #:install-plan
+      #~'(("src"
+           "share/gnome-shell/extensions/just-perfection-desktop@just-perfection"
+           #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.ui$"))
+          ("locale"
+           "share/gnome-shell/extensions/just-perfection-desktop@just-perfection/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'drop-executable-bits
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (let ((stat (lstat file)))
+                   (chmod file (logand (stat:mode stat) (lognot #o111)))))
+               (find-files "." #:directories? #f))))
+          (add-before 'install 'build
+            (lambda _
+              (invoke "glib-compile-schemas" "src/schemas")
+              (for-each
+               (lambda (file)
+                 (let* ((base (basename file))
+                        (noext (substring base 0 (- (string-length base) 3)))
+                        (dest (string-append "locale/" noext "/LC_MESSAGES/"))
+                        (out (string-append dest "just-perfection.mo")))
+                   (mkdir-p dest)
+                   (invoke "msgfmt" "-c" file "-o" out)))
+               (find-files "po" "\\.po$")))))))
     (native-inputs
      (list `(,glib "bin") gettext-minimal))
     (home-page "https://gitlab.gnome.org/jrahmatzadeh/just-perfection")
