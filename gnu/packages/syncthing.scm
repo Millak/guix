@@ -1006,34 +1006,3 @@ virtual connections from a single physical connection.")
 and RFC 5389).")
       (home-page "https://github.com/ccding/go-stun")
       (license asl2.0))))
-
-(define-public go-github-com-cespare-xxhash
-  (package
-    (name "go-github-com-cespare-xxhash")
-    (version "2.1.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/cespare/xxhash")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-       #:import-path "github.com/cespare/xxhash"
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs #:allow-other-keys #:rest args)
-               (unless
-                 ;; The tests fail when run with gccgo.
-                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (synopsis "Go implementation of xxHash")
-    (description "This package provides of Go implementation of the 64-bit
-xxHash algorithm (XXH64).")
-    (home-page "https://github.com/cespare/xxhash/")
-    (license expat)))

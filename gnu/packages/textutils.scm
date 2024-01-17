@@ -65,6 +65,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages java)
   #:use-module (gnu packages ncurses)

@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
@@ -164,6 +165,37 @@ Although this package was primarily written for btcd, it has intentionally
 been designed so it can be used as a standalone package for any projects
 needing to use secp256k1 elliptic curve cryptography.")
       (license license:isc))))
+
+(define-public go-github-com-cespare-xxhash
+  (package
+    (name "go-github-com-cespare-xxhash")
+    (version "2.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cespare/xxhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cespare/xxhash"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (unless
+                  ;; The tests fail when run with gccgo.
+                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                (apply (assoc-ref %standard-phases 'check) args)))))))
+    (home-page "https://github.com/cespare/xxhash/")
+    (synopsis "Go implementation of xxHash")
+    (description "This package provides of Go implementation of the 64-bit
+xxHash algorithm (XXH64).")
+    (license license:expat)))
 
 (define-public go-github-com-cloudflare-circl
   (package
