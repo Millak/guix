@@ -1509,13 +1509,13 @@ by R (also native code).")
 (define-public r-proj4
   (package
     (name "r-proj4")
-    (version "1.0-13")
+    (version "1.0-14")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "proj4" version))
               (sha256
                (base32
-                "1wvp17x58i614mnrjp0idzfi7s3g7pz41x8cxv05ryi9iz5l0m5c"))))
+                "1dh059lhw32vn0hxlp6sxb6m8hjdgmm01djq6vfncrhkjbd73mfk"))))
     (properties `((upstream-name . "proj4")))
     (build-system r-build-system)
     (inputs (list proj-7 zlib))
