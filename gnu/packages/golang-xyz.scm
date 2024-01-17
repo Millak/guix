@@ -257,6 +257,19 @@ status changes")))
     (description "Go bindings to systemd for starting/stopping/inspecting
 running services and units.")))
 
+(define-public go-github-com-coreos-go-systemd-journal
+  (package
+    (inherit go-github-com-coreos-go-systemd-activation)
+    (name "go-github-com-coreos-go-systemd-journal")
+    (arguments
+     '(#:tests? #f ;Tests require access to journald socket.
+       #:import-path "github.com/coreos/go-systemd/journal"
+       #:unpack-path "github.com/coreos/go-systemd"))
+    (home-page "https://github.com/coreos/go-systemd")
+    (synopsis "Go bindings to systemd for writing journald")
+    (description "Go bindings to systemd for writing to systemd's logging
+service, journald.")))
+
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
     (name "go-github-com-cyberdelia-go-metrics-graphite")
