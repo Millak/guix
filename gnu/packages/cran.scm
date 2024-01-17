@@ -27590,14 +27590,14 @@ cell free DNA} (cfDNA).")
 (define-public r-rintrojs
   (package
     (name "r-rintrojs")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rintrojs" version))
        (sha256
         (base32
-         "1fy5lz9d9njs4yrnwrrn0n1fn0chccgi1gzn4qz4g6adr3v35rgw"))
+         "12944h3h6131l916bsz6vmccq8pvq831b52s3wb1hpwygqfj0a6l"))
        (snippet
         '(delete-file "inst/javascript/introjs/intro.min.js"))))
     (properties `((upstream-name . "rintrojs")))
