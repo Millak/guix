@@ -5596,40 +5596,6 @@ provides a default implementation of a subsystem-aware leveled logger
 implementing the same interface.")
       (license license:isc))))
 
-(define-public go-github-com-minio-sha256-simd
-  (package
-    (name "go-github-com-minio-sha256-simd")
-    (version "0.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/minio/sha256-simd")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1j0iqsckm97g4l79vd4mc7apbmkdar23jpzqpnpdhwpfd834j8lp"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/minio/sha256-simd"))
-    (home-page "https://github.com/minio/sha256-simd")
-    (synopsis "Accelerate SHA256 computations in pure Go")
-    (description "Accelerate SHA256 computations in pure Go using AVX512 and
-AVX2 for Intel and ARM64 for ARM.  On AVX512 it provides an up to 8x
-improvement (over 3 GB/s per core) in comparison to AVX2.
-
-This package is designed as a replacement for @command{crypto/sha256}.  For
-Intel CPUs it has two flavors for AVX512 and AVX2 (AVX/SSE are also
-supported).  For ARM CPUs with the Cryptography Extensions, advantage is taken
-of the SHA2 instructions resulting in a massive performance improvement.
-
-This package uses Golang assembly.  The AVX512 version is based on the Intel's
-\"multi-buffer crypto library for IPSec\" whereas the other Intel
-implementations are described in \"Fast SHA-256 Implementations on Intel
-Architecture Processors\" by J. Guilford et al.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-mr-tron-base58
   (let ((commit "d724c80ecac7b49e4e562d58b2b4f4ee4ed8c312")
         (revision "0"))
