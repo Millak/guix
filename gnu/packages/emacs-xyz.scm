@@ -136,6 +136,7 @@
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
+;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33458,6 +33459,30 @@ files to numerous other formats via Pandoc.")
 With org-reveal, you can create beautiful presentations with 3D effects from
 simple but powerful Org contents.")
       (license license:gpl3+))))
+
+(define-public emacs-ox-tufte
+  (package
+    (name "emacs-ox-tufte")
+    (version "4.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ox-tufte/ox-tufte")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v8jr1k8wfpzwry073rrgkxfpwylxmk7xqabxzp49z40rc7hp26s"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-org))
+    (arguments '(#:include (cons "^src/" %default-include)))
+    (home-page "https://github.com/ox-tufte/ox-tufte")
+    (synopsis "Tufte HTML Org mode export backend")
+    (description
+     "This is an export backend for Org mode that exports buffers to HTML that
+is compatible with Tufte
+CSS (@url{https://edwardtufte.github.io/tufte-css/}).")
+    (license license:gpl3+)))
 
 (define-public emacs-ox-rss
   ;; XXX: Upstream provides no version nor tags whatsoever.
