@@ -855,54 +855,6 @@ notifications or files, and other features like SMS messaging and remote
 control.")
     (license license:gpl2)))
 
-(define-public gnome-shell-extension-hide-app-icon
-  (let ((commit "4188aa5f4ba24901a053a0c3eb0d83baa8625eab")
-        (revision "0"))
-    (package
-      (name "gnome-shell-extension-hide-app-icon")
-      (version (git-version "2.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url (string-append "https://github.com/michael-rapp"
-                                   "/gnome-shell-extension-hide-app-icon.git"))
-               (commit commit)))
-         (sha256
-          (base32
-           "1i28n4bz6wrhn07vpxkr6l1ljyn7g8frp5xrr11z3z32h2hxxcd6"))
-         (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:tests? #f                ; no test target
-         #:make-flags (list (string-append "EXTENSIONS_DIR="
-                                           (assoc-ref %outputs "out")
-                                           "/share/gnome-shell/extensions"))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)      ; no configure script
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (pre "/share/gnome-shell/extensions/")
-                     (dir "hide-app-icon@mrapp.sourceforge.com"))
-                 (copy-recursively dir (string-append out pre dir))
-                 #t))))))
-      (native-inputs
-       (list `(,glib "bin") intltool))
-      (propagated-inputs
-       (list glib))
-      (synopsis "Hide app icon from GNOME's panel")
-      (description "This extension hides the icon and/or title of the
-currently focused application in the top panel of the GNOME shell.")
-      (home-page
-       "https://github.com/michael-rapp/gnome-shell-extension-hide-app-icon/")
-      (license
-        ;; README.md and LICENSE.txt disagree -- the former claims v3, the
-        ;; latter v2.  No mention of "or later" in either place or in the code.
-        (list license:gpl2
-              license:gpl3)))))
-
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
@@ -954,6 +906,10 @@ currently focused application in the top panel of the GNOME shell.")
 GNOME Shell itself does not provide out of the box, such as the ability to hide
 certain elements or change animation speeds.")
     (license license:gpl3)))
+
+(define-public gnome-shell-extension-hide-app-icon
+  (deprecated-package "gnome-shell-extension-hide-app-icon"
+                      gnome-shell-extension-just-perfection))
 
 (define-public gnome-shell-extension-dash-to-panel
   (package
