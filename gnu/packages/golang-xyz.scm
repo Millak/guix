@@ -243,6 +243,20 @@ using socket activation from Go.")
     (description "Go bindings to systemd for notifying the daemon of service
 status changes")))
 
+(define-public go-github-com-coreos-go-systemd-dbus
+  (package
+    (inherit go-github-com-coreos-go-systemd-activation)
+    (name "go-github-com-coreos-go-systemd-dbus")
+    (arguments
+     '(#:tests? #f ;Tests require D-Bus daemon running.
+       #:import-path "github.com/coreos/go-systemd/dbus"
+       #:unpack-path "github.com/coreos/go-systemd"))
+    (native-inputs (list go-github-com-godbus-dbus))
+    (home-page "https://github.com/coreos/go-systemd")
+    (synopsis "Go bindings to systemd for managing services")
+    (description "Go bindings to systemd for starting/stopping/inspecting
+running services and units.")))
+
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
     (name "go-github-com-cyberdelia-go-metrics-graphite")
