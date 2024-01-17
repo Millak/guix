@@ -10834,46 +10834,6 @@ aware of your profiles and configuration in ~/.aws/config.")
 (define-public go-github-com-go-libsecret
   (deprecated-package "go-github-com-go-libsecret" go-github-com-gsterjov-go-libsecret))
 
-(define-public go-github-com-99designs-go-keyring
-  (package
-    (name "go-github-com-99designs-go-keyring")
-    (version "1.2.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/99designs/keyring")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0mkvy7scyq07rkqhabfmkd8imcm4h9y7zj9palj04znpihpixa5m"))))
-    (build-system go-build-system)
-    (native-inputs
-     (list go-golang-org-x-sys
-           go-golang-org-x-term
-           go-github-com-mtibben-percent
-           go-github-com-mitchellh-go-homedir
-           go-github-com-dvsekhvalnov-jose2go
-           go-github-com-godbus-dbus
-           go-github-com-gsterjov-go-libsecret
-           password-store
-           gnupg))
-    (arguments
-     '(#:import-path "github.com/99designs/keyring"
-       #:tests? #f))                              ;XXX: tests require Vagrant
-    (synopsis "Go library providing a uniform interface for various secure
-credential stores")
-    (description
-     "Keyring provides utility functions for and a common interface to a range
-of secure credential storage services.  Originally developed as part of AWS
-Vault, a command line tool for securely managing AWS access from developer
-workstations.
-
-Currently Keyring supports the following backends: macOS/OSX Keychain, Windows
-pcredential store, Pass, Secret Service, KDE Wallet, Encrypted File.")
-    (home-page "https://github.com/99designs/keyring")
-    (license license:expat)))
-
 (define-public go-github-com-mtibben-androiddnsfix
   (let ((commit "ff02804463540c36e3a148dcf4b009d003cf2a31")
         (revision "0"))

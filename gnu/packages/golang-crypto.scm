@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
@@ -12,6 +13,7 @@
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +73,46 @@
 Go, exposing the necessary APIs to build a wide array of higher-level
 primitives.")
     (license license:bsd-3)))
+
+(define-public go-github-com-99designs-go-keyring
+  (package
+    (name "go-github-com-99designs-go-keyring")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/99designs/keyring")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mkvy7scyq07rkqhabfmkd8imcm4h9y7zj9palj04znpihpixa5m"))))
+    (build-system go-build-system)
+    (native-inputs
+     (list gnupg
+           go-github-com-dvsekhvalnov-jose2go
+           go-github-com-godbus-dbus
+           go-github-com-gsterjov-go-libsecret
+           go-github-com-mitchellh-go-homedir
+           go-github-com-mtibben-percent
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           password-store))
+    (arguments
+     '(#:import-path "github.com/99designs/keyring"
+       #:tests? #f))                              ;XXX: tests require Vagrant
+    (synopsis "Go library providing a uniform interface for various secure
+credential stores")
+    (description
+     "Keyring provides utility functions for and a common interface to a range
+of secure credential storage services.  Originally developed as part of AWS
+Vault, a command line tool for securely managing AWS access from developer
+workstations.
+
+Currently Keyring supports the following backends: macOS/OSX Keychain, Windows
+pcredential store, Pass, Secret Service, KDE Wallet, Encrypted File.")
+    (home-page "https://github.com/99designs/keyring")
+    (license license:expat)))
 
 (define-public go-github-com-aead-chacha20
   (let ((commit "8b13a72661dae6e9e5dea04f344f0dc95ea29547")
