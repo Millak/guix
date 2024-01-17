@@ -13,7 +13,7 @@
 # Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 # Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-# Copyright © 2017, 2018, 2023 Clément Lassieur <clement@lassieur.org>
+# Copyright © 2017, 2018, 2023, 2024 Clément Lassieur <clement@lassieur.org>
 # Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 # Copyright © 2017, 2018, 2019 Gábor Boskovits <boskovits@gmail.com>
 # Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
@@ -633,6 +633,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/tls.scm				\
   %D%/packages/tmux.scm				\
   %D%/packages/toolkits.scm			\
+  %D%/packages/tor-browsers.scm			\
   %D%/packages/tor.scm				\
   %D%/packages/tree-sitter.scm			\
   %D%/packages/tv.scm				\
