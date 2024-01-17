@@ -8543,14 +8543,14 @@ alphabet.")
 (define-public rust-bstr-1
   (package
     (name "rust-bstr")
-    (version "1.8.0")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bstr" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0313sqdf0a40vhpnrlkf54zhr76rmlyxzhx00sq8822shfl36bsl"))))
+                "1p6hzf3wqwwynv6w4pn17jg21amfafph9kb5sfvf1idlli8h13y4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
