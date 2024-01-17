@@ -4741,8 +4741,8 @@ mapper.  Kernel components are part of Linux-libre.")
     (inherit lvm2)
     (name "lvm2-static")
 
-    ;; Propagate udev because libdevmapper.a depends on libudev.
-    (propagated-inputs `(("udev:static" ,eudev "static")))
+    (inputs `(,@(package-inputs lvm2)
+              ("udev:static" ,eudev "static")))
 
     (arguments
      (substitute-keyword-arguments (package-arguments lvm2)
@@ -4756,19 +4756,28 @@ mapper.  Kernel components are part of Linux-libre.")
                  ;; it until the situation improves.
                  (delete "--enable-dmeventd" ,flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'configure 'adjust-Makefile
-             (lambda _
-               ;; These fixes are related to the upstream libdm->device_mapper
-               ;; migration and will hopefully be fixed upstream in due time.
-               (substitute* "tools/Makefile.in"
-                 ;; This variable is empty in a static configuration and causes
-                 ;; an erroneous GCC command line.
-                 (("-L\\$\\(interfacebuilddir\\)") "")
-                 ;; Remove obsolete reference to libdevmapper.a.
-                 (("-ldevmapper") ""))
-               #t))))))
-    (synopsis "Logical volume management for Linux (statically linked)")))
+        #~(modify-phases #$phases
+            (add-before 'configure 'adjust-Makefile
+              (lambda _
+                ;; These fixes are related to the upstream libdm->device_mapper
+                ;; migration and will hopefully be fixed upstream in due time.
+                (substitute* "tools/Makefile.in"
+                  ;; This variable is empty in a static configuration and causes
+                  ;; an erroneous GCC command line.
+                  (("-L\\$\\(interfacebuilddir\\)") "")
+                  ;; Remove obsolete reference to libdevmapper.a.
+                  (("-ldevmapper") ""))
+                #t))
+            (add-after 'install 'adjust-pkgconfig
+              ;; The static eudev is missing its pkg config file, and I am not
+              ;; rebuilding it at this point.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* (string-append #$output "/lib/pkgconfig/devmapper.pc")
+                  (("Requires.private: .*") "")
+                  (("Libs.private:")
+                   (format #f "Libs.private: -L~a -ludev"
+                           (dirname (search-input-file inputs "lib/libudev.a")))))))))))
+  (synopsis "Logical volume management for Linux (statically linked)")))
 
 (define-public thin-provisioning-tools
   (package
