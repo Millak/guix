@@ -6949,14 +6949,14 @@ any subsequent lookup as it keeps the hash table in memory.")
 (define-public r-ff
   (package
     (name "r-ff")
-    (version "4.0.9")
+    (version "4.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ff" version))
        (sha256
         (base32
-         "0krwxq4985x3n5mzx8i9smwpkd5sifbfgy9z7ikwk84734km683j"))))
+         "1gs1zf3x0clnim7qlrkhlsjf2xgry5ybqnh8ipa2kzhhk9d3bbq8"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bit))
     (home-page "https://ff.r-forge.r-project.org/")
