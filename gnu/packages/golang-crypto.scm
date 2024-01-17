@@ -3,10 +3,12 @@
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
@@ -797,6 +799,32 @@ wide-block encryption mode developed by Halevi and Rogaway.")
     (synopsis "Shadowsocks tunnel proxy")
     (description "Go-ShadowSocks is a Go implementation of the Shadowsocks
 tunnel proxy protocol.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-xanzy-ssh-agent
+  (package
+    (name "go-github-com-xanzy-ssh-agent")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xanzy/ssh-agent")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1chjlnv5d6svpymxgsr62d992m2xi6jb5lybjc5zn1h3hv1m01av"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/xanzy/ssh-agent"))
+    (native-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/xanzy/ssh-agent/")
+    (synopsis "Control ssh-agent from Go")
+    (description "Package agent implements the ssh-agent protocol, and
+provides both a client and a server.  The client can talk to a standard
+ssh-agent that uses UNIX sockets, and one could implement an alternative
+ssh-agent process using the sample server.")
     (license license:asl2.0)))
 
 (define-public go-gitlab-com-yawning-edwards25519-extra
