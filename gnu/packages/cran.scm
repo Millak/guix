@@ -27491,14 +27491,14 @@ long-term reliability under stochastic load profiles.")
 (define-public r-rglpk
   (package
     (name "r-rglpk")
-    (version "0.6-5")
+    (version "0.6-5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rglpk" version))
        (sha256
         (base32
-         "18bwnpb8645vf233andr411shzp1sm3i7bn848sgxswgb80grvxa"))))
+         "1jdnkjzwbqmyg7fsay4rhscchg69gyhk9f73mlbfzpz9hz2bha75"))))
     (properties `((upstream-name . "Rglpk")))
     (build-system r-build-system)
     (propagated-inputs
