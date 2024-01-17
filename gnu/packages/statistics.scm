@@ -1409,13 +1409,13 @@ evaluation (NSE) in R.")
 (define-public r-dbi
   (package
     (name "r-dbi")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "DBI" version))
               (sha256
                (base32
-                "1g4c2qfyjwbjwbsczhk83xmx74764nn53gnqzb6xxrwqjbxj4dpn"))))
+                "0w7dpp1zg8w0mback1mk0a0vp51hf4njmrxz1i3j1xq5b1jfyiz4"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
