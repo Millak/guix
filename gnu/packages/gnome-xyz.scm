@@ -952,26 +952,33 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
     (license license:gpl2+)))
 
 (define-public gnome-shell-extension-noannoyance
-  (let ((revision "1")
-        (commit "b759d10fd2799bc084007fdd927b62637c3dbd2c"))
+  ;; There are different forks of the NoAnnoyance extension. This is the one
+  ;; named “NoAnnoyance (fork)” at
+  ;; https://extensions.gnome.org/extension/6109/noannoyance-fork/ because it
+  ;; supports newer GNOME Shell versions than the previously used “NoAnnoyance
+  ;; v2”.
+  (let ((commit "5e9e6a1878d2a1d961f5d59505f15339c5b7e17e")
+        ;; “NoAnnoyance v2” version 17 correlates with
+        ;; c6804a47063659f9f48d13a0942b78ce98aac72b, from which we count
+        ;; commits.
+        (revision "6"))
     (package
       (name "gnome-shell-extension-noannoyance")
-      ;; XXX: There is no version noted anywhere in the source.  Thus, infer it
-      ;;      from <https://extensions.gnome.org/extension/2182/noannoyance/>.
-      (version (git-version "16" revision commit))
+      (version (git-version "17" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/bdaase/noannoyance")
+                      (url "https://github.com/jirkavrba/noannoyance")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0hh7fdqvx54h9j41ia2jl0nq1d5i66k7blw41ya6hkh7201r4anp"))
+                  "0br9zrwvn499kh3db84hhw1kl02jpchwb5ldfp892p15vwih8yrf"))
                 (file-name (git-file-name name version))))
       (build-system copy-build-system)
       (arguments
-       '(#:install-plan
-         '(("." "share/gnome-shell/extensions/noannoyance@daase.net"))))
+       (list
+        #:install-plan
+        #~'(("." "share/gnome-shell/extensions/noannoyance@vrba.dev"))))
       (synopsis "Remove 'Window is ready' annotation")
       (description "One of the many extensions that remove this message.
 It uses ES6 syntax and claims to be more actively maintained than others.")
