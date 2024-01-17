@@ -898,31 +898,6 @@ prevent common NGINX misconfigurations.  It provides the @command{gixy}
 command.")
       (license license:mpl2.0))))
 
-(define-public go-github.com-smartystreets-goconvey
-  (package
-    (name "go-github.com-smartystreets-goconvey")
-    (version "1.6.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/smartystreets/goconvey")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1ph18rkl3ns3fgin5i4j54w5a69grrmf3apcsmnpdn1wlrbs3dxh"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/smartystreets/goconvey"))
-    (propagated-inputs
-     (list go-github.com-jtolds-gls go-github.com-smartystreets-assertions))
-    (synopsis "Go testing tool with both a web and terminal user interface")
-    (description
-     "GoConvey is a testing tool for Go. It integrates with go test, can show
-test coverage and has a web user interface that will refresh automatically.")
-    (home-page "https://github.com/smartystreets/goconvey")
-    (license license:expat)))
-
 (define-public googletest
   (package
     (name "googletest")
