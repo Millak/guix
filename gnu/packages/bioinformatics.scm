@@ -2429,6 +2429,7 @@ counts.")
         (base32
          "1s5373g5jjbshh3q39zy7dlxr7nda6ksxq9d1gw46h82c4fsmfbn"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
     (propagated-inputs
      (list python-future
            python-h5py
