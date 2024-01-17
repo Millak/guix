@@ -1220,38 +1220,6 @@ GNOME Shell, including the top panel, dash and overview.")
 directly inside GNOME Shell.  It can manage stations and play streams.")
     (license license:gpl3+)))
 
-(define-public gnome-shell-extension-sound-output-device-chooser
-  (package
-    (name "gnome-shell-extension-sound-output-device-chooser")
-    (version "43")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kgshank/gse-sound-output-device-chooser")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1qk6ypyqbv8zwwlky6cgk9hgp1zh32jmzw4wza200g4v94ifkwm9"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; no check target
-      #:make-flags #~(list (string-append "INSTALL_DIR="
-                                          #$output
-                                          "/share/gnome-shell/extensions"))
-      #:phases
-      #~(modify-phases %standard-phases (delete 'configure))))
-    (native-inputs (list gettext-minimal `(,glib "bin")))
-    (inputs (list python))
-    (home-page
-     "https://extensions.gnome.org/extension/906/sound-output-device-chooser")
-    (synopsis "Sound output chooser for GNOME Shell")
-    (description "This extension shows a list of sound output and input devices
-in the status menu below the volume slider.  Various active ports like HDMI,
-Speakers etc. of the same device are also displayed for selection.")
-    (license license:gpl3+)))
 
 (define-public gnome-shell-extension-vitals
   (package
