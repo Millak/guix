@@ -120,16 +120,14 @@ primitives.")
        (sha256
         (base32 "0mkvy7scyq07rkqhabfmkd8imcm4h9y7zj9palj04znpihpixa5m"))))
     (build-system go-build-system)
-    (native-inputs
-     (list gnupg
-           go-github-com-dvsekhvalnov-jose2go
+    (propagated-inputs
+     (list go-github-com-dvsekhvalnov-jose2go
            go-github-com-godbus-dbus
            go-github-com-gsterjov-go-libsecret
            go-github-com-mitchellh-go-homedir
            go-github-com-mtibben-percent
            go-golang-org-x-sys
-           go-golang-org-x-term
-           password-store))
+           go-golang-org-x-term))
     (arguments
      '(#:import-path "github.com/99designs/keyring"
        #:tests? #f))                              ;XXX: tests require Vagrant
