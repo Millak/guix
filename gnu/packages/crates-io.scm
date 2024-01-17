@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
@@ -40159,14 +40159,14 @@ unstable -Z self-profile flag.")
 (define-public rust-memchr-2
   (package
     (name "rust-memchr")
-    (version "2.6.4")
+    (version "2.7.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "memchr" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0rq1ka8790ns41j147npvxcqcl2anxyngsdimy85ag2api0fwrgn"))))
+         (base32 "0jf1kicqa4vs9lyzj4v4y1p90q0dh87hvhsdd5xvhnp527sw8gaj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
