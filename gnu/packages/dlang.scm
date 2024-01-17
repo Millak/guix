@@ -136,8 +136,7 @@ to a minimal test case.")
                     (string-append "my $gdc_dir = \""
                                    (dirname (search-input-file inputs "/bin/gdc"))
                                    "\";\n"))))))))
-      (inputs
-       (list gdc-11 perl))
+      (inputs (list gdc perl))
       (home-page "https://github.com/D-Programming-GDC/gdmd")
       (synopsis "DMD-like wrapper for GDC")
       (description "This package provides a DMD-like wrapper for the
