@@ -1109,48 +1109,6 @@ shell, including panels, corners, workspaces.")
   (deprecated-package "gnome-shell-extension-vertical-overview"
                       gnome-shell-extension-v-shell))
 
-(define-public gnome-shell-extension-jiggle
-  (package
-    (name "gnome-shell-extension-jiggle")
-    (version "8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jeffchannell/jiggle/")
-             (commit version)))
-       (sha256
-        (base32
-         "1wbdx2bp22bdwj51ckgivwglkmckr7z8kfwvc8nv4y376hjz5jxz"))
-       (file-name (git-file-name name version))
-       (snippet
-        '(begin (delete-file "schemas/gschemas.compiled")))))
-    (build-system copy-build-system)
-    (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "jiggle@jeffchannell.com")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version
-           (lambda _
-             (substitute* "metadata.json"
-               (("\"40.0\"") "\"40\", \"41\""))))
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
-    (native-inputs
-     (list `(,glib "bin")))  ; for glib-compile-resources
-    (home-page "https://github.com/jeffchannell/jiggle")
-    (synopsis "Mouse cursor enlargement for small and fast movements")
-    (description "Jiggle is a Gnome Shell extension that highlights the cursor
-position when the mouse is moved rapidly.")
-    (license license:gpl2)))
-
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
