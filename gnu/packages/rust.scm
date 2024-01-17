@@ -178,11 +178,12 @@
        (patch-flags '("-p0"))))         ;default is -p1
     (outputs '("out" "cargo"))
     (properties '((hidden? . #t)
-                  (timeout . 72000)           ;20 hours
+                  (timeout . 129600)          ;36 hours
                   (max-silent-time . 18000))) ;5 hours (for armel)
     (build-system gnu-build-system)
     (inputs
-     `(,@(if (target-ppc64le?)
+     `(,@(if (or (target-ppc64le?)
+                 (target-riscv64?))
              `(("clang" ,clang-13))
              `())
        ("llvm" ,llvm-13)
@@ -288,7 +289,8 @@
                (setenv "CARGO_HOME" cargo-home))))
          (replace 'configure
            (lambda _
-             ,@(if (target-ppc64le?)
+             ,@(if (or (target-ppc64le?)
+                       (target-riscv64?))
                    `((setenv "CC" "clang")
                      (setenv "CXX" "clang++"))
                    `((setenv "CC" "gcc")
@@ -332,7 +334,8 @@
                ;; We can to continue the build with gcc after building rustc.
                ;; librustc_driver.so undefined reference to
                ;; `llvm::cfg::Update<llvm::BasicBlock*>::dump() const'
-               ,@(if (target-ppc64le?)
+               ,@(if (or (target-ppc64le?)
+                         (target-riscv64?))
                      `((setenv "CC" "gcc")
                        (setenv "CXX" "g++"))
                      `())
