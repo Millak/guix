@@ -39908,14 +39908,14 @@ functions-as-a-service, containers, batch processing, and more.")
 (define-public r-paws
   (package
     (name "r-paws")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws" version))
        (sha256
         (base32
-         "1l9pjmfnhqgzxghxz22fbqc43x9am6d21f982p2sykxv271yclhf"))))
+         "1dwk1fnsrykvgz4l3hiapcqvvajwr3kmwxl3gza07nh573j8439h"))))
     (properties `((upstream-name . "paws")))
     (build-system r-build-system)
     (propagated-inputs
