@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
@@ -520,6 +521,37 @@ Architecture Processors\" by J. Guilford et al.")
     (description "Go standard library TLS 1.3 implementation, modified for
 QUIC.  For Go 1.20.")
     (license license:expat)))
+
+(define-public go-github-com-operatorfoundation-ed25519
+  (let ((commit "b22b4bd3ddef042eec45f3ee135cd40281fde2b4")
+        (revision "0"))
+    (package
+      (name "go-github-com-operatorfoundation-ed25519")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/OperatorFoundation/ed25519")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xrzqrjlghkgd1cy5rj4khryn4f59vas2vzrxc6d8jpj5ijf3xkv"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "github.com/OperatorFoundation/ed25519"
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'remove-test-data
+             (lambda* (#:key import-path #:allow-other-keys)
+               (delete-file-recursively
+                (string-append "src/" import-path "/testdata"))
+               #t)))))
+      (home-page "https://github.com/OperatorFoundation/ed25519")
+      (synopsis "Ed25519 for go")
+      (description "Package ed25519 implements the Ed25519 signature
+algorithm.")
+      (license license:bsd-3))))
 
 (define-public go-github-com-protonmail-go-crypto
   (package
