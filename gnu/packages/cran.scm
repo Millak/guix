@@ -526,13 +526,13 @@ correlations, distance correlations and more.")
 (define-public r-cplm
   (package
     (name "r-cplm")
-    (version "0.7-11")
+    (version "0.7-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cplm" version))
        (sha256
-        (base32 "0pcq5ska1v6kvp8ipw9clczk4w0p10lbxw2xnkhps0wqdrspsqwm"))))
+        (base32 "1m0b0jksl1y90q4sdhjspby4hafxxdgra8sbicd5rsrwq4hzwyxc"))))
     (properties `((upstream-name . "cplm")))
     (build-system r-build-system)
     (arguments
