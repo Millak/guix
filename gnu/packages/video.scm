@@ -2907,7 +2907,6 @@ To load this plugin, specify the following option when starting mpv:
   (package
     (name "libvpx")
     (version "1.12.0")
-    (replacement libvpx/fixed)
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2917,7 +2916,8 @@ To load this plugin, specify the following option when starting mpv:
               (sha256
                (base32
                 "1x12f2bd4jqd532rnixmwvcx8d29yxiacpcxqqh86qczc49la8gm"))
-              (patches (search-patches "libvpx-CVE-2016-2818.patch"))))
+              (patches (search-patches "libvpx-CVE-2016-2818.patch"
+                                       "libvpx-CVE-2023-5217.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--enable-shared"
@@ -2945,16 +2945,6 @@ To load this plugin, specify the following option when starting mpv:
     (description "libvpx is a codec for the VP8/VP9 video compression format.")
     (license license:bsd-3)
     (home-page "https://www.webmproject.org/")))
-
-(define libvpx/fixed
-  (package
-    (inherit libvpx)
-    (source
-     (origin
-       (inherit (package-source libvpx))
-       (patches (search-patches "libvpx-CVE-2016-2818.patch"
-                                "libvpx-CVE-2023-5217.patch"
-                                "libvpx-CVE-2023-44488.patch"))))))
 
 (define-public orfondl
   (package
