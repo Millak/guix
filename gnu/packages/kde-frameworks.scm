@@ -563,7 +563,7 @@ Internet).")
 (define-public kcolorpicker
   (package
     (name "kcolorpicker")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -573,7 +573,7 @@ Internet).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1aw41mj0hxin2h3cldiiv7ivq5qv97l0ww42yr7j8hmkzj7qq6ba"))))
+         "1zg078mkdapsd6vq7qy2vxbfzn6i382ss1a1w0xzvpy148ifaj42"))))
     (build-system qt-build-system)
     (propagated-inputs (list qtbase-5))
     (arguments
