@@ -1300,7 +1300,7 @@ messages.")
 (define-public networkmanager-qt
   (package
     (name "networkmanager-qt")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1309,7 +1309,7 @@ messages.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y9h1n4hccdzk5rp2bq7dyq617yg5myq7dcwnpnp1aik40647vjf"))))
+                "10anjsnrzawrfjlznjvvl2sbxrajl2ddnq2kgl314b5dk7z3yk4n"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules dbus pkg-config))
