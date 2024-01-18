@@ -2728,7 +2728,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2737,7 +2737,7 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1v5bpj90s5pwdvdkzcfpfgsgym7pxb3r22m4r7w9piq6n9s4c122"))
+                "0nwmxbfhvfw69q07vxvflri7rkdczyc89xv4ll3nrzrhgf15kb2z"))
               (patches (search-patches "kio-search-smbd-on-PATH.patch"))))
     (build-system cmake-build-system)
     (propagated-inputs
