@@ -1102,6 +1102,12 @@ as the 'native-search-paths' field."
                "gfortran" '("fortran")
                %generic-search-paths)))
 
+(define-public gfortran-9
+  (hidden-package
+   (custom-gcc gcc-9
+               "gfortran" '("fortran")
+               %generic-search-paths)))
+
 (define-public gfortran-7
   (hidden-package
    (custom-gcc gcc-7
