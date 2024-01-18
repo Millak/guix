@@ -1847,7 +1847,7 @@ by applications to write metadata.")
 (define-public kimageannotator
   (package
     (name "kimageannotator")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1857,7 +1857,7 @@ by applications to write metadata.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1gm85d1cnhf51ssj0gs2253fifl48r05d3q5s93jwk3jkq01inll"))))
+         "1ac0cxbq88zzvkgs5d39xpzk0h7xhl57yswgd760x77py0rl5bqf"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~'("-DBUILD_TESTS=ON")
