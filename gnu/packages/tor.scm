@@ -13,7 +13,7 @@
 ;;; Copyright © 2021-2023 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
-;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2023, 2024 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -609,11 +609,11 @@ Browser.")
                   (close port))))
             (add-after 'install 'deploy-assets
               (lambda* (#:key inputs #:allow-other-keys)
-                (let ((assets #$(this-package-input "torbrowser-assets"))
-                      (lib (in-vicinity #$output "lib/torbrowser"))
+                (let ((lib (in-vicinity #$output "lib/torbrowser"))
                       (tor #$(this-package-input "tor-client")))
                   ;; TorBrowser/Data/Tor/torrc-defaults
-                  (copy-recursively (in-vicinity assets "TorBrowser")
+                  (copy-recursively (in-vicinity
+                                     #$torbrowser-assets "TorBrowser")
                                     (in-vicinity lib "TorBrowser"))
                   (substitute*
                       (in-vicinity lib "TorBrowser/Data/Tor/torrc-defaults")
@@ -628,13 +628,14 @@ Browser.")
                   (copy-file (in-vicinity tor "share/tor/geoip6")
                              (in-vicinity lib "TorBrowser/Data/Tor/geoip6"))
                   ;; Fonts
-                  (copy-recursively (in-vicinity assets "fontconfig")
+                  (copy-recursively (in-vicinity
+                                     #$torbrowser-assets "fontconfig")
                                     (in-vicinity lib "fontconfig"))
                   (substitute* (in-vicinity lib "fontconfig/fonts.conf")
                     (("<dir>fonts</dir>")
                      (format #f "<dir>~a</dir>" (in-vicinity lib "fonts"))))
                   (delete-file-recursively (in-vicinity lib "fonts"))
-                  (copy-recursively (in-vicinity assets "fonts")
+                  (copy-recursively (in-vicinity #$torbrowser-assets "fonts")
                                     (in-vicinity lib "fonts")))))
             (replace 'build-sandbox-whitelist
               (lambda* (#:key inputs #:allow-other-keys)
@@ -768,10 +769,8 @@ Browser.")
                  '("16" "22" "24" "32" "48" "64" "128" "256"))))))))
     (inputs
      (modify-inputs (package-inputs icecat-minimal)
-       (append bash-minimal
-               go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
-               tor-client
-               torbrowser-assets)))
+       (append go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+               tor-client)))
     (propagated-inputs
      (list noscript/icecat))
     (home-page "https://www.torproject.org")
