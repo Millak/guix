@@ -2392,7 +2392,7 @@ their settings.")
 (define-public kdeclarative
   (package
     (name "kdeclarative")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2401,7 +2401,7 @@ their settings.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1kdg18a2xpgl6xkrk68nnbj57nwn8rv5yd5q5bfbfc8chibk9y4z"))))
+                "0w98pj8acxb4m9645963rzq5vja1fbih5czz24mf9zdqlg2dkz8g"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kconfig kpackage qtdeclarative-5))
