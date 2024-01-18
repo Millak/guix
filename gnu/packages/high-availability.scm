@@ -197,7 +197,7 @@ applications.")
 (define-public nsq
   (package
     (name "nsq")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -206,7 +206,7 @@ applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ajqjwfn06zsmz21z9mkl4cblarypaf20228pqcd1293zl6y3ry8"))))
+        (base32 "1227ricbng8r5svnpr6hkmwjafa74jdp3ivijrk55qhw43rjk05a"))))
     (build-system go-build-system)
     (arguments
      (list
