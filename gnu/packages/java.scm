@@ -580,8 +580,8 @@
 
                  ;; This is necessary because the certificate directory contains
                  ;; files with non-ASCII characters in their names.
-                 (setlocale LC_ALL "en_US.utf8")
-                 (setenv "LC_ALL" "en_US.utf8")
+                 (setlocale LC_ALL "C.UTF-8")
+                 (setenv "LC_ALL" "C.UTF-8")
 
                  (for-each import-cert (find-files certs-dir "\\.pem$"))
                  (mkdir-p (string-append (assoc-ref outputs "out")
