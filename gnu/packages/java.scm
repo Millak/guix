@@ -1402,7 +1402,7 @@ new Date();"))
                                            ((name . dir)
                                             dir))
                                          outputs)))))
-          (add-after 'remove-diz-file 'strip-archive-timestamps
+          (add-after 'remove-extraneous-files 'strip-archive-timestamps
             (lambda _
               (use-modules (ice-9 binary-ports)
                            (rnrs bytevectors))
