@@ -45637,6 +45637,21 @@ grammars and BER/DER encodings, for example.")
     (arguments
      `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.3))))))
 
+(define-public rust-oid-registry-0.3
+  (package
+    (inherit rust-oid-registry-0.6)
+    (name "rust-oid-registry")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oid-registry" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jxr4nqpcsgirl53yndhfhch1gzddkjh27z0p7rbsr2xngcpyj9n"))))
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.3))))))
+
 (define-public rust-oid-registry-0.2
   (package
     (inherit rust-oid-registry-0.4)
