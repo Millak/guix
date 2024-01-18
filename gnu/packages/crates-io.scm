@@ -67262,21 +67262,19 @@ simpler than @code{parking_lot}.")
 (define-public rust-siphasher-0.3
   (package
     (name "rust-siphasher")
-    (version "0.3.2")
+    (version "0.3.11")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "siphasher" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "08xvk3yi4vawppm1f81s4zrkksf95psz8gczh36y808candgi24f"))))
+         (base32 "03axamhmwsrmh0psdw3gf7c0zc4fyl5yjxfifz9qfka6yhkqid9q"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))))
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://docs.rs/siphasher")
     (synopsis "SipHash-2-4, SipHash-1-3 and 128-bit variants in pure Rust")
     (description "This package provides SipHash-2-4, SipHash-1-3 and 128-bit
