@@ -846,7 +846,7 @@ other special events for a geographical region.")
 (define-public ki18n
   (package
     (name "ki18n")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -855,7 +855,7 @@ other special events for a geographical region.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kpza0n900j8lf27d60ikl963616vcqnns8va6cg8y2lf2pmxvsr"))))
+                "1yg03awcx5ay6lgbgwv91i0ankrm94z9m0wky4v03gnwnvw8pa0v"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list gettext-minimal python))
