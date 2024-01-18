@@ -1529,6 +1529,35 @@ allows transformation of geographic coordinates from one projection and/or
 datum to another.")
     (license license:gpl2)))
 
+(define-public r-rocit
+  (package
+    (name "r-rocit")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROCit" version))
+       (sha256
+        (base32 "0sd6ckh7k8aqwhzzp3qff6g7d03klbr0mbp403pib3823c8pqa55"))))
+    (properties `((upstream-name . "ROCit")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=ROCit")
+    (synopsis "Performance Assessment of Binary Classifier with Visualization")
+    (description
+     "Sensitivity (or recall or true positive rate), false positive rate,
+specificity, precision (or positive predictive value), negative predictive
+value, misclassification rate, accuracy, F-score---these are popular metrics
+for assessing performance of binary classifiers for certain thresholds.  These
+metrics are calculated at certain threshold values.  @dfn{Receiver operating
+characteristic} (ROC) curve is a common tool for assessing overall diagnostic
+ability of the binary classifier.  Unlike depending on a certain threshold,
+area under ROC curve (also known as AUC), is a summary statistic about how
+well a binary classifier performs overall for the classification task.  The
+ROCit package provides flexibility to easily evaluate threshold-bound
+metrics.")
+    (license license:gpl3)))
+
 (define-public r-rorcid
   (package
     (name "r-rorcid")
