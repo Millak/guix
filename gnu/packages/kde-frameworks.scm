@@ -374,7 +374,7 @@ Bluetooth stack.  It is used by the KDE Bluetooth stack, BlueDevil.")
 (define-public breeze-icons
   (package
     (name "breeze-icons")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/frameworks/"
@@ -382,7 +382,7 @@ Bluetooth stack.  It is used by the KDE Bluetooth stack, BlueDevil.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "175g6352lv8gq6sn4pkl91b51njdliryb82x2wdjbvzlc3zhfrcy"))))
+                "0z5cpv10jyjdwjfkm7nj6hyp4vj29apm476hvbpb4gan27jyb91y"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules
