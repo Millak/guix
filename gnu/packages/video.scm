@@ -1564,13 +1564,10 @@ libebml is a C++ library to read and write EBML files.")
                                   "/share/vulkan/registry/vk.xml"))))
     (native-inputs
      (list glad python python-mako pkg-config))
-    (inputs
-     (list lcms
-           libepoxy
-           mesa
-           shaderc
-           vulkan-headers
-           vulkan-loader))
+    (inputs (list libepoxy mesa vulkan-headers))
+    ;; These are propagated as they are listed in 'Requires.private' of
+    ;; libplacebo.pc.
+    (propagated-inputs (list lcms shaderc vulkan-loader))
     (home-page "https://code.videolan.org/videolan/libplacebo")
     (synopsis "GPU-accelerated image/video processing library")
     (description "libplacebo is, in a nutshell, the core rendering algorithms
