@@ -4,7 +4,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -223,7 +223,7 @@ written in Go.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -231,7 +231,7 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0ss5k8xnzn9qk977dni5ja89yygcysdw7r3mdk67cac2dpa9hhqs"))
+        (base32 "0v8p4mjwsrqxzd6wdzafxnnfrv919x5p3r5342lbrjdv0k0yabhm"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -286,6 +286,7 @@ written in Go.")
      (list
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
+      #:go go-1.18
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
@@ -361,7 +362,7 @@ written in Go.")
                  (list this-package)
                  '())
              (list python-minimal-wrapper zsh)))
-    (home-page "https://ipfs.io")
+    (home-page "https://ipfs.tech")
     (synopsis "Go implementation of IPFS, a peer-to-peer hypermedia protocol")
     (description "IPFS is a global, versioned, peer-to-peer file system.  It
 combines good ideas from Git, BitTorrent, Kademlia, SFS, and the Web.  It is
