@@ -457,6 +457,7 @@ empty list when the FIELD cannot be found."
     ("numpy" "python-numpy")
     ("openssl-devel" "openssl")
     ("openssl@1.1" "openssl-1.1")
+    ("packaging" "python-packaging")
     ("pandas" "python-pandas")
     ("pandoc-citeproc" "pandoc")
     ("python3" "python-3")
