@@ -1289,11 +1289,20 @@ Some codes examples can be find at:
                                 ;; Do not install tests.
                                 "-DTESTS_INSTALL_PATH=/tmp"
                                 "-DCMAKE_VERBOSE_MAKEFILE=ON")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'do-not-install-tests
-                     (lambda _
-                       (substitute* "tests/CMakeLists.txt"
-                         (("/etc/dbus-1/system.d") "/tmp")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-install-tests
+            (lambda _
+              (substitute* "tests/CMakeLists.txt"
+                (("/etc/dbus-1/system.d") "/tmp"))))
+          (add-after 'unpack 'fix-elogind-requirement
+            (lambda _
+              ;; sdbus-c++.pc requires 'elogind', but it should
+              ;; require 'libelogind'. Fixed after 1.4.0 with
+              ;; fb9e4ae37152648a67814458d3ff673b1d3ca089
+              (substitute* "pkgconfig/sdbus-c++.pc.in"
+                (("@LIBSYSTEMD@")
+                 "libelogind")))))))
     (native-inputs (list googletest pkg-config))
     (inputs (list expat))
     (propagated-inputs (list elogind)) ;required by sdbus-c++.pc
