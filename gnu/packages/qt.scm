@@ -71,9 +71,11 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages dlang)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages enchant)
@@ -5172,23 +5174,28 @@ including @i{fix-its} for automatic refactoring.")
            vulkan-headers
            xvfb-run))
     (inputs
-     (list bash-minimal
-           coreutils-minimal
-           clang
-           clazy
-           elfutils
-           gdb
-           kcachegrind
-           libxkbcommon
-           llvm
-           qt5compat
-           qtdeclarative
-           qtshadertools
-           qtsvg
-           yaml-cpp
-           valgrind
-           vulkan-loader
-           `(,zstd "lib")))
+     (append
+      (list bash-minimal
+            coreutils-minimal
+            clang
+            clazy
+            d-demangler
+            elfutils
+            gdb
+            kcachegrind
+            libxkbcommon
+            llvm
+            qt5compat
+            qtdeclarative
+            qtshadertools
+            qtsvg
+            yaml-cpp
+            valgrind
+            vulkan-loader
+            `(,zstd "lib"))
+      (if (supported-package? rust-rustc-demangle-capi-0.1)
+          (list rust-rustc-demangle-capi-0.1)
+          '())))
     (home-page "https://www.qt.io/")
     (synopsis "Integrated development environment (IDE) for Qt")
     (description "Qt Creator is an IDE tailored to the needs of Qt developers.
