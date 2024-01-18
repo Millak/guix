@@ -1136,43 +1136,8 @@ shell, including panels, corners, workspaces.")
     (license license:gpl3)))
 
 (define-public gnome-shell-extension-vertical-overview
-  (package
-    (name "gnome-shell-extension-vertical-overview")
-    (version "10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/RensAlthuis/vertical-overview")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32
-         "1sqkbg93qqrq47wyfnh2flg7dpsmv5c2pmkx8kgqhnbl7j2kgi0l"))
-       (file-name (git-file-name name version))
-       (snippet
-        '(begin (delete-file "schemas/gschemas.compiled")))))
-    (build-system copy-build-system)
-    (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "vertical-overview@RensAlthuis.github.com")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
-    (native-inputs
-     (list `(,glib "bin")))  ; for glib-compile-resources
-    (home-page "https://github.com/RensAlthuis/vertical-overview")
-    (synopsis "Provides a vertical overview in Gnome 40 and upper")
-    (description "This Gnome extension replaces the new horizontally oriented
-Gnome overview with something that resembles the old vertically oriented
-style.")
-    (license license:gpl3)))
+  (deprecated-package "gnome-shell-extension-vertical-overview"
+                      gnome-shell-extension-v-shell))
 
 (define-public gnome-shell-extension-jiggle
   (package
