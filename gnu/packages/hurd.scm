@@ -301,7 +301,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 
 (define dde-sources
   ;; This is the current tip of the dde branch
-  (let ((commit "ce8810277fa3584eb36ecb23da58394153fabe6f"))
+  (let ((commit "066797b576ebf8364ad157f50bef2a655597deeb"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -309,7 +309,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
             (commit commit)))
       (sha256
        (base32
-        "0ygk7jm4jmhpvh0zzi5bk638242z7sbcab2i57fkb4y2mmdkjjbw"))
+        "19f2awlfnar5gyhi0w5zawla5brzck2s88iv0f20022pd1l5v9hl"))
       (file-name (git-file-name "dde" (string-take commit 7))))))
 
 (define %import-from-dde
