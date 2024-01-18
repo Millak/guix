@@ -65109,6 +65109,24 @@ data.  This crate provides a wrapper that works with any existing Serde
 programs in rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-json-core-0.4
+  (package
+    (inherit rust-serde-json-core-0.5)
+    (name "rust-serde-json-core")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-json-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10a7k6ly9ly4xkk30nqq2js7acrg7wjl73bpg43hzjib4zmaw540"))))
+    (arguments
+     `(#:cargo-inputs (("rust-heapless" ,rust-heapless-0.7)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1))))))
+
 (define-public rust-serde-path-to-error-0.1
   (package
     (name "rust-serde-path-to-error")
