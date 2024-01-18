@@ -2215,7 +2215,7 @@ maintaining an index of the contents of your files.")
 (define-public kactivities-stats
   (package
     (name "kactivities-stats")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2224,7 +2224,7 @@ maintaining an index of the contents of your files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03vpangw2zl2577vhcn0w1pp2hv3jgna79b18wv7i13s78v8k6ny"))))
+                "1zhrs2p3c831rwx7ww87i82k5i236vfywdxv7zhz93k3vffyqby7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
