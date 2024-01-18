@@ -531,7 +531,7 @@ and the older vCalendar.")
 (define-public kcodecs
   (package
     (name "kcodecs")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -540,7 +540,7 @@ and the older vCalendar.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "12vav9ncxcf0vpmfp7wps91ax7azrwaxhqdq8z52vcyl0rvgy341"))))
+                "080zvcqd8iq05p5x3qaf3rryx75lg2l2j1dr18sp50ir50zfwh2w"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules gperf qttools-5))
     (inputs (list qtbase-5))
