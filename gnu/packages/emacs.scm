@@ -329,7 +329,8 @@ languages.")
            ;; Most variants support tree-sitter, so let's include it here.
            (search-path-specification
             (variable "TREE_SITTER_GRAMMAR_PATH")
-            (files '("lib/tree-sitter")))))))
+            (files '("lib/tree-sitter")))))
+    (properties `((upstream-name . "emacs")))))
 
 (define-public emacs-no-x
   (package/inherit emacs-minimal
