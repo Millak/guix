@@ -3854,7 +3854,7 @@ QObjects, so you can script your applications.")
 (define-public kmediaplayer
   (package
     (name "kmediaplayer")
-    (version "5.108.0")
+    (version "5.114.0")
     (source
      (origin
        (method url-fetch)
@@ -3863,7 +3863,7 @@ QObjects, so you can script your applications.")
              (version-major+minor version) "/portingAids/"
              name "-" version ".tar.xz"))
        (sha256
-        (base32 "1vkx11736wq0idxrzmfg6s2lcrilgl7yh7a97la6c3qqj2aggi08"))))
+        (base32 "092yvzvrkvr8xxncw7h5ghfd2bggzxsqfj67c2vhymhfw4i0c54x"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools-5))
