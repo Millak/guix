@@ -1446,7 +1446,7 @@ feel.")
 (define-public solid
   (package
     (name "solid")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1455,7 +1455,7 @@ feel.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0m4i7csrz167nm6h4pcd0413x6jvnd39cx13k9ayga9my36ba2r8"))))
+                "1slxlj5jhp8g745l328932934633nl81sq3n8fd73h655hymsk4s"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
