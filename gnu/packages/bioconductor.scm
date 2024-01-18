@@ -55,6 +55,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
@@ -10848,6 +10849,49 @@ quality assessment report.  Data are represented as
 purposes.  The package also contains legacy support for early single-end,
 ungapped alignment formats.")
     (license license:artistic2.0)))
+
+(define-public r-sictools
+  (package
+    (name "r-sictools")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "SICtools" version))
+       (sha256
+        (base32 "0bcajjvkaxmr8bdij8xln7a3nmxbm7jkjvg2v6p8kd0xr3q9a70q"))))
+    (properties `((upstream-name . "SICtools")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-curses
+           (lambda _
+             (substitute* "src/Makefile"
+               (("^LIBCURSES.*")
+                "LIBCURSES=-lncurses\n")))))))
+    (propagated-inputs (list r-biostrings
+                             r-doparallel
+                             r-genomicranges
+                             r-iranges
+                             r-matrixstats
+                             r-plyr
+                             r-rsamtools
+                             r-stringr))
+    (inputs (list ncurses))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/SICtools")
+    (synopsis
+     "Find SNV/Indel differences between two bam files with near relationship")
+    (description
+     "This package is to find SNV/Indel differences between two @file{bam}
+files with near relationship in a way of pairwise comparison through each base
+position across the genome region of interest.  The difference is inferred by
+Fisher test and euclidean distance, the input of which is the base
+count (A,T,G,C) in a given position and read counts for indels that span no
+less than 2bp on both sides of indel region.")
+    (license license:gpl2+)))
 
 (define-public r-simplifyenrichment
   (package
