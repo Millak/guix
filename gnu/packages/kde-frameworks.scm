@@ -1207,7 +1207,7 @@ configuration pages, message boxes, and password requests.")
 (define-public kwindowsystem
   (package
     (name "kwindowsystem")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1216,7 +1216,7 @@ configuration pages, message boxes, and password requests.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0112cgy09qw069v1lzaz6rp84p128mq3xqp3xink398xhp3nrkqd"))))
+                "03xbsf1pmswd2kpn3pdszp4vndclsh7j02fp22npxaxllmfr4va9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules
