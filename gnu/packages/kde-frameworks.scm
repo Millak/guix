@@ -3536,7 +3536,7 @@ need.")
 (define-public ktextaddons
   (package
     (name "ktextaddons")
-    (version "1.4.1")
+    (version "1.5.3")
     (source
      (origin
        (method url-fetch)
@@ -3544,7 +3544,7 @@ need.")
              "mirror://kde/stable/" name "/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0ds6506il3vmqhpzd1dqcpm19yd80ijibfncr9mlhq4kvj7vnjl9"))))
+         "1p0p17dnh96zmzfb91wri7bryr90pvwb07r95n6xdad8py5dnlla"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases
@@ -3558,10 +3558,19 @@ need.")
                    (invoke "ctest" "-E"
                            "(grammalecteresultwidgettest|grammalecteconfigwidgettest||grammalecteresultjobtest|languagetoolconfigwidgettest|translator-translatorwidgettest|translator-translatorengineloadertest)"))))))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules
+           qttools-5))
     (inputs
-     (list karchive kconfigwidgets kcoreaddons ki18n kxmlgui
-           qtbase-5 qtkeychain))
+     (list karchive
+           kconfigwidgets
+           kcoreaddons
+           ki18n
+           kio
+           ksyntaxhighlighting
+           kxmlgui
+           qtbase-5
+           qtkeychain
+           sonnet))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Various text handling addons")
     (description "This library provides text addons (autocorrection, text to
