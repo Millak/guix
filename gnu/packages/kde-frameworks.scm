@@ -188,7 +188,7 @@ common build settings used in software produced by the KDE community.")
 (define-public kquickcharts
   (package
     (name "kquickcharts")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/frameworks/"
@@ -196,7 +196,7 @@ common build settings used in software produced by the KDE community.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1wdmgala480qjipzpq9v85vy1i3n0qgria0rgn26ibhm2wmvmrpw"))))
+                "1f91x92qdzxp31z7ixx9jn41hq9f3w9hjia94pab9vsnaz8prbd1"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
