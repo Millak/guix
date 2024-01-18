@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -136,7 +136,9 @@
         (database         (cuirass-configuration-database config))
         (port             (cuirass-configuration-port config))
         (host             (cuirass-configuration-host config))
-        (specs            (cuirass-configuration-specifications config))
+        (config-file      (scheme-file
+                           "cuirass-specs.scm"
+                           (cuirass-configuration-specifications config)))
         (use-substitutes? (cuirass-configuration-use-substitutes? config))
         (one-shot?        (cuirass-configuration-one-shot? config))
         (fallback?        (cuirass-configuration-fallback? config))
@@ -149,8 +151,7 @@
                   (list (string-append #$cuirass "/bin/cuirass")
                         "register"
                         "--cache-directory" #$cache-directory
-                        "--specifications"
-                        #$(scheme-file "cuirass-specs.scm" specs)
+                        "--specifications" #$config-file
                         "--database" #$database
                         "--interval" #$(number->string interval)
                         #$@(if parameters
@@ -172,7 +173,8 @@
                   #:user #$user
                   #:group #$group
                   #:log-file #$main-log-file))
-        (stop #~(make-kill-destructor)))
+        (stop #~(make-kill-destructor))
+        (actions (list (shepherd-configuration-action config-file))))
       ,(shepherd-service
         (documentation "Run Cuirass web interface.")
         (provision '(cuirass-web))
