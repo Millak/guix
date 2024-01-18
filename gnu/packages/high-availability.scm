@@ -280,7 +280,7 @@ instrumentation
 (define-public corosync
   (package
     (name "corosync")
-    (version "3.1.6")
+    (version "3.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -289,7 +289,7 @@ instrumentation
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03g3qnm5acmk7jry6kspvkssbiv8k39749bic2f0cj3ckkwy2li4"))))
+                "02imkif6lzhr8mwbwphdp4m6w987pqnrhai8zx06vpygiasx6cyp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--disable-static")
