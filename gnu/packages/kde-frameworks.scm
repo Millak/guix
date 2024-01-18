@@ -3932,7 +3932,7 @@ offers abstract functionality to deal with scripts.")
 (define-public kdav
   (package
     (name "kdav")
-    (version "5.108.0")
+    (version "5.114.0")
     (source
      (origin
        (method url-fetch)
@@ -3940,7 +3940,7 @@ offers abstract functionality to deal with scripts.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0knpyzdfa0m1pyakq32pw2hwbaq2dkqj87p3n6p86wlf2rn66vir"))))
+        (base32 "11959fxz24snk2l31kw8w96wah0s2fjimimrxh6xhppiy5qp2fp2"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
