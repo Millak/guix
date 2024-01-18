@@ -417,41 +417,20 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "2.9.0")
+   (version "3.0.1")
    (source
     (origin
       (method url-fetch)
-      (uri (string-append "http://flintlib.org/flint-" version ".tar.gz"))
+      (uri (string-append "https://flintlib.org/flint-" version ".tar.gz"))
       (sha256
-       (base32 "0sp79ixaawjzna79afrlwlx9hg55jxil03f1wq435j9k23ar1h1g"))))
+       (base32 "1d4lawfvmjd4n7rp4z9xkwwjjbrjhkmxnxw1xf0ki1isa001lcbv"))))
    (build-system gnu-build-system)
    (inputs
     (list ntl))
    (propagated-inputs
     (list gmp mpfr)) ; header files from both are included by flint/arith.h
    (arguments
-    `(#:parallel-tests? #f              ; seems to be necessary on arm
-      #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'newer-c++
-           (lambda _
-             (substitute* "configure"
-               (("-ansi") ""))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gmp (assoc-ref inputs "gmp"))
-                   (mpfr (assoc-ref inputs "mpfr"))
-                   (ntl (assoc-ref inputs "ntl")))
-               ;; Do not pass "--enable-fast-install", which makes the
-               ;; homebrew configure process fail.
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       (string-append "--with-gmp=" gmp)
-                       (string-append "--with-mpfr=" mpfr)
-                       (string-append "--with-ntl=" ntl))
-               #t))))))
+    `(#:parallel-tests? #f))            ; seems to be necessary on arm
    (synopsis "Fast library for number theory")
    (description
     "FLINT is a C library for number theory.  It supports arithmetic
