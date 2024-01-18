@@ -1035,8 +1035,8 @@ new Date();"))
 
                  ;; This is necessary because the certificate directory contains
                  ;; files with non-ASCII characters in their names.
-                 (setlocale LC_ALL "en_US.utf8")
-                 (setenv "LC_ALL" "en_US.utf8")
+                 (setlocale LC_ALL "C.UTF-8")
+                 (setenv "LC_ALL" "C.UTF-8")
 
                  (copy-file (string-append (assoc-ref outputs "out")
                                            "/lib/security/cacerts")
