@@ -3405,7 +3405,7 @@ setUrl, setUserAgent and call.")
 (define-public plasma-framework
   (package
     (name "plasma-framework")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3414,7 +3414,7 @@ setUrl, setUserAgent and call.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "131zxamyim4bpk006nmfw2zmcay5qnmm7lmy8rvcxn96vflrs6bb"))))
+                "058hl76q35bw3rzmv348azk1lmhkpgmfrxr3jd9s1hphijr8sgcx"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kpackage kservice))
