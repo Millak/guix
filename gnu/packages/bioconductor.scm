@@ -3250,19 +3250,18 @@ these biases and construct statistically consistent estimators.")
 (define-public r-animalcules
   (package
     (name "r-animalcules")
-    (version "1.16.0")
+    (version "1.18.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "animalcules" version))
               (sha256
                (base32
-                "1z46lpd2zi3b88i27qm48wy4acb2xsjh63zgxhfx2y4bgvr29ni7"))))
+                "1q0ca3pagqzj12kah79jg4py3ibz7qsdl975r2mxhphqwj76gnh8"))))
     (properties `((upstream-name . "animalcules")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
            r-assertthat
-           r-biomformat
            r-caret
            r-covr
            r-deseq2
@@ -3270,7 +3269,6 @@ these biases and construct statistically consistent estimators.")
            r-dt
            r-forcats
            r-ggplot2
-           r-glmnet
            r-gunifrac
            r-lattice
            r-limma
@@ -3278,9 +3276,9 @@ these biases and construct statistically consistent estimators.")
            r-matrix
            r-multiassayexperiment
            r-plotly
-           r-plotroc
            r-rentrez
            r-reshape2
+           r-rocit
            r-s4vectors
            r-scales
            r-shiny
