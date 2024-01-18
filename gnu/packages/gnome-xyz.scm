@@ -1099,6 +1099,42 @@ store an history of everything you do, so that you can get back to older
 copies you now want to paste.")
     (license license:bsd-2)))
 
+(define-public gnome-shell-extension-v-shell
+  (package
+    (name "gnome-shell-extension-v-shell")
+    (version "37")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/G-dH/vertical-workspaces")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "1h9f3g1dswxkka0yyj51610w86mwl46ylch19b51gj5mmxlyvzlv"))
+       (file-name (git-file-name name version))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("." #$(string-append
+                  "share/gnome-shell/extensions/"
+                  "vertical-workspaces@G-dH.github.com")
+           #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                             "\\.xml$" "\\.compiled$" "\\.gresource$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build
+            (lambda _
+              (invoke "make" "all"))))))
+    (native-inputs
+     (list gettext-minimal `(,glib "bin")))
+    (home-page "https://github.com/G-dH/vertical-workspaces")
+    (synopsis "Shell configuration with horizontal or vertical workspaces")
+    (description "V-Shell (Vertical Workspaces) lets the user configure different parts of the
+shell, including panels, corners, workspaces.")
+    (license license:gpl3)))
+
 (define-public gnome-shell-extension-vertical-overview
   (package
     (name "gnome-shell-extension-vertical-overview")
