@@ -1512,7 +1512,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        ;; XXX: The crate at "crates.io" contains only the alacritty subproject
@@ -1524,7 +1524,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ddvpxr0v58p8xlsjbhpv67i0dg016a4n3vj52jmbf1fpjnasd76"))))
+        (base32 "1y5xc9ryn9r0adygq53vrbpb8lazkmcqw38q978pbf0i57nwczrn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -1550,7 +1550,6 @@ basic input/output.")
         ("rust-miow" ,rust-miow-0.6)
         ("rust-notify" ,rust-notify-6)
         ("rust-objc" ,rust-objc-0.2)
-        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-parking-lot" ,rust-parking-lot-0.12)
         ("rust-piper" ,rust-piper-0.2)
         ("rust-polling" ,rust-polling-3)
