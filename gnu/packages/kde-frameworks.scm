@@ -3145,7 +3145,7 @@ types or handled by application specific code.")
 (define-public ktexteditor
   (package
     (name "ktexteditor")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3154,7 +3154,7 @@ types or handled by application specific code.")
                     "ktexteditor-" version ".tar.xz"))
               (sha256
                (base32
-                "0raz9h9y7zfynvacg4grwj0sd4v6w2kwpjkirvjr14zmfjq92mif"))))
+                "06amzk6290imi2gj3v1k3f56zdlad7zbz4wwlf34v4iibj9mfgw8"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kparts
