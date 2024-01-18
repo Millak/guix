@@ -1742,15 +1742,15 @@ aggregated sum and more.")
   (package
     (name "python-plotnine")
     (version "0.10.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/has2k1/plotnine")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0lg53wcm00lj8zbb4q9yj4a0n0fqaqq7c7vj18bda0k56gg0fpwl"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/has2k1/plotnine")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lg53wcm00lj8zbb4q9yj4a0n0fqaqq7c7vj18bda0k56gg0fpwl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1758,74 +1758,73 @@ aggregated sum and more.")
       ;; XXX: Check for any new failing tests during next update cycle.
       ;; These all fail because the images are considered to be too different,
       ;; though they really do look fine.
-      '(list "-k" (string-append
-                   "not TestThemes"
-                   (string-join
-                    (list
-                     ;; Image tests
-                     "test_adjust_text"
-                     "test_annotation_logticks_coord_flip_discrete"
-                     "test_annotation_logticks_faceting"
-                     "test_arrow"
-                     "test_aslabeller_dict_0tag"
-                     "test_caption_simple"
-                     "test_continuous_x"
-                     "test_continuous_x_fullrange"
-                     "test_coord_trans_backtransforms"
-                     "test_coord_trans_se_false"
-                     "test_custom_shape"
-                     "test_datetime_scale_limits"
-                     "test_dir_v_ncol"
-                     "test_discrete_x"
-                     "test_discrete_x_fullrange"
-                     "test_facet_grid_drop_false"
-                     "test_facet_grid_expression"
-                     "test_facet_grid_space_ratios"
-                     "test_facet_wrap"
-                     "test_facet_wrap_expression"
-                     "test_facet_wrap_label_both"
-                     "test_label_context_wrap2vars"
-                     "test_labeller_cols_both_grid"
-                     "test_labeller_cols_both_wrap"
-                     "test_labeller_towords"
-                     "test_missing_data_discrete_scale"
-                     "test_ribbon_facetting"
-                     "test_stack_non_linear_scale"
-                     "test_uneven_num_of_lines"
+      '(list "-k"
+             (string-append "not TestThemes"
+                            (string-join (list
+                                          ;; Image tests
+                                          "test_adjust_text"
+                                          "test_annotation_logticks_coord_flip_discrete"
+                                          "test_annotation_logticks_faceting"
+                                          "test_arrow"
+                                          "test_aslabeller_dict_0tag"
+                                          "test_caption_simple"
+                                          "test_continuous_x"
+                                          "test_continuous_x_fullrange"
+                                          "test_coord_trans_backtransforms"
+                                          "test_coord_trans_se_false"
+                                          "test_custom_shape"
+                                          "test_datetime_scale_limits"
+                                          "test_dir_v_ncol"
+                                          "test_discrete_x"
+                                          "test_discrete_x_fullrange"
+                                          "test_facet_grid_drop_false"
+                                          "test_facet_grid_expression"
+                                          "test_facet_grid_space_ratios"
+                                          "test_facet_wrap"
+                                          "test_facet_wrap_expression"
+                                          "test_facet_wrap_label_both"
+                                          "test_label_context_wrap2vars"
+                                          "test_labeller_cols_both_grid"
+                                          "test_labeller_cols_both_wrap"
+                                          "test_labeller_towords"
+                                          "test_missing_data_discrete_scale"
+                                          "test_ribbon_facetting"
+                                          "test_stack_non_linear_scale"
+                                          "test_uneven_num_of_lines"
 
-                     ;; Missing optional modules
-                     "test_non_linear_smooth"
-                     "test_non_linear_smooth_no_ci")
-                    " and not " 'prefix)))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; The data files are referenced by the tests but they are not
-             ;; installed.
-             (copy-recursively "plotnine/data"
-                               (string-append (site-packages inputs outputs)
-                                              "/plotnine/data"))
-             ;; Matplotlib needs to be able to write its configuration file
-             ;; somewhere.
-             (setenv "MPLCONFIGDIR" "/tmp")
-             (setenv "TZ" "UTC")
-             (setenv "TZDIR"
-                     (search-input-directory inputs "share/zoneinfo")))))))
-    (propagated-inputs
-     (list python-adjusttext
-           python-matplotlib
-           python-mizani
-           python-numpy
-           python-patsy
-           python-scipy
-           python-statsmodels))
-    (native-inputs
-     (list python-geopandas
-           python-mock
-           python-pandas
-           python-pytest python-pytest-cov
-           tzdata-for-tests))
+                                          ;; Missing optional modules
+                                          "test_non_linear_smooth"
+                                          "test_non_linear_smooth_no_ci")
+                                         " and not "
+                                         'prefix)))
+      #:phases '(modify-phases %standard-phases
+                  (add-before 'check 'pre-check
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      ;; The data files are referenced by the tests but they are not
+                      ;; installed.
+                      (copy-recursively "plotnine/data"
+                                        (string-append (site-packages inputs
+                                                                      outputs)
+                                                       "/plotnine/data"))
+                      ;; Matplotlib needs to be able to write its configuration file
+                      ;; somewhere.
+                      (setenv "MPLCONFIGDIR" "/tmp")
+                      (setenv "TZ" "UTC")
+                      (setenv "TZDIR"
+                              (search-input-directory inputs "share/zoneinfo")))))))
+    (propagated-inputs (list python-adjusttext
+                             python-matplotlib
+                             python-mizani
+                             python-numpy
+                             python-patsy
+                             python-scipy
+                             python-statsmodels))
+    (native-inputs (list python-geopandas
+                         python-mock
+                         python-pandas
+                         python-pytest
+                         python-pytest-cov
+                         tzdata-for-tests))
     (home-page "https://github.com/has2k1/plotnine")
     (synopsis "Grammar of Graphics for Python")
     (description
