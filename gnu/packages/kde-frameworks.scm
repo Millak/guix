@@ -589,7 +589,7 @@ which can be used to add custom colors to the popup menu.")
 (define-public kconfig
   (package
     (name "kconfig")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -598,7 +598,7 @@ which can be used to add custom colors to the popup menu.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0gq30f5yx3razkn12zq7224sivl76jikf7c4xdfc9fw1k54sxbjd"))))
+                "0hghdh4p6cq9ckp4g5jdgd8w47pdsxxvzimrdfjrs71lmy8ydiy2"))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus extra-cmake-modules inetutils qttools-5
