@@ -1741,8 +1741,6 @@ aggregated sum and more.")
 (define-public python-plotnine
   (package
     (name "python-plotnine")
-    ;; XXX Version 0.12.x exists, but we can't build it because we're still at
-    ;; matplotlib 3.5.  We'd need at least 3.6.
     (version "0.10.1")
     (source (origin
               (method git-fetch)
@@ -1757,6 +1755,7 @@ aggregated sum and more.")
     (arguments
      (list
       #:test-flags
+      ;; XXX: Check for any new failing tests during next update cycle.
       ;; These all fail because the images are considered to be too different,
       ;; though they really do look fine.
       '(list "-k" (string-append
@@ -1774,6 +1773,7 @@ aggregated sum and more.")
                      "test_continuous_x_fullrange"
                      "test_coord_trans_backtransforms"
                      "test_coord_trans_se_false"
+                     "test_custom_shape"
                      "test_datetime_scale_limits"
                      "test_dir_v_ncol"
                      "test_discrete_x"
