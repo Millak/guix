@@ -38653,14 +38653,14 @@ for variant discovery in high-throughput sequencing data.")
 (define-public r-randomforestsrc
   (package
     (name "r-randomforestsrc")
-    (version "3.2.3")
+    (version "2.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randomForestSRC" version))
        (sha256
         (base32
-         "0vsgdpacqfhwd958vn3wmf8lnh3wb74bgq37qzb3c02fbwilz8lc"))))
+         "05ifvj49jv0n5p6k46milpgj9r10sc5aw23fypyyibdgwpwvwixw"))))
     (properties
      `((upstream-name . "randomForestSRC")))
     (build-system r-build-system)
