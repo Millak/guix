@@ -3329,10 +3329,8 @@ MPEG-2 stream containing VOB packets.")
                (base32
                 "0cv7j8irsv1n2dadlnhr6i1b8pann2ah6xpxic41f04my6ba6rp5"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libdvdread))
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list libdvdread)) ;in 'Requires.private' of dvdnav.pc
     (home-page "http://dvdnav.mplayerhq.hu/")
     (synopsis "Library for video DVD navigation features")
     (description
