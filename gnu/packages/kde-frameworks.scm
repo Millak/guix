@@ -1674,7 +1674,7 @@ integrated it into your application's other widgets.")
 (define-public kcontacts
   (package
     (name "kcontacts")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1685,7 +1685,7 @@ integrated it into your application's other widgets.")
                (search-patches "kcontacts-incorrect-country-name.patch"))
               (sha256
                (base32
-                "15x6f05ngs3nmxpdi11bi4k4zpjnvx5cy3yxbdklls3f2wpq6jd4"))))
+                "0lyqvbs216p5zpssaf4pyccph7nbwkbvhpmhbi32y2rm23cmxlwf"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules xorg-server-for-tests)) ; for the tests
