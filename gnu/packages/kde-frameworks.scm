@@ -1479,7 +1479,7 @@ system.")
 (define-public sonnet
   (package
     (name "sonnet")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1488,7 +1488,7 @@ system.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00azygjvv0fw5agd28v3kqxc3qx1wa8j4afvn5y3ncarhb5ac7p1"))))
+                "0zxi96i3gfpx759qc1nyz7jqlswg5ivgr1w9gbbsm1x5fi9ikadx"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools-5))
