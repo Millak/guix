@@ -1054,7 +1054,7 @@ pixel units.")
 (define-public ksyntaxhighlighting
   (package
     (name "ksyntaxhighlighting")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1063,7 +1063,7 @@ pixel units.")
                     "syntax-highlighting-" version ".tar.xz"))
               (sha256
                (base32
-                "1lri80bv4i50xsd2wgyv383sqkxpav3smgk9ql5dil2n8pl219ky"))))
+                "1skblg2m0sar63qrgkjsg0w9scixggm5qj7lp4gzjn4hwq6m3n63"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules perl qttools-5
