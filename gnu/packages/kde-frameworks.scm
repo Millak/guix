@@ -1559,7 +1559,7 @@ decode RAW picture files.")
 (define-public kactivities
   (package
     (name "kactivities")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1568,7 +1568,7 @@ decode RAW picture files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0lqhfml91wh9376xr31ky8fl49yamfzz336bdjzj3i3ygqzyc7lh"))))
+                "10pyynqz8c22la9aqms080iqlisj3irbi1kwnn3s0vg5dsjxr1p3"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
