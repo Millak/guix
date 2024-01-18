@@ -2898,7 +2898,7 @@ specification.")
 (define-public knotifyconfig
   (package
     (name "knotifyconfig")
-    (version "5.108.0")
+    (version "5.114.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2907,7 +2907,7 @@ specification.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dby6ycqicsij9ngyk6ab7v14ybnsmxd51fkcy25k4c326w6yyca"))))
+                "049n64qlr69zv1dc1dhgbsca37179hp06xfsxnhg97lblz3p3gds"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
