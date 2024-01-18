@@ -12,6 +12,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -221,7 +222,7 @@ continuous display of high-volume data.")
 (define-public phonon
   (package
     (name "phonon")
-    (version "4.11.1")
+    (version "4.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -230,18 +231,16 @@ continuous display of high-volume data.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0bfy8iqmjhlg3ma3iqd3kxjc2zkzpjgashbpf5x17y0dc2i1whxl"))))
+                "16pk8g5rx00x45gnxrqg160b1l02fds1b7iz6shllbfczghgz1rj"))))
     (build-system cmake-build-system)
     (native-inputs
-     ;; TODO: Think about adding pulseaudio. Is it required for sound?
      ;; TODO: Add building the super experimental QML support
-     (list extra-cmake-modules pkg-config qttools-5))
-    (inputs
-     (list qtbase-5))
+     (list appstream extra-cmake-modules pkg-config qttools-5))
+    (inputs (list glib qtbase-5 pulseaudio))
     (arguments
      (list #:configure-flags
            #~'("-DCMAKE_CXX_FLAGS=-fPIC"
-               "-DPHONON_BUILD_PHONON4QT5=ON")
+               "-DPHONON_BUILD_QT6=OFF") ;KDE is still using Qt 5
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'install 'patch-installdir
