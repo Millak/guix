@@ -1252,6 +1252,50 @@ AR100.")
       ;; Most files are dual-licensed "BSD-3 OR GPL2", a few are GPL2 only.
       (license (list license:bsd-3 license:gpl2)))))
 
+(define make-crust-tools
+  (mlambda (platform firmware)
+    (package
+      (inherit firmware)
+      (name (string-append "crust-"
+                           (string-replace-substring platform "_" "-")
+                           "-tools"))
+      (arguments
+       (list #:make-flags
+             #~(list "V=1"
+                     "LEX=flex"
+                     (string-append "HOSTAR=" #$(ar-for-target))
+                     (string-append "HOSTCC=" #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'do-not-build-tests
+                   (lambda _
+                     ;; Attempting to build the tools test binary on a
+                     ;; non-aarch64 architecture fails with: "No cache
+                     ;; cleaning implementation available for this
+                     ;; architecture".  Avoid building it (see:
+                     ;; https://github.com/crust-firmware/crust/issues/182).
+                     (substitute* "tools/Makefile"
+                       (("tools-y \\+= test") ""))))
+                 (replace 'configure
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     (copy-file (search-input-file inputs "/libexec/.config")
+                                ".config")))
+                 (replace 'build
+                   (lambda* (#:key make-flags parallel-build?
+                             #:allow-other-keys)
+                     (apply invoke "make" "tools"
+                            `(,@(if parallel-build?
+                                    `("-j"
+                                      ,(number->string (parallel-job-count)))
+                                     '())
+                              ,@make-flags))))
+                 (replace 'install
+                   (lambda _
+                     (install-file "build/tools/load"
+                                   (string-append #$output "/bin")))))))
+      (synopsis "Firmware for Allwinner sunxi SoCs (tools)")
+      (inputs (list firmware)))))
+
 (define-public crust-pinebook
   (make-crust-package "pinebook"))
 
