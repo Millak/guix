@@ -11286,6 +11286,36 @@ data.  The tRNA package uses GRanges objects as inputs requiring only few
 additional column data sets.")
     (license license:gpl3)))
 
+(define-public r-trnadbimport
+  (package
+    (name "r-trnadbimport")
+    (version "1.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "tRNAdbImport" version))
+       (sha256
+        (base32 "1i2mismx914ijys13wwz50gkk682rklp36aci270nc7vx78hynni"))))
+    (properties `((upstream-name . "tRNAdbImport")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings
+                             r-genomicranges
+                             r-httr2
+                             r-iranges
+                             r-modstrings
+                             r-s4vectors
+                             r-stringr
+                             r-structstrings
+                             r-trna
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/tRNAdbImport")
+    (synopsis "Importing from tRNAdb and mitotRNAdb as GRanges objects")
+    (description
+     "@code{tRNAdbImport} imports the entries of the @code{tRNAdb} and
+@code{mtRNAdb} as GRanges object.")
+    (license license:gpl3)))
+
 (define-public r-scds
   (package
     (name "r-scds")
