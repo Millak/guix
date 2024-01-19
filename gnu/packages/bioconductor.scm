@@ -17657,6 +17657,78 @@ gene fusion discovery.  It can be applied to all major sequencing techologies
 and to both short and long sequence reads.")
     (license license:gpl3)))
 
+(define-public r-flames
+  (package
+    (name "r-flames")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "FLAMES" version))
+       (sha256
+        (base32 "0937zag0h4bvpapld267s5gz36h8zgjrgvbng9m7czdd8w6064ns"))))
+    (properties `((upstream-name . "FLAMES")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-build-system
+           (lambda _
+             ;; One target uses & instead of &&, which leads to a command
+             ;; being run despite the check failing.
+             (substitute* "src/Makevars"
+               ((" & ") " && ")))))))
+    (propagated-inputs
+     (list r-bambu
+           r-basilisk
+           r-biocgenerics
+           r-biostrings
+           r-circlize
+           r-complexheatmap
+           r-cowplot
+           r-dplyr
+           r-dropletutils
+           r-future
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicfeatures
+           r-genomicranges
+           r-ggbio
+           r-ggplot2
+           r-gridextra
+           r-igraph
+           r-jsonlite
+           r-magrittr
+           r-matrix
+           r-multiassayexperiment
+           r-rcolorbrewer
+           r-rcpp
+           r-reticulate
+           r-rhtslib
+           r-rsamtools
+           r-rtracklayer
+           r-s4vectors
+           r-scater
+           r-scran
+           r-scuttle
+           r-singlecellexperiment
+           r-stringr
+           r-summarizedexperiment
+           r-tidyr
+           r-withr
+           r-zlibbioc))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/OliverVoogd/FLAMES")
+    (synopsis
+     "Full Length Analysis of Mutations and Splicing in long read RNA-seq data")
+    (description
+     "This is a package for semi-supervised isoform detection and annotation
+from both bulk and single-cell long read RNA-seq data.  Flames provides
+automated pipelines for analysing isoforms, as well as intermediate functions
+for manual execution.")
+    (license license:gpl2+)))
+
 (define-public r-flowai
   (package
     (name "r-flowai")
