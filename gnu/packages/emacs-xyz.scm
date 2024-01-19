@@ -8296,7 +8296,10 @@ the speedbar window.")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
-                 (base32 "1wkqnc5n8if8fsh7f3bdr5nzn6dbj1nzdxlmnz8nflmx4g32fp6v"))))
+                 (base32
+                  "1wkqnc5n8if8fsh7f3bdr5nzn6dbj1nzdxlmnz8nflmx4g32fp6v"))
+                (patches
+                 (search-patches "emacs-shx-byte-compilation-test.patch"))))
       (build-system emacs-build-system)
       (arguments
        (list
