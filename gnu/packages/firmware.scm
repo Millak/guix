@@ -1270,7 +1270,7 @@ such as:
            (cross-binutils "or1k-elf")
            flex))
     (home-page "https://github.com/crust-firmware/crust")
-    (synopsis "System control processor firmware for Allwinner sunxi boards")
+    (synopsis "Firmware for Allwinner sunxi SoCs")
     (description "Crust improves battery life and thermal performance by
 implementing a deep sleep state.  During deep sleep, the CPU cores, the DRAM
 controller, and most onboard peripherals are powered down, reducing power
