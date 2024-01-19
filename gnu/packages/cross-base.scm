@@ -51,7 +51,6 @@
   #:export (cross-binutils
             cross-libc
             cross-gcc
-            cross-gnumach-headers
             cross-mig
             cross-kernel-headers
             cross-gcc-toolchain))
