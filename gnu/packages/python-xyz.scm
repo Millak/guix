@@ -4075,6 +4075,46 @@ lossless but can be tweaked for more aggressive cleaning.")
 after Andy Lester’s Perl module WWW::Mechanize.")
     (license license:bsd-3)))
 
+(define-public python-mediapy
+  (package
+    (name "python-mediapy")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/mediapy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14hmwib0dmy9h1w7allwsp0cgrfdv8f2sm9qlvy65yxai68v6vnl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-references
+           (lambda _
+             (substitute* "mediapy_test.py"
+               (("'/bin/bash")
+                (string-append "'" (which "bash")))))))))
+    (inputs (list ffmpeg-5))
+    (propagated-inputs (list python-absl-py
+                             python-ipython
+                             python-matplotlib
+                             python-numpy
+                             python-pillow))
+    (native-inputs
+     (list python-flit-core
+           python-pylint
+           python-pytest
+           python-pytest-xdist))
+    (home-page "https://github.com/google/mediapy")
+    (synopsis "Read/write/show images and videos in an IPython notebook")
+    (description "This Python library makes it easy to display images and
+videos in a notebook.")
+    (license license:asl2.0)))
+
 (define-public python-simpleaudio
   (package
     (name "python-simpleaudio")
