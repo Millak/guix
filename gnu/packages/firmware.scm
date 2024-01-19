@@ -1197,11 +1197,12 @@ such as:
           ;; Adding debug symbols causes the size to exceed limits.
           #~(delete "DEBUG=1" #$flags)))))))
 
-(define make-crust-package
+(define make-crust-firmware
   (mlambda (platform)
     (package
       (name (string-append "crust-"
-                           (string-replace-substring platform "_" "-")))
+                           (string-replace-substring platform "_" "-")
+                           "-firmware"))
       (version "0.6")
       (source
        (origin
@@ -1295,6 +1296,29 @@ AR100.")
                                    (string-append #$output "/bin")))))))
       (synopsis "Firmware for Allwinner sunxi SoCs (tools)")
       (inputs (list firmware)))))
+
+(define make-crust-package
+  (mlambda (platform)
+    (let* ((firmware (make-crust-firmware platform))
+           (tools (make-crust-tools platform firmware)))
+      (package
+        (inherit firmware)
+        (name (string-append "crust-"
+                             (string-replace-substring platform "_" "-")))
+        (source #f)
+        (build-system trivial-build-system)
+        (arguments
+         (list #:modules '((guix build union))
+               #:builder
+               #~(begin
+                   (use-modules (ice-9 match)
+                                (guix build union))
+
+                   (match %build-inputs
+                     (((names . directory) ...)
+                      (union-build #$output directory))))))
+        (native-inputs '())
+        (inputs (list firmware tools))))))
 
 (define-public crust-pinebook
   (make-crust-package "pinebook"))
