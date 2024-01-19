@@ -76,7 +76,7 @@
        (modify-phases %standard-phases
          (replace 'install
            (lambda _
-             (invoke "make" "install-data")))
+             (invoke "make" "install-data" "install-data-hook")))
          (delete 'build))
        #:tests? #f))
     (native-inputs
