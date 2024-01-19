@@ -1812,8 +1812,19 @@ project.")
                (base32
                 "07xvaf8s0fiv0035nk8zpzymn5www76w2a1vflrgqmp9plw8yd6r"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-introspection-install-dir
+            (lambda _
+              (substitute* "libmenu/Makefile.in"
+                (("@INTROSPECTION_GIRDIR@")
+                 (string-append #$output "/share/gir-1.0/"))
+                (("@INTROSPECTION_TYPELIBDIR@")
+                 (string-append #$output "/lib/girepository-1.0/"))))))))
     (native-inputs
-     (list gettext-minimal glib pkg-config))
+     (list gettext-minimal glib gobject-introspection pkg-config))
     (synopsis "Menu support for GNOME desktop")
     (description "GNOME Menus contains the libgnome-menu library, the layout
 configuration files for the GNOME menu, as well as a simple menu editor.")
