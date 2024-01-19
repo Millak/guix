@@ -353,7 +353,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                                                           "include/tirpc")
                                   ":" (or (getenv var) ""))))
                        '("CROSS_C_INCLUDE_PATH" "C_INCLUDE_PATH"
-                         "CROSS_CPATH" "CPATH"))))
+                         "CROSS_CPATH" "CPATH"))
+             #t))
          (add-after 'unpack 'fix-rpc-headers
            (lambda _
              (substitute* "nfs/mount.c"
@@ -366,12 +367,14 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                             "nfsd/main.c"
                             "nfsd/ops.c")
                (("#include <rpc/pmap_prot.h>" m)
-                (string-append "#include <rpc/types.h>\n#include <rpc/xdr.h>\n" m)))))
+                (string-append "#include <rpc/types.h>\n#include <rpc/xdr.h>\n" m)))
+             #t))
          (add-before 'build 'pre-build
            (lambda _
              ;; Don't change the ownership of any file at this time.
              (substitute* '("daemons/Makefile" "utils/Makefile")
-               (("-o root -m 4755") ""))))
+               (("-o root -m 4755") ""))
+             #t))
          (add-after 'unpack 'create-runsystem
            (lambda _
              ;; XXX Work towards having startup.c invoke the Guile rc
@@ -446,7 +449,8 @@ exec ${system}/rc \"$@\"
                                  ":" util-linux "/sbin\n"))
                  (("/sbin/") (string-append out "/sbin/"))
                  (("/libexec/") (string-append out "/libexec/"))
-                 (("/hurd/") (string-append out "/hurd/"))))))
+                 (("/hurd/") (string-append out "/hurd/")))
+               #t)))
          (add-after 'patch-shebangs 'patch-libexec-shebangs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; XXX: Since the 'patch-shebangs' phase doesn't traverse
@@ -456,7 +460,8 @@ exec ${system}/rc \"$@\"
                     (path (list (string-append bash "/bin"))))
                (for-each (lambda (file)
                            (patch-shebang file path))
-                         (find-files (string-append out "/libexec"))))))
+                         (find-files (string-append out "/libexec")))
+               #t)))
          (add-after 'build 'build-libdde-linux
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
              (invoke (string-append (assoc-ref (or native-inputs inputs) "make")
@@ -496,7 +501,8 @@ exec ${system}/rc \"$@\"
                (invoke "gunzip" "unifont.gz")
                (mkdir-p datadir)
                (copy-file "unifont"
-                          (string-append datadir "/vga-system.bdf"))))))
+                          (string-append datadir "/vga-system.bdf"))
+               #t))))
        #:configure-flags
        ,#~(list (string-append "LDFLAGS=-Wl,-rpath="
                                #$output "/lib")
@@ -511,11 +517,7 @@ exec ${system}/rc \"$@\"
                 "CFLAGS=-fcommon")))
     (build-system gnu-build-system)
     (inputs
-     `(("gnumach-headers" ,(if (%current-target-system)
-                               (cross-gnumach-headers (%current-target-system))
-                               gnumach-headers))
-
-       ("libgcrypt" ,libgcrypt)                  ;for /hurd/random
+     `(("libgcrypt" ,libgcrypt)                  ;for /hurd/random
        ("libdaemon" ,libdaemon)                  ;for /bin/console --daemonize
        ("unifont" ,unifont)
        ("libpciaccess" ,libpciaccess-0.17)       ;need libpciaccess > 0.16
@@ -534,13 +536,10 @@ exec ${system}/rc \"$@\"
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
-       ("gnumach-headers" ,(if (%current-target-system)
-                               (cross-gnumach-headers (%current-target-system))
-                                gnumach-headers))
        ("libgcrypt" ,libgcrypt)                   ;for 'libgcrypt-config'
-       ("mig" ,(if (%current-target-system)
-                   (cross-mig (%current-target-system))
-                   mig))
+       ("mig" , (if (%current-target-system)
+                    (cross-mig (%current-target-system))
+                    mig))
        ("pkg-config" ,pkg-config)
        ("perl" ,perl)
        ("texinfo" ,texinfo-4)
