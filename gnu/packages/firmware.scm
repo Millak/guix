@@ -1217,13 +1217,13 @@ such as:
       (build-system gnu-build-system)
       (arguments
        (list
+        #:target "or1k-elf"
         #:tests? #f                       ;no test suite
-        #:make-flags
-        #~(list "CROSS_COMPILE=or1k-elf-"
-                "V=1"
-                "HOSTAR=ar"
-                "HOSTCC=gcc"
-                "LEX=flex")
+        #:make-flags #~'("CROSS_COMPILE=or1k-elf-"
+                         "V=1"
+                         "HOSTAR=ar"
+                         "HOSTCC=gcc"
+                         "LEX=flex")
         #:phases
         #~(modify-phases %standard-phases
             (delete 'configure)
@@ -1237,13 +1237,7 @@ such as:
                             (install-file file (string-append #$output
                                                               "/libexec")))
                           (find-files "." "(scp\\.bin|\\.config)$")))))))
-      ;; The firmware is cross-compiled using a "bare bones" compiler (no libc).
-      ;; Use our own tool chain for that.
-      (native-inputs
-       (list bison
-             (cross-gcc "or1k-elf")
-             (cross-binutils "or1k-elf")
-             flex))
+      (native-inputs (list bison flex))
       (home-page "https://github.com/crust-firmware/crust")
       (synopsis "Firmware for Allwinner sunxi SoCs")
       (description "Crust improves battery life and thermal performance by
