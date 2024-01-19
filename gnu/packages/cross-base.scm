@@ -742,12 +742,18 @@ returned."
                ,@(if (target-hurd? target)
                      '((add-after 'install 'augment-libc.so
                          (lambda* (#:key outputs #:allow-other-keys)
-                           (let* ((out (assoc-ref outputs "out")))
+                           (let ((out (assoc-ref outputs "out")))
                              (substitute* (string-append out "/lib/libc.so")
                                (("/[^ ]+/lib/libc.so.0.3")
                                 (string-append out "/lib/libc.so.0.3"
-                                               " libmachuser.so libhurduser.so"))))
-                           #t)))
+                                               " libmachuser.so libhurduser.so"))))))
+                       (add-after 'install 'create-machine-symlink
+                         (lambda* (#:key outputs #:allow-other-keys)
+                           (let ((out (assoc-ref outputs "out"))
+                                 (cpu "i386"))
+                             (symlink cpu
+                                      (string-append out
+                                                     "/include/mach/machine"))))))
                      '())))))
 
       ;; Shadow the native "kernel-headers" because glibc's recipe expects the
