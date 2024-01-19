@@ -223,7 +223,9 @@ applications.")
               (when tests?
                 (setenv "HOME" "/tmp")
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke #$@(if (target-x86?)
+                ;; go test: -race is only supported on linux/amd64,
+                ;; linux/ppc64le, linux/arm64
+                  (invoke #$@(if (not target-x86-32?)
                                  (list "go" "test" "-v" "-race" "./...")
                                  (list "go" "test" "-v" "./...")))))))
           (replace 'install
