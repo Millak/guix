@@ -959,6 +959,14 @@ including SSL/TLS, X.509 certificates, SASL, OpenPGP, S/MIME CMS, and smart
 cards.")
     (license license:lgpl2.1+)))
 
+(define-public qca-qt6
+  (package
+    (inherit qca)
+    (name "qca-qt6")
+    (arguments (list #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")))
+    (inputs
+     (list openssl qtbase qt5compat))))
+
 (define-public kommit
   (package
     (name "kommit")
