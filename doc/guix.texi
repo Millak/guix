@@ -16903,6 +16903,7 @@ The available targets are:
    - i686-linux-gnu
    - i686-w64-mingw32
    - mips64el-linux-gnu
+   - or1k-elf
    - powerpc-linux-gnu
    - powerpc64le-linux-gnu
    - riscv64-linux-gnu
@@ -46165,6 +46166,11 @@ Platform targeting x86 CPU running GNU/Hurd (also referred to as
 @defvar avr
 Platform targeting AVR CPUs without an operating system, with run-time support
 from AVR Libc.
+@end defvar
+
+@defvar or1k-elf
+Platform targeting OpenRISC 1000 CPU without an operating system and without a
+C standard library.
 @end defvar
 
 @node System Images
