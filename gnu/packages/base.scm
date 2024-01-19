@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1644,7 +1645,7 @@ command.")
     (name "tzdata")
     ;; This package should be kept in sync with python-pytz and python-tzdata
     ;; in (gnu packages time).
-    (version "2022a")
+    (version "2023d")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1652,7 +1653,7 @@ command.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "0r0nhwpk9nyxj5kkvjy58nr5d85568m04dcb69c4y3zmykczyzzg"))))
+               "1wq858ip55ijnlrffnnadq7vw0x93ywxghgfxh68r2qa1fbj3jnv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f
@@ -1720,7 +1721,7 @@ command.")
                           version ".tar.gz"))
                     (sha256
                      (base32
-                      "1iysv8fdkm79k8wh8jizmjmq075q4qjhk090vxjy57my6dz5wmzq")))))
+                      "07hn7hn2klw4dfyr673ril2nrk18198hbfv25gljsvc833hzk9g9")))))
     (home-page "https://www.iana.org/time-zones")
     (synopsis "Database of current and historical time zones")
     (description "The Time Zone Database (often called tz or zoneinfo)
