@@ -473,7 +473,8 @@ exec ${system}/rc \"$@\"
                                     (assoc-ref (or native-inputs inputs) "bash")
                                     "/bin/bash")
                      (string-append "CC="
-                                    ,(cc-for-target)))))
+                                    ,(cc-for-target))
+                     "ARCH=x86")))
          (add-after 'install 'install-goodies
            (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
              ;; Install additional goodies.
@@ -489,7 +490,8 @@ exec ${system}/rc \"$@\"
                                       "/bin/bash")
                        (string-append "INSTALLDIR="
                                       out
-                                      "/share/libdde_linux26/build/include"))
+                                      "/share/libdde_linux26/build/include")
+                       "ARCH=x86")
                ;; Install the fancy UTF-8 motd.
                (mkdir-p (string-append out "/etc"))
                (copy-file "console/motd.UTF8"
