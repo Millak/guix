@@ -980,7 +980,7 @@ require a spatial database such as PostGIS.")
     (version "1.8.1")
     (source
      (origin
-       ; Fetch from github as the pypi package is missing the tests dir.
+       ;; Fetch from github as the pypi package is missing the tests dir.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/gboeing/osmnx")
@@ -991,37 +991,34 @@ require a spatial database such as PostGIS.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-               ;; The following tests require network access.
-               "not test_stats"
-               " and not test_geocoder"
-               " and not test_osm_xml"
-               " and not test_elevation"
-               " and not test_routing"
-               " and not test_plots"
-               " and not test_find_nearest"
-               " and not test_api_endpoints"
-               " and not test_graph_save_load"
-               " and not test_graph_from_functions"
-               " and not test_features"))))
-    (propagated-inputs
-      (list python-folium
-            python-geopandas
-            python-matplotlib
-            python-networkx
-            python-numpy
-            python-pandas
-            python-requests
-            python-shapely))
-    (native-inputs
-      (list python-hatchling python-pytest))
+      #:test-flags '(list "-k"
+                          (string-append
+                           ;; The following tests require network access.
+                           "not test_stats"
+                           " and not test_geocoder"
+                           " and not test_osm_xml"
+                           " and not test_elevation"
+                           " and not test_routing"
+                           " and not test_plots"
+                           " and not test_find_nearest"
+                           " and not test_api_endpoints"
+                           " and not test_graph_save_load"
+                           " and not test_graph_from_functions"
+                           " and not test_features"))))
+    (propagated-inputs (list python-folium
+                             python-geopandas
+                             python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-pandas
+                             python-requests
+                             python-shapely))
+    (native-inputs (list python-hatchling python-pytest))
     (home-page "https://github.com/gboeing/osmnx")
     (synopsis
-      "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
+     "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
     (description
-      "OSMnx is a Python library that lets you download geospatial data
+     "OSMnx is a Python library that lets you download geospatial data
 from OpenStreetMap and model, project, visualize, and analyze real-world
 street networks and any other geospatial geometries.  You can download
 and model walkable, drivable, or bikeable urban networks with a single
