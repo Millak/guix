@@ -80,6 +80,7 @@
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Vagrant Cascadian <vagrant@debian.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11322,7 +11323,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "1.0.5")
+    (version "1.0.11")
     (source
      (origin
        (method git-fetch)
@@ -11331,7 +11332,7 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v7dxzb5cfjb55jydd8f61zzlvxq9mrgdy51hq19b06dmrx1dnc7"))))
+        (base32 "1i1a4dynlb5kl55rmfmib2jha1b2igw5jyiiyla1fxgkbkjnbf27"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
