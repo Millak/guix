@@ -146,7 +146,9 @@
     `(,(shepherd-service
         (documentation "Run Cuirass.")
         (provision '(cuirass))
-        (requirement '(guix-daemon postgres postgres-roles networking))
+        (requirement '(user-processes
+                       guix-daemon
+                       postgres postgres-roles networking))
         (start #~(make-forkexec-constructor
                   (list (string-append #$cuirass "/bin/cuirass")
                         "register"
@@ -178,7 +180,7 @@
       ,(shepherd-service
         (documentation "Run Cuirass web interface.")
         (provision '(cuirass-web))
-        (requirement '(cuirass))
+        (requirement '(user-processes cuirass))
         (start #~(make-forkexec-constructor
                   (list (string-append #$cuirass "/bin/cuirass")
                         "web"
@@ -204,7 +206,7 @@
                (shepherd-service
                 (documentation "Run Cuirass remote build server.")
                 (provision '(cuirass-remote-server))
-                (requirement '(avahi-daemon cuirass))
+                (requirement '(user-processes avahi-daemon cuirass))
                 (start #~(make-forkexec-constructor
                           (list (string-append #$cuirass "/bin/cuirass")
                                 "remote-server"
@@ -375,7 +377,7 @@ CONFIG."
     (list (shepherd-service
            (documentation "Run Cuirass remote build worker.")
            (provision '(cuirass-remote-worker))
-           (requirement '(avahi-daemon guix-daemon networking))
+           (requirement '(user-processes avahi-daemon guix-daemon networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$cuirass "/bin/cuirass")
                            "remote-worker"
