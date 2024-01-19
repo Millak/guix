@@ -12,7 +12,7 @@
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2018 Alex Branham <alex.branham@gmail.com>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -6819,7 +6819,9 @@ Java package that provides routines for various statistical distributions.")
           #~(modify-phases %standard-phases
               (delete 'configure)
               (add-before 'check 'skip-failing-tests
-                ;; XXX: Skip 10 failing tests (out of 187).
+                ;; The command-without-trailing-newline-test and other
+                ;; tests fail for unknown reasons (see:
+                ;; https://github.com/emacs-ess/ESS/issues/1272).
                 (lambda _
                   (let-syntax
                       ((disable-tests
@@ -6831,7 +6833,22 @@ Java package that provides routines for various statistical distributions.")
                              (((string-append "^\\(ert-deftest " test-name ".*")
                                all)
                               (string-append all "(skip-unless nil)\n"))
-                             ...)))))
+                             ...))))
+                       (disable-etests  ;different test syntax
+                        (syntax-rules ()
+                          ((_ file ())
+                           (syntax-error "test names list must not be empty"))
+                          ((_ file (test-name ...))
+                           (emacs-batch-edit-file file
+                             '(progn
+                               (mapc (lambda (test)
+                                       (goto-char (point-min))
+                                       (search-forward
+                                        (format "etest-deftest %s " test))
+                                       (beginning-of-line)
+                                       (kill-sexp))
+                                     (list test-name ...))
+                               (basic-save-buffer)))))))
                     (disable-tests (list "test/ess-test-inf.el"
                                          "test/ess-test-r.el")
                                    ("ess--derive-connection-path"
@@ -6841,26 +6858,18 @@ Java package that provides routines for various statistical distributions.")
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
                                     "ess-set-working-directory-test"
-                                    "ess-test-r-startup-directory")))
-                  ;; The two tests below use a different syntax.
-                  (emacs-batch-edit-file "test/ess-test-r-eval.el"
-                    '(progn
-                      (mapc (lambda (test)
-                              (goto-char (point-min))
-                              (search-forward (format "etest-deftest %s " test))
-                              (beginning-of-line)
-                              (kill-sexp))
-                            '("ess-r-eval-ns-env-roxy-tracebug-test"
-                              "ess-r-eval-sink-freeze-test"))
-                      (basic-save-buffer)))))
+                                    "ess-test-r-startup-directory"))
+                    (disable-etests "test/ess-test-r-eval.el"
+                                    ("ess-r-eval-ns-env-roxy-tracebug-test"
+                                     "ess-r-eval-sink-freeze-test"))
+                    (disable-etests
+                     "test/ess-test-inf.el"
+                     ("command-without-trailing-newline-test")))))
               (replace 'check
                 (lambda _ (invoke "make" "test")))))))
-      (native-inputs
-       (list perl r-roxygen2 texinfo))
-      (inputs
-       (list emacs-minimal r-minimal))
-      (propagated-inputs
-       (list emacs-julia-mode))
+      (native-inputs (list perl r-roxygen2 texinfo))
+      (inputs (list emacs-minimal r-minimal))
+      (propagated-inputs (list emacs-julia-mode))
       (home-page "https://ess.r-project.org/")
       (synopsis "Emacs mode for statistical analysis programs")
       (description
