@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -21402,15 +21402,18 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
 (define-public wfmash
   (package
     (name "wfmash")
-    (version "0.10.5")
+    (version "0.12.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/ekg/wfmash/releases/download/v"
-                           version "/wfmash-v" version ".tar.gz"))
+       ;; There are no release tarballs after version 0.10.5.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/waveygang/wfmash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1jsvnnh14h3ir4l13qhmglhd25kzwvni9apgvr1lbikqwgrpkiq4"))
+         "1qh2chnwp7nqgp88afc4xzdkd21vh6cfqq73siqw7vc0qinqadm6"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -21436,8 +21439,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                  (let ((samtools (search-input-file inputs "/bin/samtools")))
                    ;; This is the easiest way to access the data
                    ;; needed for the test suite.
-                   (symlink (string-append "../wfmash-v" #$version "/data")
-                            "data")
+                   (symlink "../source/data" "data")
                    (and
                      ;; This test takes 60 minutes on riscv64-linux.
                      #$@(if (not (target-riscv64?))
@@ -21529,8 +21531,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                          (lambda _
                            (invoke "bin/wfmash"
                                    "data/reads.255bps.fa.gz"
-                                   "data/reads.255bps.fa.gz"
-                                   "-X" "-w" "16")))
+                                   "-w" "16" "-s" "100" "-L")))
                        (invoke "head" "reads.255bps.paf"))))))))))
     (inputs
      (list atomic-queue
@@ -21547,7 +21548,7 @@ distances and the wavefront alignment algorithm.  It is a fork of MashMap that
 implements base-level alignment via the wflign tiled wavefront global
 alignment algorithm.  It completes MashMap with a high-performance alignment
 module capable of computing base-level alignments for very large sequences.")
-    (home-page "https://github.com/ekg/wfmash")
+    (home-page "https://github.com/waveygang/wfmash")
     (license license:expat)))
 
 (define-public gdcm
