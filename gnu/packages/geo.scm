@@ -977,7 +977,7 @@ require a spatial database such as PostGIS.")
 (define-public python-osmnx
   (package
     (name "python-osmnx")
-    (version "1.1.2")
+    (version "1.8.1")
     (source
      (origin
        ; Fetch from github as the pypi package is missing the tests dir.
@@ -987,7 +987,7 @@ require a spatial database such as PostGIS.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n8qjn184p5a2s3j6x6iyc1i7p3l3xnbqqxm6ajwgwv6j5fw1d5a"))))
+        (base32 "0n238n07pp5jw9cg8nqw9qhpkw8plzb5imz1gxbliw2l1idqyjcl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -995,8 +995,8 @@ require a spatial database such as PostGIS.")
       '(list "-k"
              (string-append
                ;; The following tests require network access.
-               "not test_geocode_to_gdf"
-               " and not test_stats"
+               "not test_stats"
+               " and not test_geocoder"
                " and not test_osm_xml"
                " and not test_elevation"
                " and not test_routing"
@@ -1005,7 +1005,7 @@ require a spatial database such as PostGIS.")
                " and not test_api_endpoints"
                " and not test_graph_save_load"
                " and not test_graph_from_functions"
-               " and not test_geometries"))))
+               " and not test_features"))))
     (propagated-inputs
       (list python-folium
             python-geopandas
@@ -1013,12 +1013,10 @@ require a spatial database such as PostGIS.")
             python-networkx
             python-numpy
             python-pandas
-            python-pyproj
             python-requests
-            python-rtree
             python-shapely))
     (native-inputs
-      (list python-numpy python-pytest))
+      (list python-hatchling python-pytest))
     (home-page "https://github.com/gboeing/osmnx")
     (synopsis
       "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
