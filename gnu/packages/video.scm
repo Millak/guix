@@ -2639,31 +2639,43 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
               "-Ddvdnav=enabled"
               "-Dbuild-date=false")))
     (native-inputs
-     (list perl ; for zsh completion file
-           pkg-config python-docutils python-wrapper))
+     (list perl                         ;for zsh completion file
+           pkg-config
+           python-docutils
+           python-wrapper))
     ;; Missing features: libguess, V4L2.
     (inputs
-     (list alsa-lib
-           enca
-           ffmpeg
-           jack-1
+     (list enca
            ladspa
            lcms
+           libbs2b
+           mpg123
+           rsound
+           vulkan-headers
+           vulkan-loader
+           yt-dlp))
+    ;; XXX: These are propagated for the mpv pkg-config package, as they are
+    ;; listed in Requires.private and would break 'pkg-config --exists mpv' if
+    ;; unavailable.
+    (propagated-inputs
+     (list alsa-lib
+           ffmpeg
+           jack-1
            libass
            libbluray
            libcaca
-           libbs2b
            libcdio-paranoia
-           libdvdread
+           libdrm
            libdvdnav
+           libdvdread
            libjpeg-turbo
            libplacebo
            libva
            libvdpau
            libx11
            libxext
-           libxkbcommon
            libxinerama
+           libxkbcommon
            libxpresent
            libxrandr
            libxscrnsaver
@@ -2671,15 +2683,10 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            ;; XXX: lua > 5.2 is not currently supported; see meson.build
            lua-5.2
            mesa
-           mpg123
            pulseaudio
-           rsound
            shaderc
-           vulkan-headers
-           vulkan-loader
            wayland
            wayland-protocols
-           yt-dlp
            zimg
            zlib))
     (home-page "https://mpv.io/")
