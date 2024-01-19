@@ -10675,8 +10675,8 @@ functions for arrays and vectors.  Originally from Plump.")
   (sbcl-package->ecl-package sbcl-array-utils))
 
 (define-public sbcl-lass
-  (let ((commit "a7a4452f6a670b8fb01a73d3007030d16bd1ec2c")
-        (revision "0"))
+  (let ((commit "1f2418dbf2d8d6f5892171057616b2ca9d6e5008")
+        (revision "1"))
     (package
       (name "sbcl-lass")
       (version (git-version "0.6.0" revision commit))
@@ -10689,7 +10689,7 @@ functions for arrays and vectors.  Originally from Plump.")
            (commit commit)))
          (file-name (git-file-name "cl-lass" version))
          (sha256
-          (base32 "06wds1qzj8s862pmmza1427n7gdpplqplxqnxyqkrr0hgxdl4xbf"))))
+          (base32 "1wax2kykc9ff0sk2linp9v8fcsm5ay6idpq365vivady9fh504r5"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-base64 sbcl-trivial-indent sbcl-trivial-mimes))
