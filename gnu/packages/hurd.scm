@@ -581,7 +581,8 @@ implementing them.")
          (list (string-append "SHELL="
                               (search-input-file %build-inputs "/bin/bash"))
                "PKGDIR=libdde_linux26"
-               (string-append "CC=" ,(cc-for-target)))
+               (string-append "CC=" ,(cc-for-target))
+               "ARCH=x86")
          #:configure-flags
          ,#~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
          #:phases
