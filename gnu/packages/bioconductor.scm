@@ -11400,6 +11400,40 @@ associations.  Each interaction is associated with a combined confidence score
 that integrates the various evidences.")
     (license license:gpl2)))
 
+(define-public r-structstrings
+  (package
+    (name "r-structstrings")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Structstrings" version))
+       (sha256
+        (base32 "10j1khhjd30wn9yfz4jhgx34z0yyijgwgydr8ric52337vwpx6dl"))))
+    (properties `((upstream-name . "Structstrings")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-biostrings
+                             r-crayon
+                             r-iranges
+                             r-s4vectors
+                             r-stringi
+                             r-stringr
+                             r-xvector))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/FelixErnst/Structstrings")
+    (synopsis "Implementation of the dot bracket annotations with Biostrings")
+    (description
+     "The Structstrings package implements the widely used dot bracket
+annotation for storing base pairing information in structured
+RNA. Structstrings uses the infrastructure provided by the Biostrings package
+and derives the @code{DotBracketString} and related classes from the BString
+class.  From these, base pair tables can be produced for in depth analysis.
+In addition, the loop indices of the base pairs can be retrieved as well.  For
+better efficiency, information conversion is implemented in C, inspired to a
+large extend by the @code{ViennaRNA} package.")
+    (license license:artistic2.0)))
+
 (define-public r-structuralvariantannotation
   (package
     (name "r-structuralvariantannotation")
