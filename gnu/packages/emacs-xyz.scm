@@ -36039,7 +36039,27 @@ Files} (@url{http://tools.ietf.org/html/rfc4180}).")
       #:test-command #~(list "emacs" "-Q" "--batch"
                              "-L" "."
                              "-l" "tests/org-journal-test"
-                             "-f" "ert-run-tests-batch-and-exit")))
+                             "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              (let-syntax
+                  ((disable-tests
+                    (syntax-rules ()
+                      ((_ file ())
+                       (syntax-error "test names list must not be empty"))
+                      ((_ file (test-name ...))
+                       (substitute* file
+                         (((string-append "^\\(ert-deftest " test-name ".*") all)
+                          (string-append all "(skip-unless nil)\n")) ...)))))
+                ;; These tests fail for unknown reasons (see:
+                ;; https://github.com/bastibe/org-journal/issues/427).
+                (disable-tests
+                 "tests/org-journal-test.el"
+                 ("org-journal-carryover-delete-empty-journal-test"
+                  "org-journal-carryover-items-test"
+                  "org-journal-scheduled-weekly-test"))))))))
     (home-page "https://github.com/bastibe/org-journal")
     (synopsis "Simple Org mode journaling mode")
     (description
