@@ -11249,6 +11249,43 @@ includes a function to create a cluster-level minimum spanning tree and data
 structures to hold pseudotime inference results.")
     (license license:gpl3)))
 
+(define-public r-trna
+  (package
+    (name "r-trna")
+    (version "1.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "tRNA" version))
+       (sha256
+        (base32
+         "0mcpql3zf1gw2k6gfyqycycc8li00818gd9qzs8s3wva7kxbpn89"))))
+    (properties
+     `((upstream-name . "tRNA")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biostrings
+           r-genomicranges
+           r-ggplot2
+           r-iranges
+           r-modstrings
+           r-s4vectors
+           r-scales
+           r-stringr
+           r-structstrings
+           r-xvector))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/tRNA")
+    (synopsis "Analyzing tRNA sequences and structures")
+    (description
+     "The tRNA package allows tRNA sequences and structures to be accessed and
+used for subsetting.  In addition, it provides visualization tools to compare
+feature parameters of multiple tRNA sets and correlate them to additional
+data.  The tRNA package uses GRanges objects as inputs requiring only few
+additional column data sets.")
+    (license license:gpl3)))
+
 (define-public r-scds
   (package
     (name "r-scds")
