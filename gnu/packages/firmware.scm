@@ -1202,7 +1202,7 @@ such as:
     (package
       (name (string-append "crust-"
                            (string-replace-substring platform "_" "-")))
-      (version "0.5")
+      (version "0.6")
       (source
        (origin
          (method git-fetch)
@@ -1213,43 +1213,19 @@ such as:
          (file-name (git-file-name "crust" version))
          (sha256
           (base32
-           "0xgbbhifg3miwd3yp6jq9kp7nqgz5gzy00w95vba45j8jk5vjvvz"))))
+           "1blq6bi2rmg4qqwwr07pamv28b50mwcsybhpn9bws8vbzxa43afd"))))
       (build-system gnu-build-system)
       (arguments
        (list
         #:tests? #f                       ;no test suite
         #:make-flags
-        (let ((triplet-without-vendor
-               (and (%current-target-system)
-                    ;; TODO: Is there a use case for allowing this?
-                    (not (target-avr?))
-                    (match (string-split (nix-system->gnu-triplet
-                                          (%current-target-system)) #\-)
-                      ((arch vendor os ..1)
-                       (string-join `(,arch ,@os) "-"))))))
-          #~(list "CROSS_COMPILE=or1k-elf-"
-                  "V=1"
-                  #$@(if triplet-without-vendor
-                         ;; We are cross-compiling the tools, intended to be
-                         ;; executable for the target system.
-                         (list (string-append "HOSTAR=" triplet-without-vendor
-                                              "-ar")
-                               (string-append "HOSTCC=" triplet-without-vendor
-                                              "-gcc"))
-                         ;; Not cross-compiling.
-                         (list "HOSTAR=ar"
-                               "HOSTCC=gcc"))
-                  "LEX=flex"))
+        #~(list "CROSS_COMPILE=or1k-elf-"
+                "V=1"
+                "HOSTAR=ar"
+                "HOSTCC=gcc"
+                "LEX=flex")
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'do-not-build-tests
-              (lambda _
-                ;; Attempting to build the tools test binary on a non-aarch64
-                ;; architecture fails with: "No cache cleaning implementation
-                ;; available for this architecture".  Avoid building it (see:
-                ;; https://github.com/crust-firmware/crust/issues/182).
-                (substitute* "tools/Makefile"
-                  (("tools-y \\+= test") ""))))
             (delete 'configure)
             (add-before 'build 'defconfig
               (lambda* (#:key make-flags #:allow-other-keys)
@@ -1260,9 +1236,7 @@ such as:
                 (for-each (lambda (file)
                             (install-file file (string-append #$output
                                                               "/libexec")))
-                          (find-files "." "(scp\\.bin|\\.config)$"))
-                (install-file "build/tools/load"
-                              (string-append #$output "/bin")))))))
+                          (find-files "." "(scp\\.bin|\\.config)$")))))))
       ;; The firmware is cross-compiled using a "bare bones" compiler (no libc).
       ;; Use our own tool chain for that.
       (native-inputs
