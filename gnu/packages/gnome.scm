@@ -10726,13 +10726,35 @@ GNOME Shell appearance and extension, etc.")
                 "1aq1n75m1svsv0ppg66n9qch26rhjxcv3q33a3skf7hsydr5wd4c"))))
     (build-system meson-build-system)
     (arguments
-     '(#:configure-flags '("-Dextension_set=all")))
+     (list
+      #:configure-flags #~'("-Dextension_set=all")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'wrap-extensions
+            (lambda _
+              (use-modules (ice-9 textual-ports)
+                           (guix build utils))
+              (for-each
+               (lambda (file-to-wrap)
+                 (with-atomic-file-replacement file-to-wrap
+                   (lambda (source wrapped)
+                     (format wrapped "'~a'.split(':').forEach("
+                             (getenv "GI_TYPELIB_PATH"))
+                     (display
+                      (string-append
+                       "path => imports.gi.GIRepository.Repository"
+                       ".prepend_search_path(path));\n")
+                      wrapped)
+                     (dump-port source wrapped))))
+               (find-files "extensions" "(extension|prefs)\\.js")))))))
     (native-inputs
      (list `(,glib "bin")
            gettext-minimal
+           gobject-introspection        ; to set GI_TYPELIB_PATH
            pkg-config))
-    (propagated-inputs
-     (list glib))
+    (inputs
+     (list glib
+           gnome-menus))                ; for Applications Menu
     (synopsis "Extensions for GNOME Shell")
     (description "GNOME Shell extensions modify and extend GNOME Shell
 functionality and behavior.")
