@@ -9082,6 +9082,43 @@ It has function interfaces for:
 @end itemize")
     (license license:expat)))
 
+(define-public r-modstrings
+  (package
+    (name "r-modstrings")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Modstrings" version))
+       (sha256
+        (base32 "1jjawwkvdx02ss2vw4ah2b8psgxr01z6r1rkr2pnkmrp2ma7ygks"))))
+    (properties `((upstream-name . "Modstrings")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-biostrings
+                             r-crayon
+                             r-genomicranges
+                             r-iranges
+                             r-s4vectors
+                             r-stringi
+                             r-stringr
+                             r-xvector))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/Modstrings")
+    (synopsis "Working with modified nucleotide sequences")
+    (description
+     "Representing nucleotide modifications in a nucleotide sequence is
+usually done via special characters from a number of sources.  This represents
+a challenge to work with in R and the Biostrings package.  The Modstrings
+package implements this functionallity for RNA and DNA sequences containing
+modified nucleotides by translating the character internally in order to work
+with the infrastructure of the Biostrings package.  For this the
+@code{ModRNAString} and @code{ModDNAString} classes and derivates and
+functions to construct and modify these objects despite the encoding issues
+are implemenented.  In addition the conversion from sequences to list like
+location information (and the reverse operation) is implemented as well.")
+    (license license:artistic2.0)))
+
 (define-public r-motifrg
   (package
     (name "r-motifrg")
