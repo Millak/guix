@@ -12385,28 +12385,30 @@ Command Line Argument Parser.")
 (define-public rust-clap-complete-4
   (package
     (name "rust-clap-complete")
-    (version "4.3.2")
+    (version "4.4.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap_complete" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1khpx0fxmjh46s8354nn507ba4s9kfksiia6ambh9a419hrl7i2z"))))
+               (base32 "05c2x5jb3qf5klsxm9kcmykwjdzl879z3q1f92ia330xqavxrxza"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-clap" ,rust-clap-4)
-        ("rust-clap-lex" ,rust-clap-lex-0.5)
+        ("rust-clap-lex" ,rust-clap-lex-0.6)
         ("rust-is-executable" ,rust-is-executable-1)
         ("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-shlex" ,rust-shlex-1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.2))
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-4)
+        ("rust-completest" ,rust-completest-0.4)
+        ("rust-completest-pty" ,rust-completest-pty-0.5)
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-trycmd" ,rust-trycmd-0.14))))
     (home-page "https://github.com/clap-rs/clap/tree/master/clap_complete")
-    (synopsis "Generate shell completion scripts for your clap::Command")
+    (synopsis "Generate shell completion scripts for your @code{clap::Command}")
     (description
      "Generate shell completion scripts for your @code{clap::Command}.")
     (license (list license:expat license:asl2.0))))
