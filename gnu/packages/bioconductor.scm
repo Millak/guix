@@ -2054,6 +2054,34 @@ gene expression indicate a role for enhancer priming in immune response\", publi
 in Nature Genetics, January 2018.")
     (license license:gpl2+)))
 
+(define-public r-methylclockdata
+  (package
+    (name "r-methylclockdata")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "methylclockData" version
+                              'experiment))
+       (sha256
+        (base32 "0q4hiclws0fg03kwvbdwka024gghl1hbmmfficxfghslll78mc3y"))))
+    (properties `((upstream-name . "methylclockData")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-experimenthub r-experimenthubdata))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/isglobal-brge/methylclockData")
+    (synopsis "Data for methylclock package")
+    (description
+     "This package contains a collection of 9 datasets, andrews and bakulski
+cord blood, blood gse35069, blood gse35069 chen, blood gse35069 complete,
+combined cord blood, cord bloo d gse68456, gervin and lyle cord blood,
+guintivano dlpfc and saliva gse48472.  The data are used to estimate cell
+counts using Extrinsic epigenetic age acceleration (EEAA) method.  It also
+contains a collection of 12 datasets to use with @code{MethylClock} package to
+estimate chronological and gestational DNA methylation with estimators to use
+with different methylation clocks.")
+    (license license:expat)))
+
 (define-public r-mousegastrulationdata
   (package
     (name "r-mousegastrulationdata")
