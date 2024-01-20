@@ -1225,11 +1225,24 @@ safety and thread safety guarantees.")
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((out (assoc-ref outputs "out")))
                    (substitute* "src/bootstrap/src/core/builder.rs"
-                      ((" = rpath.*" all)
-                       (string-append all
-                                      "                "
-                                      "rustflags.arg(\"-Clink-args=-Wl,-rpath="
-                                      out "/lib\");\n"))))))
+                     ((" = rpath.*" all)
+                      (string-append all
+                                     "                "
+                                     "rustflags.arg(\"-Clink-args=-Wl,-rpath="
+                                     out "/lib\");\n"))))))
+             (add-after 'unpack 'unpack-profiler-rt
+               ;; Copy compiler-rt sources to where libprofiler_builtins looks
+               ;; for its vendored copy.  Keep the clang-runtime version in
+               ;; sync with the LLVM version used to build Rust.
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (mkdir-p "src/llvm-project/compiler-rt")
+                 (invoke "tar" "-xf" #$(package-source clang-runtime-15)
+                   "-C" "src/llvm-project/compiler-rt" "--strip-components=1")))
+             (add-after 'enable-codegen-tests 'enable-profiling
+               (lambda _
+                 (substitute* "config.toml"
+                   (("^profiler =.*$") "")
+                   (("\\[build\\]") "\n[build]\nprofiler = true\n"))))
              (add-after 'configure 'add-gdb-to-config
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((gdb (assoc-ref inputs "gdb")))
@@ -1245,7 +1258,7 @@ safety and thread safety guarantees.")
                                            (number->string (parallel-job-count))
                                            "1"))))
                    (invoke "./x.py" job-spec "build"
-                           "library/std"    ;rustc
+                           "library/std" ;rustc
                            "src/tools/cargo"
                            "src/tools/clippy"
                            "src/tools/rust-analyzer"
