@@ -3053,24 +3053,24 @@ packages for HST.")
     (name "libnova")
     (version "0.16")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://git.code.sf.net/p/libnova/libnova.git")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0icwylwkixihzni0kgl0j8dx3qhqvym6zv2hkw2dy6v9zvysrb1b"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/libnova/libnova.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0icwylwkixihzni0kgl0j8dx3qhqvym6zv2hkw2dy6v9zvysrb1b"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-git-version
-           (lambda _
-             (substitute* "./git-version-gen"
-               (("/bin/sh") (which "sh")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-git-version
+            (lambda _
+              (substitute* "./git-version-gen"
+                (("/bin/sh") (which "sh"))))))))
     (native-inputs
      (list autoconf automake libtool))
     (synopsis "Celestial mechanics, astrometry and astrodynamics library")
