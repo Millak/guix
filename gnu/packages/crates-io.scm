@@ -69201,14 +69201,14 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
 (define-public rust-snapbox-0.4
   (package
     (name "rust-snapbox")
-    (version "0.4.14")
+    (version "0.4.16")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "snapbox" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1varn9khd05s66lv5abw56ib199z3val13ix8wbc25a7dq5pqdsb"))))
+                "1v732vpzkjyawwvcq2xdf5q4s6bxrqmqih8kgc5gada9vwq5l53k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -69231,7 +69231,7 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
     (synopsis "Snapshot testing toolbox")
     (description
