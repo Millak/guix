@@ -13636,6 +13636,24 @@ Rust compiler.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-tempdir" ,rust-tempdir-0.3))))))
 
+(define-public rust-completest-0.4
+  (package
+    (name "rust-completest")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "completest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hag3094ybxv5m1fcj6mgzg36c6vrywszq8cgynk10cgr90y0ac2"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/assert-rs/completest")
+    (synopsis "Run completions for your program")
+    (description
+     "This package provides running completions for your program.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-comrak-0.12
   (package
     (name "rust-comrak")
