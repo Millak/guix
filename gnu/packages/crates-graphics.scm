@@ -3243,8 +3243,32 @@ in AVIF format (powers the @code{cavif} tool).")
     (description "Interop library between Metal and raw-window-handle.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-resize-0.7
+  (package
+    (name "rust-resize")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "resize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hdd5r2m1700y6r88v5hq3q28xixrsbfhbzqz26409jyy3zvvrw7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-fallible-collections" ,rust-fallible-collections-0.4)
+        ("rust-rgb" ,rust-rgb-0.8))
+       #:cargo-development-inputs
+       (("rust-png" ,rust-png-0.17))))
+    (home-page "https://github.com/PistonDevelopers/resize")
+    (synopsis "Image resampling library in pure Rust")
+    (description "This package provides an image resampling library in pure Rust.")
+    (license license:expat)))
+
 (define-public rust-resize-0.4
   (package
+    (inherit rust-resize-0.7)
     (name "rust-resize")
     (version "0.4.3")
     (source
@@ -3254,13 +3278,8 @@ in AVIF format (powers the @code{cavif} tool).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bamrw2m37l8q46mcy6snp6106d93dq7x67hbbj32w88pjdhxn84"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs (("rust-png" ,rust-png-0.16))))
-    (home-page "https://github.com/PistonDevelopers/resize")
-    (synopsis "Image resampling library in pure Rust")
-    (description "This package provides an image resampling library in pure Rust.")
-    (license license:expat)))
+     `(#:cargo-development-inputs (("rust-png" ,rust-png-0.16))))))
 
 (define-public rust-rgb-0.8
   (package
