@@ -661,16 +661,20 @@ a convention of suggesting best recommended practices for using
        (sha256
         (base32 "1mnqk583z90k1n0z3lfa4rd0ng40v7hqfk7phz5gjmxlzfjbxa1x"))
        (modules '((guix build utils)))
-       ;; These tests require PySpark. We need to remove the entire directory,
-       ;; since the conftest.py in this directory contains a PySpark import.
-       ;; (See: https://github.com/pytest-dev/pytest/issues/7452)
-       (snippet '(delete-file-recursively "tests/pyspark"))))
+       ;; These tests require PySpark and Modin. We need to remove the entire
+       ;; directory, since the conftest.py in these directories contain
+       ;; imports.  (See: https://github.com/pytest-dev/pytest/issues/7452)
+       (snippet '(begin
+                   (delete-file-recursively "tests/pyspark")
+                   (delete-file-recursively "tests/modin")))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags '(list "-k"
                           (string-append
-                           ;; Needs python-pandas >= 1.5
+                           ;; Mypy functionality is experimental and relying
+                           ;; on pandas-stubs can lead to false
+                           ;; positives. These tests currently fail.
                            "not test_python_std_list_dict_generics"
                            " and not test_python_std_list_dict_empty_and_none"
                            " and not test_pandas_modules_importable"))))
@@ -692,7 +696,6 @@ a convention of suggesting best recommended practices for using
     (native-inputs (list python-dask ;dask extra
                          python-fastapi ;fastapi extra
                          python-geopandas ;geopandas extra
-                         python-modin ;modin extra
                          python-pyarrow ;needed to run fastapi tests
                          python-pytest
                          python-pytest-asyncio
