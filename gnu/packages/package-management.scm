@@ -465,7 +465,8 @@ $(prefix)/etc/openrc\n")))
                     ;; the 'patch-shebangs' phase, which would otherwise
                     ;; change it to 'GUILE/bin/guile'.
                     (delete 'patch-shebangs))))
-      (native-inputs `(("pkg-config" ,pkg-config)
+      (native-inputs `(("locales" ,(libc-utf8-locales-for-target))
+                       ("pkg-config" ,pkg-config)
 
                        ;; Guile libraries are needed here for
                        ;; cross-compilation.
