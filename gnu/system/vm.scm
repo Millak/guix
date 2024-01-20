@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -63,6 +63,7 @@
   #:use-module (gnu system uuid)
 
   #:use-module ((srfi srfi-1) #:hide (partition))
+  #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 match)
@@ -326,7 +327,9 @@ useful when FULL-BOOT?  is true."
   (disk-image-size  virtual-machine-disk-image-size   ;integer (bytes)
                     (default 'guess))
   (port-forwardings virtual-machine-port-forwardings ;list of integer pairs
-                    (default '())))
+                    (default '()))
+  (date             virtual-machine-date          ;SRFI-19 date | #f
+                    (default #f)))
 
 (define-syntax virtual-machine
   (syntax-rules ()
@@ -353,22 +356,19 @@ FORWARDINGS is a list of host-port/guest-port pairs."
                                                 system target)
   (match vm
     (($ <virtual-machine> os qemu volatile? graphic? memory-size
-                          disk-image-size ())
-     (system-qemu-image/shared-store-script os
-                                            #:system system
-                                            #:target target
-                                            #:qemu qemu
-                                            #:graphic? graphic?
-                                            #:volatile? volatile?
-                                            #:memory-size memory-size
-                                            #:disk-image-size
-                                            disk-image-size))
-    (($ <virtual-machine> os qemu volatile? graphic? memory-size
-                          disk-image-size forwardings)
+                          disk-image-size forwardings date)
      (let ((options
-            `("-nic" ,(string-append
-                       "user,model=virtio-net-pci,"
-                       (port-forwardings->qemu-options forwardings)))))
+            (append (if (null? forwardings)
+                        '()
+                        `("-nic" ,(string-append
+                                   "user,model=virtio-net-pci,"
+                                   (port-forwardings->qemu-options
+                                    forwardings))))
+                    (if date
+                        `("-rtc"
+                          ,(string-append
+                            "base=" (date->string date "~5")))
+                        '()))))
        (system-qemu-image/shared-store-script os
                                               #:system system
                                               #:target target
