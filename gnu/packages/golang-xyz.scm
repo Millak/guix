@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check))
 
 ;;; Commentary:
@@ -54,6 +56,57 @@
     (synopsis "Access Times for files")
     (description "Package atime provides a platform-independent way to get
 atimes for files.")
+    (license license:expat)))
+
+(define-public go-github-com-gabriel-vasile-mimetype
+  (package
+    (name "go-github-com-gabriel-vasile-mimetype")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gabriel-vasile/mimetype")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11swnjczhrza0xi8q2wlk056nnbcghm44vqs52zfv6rwqvy6imhj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/gabriel-vasile/mimetype"
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'add-supported-mimes-md
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       ;; This file needs to be available for writing during the
+                       ;; tests otherwise they will fail.
+                       (let ((file (format #f "src/~a/supported_mimes.md"
+                                           import-path)))
+                         (invoke "touch" file)
+                         (chmod file #o644)))))))
+    (propagated-inputs (list go-golang-org-x-net))
+    (home-page "https://github.com/gabriel-vasile/mimetype")
+    (synopsis "Golang library for media type and file extension detection")
+    (description
+     "This package provides a Golang module that uses magic number signatures
+to detect the MIME type of a file.
+
+Main features:
+@itemize
+@item Fast and precise MIME type and file extension detection.
+@item Supports
+@url{https://github.com/gabriel-vasile/mimetype/blob/master/supported_mimes.md,
+many MIME types}.
+@item Allows to
+@url{https://pkg.go.dev/github.com/gabriel-vasile/mimetype#example-package-Extend,
+extend} with other file formats.
+@item Common file formats are prioritized.
+@item
+@url{https://pkg.go.dev/github.com/gabriel-vasile/mimetype#example-package-TextVsBinary,
+Differentiation between text and binary files}.
+@item Safe for concurrent usage.
+@end itemize")
     (license license:expat)))
 
 (define-public go-github-com-matryer-try
