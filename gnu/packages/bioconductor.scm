@@ -18097,41 +18097,23 @@ datasets, which increases the analytical flexibility and the statistical power
 of the analyses while minimizing technical noise.")
       (license license:expat))))
 
+;; This package bundles a version of Boost.  We cannot use the latest version
+;; of Boost here, as we also need to make sure that the BH (r-bh) package is
+;; compatible with whatever this package bundles.
 (define-public r-cytolib
   (package
     (name "r-cytolib")
-    (version "2.14.0")
+    (version "2.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "1r2slhzrp3gf45k5gknqgj3vjz7p0rx2yjzrbp020inj82fp4mgi"))
-       ;; Remove bundled boost sources
-       (modules '((guix build utils)))
-       (snippet
-        '(delete-file-recursively "src/boost"))))
+         "1kagik93ddcl3m1i2bqzzlh18lbxywfn3pxmp47p45kayzxzldrf"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'unbundle
-            (lambda _
-              (substitute* "src/Makevars.in"
-                (("\\$\\(USERLIB\\): \\$\\{boost_fs_objs\\}")
-                 "$(USERLIB):")
-                (("\\$\\{cytolib_objs\\} \\$\\{boost_fs_objs\\} \\$\\{boost_sys_objs\\}")
-                 "${cytolib_objs}")
-                (("PKG_CPPFLAGS =")
-                 "PKG_CPPFLAGS = -lboost_filesystem")
-                #;
-                (("^BOOSTFSLIB.*")
-                 (string-append "BOOSTFSLIB="
-                                #$(this-package-input "boost") "/libboost_filesystem.so\n"))))))))
-    (inputs (list boost openblas protobuf zlib))
+    (inputs (list openblas protobuf zlib))
     (native-inputs
      (list r-knitr))
     (propagated-inputs
