@@ -20462,6 +20462,34 @@ and manages a local cache of files retrieved enabling quick and reproducible
 access.")
     (license license:artistic2.0)))
 
+(define-public r-experimenthubdata
+  (package
+    (name "r-experimenthubdata")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ExperimentHubData" version))
+       (sha256
+        (base32 "0msg3wpz1ppvwc4dsm9bz9h4y4hz67xr1xwp4vv4100sg0i5v9jn"))))
+    (properties `((upstream-name . "ExperimentHubData")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationhubdata
+                             r-biocgenerics
+                             r-biocmanager
+                             r-curl
+                             r-dbi
+                             r-experimenthub
+                             r-httr
+                             r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ExperimentHubData")
+    (synopsis "Add resources to ExperimentHub")
+    (description
+     "This package provides functions to add metadata to @code{ExperimentHub}
+db and resource files to AWS S3 buckets.")
+    (license license:artistic2.0)))
+
 (define-public r-grohmm
   (package
     (name "r-grohmm")
