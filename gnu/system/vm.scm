@@ -71,6 +71,8 @@
   #:export (virtualized-operating-system
             system-qemu-image/shared-store-script
 
+            linux-image-startup-command
+
             virtual-machine
             virtual-machine?
             virtual-machine-operating-system
@@ -132,7 +134,8 @@
        (check? #f)
        (create-mount-point? #t)))))
 
-(define* (virtualized-operating-system os mappings
+(define* (virtualized-operating-system os
+                                       #:optional (mappings '())
                                        #:key (full-boot? #f) volatile?)
   "Return an operating system based on OS suitable for use in a virtualized
 environment with the store shared with the host.  MAPPINGS is a list of
@@ -315,6 +318,63 @@ useful when FULL-BOOT?  is true."
             (chmod port #o555))))
 
     (gexp->derivation "run-vm.sh" builder)))
+
+(define* (linux-image-startup-command image
+                                      #:key
+                                      (system (%current-system))
+                                      (target #f)
+                                      (qemu qemu-minimal)
+                                      (graphic? #f)
+                                      (cpu "max")
+                                      (cpu-count 1)
+                                      (memory-size 1024)
+                                      (port-forwardings '())
+                                      (date #f))
+  "Return a list-valued gexp representing the command to start QEMU to run
+IMAGE, assuming it uses the Linux kernel, and not sharing the store with the
+host."
+  (define os
+    ;; Note: 'image-operating-system' would return the wrong OS, before
+    ;; its root partition has been assigned a UUID.
+    (operating-system-for-image image))
+
+  (define kernel-arguments
+    #~(list #$@(if graphic? #~() #~("console=ttyS0"))
+            #+@(operating-system-kernel-arguments os "/dev/vda1")))
+
+  #~`(#+(file-append qemu "/bin/"
+                     (qemu-command (or target system)))
+      ,@(if (access? "/dev/kvm" (logior R_OK W_OK))
+            '("-enable-kvm")
+            '())
+
+      "-cpu" #$cpu
+      #$@(if (> cpu-count 1)
+             #~("-smp" #$(string-append "cpus=" (number->string cpu-count)))
+             #~())
+      "-m" #$(number->string memory-size)
+      "-nic" #$(string-append
+                "user,model=virtio-net-pci,"
+                (port-forwardings->qemu-options port-forwardings))
+      "-kernel" #$(operating-system-kernel-file os)
+      "-initrd" #$(file-append os "/initrd")
+      "-append" ,(string-join #$kernel-arguments)
+      "-serial" "stdio"
+
+      #$@(if date
+             #~("-rtc"
+                #$(string-append "base=" (date->string date "~5")))
+             #~())
+
+      "-object" "rng-random,filename=/dev/urandom,id=guix-vm-rng"
+      "-device" "virtio-rng-pci,rng=guix-vm-rng"
+
+      "-drive"
+      ,(string-append "file=" #$(system-image image)
+                      ",format=qcow2,if=virtio,"
+                      "cache=writeback,werror=report,readonly=off")
+      "-snapshot"
+      "-no-reboot"))
 
 
 ;;;
