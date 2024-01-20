@@ -57330,6 +57330,25 @@ Pwrite traits from the scroll crate.")
         ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16)
         ("rust-tiny-skia" ,rust-tiny-skia-0.7))))))
 
+(define-public rust-sd-notify-0.4
+  (package
+    (name "rust-sd-notify")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sd-notify" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0clc887rjdz0796c1lsbwnrgmcis4b30gyy3qb4v8zg0yf03c7k2"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/lnicola/sd-notify")
+    (synopsis "Lightweight crate for systemd service state notifications")
+    (description
+     "This package provides a lightweight crate for systemd service state
+notifications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-seahash-3
   (package
     (name "rust-seahash")
