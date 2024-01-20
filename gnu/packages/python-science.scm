@@ -339,6 +339,27 @@ logic, also known as grey logic.")
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
 
+(define-public python-scikit-opt
+  (package
+    (name "python-scikit-opt")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit-opt" version))
+       (sha256
+        (base32 "0ycqizgsj7q57asc1bphzhf1fx9zqn0vx5rli7q541bas64hfqiy"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/guofei9987/scikit-opt")
+    (synopsis "Swarm intelligence algorithms in Python")
+    (description
+     "Scikit-opt (or sko) is a Python module implementing @dfn{swarm
+intelligence} algorithms: genetic algorithm, particle swarm optimization,
+simulated annealing, ant colony algorithm, immune algorithm, artificial fish
+swarm algorithm.")
+    (license license:expat)))
+
 (define-public python-scikit-optimize
   (package
     (name "python-scikit-optimize")
