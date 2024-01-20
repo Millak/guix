@@ -64,7 +64,7 @@
 ;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
@@ -90,6 +90,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system asdf)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -107,8 +108,10 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages calendar)
-  #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -1912,6 +1915,94 @@ display a clock or apply image manipulation techniques to the background image."
     (description "Swaybg is a wallpaper utility for Wayland compositors.")
     (license license:expat))) ; MIT license
 
+(define-public swww
+  (package
+    (name "swww")
+    (version "0.8.2")
+    (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/LGFae/swww")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ps10dv6a8a0hiw7p8kg64mf81pvavskmyn5xpbfw6hrc991vdlz"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin (substitute* "utils/Cargo.toml"
+                           (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                            (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-log" ,rust-log-0.4)
+        ("rust-simplelog" ,rust-simplelog-0.12)
+        ("rust-wayland-client" ,rust-wayland-client-0.31)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18)
+        ("rust-nix" ,rust-nix-0.27)
+        ("rust-keyframe" ,rust-keyframe-1)
+        ("rust-rkyv" ,rust-rkyv-0.7)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-spin-sleep" ,rust-spin-sleep-1)
+        ("rust-sd-notify" ,rust-sd-notify-0.4)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-fast-image-resize" ,rust-fast-image-resize-2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-lzzzz" ,rust-lzzzz-1))
+      #:cargo-development-inputs
+      `(("rust-rand" ,rust-rand-0.8)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-criterion" ,rust-criterion-0.5))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-documentation
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "doc/gen.sh")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (share (string-append out "/share"))
+                     (man1 (string-append share "/man/man1"))
+                     (swww (car (find-files "target" "^swww$")))
+                     (swww-daemon (car (find-files "target" "^swww-daemon$")))
+                     (bash-completions-dir
+                      (string-append share "/bash-completion/completions"))
+                     (zsh-completions-dir
+                      (string-append share "/zsh/site-functions"))
+                     (fish-completions-dir
+                      (string-append share "/fish/vendor_completions.d"))
+                     (elvish-completions-dir
+                      (string-append share "/elvish/lib")))
+                (install-file swww bin)
+                (install-file swww-daemon bin)
+                (copy-recursively "doc/generated" man1)
+                (install-file "completions/swww.bash" bash-completions-dir)
+                (install-file "completions/_swww" zsh-completions-dir)
+                (install-file "completions/swww.fish" fish-completions-dir)
+                (install-file "completions/swww.elv" elvish-completions-dir))))
+          (add-after 'install 'wrap-binaries
+           (lambda* (#:key outputs inputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (lz4 (assoc-ref inputs "lz4")))
+               (wrap-program (string-append out "/bin/swww")
+                 `("PATH" prefix (,(string-append lz4 "/bin"))))
+               (wrap-program (string-append out "/bin/swww-daemon")
+                 `("PATH" prefix (,(string-append lz4 "/bin"))))))))))
+    (native-inputs (list scdoc))
+    (inputs (list bash-minimal lz4))
+    (home-page "https://github.com/LGFae/swww")
+    (synopsis
+     "Efficient animated wallpaper daemon for wayland controlled at runtime")
+    (description
+     "A Solution to your Wayland Wallpaper Woes (swww).  It uses minimal resources
+and provides animations for switching between backgrounds.")
+    (license license:gpl3+)))
 
 (define-public swaynotificationcenter
   (package
