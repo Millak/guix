@@ -72,7 +72,15 @@
             system-qemu-image/shared-store-script
 
             virtual-machine
-            virtual-machine?))
+            virtual-machine?
+            virtual-machine-operating-system
+            virtual-machine-qemu
+            virtual-machine-volatile?
+            virtual-machine-graphic?
+            virtual-machine-memory-size
+            virtual-machine-disk-image-size
+            virtual-machine-port-forwardings
+            virtual-machine-date))
 
 
 ;;; Commentary:
