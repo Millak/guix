@@ -13654,6 +13654,28 @@ Rust compiler.")
      "This package provides running completions for your program.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-completest-pty-0.5
+  (package
+    (name "rust-completest-pty")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "completest-pty" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11fib7yly355yjkzjp8bj5rqvv83xlm7mrkbc6bqyq3zw9r14v9a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-completest" ,rust-completest-0.4)
+                       ("rust-ptyprocess" ,rust-ptyprocess-0.4)
+                       ("rust-vt100" ,rust-vt100-0.15))))
+    (home-page "https://github.com/assert-rs/completest")
+    (synopsis "Run completions for your program")
+    (description
+     "This package provides running completions for your program.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-comrak-0.12
   (package
     (name "rust-comrak")
