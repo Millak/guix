@@ -580,8 +580,8 @@ doing practical, real world data analysis in Python.")
     (name "python-pandas-stubs")
     ;; The versioning follows that of Pandas and uses the date of the
     ;; python-pandas-stubs release. This is the latest version of
-    ;; python-pandas-stubs for python-pandas 1.4.4.
-    (version "1.4.4.220919")
+    ;; python-pandas-stubs for python-pandas 1.5.3.
+    (version "1.5.3.230321")
     (source
      (origin
        ;; No tests in the PyPI tarball.
@@ -591,10 +591,21 @@ doing practical, real world data analysis in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14fhj1y71akwl41ws7cpazsbq5b8wf4rwaydqq2h39q7gylpcp99"))))
+        (base32 "1blwlq5053pxnmx721zdd6v8njiybz4azribx2ygq33jcpmknda6"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     (list
+      #:test-flags #~(list "-k"
+                           (string-append
+                            ;; The python-pyarrow package in Guix is not built
+                            ;; with ORC integration, causing these tests to
+                            ;; fail.
+                            "not test_orc"
+                            " and not test_orc_path"
+                            " and not test_orc_buffer"
+                            " and not test_orc_columns"
+                            " and not test_orc_bytes"))
+      #:phases '(modify-phases %standard-phases
                   (add-before 'check 'prepare-x
                     (lambda _
                       (system "Xvfb &")
@@ -607,6 +618,7 @@ doing practical, real world data analysis in Python.")
     ;; tests will be skipped for now.
     (native-inputs (list python-lxml
                          python-matplotlib
+                         python-odfpy
                          python-pandas
                          python-poetry-core
                          python-pyarrow
