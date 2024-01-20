@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -42,7 +42,7 @@
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "1.1.0")
+    (version "2.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0k1miyrnh5362qy50jzp5j3ww0c8hr7wk3y5kg6xlqgk9f8msvag"))
+                "0bn3a3m0kcjybyaz1a7pj8n48jh1cg4szwi9px3zjhhm5818wi7z"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
@@ -89,6 +89,7 @@
            texlive-glossaries-extra
            texlive-koma-script
            texlive-lilyglyphs
+           texlive-chngcntr
            texlive-minted
            texlive-multirow
            texlive-pgf
