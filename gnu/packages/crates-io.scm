@@ -75259,14 +75259,14 @@ streams.")
 (define-public rust-test-case-3
   (package
     (name "rust-test-case")
-    (version "3.1.0")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "test-case" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1pr53g4x6gykfj4hvffivyd0aa0hj9pbfr87y8908sskvrxnw79a"))))
+                "1a380yzm6787737cw7s09jqmkn9035hghahradl2ikdg2gfm09gb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all test files included.
@@ -75275,7 +75275,7 @@ streams.")
         ("rust-test-case-macros" ,rust-test-case-macros-3))
        #:cargo-development-inputs
        (("rust-insta" ,rust-insta-1)
-        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools" ,rust-itertools-0.11)
         ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/frondeus/test-case")
     (synopsis "Procedural macro attribute for parametrized test cases")
