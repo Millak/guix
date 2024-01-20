@@ -75,6 +75,7 @@
             virtual-machine?
             virtual-machine-operating-system
             virtual-machine-qemu
+            virtual-machine-cpu-count
             virtual-machine-volatile?
             virtual-machine-graphic?
             virtual-machine-memory-size
@@ -326,6 +327,8 @@ useful when FULL-BOOT?  is true."
   (operating-system virtual-machine-operating-system) ;<operating-system>
   (qemu             virtual-machine-qemu              ;<package>
                     (default qemu-minimal))
+  (cpu-count        virtual-machine-cpu-count     ;integer
+                    (default 1))
   (volatile?        virtual-machine-volatile?    ;Boolean
                     (default #t))
   (graphic?         virtual-machine-graphic?      ;Boolean
@@ -363,7 +366,7 @@ FORWARDINGS is a list of host-port/guest-port pairs."
 (define-gexp-compiler (virtual-machine-compiler (vm <virtual-machine>)
                                                 system target)
   (match vm
-    (($ <virtual-machine> os qemu volatile? graphic? memory-size
+    (($ <virtual-machine> os qemu cpus volatile? graphic? memory-size
                           disk-image-size forwardings date)
      (let ((options
             (append (if (null? forwardings)
@@ -372,6 +375,10 @@ FORWARDINGS is a list of host-port/guest-port pairs."
                                    "user,model=virtio-net-pci,"
                                    (port-forwardings->qemu-options
                                     forwardings))))
+                    (if (> cpus 1)
+                        `("-smp" ,(string-append "cpus="
+                                                 (number->string cpus)))
+                        '())
                     (if date
                         `("-rtc"
                           ,(string-append
