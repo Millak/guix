@@ -1622,7 +1622,7 @@ provides a number of utilities to make coding with expected cleaner.")
 (define-public immer
   (package
    (name "immer")
-   (version "0.8.0")
+   (version "0.8.1")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -1630,19 +1630,12 @@ provides a number of utilities to make coding with expected cleaner.")
                   (commit (string-append "v" version))))
             (file-name (git-file-name name version))
             (sha256
-             (base32 "11km3l5h3rgsbj8yfyzk3fnx9na55l6zs2sxpx922yvlvs2blh27"))
-            (modules '((guix build utils)))
-            (snippet #~(begin
-                         (delete-file "tools/include/doctest.h")
-                         (delete-file "tools/include/catch.hpp")
-                         (substitute* (find-files "test" "\\.[cih]pp")
-                           (("<catch.hpp>") "<catch2/catch.hpp>")
-                           (("<doctest.h>") "<doctest/doctest.h>"))
-                         (substitute* (find-files "test/oss-fuzz" "\\.cpp")
-                           ;; someone used the wrong header :)
-                           (("<fmt/printf.h>") "<fmt/ostream.h>"))))))
+             (base32 "03qkr42h0g6rivj3kq207gzgnv7hq88y69q16l2vg1lbvjcgca2g"))))
    (build-system cmake-build-system)
-   (arguments (list #:test-target "check"))
+   (arguments (list #:test-target "check"
+                    ;; -Werror appears to report false positives.
+                    ;; See <https://github.com/arximboldi/immer/issues/223>.
+                    #:configure-flags #~(list "-DDISABLE_WERROR=ON")))
    (inputs (list boost libgc c-rrb))
    (native-inputs (list catch2 doctest fmt pkg-config))
    (home-page "https://sinusoid.es/immer")
