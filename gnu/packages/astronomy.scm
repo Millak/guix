@@ -1227,52 +1227,51 @@ astronomical fields.  SkyMaker is part of the
         (base32 "0rz29v33n0x0k40hv3v79ym5ylch1v0pbph4i21809gz2al5p7dq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list
-        (string-append
-         "SKRY_INCLUDE_PATH=" (assoc-ref %build-inputs "libskry") "/include")
-        (string-append
-         "SKRY_LIB_PATH=-L" (assoc-ref %build-inputs "libskry") "/lib")
-        (string-append
-         "LIBAV_INCLUDE_PATH=" (assoc-ref %build-inputs "ffmpeg") "/include"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; no configure and tests are provided
-         (delete 'configure)
-         (delete 'check)
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "src/main.cpp"
-               (("\"\\.\\.\", \"lang\"")
-                "\"../share/stackistry\", \"lang\""))
-             (substitute* "src/utils.cpp"
-               (("\"\\.\\.\", \"icons\"")
-                "\"../share/stackistry\", \"icons\""))
-             #t))
-         (replace 'install
-           ;; The Makefile lacks an ‘install’ target.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (icons (string-append out "/share/stackistry/icons"))
-                    (lang (string-append out "/share/stackistry/lang")))
-               (copy-recursively "bin" bin)
-               (copy-recursively "icons" icons)
-               (copy-recursively "lang" lang))
-             #t)))))
+     (list
+      #:tests? #f ; No test target
+      #:make-flags
+      #~(list
+         (string-append
+          "SKRY_INCLUDE_PATH=" #$(this-package-input "libskry") "/include")
+         (string-append
+          "SKRY_LIB_PATH=-L" #$(this-package-input "libskry") "/lib")
+         (string-append
+          "LIBAV_INCLUDE_PATH=" #$(this-package-input "ffmpeg") "/include"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; no configure and tests are provided
+          (delete 'configure)
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* "src/main.cpp"
+                (("\"\\.\\.\", \"lang\"")
+                 "\"../share/stackistry\", \"lang\""))
+              (substitute* "src/utils.cpp"
+                (("\"\\.\\.\", \"icons\"")
+                 "\"../share/stackistry\", \"icons\""))))
+          (replace 'install
+            ;; The Makefile lacks an ‘install’ target.
+            (lambda _
+              (let* ((out #$output)
+                     (bin (string-append out "/bin"))
+                     (icons (string-append out "/share/stackistry/icons"))
+                     (lang (string-append out "/share/stackistry/lang")))
+                (copy-recursively "bin" bin)
+                (copy-recursively "icons" icons)
+                (copy-recursively "lang" lang)))))))
     (native-inputs
      (list pkg-config))
-     (inputs
-      (list gtkmm-3 libskry ffmpeg-4))
-     (home-page "https://github.com/GreatAttractor/stackistry")
-     (synopsis "Astronomical lucky imaging/image stacking tool")
-     (description
-      "Stackistry implements the lucky imaging principle of astronomical
+    (inputs
+     (list gtkmm-3 libskry ffmpeg-4))
+    (home-page "https://github.com/GreatAttractor/stackistry")
+    (synopsis "Astronomical lucky imaging/image stacking tool")
+    (description
+     "Stackistry implements the lucky imaging principle of astronomical
 imaging: creating a high-quality still image out of a series of many (possibly
 thousands) low quality ones (blurred, deformed, noisy).  The resulting image
 stack typically requires post-processing, including sharpening (e.g. via
 deconvolution).  Such post-processing is not performed by Stackistry.")
-     (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public stellarium
   (package
