@@ -525,7 +525,7 @@ This package is the community maintained fork of @code{exa}.")
 (define-public fd
   (package
     (name "fd")
-    (version "8.7.0")
+    (version "9.0.0")
     (source
      (origin
        (method url-fetch)
@@ -534,85 +534,77 @@ This package is the community maintained fork of @code{exa}.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "186217yyb0znfn4jcc9l3i51fhfyb23lhbm3gg084sdrbj6bdnbg"))))
+         "1is6xrsnbiy4la3lrmxzl3pzzkygnx9mp8h5k8gfrc29bq8m7891"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       '("--release"
-         "--"
-         ;; No user 'root' in the build environment.
-         "--skip=test_owner_root")
-       #:install-source? #f
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
+     (list
+      #:cargo-test-flags
+      ;; No user 'root' in the build environment.
+      '(list "--release" "--"
+             "--skip=test_owner_root")
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-aho-corasick" ,rust-aho-corasick-1)
+        ("rust-anyhow" ,rust-anyhow-1)
         ("rust-argmax" ,rust-argmax-0.3)
-        ("rust-atty" ,rust-atty-0.2)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-dirs-next" ,rust-dirs-next-2)
+        ("rust-etcetera" ,rust-etcetera-0.8)
         ("rust-faccess" ,rust-faccess-0.2)
         ("rust-globset" ,rust-globset-0.4)
         ("rust-humantime" ,rust-humantime-2)
         ("rust-ignore" ,rust-ignore-0.4)
         ("rust-jemallocator" ,rust-jemallocator-0.5)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-lscolors" ,rust-lscolors-0.13)
-        ("rust-nix" ,rust-nix-0.26)
-        ("rust-normpath" ,rust-normpath-0.3)
-        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.46)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-lscolors" ,rust-lscolors-0.16)
+        ("rust-nix" ,rust-nix-0.27)
+        ("rust-normpath" ,rust-normpath-1)
+        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.49)
         ("rust-regex" ,rust-regex-1)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
-        ("rust-users" ,rust-users-0.11)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.8)
         ("rust-version-check" ,rust-version-check-0.9))
-       #:cargo-development-inputs
-       (("rust-diff" ,rust-diff-0.1)
+      #:cargo-development-inputs
+      `(("rust-diff" ,rust-diff-0.1)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-test-case" ,rust-test-case-2))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'override-jemalloc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((jemalloc (assoc-ref inputs "jemalloc")))
-               ;; This flag is needed when not using the bundled jemalloc.
-               ;; https://github.com/tikv/jemallocator/issues/19
-               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
-               (setenv "JEMALLOC_OVERRIDE"
-                       (string-append jemalloc "/lib/libjemalloc.so")))))
-         (add-after 'unpack 'adjust-feature-flags
-           (lambda _
-             ;; unstable-grouped was stablized in rust-clap 4.2.0
-             (substitute* "Cargo.toml"
-               ((".*unstable-grouped.*") ""))))
-         (add-after 'install 'install-extra
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Manpages
-               (install-file "doc/fd.1" (string-append out "/share/man/man1"))
-               ;; Completions require running the built binary.
-               (unless ,(%current-target-system)
-                 (invoke "make" "completions")
-                 (install-file "autocomplete/fd.bash"
-                               (string-append out "/etc/bash_completion.d"))
-                 (install-file "autocomplete/fd.fish"
-                               (string-append out "/share/fish/vendor_completions.d"))
-                 (install-file "autocomplete/_fd"
-                               (string-append out "/share/zsh/site-functions"))
-                 (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
-                              (string-append out "/etc/bash_completion.d/fd")))))))))
-    (inputs (list jemalloc))
-    (home-page "https://github.com/sharkdp/fd")
-    (synopsis "Simple, fast and user-friendly alternative to find")
-    (description
-     "@code{fd} is a simple, fast and user-friendly alternative to @code{find}.
-While it does not seek to mirror all of find's powerful functionality, it
-provides defaults for 80% of the use cases.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-test-case" ,rust-test-case-3))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'override-jemalloc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((jemalloc (assoc-ref inputs "jemalloc")))
+                ;; This flag is needed when not using the bundled jemalloc.
+                ;; https://github.com/tikv/jemallocator/issues/19
+                (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+                (setenv "JEMALLOC_OVERRIDE"
+                        (string-append jemalloc "/lib/libjemalloc.so")))))
+          (add-after 'install 'install-extras
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                ;; Manpages
+                (install-file "doc/fd.1" (string-append out "/share/man/man1"))
+                ;; Completions require running the built binary.
+                (unless #$(%current-target-system)
+                  (invoke "make" "completions")
+                  (install-file "autocomplete/fd.bash"
+                                (string-append out "/etc/bash_completion.d"))
+                  (install-file "autocomplete/fd.fish"
+                                (string-append out "/share/fish/vendor_completions.d"))
+                  (install-file "autocomplete/_fd"
+                                (string-append out "/share/zsh/site-functions"))
+                  (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
+                               (string-append out "/etc/bash_completion.d/fd")))))))))
+     (inputs (list jemalloc))
+     (home-page "https://github.com/sharkdp/fd")
+     (synopsis "Simple, fast and user-friendly alternative to find")
+     (description
+      "@code{fd} is a simple, fast and user-friendly alternative to @code{find}.
+While it does not seek to mirror all of find's powerful functionality, it provides
+defaults for 80% of the use cases.")
+     (license (list license:expat license:asl2.0))))
 
 (define-public hexyl
   (package
