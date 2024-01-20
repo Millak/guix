@@ -69159,14 +69159,14 @@ algorithm.  Includes streaming compression and decompression.")
 (define-public rust-snapbox-macros-0.3
   (package
     (name "rust-snapbox-macros")
-    (version "0.3.6")
+    (version "0.3.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "snapbox-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "13mj53zkgz85f80pk3g3nixkwhqdjhzbxf926gfnlscazyx5j5gd"))))
+                "0rxn80n3y6h7cp75zd3g3akpw3whh31fhvv9zy20k55dk82xxk3q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6))))
