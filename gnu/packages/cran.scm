@@ -5092,6 +5092,42 @@ Shiny apps, using modal dialog boxes, with no need to observe each help button
 separately.")
     (license license:gpl3)))
 
+(define-public r-shinymeta
+  (package
+    (name "r-shinymeta")
+    (version "0.2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "shinymeta" version))
+       (sha256
+        (base32 "1lizg5sjg0f2axr9vk8z4w43lbyim83gd4dzx91dygknv3kgyp89"))))
+    (properties `((upstream-name . "shinymeta")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed by styler for writing to caches.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list r-callr
+                             r-fastmap
+                             r-fs
+                             r-htmltools
+                             r-rlang
+                             r-shiny
+                             r-sourcetools
+                             r-styler))
+    (home-page "https://rstudio.github.io/shinymeta/")
+    (synopsis "Export domain logic from Shiny using meta-programming")
+    (description
+     "This package provides tools for capturing logic in a Shiny app and
+exposing it as code that can be run outside of Shiny (e.g., from an R
+console).  It also provides tools for bundling both the code and results to
+the end user.")
+    (license license:gpl3)))
+
 ;; This package includes minified JavaScript files.  When upgrading please
 ;; check that there are no new minified JavaScript files.
 (define-public r-shinytree
