@@ -16289,6 +16289,37 @@ type and symbol colors.")
 position-specific scores within R and Bioconductor.")
     (license license:artistic2.0)))
 
+(define-public r-genomicstate
+  (package
+    (name "r-genomicstate")
+    (version "0.99.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "GenomicState" version
+                              'annotation))
+       (sha256
+        (base32 "1r7z3n6wyrd2cclj5b7sg15wpmjdh9k5b1hjlw7jjx8j384l7l1h"))))
+    (properties `((upstream-name . "GenomicState")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-annotationhub
+                             r-bumphunter
+                             r-derfinder
+                             r-genomeinfodb
+                             r-genomicfeatures
+                             r-iranges
+                             r-org-hs-eg-db
+                             r-rtracklayer))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/LieberInstitute/GenomicState")
+    (synopsis "Build and access GenomicState objects")
+    (description
+     "This package contains functions for building @code{GenomicState} objects
+from different annotation sources such as Gencode.  It also provides access to
+these files at JHPCE.")
+    (license license:artistic2.0)))
+
 (define-public r-atacseqqc
   (package
     (name "r-atacseqqc")
