@@ -61918,6 +61918,29 @@ future to wake it up, it continuously polls the future until the future is
 ready.  This will probably use a lot of CPU, so be careful when you use it.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-spin-sleep-1
+  (package
+    (name "rust-spin-sleep")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spin_sleep" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zrllbf1ksc6srjgbslk2fn5c9fp5f1rrrw2n0301xza9639g2in"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5))))
+    (home-page "https://github.com/alexheretic/spin-sleep")
+    (synopsis "Accurate sleeping and spinning")
+    (description
+     "This library adds a middle ground, using a configurable native accuracy setting
+allowing @code{thread::sleep} to wait the bulk of a sleep time, and spin the final
+section to guarantee accuracy.")
+    (license license:asl2.0)))
+
 (define-public rust-spinning-top-0.2
   (package
     (name "rust-spinning-top")
