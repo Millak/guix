@@ -3179,23 +3179,30 @@ low quality ones")
        (sha256
         (base32 "1na3gyb3nzb5gdgccs1653j2gnz6w3v1mqzhyhkx3yqw8bs3q5x0"))))
     (build-system gnu-build-system)
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "armhf-linux" "aarch64-linux"))
     (arguments
-     `(#:tests? #f
-       #:make-flags
-       (list
-        ,(match (or (%current-target-system) (%current-system))
-           ((or "aarch64-linux" "armhf-linux" "i686-linux" "x86_64-linux")
-            "OS_TARGET=linux")
-           (_ #f))
-        ,(match (or (%current-target-system) (%current-system))
-           ("i686-linux" "CPU_TARGET=i386")
-           ("x86_64-linux" "CPU_TARGET=x86_64")
-           ((or "armhf-linux" "aarch64-linux") "CPU_TARGET=armv7l")
-           (_ #f))
-        (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:tests? #f ; no tests provided
+      #:make-flags
+      #~(list
+         ;; Keep OS detection for the case when Hurd would be suitable to try.
+         #$@(if (target-linux?) '("OS_TARGET=linux") '())
+         ;; Enable buildtime CPU detection where supported,
+         ;; and set a suitable CPU target variable.
+         #$@(match (or (%current-target-system)
+                       (%current-system))
+              ("i686-linux"
+               '("CPU_TARGET=i386"))
+              ("x86_64-linux"
+               '("CPU_TARGET=x86_64"))
+              ((or "armhf-linux" "aarch64-linux")
+               '("CPU_TARGET=armv7l"))
+              (_ '()))
+         (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (home-page "https://github.com/pchev/libpasastro")
     (synopsis "Interface to astronomy library for use from Pascal program")
     (description
@@ -3207,7 +3214,7 @@ standard astronomy libraries:
 @item @code{libpasplan404.so}: Interface with Plan404 to compute planets position.
 @item @code{libpaswcs.so}: Interface with libwcs to work with FITS WCS.
 @item @code{libpasspice.so}: To work with NAIF/SPICE kernel.
-@end itemize\n")
+@end itemize")
       (license license:gpl2+)))
 
 (define-public libxisf
