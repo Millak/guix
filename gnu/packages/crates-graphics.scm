@@ -2260,6 +2260,35 @@ pixel buffers with width, height and stride.")
         ("rust-png" ,rust-png-0.14)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-keyframe-1
+  (package
+    (name "rust-keyframe")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "keyframe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1afr5ffns3k79xaqnw6rw3qn8sngwly6gxfnjn8d060mk3vqnw30"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Done to avoid dev dependency on ggez, a game engine.
+       #:cargo-inputs (("rust-mint" ,rust-mint-0.5)
+                       ("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/HannesMann/keyframe")
+    (synopsis "Simple library for animation in Rust")
+    (description
+     "This package provides a simple library for animation in Rust.
+It's features include:
+
+@enumerate
+@item Several easing functions, including user-defined Bézier curves and keyframable curves.
+@item Animation sequences (like CSS keyframes).
+@item @code{mint} integration for 2D/3D/4D support (points, rectangles, colors, etc).
+@end enumerate")
+    (license license:expat)))
+
 (define-public rust-libdav1d-sys-0.6
   (package
     (name "rust-libdav1d-sys")
