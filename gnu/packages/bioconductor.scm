@@ -2012,6 +2012,25 @@ package.")
     ;; Expanded from GPL
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-jaspar2016
+  (package
+    (name "r-jaspar2016")
+    (version "1.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "JASPAR2016" version 'experiment))
+       (sha256
+        (base32 "0dyx29f7jnyqcj85j2yrl8jcphi2kymx2y2mk7ws25xcahl5zzpy"))))
+    (properties `((upstream-name . "JASPAR2016")))
+    (build-system r-build-system)
+    (home-page "https://jaspar.elixir.no/")
+    (synopsis "Data package for JASPAR 2016")
+    (description
+     "This is a data package for JASPAR 2016.  To search this databases,
+please use the package TFBSTools.")
+    (license license:gpl2)))
+
 (define-public r-macrophage
   (package
     (name "r-macrophage")
