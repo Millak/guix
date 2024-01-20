@@ -106,6 +106,26 @@ Only the AGAPS and AMB masks are \"active\" by default.  The sequences are store
 in @code{MaskedDNAString} objects.")
     (license license:artistic2.0)))
 
+(define-public r-ensdb-hsapiens-v79
+  (package
+    (name "r-ensdb-hsapiens-v79")
+    (version "2.99.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EnsDb.Hsapiens.v79" version
+                              'annotation))
+       (sha256
+        (base32 "0k94iml0417m3k086d0bzd83fndyb2kn7pimsfzcdmafgy6sxwgg"))))
+    (properties `((upstream-name . "EnsDb.Hsapiens.v79")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ensembldb))
+    (home-page "https://bioconductor.org/packages/EnsDb.Hsapiens.v79")
+    (synopsis "Ensembl based annotation package")
+    (description "This package exposes an annotation database generated from
+Ensembl.")
+    (license license:artistic2.0)))
+
 (define-public r-hpo-db
   (package
     (name "r-hpo-db")
