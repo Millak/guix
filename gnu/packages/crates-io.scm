@@ -38812,8 +38812,34 @@ image together with its neighboring pixels.")
 key-value pairs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lscolors-0.16
+  (package
+    (name "rust-lscolors")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lscolors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yqfym0lfdkj0f7lpvd0a0brljs7cpknyh14c202frcpqfg202xb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-crossterm" ,rust-crossterm-0.27)
+        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.49))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/sharkdp/lscolors")
+    (synopsis "Colorize paths using the LS_COLORS environment variable")
+    (description
+     "Colorize paths using the LS_COLORS environment variable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lscolors-0.13
   (package
+    (inherit rust-lscolors-0.16)
     (name "rust-lscolors")
     (version "0.13.0")
     (source (origin
@@ -38822,19 +38848,13 @@ key-value pairs.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "1wnxs5d004fx71apvh9124xqky0qjjmpibag24km7bvvss2xrpn2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-crossterm" ,rust-crossterm-0.25)
         ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.46))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/sharkdp/lscolors")
-    (synopsis "Colorize paths using the LS_COLORS environment variable")
-    (description
-     "Colorize paths using the LS_COLORS environment variable.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-lsp-types-0.91
   (package
