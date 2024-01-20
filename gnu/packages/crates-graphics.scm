@@ -1225,6 +1225,41 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (description "Read and write OpenEXR files without any unsafe code")
     (license license:bsd-3)))
 
+(define-public rust-fast-image-resize-2
+  (package
+    (name "rust-fast-image-resize")
+    (version "2.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fast_image_resize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nnm59h7dl2bpi5k2wcd7zz14nl00sa33jiipbjbn48f0i09ly6c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; Unresolved import `testing'
+       #:cargo-inputs
+       (("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-png" ,rust-png-0.17)
+        ("rust-resize" ,rust-resize-0.7)
+        ("rust-rgb" ,rust-rgb-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/cykooz/fast_image_resize")
+    (synopsis
+     "Fast image resizing with using of SIMD instructions")
+    (description
+     "This package provides fast image resizing with using of SIMD instructions.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fast-srgb8-1
   (package
     (name "rust-fast-srgb8")
