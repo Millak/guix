@@ -75352,22 +75352,21 @@ into mod, giving clear and readable test results.")
 (define-public rust-test-case-core-3
   (package
     (name "rust-test-case-core")
-    (version "3.1.0")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "test-case-core" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1vhckjjw4w1kaanhgy6bw8kdr8ligr68bz5nfbvr8xz2s7ar80yi"))))
+                "0krqi0gbi1yyycigyjlak63r8h1n0vms7mg3kckqwlfd87c7zjxd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/frondeus/test-case")
     (synopsis "Core functionality for the test-case crate")
     (description
