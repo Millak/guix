@@ -2066,25 +2066,27 @@ it outputs messages to Android's logcat.")
 (define-public rust-anstream-0.6
   (package
     (name "rust-anstream")
-    (version "0.6.4")
+    (version "0.6.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "anstream" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i2a9390vwhc42c5njz38n56jfwg17v64nqw9232j9gb2sz1xf9a"))))
+        (base32 "19dndamalavhjwp4i74k8hdijcixb7gsfa6ycwyc1r8xn6y1wbkf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
-                       ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
-                       ("rust-anstyle-query" ,rust-anstyle-query-1)
-                       ("rust-anstyle-wincon" ,rust-anstyle-wincon-3)
-                       ("rust-colorchoice" ,rust-colorchoice-1)
-                       ("rust-utf8parse" ,rust-utf8parse-0.2))
+     `(#:cargo-inputs
+       (("rust-anstyle" ,rust-anstyle-1)
+        ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
+        ("rust-anstyle-query" ,rust-anstyle-query-1)
+        ("rust-anstyle-wincon" ,rust-anstyle-wincon-3)
+        ("rust-colorchoice" ,rust-colorchoice-1)
+        ("rust-utf8parse" ,rust-utf8parse-0.2))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.5)
-        ("rust-owo-colors" ,rust-owo-colors-3)
+        ("rust-lexopt" ,rust-lexopt-0.3)
+        ("rust-owo-colors" ,rust-owo-colors-4)
         ("rust-proptest" ,rust-proptest-1)
         ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.2))))
     (home-page "https://github.com/rust-cli/anstyle")
