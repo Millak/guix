@@ -75377,21 +75377,20 @@ procedural macro attribute for generating parametrized test cases easily")
 (define-public rust-test-case-macros-3
   (package
     (name "rust-test-case-macros")
-    (version "3.1.0")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "test-case-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "014l5wafp069d251c62flwyai8nv75vpjlmib2xc2m3a3i5s9fgf"))))
+                "1yvgky3qax73bic6m368q04xc955p4a91mddd6b5fk7d04mfg2aw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
+        ("rust-syn" ,rust-syn-2)
         ("rust-test-case-core" ,rust-test-case-core-3))))
     (home-page "https://github.com/frondeus/test-case")
     (synopsis "Macros for the test-case crate")
