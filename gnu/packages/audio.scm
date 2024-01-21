@@ -305,7 +305,7 @@ displays a histogram of the roundtrip time jitter.")
 (define-public webrtc-audio-processing
   (package
     (name "webrtc-audio-processing")
-    (version "1.0")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
@@ -313,7 +313,7 @@ displays a histogram of the roundtrip time jitter.")
         (string-append "http://freedesktop.org/software/pulseaudio/"
                        name "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vwkw5xw8l37f5vbzbkipjsf03r7b8nnrfbfbhab8bkvf79306j4"))
+        (base32 "0xfvq5lxg612vfzk3zk6896zcb4cgrrb7fq76w9h40magz0jymcm"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
