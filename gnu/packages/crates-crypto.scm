@@ -1706,3 +1706,37 @@ cryptographic library.")
 cryptographic library.")
     (license ;; licensed under either of these, at your option
      (list license:lgpl3 license:gpl2 license:gpl3))))
+
+(define-public rust-orion-0.17
+  (package
+    (name "rust-orion")
+    (version "0.17.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "orion" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ri0b0vyd9vqwlzlcv0q4i7r9pga23q7nnnvd5z4zycjc9v4mryb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ct-codecs" ,rust-ct-codecs-1)
+        ("rust-fiat-crypto" ,rust-fiat-crypto-0.1)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/orion-rs/orion")
+    (synopsis "Pure-Rust crypto")
+    (description
+     "Orion is a cryptography library written in pure Rust.  It aims to provide
+easy and usable crypto while trying to minimize the use of unsafe code.")
+    (license license:expat)))
