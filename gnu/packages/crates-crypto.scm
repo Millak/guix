@@ -1366,3 +1366,119 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
        #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
                                    ("rust-sha2" ,rust-sha2-0.10)
                                    ("rust-sha3" ,rust-sha3-0.10))))))
+
+(define-public rust-hkdf-0.12
+  (package
+    (name "rust-hkdf")
+    (version "0.12.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xxxzcarz151p1b858yn5skmhyrvn8fs4ivx5km3i1kjmnr8wpvv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hmac" ,rust-hmac-0.12))
+       #:cargo-development-inputs
+       (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-hex-literal" ,rust-hex-literal-0.2)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/RustCrypto/KDFs/")
+    (synopsis "HMAC-based Extract-and-Expand Key Derivation Function (HKDF)")
+    (description "This package provides a HMAC-based Extract-and-Expand Key
+Derivation Function (HKDF).")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hkdf-0.11
+  (package
+    (inherit rust-hkdf-0.12)
+    (name "rust-hkdf")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sw8bz79xqq3bc5dh6nzv084g7va13j3lrqf91c10a2wimbnsw01"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hmac" ,rust-hmac-0.11))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-blobby" ,rust-blobby-0.3)
+        ("rust-crypto-tests" ,rust-crypto-tests-0.5)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-sha-1" ,rust-sha-1-0.9)
+        ("rust-sha2" ,rust-sha2-0.9))))))
+
+(define-public rust-hkdf-0.10
+  (package
+    (inherit rust-hkdf-0.11)
+    (name "rust-hkdf")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0kwn3scjvv2x8zc6nz3wrnzxp9shpsdxnjqiyv2r65r3kiijzasi"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hmac" ,rust-hmac-0.10))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-crypto-tests" ,rust-crypto-tests-0.5)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-sha-1" ,rust-sha-1-0.9)
+        ("rust-sha2" ,rust-sha2-0.9))))))
+
+(define-public rust-hkdf-0.9
+  (package
+    (inherit rust-hkdf-0.11)
+    (name "rust-hkdf")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1jdvmf8aadk3s0kn9kk3dj00nprjk9glks5f8dm55r43af34j4gy"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hmac" ,rust-hmac-0.8))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-crypto-tests" ,rust-crypto-tests-0.5)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-sha-1" ,rust-sha-1-0.9)
+        ("rust-sha2" ,rust-sha2-0.9))))))
+
+(define-public rust-hkdf-0.8
+  (package
+    (inherit rust-hkdf-0.9)
+    (name "rust-hkdf")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qzsmqrvcmgnrb109qr2mvsmr5c4psm1702vrpcqnj02c408m81z"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-digest" ,rust-digest-0.8)
+        ("rust-hmac" ,rust-hmac-0.7))))))
