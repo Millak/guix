@@ -1184,3 +1184,106 @@ ristretto255 and Curve25519.")
      "This package provides a pure-Rust implementation of group operations on
 ristretto255 and Curve25519.")
     (license license:bsd-3)))
+
+(define-public rust-digest-0.10
+  (package
+    (name "rust-digest")
+    (version "0.10.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "digest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14p2n6ih29x81akj097lvz7wi9b6b9hvls0lwrv7b6xwyy0s5ncy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-block-buffer" ,rust-block-buffer-0.10)
+        ("rust-const-oid" ,rust-const-oid-0.9)
+        ("rust-crypto-common" ,rust-crypto-common-0.1)
+        ("rust-subtle" ,rust-subtle-2))))
+    (home-page "https://github.com/RustCrypto/traits")
+    (synopsis "Traits for cryptographic hash functions")
+    (description
+     "Traits for cryptographic hash functions.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-digest-0.9
+  (package
+    (inherit rust-digest-0.10)
+    (name "rust-digest")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "digest" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0rmhvk33rgvd6ll71z8sng91a52rw14p0drjn1da0mqa138n1pfk"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-blobby" ,rust-blobby-0.1)
+        ("rust-generic-array" ,rust-generic-array-0.14))))))
+
+(define-public rust-digest-0.8
+  (package
+    (inherit rust-digest-0.9)
+    (name "rust-digest")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "digest" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1madjl27f3kj5ql7kwgvb9c8b7yb7bv7yfgx7rqzj4i3fp4cil7k"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-blobby" ,rust-blobby-0.1)
+        ("rust-generic-array" ,rust-generic-array-0.12))))))
+
+(define-public rust-digest-0.7
+  (package
+    (inherit rust-digest-0.9)
+    (name "rust-digest")
+    (version "0.7.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "digest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "142vdpvkqlqk9s1dcgpqb2wz76n5a39gjnk68p0zkflc58j75c03"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-generic-array" ,rust-generic-array-0.9))))))
+
+(define-public rust-digest-0.6
+  (package
+    (name "rust-digest")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "digest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "02mgf8z4hi96w9nl2zb5w3k6lqbhjgv5z8hhyv2b7x7kavqrpcp5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-generic-array" ,rust-generic-array-0.8))))
+    (home-page "https://github.com/RustCrypto/traits")
+    (synopsis "Traits for cryptographic hash functions")
+    (description "This package provides traits for cryptographic hash
+functions.")
+    (license (list license:expat license:asl2.0))))
