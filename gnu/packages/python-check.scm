@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2337,6 +2338,31 @@ Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
 Avocado machine readable outputs this one is streamlined (per test results).
 @end table")
     (license license:gpl2)))            ;some files are under GPLv2 only
+
+(define-public python-pandas-vet
+  (package
+    (name "python-pandas-vet")
+    ;; Newer versions require flake8>=6.0.0.
+    (version "0.2.3")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/deppen8/pandas-vet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b3pqcargv68p2lpv72q49siq6mxfh3znxhz9vd91rp6fd6lf2cz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-attrs python-flake8))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/deppen8/pandas-vet")
+    (synopsis "Opionated @code{flake8} plugin for @code{pandas} code")
+    (description
+     "This package provides a @code{flake8} plugin to lint @code{pandas} code
+in an opinionated way.")
+    (license license:expat)))
 
 (define-public python-parameterizedtestcase
   (package
