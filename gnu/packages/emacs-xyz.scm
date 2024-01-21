@@ -2045,19 +2045,18 @@ theme but now takes more inspiration from the Nano theme.")
     (license license:gpl3+)))
 
 (define-public emacs-adwaita-dark-theme
-  ;; Version 1.1.1 isn't tagged upstream.
   (package
     (name "emacs-adwaita-dark-theme")
-    (version "1.1.1")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/jessieh/adwaita-dark-theme")
-                    (commit "057c39313341907b35c68d2179226886a0c276fd")))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g7hyg2hfvn24gaw4lca4g8lw10q2wg9nfrgl7pfdggz202m027c"))))
+                "10hm8anw78n37pl9rz3dnjphrnsxf3fy00d008gayn70jfjl1433"))))
     (build-system emacs-build-system)
     (home-page "https://gitlab.com/jessieh/adwaita-dark-theme")
     (synopsis "Adwaita-inspired dark color scheme for Emacs")
