@@ -36501,6 +36501,45 @@ opening Org Ref's @code{cite:} links.")
 org-mode templates.")
     (license license:gpl3+)))
 
+(define-public emacs-org-glossary
+  (let ((commit "1b9b7fd3d1e6c214c34463e568daaba6df00ec27")
+        (revision "0"))
+    (package
+      (name "emacs-org-glossary")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.tecosaur.net/tec/org-glossary")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09mg8aqxamnxx8kpdyk074wf2wkm4rx62z7q66azw70hjr1ggwa3"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'makeinfo
+              (lambda _
+                (invoke "emacs"
+                        "--batch"
+                        "--eval=(require 'ox-texinfo)"
+                        "--eval=(find-file \"org-glossary.org\")"
+                        "--eval=(org-texinfo-export-to-info)")
+                (install-file "org-glossary.info"
+                              (string-append #$output "/share/info")))))))
+      (native-inputs (list texinfo))
+      (home-page "https://git.tecosaur.net/tec/org-glossary")
+      (synopsis "Interact with glossary-like structures in Org documents")
+      (description
+       "Org Glossary defines a flexible model for working with glossary-like
+constructs (glossaries, acronyms, indices, etc.) within Org documents, with
+support for in-buffer highlighting of defined terms and high-quality exports
+across all Org export back-ends.")
+      (license license:gpl3+))))
+
 (define-public emacs-uml-mode
   ;; Package has no release.  Version is extracted from "Version:" keyword in
   ;; main file.
