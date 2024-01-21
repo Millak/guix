@@ -156,6 +156,32 @@
 of C++20 coroutines in connection with certain asynchronous Qt actions.")
     (license license:expat)))
 
+(define-public qmdnsengine
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
+  (let ((commit "b7a5a9f225d5e14b39f9fd1f905c4f505cf2ee99")
+        (revision "1"))
+    (package
+      (name "qmdnsengine")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/cgutman/qmdnsengine")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1f5v5n9w4aszcdjxmw81cwmd26ssywvfiyr8x0vbyamp4kqd8mww"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags (list "-DBUILD_TESTS=ON")))
+      (inputs (list qtbase-5))
+      (synopsis "Multicast DNS library for Qt application")
+      (description "This package provides multicast DNS library for Qt
+  applications.")
+      (home-page "https://github.com/moonlight-stream/moonlight-common-c")
+      (license license:expat))))
+
 (define-public qite
   (let ((commit "75fb3b6bbd5c6a5a8fc35e08a6efbfb588ed546a")
         (revision "74"))
