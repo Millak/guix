@@ -35,19 +35,26 @@
 (define-module (gnu packages crates-crypto)
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages assembly)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages tls))
 
 ;;;
@@ -2049,3 +2056,823 @@ Digital Signature Algorithm} (ECDSA).")
                        ("rust-hmac" ,rust-hmac-0.12)
                        ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs (("rust-sha2" ,rust-sha2-0.10))))))
+
+(define computed-origin-method (@@ (guix packages) computed-origin-method))
+(define rust-ring-0.17-sources
+  (let* ((version "0.17.7")
+         (upstream-source
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/briansmith/ring")
+                    (commit "2be687bebdf76648ce85109d40c015412e14b0da")))
+             (file-name (git-file-name "rust-ring" version))
+             (sha256
+              (base32 "1i3b7sha8yj990v2s5yk2a5dx3v4x9b8ckzm6bgiyi6wk4vnid69"))
+             (patches (search-patches "rust-ring-0.17-ring-core.patch")))))
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "rust-ring-" version ".tar.gz"))
+      (sha256 #f)
+      (uri
+        (delay
+          (with-imported-modules '((guix build utils))
+            #~(begin
+                (use-modules (guix build utils))
+                (set-path-environment-variable
+                  "PATH" '("bin")
+                  (list #+(canonical-package gzip)
+                        #+(canonical-package tar)
+                        #+perl
+                        #+nasm
+                        #+go
+                        #+clang             ; clang-format
+                        #+python-minimal))
+                (setenv "HOME" (getcwd))
+                (copy-recursively #+upstream-source
+                                  (string-append "ring-" #$version))
+                (with-directory-excursion (string-append "ring-" #$version)
+                  (begin
+                    ;; It turns out Guix's nasm works just fine here.
+                    (substitute* "build.rs"
+                      (("./target/tools/windows/nasm/nasm") "nasm"))
+                    ;; Files which would be deleted in a snippet:
+                    (delete-file "crypto/curve25519/curve25519_tables.h")
+                    (delete-file "crypto/fipsmodule/ec/p256-nistz-table.h")
+                    (delete-file "crypto/fipsmodule/ec/p256_table.h")
+                    ;; This file causes problems during the 'package phase and
+                    ;; is not distributed with the packaged crate.
+                    (substitute* "Cargo.toml"
+                      (("\"bench\",") ""))
+                    (delete-file "bench/Cargo.toml")
+                    ;; Files to be generated in the sources:
+                    (format #t "Generating the missing files ...~%")
+                    (force-output)
+                    (with-directory-excursion "crypto/curve25519"
+                      (with-output-to-file "curve25519_tables.h"
+                        (lambda _ (invoke "python3" "make_curve25519_tables.py")))
+                      ;; As seen in git between 0.17.0 and 0.17.1.
+                      (substitute* "curve25519_tables.h"
+                        (("static const uint8_t k25519Precomp")
+                         "const uint8_t k25519Precomp")))
+                    (with-directory-excursion "crypto/fipsmodule/ec"
+                      (invoke "go" "run" "make_tables.go")
+                      (invoke "go" "run" "make_ec_scalar_base_mult_tests.go"))
+                    (format #t "Generating the pregenerated files ...~%")
+                    (force-output)
+                    (mkdir-p "pregenerated/tmp/ring_core_generated")
+
+                    ;; We generate all the files which upstream would normally be
+                    ;; generate by using 'RING_PREGENERATE_ASM=1 cargo build
+                    ;; --target-dir=target/pregenerate_asm' in order to not include
+                    ;; a dependency on cargo when generating the sources.
+                    (define (prefix script)
+                      (string-append
+                        "pregenerated/"
+                        (string-drop-right
+                          (string-drop script
+                                       (string-index-right script #\/)) 3)))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios64"
+                                (string-append (prefix script) "-ios64.S"))
+                        (invoke "perl" script "linux64"
+                                (string-append (prefix script) "-linux64.S"))
+                        (invoke "perl" script "win64"
+                                (string-append (prefix script) "-win64.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/chacha/asm/chacha-armv8.pl"
+                        "crypto/cipher_extra/asm/chacha20_poly1305_armv8.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-armv8.pl"
+                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                        "crypto/fipsmodule/ec/asm/p256-armv8-asm.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+
+                    (for-each
+                      (lambda (arch)
+                        (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                                arch (string-append
+                                       "pregenerated/sha256-armv8-" arch ".S")))
+                      '("ios64" "linux64" "win64"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "linux32"
+                                (string-append (prefix script) "-linux32.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-armv7.pl"
+                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                        "crypto/chacha/asm/chacha-armv4.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "win32n"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-win32n.asm")))
+                      '("crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                        "crypto/chacha/asm/chacha-x86.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "nasm"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-nasm.asm")))
+                      '("crypto/chacha/asm/chacha-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                        "crypto/cipher_extra/asm/chacha20_poly1305_x86_64.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "elf" "pregenerated/sha256-x86_64-elf.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+
+                    ;; TODO: Extract ring_core_generated/prefix_symbols_nasm.inc
+                    ;; and ring_core_generated/prefix_symbols_asm.h from build.rs.
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "nasm" "-o" (string-append (prefix script) "o")
+                                "-f" "win32" "-i" "include/" "-i" "pregenerated/tmp/"
+                                "-Xgnu" "-gcv8" script))
+                    (find-files "pregenerated/tmp" "win32n\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "nasm" "-o" (string-append (prefix script) "o")
+                                "-f" "win64" "-i" "include/" "-i" "pregenerated/tmp/"
+                                "-Xgnu" "-gcv8" script))
+                    (find-files "pregenerated/tmp" "nasm\\.asm"))
+
+                    (format #t "Creating the tarball ...~%")
+                    (force-output)
+                    ;; The other option is to use cargo package --allow-dirty
+                    (with-directory-excursion "../"
+                      (invoke "tar" "czf" #$output
+                              ;; avoid non-determinism in the archive
+                              "--sort=name" "--mtime=@0"
+                              "--owner=root:0" "--group=root:0"
+                              (string-append "ring-" #$version))))))))))))
+
+(define-public rust-ring-0.17
+  (package
+    (name "rust-ring")
+    (version "0.17.7")
+    (source rust-ring-0.17-sources)
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-spin" ,rust-spin-0.9)
+                       ("rust-untrusted" ,rust-untrusted-0.9)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/briansmith/ring")
+    (synopsis "Safe, fast, small crypto using Rust")
+    (description "This package provided safe, fast, small crypto using Rust.")
+    (license (list license:isc license:openssl))))
+
+(define rust-ring-0.16-sources
+  (let* ((version "0.16.20")
+         (upstream-source
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/briansmith/ring")
+                    (commit "9cc0d45f4d8521f467bb3a621e74b1535e118188")))
+             (file-name (git-file-name "rust-ring" version))
+             (sha256
+              (base32 "1aps05i5308ka03968glnnqr4kdkk2x4ghlg5vrqhl78jm6ivvby")))))
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "rust-ring-" version ".tar.gz"))
+      (sha256 #f)
+      (uri
+        (delay
+          (with-imported-modules '((guix build utils))
+            #~(begin
+                (use-modules (guix build utils))
+                (set-path-environment-variable
+                  "PATH" '("bin")
+                  (list #+(canonical-package gzip)
+                        #+(canonical-package tar)
+                        #+perl
+                        #+nasm
+                        #+go
+                        #+clang             ; clang-format
+                        #+python2-minimal))
+                (setenv "HOME" (getcwd))
+                (copy-recursively #+upstream-source
+                                  (string-append "ring-" #$version))
+                (with-directory-excursion (string-append "ring-" #$version)
+                  (begin
+                    ;; It turns out Guix's nasm works just fine here.
+                    (substitute* "build.rs"
+                      (("./target/tools/nasm") "nasm"))
+                    ;; Files which would be deleted in a snippet:
+                    (delete-file "crypto/curve25519/curve25519_tables.h")
+                    (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
+                    ;; Files to be generated in the sources:
+                    (format #t "Generating the missing files ...~%")
+                    (force-output)
+                    (with-directory-excursion "crypto/curve25519"
+                      (with-output-to-file "curve25519_tables.h"
+                        (lambda _ (invoke "python" "make_curve25519_tables.py"))))
+                    (with-directory-excursion "crypto/fipsmodule/ec"
+                      (with-output-to-file "ecp_nistz256_table.inl"
+                        (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
+                    (format #t "Generating the pregenerated files ...~%")
+                    (force-output)
+                    (mkdir-p "pregenerated/tmp")
+
+                    ;; We generate all the files which upstream would normally be
+                    ;; generate by using '(cd pregenerate_asm && cargo clean &&
+                    ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
+                    ;; in order to not include a dependency on cargo when
+                    ;; generating the sources.
+                    (define (prefix script)
+                      (string-append
+                        "pregenerated/"
+                        (string-drop-right
+                          (string-drop script
+                                       (string-index-right script #\/)) 3)))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "nasm"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-nasm.asm")))
+                      '("crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                        "crypto/chacha/asm/chacha-x86_64.pl"
+                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                        "crypto/cipher_extra/asm/chacha20_poly1305_x86_64.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "elf" "pregenerated/sha256-x86_64-elf.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "nasm" "-o" (string-append (prefix script) "obj")
+                                "-f" "win64" "-Xgnu" "-gcv8" script))
+                    (find-files "pregenerated/tmp" "\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios64"
+                                (string-append (prefix script) "-ios64.S"))
+                        (invoke "perl" script "linux64"
+                                (string-append (prefix script) "-linux64.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-armv8.pl"
+                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                        "crypto/chacha/asm/chacha-armv8.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "ios64" "pregenerated/sha256-armv8-ios64.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "linux64" "pregenerated/sha256-armv8-linux64.S")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "win32n"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-win32n.asm")))
+                      '("crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                        "crypto/chacha/asm/chacha-x86.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "nasm" "-o" (string-append (prefix script) "obj")
+                                "-f" "win32" "-Xgnu" "-gcv8" script))
+                    (find-files "pregenerated/tmp" "-win32n\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios32"
+                                (string-append (prefix script) "-ios32.S"))
+                        (invoke "perl" script "linux32"
+                                (string-append (prefix script) "-linux32.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-armv7.pl"
+                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                        "crypto/chacha/asm/chacha-armv4.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+                    (format #t "Creating the tarball ...~%")
+                    (force-output)
+                    ;; The other option is to use cargo package --allow-dirty
+                    (with-directory-excursion "../"
+                      (invoke "tar" "czf" #$output
+                              ;; avoid non-determinism in the archive
+                              "--sort=name" "--mtime=@0"
+                              "--owner=root:0" "--group=root:0"
+                              (string-append "ring-" #$version))))))))))))
+
+(define-public rust-ring-0.16
+  (package
+    (inherit rust-ring-0.17)
+    (name "rust-ring")
+    (version "0.16.20")
+    (source rust-ring-0.16-sources)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-spin" ,rust-spin-0.5)
+        ("rust-untrusted" ,rust-untrusted-0.7)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ;; build dependencies
+        ("rust-cc" ,rust-cc-1))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    ;; For a mostly complete list of supported systems see:
+    ;; https://github.com/briansmith/ring/blob/main/.github/workflows/ci.yml#L170
+    (supported-systems (list "aarch64-linux" "armhf-linux"
+                             "i686-linux" "x86_64-linux"))))
+
+(define rust-ring-0.14-sources
+  (let* ((version "0.14.6")
+         (upstream-source
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/briansmith/ring")
+                    (commit "ef85df478152aa3fe06c811309379efa08f8a529")))
+             (file-name (git-file-name "rust-ring" version))
+             (sha256
+              (base32 "12dgw2spvmkdypgzymw3bxpv4bbpnlq8s10sdggral31x597n6xx")))))
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "rust-ring-" version ".tar.gz"))
+      (sha256 #f)
+      (uri
+        (delay
+          (with-imported-modules '((guix build utils))
+            #~(begin
+                (use-modules (guix build utils))
+                (set-path-environment-variable
+                  "PATH" '("bin")
+                  (list #+(canonical-package gzip)
+                        #+(canonical-package tar)
+                        #+perl
+                        #+yasm
+                        #+go
+                        #+clang             ; clang-format
+                        #+python2-minimal))
+                (setenv "HOME" (getcwd))
+                (copy-recursively #+upstream-source
+                                  (string-append "ring-" #$version))
+                (with-directory-excursion (string-append "ring-" #$version)
+                  (begin
+                    ;; It turns out Guix's yasm works just fine here.
+                    (substitute* "build.rs"
+                      (("yasm.exe") "yasm"))
+                    ;; Files which would be deleted in a snippet:
+                    (delete-file "third_party/fiat/curve25519_tables.h")
+                    (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
+                    (delete-file "util/ar/testdata/linux/libsample.a")
+                    (delete-file "util/ar/testdata/mac/libsample.a")
+                    (delete-file "util/ar/testdata/windows/sample.lib")
+                    ;; Fix the doc tests.
+                    (substitute* "src/ec/curve25519/ed25519/verification.rs"
+                      ((";;") ";"))
+                    ;; Files to be generated in the sources:
+                    (format #t "Generating the missing files ...~%")
+                    (force-output)
+                    (with-directory-excursion "third_party/fiat"
+                      (with-output-to-file "curve25519_tables.h"
+                        (lambda _ (invoke "python" "make_curve25519_tables.py"))))
+                    (with-directory-excursion "crypto/fipsmodule/ec"
+                      ;; This one seems to have been changed elsewhere in the
+                      ;; sources but not in the script generating the definition.
+                      (substitute* "make_p256-x86_64-table.go"
+                        (("ecp_nistz256_precomputed") "GFp_nistz256_precomputed"))
+                      (with-output-to-file "ecp_nistz256_table.inl"
+                        (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
+                    (format #t "Generating the pregenerated files ...~%")
+                    (force-output)
+                    (mkdir-p "pregenerated/tmp")
+
+                    ;; We generate all the files which upstream would normally be
+                    ;; generate by using '(cd pregenerate_asm && cargo clean &&
+                    ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
+                    ;; in order to not include a dependency on cargo when
+                    ;; generating the sources.
+                    (define (prefix script)
+                      (string-append
+                        "pregenerated/"
+                        (string-drop-right
+                          (string-drop script
+                                       (string-index-right script #\/)) 3)))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "nasm"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-nasm.asm")))
+                      '("crypto/fipsmodule/aes/asm/aes-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                        "crypto/chacha/asm/chacha-x86_64.pl"
+                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                        "crypto/poly1305/asm/poly1305-x86_64.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "elf" "pregenerated/sha256-x86_64-elf.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                                "--oformat=win64" "--machine=amd64" "-o"
+                                (string-append (prefix script) "obj") script))
+                      (find-files "pregenerated/tmp" "\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios64"
+                                (string-append (prefix script) "-ios64.S"))
+                        (invoke "perl" script "linux64"
+                                (string-append (prefix script) "-linux64.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                        "crypto/chacha/asm/chacha-armv8.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
+                        "crypto/poly1305/asm/poly1305-armv8.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "ios64" "pregenerated/sha256-armv8-ios64.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "linux64" "pregenerated/sha256-armv8-linux64.S")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "win32n"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-win32n.asm")))
+                      '("crypto/fipsmodule/aes/asm/aes-586.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                        "crypto/chacha/asm/chacha-x86.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"
+                        "crypto/poly1305/asm/poly1305-x86.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-586.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-586.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                                "--oformat=win32" "--machine=x86" "-o"
+                                (string-append (prefix script) "obj") script))
+                      (find-files "pregenerated/tmp" "-win32n\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios32"
+                                (string-append (prefix script) "-ios32.S"))
+                        (invoke "perl" script "linux32"
+                                (string-append (prefix script) "-linux32.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/aes/asm/aes-armv4.pl"
+                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                        "crypto/chacha/asm/chacha-armv4.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                        "crypto/poly1305/asm/poly1305-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+                    (format #t "Creating the tarball ...~%")
+                    (force-output)
+                    ;; The other option is to use cargo package --allow-dirty
+                    (with-directory-excursion "../"
+                      (invoke "tar" "czf" #$output
+                              ;; avoid non-determinism in the archive
+                              "--sort=name" "--mtime=@0"
+                              "--owner=root:0" "--group=root:0"
+                              (string-append "ring-" #$version))))))))))))
+(define-public rust-ring-0.14
+  (package
+    (inherit rust-ring-0.16)
+    (name "rust-ring")
+    (version "0.14.6")
+    (source rust-ring-0.14-sources)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-spin" ,rust-spin-0.5)
+        ("rust-untrusted" ,rust-untrusted-0.6)
+        ("rust-winapi" ,rust-winapi-0.3))))))
+
+(define rust-ring-0.13-sources
+  (let* ((version "0.13.5")
+         (upstream-source
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/briansmith/ring")
+                    (commit "704e4216a397bd830479bcd6d7dd67fc62cdbe67")))
+             (file-name (git-file-name "rust-ring" version))
+             (sha256
+              (base32 "0iqwf8i2i0a46ymrqss1ngbd2lqphk0mw74c65pxb8skyn2n7csi")))))
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "rust-ring-" version ".tar.gz"))
+      (sha256 #f)
+      (uri
+        (delay
+          (with-imported-modules '((guix build utils))
+            #~(begin
+                (use-modules (guix build utils))
+                (set-path-environment-variable
+                  "PATH" '("bin")
+                  (list #+(canonical-package gzip)
+                        #+(canonical-package tar)
+                        #+perl
+                        #+yasm
+                        #+go
+                        #+clang             ; clang-format
+                        #+python2-minimal))
+                (setenv "HOME" (getcwd))
+                (copy-recursively #+upstream-source
+                                  (string-append "ring-" #$version))
+                (with-directory-excursion (string-append "ring-" #$version)
+                  (begin
+                    ;; Make some adjustments for newer versions of rust
+                    ;; error: `...` range patterns are deprecated
+                    (substitute* "src/digest/sha1.rs"
+                      (("0\\.\\.\\.") "0..="))
+                    (substitute* "build.rs"
+                      (("out_dir\\.clone\\(\\)") "out_dir")
+                      (("libs\\.into_iter\\(\\)") "libs.iter()"))
+                    ;; It turns out Guix's yasm works just fine here.
+                    (substitute* "build.rs"
+                      (("yasm.exe") "yasm"))
+                    ;; Files which would be deleted in a snippet:
+                    (delete-file "third_party/fiat/curve25519_tables.h")
+                    (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
+                    ;; Files to be generated in the sources:
+                    (format #t "Generating the missing files ...~%")
+                    (force-output)
+                    (with-directory-excursion "third_party/fiat"
+                      (with-output-to-file "curve25519_tables.h"
+                        (lambda _ (invoke "python" "make_curve25519_tables.py"))))
+                    (with-directory-excursion "crypto/fipsmodule/ec"
+                      ;; This one seems to have been changed elsewhere in the
+                      ;; sources but not in the script generating the definition.
+                      (substitute* "make_p256-x86_64-table.go"
+                        (("ecp_nistz256_precomputed") "GFp_nistz256_precomputed"))
+                      (with-output-to-file "ecp_nistz256_table.inl"
+                        (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
+                    (format #t "Generating the pregenerated files ...~%")
+                    (force-output)
+                    (mkdir-p "pregenerated/tmp")
+
+                    ;; We generate all the files which upstream would normally be
+                    ;; generate by using '(cd pregenerate_asm && cargo clean &&
+                    ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
+                    ;; in order to not include a dependency on cargo when
+                    ;; generating the sources.
+                    (define (prefix script)
+                      (string-append
+                        "pregenerated/"
+                        (string-drop-right
+                          (string-drop script
+                                       (string-index-right script #\/)) 3)))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "nasm"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-nasm.asm")))
+                      '("crypto/fipsmodule/aes/asm/aes-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                        "crypto/chacha/asm/chacha-x86_64.pl"
+                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                        "crypto/poly1305/asm/poly1305-x86_64.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "elf" "pregenerated/sha256-x86_64-elf.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                                "--oformat=win64" "--machine=amd64" "-o"
+                                (string-append (prefix script) "obj") script))
+                      (find-files "pregenerated/tmp" "\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios64"
+                                (string-append (prefix script) "-ios64.S"))
+                        (invoke "perl" script "linux64"
+                                (string-append (prefix script) "-linux64.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                        "crypto/chacha/asm/chacha-armv8.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
+                        "crypto/poly1305/asm/poly1305-armv8.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "ios64" "pregenerated/sha256-armv8-ios64.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "linux64" "pregenerated/sha256-armv8-linux64.S")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "win32n"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-win32n.asm")))
+                      '("crypto/fipsmodule/aes/asm/aes-586.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                        "crypto/chacha/asm/chacha-x86.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"
+                        "crypto/poly1305/asm/poly1305-x86.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-586.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-586.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                                "--oformat=win32" "--machine=x86" "-o"
+                                (string-append (prefix script) "obj") script))
+                      (find-files "pregenerated/tmp" "-win32n\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios32"
+                                (string-append (prefix script) "-ios32.S"))
+                        (invoke "perl" script "linux32"
+                                (string-append (prefix script) "-linux32.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/aes/asm/aes-armv4.pl"
+                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                        "crypto/chacha/asm/chacha-armv4.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                        "crypto/poly1305/asm/poly1305-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+                    (format #t "Creating the tarball ...~%")
+                    (force-output)
+                    ;; The other option is to use cargo package --allow-dirty
+                    (with-directory-excursion "../"
+                      (invoke "tar" "czf" #$output
+                              ;; avoid non-determinism in the archive
+                              "--sort=name" "--mtime=@0"
+                              "--owner=root:0" "--group=root:0"
+                              (string-append "ring-" #$version))))))))))))
+(define-public rust-ring-0.13
+  (package
+    (inherit rust-ring-0.14)
+    (name "rust-ring")
+    (version "0.13.5")
+    (source rust-ring-0.13-sources)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-untrusted" ,rust-untrusted-0.6)
+        ;; build dependencies
+        ("rust-cc" ,rust-cc-1))))))

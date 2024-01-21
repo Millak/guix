@@ -32,6 +32,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages crates-apple)
+  #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crates-windows)
