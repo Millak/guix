@@ -1003,6 +1003,30 @@ ciphers.")
     (description "Cipher Block Chaining (CBC) block cipher mode of operation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cfb-mode-0.8
+  (package
+    (name "rust-cfb-mode")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cfb-mode" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c6kd34jk4p52vr0qgn9slj6zdgmc42gfcqr6mqhmy37g138v2vk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/block-modes")
+    (synopsis "Cipher Feedback (CFB) block cipher mode of operation")
+    (description "Cipher Feedback (CFB) block cipher mode of operation")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-chacha20-0.9
   (package
     (name "rust-chacha20")
