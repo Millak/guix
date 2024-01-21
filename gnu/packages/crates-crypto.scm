@@ -1662,6 +1662,39 @@ ristretto255 and Curve25519.")
 functions.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-eax-0.5
+  (package
+    (name "rust-eax")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "eax" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0a5cpzk577f1lw3wkk20iqvavnbdr5yzjrcglvbvk0ivj2yzlm4r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aead" ,rust-aead-0.5)
+        ("rust-cipher" ,rust-cipher-0.4)
+        ("rust-cmac" ,rust-cmac-0.7)
+        ("rust-ctr" ,rust-ctr-0.9)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-aead" ,rust-aead-0.5)
+        ("rust-aes" ,rust-aes-0.8))))
+    (home-page "https://github.com/RustCrypto/AEADs")
+    (synopsis "Pure Rust implementation of the EAX Authenticated Encryption with
+Associated Data (AEAD)")
+    (description
+     "Pure Rust implementation of the EAX Authenticated Encryption with Associated
+Data (AEAD) Cipher with optional architecture-specific hardware acceleration
+This scheme is only based on a block cipher.  It uses counter mode (CTR) for
+encryption and CBC mode for generating a OMAC/CMAC/CBCMAC (all names for the
+same thing).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-elliptic-curve-0.13
   (package
     (name "rust-elliptic-curve")
