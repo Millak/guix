@@ -2333,6 +2333,42 @@ secp256r1, prime256v1) elliptic curve as defined in SP 800-186, with support for
 ECDH, ECDSA signing/verification, and general purpose curve arithmetic.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-p384-0.13
+  (package
+    (name "rust-p384")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "p384" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02cjlxdvxwvhmnckqnydqpvrwhf5raj67q300d66m7y6pi8nyy3h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ecdsa" ,rust-ecdsa-0.16)
+        ("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
+        ("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-primeorder" ,rust-primeorder-0.13)
+        ("rust-serdect" ,rust-serdect-0.2)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-ecdsa" ,rust-ecdsa-0.16)
+        ("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand-core" ,rust-rand-core-0.6))))
+    (home-page
+     "https://github.com/RustCrypto/elliptic-curves/tree/master/p384")
+    (synopsis "Pure Rust implementation of the NIST P-384 elliptic curve")
+    (description
+     "This package provides a pure Rust implementation of the NIST P-384 (a.k.a.
+secp384r1) elliptic curve as defined in SP 800-186 with support for ECDH, ECDSA
+signing/verification, and general purpose curve arithmetic support.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pbkdf2-0.12
   (package
     (name "rust-pbkdf2")
