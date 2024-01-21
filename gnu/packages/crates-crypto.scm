@@ -3510,6 +3510,130 @@ Digital Signature Algorithm} (ECDSA).")
     (description "Pure Rust implementation of the RIPEMD hash functions")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rsa-0.9
+  (package
+    (name "rust-rsa")
+    (version "0.9.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rsa" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1z0d1aavfm0v4pv8jqmqhhvvhvblla1ydzlvwykpc3mkzhj523jx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-const-oid" ,rust-const-oid-0.9)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pkcs1" ,rust-pkcs1-0.7)
+        ("rust-pkcs8" ,rust-pkcs8-0.10)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-signature" ,rust-signature-2)
+        ("rust-spki" ,rust-spki-0.7)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-base64ct" ,rust-base64ct-1)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-sha3" ,rust-sha3-0.10))))
+    (home-page "https://github.com/RustCrypto/RSA")
+    (synopsis "Pure Rust RSA implementation")
+    (description "This package provides a pure Rust RSA implementation.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-rsa-0.6
+  (package
+    (inherit rust-rsa-0.9)
+    (name "rust-rsa")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rsa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02viiiylxpk2hx5h5qrpm4lcd8ildvafbw0rn6rx44wnqia2gwjc"))))
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-iter" ,rust-num-iter-0.1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-pkcs1" ,rust-pkcs1-0.3)
+                       ("rust-pkcs8" ,rust-pkcs8-0.8)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-base64ct" ,rust-base64ct-1)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+                                   ("rust-rand-core" ,rust-rand-core-0.6)
+                                   ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+                                   ("rust-serde-test" ,rust-serde-test-1)
+                                   ("rust-sha1" ,rust-sha1-0.10)
+                                   ("rust-sha2" ,rust-sha2-0.10)
+                                   ("rust-sha3" ,rust-sha3-0.10))))))
+
+(define-public rust-rsa-0.5
+  (package
+    (inherit rust-rsa-0.9)
+    (name "rust-rsa")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rsa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "039676a4mj0875phdi7vc0bd37hv84dh0dql6fmk8dl2w81jcp70"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("version = \">=1, <1.5\"") "version = \"^1\""))))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-digest" ,rust-digest-0.9)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.7)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-iter" ,rust-num-iter-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pkcs1" ,rust-pkcs1-0.2)
+        ("rust-pkcs8" ,rust-pkcs8-0.7)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+        (("rust-base64" ,rust-base64-0.13)
+         ("rust-hex" ,rust-hex-0.4)
+         ("rust-hex-literal" ,rust-hex-literal-0.3)
+         ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+         ("rust-serde-test" ,rust-serde-test-1)
+         ("rust-sha-1" ,rust-sha-1-0.9)
+         ("rust-sha2" ,rust-sha2-0.9)
+         ("rust-sha3" ,rust-sha3-0.9))))))
+
 (define-public rust-sha-1-0.10
   (package
     (name "rust-sha-1")
