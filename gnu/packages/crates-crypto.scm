@@ -956,6 +956,29 @@ ciphers.")
      "The ChaCha family of stream ciphers.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cast5-0.11
+  (package
+    (name "rust-cast5")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cast5" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04crg8dj6lxbp3lmdc3filsahxcyvccvhm0gx40g1k5i7mkpvc16"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "CAST5 block cipher")
+    (description "CAST5 block cipher")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cbc-0.1
   (package
     (name "rust-cbc")
