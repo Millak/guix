@@ -4400,6 +4400,89 @@ for additional details.")
         ("rust-syn" ,rust-syn-1)
         ("rust-synstructure" ,rust-synstructure-0.12))))))
 
+(define-public rust-spki-0.7
+  (package
+    (name "rust-spki")
+    (version "0.7.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "spki" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "17fj8k5fmx4w9mp27l970clrh5qa7r5sjdvbsln987xhb34dc7nr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-base64ct" ,rust-base64ct-1)
+        ("rust-der" ,rust-der-0.7)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/spki")
+    (synopsis
+     "X.509 Subject Public Key Info (RFC5280) describing public keys")
+    (description
+     "This package provides X.509 Subject Public Key Info (RFC5280)
+describing public keys as well as their associated AlgorithmIdentifiers (i.e.
+OIDs)")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-spki-0.6
+  (package
+    (inherit rust-spki-0.7)
+    (name "rust-spki")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "spki" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ar1ldkl7svp8l3gfw2hyiiph7n2nqynjnjgdv1pscvsmjxh5kv7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64ct" ,rust-base64ct-1)
+        ("rust-der" ,rust-der-0.6)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-spki-0.5
+  (package
+    (inherit rust-spki-0.7)
+    (name "rust-spki")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spki" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09qaddm4kw01xm9638910bm4yqnshzh2p38lvc3kxkvc5b01ml24"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1)
+                       ("rust-der" ,rust-der-0.5)
+                       ("rust-sha2" ,rust-sha2-0.9))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
+(define-public rust-spki-0.4
+  (package
+    (inherit rust-spki-0.7)
+    (name "rust-spki")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spki" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ckgkcg6db5y94dqhmyikgn8yrsah6pyf4j197hv1c51bp0s00aw"))))
+    (arguments `(#:skip-build? #t #:cargo-inputs (("rust-der" ,rust-der-0.4))))))
+
 (define-public rust-subtle-2
   (package
     (name "rust-subtle")
