@@ -22687,7 +22687,7 @@ match and total match information in the mode-line in various search modes.")
 (define-public emacs-pg
   (package
     (name "emacs-pg")
-    (version "0.24")
+    (version "0.27")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/emarsden/pg-el")
@@ -22695,7 +22695,7 @@ match and total match information in the mode-line in various search modes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0228yig42g3x79gj1yakgmsj119v0agzvyn888nq6qgcd04i1w0d"))))
+                "1dad9irnv3sppl3yfl5swdsf4f1z2fds7r1li3f1kphm37v6jn5g"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emarsden/pg-el")
     (synopsis "Emacs Lisp interface for PostgreSQL")
