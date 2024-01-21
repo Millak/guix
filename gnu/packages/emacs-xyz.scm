@@ -6679,26 +6679,28 @@ and code formatting.")
     (license license:gpl3+)))
 
 (define-public emacs-el-mock
-  (package
-    (name "emacs-el-mock")
-    (version "1.25.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rejeep/el-mock.el")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13mv1rhgkwiww2wh5w926jz7idppp492wir1vdl245c5x50dh4f7"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/rejeep/el-mock.el")
-    (synopsis "Tiny mock and stub framework in Emacs Lisp")
-    (description
-     "Emacs Lisp Mock is a library for mocking and stubbing using readable
+  (let ((commit "6cfbc9de8f1927295dca6864907fe4156bd71910")
+        (revision "1"))
+    (package
+      (name "emacs-el-mock")
+      (version (git-version "1.25.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rejeep/el-mock.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09c3a1771v6kliwj0bn953pxxyjlk6q9kp31cxcr0nraik7d0mhk"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/rejeep/el-mock.el")
+      (synopsis "Tiny mock and stub framework in Emacs Lisp")
+      (description
+       "Emacs Lisp Mock is a library for mocking and stubbing using readable
 syntax.  Most commonly Emacs Lisp Mock is used in conjunction with Emacs Lisp
 Expectations, but it can be used in other contexts.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-ecukes
   (package
