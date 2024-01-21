@@ -3122,3 +3122,136 @@ SHA1 for Rust.")
 This is a port of Marc Stevens' sha1collisiondetection algorithm to Rust.  The
 code is translated from C to Rust using c2rust.")
     (license license:expat)))
+
+(define-public rust-sha2-0.10
+  (package
+    (name "rust-sha2")
+    (version "0.10.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j1x78zk9il95w9iv46dh9wm73r6xrgj32y6lzzw7bxws9dbfgbr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-sha2-asm" ,rust-sha2-asm-0.6))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "SHA-2 hash functions")
+    (description
+     "This package provides a pure Rust implementation of the SHA-2 hash
+function family including SHA-224, SHA-256, SHA-384, and SHA-512.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-sha2-0.9
+  (package
+    (inherit rust-sha2-0.10)
+    (name "rust-sha2")
+    (version "0.9.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "sha2" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "006q2f0ar26xcjxqz8zsncfgz86zqa5dkwlwv03rhx1rpzhs2n2d"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-block-buffer" ,rust-block-buffer-0.9)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-digest" ,rust-digest-0.9)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3)
+        ("rust-sha2-asm" ,rust-sha2-asm-0.6))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
+
+(define-public rust-sha2-0.8
+  (package
+    (inherit rust-sha2-0.9)
+    (name "rust-sha2")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s9yddvyg6anaikdl86wmwfim25c0d4m0xq0y2ghs34alxpg8mm2"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
+       (("rust-block-buffer" ,rust-block-buffer-0.7)
+        ("rust-digest" ,rust-digest-0.8)
+        ("rust-fake-simd" ,rust-fake-simd-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.2)
+        ("rust-sha2-asm" ,rust-sha2-asm-0.5))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.8)
+        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
+
+(define-public rust-sha2-0.7
+  (package
+    (inherit rust-sha2-0.9)
+    (name "rust-sha2")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "183yhkj16i7yzdp8i7aavpy329vz5xrd502233bq8fn2whjbxdly"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-block-buffer" ,rust-block-buffer-0.3)
+        ("rust-byte-tools" ,rust-byte-tools-0.2)
+        ("rust-digest" ,rust-digest-0.7)
+        ("rust-fake-simd" ,rust-fake-simd-0.1)
+        ("rust-sha2-asm" ,rust-sha2-asm-0.5))))))
+
+(define-public rust-sha2-asm-0.6
+  (package
+    (name "rust-sha2-asm")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha2-asm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kp480744vkwg3fqx98379nsdw1lzzzimd88v0qgpqqic03afyzj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1))))       ;build dependency
+    (home-page "https://github.com/RustCrypto/asm-hashes")
+    (synopsis "Assembly implementation of SHA-2")
+    (description "This package provides an assembly implementations of hash
+functions core functionality.")
+    (license license:expat)))
+
+(define-public rust-sha2-asm-0.5
+  (package
+    (inherit rust-sha2-asm-0.6)
+    (name "rust-sha2-asm")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha2-asm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y4n8r4362y2fa6p2j0dgny4zfi194gdf01l6j850n9vf8ha3kwj"))))))
