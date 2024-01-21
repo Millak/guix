@@ -525,6 +525,36 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-opaque-debug" ,rust-opaque-debug-0.2)
         ("rust-stream-cipher" ,rust-stream-cipher-0.3))))))
 
+(define-public rust-argon2-0.5
+  (package
+    (name "rust-argon2")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argon2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y820hkza66lfliaxg49zskz7agj8wf7aak528livg261an4rfhp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64ct" ,rust-base64ct-1)
+        ("rust-blake2" ,rust-blake2-0.10)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-password-hash" ,rust-password-hash-0.5)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-password-hash" ,rust-password-hash-0.5))))
+    (home-page
+     "https://github.com/RustCrypto/password-hashes/tree/master/argon2")
+    (synopsis "Rust argon2 library")
+    (description
+     "Pure Rust implementation of the Argon2 password hashing function with support
+for the Argon2d, Argon2i, and Argon2id algorithmic variants.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-blake2-0.10
   (package
     (name "rust-blake2")
