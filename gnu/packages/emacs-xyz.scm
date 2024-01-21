@@ -28494,7 +28494,7 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.0.7")
+    (version "2.0.9")
     (source
      (origin
        (method git-fetch)
@@ -28503,7 +28503,7 @@ and comments.")
              (commit version)))
        (sha256
         (base32
-         "05w33431dfr1ldcg3yq01qvz0alpv8q88r0dsb278qbwszw9cfz6"))
+         "17475zkvhj7yc3sxv0snmvxf84mkl30l78s28gzzm3j15p806cbd"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -28517,8 +28517,11 @@ and comments.")
                  (search-input-file inputs "/bin/yt-dlp")))
               (emacs-substitute-variables "yeetube-mpv.el"
                 ("yeetube-mpv-path"
-                 (search-input-file inputs "/bin/mpv"))))))))
+                 (search-input-file inputs "/bin/mpv")))
+              (substitute* "yeetube-mpv.el"
+                (("\\(yeetube-mpv-check\\)") "")))))))
     (inputs (list mpv yt-dlp))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://thanosapollo.com/blog/yeetube/")
     (synopsis "Youtube and Invidious front-end for Emacs")
     (description
