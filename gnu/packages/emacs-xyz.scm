@@ -23032,29 +23032,25 @@ outline-mode), so there is no such thing like an outshine mode, only
     (license license:gpl3+)))
 
 (define-public emacs-frecency
-  (let ((commit "31ef9ff4af1a4fed3dcc24ea74037feea8795c87")
-        (version "0.1-pre")
-        (revision "1"))
-    (package
-      (name "emacs-frecency")
-      (version (git-version version revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/alphapapa/frecency.el")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "051aihjdg3x22svaxhwylpi8i6s2x9j8syvsj1jgilgjjdy15l6j"))
-                (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-a emacs-dash))
-      (home-page "https://github.com/alphapapa/frecency.el")
-      (synopsis "Sort items by frequency and recency of access")
-      (description "This package provides a way of sorting items via
+  (package
+    (name "emacs-frecency")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alphapapa/frecency.el")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1n1ghl3jr4wmzc4f5xhkx5mfg3vfqs0kjzbra6k5drcnyh2iixkc"))
+              (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-a emacs-dash))
+    (home-page "https://github.com/alphapapa/frecency.el")
+    (synopsis "Sort items by frequency and recency of access")
+    (description "This package provides a way of sorting items via
 a heuristic based on frequency and recency.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-org-recent-headings
   (let ((commit "97418d581ea030f0718794e50b005e9bae44582e")
