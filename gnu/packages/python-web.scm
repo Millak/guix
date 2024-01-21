@@ -2722,6 +2722,44 @@ object to help create WSGI responses.")
 files.  These locks can also be used to mediate access to other files.")
     (license license:zpl2.1)))
 
+(define-public python-zconfig
+  (package
+    (name "python-zconfig")
+    (version "4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ZConfig" version))
+       (sha256
+        (base32 "0mh13p38vq7ip4zkvaplzr8w0mqrmmqiyb5y663d165slvxl5mpq"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (begin
+                            ;; This test assumes we still have setup.py in the
+                            ;; directory from which we import zconfig, which
+                            ;; does not work after installing the package.
+                            (delete-file-recursively
+                             "src/ZConfig/tests/test_readme.py")
+                            (invoke "zope-testrunner" "-vv" "--test-path=src"
+                                    "--all"))
+                          (format #t "test suite not run~%")))))))
+    (native-inputs (list python-docutils python-manuel python-zope-exceptions
+                         python-zope-testrunner))
+    (home-page "https://github.com/zopefoundation/ZConfig/")
+    (synopsis "Structured configuration library intended for general use")
+    (description
+     "@code{zconfig} is a configuration library intended for general
+use.  It supports a hierarchical schema-driven configuration model that allows
+a schema to specify data conversion routines written in Python.  Its model is
+very different from the model supported by the @code{configparser} module
+found in Python's standard library, and is more suitable to
+configuration-intensive applications.")
+    (license license:zpl2.1)))
+
 (define-public python-zope-event
   (package
     (name "python-zope-event")
