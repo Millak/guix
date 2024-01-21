@@ -94,7 +94,7 @@
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -8835,6 +8835,29 @@ clean plots with a minimalistic style.")
     (description "@code{cplot} is a Python library for plotting
 complex-valued functions.")
     (license license:gpl3+)))
+
+(define-public python-cppheaderparser
+  (package
+    (name "python-cppheaderparser")
+    (version "2.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "CppHeaderParser" version))
+       (sha256
+        (base32 "0hncwd9y5ayk8wa6bqhp551mcamcvh84h89ba3labc4mdm0k0arq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f))     ; no tests
+    (propagated-inputs (list python-ply))
+    (home-page "http://senexcanis.com/open-source/cppheaderparser/")
+    (synopsis
+     "Parse C++ header files and generate a data structure representing the class")
+    (description
+     "CppHeaderParser is a pure python module that will parse C++ header files
+and generate a data structure representing the class﻿.")
+    (license license:bsd-3)))
 
 (define-public python-cppy
   (package
