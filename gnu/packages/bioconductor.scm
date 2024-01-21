@@ -6188,6 +6188,52 @@ multiple features (e.g. genes).  @code{Seurat} and @code{SingleCellExperiment}
 objects can be used within Nebulosa.")
     (license license:gpl3)))
 
+;; This is a CRAN package but it requires r-rcy3, a Bioconductor package.
+(define-public r-netgsa
+  (package
+    (name "r-netgsa")
+    (version "4.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "netgsa" version))
+       (sha256
+        (base32 "1m9myxsbvbljr038azxzakpbh20a21qhiy20d0ipvjc5asq3kfla"))))
+    (properties `((upstream-name . "netgsa")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-corpcor
+                             r-data-table
+                             r-dplyr
+                             r-genefilter
+                             r-glassofast
+                             r-glmnet
+                             r-graph
+                             r-graphite
+                             r-httr
+                             r-igraph
+                             r-magrittr
+                             r-matrix
+                             r-msigdbr
+                             r-org-hs-eg-db
+                             r-quadprog
+                             r-rcpp
+                             r-rcppeigen
+                             r-rcy3
+                             r-reshape2
+                             r-rlang))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mikehellstern/netgsa")
+    (synopsis "Network-Based gene set analysis")
+    (description
+     "This package lets you carry out network-based gene set analysis by
+incorporating external information about interactions among genes, as well as
+novel interactions learned from data.  It implements methods described in
+Shojaie A, Michailidis G (2010) <doi:10.1093/biomet/asq038>, Shojaie A,
+Michailidis G (2009) <doi:10.1089/cmb.2008.0081>, and Ma J, Shojaie A,
+Michailidis G (2016) <doi:10.1093/bioinformatics/btw410>.")
+    (license license:gpl3+)))
+
 ;; This is a CRAN package, but it depends on Bioconductor packages.
 (define-public r-nmf
   (package
