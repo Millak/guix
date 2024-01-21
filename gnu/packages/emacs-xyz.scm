@@ -13498,7 +13498,7 @@ Clojure projects from templates.")
 (define-public emacs-clj-refactor
   (package
     (name "emacs-clj-refactor")
-    (version "3.11.2")
+    (version "3.11.3")
     (source
      (origin
        (method git-fetch)
@@ -13507,7 +13507,7 @@ Clojure projects from templates.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y8xphmmd2ciwnrr7lbiwq0v5c7chq60wssxng9mw0fiz2i3ix22"))))
+        (base32 "17c9lrykbfp0ab7lmi4jh34q6ir7i46acn313xw5342d2q5ql6sk"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-cider
