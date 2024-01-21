@@ -43375,7 +43375,7 @@ A clause has the following form:
 the generated record.
 
 @var{type-decl} is either @code{@var{type}} for fields that require a
-value to be set or @code{(@var{type} @var{default})} otherwise.
+value to be set or @code{(@var{type} @var{default-value})} otherwise.
 
 @var{type} is the type of the value corresponding to @var{field-name};
 since Guile is untyped, a predicate
