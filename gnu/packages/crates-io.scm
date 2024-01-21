@@ -11774,36 +11774,6 @@ contains all syscalls and related types.")
 weighted semantic.")
     (license license:expat)))
 
-(define-public rust-cmac-0.7
-  (package
-    (name "rust-cmac")
-    (version "0.7.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cmac" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1an1vcala24grlyhvk71ikxk2kmgcbal9kgrzzpjcl9z7i74ahw5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cipher" ,rust-cipher-0.4)
-        ("rust-dbl" ,rust-dbl-0.3)
-        ("rust-digest" ,rust-digest-0.10))
-       #:cargo-development-inputs
-       (("rust-aes" ,rust-aes-0.8)
-        ("rust-des" ,rust-des-0.8)
-        ("rust-digest" ,rust-digest-0.10)
-        ("rust-hex-literal" ,rust-hex-literal-0.3)
-        ("rust-kuznyechik" ,rust-kuznyechik-0.8)
-        ("rust-magma" ,rust-magma-0.8))))
-    (home-page "https://github.com/RustCrypto/MACs")
-    (synopsis "Generic implementation of Cipher-based Message Authentication Code")
-    (description "This package provides a pure Rust implementation of the
-Cipher-based Message Authentication Code.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-cmake-0.1
   (package
     (name "rust-cmake")
