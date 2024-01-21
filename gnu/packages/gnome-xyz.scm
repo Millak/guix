@@ -1030,19 +1030,19 @@ It uses ES6 syntax and claims to be more actively maintained than others.")
                '(begin (delete-file "schemas/gschemas.compiled")))))
     (build-system copy-build-system)
     (arguments
-     '(#:install-plan
-       '(("." "share/gnome-shell/extensions/paperwm@paperwm.github.com"
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$" "\\.svg$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "make"))
-             #t)))))
+     (list
+      #:install-plan
+      #~'(("." "share/gnome-shell/extensions/paperwm@paperwm.github.com"
+           #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                             "\\.xml$" "\\.compiled$" "\\.svg$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "schemas"
+                (invoke "make")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin"))) ; for glib-compile-schemas
+     (list `(,glib "bin"))) ; for glib-compile-schemas
     (home-page "https://github.com/paperwm/PaperWM")
     (synopsis "Tiled scrollable window management for GNOME Shell")
     (description "PaperWM is an experimental GNOME Shell extension providing
