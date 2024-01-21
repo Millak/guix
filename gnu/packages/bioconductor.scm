@@ -9980,6 +9980,68 @@ data and detection of regions with abnormal copy number within each parental
 chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
     (license license:gpl2+)))
 
+(define-public r-protgear
+  (package
+    (name "r-protgear")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "protGear" version))
+       (sha256
+        (base32 "0r8md32vxjzarjldr9vsh3k0ms4zgqm9c7pp2flanbyinnqlfnxv"))))
+    (properties `((upstream-name . "protGear")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed by styler for writing to caches.
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list r-biobase
+                             r-data-table
+                             r-dplyr
+                             r-factoextra
+                             r-factominer
+                             r-flexdashboard
+                             r-genefilter
+                             r-ggally
+                             r-ggplot2
+                             r-ggpubr
+                             r-gtools
+                             r-htmltools
+                             r-kendall
+                             r-knitr
+                             r-limma
+                             r-magrittr
+                             r-mass
+                             r-pheatmap
+                             r-plotly
+                             r-plyr
+                             r-purrr
+                             r-readr
+                             r-remotes
+                             r-rlang
+                             r-rmarkdown
+                             r-shiny
+                             r-shinydashboard
+                             r-styler
+                             r-tibble
+                             r-tidyr
+                             r-vsn))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/Keniajin/protGear")
+    (synopsis
+     "Protein micro array data management and interactive visualization")
+    (description
+     "This package provides a generic three-step pre-processing package for
+protein microarray data.  This package contains different data pre-processing
+procedures to allow comparison of their performance.  These steps are
+background correction, the coefficient of variation (CV) based filtering,
+batch correction and normalization.")
+    (license license:gpl3)))
+
 (define-public r-protgenerics
   (package
     (name "r-protgenerics")
