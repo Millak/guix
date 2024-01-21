@@ -2634,6 +2634,94 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
        (("rust-digest" ,rust-digest-0.8)
         ("rust-hex-literal" ,rust-hex-literal-0.1))))))
 
+(define-public rust-md5-0.7
+  (package
+    (name "rust-md5")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "md5" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wcps37hrhz59fkhf8di1ppdnqld6l1w5sdy7jp7p51z0i4c8329"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t))
+    (home-page "https://github.com/stainless-steel/md5")
+    (synopsis "MD5 hash function in Rust")
+    (description "The package provides the MD5 hash function.")
+    (license (list license:asl2.0
+                   license:expat))))
+
+(define-public rust-md5-0.6
+  (package
+    (inherit rust-md5-0.7)
+    (name "rust-md5")
+    (version "0.6.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "md5" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "17b2xm4h4cvxsdjsf3kdrzqv2za60kak961xzi5kmw6g6djcssvy"))))))
+
+(define-public rust-md5-0.3
+  (package
+    (inherit rust-md5-0.6)
+    (name "rust-md5")
+    (version "0.3.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "md5" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0j2s8aqdkhwhy7awga2bmv5n8qq8bgy8672iha9f3y871dm6vibr"))))))
+
+(define-public rust-md5-asm-0.5
+  (package
+    (name "rust-md5-asm")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "md5-asm" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ixmkg8j7sqy9zln6pz9xi2dl2d9zpm8pz6p49za47n1bvradfbk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/RustCrypto/asm-hashes")
+    (synopsis "Assembly implementation of MD5 compression function")
+    (description
+     "This package contains an assembly implementation of the MD5
+compression function.")
+    (supported-systems '("x86_64-linux" "i686-linux"))
+    (license license:expat)))
+
+(define-public rust-md5-asm-0.4
+  (package
+    (inherit rust-md5-asm-0.5)
+    (name "rust-md5-asm")
+    (version "0.4.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "md5-asm" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0gpk5647js1k084jc7pg2gji0cvl6hjkkbfia6lnpk8y4shyairv"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1))))))
+
 (define-public rust-nettle-7
   (package
     (name "rust-nettle")
