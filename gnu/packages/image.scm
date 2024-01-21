@@ -36,7 +36,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -122,7 +122,7 @@
 (define-public converseen
   (package
     (name "converseen")
-    (version "0.11.0.0")
+    (version "0.12.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -131,7 +131,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1imc0dbbrs96yv3mp6bs7whd14zvgdw7hmv87bz8lp7d739s74z4"))
+                "0gjg2ma8v8pwldny4j2ag92g5zrv5cz511mq44qr7akjsddq6q6p"))
               (patches
                (search-patches "converseen-hide-updates-checks.patch"
                                ;; Remove links to sites relying on non-free
@@ -141,6 +141,7 @@
     (arguments
      (list
       #:tests? #false                   ;no tests
+      #:configure-flags #~(list "-DUSE_QT6=yes")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-translations-location
@@ -153,9 +154,9 @@
                                 #$output
                                 "/share/converseen/loc\")"))))))))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (inputs
-     (list imagemagick qtbase-5))
+     (list imagemagick qtbase))
     (home-page "https://converseen.fasterland.net/")
     (synopsis "Batch image converter and resizer")
     (description
