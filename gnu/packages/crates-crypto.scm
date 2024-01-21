@@ -5647,6 +5647,58 @@ cryptographic implementations.")
      "This package provides the Tiger cryptographic hash function.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-totp-lite-2
+  (package
+    (name "rust-totp-lite")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "totp-lite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hvnpv7nl79jp96w6g2j7l6xskl5qlx3h0qqf9zry68pvcs33r7q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-koibumi-base32" ,rust-koibumi-base32-0.0.2)
+        ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/fosskers/totp-lite")
+    (synopsis "Simple, correct TOTP library")
+    (description "Rust-totp-lite provides a simple, correct time-based
+One-Time Password library.")
+    (license license:expat)))
+
+(define-public rust-totp-lite-1
+  (package
+    (name "rust-totp-lite")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "totp-lite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12ql4pi9q7sf5651588wia2l5h4mil3kv9jrrkib5gvlpvl0k05i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hmac" ,rust-hmac-0.11)
+        ("rust-sha-1" ,rust-sha-1-0.9)
+        ("rust-sha2" ,rust-sha2-0.9))))
+    (home-page "https://github.com/fosskers/totp-lite")
+    (synopsis "Simple, correct TOTP library")
+    (description "Rust-totp-lite provides a simple, correct time-based
+One-Time Password library.")
+    (license license:expat)))
+
 (define-public rust-twofish-0.7
   (package
     (name "rust-twofish")
