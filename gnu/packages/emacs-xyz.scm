@@ -15592,11 +15592,11 @@ Makefile targets.")
       (license license:gpl3+))))
 
 (define-public emacs-helm-make
-  (let ((commit "feae8df22bc4b20705ea08ac9adfc2b43bb348d0")
-        (revision "1"))
+  (let ((commit "ebd71e85046d59b37f6a96535e01993b6962c559")
+        (revision "0"))
     (package
       (name "emacs-helm-make")
-      (version (string-append "0.1.0-" revision "." (string-take commit 7)))
+      (version (git-version "0.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15606,10 +15606,10 @@ Makefile targets.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1y2v77mmd1bfkkz51cnk1l0dg3lvvxc39wlamnm7wjns66dbvlam"))))
+           "14jvhhw4chl94dgfwbyy7yirwchvcz5zrsgr9w6qy4z0fhqba41a"))))
       (build-system emacs-build-system)
       (propagated-inputs
-       (list emacs-helm emacs-projectile))
+       (list emacs-helm emacs-ivy emacs-projectile))
       (home-page "https://github.com/abo-abo/helm-make")
       (synopsis "Select a Makefile target with helm")
       (description "@code{helm-make} or @code{helm-make-projectile} will give
