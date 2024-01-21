@@ -3481,3 +3481,64 @@ cryptographic implementations.")
     (description
      "This package provides the Tiger cryptographic hash function.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-universal-hash-0.5
+  (package
+    (name "rust-universal-hash")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "universal-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sh79x677zkncasa95wz05b36134822w6qxmi1ck05fwi33f47gw"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+           (substitute* "Cargo.toml"
+             (("=2\\.4\\.1") "^2.4.1"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crypto-common" ,rust-crypto-common-0.1)
+        ("rust-subtle" ,rust-subtle-2))))
+    (home-page "https://github.com/RustCrypto/traits")
+    (synopsis "Trait for universal hash functions")
+    (description "This package provides traits for universal hash functions.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-universal-hash-0.4
+  (package
+    (inherit rust-universal-hash-0.5)
+    (name "rust-universal-hash")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "universal-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "00hljq64l0p68yrncvyww4cdgkzpzl49vrlnj57kwblkak3b49l3"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-generic-array" ,rust-generic-array-0.14)
+        ("rust-subtle" ,rust-subtle-2))))))
+
+(define-public rust-universal-hash-0.3
+  (package
+    (inherit rust-universal-hash-0.4)
+    (name "rust-universal-hash")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "universal-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00aa241pab99z66f0s464vdrxnk3igs8z1qm6j01chcv5w7r036z"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-generic-array" ,rust-generic-array-0.12)
+        ("rust-subtle" ,rust-subtle-2))))))
