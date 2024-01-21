@@ -24411,14 +24411,14 @@ or expressions with SVG rounded box labels that are fully customizable.")
 (define-public emacs-kind-icon
   (package
     (name "emacs-kind-icon")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/kind-icon-"
                            version ".tar"))
        (sha256
-        (base32 "0ri5k2bgr9cf0qsdznsil70b4zs4z00fs4k35c3dj7kxx9nlncfi"))))
+        (base32 "1jpc4izbi5ajqqrvvfp5yqfmljaw2mq06ym36d4p2cxkz95vcmi7"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-svg-lib))
     (home-page "https://github.com/jdtsmith/kind-icon")
