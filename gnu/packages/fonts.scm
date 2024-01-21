@@ -2229,7 +2229,7 @@ and stylistic alternates.")
            (add-before 'install-license-files 'enter-license-directory
              (lambda _
                (chdir "../../.."))))))
-      (home-page "https://blog.golang.org/go-fonts")
+      (home-page "https://go.dev/blog/go-fonts")
       (synopsis "The Go font family")
       (description
        "The Go font family is a set of WGL4 TrueType fonts from the Bigelow &
