@@ -956,6 +956,30 @@ ciphers.")
      "The ChaCha family of stream ciphers.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cbc-0.1
+  (package
+    (name "rust-cbc")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cbc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19l9y9ccv1ffg6876hshd123f2f8v7zbkc4nkckqycxf8fajmd96"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/block-modes")
+    (synopsis "Cipher Block Chaining (CBC) block cipher mode of operation")
+    (description "Cipher Block Chaining (CBC) block cipher mode of operation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-chacha20-0.9
   (package
     (name "rust-chacha20")
