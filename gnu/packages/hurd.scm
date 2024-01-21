@@ -255,26 +255,24 @@ Hurd-minimal package which are needed for both glibc and GCC.")
               (inherit (package-source gnumach-headers))
               (patches
                (append
-                (search-patches "gnumach-support-noide.patch")
+                (search-patches "gnumach-support-noide.patch"
+                                "gnumach-fix-i686-linux-build.patch")
                 (origin-patches (package-source gnumach-headers))))))
     (arguments
      (substitute-keyword-arguments (package-arguments gnumach-headers)
-       ((#:make-flags flags ''())
-        `(cons "CFLAGS=-fcommon" ,flags))
        ((#:configure-flags flags ''())
-        `(cons* "--enable-kdb" ;enable kernel debugger
+        `(cons* "--enable-kdb"          ;enable kernel debugger
                 "--disable-net-group"
                 "--disable-pcmcia-group"
                 "--disable-wireless-group"
-               ,flags))
+                ,flags))
        ((#:phases phases '%standard-phases)
-        `(modify-phases %standard-phases
-           (add-after 'install 'produce-image
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out  (assoc-ref outputs "out"))
-                      (boot (string-append out "/boot")))
-                 (invoke "make" "gnumach.gz")
-                 (install-file "gnumach.gz" boot))))))))
+        #~(modify-phases %standard-phases
+            (add-after 'install 'produce-image
+              (lambda _
+                (let ((boot (string-append #$output "/boot")))
+                  (invoke "make" "gnumach.gz")
+                  (install-file "gnumach.gz" boot))))))))
     (native-inputs
      (list autoconf
            automake
@@ -283,7 +281,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                mig)
            perl
            texinfo-4))
-    (supported-systems %hurd-systems)
+    (supported-systems `("i686-linux" ,@%hurd-systems))
     (synopsis "Microkernel of the GNU system")
     (description
      "GNU Mach is the microkernel upon which a GNU Hurd system is based.")))

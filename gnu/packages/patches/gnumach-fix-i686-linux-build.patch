@@ -1,0 +1,50 @@
+Upstream status: presented upstream.
+
+    https://lists.gnu.org/archive/html/bug-hurd/2024-01/msg00198.html
+
+From af5ec3c82ae6a9077ce7d814dda773562ef6757f Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Mon, 22 Jan 2024 08:41:02 +0100
+Subject: [PATCH] Resurrect x86-linux build.
+
+This avoids using system headers, which may result in
+
+    kern/strings.c: In function 'strchr':
+    kern/strings.c:188:32: error: 'NULL' undeclared (first use in this function)
+
+    In file included from util/atoi.c:77:
+    ./util/atoi.h:65:29: error: unknown type name 'u_char'
+
+    device/net_io.c: In function 'bpf_do_filter':
+    device/net_io.c:1636:34: error: 'u_int' undeclared (first use in this function); did you mean 'int'?
+
+    In file included from device/subrs.c:36:
+    ./device/if_ether.h:43:9: error: unknown type name 'u_char'
+       43 |         u_char  ether_dhost[6];
+
+    ./linux/dev/include/linux/fs.h:304:5: error: unknown type name 'loff_t'
+      304 |     loff_t f_pos;
+
+This is a follow-up to commit
+    d5e5dd3401ea0d0475aa830c2171be5b8a72f4fa
+    Update configure.ac so that we don't need glibc when running ./configure.
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index e31a875d..ad38249b 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -43,7 +43,7 @@ AM_LDFLAGS =
+ 
+ GCC_INSTALL = $(shell LANG=C $(CC) -print-search-dirs | sed -n -e 's/install: \(.*\)/\1/p')
+ AM_CPPFLAGS += \
+-	-imacros config.h -I $(GCC_INSTALL)/include
++	-nostdinc -imacros config.h -I $(GCC_INSTALL)/include
+ 
+ AM_CPPFLAGS += \
+ 	-I$(systype) \
+-- 
+2.41.0
+
