@@ -10027,6 +10027,43 @@ library implementing most of the pipeline's features.")
     (home-page "https://github.com/BIMSBbioinfo/RCAS")
     (license license:artistic2.0)))
 
+(define-public r-rcy3
+  (package
+    (name "r-rcy3")
+    (version "2.22.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RCy3" version))
+       (sha256
+        (base32 "0qkjprf2p641j3a60av1l87pd6p17za5w6bp9qyah97jmm19za7m"))))
+    (properties `((upstream-name . "RCy3")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-base64enc
+                             r-base64url
+                             r-biocgenerics
+                             r-fs
+                             r-glue
+                             r-gplots
+                             r-graph
+                             r-httr
+                             r-irdisplay
+                             r-irkernel
+                             r-rcolorbrewer
+                             r-rcurl
+                             r-rjsonio
+                             r-stringi
+                             r-uuid
+                             r-xml))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/cytoscape/RCy3")
+    (synopsis "Functions to access and control Cytoscape")
+    (description
+     "Vizualize, analyze and explore networks using Cytoscape via R.  Anything
+you can do using the graphical user interface of Cytoscape, you can now do
+with a single RCy3 function.")
+    (license license:expat)))
+
 (define-public r-regioner
   (package
     (name "r-regioner")
