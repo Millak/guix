@@ -2115,6 +2115,280 @@ in pure Rust.")
         ("rust-sha-1" ,rust-sha-1-0.9)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
+(define-public rust-pkcs1-0.7
+  (package
+    (name "rust-pkcs1")
+    (version "0.7.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs1" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0zz4mil3nchnxljdfs2k5ab1cjqn7kq5lqp62n9qfix01zqvkzy8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-pkcs8" ,rust-pkcs8-0.10)
+        ("rust-spki" ,rust-spki-0.7))
+       #:cargo-development-inputs
+       (("rust-const-oid" ,rust-const-oid-0.9)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs1")
+    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #1")
+    (description
+     "This package provides a pure Rust implementation of Public-Key
+Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.2
+(RFC 8017).")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-pkcs1-0.3
+  (package
+    (inherit rust-pkcs1-0.7)
+    (name "rust-pkcs1")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0813szfx13n4xl6l19m3lwj7pqgljqwc6ipxhr2dv0yc9k06d3x7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-der" ,rust-der-0.5)
+                       ("rust-pkcs8" ,rust-pkcs8-0.8)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
+(define-public rust-pkcs1-0.2
+  (package
+    (inherit rust-pkcs1-0.7)
+    (name "rust-pkcs1")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b2f1a0lf5h53zrjvcqbxzjhh89gcfa1myhf6z7w10ypg61fwsqi"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-der" ,rust-der-0.4)
+        ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.2)
+        ("rust-zeroize" ,rust-zeroize-1))))))
+
+(define-public rust-pkcs5-0.7
+  (package
+    (name "rust-pkcs5")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs5" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19k9igzay529fqj90qdkgnvmvwp65wzw73h2vn3sigqq3b4y4iz8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-cbc" ,rust-cbc-0.1)
+        ("rust-der" ,rust-der-0.7)
+        ("rust-des" ,rust-des-0.8)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.12)
+        ("rust-scrypt" ,rust-scrypt-0.11)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-spki" ,rust-spki-0.7))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs5")
+    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #5")
+    (description
+     "This package is a pure Rust implementation of Public-Key Cryptography
+Standards (PKCS) #5: Password-Based Cryptography Specification Version
+2.1 (RFC 8018).")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-pkcs5-0.5
+  (package
+    (inherit rust-pkcs5-0.7)
+    (name "rust-pkcs5")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs5" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0x81m285ijqi0fqkgym6a6ax02mfzdx87zfvqgrjsc2w3wn8c3fi"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-cbc" ,rust-cbc-0.1)
+        ("rust-der" ,rust-der-0.6)
+        ("rust-des" ,rust-des-0.8)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.11)
+        ("rust-scrypt" ,rust-scrypt-0.10)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-spki" ,rust-spki-0.6))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
+(define-public rust-pkcs5-0.4
+  (package
+    (inherit rust-pkcs5-0.7)
+    (name "rust-pkcs5")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs5" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xhyi3k5p6lxb28ivcd1f3skdbmhzk0gamfry7q56pifx9xi8g6n"))))
+    (arguments
+     `(#:cargo-inputs (("rust-aes" ,rust-aes-0.7)
+                       ("rust-block-modes" ,rust-block-modes-0.8)
+                       ("rust-der" ,rust-der-0.5)
+                       ("rust-des" ,rust-des-0.7)
+                       ("rust-hmac" ,rust-hmac-0.11)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.9)
+                       ("rust-scrypt" ,rust-scrypt-0.8)
+                       ("rust-sha-1" ,rust-sha-1-0.9)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-spki" ,rust-spki-0.5))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
+(define-public rust-pkcs5-0.3
+  (package
+    (inherit rust-pkcs5-0.7)
+    (name "rust-pkcs5")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs5" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m3xrrwwbn9883bylgjzssfh3w1lbl7fhkb3ndz721rf27pca8sl"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-aes" ,rust-aes-0.7)
+        ("rust-block-modes" ,rust-block-modes-0.8)
+        ("rust-der" ,rust-der-0.4)
+        ("rust-des" ,rust-des-0.7)
+        ("rust-hmac" ,rust-hmac-0.11)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.9)
+        ("rust-scrypt" ,rust-scrypt-0.8)
+        ("rust-sha-1" ,rust-sha-1-0.9)
+        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-spki" ,rust-spki-0.4))))))
+
+(define-public rust-pkcs8-0.10
+  (package
+    (name "rust-pkcs8")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs8" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1dx7w21gvn07azszgqd3ryjhyphsrjrmq5mmz1fbxkj5g0vv4l7r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-pkcs5" ,rust-pkcs5-0.7)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-spki" ,rust-spki-0.7)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs8")
+    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #8")
+    (description
+     "This package is a pure Rust implementation of Public-Key Cryptography
+Standards (PKCS) #8: Private-Key Information Syntax Specification (RFC 5208),
+with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-pkcs8-0.9
+  (package
+    (inherit rust-pkcs8-0.10)
+    (name "rust-pkcs8")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs8" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1fm4sigvcd0zpzg9jcp862a8p272kk08b9lgcs1dm1az19cjrjly"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.6)
+        ("rust-pkcs5" ,rust-pkcs5-0.5)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-spki" ,rust-spki-0.6)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-pkcs8-0.8
+  (package
+    (inherit rust-pkcs8-0.10)
+    (name "rust-pkcs8")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs8" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l29h4mrgi2kpsl98jzky3ni5by3xa1sc6db9yd8l1i1p0zxmavw"))))
+    (arguments
+     `(#:cargo-inputs (("rust-der" ,rust-der-0.5)
+                       ("rust-pkcs5" ,rust-pkcs5-0.4)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-spki" ,rust-spki-0.5)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
+(define-public rust-pkcs8-0.7
+  (package
+    (inherit rust-pkcs8-0.10)
+    (name "rust-pkcs8")
+    (version "0.7.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs8" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0iq46p6fa2b8xy6pj52zpmdy8ya3fg31dj4rc19x1fi69nvgjgpf"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-der" ,rust-der-0.4)
+        ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.2)
+        ("rust-pkcs1" ,rust-pkcs1-0.2)
+        ("rust-pkcs5" ,rust-pkcs5-0.3)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-spki" ,rust-spki-0.4)
+        ("rust-zeroize" ,rust-zeroize-1))))))
+
 (define-public rust-pem-rfc7468-0.7
   (package
     (name "rust-pem-rfc7468")
