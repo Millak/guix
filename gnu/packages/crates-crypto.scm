@@ -3487,6 +3487,29 @@ Digital Signature Algorithm} (ECDSA).")
         ;; build dependencies
         ("rust-cc" ,rust-cc-1))))))
 
+(define-public rust-ripemd-0.1
+  (package
+    (name "rust-ripemd")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ripemd" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "17xh5yl9wjjj2v18rh3m8ajlmdjg1yj13l6r9rj3mnbss4i444mx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.10))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "Pure Rust implementation of the RIPEMD hash functions")
+    (description "Pure Rust implementation of the RIPEMD hash functions")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sha-1-0.10
   (package
     (name "rust-sha-1")
