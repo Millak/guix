@@ -3695,6 +3695,77 @@ in pure Rust.")
         #:cargo-development-inputs
         (("rust-cipher" ,rust-cipher-0.2))))))
 
+(define-public rust-scrypt-0.11
+  (package
+    (name "rust-scrypt")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "scrypt" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07zxfaqpns9jn0mnxm7wj3ksqsinyfpirkav1f7kc2bchs2s65h5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-password-hash" ,rust-password-hash-0.5)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.12)
+        ("rust-salsa20" ,rust-salsa20-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-password-hash" ,rust-password-hash-0.5))))
+    (home-page
+     "https://github.com/RustCrypto/password-hashes/tree/master/scrypt")
+    (synopsis "Scrypt password-based key derivation function")
+    (description
+     "This package provides a Scrypt password-based key derivation
+function.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-scrypt-0.10
+  (package
+    (inherit rust-scrypt-0.11)
+    (name "rust-scrypt")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "scrypt" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0pglmppcl8mdzfxdv2x9dsjrwxhc1bm9zvxjibnlv59jnv9297lz"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hmac" ,rust-hmac-0.12)
+        ("rust-password-hash" ,rust-password-hash-0.4)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.11)
+        ("rust-salsa20" ,rust-salsa20-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-password-hash" ,rust-password-hash-0.4))))))
+
+(define-public rust-scrypt-0.8
+  (package
+    (inherit rust-scrypt-0.11)
+    (name "rust-scrypt")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scrypt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09fkz5sc7qx97dyi1nkv69z36diggd2c9mja33cxpsqicdy6sgg7"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-hmac" ,rust-hmac-0.12)
+        ("rust-password-hash" ,rust-password-hash-0.3)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.10)
+        ("rust-salsa20" ,rust-salsa20-0.9)
+        ("rust-sha2" ,rust-sha2-0.10))))))
+
 (define-public rust-sha-1-0.10
   (package
     (name "rust-sha-1")
