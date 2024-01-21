@@ -8718,7 +8718,7 @@ files which are intended to be packages.")
 (define-public emacs-elisp-demos
   (package
     (name "emacs-elisp-demos")
-    (version "2020.02.19")
+    (version "2024.01.16")
     (source
      (origin
        (method git-fetch)
@@ -8728,7 +8728,7 @@ files which are intended to be packages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mckgaz92v3y2vlkggx9kd51fd1mahylw39c42l51dyv8wscm7sc"))))
+         "1pgg5z3z2pf0vps86lrkxfr36v4c24mpgvj551gixdlrm2s55p0l"))))
     (build-system emacs-build-system)
     (arguments
      `(#:include '("\\.el$" "\\.org$")
