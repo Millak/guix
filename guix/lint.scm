@@ -1857,7 +1857,8 @@ them for PACKAGE."
 
   (call-with-input-file file
     (lambda (port)
-      (let loop ((line-number 1)
+      (go-to-location port starting-line 0)
+      (let loop ((line-number starting-line)
                  (last-line #f)
                  (warnings '()))
         (let ((line (read-line port)))

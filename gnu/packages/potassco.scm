@@ -2,6 +2,7 @@
 ;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -209,7 +210,7 @@ satisfiability checking (SAT).")
                                 "unpool-ast-v2" "parse_term"
                                 "propagator" "propgator-sequence-mining"
                                 "symbol" "visitor"))))))))))
-    (inputs (list catch2-3.3 clasp libpotassco))
+    (inputs (list catch2-3 clasp libpotassco))
     (native-inputs (list mpark-variant
                          pkg-config
                          tl-optional
@@ -219,6 +220,60 @@ satisfiability checking (SAT).")
     (home-page "https://potassco.org/")
     (synopsis "Grounder and solver for logic programs")
     (description "Clingo computes answer sets for a given logic program.")
+    (license license:expat)))
+
+(define-public clingo-dl
+  (package
+    (name "clingo-dl")
+    (version "1.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/clingo-dl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0dncwj63vdm6958vb7355d5j9mdr7hm037j4z82yz6l77jg3sipw"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f        ; no tests
+                     #:configure-flags #~`("-DPYCLINGODL_ENABLE=off")))
+    (inputs (list clingo))
+    (home-page "https://github.com/potassco/clingo-dl")
+    (synopsis "Solver for answer set programs modulo difference constraints")
+    (description "Clingo-DL is an extension to Clingo that models constraints
+over difference logic.")
+    (license license:expat)))
+
+(define-public plasp
+  (package
+    (name "plasp")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/plasp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "123v1bjzh7yjwgcc5k55rkfz0lfl8ish5p3z8x3pn8k1svd50xal"))
+              (patches (search-patches
+                        "plasp-fix-normalization.patch"
+                        "plasp-include-iostream.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f        ; No ‘test’ target
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (copy-recursively "bin"
+                                     (string-append (assoc-ref outputs "out")
+                                                    "/bin")))))))
+    (inputs (list cxxopts mapbox-variant))
+    (home-page "https://potassco.org/")
+    (synopsis "ASP planning tools for PDDL")
+    (description "@command{plasp} is a tool collection for planning in
+answer set programming.  It supports a subset of PDDL 3.1 and SAS 3.")
     (license license:expat)))
 
 (define-public emacs-pasp-mode
@@ -375,7 +430,7 @@ logic programs based on clingo.")
 (define-public python-clingraph
   (package
     (name "python-clingraph")
-    (version "1.1.0")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -384,7 +439,7 @@ logic programs based on clingo.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bdhli20nw9qnyxmpisgz7m97d7bwx6lbmxy9bgqvm6mipprnv3n"))))
+                "16q54rkwr84byzy27795rl9z08kcyxsg7lfk017yr8p5axh9a9rr"))))
     (build-system pyproject-build-system)
     (inputs (list dot2tex graphviz))
     (propagated-inputs (list python-clingo

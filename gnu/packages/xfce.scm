@@ -216,7 +216,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
 (define-public catfish
   (package
     (name "catfish")
-    (version "4.16.4")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -224,7 +224,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
                                   "/catfish-" version ".tar.bz2"))
               (sha256
                (base32
-                "1z5m9f4cj473n68rrhhbkq3x5df5k394qp4n27lqqyny6k2h2p3f"))))
+                "16cbsnki7qragwhbfs3h0ja7xg8xlf59ajxhddqm0jkmrirrpbpx"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -270,7 +270,7 @@ it to your needs by using several command line options.")
 (define-public elementary-xfce-icon-theme
   (package
     (name "elementary-xfce-icon-theme")
-    (version "0.17")
+    (version "0.18")
     (source (origin
               (method git-fetch)
               (uri
@@ -280,7 +280,7 @@ it to your needs by using several command line options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jlawp6rg55w5cm4d7836r660i2pnc5gkzpdjsq7w5875i85arzm"))))
+                "124bdgghkjkpcsfn9a2ad6zqy233pi9jqmv8w8a3ha6q3al2s11s"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
@@ -1035,7 +1035,7 @@ local and remote file systems and manage bookmarks of such.")
 (define-public parole
   (package
     (name "parole")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1043,7 +1043,7 @@ local and remote file systems and manage bookmarks of such.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0w9p9zf87pnpl44bay8srrsczscxpmbsriwzqzv31gis9ny2zrdv"))))
+                "0rjsqm582c8i3lyi1n2ghp638cr0chw358i05g7njbw1hjj68wqc"))))
     (build-system gnu-build-system)
     (arguments
      (list

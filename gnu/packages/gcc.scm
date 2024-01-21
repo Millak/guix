@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2023 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015-2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -74,6 +74,9 @@ where the OS part is overloaded to denote a specific ABI---into GCC
            "--with-float=hard"
            "--with-mode=thumb"
            "--with-fpu=neon"))
+
+        ((string-match "x86_64-linux-gnux32" target)
+         '("--with-abi=mx32"))
 
         ((and (string-suffix? "-gnu" target)
               (not (string-contains target "-linux")))
@@ -1099,6 +1102,12 @@ as the 'native-search-paths' field."
                "gfortran" '("fortran")
                %generic-search-paths)))
 
+(define-public gfortran-9
+  (hidden-package
+   (custom-gcc gcc-9
+               "gfortran" '("fortran")
+               %generic-search-paths)))
+
 (define-public gfortran-7
   (hidden-package
    (custom-gcc gcc-7
@@ -1182,6 +1191,21 @@ provides the GNU compiler for the Go programming language.")
        (substitute-keyword-arguments (package-arguments gccgo)
          ((#:phases phases)
           #~(modify-phases #$phases
+              #$@(if (version>=? (package-version gccgo) "12.0")
+                     #~((add-after 'unpack 'adjust-libgo-dependencies
+                          (lambda _
+                            (substitute* "Makefile.in"
+                              ;; libgo.la depends on libbacktrace.la but the
+                              ;; current dependency rules don't have libbacktrace
+                              ;; building early enough for libgo.  When built
+                              ;; with more than 1 core this issue doesn't appear.
+                              ;; see commit 5fee5ec362f7a243f459e6378fd49dfc89dc9fb5.
+                              (("all-target-libgo: maybe-all-target-libffi")
+                               (string-append
+                                 "all-target-libgo: maybe-all-target-libbacktrace\n"
+                                 "all-target-libgo: maybe-all-target-libffi\n"
+                                 "all-target-libgo: maybe-all-target-libatomic"))))))
+                     #~())
               (add-after 'install 'wrap-go-with-tool-path
                 (lambda* (#:key outputs #:allow-other-keys)
                   (let* ((out (assoc-ref outputs "out"))

@@ -192,6 +192,7 @@
             terminal-window-size
             terminal-columns
             terminal-rows
+            terminal-string-width
             openpty
             login-tty
 
@@ -1097,6 +1098,7 @@ Turning finalization off shuts down the finalization thread as a side effect."
                        ("armv7l" 120)
                        ("aarch64" 220)
                        ("ppc64le" 120)
+                       ("riscv64" 220)
                        (_ #f))))
     (lambda (flags)
       "Create a new child process by duplicating the current parent process.
@@ -2335,6 +2337,26 @@ always a positive integer."
 PORT, trying to guess a reasonable value if all else fails.  The result is
 always a positive integer."
   (terminal-dimension window-size-rows port (const 25)))
+
+(define terminal-string-width
+  (let ((mbstowcs (and=> (false-if-exception
+                          (dynamic-func "mbstowcs" (dynamic-link)))
+                         (cute pointer->procedure int <> (list '* '* size_t))))
+        (wcswidth (and=> (false-if-exception
+                          (dynamic-func "wcswidth" (dynamic-link)))
+                         (cute pointer->procedure int <> (list '* size_t)))))
+    (if (and mbstowcs wcswidth)
+        (lambda (str)
+          "Return the width of a string as it would be printed on the terminal.
+This procedure accounts for characters that have a different width than 1, such
+as CJK double-width characters."
+          (let ((wchar (make-bytevector (* (+ (string-length str) 1) 4))))
+            (mbstowcs (bytevector->pointer wchar)
+                      (string->pointer str)
+                      (string-length str))
+            (wcswidth (bytevector->pointer wchar)
+                      (string-length str))))
+        string-length)))                      ;using a statically-linked Guile
 
 (define openpty
   (let ((proc (syscall->procedure int "openpty" '(* * * * *)

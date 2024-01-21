@@ -1,39 +1,52 @@
-Add "display_name" configuration option and use its value instead of
-the hard coded one.
+Add "display_name" configuration option and use its value instead of the hard
+coded one.
 
 Patch by Diego N. Barbato
+---
+ app.cpp        | 23 ++++++++++-------------
+ cfg.cpp        |  1 +
+ switchuser.cpp |  2 +-
+ 3 files changed, 12 insertions(+), 14 deletions(-)
 
---- a/app.cpp	1970-01-01 01:00:00.000000000 +0100
-+++ b/app.cpp	2019-04-27 13:48:23.479133531 +0200
-@@ -190,7 +190,13 @@
- }
+diff --git a/app.cpp b/app.cpp
+index b840e60..4f72da0 100644
+--- a/app.cpp
++++ b/app.cpp
+@@ -270,7 +270,16 @@ App::App(int argc, char** argv)
  
- void App::Run() {
+ void App::Run()
+ {
 -	DisplayName = DISPLAY;
 +	/* Read configuration */
-+	cfg = new Cfg;
-+	char *cfgfile = getenv("SLIM_CFGFILE");
-+	if (!cfgfile) cfgfile = CFGFILE;
-+	cfg->readConf(cfgfile);
++	if ( cfg == 0 )
++	{
++		cfg = new Cfg;
++		const char *cfgfile = getenv("SLIM_CFGFILE");
++		if (!cfgfile) cfgfile = CFGFILE;
++		cfg->readConf(cfgfile);
 +
-+	DisplayName = cfg->getOption("display_name").c_str();
++		DisplayName = cfg->getOption("display_name").c_str();
++	}
  
  #ifdef XNEST_DEBUG
  	char* p = getenv("DISPLAY");
-@@ -200,11 +206,7 @@
+@@ -281,14 +287,7 @@ void App::Run()
  	}
  #endif
  
 -	/* Read configuration and theme */
--	cfg = new Cfg;
--	char *cfgfile = getenv("SLIM_CFGFILE");
--	if (!cfgfile) cfgfile = CFGFILE;
--	cfg->readConf(cfgfile);
-+	/* Read theme */
+-	if ( cfg == 0 )
+-	{
+-		cfg = new Cfg;
+-		const char* cfgfile = getenv("SLIM_CFGFILE");
+-		if (!cfgfile) cfgfile = CFGFILE;
+-		cfg->readConf(cfgfile);
+-	}
++        /* Read theme */
  	string themebase = "";
  	string themefile = "";
  	string themedir = "";
-@@ -911,9 +913,7 @@
+@@ -1115,9 +1114,7 @@ int App::StartServer()
  	static const int MAX_XSERVER_ARGS = 256;
  	static char* server[MAX_XSERVER_ARGS+2] = { NULL };
  	server[0] = (char *)cfg->getOption("default_xserver").c_str();
@@ -44,7 +57,7 @@ Patch by Diego N. Barbato
  	char* args = new char[argOption.length()+2]; /* NULL plus vt */
  	strcpy(args, argOption.c_str());
  
-@@ -1233,7 +1233,7 @@
+@@ -1424,7 +1421,7 @@ void App::CreateServerAuth()
  	authfile = cfg->getOption("authfile");
  	remove(authfile.c_str());
  	putenv(StrConcat("XAUTHORITY=", authfile.c_str()));
@@ -53,9 +66,11 @@ Patch by Diego N. Barbato
  	  authfile);
  }
  
---- a/cfg.cpp	1970-01-01 01:00:00.000000000 +0100
-+++ b/cfg.cpp	2019-04-27 13:49:40.511773743 +0200
-@@ -31,6 +31,7 @@
+diff --git a/cfg.cpp b/cfg.cpp
+index 37fb10d..a0c9bf1 100644
+--- a/cfg.cpp
++++ b/cfg.cpp
+@@ -40,6 +40,7 @@ Cfg::Cfg()
  	/* Configuration options */
  	options.insert(option("default_path","/bin:/usr/bin:/usr/local/bin"));
  	options.insert(option("default_xserver","/usr/bin/X"));
@@ -63,13 +78,18 @@ Patch by Diego N. Barbato
  	options.insert(option("xserver_arguments",""));
  	options.insert(option("numlock",""));
  	options.insert(option("daemon",""));
---- a/switchuser.cpp	1970-01-01 01:00:00.000000000 +0100
-+++ b/switchuser.cpp	2019-04-27 13:50:19.380096651 +0200
-@@ -54,6 +54,6 @@
+diff --git a/switchuser.cpp b/switchuser.cpp
+index ca936ae..255f5d9 100644
+--- a/switchuser.cpp
++++ b/switchuser.cpp
+@@ -69,6 +69,6 @@ void SwitchUser::SetClientAuth(const char* mcookie)
  	string home = string(Pw->pw_dir);
  	string authfile = home + "/.Xauthority";
  	remove(authfile.c_str());
 -	Util::add_mcookie(mcookie, ":0", cfg->getOption("xauth_path"),
-+	Util::add_mcookie(mcookie, displayName.c_str(), cfg->getOption("xauth_path"),
++	Util::add_mcookie(mcookie, cfg->getOption("display_name").c_str(), cfg->getOption("xauth_path"),
  	  authfile);
  }
+-- 
+2.39.2
+

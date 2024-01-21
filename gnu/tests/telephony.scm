@@ -38,7 +38,10 @@
 ;;; Jami daemon.
 ;;;
 
-(include "data/jami-dummy-account.dat") ;defines %jami-account-content-sexp
+(define %jami-account-content-sexp
+  (call-with-input-file
+      (search-path %load-path "gnu/tests/data/jami-dummy-account.dat")
+    read))
 
 (define %dummy-jami-account-archive
   ;; A Jami account archive is a gzipped JSON file.
@@ -184,13 +187,22 @@ jami account used as part of the jami configuration are left *unspecified*."
                 %load-path)
              marionette))
 
+          (test-assert "dbus session is up"
+            (and (marionette-eval
+                  '(begin
+                     (use-modules (gnu services herd))
+                     (wait-for-service 'jami-dbus-session #:timeout 40))
+                  marionette)
+                 (wait-for-unix-socket "/var/run/jami/bus"
+                                       marionette)))
+
           (test-assert "service is running"
             (marionette-eval
              '(begin
                 (use-modules (gnu build jami-service)
                              (gnu services herd))
 
-                (wait-for-service 'jami)
+                (wait-for-service 'jami #:timeout 40)
                 (jami-service-available?))
              marionette))
 
@@ -217,10 +229,10 @@ jami account used as part of the jami configuration are left *unspecified*."
                              (rnrs base)                               )
                 ;; Start the service.
                 (start-service 'jami)
-                (with-retries 20 1 (jami-service-available?))
+                (with-retries 40 1 (jami-service-available?))
                 ;; Restart the service.
                 (restart-service 'jami)
-                (with-retries 20 1 (jami-service-available?)))
+                (with-retries 40 1 (jami-service-available?)))
              marionette))
 
           (unless #$provisioning? (test-skip 1))
@@ -231,7 +243,7 @@ jami account used as part of the jami configuration are left *unspecified*."
                              (gnu services herd)
                              (rnrs base))
                 ;; Accounts take some time to appear after being added.
-                (with-retries 20 1
+                (with-retries 40 1
                               (with-shepherd-action 'jami ('list-accounts) results
                                 (let ((account (assoc-ref (car results) #$username)))
                                   (assert (string=? #$username
@@ -382,7 +394,7 @@ jami account used as part of the jami configuration are left *unspecified*."
    (description "Provisioning test for the jami service.")
    (value (run-jami-test #:provisioning? #t))))
 
-;;; Thi test verifies that <jami-account> values can be left unspecified
+;;; This test verifies that <jami-account> values can be left unspecified
 ;;; without causing any issue (see: https://issues.guix.gnu.org/56799).
 (define %test-jami-provisioning-partial
   (system-test

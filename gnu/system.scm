@@ -59,7 +59,6 @@
   #:use-module (gnu packages less)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
-  #:use-module (gnu packages nano)
   #:use-module (gnu packages nvi)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pciutils)
@@ -804,9 +803,7 @@ bookkeeping."
           %boot-service
           %hurd-startup-service
           %activation-service
-          (service shepherd-root-service-type
-                   (shepherd-configuration
-                    (shepherd shepherd-0.8)))     ;no Fibers
+          (service shepherd-root-service-type)
 
           (service user-processes-service-type)
           (account-service (append (operating-system-accounts os)

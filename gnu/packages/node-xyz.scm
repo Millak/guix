@@ -347,6 +347,35 @@ random number generator.")
 Javascript.")
     (license license:expat)))
 
+(define-public node-normalize-path
+  (package
+    (name "node-normalize-path")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jonschlinkert/normalize-path")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l079szbgw2b9i5zx6zbwvxiivssa55a4pwfy4m7n6rdkcmsxf7f"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dependencies
+                    (lambda _
+                      (delete-dependencies '("gulp-format-md" "mocha")))))))
+    (native-inputs (list node-minimist))
+    (home-page "https://github.com/jonschlinkert/normalize-path")
+    (synopsis "Normalize slashes in a file path")
+    (description
+     "Normalize slashes in a file path to be POSIX/Unix-like forward slashes.
+Can also condense repeated slashes to a single slash and remove trailing
+slashes, unless disabled.")
+    (license license:expat)))
+
 (define-public node-oop
   ;; No releases, last commit was February 2013.
   (let ((commit "f9d87cda0958886955c14a0a716e57021ed295dc")
@@ -465,6 +494,48 @@ written in Javascript.")
     (description
      "This package can read a protobuf schema from the disk, parse it and
 resolve all imports.")
+    (license license:expat)))
+
+(define-public node-safe-stable-stringify
+  (package
+    (name "node-safe-stable-stringify")
+    (version "2.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BridgeAR/safe-stable-stringify")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "008adig8j13rn2a21ngnp770y4zz6yq176ix5rkskjbb8g2qwapg"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dependencies
+                    (lambda _
+                      (delete-dependencies '("benchmark" "clone"
+                                             "fast-json-stable-stringify"
+                                             "fast-safe-stringify"
+                                             "fast-stable-stringify"
+                                             "faster-stable-stringify"
+                                             "fastest-stable-stringify"
+                                             "json-stable-stringify"
+                                             "json-stringify-deterministic"
+                                             "json-stringify-safe"
+                                             "standard"
+                                             "tap"
+                                             "typescript"
+                                             "@types/node"
+                                             "@types/json-stable-stringify")))))))
+    (home-page "https://github.com/BridgeAR/safe-stable-stringify")
+    (synopsis "Serialization of javascript objects")
+    (description
+     "Safe, deterministic and fast serialization alternative to JSON.stringify.
+Gracefully handles circular structures and bigint instead of throwing.
+Optional custom circular values, deterministic behavior or strict JSON
+compatibility check.")
     (license license:expat)))
 
 (define-public node-stack-trace

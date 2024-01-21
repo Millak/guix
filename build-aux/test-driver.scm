@@ -3,7 +3,7 @@ exec guile --no-auto-compile -e main -s "$0" "$@"
 !#
 ;;;; test-driver.scm - Guile test driver for Automake testsuite harness
 
-(define script-version "2021-02-02.05") ;UTC
+(define script-version "2023-12-08.14") ;UTC
 
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -274,6 +274,7 @@ cases based on their names."
     (exit 0)))
 
 ;;; Local Variables:
+;;; mode: scheme
 ;;; eval: (add-hook 'write-file-functions 'time-stamp)
 ;;; time-stamp-start: "(define script-version \""
 ;;; time-stamp-format: "%:y-%02m-%02d.%02H"

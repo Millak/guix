@@ -20,7 +20,7 @@
 
 (define-module (gnu home services shells)
   #:use-module (gnu services configuration)
-  #:autoload   (gnu system shadow) (%default-bashrc)
+  #:autoload   (gnu system shadow) (%default-bashrc %default-zprofile)
   #:use-module (gnu home services utils)
   #:use-module (gnu home services)
   #:use-module (gnu packages shells)
@@ -189,12 +189,8 @@ another process for example)."))
 (define (zsh-file-zprofile config)
   (mixed-text-file
    "zprofile"
+   (plain-file-content %default-zprofile)
    "\
-# Set up the system, user profile, and related variables.
-source /etc/profile
-# Set up the home environment profile.
-source ~/.profile
-
 # It's only necessary if zsh is a login shell, otherwise profiles will
 # be already sourced by bash
 "

@@ -5,7 +5,7 @@
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2014 Mathieu Lirzin <mathieu.lirzin@openmailbox.org>
-;;; Copyright © 2015–2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015–2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -58,6 +58,7 @@
 ;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
+;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
@@ -103,6 +104,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -135,6 +137,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages java)
   #:use-module (gnu packages less)
   #:use-module (gnu packages lisp)
@@ -162,6 +165,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -171,6 +176,7 @@
   #:use-module (gnu packages scheme)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages simulation)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
@@ -2915,7 +2921,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "8.3.0")
+    (version "8.4.0")
     (source
      (origin
        (method url-fetch)
@@ -2923,7 +2929,7 @@ can solve two kinds of problems:
                            version ".tar.xz"))
        (sha256
         (base32
-         "1aav8i88y2yl11g5d44wpjngkpldvzk90ja7wghkb91cy2a9974i"))))
+         "1a58zyrl1lx6b6wr2jbf6w806vjxr3jzbh6n85iinag47qxdg6kg"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib
@@ -3630,14 +3636,16 @@ bindings to almost all functions of PETSc.")
 (define-public python-kiwisolver
   (package
     (name "python-kiwisolver")
-    (version "1.0.1")
+    (version "1.4.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "kiwisolver" version))
               (sha256
                (base32
-                "0y22ci86znwwwfhbmvbgdfnbi6lv5gv2xkdlxvjw7lml43ayafyf"))))
-    (build-system python-build-system)
+                "1v6nc0z9dg4am0bibji9pijci9f15z68mwrlv91a28pvawx5czp5"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs (list python-cppy python-pytest python-setuptools-scm))
     (home-page "https://github.com/nucleic/kiwi")
     (synopsis "Fast implementation of the Cassowary constraint solver")
     (description
@@ -3647,6 +3655,146 @@ lightweight and fast.  Kiwi ranges from 10x to 500x faster than the original
 Cassowary solver with typical use cases gaining a 40x improvement.  Memory
 savings are consistently > 5x.")
     (license license:bsd-3)))
+
+(define-public python-accupy
+  (package
+    (name "python-accupy")
+    (version "0.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/accupy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sxkwpp2xy2jgakhdxr4nh1cspqv8l89kz6s832h05pbpyc0n767"))
+       (patches (search-patches "python-accupy-use-matplotx.patch"
+                                "python-accupy-fix-use-of-perfplot.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-eigen-include-dir
+            (lambda _
+              (substitute* "setup.py"
+                (("include_dirs=\\[\"\\/usr\\/include\\/eigen3\\/\"\\]," _)
+                 (string-append "include_dirs=[\""
+                                #$(file-append (this-package-input "eigen")
+                                             "/include/eigen3/")
+                                "\"],"))))))))
+    (propagated-inputs (list eigen python-mpmath python-pyfma))
+    (native-inputs (list pybind11
+                         python-matplotx
+                         python-perfplot
+                         python-pytest))
+    (home-page "https://github.com/diego-hayashi/accupy")
+    (synopsis "Accurate calculation of sums and dot products")
+    (description
+      "@code{accupy} is a Python library for accurately computing sums
+and (dot) products.  It implements Kahan summation, Shewchuck's
+algorithm and summation in K-fold precision.")
+    (license license:gpl3+)))
+
+(define-public python-ndim
+  (package
+    (name "python-ndim")
+    (version "0.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/ndim")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hri82k7pcpw9dns8l1f2asa3dm7hjv71wnxi3752258ia2qa44v"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sympy))
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://github.com/diego-hayashi/ndim")
+    (synopsis "Multidimensional volumes and monomial integrals")
+    (description
+      "@code{ndim} computes all kinds of volumes and integrals of
+monomials over such volumes in a fast, numerically stable way, using
+recurrence relations.")
+    (license license:gpl3+)))
+
+(define-public python-orthopy
+  (package
+    (name "python-orthopy")
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/orthopy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00s2rwjdlq38zkf7wl1gvm2aw057r30266lkzfxkrfzr4i705xnq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-importlib-metadata
+            python-ndim
+            python-numpy
+            python-sympy))
+    (native-inputs (list ;python-cplot  ;only used in deselected tests
+                         python-matplotx
+                         python-meshio
+                         python-meshzoo
+                         python-pytest
+                         python-scipy))
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests fails with unexpected keyword arguments
+      ;; in calls to cplot.
+      #~(list "--deselect" "tests/test_u3.py::test_write_single"
+              "--deselect" "tests/test_u3.py::test_write_tree")))
+    (home-page "https://github.com/diego-hayashi/orthopy")
+    (synopsis "Tools for orthogonal polynomials, Gaussian quadrature")
+    (description "@code{orthopy} provides various orthogonal polynomial
+classes for lines, triangles, quadrilaterals, disks, spheres, hexahedra,
+and n-cubes.  All computations are done using numerically stable
+recurrence schemes.  Furthermore, all functions are fully vectorized and
+can return results in exact arithmetic.")
+    (license license:gpl3+)))
+
+(define-public python-quadpy
+  (package
+    (name "python-quadpy")
+    (version "0.16.10")
+    (source
+      (origin
+        (method url-fetch)
+        ; Download zipfile from zenodo, because git checkout is missing
+        ; some data files that are stored via git-lfs.
+        (uri (string-append
+               "https://zenodo.org/records/5541216/files/nschloe/quadpy-v"
+               version
+               ".zip"))
+        (sha256
+          (base32
+            "1f989dipv7lqxvalfrvvlmhlxyl67a87lavyyqrr1mh88glhl592"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-importlib-metadata
+            python-numpy
+            python-orthopy
+            python-scipy
+            python-sympy))
+    (native-inputs (list python-accupy python-pytest unzip vtk))
+    (home-page "https://github.com/diego-hayashi/quadpy")
+    (synopsis "Numerical integration, quadrature for various domains")
+    (description
+      "More than 1500 numerical integration schemes for line segments, circles,
+disks, triangles, quadrilaterals, spheres, balls, tetrahedra, hexahedra,
+wedges, pyramids, n-spheres, n-balls, n-cubes, n-simplices, and the
+1D/2D/3D/nD spaces with weight functions exp(-r) and exp(-r2) for fast
+integration of real-, complex-, and vector-valued functions.")
+    (license license:gpl3+)))
 
 (define-public slepc
   (package
@@ -4328,7 +4476,7 @@ implemented in ANSI C, and MPI for communications.")
 (define-public scotch
   (package
     (name "scotch")
-    (version "7.0.1")
+    (version "7.0.4")
     (source
      (origin
        (method git-fetch)
@@ -4337,7 +4485,7 @@ implemented in ANSI C, and MPI for communications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fvgxd3ipl5xswswyadvxvlcgv6an8c229ispnlksgnlwphg10ig"))))
+        (base32 "0rbc51albpd2923dkirpkj8rfkic6rsvwqqnv1mmsk391zhk3amr"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
@@ -4744,7 +4892,7 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "22.12.0")
+    (version "23.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4753,7 +4901,7 @@ point numbers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12bjadmy2mf7d8v4iszmzckahfcwjzaba8wpbigksh4brvhb4gj5"))))
+                "0xj91wfkm19avwmpcfwgzdkcqjwfpkl3glhkpn4advsqc6sx3ra0"))))
     (build-system cmake-build-system)
     (native-inputs (list gettext-minimal))
     (inputs (list bash-minimal
@@ -7593,60 +7741,65 @@ symmetric matrices.")
     (synopsis "Eigenvalue solvers for symmetric matrices (with MPI support)")))
 
 (define-public elemental
-  (package
-    (name "elemental")
-    (version "0.87.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/elemental/Elemental")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1687xpjjzig27y2pnqv7hv09smpijyfdpz7qjgmcxf4shfajlfkc"))))
-    (build-system cmake-build-system)
-    (home-page "https://github.com/elemental/Elemental")
-    (native-inputs
-     (list gfortran))
-    (inputs
-     `(("blas" ,openblas)
-       ("gfortran:lib" ,gfortran "lib")
-       ("gmp" ,gmp)
-       ("lapack" ,lapack)
-       ("metis" ,metis)
-       ("mpc" ,mpc)
-       ("mpfr" ,mpfr)
-       ("mpi" ,openmpi)
-       ("qd" ,qd)))
-    (arguments
-     `(#:build-type "Release"           ;default RelWithDebInfo not supported
-       #:configure-flags `("-DEL_DISABLE_PARMETIS:BOOL=YES"
-                           "-DEL_AVOID_COMPLEX_MPI:BOOL=NO"
-                           "-DEL_CACHE_WARNINGS:BOOL=YES"
-                           "-DEL_TESTS:BOOL=YES"
-                           "-DCMAKE_INSTALL_LIBDIR=lib"
-                           "-DGFORTRAN_LIB=gfortran")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'mpi-setup
-                    ,%openmpi-setup)
-                  (add-before 'check 'setup-tests
-                    (lambda _
-                      ;; Parallelism is done at the MPI layer.
-                      (setenv "OMP_NUM_THREADS" "1")
-                      #t))
-                  (add-after 'install 'remove-tests
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Tests are installed, with no easy configuration
-                      ;; switch to prevent this, so delete them.
-                      (delete-file-recursively
-                        (string-append (assoc-ref outputs "out") "/bin"))
-                      #t)))))
-    (synopsis "Dense and sparse-direct linear algebra and optimization")
-    (description "Elemental is a modern C++ library for distributed-memory
+  ;; The build of 0.87.7 is failed for a long time due to new version of GCC. The
+  ;; latest commit has fixes.
+  ;; See https://github.com/elemental/Elemental/issues/254
+  (let ((commit "6eb15a0da2a4998bf1cf971ae231b78e06d989d9")
+        (revision "0"))
+    (package
+      (name "elemental")
+      (version (git-version "0.87.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/elemental/Elemental")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "06xcs4ic60ndcf2hq19gr8yjwdsnphpcyhapab41rkw726z4lm7p"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:build-type "Release" ;default RelWithDebInfo not supported
+        #:configure-flags
+        #~(list "-DEL_DISABLE_PARMETIS:BOOL=YES"
+                "-DEL_AVOID_COMPLEX_MPI:BOOL=NO"
+                "-DEL_CACHE_WARNINGS:BOOL=YES"
+                "-DEL_TESTS:BOOL=YES"
+                "-DCMAKE_INSTALL_LIBDIR=lib"
+                "-DGFORTRAN_LIB=gfortran")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'mpi-setup
+                 #$%openmpi-setup)
+            (add-before 'check 'setup-tests
+              (lambda _                ;; Parallelism is done at the MPI layer.
+                (setenv "OMP_NUM_THREADS" "1")))
+            (add-after 'install 'remove-tests
+              (lambda _
+                ;; Tests are installed, with no easy configuration
+                ;; switch to prevent this, so delete them.
+                (delete-file-recursively
+                 (string-append  #$output "/bin/test")))))))
+      (native-inputs
+       (list gfortran))
+      (inputs
+       (list `(,gfortran "lib")
+             gmp
+             lapack
+             metis
+             mpc
+             mpfr
+             openmpi
+             qd
+             openblas))
+      (home-page "https://github.com/elemental/Elemental")
+      (synopsis "Dense and sparse-direct linear algebra and optimization")
+      (description "Elemental is a modern C++ library for distributed-memory
 dense and sparse-direct linear algebra, conic optimization, and lattice
 reduction.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public mcrl2
   (package
@@ -9524,7 +9677,7 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "2023.1.0")
+    (version "2024.0.0")
     (source
      (origin
        (method git-fetch)
@@ -9534,10 +9687,9 @@ computation is supported via MPI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hbqsnc67b4f8zc690kl79bwhjaasykjlmqbln8iymnjcn3l5ypd"))
+         "08nyfli3x7gd396ffd1a8zn9fj3gm6a8yw0ggm547c09sp2rgvl7"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
-       (patches (search-patches "scilab-hdf5-1.8-api.patch"))
        (snippet
         #~(begin
             ;; Delete everything except for scilab itself:
@@ -9554,7 +9706,8 @@ computation is supported via MPI.")
             (for-each delete-file-recursively
                       '("scilab"
                         "config"
-                        "libs/GetWindowsVersion"))
+                        "libs/GetWindowsVersion"
+                        "Visual-Studio-settings"))
             (for-each delete-file
                       (cons* "aclocal.m4"
                              "configure"
@@ -9566,22 +9719,23 @@ computation is supported via MPI.")
                              "m4/ltversion.m4"
                              "m4/lt~obsolete.m4"
                              "m4/pkg.m4"
+                             "Scilab.sln"
                              (find-files "." "^Makefile\\.in$")))
 
             ;; And finally some files in the modules directory:
             (for-each
-              (lambda (file)
-                (delete-file
-                  (string-append "modules/dynamic_link/src/scripts/" file)))
-              '("aclocal.m4"
-                "configure"
-                "compile"
-                "config.guess"
-                "config.sub"
-                "ltmain.sh"
-                "depcomp"
-                "install-sh"
-                "missing"))
+             (lambda (file)
+               (delete-file
+                (string-append "modules/dynamic_link/src/scripts/" file)))
+             '("aclocal.m4"
+               "configure"
+               "compile"
+               "config.guess"
+               "config.sub"
+               "ltmain.sh"
+               "depcomp"
+               "install-sh"
+               "missing"))
             (delete-file-recursively "modules/dynamic_link/src/scripts/m4")
             (for-each delete-file
                       '("modules/ast/src/cpp/parse/scanscilab.cpp"
@@ -9590,7 +9744,7 @@ computation is supported via MPI.")
                         "modules/ast/src/cpp/parse/parsescilab.cpp"))))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf
+     (list autoconf-2.71
            autoconf-archive
            automake
            bison
@@ -9607,8 +9761,9 @@ computation is supported via MPI.")
                   curl
                   fftw
                   gettext-minimal
-                  hdf5-1.14
+                  hdf5-1.10
                   lapack
+                  libarchive
                   libx11
                   libxml2
                   matio
@@ -9619,83 +9774,125 @@ computation is supported via MPI.")
                   tcl
                   tk))
     (arguments
-     (list
-      ;; The tests require java code.
-      #:tests? #f
-      #:configure-flags
-      #~(list
-         "--enable-relocatable"
-         "--disable-static-system-lib"
-         "--enable-build-parser"
-         ;; Disable all java code.
-         "--without-gui"
-         "--without-javasci"
-         "--disable-build-help"
-         "--with-external-scirenderer"
-         ;; Tcl and Tk library locations.
-         (string-append "--with-tcl-include="
-                        (dirname
-                          (search-input-file %build-inputs "include/tcl.h")))
-         (string-append "--with-tcl-library="
-                        (dirname
-                          (search-input-directory %build-inputs "lib/tcl8")))
-         (string-append "--with-tk-include="
-                        (dirname
-                          (search-input-file %build-inputs "include/tk.h")))
-         (string-append "--with-tk-library="
-                        (dirname
-                          (search-input-directory %build-inputs "lib/tk8.6")))
-         (string-append "--with-eigen-include="
-                        (search-input-directory %build-inputs "include/eigen3"))
-         ;; Find and link to the OCaml Num package
-         "OCAMLC=ocamlfind ocamlc -package num"
-         "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg"
-         ;; There are some 2018-fortran errors that are ignored
-         ;; with this fortran compiler flag.
-         "FFLAGS=-fallow-argument-mismatch")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The Num library is specified with the OCAMLC and
-          ;; OCAMLOPT variables above.
-          (add-after 'unpack 'fix-ocaml-num
-            (lambda _
-              (substitute*
-                '("modules/scicos/Makefile.modelica.am"
-                  "modules/scicos/src/translator/makefile.mak"
-                  "modules/scicos/src/modelica_compiler/makefile.mak")
-                (("nums\\.cmx?a") ""))))
-          ;; Install only scilab-cli.desktop
-          (add-after 'unpack 'remove-desktop-files
-            (lambda _
-              (substitute* "desktop/Makefile.am"
-                (("desktop_DATA =")
-                 "desktop_DATA = scilab-cli.desktop\nDUMMY ="))))
-          ;; These generated files are assumed to be present during
-          ;; the build.
-          (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
-            (lambda _
-              (with-directory-excursion "modules/dynamic_link/src/scripts"
-                ((assoc-ref %standard-phases 'bootstrap)))))
-          (add-before 'build 'pre-build
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Fix scilab script.
-              (substitute* "bin/scilab"
-                (("\\/bin\\/ls")
-                 (search-input-file inputs "bin/ls")))
-              ;; Fix core.start.
-              (substitute* "modules/core/etc/core.start"
-                (("'SCI/modules")
-                 "SCI+'/modules"))
-              ;; Set SCIHOME to /tmp before macros compilation.
-              (setenv "SCIHOME" "/tmp")))
-          ;; Prevent race condition
-          (add-after 'pre-build 'build-parsers
-            (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
-              (with-directory-excursion "modules/ast"
-                (apply invoke "make"
-                       "src/cpp/parse/parsescilab.cpp"
-                       "src/cpp/parse/scanscilab.cpp"
-                       make-flags)))))))
+     (let* ((tcl (this-package-input "tcl"))
+            (tk (this-package-input "tk")))
+       (list
+        #:configure-flags
+        #~(list
+           "--enable-relocatable"
+           "--disable-static-system-lib"
+           "--enable-build-parser"
+           ;; Disable all java code.
+           "--without-gui"
+           "--without-javasci"
+           "--disable-build-help"
+           "--with-external-scirenderer"
+           ;; Tcl and Tk library locations.
+           (string-append "--with-tcl-include=" #$tcl "/include")
+           (string-append "--with-tcl-library=" #$tcl "/lib")
+           (string-append "--with-tk-include=" #$tk "/include")
+           (string-append "--with-tk-library=" #$tk "/lib")
+           (string-append "--with-eigen-include="
+                          (search-input-directory %build-inputs "include/eigen3"))
+           ;; Find and link to the OCaml Num package
+           "OCAMLC=ocamlfind ocamlc -package num"
+           "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The Num library is specified with the OCAMLC and
+            ;; OCAMLOPT variables above.
+            (add-after 'unpack 'fix-ocaml-num
+              (lambda _
+                (substitute*
+                    '("modules/scicos/Makefile.modelica.am"
+                      "modules/scicos/src/translator/makefile.mak"
+                      "modules/scicos/src/modelica_compiler/makefile.mak")
+                  (("nums\\.cmx?a") ""))))
+            (add-after 'unpack 'fix-linking
+              (lambda _
+                (substitute* "modules/Makefile.am"
+                  (("libscilab_cli_la_LDFLAGS = .*\\)" all)
+                   (string-append all " -lcurl")))))
+            (add-after 'unpack 'set-version
+              (lambda _
+                (substitute* "modules/core/includes/version.h.in"
+                  (("scilab-branch-main")  ; version
+                   (string-append
+                    "scilab-"
+                    #$(version-major+minor (package-version this-package)))))))
+            (add-after 'unpack 'restrain-to-scilab-cli
+              (lambda _
+                ;; Install only scilab-cli.desktop
+                (substitute* "desktop/Makefile.am"
+                  (("desktop_DATA =")
+                   "desktop_DATA = scilab-cli.desktop\nDUMMY ="))
+                ;; Replace scilab with scilab-cli for tests.
+                (substitute* "Makefile.incl.am"
+                  (("scilab-bin") "scilab-cli-bin")
+                  (("scilab -nwni") "scilab-cli")
+                  ;; Do not install tests, demos and examples.
+                  ;; This saves up to 140 Mo in the final output.
+                  (("(TESTS|DEMOS|EXAMPLES)_DIR=.*" all kind)
+                   (string-append kind "_DIR=")))))
+            (add-before 'check 'disable-failing-tests
+              (lambda _
+                (substitute* "Makefile"
+                  (("TESTS = .*")
+                   "TESTS =\n"))
+                (substitute* "modules/functions_manager/Makefile"
+                  (("check:.*")
+                   "check:\n"))
+                (substitute* "modules/types/Makefile"
+                  (("\\$\\(MAKE\\) \\$\\(AM_MAKEFLAGS\\) check-am")
+                   ""))))
+            ;; These generated files are assumed to be present during
+            ;; the build.
+            (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
+              (lambda _
+                (with-directory-excursion "modules/dynamic_link/src/scripts"
+                  ((assoc-ref %standard-phases 'bootstrap)))))
+            (add-before 'build 'pre-build
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Fix scilab script.
+                (substitute* "bin/scilab"
+                  (("/bin/ls")
+                   (search-input-file inputs "bin/ls")))
+                ;; Fix core.start.
+                (substitute* "modules/core/etc/core.start"
+                  (("'SCI/modules")
+                   "SCI+'/modules"))))
+            ;; Prevent race condition
+            (add-after 'pre-build 'build-parsers
+              (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+                (with-directory-excursion "modules/ast"
+                  (apply invoke "make"
+                         "src/cpp/parse/parsescilab.cpp"
+                         "src/cpp/parse/scanscilab.cpp"
+                         make-flags))))
+            ;; The startup script is mostly there to define the following env
+            ;; variables properly. We can do this with guix directly.
+            (add-after 'install 'rewrap-scilab-cli
+              (lambda _
+                (define (bin path) (string-append #$output "/bin/" path))
+                (delete-file (bin "scilab-cli"))
+                (wrap-program (bin "scilab-cli-bin")
+                  `("SCI" = (,(string-append #$output "/share/scilab")))
+                  `("LD_LIBRARY_PATH" ":" prefix
+                    (,(string-append #$output "/lib/scilab")))
+                  `("TCL_LIBRARY" = (,(string-append #$tcl "/lib")))
+                  `("TK_LIBRARY" = (,(string-append #$tk "/lib"))))
+                (copy-file (bin "scilab-cli-bin") (bin "scilab-cli"))
+                (copy-file (bin ".scilab-cli-bin-real") (bin "scilab-cli-bin"))
+                (delete-file (bin ".scilab-cli-bin-real"))
+                (substitute* (bin "scilab-cli")
+                  ;; Also set SCIHOME to sensible XDG base dirs value.
+                  (("\\.scilab-cli-bin-real\"")
+                   (string-append
+                    "scilab-cli-bin\" -scihome "
+                    "\"${XDG_STATE_HOME:-$HOME/.local/state}/scilab/"
+                    #$(package-version this-package) "\""))
+                  (("export SCI=")
+                   "unset LANGUAGE\nexport SCI="))))))))
     (home-page "https://www.scilab.org/")
     (synopsis "Software for engineers and scientists")
     (description "This package provides the non-graphical version of the Scilab

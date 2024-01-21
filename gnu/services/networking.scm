@@ -1918,29 +1918,35 @@ table inet filter {
 (define (pagekite-shepherd-service config)
   (match-record config <pagekite-configuration>
     (package kitename kitesecret frontend kites extra-file)
-    (with-imported-modules (source-module-closure
-                            '((gnu build shepherd)
-                              (gnu system file-systems)))
+    (let* ((config-file (pagekite-configuration-file config))
+           (mappings (cons (file-system-mapping
+                            (source config-file)
+                            (target source))
+                           (if extra-file
+                               (list (file-system-mapping
+                                      (source extra-file)
+                                      (target source)))
+                               '())))
+           (pagekite (least-authority-wrapper
+                      (file-append package "/bin/pagekite")
+                      #:name "pagekite"
+                      #:mappings mappings
+                      ;; 'pagekite' changes user IDs to it needs to run in the
+                      ;; global user namespace.
+                      #:namespaces (fold delq %namespaces '(net user)))))
       (shepherd-service
        (documentation "Run the PageKite service.")
        (provision '(pagekite))
        (requirement '(networking))
-       (modules '((gnu build shepherd)
-                  (gnu system file-systems)))
-       (start #~(make-forkexec-constructor/container
-                 (list #$(file-append package "/bin/pagekite")
+       (actions (list (shepherd-configuration-action config-file)))
+       (start #~(make-forkexec-constructor
+                 (list #$pagekite
                        "--clean"
                        "--nullui"
                        "--nocrashreport"
                        "--runas=pagekite:pagekite"
-                       (string-append "--optfile="
-                                      #$(pagekite-configuration-file config)))
-                 #:log-file "/var/log/pagekite.log"
-                 #:mappings #$(if extra-file
-                                  #~(list (file-system-mapping
-                                           (source #$extra-file)
-                                           (target source)))
-                                  #~'())))
+                       (string-append "--optfile=" #$config-file))
+                 #:log-file "/var/log/pagekite.log"))
        ;; SIGTERM doesn't always work for some reason.
        (stop #~(make-kill-destructor SIGINT))))))
 

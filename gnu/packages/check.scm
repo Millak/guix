@@ -24,7 +24,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
@@ -39,7 +39,7 @@
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
@@ -47,6 +47,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,6 +108,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix deprecation)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
 (define-public pict
@@ -602,10 +604,10 @@ It allows the specification of behaviour scenarios using a given-when-then
 pattern.")
       (license license:apsl2))))
 
-(define-public catch2-3.3
+(define-public catch2-3
   (package
     (name "catch2")
-    (version "3.4.0")
+    (version "3.5.1")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -615,12 +617,19 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gdfsva6mnd66px85fmm3s65h8qzqnmgbmws2i3nygfav1y8d88f"))))
+                "0p7rk01n4qfnnm1bgakllyqi83n1kbpz11gh65z1vspfz58hs9iv"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "-DCATCH_DEVELOPMENT_BUILD=ON"
+      #~(list #$@(match (%current-system)
+                   ((or "x86_64-linux" "i686-linux")
+                    ;; Tests fail on i686-linux without SSE2 for floats, see
+                    ;; upstream report
+                    ;; <https://github.com/catchorg/Catch2/issues/2796>.
+                    '("-DCMAKE_CXX_FLAGS=-msse2 -mfpmath=sse"))
+                   (_ '()))
+              "-DCATCH_DEVELOPMENT_BUILD=ON"
               "-DCATCH_ENABLE_WERROR=OFF"
               "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list python-wrapper))
@@ -1069,7 +1078,7 @@ but it works for any C/C++ project.")
 (define-public actionlint
   (package
     (name "actionlint")
-    (version "1.6.23")
+    (version "1.6.26")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1078,7 +1087,7 @@ but it works for any C/C++ project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07is4920a40zrl7mfldg0az2pisi7f6dv4vh3ijn3nzb4i7fqbni"))))
+                "0j4ni2cryvqn3qim1r6q6sargh0wig6l4vjjwc40cgqvvkrdla04"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/rhysd/actionlint/cmd/actionlint"
@@ -1087,7 +1096,7 @@ but it works for any C/C++ project.")
     (inputs (list go-github-com-fatih-color
                   go-github-com-mattn-go-colorable
                   go-github-com-mattn-go-runewidth
-                  go-github-com-robfig-cron-1.2
+                  go-github-com-robfig-cron
                   go-golang.org-x-sync-errgroup
                   go-golang.org-x-sync-semaphore
                   go-gopkg-in-yaml-v3))
@@ -1416,6 +1425,30 @@ distributed testing in both @code{load} and @code{each} modes.  It also
 supports coverage of subprocesses.")
   (license license:expat)))
 
+(define-public python-pytest-dotenv
+  (package
+    (name "python-pytest-dotenv")
+    (version "0.5.2")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quiqua/pytest-dotenv")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bdxwaak5clhsd63b9q65nf2amqqv5hfn7dskfakyldxsqnnh0y6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dotenv))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/quiqua/pytest-dotenv")
+    (synopsis "Automatically detect and load a .env file before running tests")
+    (description
+     "This Pytest plugin automatically detects and loads environment variables
+from a .env file before running tests.")
+    (license license:expat)))
+
 (define-public python-pytest-httpserver
   (package
     (name "python-pytest-httpserver")
@@ -1445,6 +1478,27 @@ supports coverage of subprocesses.")
     (synopsis "HTTP server for pytest")
     (description "Pytest plugin library to test http clients without
 contacting the real http server.")
+    (license license:expat)))
+
+(define-public python-pytest-nunit
+  (package
+    (name "python-pytest-nunit")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-nunit" version))
+       (sha256
+        (base32 "1gw3a33myq9yncjixs3kkcrr1xkjzvvf3xk6x955p3i79wlwkswx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;no tests included
+    (propagated-inputs (list python-attrs python-pytest))
+    (native-inputs (list python-pytest python-pytest-cov python-xmlschema))
+    (home-page "https://github.com/pytest-dev/pytest-nunit")
+    (synopsis "Pytest plugin for generating NUnit3 test result XML output")
+    (description
+     "This package provides a pytest plugin for generating NUnit3 test result
+XML output")
     (license license:expat)))
 
 (define-public python-pytest-param-files
@@ -2358,14 +2412,14 @@ programs, something like CSmith, a random generator of C programs.")
 (define-public python-lit
   (package
     (name "python-lit")
-    (version "16.0.0")
+    (version "17.0.6")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "lit" version))
         (sha256
          (base32
-          "04dyv8b2nbdbn61zdgm042a21dwidyapn9zbinlf879a29rc6jiw"))))
+          "06z3p85gsy5hw3rbk0ym8aig9mvry1327gz7dfjhjigwandszafz"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2374,8 +2428,8 @@ programs, something like CSmith, a random generator of C programs.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "python" "lit.py" "tests")))))))
-    (native-inputs
-     (list llvm-14))
+    ;; This can be built with any version of llvm.
+    (native-inputs (list llvm))
     (home-page "https://llvm.org/")
     (synopsis "LLVM Software Testing Tool")
     (description "@code{lit} is a portable tool for executing LLVM and Clang
@@ -2551,7 +2605,7 @@ mypy plugins.")
 (define-public python-pytest-perf
   (package
     (name "python-pytest-perf")
-    (version "0.12.0")
+    (version "0.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2560,26 +2614,21 @@ mypy plugins.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05mgknvrmyz1kmkgw8jzvisavc68wz1g2wxv69i6xvzgqxf17m9f"))))
-    (build-system python-build-system)
+                "1hrccvrbccqwba04pqj749hdzn4sgldmbpg74nf3fzz7wyg6jxqk"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-k"
-                        (string-append
-                         ;; Do not test the myproject.toml build as it tries to pull
-                         ;; dependencies from the internet.
-                         "not project "
-                         ;; The benchmark test attempts to install the
-                         ;; package, failing to pull its dependencies from the
-                         ;; network.
-                         "and not BenchmarkRunner "
-                         ;; The upstream_url test requires networking.
-                         "and not upstream_url"))))))))
+      #:test-flags '(list "-k"
+                          (string-append
+                           ;; Do not test the myproject.toml build as it tries to pull
+                           ;; dependencies from the internet.
+                           "not project "
+                           ;; The benchmark test attempts to install the
+                           ;; package, failing to pull its dependencies from the
+                           ;; network.
+                           "and not BenchmarkRunner "
+                           ;; The upstream_url test requires networking.
+                           "and not upstream_url"))))
     (native-inputs
      (list python-pytest
            python-pytest-black
@@ -2726,7 +2775,7 @@ possible to write plugins to add your own checks.")
                (base32
                 "16a1ac5n7k7sx15cnk03gw3fmslab3a7m74dc45rgpldgiff3577"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-pylint))
+    (propagated-inputs (list python-tomli python-pylint))
     (home-page "https://github.com/johnnoone/setuptools-pylint")
     (synopsis "Run pylint with @command{python setup.py lint}")
     (description "This package expose pylint as a lint command into

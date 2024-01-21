@@ -46,12 +46,6 @@
   #:use-module (srfi srfi-71)
   #:export (guix-time-machine))
 
-;;; The required inferiors mechanism relied on by 'guix time-machine' was
-;;; firmed up in v1.0.0; it is the oldest, safest commit that can be travelled
-;;; to.
-(define %oldest-possible-commit
-  "6298c3ffd9654d3231a6f25390b056483e8f407c") ;v1.0.0
-
 
 ;;;
 ;;; Command-line options.
@@ -146,6 +140,31 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
 
 
 ;;;
+;;; Avoiding traveling too far back.
+;;;
+
+;;; The required inferiors mechanism relied on by 'guix time-machine' was
+;;; firmed up in v1.0.0; it is the oldest, safest commit that can be travelled
+;;; to.
+(define %oldest-possible-commit
+  "6298c3ffd9654d3231a6f25390b056483e8f407c") ;v1.0.0
+
+(define %reference-channels
+  (list (channel (inherit %default-guix-channel)
+                 (commit %oldest-possible-commit))))
+
+(define (validate-guix-channel channel start commit relation)
+  "Raise an error if CHANNEL is the 'guix' channel and the RELATION of COMMIT
+to %OLDEST-POSSIBLE-COMMIT is not that of an ancestor."
+  (unless (or (not (guix-channel? channel))
+              (memq relation '(ancestor self)))
+    (raise (formatted-message
+            (G_ "cannot travel past commit `~a' from May 1st, 2019")
+            (string-take %oldest-possible-commit 12)))))
+
+
+
+;;;
 ;;; Entry point.
 ;;;
 
@@ -160,44 +179,22 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
             (ref          (assoc-ref opts 'ref))
             (substitutes?  (assoc-ref opts 'substitutes?))
             (authenticate? (assoc-ref opts 'authenticate-channels?)))
-
-       (define (validate-guix-channel channels)
-         "Finds the Guix channel among CHANNELS, and validates that REF as
-captured from the closure, a git reference specification such as a commit hash
-or tag associated to the channel, is valid and new enough to satisfy the 'guix
-time-machine' requirements.  If the captured REF variable is #f, the reference
-validate is the one of the Guix channel found in CHANNELS.  A
-`formatted-message' condition is raised otherwise."
-         (let* ((guix-channel (find guix-channel? channels))
-                (guix-channel-commit (channel-commit guix-channel))
-                (guix-channel-branch (channel-branch guix-channel))
-                (guix-channel-ref (if guix-channel-commit
-                                      `(tag-or-commit . ,guix-channel-commit)
-                                      `(branch . ,guix-channel-branch)))
-                (reference (or ref guix-channel-ref))
-                (checkout commit relation (update-cached-checkout
-                                           (channel-url guix-channel)
-                                           #:ref reference
-                                           #:starting-commit
-                                           %oldest-possible-commit)))
-           (unless (memq relation '(ancestor self))
-             (raise (formatted-message
-                     (G_ "cannot travel past commit `~a' from May 1st, 2019")
-                     (string-take %oldest-possible-commit 12))))))
-
-       (when command-line
-         (let* ((directory
-                 (with-store store
-                   (with-status-verbosity (assoc-ref opts 'verbosity)
-                     (with-build-handler (build-notifier #:use-substitutes?
-                                                         substitutes?
-                                                         #:verbosity
-                                                         (assoc-ref opts 'verbosity)
-                                                         #:dry-run? #f)
-                       (set-build-options-from-command-line store opts)
-                       (cached-channel-instance store channels
-                                                #:authenticate? authenticate?
-                                                #:validate-channels
-                                                validate-guix-channel)))))
-                (executable (string-append directory "/bin/guix")))
-           (apply execl (cons* executable executable command-line))))))))
+       (if command-line
+           (let* ((directory
+                   (with-store store
+                     (with-status-verbosity (assoc-ref opts 'verbosity)
+                       (with-build-handler (build-notifier #:use-substitutes?
+                                                           substitutes?
+                                                           #:verbosity
+                                                           (assoc-ref opts 'verbosity)
+                                                           #:dry-run? #f)
+                         (set-build-options-from-command-line store opts)
+                         (cached-channel-instance store channels
+                                                  #:authenticate? authenticate?
+                                                  #:reference-channels
+                                                  %reference-channels
+                                                  #:validate-channels
+                                                  validate-guix-channel)))))
+                  (executable (string-append directory "/bin/guix")))
+             (apply execl (cons* executable executable command-line)))
+           (warning (G_ "no command specified; nothing to do~%")))))))

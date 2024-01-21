@@ -37,6 +37,7 @@
 
 (define* (default-build.xml jar-name prefix #:optional
                             (source-dir ".") (test-dir "./test") (main-class #f)
+                            (use-java-modules? #f)
                             (test-include '("**/*Test.java"))
                             (test-exclude '("**/Abstract*Test.java")))
   "Create a simple build.xml with standard targets for Ant."
@@ -65,7 +66,7 @@
                               (value "first")))
                  (property (@ (environment "env")))
                  (path (@ (id "classpath"))
-                       (pathelement (@ (location "${env.CLASSPATH}"))))
+                       (pathelement (@ (path "${env.CLASSPATH}"))))
 
                  (target (@ (name "manifest"))
                          (mkdir (@ (dir "${manifest.dir}")))
@@ -79,18 +80,30 @@
                          (mkdir (@ (dir "${classes.dir}")))
                          (javac (@ (includeantruntime "false")
                                    (srcdir ,source-dir)
-                                   (destdir "${classes.dir}")
-                                   (classpath (@ (refid "classpath"))))))
+                                   (destdir "${classes.dir}"))
+                          ,(if use-java-modules?
+                             `((modulepath (@ (refid "classpath"))))
+                             '())
+                          (classpath (@ (refid "classpath")))))
 
                  (target (@ (name "compile-tests"))
                          (mkdir (@ (dir "${test.classes.dir}")))
                          (javac (@ (includeantruntime "false")
                                    (srcdir ,test-dir)
                                    (destdir "${test.classes.dir}"))
-                                (classpath
-                                 (pathelement (@ (path "${env.CLASSPATH}")))
-                                 (pathelement (@ (location "${classes.dir}")))
-                                 (pathelement (@ (location "${test.classes.dir}"))))))
+                           ,(if use-java-modules?
+                                `((classpath
+                                    (pathelement
+                                      (@ (path "${env.CLASSPATH}")))
+                                    (pathelement
+                                      (@ (location "${classes.dir}")))
+                                    (pathelement
+                                      (@ (location "${test.classes.dir}")))))
+                                '())
+                           (classpath
+                            (pathelement (@ (path "${env.CLASSPATH}")))
+                            (pathelement (@ (location "${classes.dir}")))
+                            (pathelement (@ (location "${test.classes.dir}"))))))
 
                  (target (@ (name "check")
                             (depends "compile-tests"))
@@ -156,13 +169,15 @@ to the default GNU unpack strategy."
                     (source-dir "src")
                     (test-dir "src/test")
                     (main-class #f)
+                    (use-java-modules? #f)
                     (test-include '("**/*Test.java"))
                     (test-exclude '("**/Abstract*.java")) #:allow-other-keys)
   (when jar-name
     (default-build.xml jar-name
                        (string-append (assoc-ref outputs "out")
                                       "/share/java")
-                       source-dir test-dir main-class test-include test-exclude))
+                       source-dir test-dir main-class use-java-modules?
+                       test-include test-exclude))
   (setenv "JAVA_HOME" (assoc-ref inputs "jdk"))
   (setenv "CLASSPATH" (generate-classpath inputs))
   #t)

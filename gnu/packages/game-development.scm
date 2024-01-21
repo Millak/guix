@@ -56,6 +56,7 @@
   #:use-module (guix svn-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
@@ -109,8 +110,10 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -193,69 +196,71 @@ is used in some video games and movies.")
     (license license:zlib)))
 
 (define-public dds
-  (package
-    (name "dds")
-    (version "2.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dds-bridge/dds")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1iv09qic43nvla02lm8zgnkqpjgnc95p8zh3wyifmnmlh1rz02yj"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'chdir
-                 (lambda _
-                   (chdir "src")))
-               (replace 'configure
-                 ;; Configuration is done by copying the appropriate
-                 ;; make file in the working directory.  There is no
-                 ;; configure script.
-                 (lambda _
-                   (copy-file "Makefiles/Makefile_linux_shared"
-                              "Makefile")))
-               (replace 'check
-                 ;; There is no "check" traget.  We must compile
-                 ;; a "dtest" program and apply it on a data set.
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (install-file "libdds.so" "../test")
-                     (with-directory-excursion "../test"
-                       (copy-file "Makefiles/Makefile_linux"
-                                  "Makefile")
-                       (substitute* "Makefile"
-                         (("-Werror") ""))
-                       (invoke "make")
-                       (invoke "./dtest" "-f" "../hands/list100.txt")))))
-               (replace 'install
-                 ;; "install" target merely moves ".so" file around
-                 ;; the source directory.  We install it in the store,
-                 ;; along with all shipped documentation (which cannot
-                 ;; be built from source unfortunately).
-                 (lambda _
-                   (install-file "libdds.so"
-                                 (string-append #$output "/lib"))
-                   (let ((doc (string-append #$output
-                                             "/share/doc/"
-                                             #$name "-" #$version)))
-                     (install-file "../LICENSE" doc)
-                     (copy-recursively "../doc" doc)))))))
-    (native-inputs
-     (list gawk procps))
-    (inputs
-     (list boost))
-    (home-page "https://privat.bahnhof.se/wb758135/")
-    (synopsis "Double dummy solver for the bridge card game")
-    (description "DDS is a double-dummy solver of bridge hands.  It supports
+  (let ((commit "d2bc4c2c703941664fc1d73e69caa5233cdeac18")
+        (revision "1"))
+    (package
+      (name "dds")
+      (version (git-version "2.9.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dds-bridge/dds")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1ishbb69cvyv96xdxshnly0m5ydwljgdf8fwa1cr9rj2qj40q4rm"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'chdir
+                   (lambda _
+                     (chdir "src")))
+                 (replace 'configure
+                   ;; Configuration is done by copying the appropriate
+                   ;; make file in the working directory.  There is no
+                   ;; configure script.
+                   (lambda _
+                     (copy-file "Makefiles/Makefile_linux_shared"
+                                "Makefile")))
+                 (replace 'check
+                   ;; There is no "check" traget.  We must compile
+                   ;; a "dtest" program and apply it on a data set.
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (install-file "libdds.so" "../test")
+                       (with-directory-excursion "../test"
+                         (copy-file "Makefiles/Makefile_linux"
+                                    "Makefile")
+                         (substitute* "Makefile"
+                           (("-Werror") ""))
+                         (invoke "make")
+                         (invoke "./dtest" "-f" "../hands/list100.txt")))))
+                 (replace 'install
+                   ;; "install" target merely moves ".so" file around
+                   ;; the source directory.  We install it in the store,
+                   ;; along with all shipped documentation (which cannot
+                   ;; be built from source unfortunately).
+                   (lambda _
+                     (install-file "libdds.so"
+                                   (string-append #$output "/lib"))
+                     (let ((doc (string-append #$output
+                                               "/share/doc/"
+                                               #$name "-" #$version)))
+                       (install-file "../LICENSE" doc)
+                       (copy-recursively "../doc" doc)))))))
+      (native-inputs
+       (list gawk procps))
+      (inputs
+       (list boost))
+      (home-page "https://privat.bahnhof.se/wb758135/")
+      (synopsis "Double dummy solver for the bridge card game")
+      (description "DDS is a double-dummy solver of bridge hands.  It supports
 single-threading and multi-threading for improved performance.  DDS
 offers a wide range of functions, including par-score calculations.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public deutex
   (package
@@ -1339,17 +1344,17 @@ and multimedia programs in the Python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.1.0"))
+        (renpy-version "8.1.3"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
-      (version (string-append real-version "-for-renpy-" renpy-version))
+      (version (string-append real-version "+renpy" renpy-version))
       (source
        (origin
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "1qj39jqnv334p4wnxc2v5qxyahp7nkqf9hpdd2sgqcmgaqwnqqmj"))
+         (sha256 (base32 "0qlprs9n3w254ilizqzvr6s01zx72gh7an0bgwxsq4hm22qypdws"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1390,7 +1395,7 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.1.0")
+    (version "8.1.3")
     (source
      (origin
        (method url-fetch)
@@ -1398,7 +1403,7 @@ developed mainly for Ren'py.")
                            "/renpy-" version "-source.tar.bz2"))
        (sha256
         (base32
-         "08l7z2vwqxkskj3rs2a0w9ahah28ixq8hy48h30k2dm9g19h450h"))
+         "1g6fz5dxp7yxhgv6q4brzf5hpfqq3l1g3dfv3fsiwwn6mj0b01z2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1841,38 +1846,37 @@ of use.")
 (define-public openmw
   (package
     (name "openmw")
-    (version "0.47.0")
+    (version "0.48.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/OpenMW/openmw")
-              (commit (string-append "openmw-" version))))
+             (url "https://github.com/OpenMW/openmw")
+             (commit (string-append "openmw-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "19mcbnjl4279qalb97msf965bjax48mx1r1qczyvwhn28h6n3bsy"))
-       (patches (search-patches "openmw-assume-nonconst-SIGSTKSZ.patch"))))
+        (base32 "0amkxfylk1l67d2igihnhhql62xr89wvg1sxbq2rnhczf6vxaj6f"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; No test target
-       #:configure-flags
-       (list "-DDESIRED_QT_VERSION=5"
-             "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
-    (native-inputs
-     (list boost doxygen pkg-config))
-    (inputs
-     (list bullet
-           ffmpeg-4                     ; https://gitlab.com/OpenMW/openmw/-/issues/6631
-           libxt
-           lz4
-           mygui-gl              ; OpenMW does not need Ogre.
-           openal
-           openmw-openscenegraph
-           qtbase-5
-           recastnavigation
-           sdl2
-           unshield))
+     `(#:tests? #f ;No test target
+       #:configure-flags (list "-DDESIRED_QT_VERSION=5"
+                               "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
+    (native-inputs (list boost doxygen pkg-config))
+    (inputs (list bullet
+                  ffmpeg
+                  libxt
+                  lz4
+                  mygui-gl ;OpenMW does not need Ogre.
+                  openal
+                  openmw-openscenegraph
+                  qtbase-5
+                  recastnavigation
+                  sdl2
+                  unshield
+                  icu4c
+                  yaml-cpp
+                  luajit
+                  sqlite))
     (synopsis "Re-implementation of the RPG Morrowind engine")
     (description
      "OpenMW is a game engine which reimplements and extends the one that runs
@@ -2055,7 +2059,7 @@ scripted in a Python-like language.")
 (define-public godot
   (package
     (name "godot")
-    (version "4.1.2")
+    (version "4.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2064,7 +2068,7 @@ scripted in a Python-like language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zm07rknpjkvyxpiscqsx5hi4gc5wi647jlhillxdf85b36s6q9j"))
+                "1mwwzf77ixkalciqakn6q42g9sl2570didfll406sfs42wz534ng"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -2581,6 +2585,57 @@ the original, ioquake3 has been cleaned up, bugs have been fixed and features
 added.  The permanent goal is to create a Quake 3 distribution upon which
 people base their games, ports to new platforms, and other projects.")
       (license license:gpl2))))
+
+(define-public inform
+  ;; The latest release does not yet have a build system.
+  ;; This commit is the earliest to have one.
+  (let ((commit "20cbfff96015938809d0e3da6cd0d83b76d27f14")
+        (revision "0"))
+    (package
+      (name "inform")
+      (version (git-version "6.41" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://jxself.org/git/inform.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19z8pgrj1s2irany5s6xxwsm3bdnri1as46fdi16zdp4aah523jy"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake))
+      (synopsis "The Inform 6 compiler")
+      (description
+       "Inform 6 is a programming language designed for interactive fiction.
+This version of the compiler has been modified slightly to work better when the
+Inform standard library is in a non-standard location.")
+      (home-page "https://jxself.org/git/inform.git")
+      (license license:gpl3+))))
+
+(define-public informlib
+  (package
+    (name "informlib")
+    (version "6.12.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://jxself.org/git/informlib.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fcnw4jjzln402qk097n2s8y24vw1p3mmlmh6k1mbr2zfajjcn5r"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("." "lib"))))
+    (synopsis "Inform 6 standard library")
+    (description
+     "This package provides the standard library for Inform 6.")
+    (home-page "https://jxself.org/git/informlib.git")
+    (license license:agpl3+)))
 
 (define-public instead
   (package
@@ -3216,16 +3271,16 @@ progresses the level, or you may regenerate tiles as the world changes.")
 (define-public bbcsdl
   (package
     (name "bbcsdl")
-    (version "1.35a")
+    (version "1.39a")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/rtrussell/BBCSDL/")
-                    (commit "b9b2a3eb438cb799edb2766055b3c38e9518e3e3")))
+                    (commit "93b0ffae960f4c4f45fdc2202bc6e83ee5ca277c")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d03xmhrl6ba6w0vwfk46mpyc9d0w3bixxj2d4irx7wl7bh3bfic"))))
+                "03ga14k2hbhflnaynbyx9lwlbxlzx3rv6zqq21yhl183s6d4c0wa"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3265,6 +3320,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
                      inputs (string-append "share/fonts/truetype/" font))
                     (string-append opt "/lib/" font)))
                  '("DejaVuSans.ttf" "DejaVuSansMono.ttf"
+                   "DejaVuSans-Oblique.ttf"
                    "FreeSans.ttf" "FreeMono.ttf" "FreeSerif.ttf"))
                 (mkdir bin)
                 (symlink (string-append opt "/bbcsdl")

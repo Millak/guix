@@ -33,7 +33,6 @@
                                  %precious-signals)
   #:autoload (shepherd system) (unblock-signals)
   #:export (default-mounts
-            make-forkexec-constructor/container
             fork+exec-command/container))
 
 ;;; Commentary:
@@ -101,27 +100,6 @@
                            (file-exists? (file-system-mapping-source mapping)))
                          mappings)))))
 
-(define* (read-pid-file/container pid pid-file #:key (max-delay 5))
-  "Read PID-FILE in the container namespaces of PID, which exists in a
-separate mount and PID name space.  Return the \"outer\" PID. "
-  (match (container-excursion* pid
-           (lambda ()
-             ;; XXX: Trick for Shepherd 0.9: prevent 'read-pid-file' from
-             ;; using (@ (fibers) sleep), which would try to suspend the
-             ;; current task, which doesn't work in this extra process.
-             (with-continuation-barrier
-              (lambda ()
-                (read-pid-file pid-file
-                               #:max-delay max-delay)))))
-    (#f
-     ;; Send SIGTERM to the whole process group.
-     (catch-system-error (kill (- pid) SIGTERM))
-     #f)
-    ((? integer? container-pid)
-     ;; XXX: When COMMAND is started in a separate PID namespace, its
-     ;; PID is always 1, but that's not what Shepherd needs to know.
-     pid)))
-
 (define* (exec-command* command #:key user group log-file pid-file
                         (supplementary-groups '())
                         (directory "/") (environment-variables (environ)))
@@ -143,74 +121,6 @@ shepherd (PID 1)."
                 #:log-file log-file
                 #:directory directory
                 #:environment-variables environment-variables))
-
-(define* (make-forkexec-constructor/container command
-                                              #:key
-                                              (namespaces
-                                               (default-namespaces args))
-                                              (mappings '())
-                                              (user #f)
-                                              (group #f)
-                                              (supplementary-groups '())
-                                              (log-file #f)
-                                              pid-file
-                                              (pid-file-timeout 5)
-                                              (directory "/")
-                                              (environment-variables
-                                               (environ))
-                                              #:rest args)
-  "This is a variant of 'make-forkexec-constructor' that starts COMMAND in
-NAMESPACES, a list of Linux namespaces such as '(mnt ipc).  MAPPINGS is the
-list of <file-system-mapping> to make in the case of a separate mount
-namespace, in addition to essential bind-mounts such /proc."
-  (define container-directory
-    (match command
-      ((program _  ...)
-       (string-append "/var/run/containers/" (basename program)))))
-
-  (define auto-mappings
-    `(,@(if log-file
-            (list (file-system-mapping
-                   (source log-file)
-                   (target source)
-                   (writable? #t)))
-            '())))
-
-  (define mounts
-    (append (map file-system-mapping->bind-mount
-                 (append auto-mappings mappings))
-            (default-mounts #:namespaces namespaces)))
-
-  (lambda args
-    (mkdir-p container-directory)
-
-    (when log-file
-      ;; Create LOG-FILE so we can map it in the container.
-      (unless (file-exists? log-file)
-        (close (open log-file (logior O_CREAT O_APPEND O_CLOEXEC) #o640))
-        (when user
-          (let ((pw (getpwnam user)))
-            (chown log-file (passwd:uid pw) (passwd:gid pw))))))
-
-    (let ((pid (run-container container-directory
-                              mounts namespaces 1
-                              (lambda ()
-                                (exec-command* command
-                                               #:user user
-                                               #:group group
-                                               #:supplementary-groups
-                                               supplementary-groups
-                                               #:pid-file pid-file
-                                               #:log-file log-file
-                                               #:directory directory
-                                               #:environment-variables
-                                               environment-variables)))))
-      (if pid-file
-          (if (or (memq 'mnt namespaces) (memq 'pid namespaces))
-              (read-pid-file/container pid pid-file
-                                       #:max-delay pid-file-timeout)
-              (read-pid-file pid-file #:max-delay pid-file-timeout))
-          pid))))
 
 (define* (fork+exec-command/container command
                                       #:key pid

@@ -1,0 +1,32 @@
+From 4ff605d6c55fcf3e9b4777ffbcb0c24ef17ba4ca Mon Sep 17 00:00:00 2001
+From: Arti <artism90@googlemail.com>
+Date: Mon, 28 Feb 2022 21:19:50 +0100
+Subject: [PATCH] Rename instances of `collections.Iterable` into
+ `collections.abc.Iterable` (#2956)
+
+---
+ horizons/ai/aiplayer/combat/unitmanager.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/horizons/ai/aiplayer/combat/unitmanager.py b/horizons/ai/aiplayer/combat/unitmanager.py
+index 8449d5563c5..57db0d47061 100644
+--- a/horizons/ai/aiplayer/combat/unitmanager.py
++++ b/horizons/ai/aiplayer/combat/unitmanager.py
+@@ -151,7 +151,7 @@ def _ship_state_rule(self, state_dict, ship_states):
+ 		"""
+ 		Rule stating that ship has to be in any of given states.
+ 		"""
+-		if not isinstance(ship_states, collections.Iterable):
++		if not isinstance(ship_states, collections.abc.Iterable):
+ 			ship_states = (ship_states,)
+ 		return lambda ship: (state_dict[ship] in ship_states)
+ 
+@@ -178,7 +178,7 @@ def filter_ships(self, ships, rules):
+ 		@param rules: conditions each ship has to meet (AND)
+ 		@type rules: iterable of lambda(ship) or single lambda(ship)
+ 		"""
+-		if not isinstance(rules, collections.Iterable):
++		if not isinstance(rules, collections.abc.Iterable):
+ 			rules = (rules,)
+ 		return [ship for ship in ships if all((rule(ship) for rule in rules))]
+ 

@@ -343,7 +343,7 @@ applications''.  These must be installed separately.")
 (define cups-minimal/fixed
   (package
     (inherit cups-minimal)
-    (version "2.4.6")
+    (version "2.4.7")
     (source
      (origin
        (method git-fetch)
@@ -352,7 +352,7 @@ applications''.  These must be installed separately.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cups" version))
        (sha256
-        (base32 "0z70rhfd96qmdx82gdhh2nqjiia0lnvfdwpngjkag2sidw4cm3c1"))))))
+        (base32 "0cj3gs7ki9v0drj19l326s8f1kxrpq7jkzrdfdk7ykrlk7sj645f"))))))
 
 (define-public cups
   (package/inherit cups-minimal
@@ -521,14 +521,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.23.8")
+    (version "3.23.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "0ihv9ddjrjx5bdf8pwc2fvljkpfzq4qi9r2awm8dgky053v0bk7p"))
+                "1vb9irqsm3d4c2qdr4h6ia940x65bb99h4x31mgxn7dkvv42lv57"))
               (patches (search-patches "hplip-usb-timeout.patch"))
               (modules '((guix build utils)))
               (snippet

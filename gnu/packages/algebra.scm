@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -41,7 +41,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages documentation)
-  #:use-module (gnu packages ed)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages gcc)
@@ -63,6 +62,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -736,14 +736,14 @@ a C program.")
 (define-public fftw
   (package
     (name "fftw")
-    (version "3.3.8")
+    (version "3.3.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "ftp://ftp.fftw.org/pub/fftw/fftw-"
                                  version".tar.gz"))
              (sha256
               (base32
-               "00z3k8fq561wq2khssqg0kallk0504dzlx989x3vvicjdqpjc4v1"))))
+               "0rv4w90b65b2kvjpj8g9bdkl4xqc42q20f5bzpxdrkajk1a35jan"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -936,7 +936,7 @@ algorithms from the FORTRAN library MINPACK.")
 (define-public symengine
   (package
     (name "symengine")
-    (version "0.10.1")
+    (version "0.11.2")
     (source
      (origin
        (method git-fetch)
@@ -945,7 +945,7 @@ algorithms from the FORTRAN library MINPACK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qy5w5msq0zy7drbhdy0vx451zglha8jm5s4zzmvmsja5yyv8fx9"))))
+        (base32 "0j6vd72hjj9fnsw5iiykmkrw8vyjcyyycgib2zxlmlzi6sj4618b"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags

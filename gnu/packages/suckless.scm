@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1115,7 +1116,7 @@ support.")
 (define-public sfeed
   (package
     (name "sfeed")
-    (version "1.6")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -1125,7 +1126,7 @@ support.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ax603xxcwvmgizf6ia820fc7fliinx86zv6ggiqj5p59kz75x0r"))))
+        (base32 "0zmgkvq75a7h4rmk7izpsaxswlqh9zg446wxv7qcw0bh5xdckg0d"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1247,7 +1248,7 @@ a nice format.")
                (delete 'configure)))) ;no configure script
     (native-inputs (list pkg-config))
     (inputs (list freetype libx11 libxft libxtst libxinerama))
-    (propagated-inputs (list glibc-utf8-locales))
+    (propagated-inputs (list (libc-utf8-locales-for-target)))
     (home-page "https://tools.suckless.org/x/svkbd/")
     (synopsis "Virtual on-screen keyboard")
     (description "svkbd is a simple virtual keyboard, intended to be used in

@@ -28,6 +28,7 @@
   #:use-module (ice-9 format)
   #:use-module (guix build utils)
   #:export (target-guile-effective-version
+            target-guile-scm+go
             %standard-phases
             guile-build))
 
@@ -44,7 +45,17 @@ Return #false if it cannot be determined."
          (string? line)
          line)))
 
-(define (file-sans-extension file)                ;TODO: factorize
+(define* (target-guile-scm+go output #:optional guile)
+  "Return paths under `output' for scm and go files for effective version of
+GUILE or whichever `guile' is in $PATH.  Raises an error if they cannot be
+determined."
+  (let* ((version (or (target-guile-effective-version guile)
+                      (error "Cannot determine the effective target guile version.")))
+         (scm (string-append output "/share/guile/site/" version))
+         (go (string-append output "/lib/guile/" version "/site-ccache")))
+    (values scm go)))
+
+(define (file-sans-extension file)      ;TODO: factorize
   "Return the substring of FILE without its extension, if any."
   (let ((dot (string-rindex file #\.)))
     (if dot

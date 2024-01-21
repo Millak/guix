@@ -617,7 +617,7 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
 (define-public jpegoptim
   (package
    (name "jpegoptim")
-   (version "1.4.7")
+   (version "1.5.5")
    (source
     (origin
       (method git-fetch)
@@ -626,36 +626,44 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "06f6d08xvmsiki4mc1qs985gsjqmsxx793a93b72y25q84wbg9x9"))))
+       (base32 "18zq7ada7n17vgkkcixpisxsbs7i8xp5qjp78hyyvmmb9dqy97fy"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:tests? #f                       ; no tests
-      ,@(if (and (target-riscv64?)
-                 (%current-target-system))
-          (list #:phases
-                #~(modify-phases %standard-phases
-                    (add-after 'unpack 'update-config-scripts
-                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                        (for-each (lambda (file)
-                                    (install-file
-                                      (search-input-file
-                                        (or native-inputs inputs)
-                                        (string-append "/bin/" file)) "./tools"))
-                                  '("config.guess" "config.sub"))))))
-          '())))
+    (list #:tests? #f))
    (inputs (list libjpeg-turbo))
-   (native-inputs
-    (if (and (target-riscv64?)
-             (%current-target-system))
-      (list config)
-      '()))
    (synopsis "Optimize JPEG images")
    (description
     "jpegoptim provides lossless optimization (based on optimizing
 the Huffman tables) and \"lossy\" optimization based on setting
 maximum quality factor.")
-   (license license:gpl2+)
+   (license license:gpl3+)
    (home-page "https://www.kokkonen.net/tjko/projects.html#jpegoptim")))
+
+(define-public tgif
+  (package
+    (name "tgif")
+    (version "4.2.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "mirror://sourceforge/tgif/tgif/"
+               version "/tgif-QPL-" version ".tar.gz"))
+        (sha256
+          (base32 "1fk7qnqjmrr390bclwqrvlmh77bcl28hdn4vfdqydrpsrbzfj91g"))))
+    (build-system gnu-build-system)
+    (inputs
+      (list libx11
+            libxext
+            libxt
+            libxmu
+            zlib))
+    (home-page "http://bourbon.usc.edu/tgif/")
+    (synopsis "Xlib based interactive 2-D drawing tool")
+    (description
+      "Tgif (pronounced t-g-i-f) is an Xlib based interactive 2-D drawing tool
+(using vector graphics) under X11.")
+    (license license:qpl)))
 
 (define-public libicns
   (package
@@ -1253,7 +1261,9 @@ supplies a generic doubly-linked list and some string functions.")
               (patches
                (append
                 (search-patches "freeimage-unbundle.patch"
-                                "freeimage-libtiff-compat.patch")
+                                "freeimage-libtiff-compat.patch"
+                                "freeimage-CVE-2020-21428.patch"
+                                "freeimage-CVE-2020-22524.patch")
                 ;; Take one patch from Arch Linux that adds LibRaw 0.20 compatibility.
                 (list (origin
                         (method url-fetch)
@@ -1499,6 +1509,26 @@ channels.")
                (base32
                 "1lvxnpds0vcf0lil6ia2036ghqlbl740c4d2sz0q5g6l93fjyija"))))
     (build-system gnu-build-system)
+    (arguments
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'update-config-scripts
+                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                       ;; Replace outdated config.guess and config.sub.
+                       (for-each (lambda (file)
+                                   (install-file
+                                    (search-input-file
+                                     (or native-inputs inputs)
+                                     (string-append "/bin/" file)) "."))
+                                 '("config.guess" "config.sub"))))))
+         '()))
+    (native-inputs
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list config)
+         '()))
     (propagated-inputs
      ;; These are all in the 'Libs.private' field of libmng.pc.
      (list lcms libjpeg-turbo zlib))
@@ -2221,20 +2251,24 @@ identical visual appearance.")
 (define-public grim
   (package
    (name "grim")
-   (version "1.4.0")
+   (version "1.4.1")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
-           (url "https://github.com/emersion/grim")
+           (url "https://git.sr.ht/~emersion/grim")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1b1k5cmmk7gzis0rncyl98lnhdwpjkdsv9pada5mmgxcpka6f0lp"))))
+      (base32 "1snp4qlj05d0nx4f0qr8kywv0i1xcw5i278ybng1rand2alhkjz5"))))
    (build-system meson-build-system)
-   (native-inputs (list pkg-config scdoc))
+   (native-inputs (append (if (%current-target-system)
+                              ;; for wayland-scanner
+                              (list pkg-config-for-build wayland)
+                              '())
+                          (list pkg-config scdoc)))
    (inputs (list pixman libpng libjpeg-turbo wayland wayland-protocols))
-   (home-page "https://github.com/emersion/grim")
+   (home-page "https://sr.ht/~emersion/grim/")
    (synopsis "Create screenshots from a Wayland compositor")
    (description "grim can create screenshots from a Wayland compositor.")
    ;; MIT license.
@@ -2243,7 +2277,7 @@ identical visual appearance.")
 (define-public slurp
   (package
    (name "slurp")
-   (version "1.4.0")
+   (version "1.5.0")
    (source
     (origin
      (method git-fetch)
@@ -2252,10 +2286,14 @@ identical visual appearance.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1i6g4dfiv2mwkjvvrx3wizb1n05xmd4j9nkhdii4klwd1gdrhjwd"))))
+      (base32 "0wlml42c3shma50bsvqzll7p3zn251jaf0jm59q2idks8gg1zkyq"))))
    (build-system meson-build-system)
    (native-inputs
-    (list pkg-config scdoc))
+    (append (if (%current-target-system)
+                ;; for wayland-scanner
+                (list wayland pkg-config-for-build)
+                '())
+            (list pkg-config scdoc)))
    (inputs
     (list cairo libxkbcommon wayland wayland-protocols))
    (home-page "https://github.com/emersion/slurp")

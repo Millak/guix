@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023, 2024 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -245,14 +246,14 @@ which can be read by any architecture.")
 (define-public xorgproto
   (package
     (name "xorgproto")
-    (version "2022.2")
+    (version "2023.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/proto"
                                   "/xorgproto-" version ".tar.xz"))
               (sha256
                (base32
-                "17kbq1x68jl9mz69ays5c0w72lpkqi937raxk0im7y88pvrdn4sx"))))
+                "0b4c27aq25w1fccks49p020avf9jzh75kaq5qwnww51bp1yvq7xn"))))
     (build-system gnu-build-system)
     (propagated-inputs
      ;; To get util-macros in (almost?) all package inputs.
@@ -1432,18 +1433,17 @@ treat it as part of their software base when porting.")
 (define-public libxpm
   (package
     (name "libxpm")
-    (version "3.5.13")
-    (replacement libxpm/fixed)
+    (version "3.5.17")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXpm-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "09dc6nwlb2122h02vl64k9x56mxnyqz2gwpga0abfv4bb1bxmlcw"))))
+           "0hvf49qy55gwldpwpw7ihcmn5i2iinpjh2rbha63hzcy060izcv4"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -1456,21 +1456,6 @@ treat it as part of their software base when porting.")
     (synopsis "Xorg XPM library")
     (description "XPM (X Pixmap) image file format library.")
     (license license:x11)))
-
-(define-public libxpm/fixed
-  (package
-    (inherit libxpm)
-    (version "3.5.17")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/lib/libXpm-"
-               version
-               ".tar.xz"))
-        (sha256
-          (base32
-            "0hvf49qy55gwldpwpw7ihcmn5i2iinpjh2rbha63hzcy060izcv4"))))))
 
 (define-public libxres
   (package
@@ -1514,7 +1499,11 @@ treat it as part of their software base when porting.")
             "1zi0r6mqa1g0hhsp02cdsjcxmsbipiv0v65c1h4pl84fydcjikbm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static"
+                           ;; This fixes cross compiling.
+                           ,@(if (%current-target-system)
+                               '("--enable-malloc0returnsnull=yes")
+                               '()))))
     (propagated-inputs
       (list libx11 libxext xorgproto))
     (native-inputs
@@ -5029,7 +5018,7 @@ by the Xorg server.")
 (define-public xorg-server
   (package
     (name "xorg-server")
-    (version "21.1.4")
+    (version "21.1.11")
     (source
      (origin
        (method url-fetch)
@@ -5037,7 +5026,7 @@ by the Xorg server.")
                            "/xserver/xorg-server-" version ".tar.xz"))
        (sha256
         (base32
-         "11y5w6z3rz3i4jyv0wc3scd2jh3bsmcklq0fm7a5invywj7bxi2w"))
+         "1vr6sc38sqipazsm61bcym2ggbgfgaamz7wf05mb31pvayyssg8x"))
        (patches
         (list
          ;; See:
@@ -5262,7 +5251,7 @@ EGLStream families of extensions.")
 (define-public xorg-server-xwayland
   (package
     (name "xorg-server-xwayland")
-    (version "21.1.3")
+    (version "23.2.4")
     (source
      (origin
        (method url-fetch)
@@ -5270,7 +5259,7 @@ EGLStream families of extensions.")
                            "/xserver/xwayland-" version ".tar.xz"))
        (sha256
         (base32
-         "18pqvg76grbsyxa3mm3j06i1l8cwb28nbn2gcnqpsk7x75zpbhpb"))))
+         "0sxlh43cnpf56p2p5jnhp7427knfpy42mcka7f5hjcqddndib7m9"))))
     (inputs (list font-dejavu
                   dbus
                   egl-wayland
@@ -5280,6 +5269,7 @@ EGLStream families of extensions.")
                   libepoxy
                   libgcrypt
                   libtirpc
+                  libxcvt
                   libxfont2
                   libxkbfile
                   pixman
@@ -5295,6 +5285,7 @@ EGLStream families of extensions.")
                                  wayland
                                  wayland-protocols)
                            '())))
+    (properties '((upstream-name . "xwayland")))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -5332,16 +5323,15 @@ Wayland.")
 (define-public libx11
   (package
     (name "libx11")
-    (version "1.8.1")
-    (replacement libx11-fixed)          ;security fixes
+    (version "1.8.7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://xorg.freedesktop.org/archive/"
-                           "/individual/lib/libX11-" version ".tar.xz"))
+       (uri (string-append "mirror://xorg/individual/lib/libX11-"
+                           version ".tar.xz"))
        (sha256
         (base32
-         "1xyry8i7zqmlkvpbyyqwi18rrdw6ycczlvfp63rh2570pfhimi0v"))))
+         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;8 MiB of man pages + XML
@@ -5362,19 +5352,6 @@ Wayland.")
     (synopsis "Xorg Core X11 protocol client library")
     (description "Xorg Core X11 protocol client library.")
     (license license:x11)))
-
-(define-public libx11-fixed
-  (package
-    (inherit libx11)
-    (version "1.8.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://xorg/individual/lib/libX11-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))))
 
 ;; packages of height 5 in the propagated-inputs tree
 
@@ -5701,11 +5678,29 @@ The XCB util-keysyms module provides the following library:
                "0nza1csdvvxbmk8vgv8vpmq7q8h05xrw3cfx9lwxd1hjzd47xsf6"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static")
+       ,@(if (and (%current-target-system)
+                  (target-riscv64?))
+             `(#:phases
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'update-config-scripts
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     ;; Replace outdated config.guess and config.sub.
+                     (for-each (lambda (file)
+                                 (install-file
+                                  (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                               '("config.guess" "config.sub"))))))
+             '())))
     (propagated-inputs
      (list libxcb))
     (native-inputs
-     (list pkg-config))
+     (append (if (and (%current-target-system)
+                      (target-riscv64?))
+                 (list config)
+                 '())
+             (list pkg-config)))
     (home-page "https://cgit.freedesktop.org/xcb/util-renderutil/")
     (synopsis "Convenience functions for the Render extension")
     (description
@@ -6120,7 +6115,7 @@ Conventions Manual) and some of the @dfn{EWMH}
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config autoconf automake))
+     (list util-macros pkg-config autoconf automake))
     (inputs
      (list libx11
            libxext
@@ -6139,14 +6134,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "5.0.3")
+    (version "5.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "03vpihkinidyv6257683av8288vm0hmg767yf188jkkdxl4cv4gs"))
+        (base32 "0zb49adrjrdsmf0k9xdc6j2idqy5lgzsjjrb4awjh5i4r3wc58m0"))
        (patches (search-patches "xpra-5.0-systemd-run.patch"
                                 "xpra-5.0-install_libs.patch"))))
     (build-system python-build-system)

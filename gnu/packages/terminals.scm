@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -155,38 +156,56 @@ less to gain, as only the helper process is running with privileges (e.g.,
   (package
     (name "tilda")
     (version "1.5.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/lanoxx/tilda")
-                    (commit (string-append "tilda-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0q2i9ny8sh7zjzgvkx8vcvk593wcvchjc4xq4nrlqdd377r7cg5q"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lanoxx/tilda")
+             (commit (string-append "tilda-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q2i9ny8sh7zjzgvkx8vcvk593wcvchjc4xq4nrlqdd377r7cg5q"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-po-writable
-           (lambda _
-             (for-each make-file-writable (find-files "po" "."))
-             #t)))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list libconfuse vte))
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'make-po-writable
+                    (lambda _
+                      (for-each make-file-writable
+                                (find-files "po" ".")) #t)))))
+    (native-inputs (list autoconf automake gettext-minimal pkg-config))
+    (inputs (list libconfuse vte))
     (synopsis "GTK+-based drop-down terminal")
-    (description "Tilda is a terminal emulator similar to normal terminals like
+    (description
+     "Tilda is a terminal emulator similar to normal terminals like
 gnome-terminal (GNOME) or Konsole (KDE), with the difference that it drops down
 from the edge of a screen when a certain configurable hotkey is pressed.  This
 is similar to the built-in consoles in some applications.  Tilda is highly
 configurable through a graphical wizard.")
     (home-page "https://github.com/lanoxx/tilda")
     (license license:gpl2+)))
+
+(define-public tilda-dbus
+  (package
+    (inherit tilda)
+    (name "tilda")
+    (version "1.6-alpha")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lanoxx/tilda")
+             (commit "51a980a55ad6d750daa21d43a66d44577dad277b")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pdarmlxkap9v689s88b89l5hi4vspsrrysh7pbm9rhdjmzk5m2c"))))
+    (synopsis "GTK+-based drop-down terminal with experimental D-Bus support")
+    (description
+     "Tilda is a terminal emulator similar to normal terminals like
+gnome-terminal (GNOME) or Konsole (KDE), with the difference that it drops down
+from the edge of a screen when a certain configurable hotkey is pressed.  This
+is similar to the built-in consoles in some applications.  Tilda is highly
+configurable through a graphical wizard.  This version enables D-Bus support
+which is necessary for using Tilda on Wayland.")))
 
 (define-public termite
   (package
@@ -230,7 +249,7 @@ managers.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -239,7 +258,7 @@ managers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mqn12h51nqdmn1ya7hw1l2z2893937dqq4b1zh32y6bazd807fl"))))
+        (base32 "0qhf4sc5fl81rpq3rgzy7qcch620dh12scvsbdfczfbyjb10ps2i"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -584,7 +603,18 @@ to all types of devices that provide serial consoles.")
                      ;; The build environment lacks /dev/{console,tty*}.
                      ;; In fact, even nckx's regular Guix System lacks ttyS1…
                      ((": Permission denied")
-                      ": No such file or directory")))))))
+                      ": No such file or directory"))))
+               (add-before 'install 'install-rules
+                 (lambda _
+                   (mkdir-p (string-append #$output "/etc/udev/rules.d"))
+                   (with-output-to-file
+                       (string-append #$output
+                                      "/etc/udev/rules.d/70-pcspkr-beep.rules")
+                     (lambda _
+                       (display (string-append "\
+ACTION==\"add\", SUBSYSTEM==\"input\", ATTRS{name}==\"PC Speaker\", "
+                                               "ENV{DEVNAME}!=\"\", "
+                                               "TAG+=\"uaccess\"")))))))))
     (synopsis "Linux command-line utility to control the PC speaker")
     (description "beep allows the user to control the PC speaker with precision,
 allowing different sounds to indicate different events.  While it can be run
@@ -834,33 +864,34 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.15.3")
+    (version "1.16.2")
     (home-page "https://codeberg.org/dnkl/foot")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1a224i2i7qk170kf2rzyxqcv3lnx9f548lwa37jgjr7i339x4zwf"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00wac8li1ac8ncmnlqvz3xnr5pi8gj4v3v341n0h2zzaayv9ngw5"))))
     (build-system meson-build-system)
     (arguments
-     `(;; Using a "release" build is recommended both for performance, and
-       ;; also to address a GCC 10 issue when doing PGO builds.
-       #:build-type "release"
-       ;; Enable LTO as recommended by INSTALL.md.
-       #:configure-flags '("-Db_lto=true")))
-    (native-inputs
-     (list ncurses ;for 'tic'
-           pkg-config scdoc wayland-protocols))
+     (list
+      ;; Using a "release" build is recommended both for performance, and
+      ;; also to address a GCC 10 issue when doing PGO builds.
+      #:build-type "release"
+      ;; Enable LTO as recommended by INSTALL.md.
+      #:configure-flags #~'("-Db_lto=true")))
+    (native-inputs (list ncurses ;for 'tic'
+                         pkg-config scdoc wayland-protocols))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (inputs
-     (list fcft libxkbcommon wayland))
+    (inputs (list fcft libxkbcommon wayland))
     (synopsis "Wayland-native terminal emulator")
     (description
      "@command{foot} is a terminal emulator for systems using the Wayland
@@ -1258,10 +1289,8 @@ that can be displayed terminal.")
         (base32
          "0x5c31yq7ansmiy20a0qf59wagba9v3pq97mlkxrqxn4n1gcc6vi"))))
     (build-system gnu-build-system)
-    (inputs
-     (list libevent libssh msgpack ncurses))
-    (native-inputs
-     (list autoconf automake pkg-config))
+    (inputs (list libevent libssh msgpack-3 ncurses))
+    (native-inputs (list autoconf automake pkg-config))
     (home-page "https://tmate.io/")
     (synopsis "Terminal sharing application")
     (description "tmate is a terminal sharing application that allows you to
@@ -1579,14 +1608,14 @@ basic input/output.")
                 (search-input-file inputs "lib/libxkbcommon.so")))))
          (replace 'install
            ;; Upstream install script only takes care of executable.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (bin   (string-append out "/bin"))
                     (share (string-append out "/share"))
                     (icons (string-append share "/icons/hicolor/scalable/apps"))
-                    (tic   (search-input-file inputs "/bin/tic"))
+                    (tic   (search-input-file (or native-inputs inputs) "/bin/tic"))
                     (man   (string-append share "/man/man1"))
-                    (alacritty-bin "target/release/alacritty"))
+                    (alacritty-bin (car (find-files "target" "^alacritty$"))))
                ;; Install the executable.
                (install-file alacritty-bin bin)
                ;; Install man pages.

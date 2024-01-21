@@ -149,7 +149,7 @@ CONFIG, a <xvnc-configuration> object."
     (xvnc display-number geometry depth port ipv4? ipv6? password-file xdmcp?
           inetd? frame-rate security-types localhost? log-level extra-options)
     #~(list #$(file-append xvnc "/bin/Xvnc")
-            #$(format #f ":~a" display-number)
+            #$@(if inetd? '() (list (format #f ":~a" display-number)))
             "-geometry" #$geometry
             "-depth" #$(number->string depth)
             #$@(if inetd?

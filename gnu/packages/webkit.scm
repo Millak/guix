@@ -126,14 +126,14 @@ engine that uses Wayland for graphics output.")
 
 (define-public webkitgtk
   (package
-    (name "webkitgtk")                  ; webkit2gtk4
-    (version "2.40.5")
+    (name "webkitgtk")
+    (version "2.42.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0zq32rn34v7hzr53s100r77aglbi6wffp9b13bcj31k6cfi53q3x"))
+               (base32 "1qnq2f6chsfns1psrqbbsqhgyb458zf75nlmzskb6a2n0hq4c6ha"))
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
@@ -149,10 +149,8 @@ engine that uses Wayland for graphics output.")
       #:build-type "Release"
       #:configure-flags
       #~(list "-DPORT=GTK"
-              ;; GTKDOC will be removed upstream soon in favor of
-              ;; gi-docgen; it is normally disabled because the
-              ;; doc is rather expensive to build.
-              "-DENABLE_GTKDOC=ON"
+              "-DENABLE_INTROSPECTION=ON"
+              "-DUSE_GTK4=ON"
               ;; The minibrowser, not built by default, is a good
               ;; tool to validate the good operation of
               ;; webkitgtk.
@@ -232,7 +230,7 @@ engine that uses Wayland for graphics output.")
            ruby-2.7
            unifdef))
     (propagated-inputs
-     (list gtk+ libsoup))
+     (list gtk libsoup))
     (inputs
      (list at-spi2-core
            bubblewrap
@@ -249,8 +247,8 @@ engine that uses Wayland for graphics output.")
            libgcrypt
            libgudev
            libjpeg-turbo
+           libjxl
            libmanette
-           libnotify
            libpng
            libseccomp
            libsecret
@@ -283,34 +281,34 @@ propagated by default) such as @code{gst-plugins-good} and
                    license:bsd-2
                    license:bsd-3))))
 
-(define-public webkitgtk-next
+(define-public webkitgtk-for-gtk3
   (package
     (inherit webkitgtk)
-    (name "webkitgtk-next")             ; webkit2gtk5
+    (name "webkitgtk-for-gtk3")
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)
-        #~(cons* "-DENABLE_INTROSPECTION=ON"
-                 "-DUSE_GTK4=ON"
-                 (delete "-DENABLE_GTKDOC=ON" #$flags)))))
+        #~(cons* "-DENABLE_GTKDOC=ON"
+                 (delete "-DENABLE_INTROSPECTION=ON"
+                         (delete "-DUSE_GTK4=ON" #$flags))))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs webkitgtk)
-       (replace "gtk+" gtk)))
+       (replace "gtk" gtk+)))
     (inputs
      (modify-inputs (package-inputs webkitgtk)
-       (delete "libnotify")))))
+       (prepend libnotify)))))
 
 ;;; Required by e.g. emacs-next-pgtk, emacs-xwidgets, and some other GNOME
 ;;; packages for webkit2gtk-4.0.  See also the upstream tracker for libsoup 3:
 ;;; https://gitlab.gnome.org/GNOME/libsoup/-/issues/218.
 (define-public webkitgtk-with-libsoup2
-  (package/inherit webkitgtk
+  (package/inherit webkitgtk-for-gtk3
     (name "webkitgtk-with-libsoup2")
-    (arguments (substitute-keyword-arguments (package-arguments webkitgtk)
+    (arguments (substitute-keyword-arguments (package-arguments webkitgtk-for-gtk3)
                  ((#:configure-flags flags)
                   #~(cons "-DUSE_SOUP2=ON" #$flags))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs webkitgtk)
+     (modify-inputs (package-propagated-inputs webkitgtk-for-gtk3)
        (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public wpewebkit

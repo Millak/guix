@@ -43,23 +43,17 @@
 (define-public radicale
   (package
     (name "radicale")
-    (version "3.1.7")
+    (version "3.1.8")
     (source
      (origin
-       ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Kozea/Radicale")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mv1w9qazbis9ir5shr1ybsfn4cxd3rmxa3ns6kbk23yramlzwhg"))))
+        (base32 "1qy2azn02bw772yhzgqvyf1pyl0ijj9ccvl1078w9icl261yljap"))))
     (build-system python-build-system)
-    (arguments
-      (list
-       ;; TODO: enable again when https://github.com/Kozea/Radicale/issues/1184
-       ;; is fixed
-       #:tests? #f))
     (native-inputs
      (list python-pytest
            python-pytest-cov

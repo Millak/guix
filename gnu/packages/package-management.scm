@@ -174,8 +174,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "e863274e67e2242b970845783172c9f4e49405ca")
-        (revision 13))
+        (commit "aeb494322ca9dec4a4d66a7d063239c8536bd538")
+        (revision 16))
     (package
       (name "guix")
 
@@ -191,7 +191,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0g8p0w9qrqbzz3b4fzbvvqpdfgwhlxpz75n3ysa6haima5s19mp3"))
+                  "1xl769lkpvkjpvq4vwkxm4dp77sr9finvr6izvf4kvyi6s3hbsys"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -524,7 +524,7 @@ $(prefix)/etc/openrc\n")))
 
          ("git-minimal" ,git-minimal)             ;for 'guix perform-download'
 
-         ("glibc-utf8-locales" ,glibc-utf8-locales)))
+         ("glibc-utf8-locales" ,(libc-utf8-locales-for-target))))
       (propagated-inputs
        `(("guile-gnutls" ,guile-gnutls)
          ;; Avahi requires "glib" which doesn't cross-compile yet.
@@ -971,8 +971,8 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "722c37ec8a23835edfc85cba3d89868592a2ed2d")
-        (revision "2"))
+  (let ((commit "1c12da4e6f3c7d3ab557781769fb848354362748")
+        (revision "3"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
@@ -983,7 +983,7 @@ transactions from C or Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "05i4awyirp440pk4vwa0sf46gi801zv839qm1i2z7jipm1xfwaxx"))
+                  "0qa63mssv85g38m3bcblgp3yscywgz0hrg4lc84dxx99b07pmfc3"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
@@ -1510,8 +1510,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "34463558e589aa260b15e53422652a37848aec95")
-        (revision "90"))
+  (let ((commit "dc04b747048638a753bd044646306fcdd33c241a")
+        (revision "95"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1522,7 +1522,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0fhy0l9js38byxwwb72qnjm358ai3k654jdnhwdcgk25pdsdzcpr"))
+                  "0dx1kky305gb6725fybcrsyf99sjggiziq9zi0rh862i206b2if4"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1570,6 +1570,9 @@ environments.")
                             ,@(or (and=> (assoc-ref inputs "sqitch")
                                          list)
                                   '())))
+                         `("GUIX_LOCPATH" ":" prefix
+                           (,(string-append (assoc-ref inputs "glibc-utf8-locales")
+                                            "/lib/locale")))
                          `("GUILE_LOAD_PATH" ":" prefix
                            (,scm ,(string-join
                                    (map (lambda (input)
@@ -1603,11 +1606,12 @@ environments.")
              guile-prometheus
              guile-fibers
              guile-lib
-             (first (assoc-ref (package-native-inputs guix) "guile"))))
+             guile-next))
       (inputs
-       (list (first (assoc-ref (package-native-inputs guix) "guile"))
+       (list guile-next
              sqlite
              bash-minimal
+             (libc-utf8-locales-for-target)
              sqitch))
       (propagated-inputs
        (list guile-prometheus
@@ -1644,10 +1648,11 @@ outputs of those builds.")
            guix
            guile-prometheus
            guile-lib
-           (first (assoc-ref (package-native-inputs guix) "guile"))))
+           guile-next))
     (inputs
-     (list (first (assoc-ref (package-native-inputs guix) "guile"))
-           bash-minimal))
+     (list guile-next
+           bash-minimal
+           (libc-utf8-locales-for-target)))
     (propagated-inputs
      (list guile-prometheus
            guile-gcrypt
@@ -1754,8 +1759,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "53682fac7e00cd2801406edbd014922c1720c347")
-        (revision "21"))
+  (let ((commit "5ccd6cbbdf5fc41e43a491d3414c1663e1fba64d")
+        (revision "23"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1766,7 +1771,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "18mzrpc5ni8d6xbp1bg0nzdj0brmnji4jm1gyiq77dm17c118zyz"))
+                  "1lid5k4wgghl9lzhazx1c473qv18yxp0xxrvj04b33pdvxnaawl8"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -2052,7 +2057,7 @@ cp -r /tmp/locale/*/en_US.*")))
            dbus ; for dbus-daemon
            gettext-minimal
            `(,glib "bin") ; for glib-mkenums + gdbus-codegen
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gobject-introspection
            libcap
            pkg-config

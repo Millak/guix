@@ -512,28 +512,25 @@ created after the PostgreSQL database is started.")))
   (match-lambda
     (($ <memcached-configuration> memcached interfaces tcp-port udp-port
                                   additional-options)
-     (with-imported-modules (source-module-closure
-                             '((gnu build shepherd)))
-       (list (shepherd-service
-              (provision '(memcached))
-              (documentation "Run the Memcached daemon.")
-              (requirement '(user-processes loopback))
-              (modules '((gnu build shepherd)))
-              (start #~(make-forkexec-constructor
-                        `(#$(file-append memcached "/bin/memcached")
-                          "-l" #$(string-join interfaces ",")
-                          "-p" #$(number->string tcp-port)
-                          "-U" #$(number->string udp-port)
-                          "--daemon"
-                          ;; Memcached changes to the memcached user prior to
-                          ;; writing the pid file, so write it to a directory
-                          ;; that memcached owns.
-                          "-P" "/var/run/memcached/pid"
-                          "-u" "memcached"
-                          ,#$@additional-options)
-                        #:log-file "/var/log/memcached"
-                        #:pid-file "/var/run/memcached/pid"))
-              (stop #~(make-kill-destructor))))))))
+     (list (shepherd-service
+            (provision '(memcached))
+            (documentation "Run the Memcached daemon.")
+            (requirement '(user-processes loopback))
+            (start #~(make-forkexec-constructor
+                      `(#$(file-append memcached "/bin/memcached")
+                        "-l" #$(string-join interfaces ",")
+                        "-p" #$(number->string tcp-port)
+                        "-U" #$(number->string udp-port)
+                        "--daemon"
+                        ;; Memcached changes to the memcached user prior to
+                        ;; writing the pid file, so write it to a directory
+                        ;; that memcached owns.
+                        "-P" "/var/run/memcached/pid"
+                        "-u" "memcached"
+                        ,#$@additional-options)
+                      #:log-file "/var/log/memcached"
+                      #:pid-file "/var/run/memcached/pid"))
+            (stop #~(make-kill-destructor)))))))
 
 (define memcached-service-type
   (service-type (name 'memcached)

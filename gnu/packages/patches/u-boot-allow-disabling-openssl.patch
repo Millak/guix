@@ -8,8 +8,11 @@ This reverts commit b4f3cc2c42d97967a3a3c8796c340f6b07ecccac.
 Addendum 2022-12-08, Ricardo Wurmus: This patch has been updated to introduce
 CONFIG_FIT_PRELOAD to remove fit_pre_load_data, which depends on openssl.
 
+Addendum 2024-01-18, Herman Rimm: Patch updated to leave out upstreamed
+diffs with CONFIG_FIT_PRELOAD.
+
 diff --git a/tools/kwbimage.c b/tools/kwbimage.c
-index 94b7685392..eec599b0ee 100644
+index 4dce495ff0..976174ae77 100644
 --- a/tools/kwbimage.c
 +++ b/tools/kwbimage.c
 @@ -19,6 +19,7 @@
@@ -38,7 +41,7 @@ index 94b7685392..eec599b0ee 100644
  
  struct boot_mode {
  	unsigned int id;
-@@ -278,6 +282,8 @@ image_count_options(unsigned int optiontype)
+@@ -281,6 +285,8 @@ image_count_options(unsigned int optiontype)
  	return count;
  }
  
@@ -47,7 +50,7 @@ index 94b7685392..eec599b0ee 100644
  static int image_get_csk_index(void)
  {
  	struct image_cfg_element *e;
-@@ -288,6 +294,7 @@ static int image_get_csk_index(void)
+@@ -291,6 +297,7 @@ static int image_get_csk_index(void)
  
  	return e->csk_idx;
  }
@@ -55,7 +58,7 @@ index 94b7685392..eec599b0ee 100644
  
  static bool image_get_spezialized_img(void)
  {
-@@ -432,6 +439,7 @@ static uint8_t baudrate_to_option(unsigned int baudrate)
+@@ -435,6 +442,7 @@ static uint8_t baudrate_to_option(unsigned int baudrate)
  	}
  }
  
@@ -63,29 +66,31 @@ index 94b7685392..eec599b0ee 100644
  static void kwb_msg(const char *fmt, ...)
  {
  	if (verbose_mode) {
-@@ -926,6 +934,7 @@ static int kwb_dump_fuse_cmds(struct secure_hdr_v1 *sec_hdr)
+@@ -929,6 +937,7 @@ static int kwb_dump_fuse_cmds(struct secure_hdr_v1 *sec_hdr)
  done:
  	return ret;
  }
 +#endif
  
- static size_t image_headersz_align(size_t headersz, uint8_t blockid)
+ static int image_fill_xip_header(void *image, struct image_tool_params *params)
  {
-@@ -1079,11 +1088,13 @@ static size_t image_headersz_v1(int *hasext)
- 	 */
- 	headersz = sizeof(struct main_hdr_v1);
+@@ -1149,13 +1158,13 @@ static size_t image_headersz_v1(int *hasext)
+ 	int ret;
  
+ 	headersz = sizeof(struct main_hdr_v1);
+-
 +#if defined(CONFIG_KWB_SECURE)
  	if (image_get_csk_index() >= 0) {
  		headersz += sizeof(struct secure_hdr_v1);
  		if (hasext)
  			*hasext = 1;
  	}
+-
 +#endif
- 
  	cpu_sheeva = image_is_cpu_sheeva();
  
-@@ -1270,6 +1281,7 @@ err_close:
+ 	count = 0;
+@@ -1351,6 +1360,7 @@ err_close:
  	return -1;
  }
  
@@ -93,7 +98,7 @@ index 94b7685392..eec599b0ee 100644
  static int export_pub_kak_hash(RSA *kak, struct secure_hdr_v1 *secure_hdr)
  {
  	FILE *hashf;
-@@ -1382,6 +1394,7 @@ static int add_secure_header_v1(struct image_tool_params *params, uint8_t *ptr,
+@@ -1458,6 +1468,7 @@ static int add_secure_header_v1(struct image_tool_params *params, uint8_t *image
  
  	return 0;
  }
@@ -101,9 +106,9 @@ index 94b7685392..eec599b0ee 100644
  
  static void finish_register_set_header_v1(uint8_t **cur, uint8_t **next_ext,
  					  struct register_set_hdr_v1 *register_set_hdr,
-@@ -1406,7 +1419,9 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
+@@ -1481,7 +1492,9 @@ static void *image_create_v1(size_t *dataoff, struct image_tool_params *params,
+ 	struct image_cfg_element *e;
  	struct main_hdr_v1 *main_hdr;
- 	struct opt_hdr_v1 *ohdr;
  	struct register_set_hdr_v1 *register_set_hdr;
 +#if defined(CONFIG_KWB_SECURE)
  	struct secure_hdr_v1 *secure_hdr = NULL;
@@ -111,15 +116,16 @@ index 94b7685392..eec599b0ee 100644
  	size_t headersz;
  	uint8_t *image, *cur;
  	int hasext = 0;
-@@ -1491,6 +1506,7 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
- 	if (main_hdr->blockid == IBR_HDR_PEX_ID)
- 		main_hdr->srcaddr = cpu_to_le32(0xFFFFFFFF);
- 
+@@ -1562,7 +1575,7 @@ static void *image_create_v1(size_t *dataoff, struct image_tool_params *params,
+ 		}
+ 		*dataoff = le32_to_cpu(main_hdr->srcaddr);
+ 	}
+-
 +#if defined(CONFIG_KWB_SECURE)
  	if (image_get_csk_index() >= 0) {
  		/*
  		 * only reserve the space here; we fill the header later since
-@@ -1501,7 +1517,7 @@ static void *image_create_v1(size_t *imagesz, struct image_tool_params *params,
+@@ -1573,7 +1586,7 @@ static void *image_create_v1(size_t *dataoff, struct image_tool_params *params,
  		*next_ext = 1;
  		next_ext = &secure_hdr->next;
  	}
@@ -128,7 +134,7 @@ index 94b7685392..eec599b0ee 100644
  	datai = 0;
  	for (cfgi = 0; cfgi < cfgn; cfgi++) {
  		e = &image_cfg[cfgi];
-@@ -1624,10 +1640,12 @@ static void *image_create_v1(size_t *dataoff, struct image_tool_params *params,
+@@ -1624,9 +1637,11 @@ static void *image_create_v1(size_t *dataoff, struct image_tool_params *params,
  					      &datai, delay);
  	}
  
@@ -140,65 +146,3 @@ index 94b7685392..eec599b0ee 100644
  
  	/* Calculate and set the header checksum */
  	main_hdr->checksum = image_checksum8(main_hdr, headersz);
- 
---- a/tools/image-host.c
-+++ b/tools/image-host.c
-@@ -14,8 +14,10 @@
- #include <image.h>
- #include <version.h>
- 
-+#ifdef CONFIG_FIT_PRELOAD
- #include <openssl/pem.h>
- #include <openssl/evp.h>
-+#endif
- 
- /**
-  * fit_set_hash_value - set hash value in requested has node
-@@ -1116,6 +1118,7 @@
- 	return 0;
- }
- 
-+#ifdef CONFIG_FIT_PRELOAD
- /*
-  * 0) open file (open)
-  * 1) read certificate (PEM_read_X509)
-@@ -1224,6 +1227,7 @@
-  out:
- 	return ret;
- }
-+#endif
- 
- int fit_cipher_data(const char *keydir, void *keydest, void *fit,
- 		    const char *comment, int require_keys,
---- a/tools/fit_image.c
-+++ b/tools/fit_image.c
-@@ -59,9 +59,10 @@
- 		ret = fit_set_timestamp(ptr, 0, time);
- 	}
- 
-+#ifdef CONFIG_FIT_PRELOAD
- 	if (!ret)
- 		ret = fit_pre_load_data(params->keydir, dest_blob, ptr);
--
-+#endif
- 	if (!ret) {
- 		ret = fit_cipher_data(params->keydir, dest_blob, ptr,
- 				      params->comment,
---- a/include/image.h
-+++ b/include/image.h
-@@ -1090,6 +1090,7 @@
- 
- int fit_set_timestamp(void *fit, int noffset, time_t timestamp);
- 
-+#ifdef CONFIG_FIT_PRELOAD
- /**
-  * fit_pre_load_data() - add public key to fdt blob
-  *
-@@ -1104,6 +1105,7 @@
-  *	< 0, on failure
-  */
- int fit_pre_load_data(const char *keydir, void *keydest, void *fit);
-+#endif
- 
- int fit_cipher_data(const char *keydir, void *keydest, void *fit,
- 		    const char *comment, int require_keys,

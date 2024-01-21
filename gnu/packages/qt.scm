@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +113,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
@@ -406,7 +408,10 @@ system, and the core design of Django is reused in Grantlee.")
            libxfixes
            libxi
            libxinerama
-           libxkbcommon
+           ;; Use libxkbcommon-1.5 as 1.6.0 removed keysyms referenced in the
+           ;; qtbase source.
+           ;; TODO: Check if libxkbcommon can be used on next update.
+           libxkbcommon-1.5
            libxml2
            libxrandr
            libxrender
@@ -677,20 +682,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  "-DFEATURE_system_sqlite=ON"
                  "-DFEATURE_system_xcb_xinput=ON"
                  ;; Don't use the precompiled headers.
-                 "-DBUILD_WITH_PCH=OFF"
-                 ;; Drop special machine instructions that do not have runtime
-                 ;; detection.
-                 ,@(if (string-prefix? "x86_64"
-                                       (or (%current-target-system)
-                                           (%current-system)))
-                       '()              ;implicitly enabled
-                       '("-DFEATURE_sse2=OFF"
-                         "-DFEATURE_sse3=OFF"
-                         "-DFEATURE_ssse3=OFF"
-                         "-DFEATURE_sse4_1=OFF"
-                         "-DFEATURE_sse4_2=OFF"))
-                 "-DFEATURE_mips_dsp=OFF"
-                 "-DFEATURE_mips_dspr2=OFF")))
+                 "-DBUILD_WITH_PCH=OFF")))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'honor-CMAKE_PREFIX_PATH
@@ -873,7 +865,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                        "tst_qfiledialog"
                        ;; This test is susceptible to the 600 ms timeout used:
                        "tst_qpauseanimation")
-                      #$@(if (target-ppc64le?)
+                      #$@(cond
+                           ((target-ppc64le?)
                              #~((list
                                  ;; The 'tst_QPainter::fpe_radialGradients'
                                  ;; test fails with a 'Floating point
@@ -891,8 +884,30 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  ;; "'Unable to fetch row' || 'database is
                                  ;; locked'" (see:
                                  ;; https://bugreports.qt.io/browse/QTBUG-117114).
-                                 "tst_qsqlthread"))
-                             #~())) "|") ")")))))
+                                 "tst_qsqlthread")))
+                           ((target-x86-32?)
+                             #~((list
+                                 ;; QCOMPARE(qRound(actual), expected) returned TRUE
+                                 ;; unexpectedly.
+                                 "tst_qglobal"
+
+                                 ;; Actual   (llMinDbl == llMin) : 0
+                                 ;; Expected (-9223372036854775807.0 ==
+                                 ;; Q_INT64_C(-9223372036854775807)) : 1
+                                 "tst_json"
+
+                                 ;; 'QVector3D::normal(QVector3D(), v1, v2) ==
+                                 ;; v3.normalized()' returned FALSE. ()
+                                 "tst_qvectornd"
+
+                                 ;; Actual   (qRed(p))  : 11
+                                 ;; Expected (qGreen(p)): 10
+                                 "tst_qcolorspace"
+
+                                 ;; Actual   (dv.validate(value, dummy)): Invalid
+                                 ;; Expected (standard_state)           : Intermediate
+                                 "tst_qdoublevalidator")))
+                           (else #~()))) "|") ")")))))
             (replace 'patch-mkspecs
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((archdata (search-input-directory outputs "lib/qt6"))
@@ -2951,7 +2966,12 @@ linux/libcurl_wrapper.h")
               (lambda _
                 ;; Valid QT_BUILD_PARTS variables are:
                 ;; libs tools tests examples demos docs translations
-                (invoke "qmake" "QT_BUILD_PARTS = libs tools" "--"
+                (invoke "qmake"
+                        #$@(if (target-x86-32?)
+                               ;; Don't exhaust memory while linking.
+                               #~("QMAKE_LFLAGS+=-Wl,--no-keep-memory -Wl,-z,now")
+                               #~())
+                        "QT_BUILD_PARTS = libs tools" "--"
                         "--webengine-printing-and-pdf=no"
                         "--webengine-ffmpeg=system"
                        ;; FIXME: Building qtwebengine-5 5.12.2 with
@@ -3656,6 +3676,50 @@ framework.  The bindings are implemented as a set of Python modules and
 contain over 620 classes.")
     (license license:gpl3)))
 
+(define-public python-pyqt-6
+  (package
+    (inherit python-pyqt)
+    (version "6.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6" version))
+       (file-name (string-append "PyQt6-" version ".tar.gz"))
+       (sha256
+        (base32 "100jh1iiz5gx821qzgicfrqv7hjjj98pchdbc1nvdzzra1ryx1ql"))))
+    (inputs ;Qt5 dependencies only in python-pyqt:
+            ;; (qt)connectivity, location, sensors, serialport, x11extras, xmlpatterns.
+            (list python-wrapper
+                  qtbase
+                  qtdeclarative
+                  qtmultimedia
+                  qtpositioning
+                  qtsvg
+                  qttools
+                  qtwebchannel
+                  qtwebsockets))
+    (propagated-inputs (list python-sip python-pyqt6-sip))
+    (native-inputs (list python-pyqt-builder qtbase)) ;qtbase is required for qmake.
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
+                              ("--confirm-license" . "")
+                              ("--jobs" unquote
+                               (number->string (parallel-job-count))))
+      #:phases #~(modify-phases %standard-phases
+                   ;; When building python-pyqtwebengine, <qprinter.h> cannot be
+                   ;; included.  Here we substitute the full path to the header in the
+                   ;; store.
+                   (add-after 'unpack 'substitute-source
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (let* ((qprinter.h (search-input-file inputs
+                                           "/include/qt6/QtPrintSupport/qprinter.h")))
+                         (substitute* (list "sip/QtPrintSupport/qprinter.sip"
+                                       "sip/QtPrintSupport/qpyprintsupport_qlist.sip")
+                           (("qprinter.h")
+                            qprinter.h))))))))))
+
 (define-public python-pyqt5-sip
   (package
     (name "python-pyqt5-sip")
@@ -3674,6 +3738,22 @@ contain over 620 classes.")
     (synopsis "Sip module support for PyQt5")
     (description "Sip module support for PyQt5")
     (license license:lgpl2.1+)))
+
+(define-public python-pyqt6-sip
+  (package
+    (inherit python-pyqt5-sip)
+    (name "python-pyqt6-sip")
+    (version "13.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6_sip" version))
+       (sha256
+        (base32 "0y2pgc1kzskq3q230b5d48izvzy9dl4hkfjpcr7kv53ih1cf31i4"))))
+    (synopsis "Sip module support for PyQt6")
+    (description
+     "SIP is used to write self contained extension modules, i.e. without a library
+to be wrapped. This SIP extension module provides support for the PyQt6 package.")))
 
 (define-public python-pyqtwebengine
   (package
@@ -3731,6 +3811,40 @@ WebEngine libraries.  The bindings sit on top of PyQt5 and are implemented as a
 set of three modules.  Prior to v5.12 these bindings were part of PyQt
 itself.")
     (license license:gpl3)))
+
+(define-public python-pyqtwebengine-6
+  (package
+    (inherit python-pyqtwebengine)
+    (version "6.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6_WebEngine" version))
+       (sha256
+        (base32 "11wlnggs5vi7z465xhmnz664wbaj44ki6mmijbk0kr457x69h2ym"))))
+    (native-inputs (list python python-sip python-pyqt-builder
+                         ;; qtbase is required for qmake
+                         qtbase))
+    (inputs (list python-pyqt-6 qtbase qtdeclarative qtwebchannel qtwebengine))
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
+                              ("--jobs" unquote
+                               (number->string (parallel-job-count))))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'set-include-dirs
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (let* ((python (assoc-ref inputs "python"))
+                              (sip-include-dirs (search-input-directory inputs
+                                                 (string-append "/lib/python"
+                                                  (python-version python)
+                                                  "/site-packages/PyQt6/bindings"))))
+                         (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
+    (description
+     "PyQtWebEngine is a set of Python bindings for The Qt Company's Qt
+WebEngine libraries.  The bindings sit on top of PyQt6 and are implemented as a
+set of three modules.")))
 
 (define-public python-pyqt-builder
   (package
@@ -4929,7 +5043,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "11.0.1")
+    (version "12.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4943,7 +5057,6 @@ including @i{fix-its} for automatic refactoring.")
                            ;; Remove bundled libraries, where supported.
                            ;; TODO: package and unbundle litehtml
                            '("src/libs/3rdparty/yaml-cpp"
-                             "tests/unit/unittest/3rdparty"
                              ;; Marketplace recommends nonfree extensions;
                              ;; remove it.
                              "src/plugins/marketplace"))
@@ -4953,7 +5066,7 @@ including @i{fix-its} for automatic refactoring.")
                             ((".*marketplace/marketplace.qbs.*") ""))))
               (sha256
                (base32
-                "0j90dv9micqsvj4r7iqd11szixr0mlpna4w5s2lnyqckjs6a0mm6"))))
+                "04h35za3gliai5djxwmzqrbih2g26lcv68pp4wvljkdwkcjsscvb"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -5022,6 +5135,7 @@ including @i{fix-its} for automatic refactoring.")
                                       '("bin/clang-tidy"
                                         "bin/clazy-standalone"
                                         "bin/gdb"
+                                        "bin/kcachegrind"
                                         "bin/valgrind")))))))))
     (native-inputs
      (list googletest
@@ -5038,6 +5152,7 @@ including @i{fix-its} for automatic refactoring.")
            clazy
            elfutils
            gdb
+           kcachegrind
            libxkbcommon
            llvm
            qt5compat

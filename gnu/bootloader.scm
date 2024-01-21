@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,7 @@
             bootloader-configuration-serial-unit
             bootloader-configuration-serial-speed
             bootloader-configuration-device-tree-support?
+            bootloader-configuration-extra-initrd
 
             %bootloaders
             lookup-bootloader-by-name
@@ -279,7 +281,9 @@ instead~%")))
   (serial-speed          bootloader-configuration-serial-speed
                          (default #f))    ;integer | #f
   (device-tree-support?  bootloader-configuration-device-tree-support?
-                         (default #t)))   ;boolean
+                         (default #t))    ;boolean
+  (extra-initrd          bootloader-configuration-extra-initrd
+                         (default #f)))   ;string | #f
 
 (define-deprecated (bootloader-configuration-target config)
   bootloader-configuration-targets

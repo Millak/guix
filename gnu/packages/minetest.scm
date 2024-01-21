@@ -44,6 +44,7 @@
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system minetest)
@@ -52,7 +53,7 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.7.0")
+    (version "5.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -61,7 +62,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "008l44zwwsarwk4hn7wx2nj2m21b1iqsphl7g69rrlxj760zl0pl"))
+                "1sww17h8z77w38jk19nsqxn8xcj27msq0glbil7pyj4i0ffprjrr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -154,6 +155,41 @@ in different ways.")
     (home-page "https://www.minetest.net/")
     (license license:lgpl2.1+)))
 
+(define-public minetest-server
+  (package
+    (inherit minetest)
+    (name "minetest-server")
+    (arguments
+     (substitute-keyword-arguments (package-arguments minetest)
+       ((#:configure-flags configure-flags)
+        #~(cons* "-DBUILD_CLIENT=FALSE"
+                 "-DBUILD_SERVER=TRUE"
+                 #$configure-flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "HOME" "/tmp")
+                  (invoke "src/minetestserver" "--run-unittests"))))))))
+    (inputs
+     (modify-inputs (package-inputs minetest)
+       (delete "libjpeg-turbo"
+               "libpng"
+               "libogg"
+               "libvorbis"
+               "libxxf86vm"
+               "mesa"
+               "openal")))
+    (synopsis "Infinite-world block sandbox game (server)")
+    (description
+     "Minetest is a sandbox construction game.  Players can create and destroy
+various types of blocks in a three-dimensional open world.  This allows
+forming structures in every possible creation, on multiplayer servers or as a
+single player.  Mods and texture packs allow players to personalize the game
+in different ways.  This package provides @command{minetestserver} to run a
+Minetest server.")))
+
 (define minetest-data
   (package
     (name "minetest-data")
@@ -166,7 +202,7 @@ in different ways.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02kbj1h6jsq6k8x4v2ir0njczdz7nyx6dbym85ixxp3mrqxiws61"))))
+                "1pq4rm15lzwcqv6npgyz6v89hi3zj8zybw25n9i0d27qj786xc4z"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan

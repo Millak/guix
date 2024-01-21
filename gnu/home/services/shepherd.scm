@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,11 +76,8 @@ as shepherd package."
       #~(begin
           (use-modules (srfi srfi-34)
                        (system repl error-handling))
-          (apply
-           register-services
-           (map
-            (lambda (file) (load file))
-            '#$files))
+
+          (register-services (map load '#$files))
 
           #$@(if daemonize?
                  `((action 'root 'daemonize))
@@ -90,9 +88,7 @@ as shepherd package."
                  '#$(append-map shepherd-service-provision
                                 (filter shepherd-service-auto-start?
                                         services))))
-            (if (defined? 'start-in-the-background)
-                (start-in-the-background services-to-start)
-                (for-each start services-to-start))
+            (start-in-the-background services-to-start)
 
             (redirect-port (open-input-file "/dev/null")
                            (current-input-port)))))

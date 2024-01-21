@@ -14,6 +14,7 @@
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -233,10 +234,35 @@ files.")
      `(#:tests? #f ; there is no check target
        #:parallel-build? #f             ;randomly fails to link
        #:configure-flags ; Add $libdir to the RUNPATH of all the executables.
-       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
+       (list (string-append "LDFLAGS=-Wl,-rpath="
+                            ,(if (%current-target-system)
+                                 '(assoc-ref %outputs "out")
+                                 '%output)
+                            "/lib"))
        ;; Building in parallel is flaky: “ld: […]/cachetest.c:393: undefined
        ;; reference to `paranoia_free'”.
-       #:parallel-build? #f))
+       #:parallel-build? #f
+       ,@(if (and (or (target-riscv64?)
+                      (target-aarch64?))
+                  (%current-target-system))
+             '(#:phases
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'update-config-scripts
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     ;; Replace outdated config.guess and config.sub.
+                     (for-each (lambda (file)
+                                 (install-file
+                                  (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                               '("config.guess" "config.sub"))))))
+             '())))
+    (native-inputs
+     (if (and (or (target-riscv64?)
+                  (target-aarch64?))
+              (%current-target-system))
+         (list config)
+         '()))
     (home-page "https://www.xiph.org/paranoia/")
     (synopsis "Audio CD reading utility")
     (description "Cdparanoia retrieves audio tracks from CDDA capable CDROM
@@ -952,7 +978,7 @@ CD data, and more.  It's mostly compatible with @code{cdrtools}.")
 (define-public libmirage
   (package
     (name "libmirage")
-    (version "3.2.6")
+    (version "3.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -960,7 +986,7 @@ CD data, and more.  It's mostly compatible with @code{cdrtools}.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "19pjdmxhzl8y3brhg8fsv99b6jg4lfnl8jvcjgm4jmqrr684czr5"))))
+                "1lxkpmad8l2wl0afp26jahzf5cxp10p0zl1a56lcqjwmsy0292gs"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config intltool))

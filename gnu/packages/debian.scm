@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -87,7 +87,7 @@ contains the archive keys used for that.")
 (define-public debian-ports-archive-keyring
   (package
     (name "debian-ports-archive-keyring")
-    (version "2023.02.01")
+    (version "2024.01.05")
     (source
       (origin
         (method url-fetch)
@@ -96,7 +96,7 @@ contains the archive keys used for that.")
                             "/debian-ports-archive-keyring_" version ".tar.xz"))
         (sha256
          (base32
-          "1xq7i6plgfbf4drqdmmk1yija48x11jmhnk2av3cajn2cdhkw73s"))))
+          "010yaxc6ngq4ygh7mjyz2bk3w8ialxzya1bqwc7knavaixz9gfpp"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f              ; No test suite.
@@ -149,15 +149,15 @@ contains the archive keys used for that.")
 (define-public ubuntu-keyring
   (package
     (name "ubuntu-keyring")
-    (version "2021.03.26")
+    (version "2023.11.28.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://launchpad.net/ubuntu/+archive/primary/"
-                            "+files/" name "_" version ".tar.gz"))
+                            "+files/" name "_" version ".tar.xz"))
         (sha256
          (base32
-          "1ccvwh4s51viyhcg8gh189jmvbrhc5wv1bbp4minz3200rffsbj9"))))
+          "0bmafky67hrb79baaydmw7al21lz0wgi4ks5dqfkfqamw5d4bkdf"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -167,7 +167,7 @@ contains the archive keys used for that.")
                           (apt (string-append out "/etc/apt/trusted.gpg.d/"))
                           (key (string-append out "/share/keyrings/")))
                      (setenv "PATH" (string-append
-                                      (assoc-ref %build-inputs "gzip") "/bin:"
+                                      (assoc-ref %build-inputs "xz") "/bin:"
                                       (assoc-ref %build-inputs "tar") "/bin"))
                      (invoke "tar" "xvf" (assoc-ref %build-inputs "source"))
                      (for-each (lambda (file)
@@ -175,10 +175,9 @@ contains the archive keys used for that.")
                                (find-files "." "ubuntu-[^am].*\\.gpg$"))
                      (for-each (lambda (file)
                                  (install-file file key))
-                               (find-files "." "ubuntu-[am].*\\.gpg$")))
-                   #t)))
+                               (find-files "." "ubuntu-[am].*\\.gpg$"))))))
     (native-inputs
-     (list tar gzip))
+     (list tar xz))
     (home-page "https://launchpad.net/ubuntu/+source/ubuntu-keyring")
     (synopsis "GnuPG keys of the Ubuntu archive")
     (description
@@ -190,7 +189,7 @@ contains the archive keys used for that.")
 (define-public debootstrap
   (package
     (name "debootstrap")
-    (version "1.0.132")
+    (version "1.0.134")
     (source
       (origin
         (method git-fetch)
@@ -199,7 +198,7 @@ contains the archive keys used for that.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1l6mc3i2wqfhmhj85x9qiiqchqp9br6gg54hv1xs08h8xndmfchf"))))
+         (base32 "0k9gi6gn8qlqs81r2q1hx5wfyax3nvpkk450girdra7dh54iidr4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -211,9 +210,7 @@ contains the archive keys used for that.")
                (let ((debian #$(this-package-input "debian-archive-keyring"))
                      (ubuntu #$(this-package-input "ubuntu-keyring")))
                  (substitute* "Makefile"
-                   (("/usr") "")
-                   (("-o root -g root") "")
-                   (("chown root.*") "\n"))
+                   (("/usr") ""))
                  (substitute* '("scripts/etch"
                                 "scripts/potato"
                                 "scripts/sarge"
@@ -341,7 +338,7 @@ distributions such as Debian and Trisquel.")
 (define-public dpkg
   (package
     (name "dpkg")
-    (version "1.22.0")
+    (version "1.22.1")
     (source
       (origin
         (method git-fetch)
@@ -350,7 +347,7 @@ distributions such as Debian and Trisquel.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1p7f2mgrn2iy0xfysxfq4pjbbhbhb2rp649bsik0x25jrck4if83"))))
+         (base32 "1s6dzcczmpkr9pla25idymfdjz10gck0kphpp0vqbp92vmfskipg"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules

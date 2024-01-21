@@ -1,0 +1,48 @@
+From 567558a4eb9b73ab30f9e469b36091eccf445f80 Mon Sep 17 00:00:00 2001
+From: Felix Gruber <felgru@posteo.net>
+Date: Sun, 23 Apr 2023 16:48:59 +0200
+Subject: [PATCH] Fix use of perfplot.
+
+data tuples are unpacked by perfplot before it calls the kernel
+functions.
+---
+ tests/test_dot.py | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/tests/test_dot.py b/tests/test_dot.py
+index a8160fe..51307ad 100644
+--- a/tests/test_dot.py
++++ b/tests/test_dot.py
+@@ -76,10 +76,10 @@ def test_speed_comparison1(n_range=None):
+     perfplot.plot(
+         setup=lambda n: (np.random.rand(n, 100), np.random.rand(100, n)),
+         kernels=[
+-            lambda xy: np.dot(*xy),
+-            lambda xy: accupy.kdot(*xy, K=2),
+-            lambda xy: accupy.kdot(*xy, K=3),
+-            lambda xy: accupy.fdot(*xy),
++            lambda x, y: np.dot(x, y),
++            lambda x, y: accupy.kdot(x, y, K=2),
++            lambda x, y: accupy.kdot(x, y, K=3),
++            lambda x, y: accupy.fdot(x, y),
+         ],
+         labels=["np.dot", "accupy.kdot[2]", "accupy.kdot[3]", "accupy.fdot"],
+         n_range=n_range,
+@@ -96,10 +96,10 @@ def test_speed_comparison2(n_range=None):
+     perfplot.plot(
+         setup=lambda n: (np.random.rand(100, n), np.random.rand(n, 100)),
+         kernels=[
+-            lambda xy: np.dot(*xy),
+-            lambda xy: accupy.kdot(*xy, K=2),
+-            lambda xy: accupy.kdot(*xy, K=3),
+-            lambda xy: accupy.fdot(*xy),
++            lambda x, y: np.dot(x, y),
++            lambda x, y: accupy.kdot(x, y, K=2),
++            lambda x, y: accupy.kdot(x, y, K=3),
++            lambda x, y: accupy.fdot(x, y),
+         ],
+         labels=["np.dot", "accupy.kdot[2]", "accupy.kdot[3]", "accupy.fdot"],
+         n_range=n_range,
+-- 
+2.39.2
+

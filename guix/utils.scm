@@ -7,7 +7,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,9 +97,11 @@
             target-x86-32?
             target-x86-64?
             target-x86?
+            target-x32?
             target-arm32?
             target-aarch64?
             target-arm?
+            target-avr?
             target-ppc32?
             target-ppc64le?
             target-powerpc?
@@ -632,6 +635,8 @@ returned by `config.guess'."
                        (else triplet))))
     (cond ((string-match "^arm[^-]*-([^-]+-)?linux-gnueabihf" triplet)
            "armhf-linux")
+          ;; Otherwise it will show up as x86_64-linux... which isn't wrong.
+          ((string-match "x86_64-linux-gnux32" triplet) "x86_64-linux-gnux32")
           ((string-match "^([^-]+)-([^-]+-)?linux-gnu.*" triplet)
            =>
            (lambda (m)
@@ -708,6 +713,13 @@ a character other than '@'."
 architecture (x86_64)?"
   (string-prefix? "x86_64-" target))
 
+(define* (target-x32? #:optional (target (or (%current-target-system)
+                                             (%current-system))))
+  "Is the architecture of TARGET a variant of Intel/AMD's 64-bit
+architecture (x86_64) using 32-bit data types?"
+  (and (target-x86-64? target)
+       (string-suffix? "gnux32" target)))
+
 (define* (target-x86? #:optional (target (or (%current-target-system)
                                              (%current-system))))
   (or (target-x86-32? target) (target-x86-64? target)))
@@ -723,6 +735,10 @@ architecture (x86_64)?"
 (define* (target-arm? #:optional (target (or (%current-target-system)
                                              (%current-system))))
   (or (target-arm32? target) (target-aarch64? target)))
+
+(define* (target-avr? #:optional (target (%current-target-system)))
+  "Is the architecture of TARGET a variant of Microchip's AVR architecture?"
+  (or (string=? target "avr") (string-prefix? "avr-" target)))
 
 (define* (target-ppc32? #:optional (target (or (%current-target-system)
                                                (%current-system))))

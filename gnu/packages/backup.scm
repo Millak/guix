@@ -71,6 +71,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -104,34 +105,32 @@
 (define-public duplicity
   (package
     (name "duplicity")
-    (version "0.8.21")
+    (version "2.1.4")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://code.launchpad.net/duplicity/"
-                          (version-major+minor version)
-                          "-series/" version "/+download/duplicity-"
-                          version ".tar.gz"))
-      (sha256
-       (base32 "0ld4bhsi6iv4bvy99pblbr7vlwy9jbgfd6flyvb8qwbl8rvadzjp"))))
+      (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/duplicity/duplicity")
+             (commit (string-append "rel." version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14x5brpq1l400i9l2hnyqmbn19cc1hnbmj5fn8cs8zzwzbgrfxng"))))
     (build-system python-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)     ; for msgfmt
-       ("util-linux" ,util-linux)       ; setsid command, for the tests
-       ("par2cmdline" ,par2cmdline)
-       ("python-fasteners" ,python-fasteners)
-       ("python-future" ,python-future) ; for tests
-       ("python-paramiko" ,python-paramiko)
-       ("python-pexpect" ,python-pexpect)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-runner" ,python-pytest-runner)
-       ("python-setuptools-scm" ,python-setuptools-scm)
-       ("tzdata" ,tzdata-for-tests)
-       ("mock" ,python-mock)))
+     (list gettext-minimal ; for msgfmt
+           util-linux ; setsid command, for the tests
+           par2cmdline
+           python-fasteners
+           python-future ; for tests
+           python-paramiko
+           python-pexpect
+           python-pytest
+           python-pytest-runner
+           python-setuptools-scm
+           tzdata-for-tests
+           python-mock))
     (propagated-inputs
-     `(("lockfile" ,python-lockfile)
-       ("pygobject" ,python-pygobject)
-       ("urllib3" ,python-urllib3)))
+     (list python-lockfile python-pygobject python-urllib3))
     (inputs
      (list dbus ; dbus-launch (Gio backend)
            librsync
@@ -139,30 +138,41 @@
            gnupg ; gpg executable needed
            util-linux))     ; for setsid
     (arguments
-     `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'use-store-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "duplicity/gpginterface.py"
-               (("self.call = u'gpg'")
-                (string-append "self.call = '" (assoc-ref inputs "gnupg") "/bin/gpg'")))
-             (substitute* "duplicity/backends/giobackend.py"
-               (("subprocess.Popen\\(\\[u'dbus-launch'\\]")
-                (string-append "subprocess.Popen([u'"
-                               (assoc-ref inputs "dbus")
-                               "/bin/dbus-launch']")))
-             (substitute* '("testing/functional/__init__.py"
-                            "testing/overrides/bin/lftp")
-               (("/bin/sh") (which "sh")))))
-         (add-before 'check 'set-up-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))   ; gpg needs to write to $HOME
-             (setenv "TZDIR"            ; some timestamp checks need TZDIR
-                     (search-input-directory inputs "share/zoneinfo"))
-             ;; Some things respect TMPDIR, others hard-code /tmp, and the
-             ;; defaults don't match up, breaking test_restart.  Fix it.
-             (setenv "TMPDIR" "/tmp"))))))
+     (list #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'use-store-file-names
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "duplicity/gpginterface.py"
+                     (("self.call = u'gpg'")
+                      (string-append "self.call = '"
+                                     (search-input-file inputs
+                                                        "/bin/gpg")
+                                     "'")))
+                   (substitute* "duplicity/backends/giobackend.py"
+                     (("subprocess.Popen\\(\\[u'dbus-launch'\\]")
+                      (string-append "subprocess.Popen([u'"
+                                     (search-input-file inputs
+                                                        "/bin/dbus-launch") "']")))
+                   (substitute* '("testing/functional/__init__.py"
+                                  "testing/overrides/bin/lftp")
+                     (("/bin/sh")
+                      (which "sh")))))
+               (add-before 'build 'fix-version
+                 (lambda _
+                   (substitute* "duplicity/__init__.py"
+                     (("\\$version")
+                      #$(package-version this-package)))))
+               (add-before 'check 'set-up-tests
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "HOME"
+                           (getcwd)) ; gpg needs to write to $HOME
+                   (setenv "TZDIR" ; some timestamp checks need TZDIR
+                           (search-input-directory inputs
+                                                   "share/zoneinfo"))
+                   ;; Some things respect TMPDIR, others hard-code /tmp, and the
+                   ;; defaults don't match up, breaking test_restart.  Fix it.
+                   (setenv "TMPDIR" "/tmp"))))))
     (home-page "https://duplicity.gitlab.io/duplicity-web/")
     (synopsis "Encrypted backup using rsync algorithm")
     (description
@@ -635,13 +645,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "178klb3pglhhz553frf928v7zvaiqvri9fbhj33yx7h3hvqgi9mp"))
+        (base32 "06j1v4bw9jkjh6m29ns5sigmp0cslcf0cyy8rrqij11w72ijhgzn"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -750,7 +760,7 @@ detection, and lossless compression.")
            lz4
            openssl
            ;; This is the latest version of msgpack accepted by 'setup.py'.
-           python-msgpack-1.0.2
+           python-msgpack
            ;; FUSE 3 isn't working well, so we stick with FUSE 2 for now:
            ;; <https://issues.guix.gnu.org/53407>
            python-llfuse

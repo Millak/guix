@@ -33,6 +33,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (guix packages)
@@ -153,15 +154,16 @@ parsers to allow execution with Guile as extension languages.")))
 (define-public mes
   (package
     (name "mes")
-    (version "0.24.2")
+    (version "0.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "0vp8v88zszh1imm3dvdfi3m8cywshdj7xcrsq4cgmss69s2y1nkx"))))
-    (supported-systems '("armhf-linux" "i686-linux" "x86_64-linux"))
+                "1m45wcrpp3syzdniqx12nyr6v8f9hsg516pwl1k9894nb2ni08hg"))))
+    (supported-systems '("armhf-linux" "i686-linux"
+                         "x86_64-linux" "riscv64-linux"))
     (propagated-inputs (list mescc-tools nyacc-1.00.2))
     (native-inputs
      (append (list guile-3.0)
@@ -173,8 +175,13 @@ parsers to allow execution with Guile as extension languages.")))
              ;; MesCC 64 bit .go files installed ready for use with Guile.
              (list (cross-binutils "i686-unknown-linux-gnu")
                    (cross-gcc "i686-unknown-linux-gnu")))
-            (else
-             '())))
+         ((string-prefix? "aarch64-linux" target-system)
+          ;; Use cross-compiler rather than #:system "armhf-linux" to get
+          ;; MesCC 64 bit .go files installed ready for use with Guile.
+          (let ((triplet "arm-linux-gnueabihf"))
+            (list (cross-binutils triplet) (cross-gcc triplet))))
+         (else
+          '())))
        (list graphviz help2man
              m2-planet
              perl                               ;build-aux/gitlog-to-changelog
@@ -206,26 +213,24 @@ Guile.")
 (define-public mescc-tools
   (package
     (name "mescc-tools")
-    (version "1.4.0")
+    (version "1.5.2")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.savannah.nongnu.org/r/mescc-tools.git")
-                    (commit (string-append "Release_" version))
-                    (recursive? #t)))             ;for M2libc
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "mirror://savannah/" name "/"
+                                  name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0z2ni2qn2np1walcaqlxz8sinzb78d4hiq9glddzf26wxc226hs4"))))
+                "1jak61gxab8bj8ddpgwfn9lqs917szq1phadmg8y5cjsndn1hv4k"))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
                          "armhf-linux" "aarch64-linux"
                          "riscv64-linux"))
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:test-target "test"
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
     (native-inputs (list which))
     (synopsis "Tools for the full source bootstrapping process")
     (description
@@ -239,19 +244,20 @@ get_machine.")
 (define-public m2-planet
   (package
     (name "m2-planet")
-    (version "1.9.0")
+    (version "1.11.0")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/oriansj/m2-planet")
-                    (commit (string-append "Release_" version))
-                    (recursive? #t)))             ;for M2libc
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/oriansj/M2-Planet/releases/download/"
+                    "Release_" version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0cgvvq91cbxxm93k8ayyvhpaf3c2lv10qw4wyqwn3hc1qb1cfyvr"))))
+                "1c510p55amxjyvjlx9jpa30gixlgmf6mmfnaqcs46412krymwg38"))))
     (native-inputs (list mescc-tools))
     (build-system gnu-build-system)
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "armhf-linux" "aarch64-linux"
+                         "riscv32-linux" "riscv64-linux"))
     (arguments
      `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           ,(string-append "CC=" (cc-for-target)))
@@ -269,3 +275,4 @@ built as Phase-5 of the full source bootstrapping process and is capable of
 building GNU Mes.")
     (home-page "https://github.com/oriansj/m2-planet")
     (license gpl3+)))
+

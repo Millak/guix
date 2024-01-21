@@ -11,7 +11,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -30,7 +30,7 @@
 ;;; Copyright © 2017, 2020, 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Jovany Leandro G.C <bit4bit@riseup.net>
-;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
+;;; Copyright © 2018, 2023 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018, 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
@@ -51,7 +51,7 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -1666,7 +1666,7 @@ sharing to the masses.")
            libmusicbrainz
            libxml2
            neon
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (synopsis "File previewer for the GNOME desktop")
     (description "Sushi is a DBus-activated service that allows applications
 to preview files on the GNOME desktop.")
@@ -1894,7 +1894,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.14.3")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
@@ -1902,8 +1902,10 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "0yzx9slg632iflw9p96nlh9i50dhacq7hrzpkj8b48mr1zkxrn3q"))))
-    (build-system glib-or-gtk-build-system)
+        (base32 "1cyh20nz2f81rb6di99idvw4xjn969mjhj3n2q17kzjhlv20079z"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t))
     (native-inputs
      (list desktop-file-utils
            flex
@@ -1911,6 +1913,7 @@ either on a local, or remote machine via a number of methods.")
            `(,glib "bin")
            gobject-introspection
            googletest
+           `(,gtk+-2 "bin")
            intltool
            itstool
            libtool
@@ -3395,7 +3398,7 @@ compiles to GTKBuilder XML.")
            python-pygobject
            python-lxml
            webkitgtk
-           webkitgtk-next))
+           webkitgtk))
     (native-inputs
      (list `(,glib "bin")
            gobject-introspection
@@ -3583,11 +3586,19 @@ for dealing with different structured file formats.")
               ;; https://gitlab.gnome.org/GNOME/librsvg/-/issues/955).
               (substitute* "gdk-pixbuf-loader/librsvg.thumbnailer.in"
                 (("@bindir@/gdk-pixbuf-thumbnailer")
-                 (search-input-file inputs "bin/gdk-pixbuf-thumbnailer")))))
+                 (string-append #$(this-package-input "gdk-pixbuf")
+                                "/bin/gdk-pixbuf-thumbnailer")))))
           (add-after 'unpack 'prepare-for-build
             (lambda _
               ;; In lieu of #:make-flags
               (setenv "CC" #$(cc-for-target))
+              (setenv "PKG_CONFIG" #$(pkg-config-for-target))
+              (when #$(%current-target-system)
+                (setenv "RUST_TARGET"
+                        (string-replace
+                          #$(%current-target-system)
+                          "-unknown-linux-gnu"
+                          (string-index #$(%current-target-system) #\-))))
               ;; Something about the build environment resists building
               ;; successfully with the '--locked' flag.
               (substitute* '("Makefile.am" "Makefile.in")
@@ -3620,9 +3631,18 @@ for dealing with different structured file formats.")
               (apply (assoc-ref gnu:%standard-phases 'configure)
                      #:configure-flags
                      (list "--disable-static"
-                           "--enable-vala"
-                           (string-append "--with-html-dir=" #$output
-                                          "/share/gtk-doc/html"))
+                           #$@(if (%current-target-system)
+                                #~(;; g-ir-scanner can't import its modules
+                                   ;; and vala currently can't be cross-compiled.
+                                   "--enable-introspection=no"
+                                   "--enable-vala=no"
+                                   ;; These two are necessary for cross-compiling.
+                                   (string-append
+                                     "--build=" #$(nix-system->gnu-triplet
+                                                    (%current-system)))
+                                   (string-append
+                                     "--host=" #$(%current-target-system)))
+                                #~("--enable-vala")))
                      args)))
           (add-after 'configure 'dont-vendor-self
             (lambda* (#:key vendor-dir #:allow-other-keys)
@@ -3632,13 +3652,14 @@ for dealing with different structured file formats.")
           (replace 'build
             (assoc-ref gnu:%standard-phases 'build))
           (replace 'check
-            (lambda* args
-              ((assoc-ref gnu:%standard-phases 'check)
-               #:test-target "check")))
+            (lambda* (#:key tests? #:allow-other-keys #:rest args)
+              (when tests?
+                ((assoc-ref gnu:%standard-phases 'check)
+                 #:test-target "check"))))
           (replace 'install
             (assoc-ref gnu:%standard-phases 'install)))))
-    (native-inputs (list `(,glib "bin") gobject-introspection pkg-config vala))
-    (inputs (list freetype harfbuzz libxml2 pango))
+    (native-inputs (list gdk-pixbuf `(,glib "bin") gobject-introspection pkg-config vala))
+    (inputs (list freetype gobject-introspection harfbuzz libxml2 pango))
     (propagated-inputs (list cairo gdk-pixbuf glib))
     (synopsis "SVG rendering library")
     (description "Librsvg is a library to render SVG images to Cairo surfaces.
@@ -4760,12 +4781,15 @@ GLib and GObject, and integrates JSON with GLib data types.")
                            (string-append #$output:doc
                                           "/share/gtk-doc"))))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs json-glib-minimal)
-       (prepend docbook-xml-4.3
-                docbook-xsl
-                gobject-introspection
-                gtk-doc
-                libxslt)))))
+     (if (%current-target-system)
+         ;; No docs, no additional inputs.
+         (package-native-inputs json-glib-minimal)
+         (modify-inputs (package-native-inputs json-glib-minimal)
+                        (prepend docbook-xml-4.3
+                                 docbook-xsl
+                                 gobject-introspection
+                                 gtk-doc
+                                 libxslt))))))
 
 (define-public libxklavier
   (package
@@ -5917,7 +5941,7 @@ services for numerous locations.")
            gi-docgen
            `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gsettings-desktop-schemas
            pkg-config
            python
@@ -6154,7 +6178,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
            pkg-config))
     (inputs
      (list amtk
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Devhelp")
     (synopsis "API documentation browser for GNOME")
     (description
@@ -6167,7 +6191,7 @@ throughout GNOME for API documentation).")
   (hidden-package
    (package/inherit devhelp
      (inputs (modify-inputs (package-inputs devhelp)
-               (replace "webkitgtk" webkitgtk-with-libsoup2))))))
+               (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2))))))
 
 (define-public cogl
   (package
@@ -7183,7 +7207,7 @@ almost all of them.")
            libxslt
            nettle                       ; for hogweed
            sqlite
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Web")
     (synopsis "GNOME web browser")
     (description
@@ -7373,7 +7397,7 @@ jQuery.Syntax JavaScript libraries.")
            man-db                                 ;for URIs like "man:ls"
            groff-minimal                          ;ditto
            sqlite
-           webkitgtk
+           webkitgtk-for-gtk3
            yelp-xsl))
     (home-page "https://wiki.gnome.org/Apps/Yelp")
     (synopsis "GNOME help browser")
@@ -7541,7 +7565,7 @@ metadata in photo and video files of various formats.")
            libwebp
            libxml2
            sqlite
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Shotwell")
     (synopsis "Photo manager for GNOME 3")
     (description
@@ -8053,7 +8077,7 @@ window manager.")
            libsecret
            mit-krb5
            rest-next
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (synopsis "Single sign-on framework for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GnomeOnlineAccounts")
     (description
@@ -8086,7 +8110,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                       (delete 'disable-gtk-update-icon-cache)))))
     (inputs (modify-inputs (package-inputs gnome-online-accounts)
               (replace "rest" rest)
-              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
+              (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2)))))
 
 (define-public evolution-data-server
   (package
@@ -8172,7 +8196,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
            libphonenumber
            mit-krb5
            openldap
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (synopsis "Store address books and calendars")
     (home-page "https://wiki.gnome.org/Apps/Evolution")
     (description
@@ -8199,7 +8223,7 @@ Evolution (hence the name), but is now used by other packages as well.")
      (modify-inputs (package-inputs evolution-data-server)
        (replace "gnome-online-accounts" gnome-online-accounts-3.44)
        (replace "libgweather4" libgweather)
-       (replace "webkitgtk" webkitgtk-with-libsoup2)))
+       (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs evolution-data-server)
        (delete "gtk")
@@ -8635,7 +8659,10 @@ Cisco's AnyConnect SSL VPN.")
                   libsecret
                   network-manager
                   openfortivpn
-                  ppp))
+
+                  ;; ppp < 2.5.0 is currently required:
+                  ;; https://gitlab.gnome.org/GNOME/NetworkManager-fortisslvpn/-/commit/084ef529c5fb816927ca54866f66b340265aa9f6
+                  ppp-2.4.9))
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "Fortinet SSLVPN plug-in for NetworkManager")
     (description
@@ -8669,7 +8696,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/network-manager-applet/"
@@ -8677,7 +8704,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
                                   "network-manager-applet-" version ".tar.xz"))
               (sha256
                (base32
-                "0f5sxxi9rywg8mhglcyk3sqmgv5wwl4vxzar56847b852pxazdd2"))))
+                "1a55mf4ww06lqacs6zndp29ayyby5f8rgg1lp341y5kb1x3qwdmb"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -8744,8 +8771,25 @@ the available networks and allows users to easily switch between them.")
 library.")
     (license license:lgpl2.1+)))
 
-;; This is the last release providing the 2.6 API, hence the name.
 ;; This is needed by tascam-gtk
+(define-public libxml++-3
+  (package
+    (inherit libxml++)
+    (name "libxml++")
+    (version "3.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libxmlplusplus/libxmlplusplus")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07f6l9ka63dnc85npxq5g7bn1ja7lad0w2wixqdlyabdvc4l2hp5"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs libxml++)
+                         (append glibmm-2.64)))))
+
+;; This is the last release providing the 2.6 API, hence the name.
 (define-public libxml++-2
   (package
     (inherit libxml++)
@@ -9468,7 +9512,7 @@ easy, safe, and automatic.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gobject-introspection
            docbook-xsl
            docbook-xml
@@ -11276,7 +11320,7 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
            python-pygobject
            python-pylast
            totem-pl-parser
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (propagated-inputs
      (list gst-plugins-good             ;required to start lollypop
            gst-plugins-ugly))           ;required for streaming
@@ -11745,7 +11789,7 @@ generic enough to work for everyone.")
            libsoup
            nss
            openldap
-           webkitgtk
+           webkitgtk-for-gtk3
            ytnef))
     (home-page "https://gitlab.gnome.org/GNOME/evolution")
     (synopsis "Manage your email, contacts and schedule")
@@ -11771,38 +11815,36 @@ functionality.")
                 "09flm8s6jrvfya2ypw5873mnnani8ssy7wdv3ra1cljk4bjszy4p"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       ;; Ensure the RUNPATH contains all installed library locations.
-       (list (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/gthumb/extensions")
-             (string-append "-Dcpp_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/gthumb/extensions"))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      ;; Ensure the RUNPATH contains all installed library locations.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath=" #$output
+                             "/lib/gthumb/extensions")
+              (string-append "-Dcpp_link_args=-Wl,-rpath=" #$output
+                             "/lib/gthumb/extensions"))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("glib:bin" ,glib "bin")                   ; for glib-compile-resources
-       ("gtk+:bin" ,gtk+ "bin")                   ; for gtk-update-icon-cache
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list desktop-file-utils   ; for update-desktop-database
+           `(,glib "bin")       ; for glib-compile-resources
+           `(,gtk+ "bin")       ; for gtk-update-icon-cache
+           intltool
+           itstool
+           pkg-config
+           python))
     (inputs
-     `(("clutter" ,clutter)
-       ("clutter-gst" ,clutter-gst)
-       ("clutter-gtk" ,clutter-gtk)
-       ("colord" ,colord)
-       ("exiv2" ,exiv2)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gstreamer" ,gstreamer)
-       ("gtk" ,gtk+)
-       ("libheif" ,libheif)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libraw" ,libraw)
-       ("librsvg" ,(librsvg-for-system))
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)))
+     (list clutter
+           clutter-gst
+           clutter-gtk
+           colord
+           exiv2
+           gsettings-desktop-schemas
+           gtk+
+           libheif
+           libjpeg-turbo
+           libraw
+           (librsvg-for-system)
+           libtiff
+           libwebp))
     (home-page "https://wiki.gnome.org/Apps/Gthumb")
     (synopsis "GNOME image viewer and browser")
     (description "GThumb is an image viewer, browser, organizer, editor and
@@ -12364,7 +12406,7 @@ integrate seamlessly with the GNOME desktop.")
            spice-gtk
            tracker
            vte
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Boxes")
     (synopsis "View, access, and manage remote and virtual systems")
     (description "GNOME Boxes is a simple application to view, access, and
@@ -12438,7 +12480,7 @@ non-privileged user.")
            libstemmer
            libunwind
            sqlite
-           webkitgtk
+           webkitgtk-for-gtk3
            ytnef))
     (native-inputs
      (list appstream-glib
@@ -13137,7 +13179,7 @@ profiler via Sysprof, debugging support, and more.")
            python-rarfile
            python-requests
            python-unidecode
-           webkitgtk-next))
+           webkitgtk))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal

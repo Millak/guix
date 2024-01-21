@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
@@ -529,7 +529,7 @@ topology functions.")
            libsoup
            libxml2
            rest-next
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (synopsis "Graphical map viewer and wayfinding program")
     (description "GNOME Maps is a graphical map viewer.  It uses map data from
 the OpenStreetMap project.  It can provide directions for walking, bicycling,
@@ -939,14 +939,14 @@ pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "0.13.2")
+    (version "0.14.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "0s59jjk02l1zajz95n1c7fr3fyj44wzxn569q2y7f34042f6vdg5"))))
+            "1nycf79nzris058lz1fyg0byj874wxq33an3y74zvybnhdxxawbf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -955,6 +955,8 @@ pyproj, Rtree, and Shapely.")
          ;; Test files are missing
          "--ignore=geopandas/tests/test_overlay.py"
          "--ignore=geopandas/io/tests/test_file.py"
+         ;; Number of open figures changed during test
+         "-k" "not test_pandas_kind"
          ;; Disable tests that require internet access.
          "-m" "not web")))
     (propagated-inputs
@@ -1290,40 +1292,46 @@ utilities for data translation and processing.")
 (define-public python-cartopy
   (package
     (name "python-cartopy")
-    ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.21.1")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "02i5rjhvrsi3vgj8kfsdx77g1xl59jh2a671qqqj4n682abn9mc9"))))
-    (build-system python-build-system)
+        (base32 "0jdv92az0b7qxdvalh29kasw3knsl570cz7q3vql67ck400zj05k"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "cartopy"
-                       ;; These tests require online data.
-                       "-m" "not natural_earth and not network"
-                       "-k"
-                       (string-append
-                         ;; This one too but it's not marked as such.
-                         "not test_gridliner_labels_bbox_style"
-                         ;; Those tests fail with proj 9.2.0
-                         ;; https://github.com/SciTools/cartopy/issues/2145
-                         " and not test_epsg"
-                         " and not test_default"
-                         " and not test_eccentric_globe"
-                         " and not test_ellipsoid_transform"
-                         " and not test_eccentric_globe"))))))))
+     (list
+      #:test-flags
+      '(list
+        "--pyargs" "cartopy"
+        ;; These tests require online data.
+        "-m" "not natural_earth and not network"
+        "-k"
+        (string-append
+         ;; This one too but it's not marked as such.
+         "not test_gridliner_labels_bbox_style"
+         ;; Accuracy problems
+         " and not test_single_spole"
+         " and not test_single_npole"
+         ;; Incomplete shapefile definition
+         " and not test_gshhs"
+         " and not test_geometry"
+         " and not test_record"
+         " and not test_bounds"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We don't want to create an entrypoint for
+         ;; tools/cartopy_feature_download.py, because that file is not
+         ;; installed.
+         (add-after 'unpack 'remove-endpoint
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^feature_download = .*") "")))))))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
-           python-pykdtree
+           python-packaging
            python-pyproj
            python-pyshp
            python-scipy
@@ -1331,10 +1339,12 @@ utilities for data translation and processing.")
     (inputs
      (list geos))
     (native-inputs
-     (list python-cython
-           python-flufl-lock
+     (list python-coveralls
+           python-cython
            python-pytest
-           python-pytest-mpl))
+           python-pytest-cov
+           python-pytest-mpl
+           python-pytest-xdist))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
     (synopsis "Cartographic library for visualisation")
     (description
@@ -1485,13 +1495,13 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public python-metpy
   (package
     (name "python-metpy")
-    (version "1.5.1")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MetPy" version))
               (sha256
                (base32
-                "1is6rradl97k04hf27dhzla4y4j98hibran3rbz6xh226q1r9vmb"))))
+                "1pzzanar797wkn6ljs47vni1fwli570d5qsiw1kpw0j1xymcmfsm"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Too many of the tests in the files below require online data.
@@ -1514,7 +1524,23 @@ to create databases that are optimized for rendering/tile/map-services.")
                     " and not test_zoom_xarray"
                     " and not test_parse_wpc_surface_bulletin"
                     " and not test_add_timestamp_xarray"
-                    " and not test_parse_wpc_surface_bulletin_highres"))))
+                    " and not test_parse_wpc_surface_bulletin_highres"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-version-check
+           (lambda _
+             (substitute* "src/metpy/testing.py"
+               (("^( +)match = pattern.*" m indent)
+                (string-append indent "\
+version_spec = re.sub('[()]', '', version_spec)\n" m)))))
+         ;; The deprecation warning from python-future's use of imp breaks the
+         ;; tests.
+         (add-after 'unpack 'hide-imp-deprecation-warnings
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("\"ignore:numpy.ndarray size changed:RuntimeWarning\"," m)
+                (string-append m "
+\"ignore:the imp module is deprecated\","))))))))
     (propagated-inputs (list python-importlib-resources
                              python-matplotlib
                              python-numpy
@@ -1525,8 +1551,8 @@ to create databases that are optimized for rendering/tile/map-services.")
                              python-scipy
                              python-traitlets
                              python-xarray))
-    (native-inputs (list python-cartopy python-netcdf4 python-pytest
-                         python-pytest-mpl python-shapely))
+    (native-inputs (list python-netcdf4 python-packaging python-pytest
+                         python-pytest-mpl))
     (home-page "https://github.com/Unidata/MetPy")
     (synopsis "Collection of tools to deal with weather data")
     (description "MetPy is a collection of tools in Python for reading,
@@ -1940,7 +1966,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18646")
+    (version "18907")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1949,7 +1975,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0zr3p1i39wi0f29lgb3xrnv6lijrq5ia8jxn4wnq1yz0xdlbg98i"))
+                "0vkczijw537f4y1b7hfxa45k3ww6nf2cf485b19dnbgh9ab6mnjl"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1963,17 +1989,20 @@ to the OSM opening hours specification.")
      (list java-commons-jcs
            java-commons-compress
            java-jmapviewer
-           java-jsonp-api
-           java-jsonp-impl ; runtime dependency
+           java-jakarta-annotations-api
+           java-jakarta-json
            java-jsr305
            java-metadata-extractor
            java-opening-hours-parser
            java-openjfx-media
+           java-parsson ; runtime dependency
            java-signpost-core
-           java-svg-salamander))
+           java-svg-salamander
+           openjdk11))
     (arguments
      `(#:tests? #f
        #:jar-name "josm.jar"
+       #:jdk ,openjdk11
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'rm-build.xml
@@ -2069,9 +2098,16 @@ to the OSM opening hours specification.")
                  (lambda _
                    (display
                      (string-append "#!/bin/sh\n"
-                                    (assoc-ref inputs "jdk") "/bin/java"
+                                    (assoc-ref inputs "openjdk") "/bin/java"
                                     " -cp " out "/share/java/josm.jar:"
-                                    (getenv "CLASSPATH")
+                                    ;; CLASSPATH, but remove native inputs
+                                    (string-join
+                                      (filter
+                                        (lambda (jar)
+                                          (and (not (string-contains jar "-jdk/"))
+                                               (not (string-contains jar "-javacc-"))))
+                                        (string-split (getenv "CLASSPATH") #\:))
+                                      ":")
                                     " org.openstreetmap.josm.gui.MainApplication"))))
                (chmod (string-append bin "/josm") #o755))
              #t)))))
@@ -2223,7 +2259,7 @@ data.")
 (define-public qmapshack
   (package
     (name "qmapshack")
-    (version "1.16.1")
+    (version "1.17.1")
     (source
      (origin
        (method git-fetch)
@@ -2232,7 +2268,7 @@ data.")
              (commit (string-append "V_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "184fqmsfzr3b333ssizjk6gvv7mncmygq8dj5r7rsvs5md26z2ys"))))
+        (base32 "1ckadklk67dp1pvkacfkr8379g2pwk73q85jfzm8viclcqmfvb62"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config qttools-5))
@@ -2320,7 +2356,7 @@ associated attribute file (@file{.dbf}).")
 (define-public spatialite-tools
   (package
     (name "spatialite-tools")
-    (version "5.1.0")
+    (version "5.1.0a")
     (source
      (origin
        (method url-fetch)
@@ -2328,7 +2364,7 @@ associated attribute file (@file{.dbf}).")
                            "spatialite-tools-sources/"
                            "spatialite-tools-" version ".tar.gz"))
        (sha256
-        (base32 "1dc3hnqa9ns0ycsac6wyl96pi052y7rrf233lq7sk708ghv30c6z"))))
+        (base32 "1kh1amab452m3801knmpn1jcg27axakb90gd8fxwv240irsk97hi"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -3218,3 +3254,31 @@ For maps, it can uses its own \"binfile\" map format, or Garmin map
 file format, and data from OpenStreetMap, Garmin maps, Marco Polo
 Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
     (license license:gpl2)))
+
+(define-public laszip
+  (package
+    (name "laszip")
+    (version "3.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LASzip/LASzip")
+             (commit "3.4.3")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09lcsgxwv0jq50fhsgfhx0npbf1zcwn3hbnq6q78fshqksbxmz7m"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DLASZIP_BUILD_STATIC=NO")
+      #:build-type "Release"
+      ;; No tests.
+      #:tests? #f))
+    (home-page "https://laszip.org/")
+    (synopsis "Compression library for LAS files")
+    (description
+     "LASzip is a library for compressing @code{LAS} files and uncompressing
+@code{LAZ} files.  The @code{LAS} format is a file format designed for the
+interchange and archiving of lidar point cloud data.")
+    (license license:asl2.0)))

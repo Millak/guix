@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Denis Carikli <GNUtoo@cyberdimension.org>
@@ -39,7 +39,7 @@
 (define-public valgrind
   (package
     (name "valgrind")
-    (version "3.20.0")
+    (version "3.22.0")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/pub/valgrind"
@@ -48,7 +48,7 @@
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))))
+                "0k1ddnzxfpbng2sp5r31jjxsmp35g977rx6a8jcp4prcvmddn4f8"))))
     (build-system gnu-build-system)
     (outputs '("doc"                              ;16 MB
                "out"))
@@ -85,7 +85,7 @@ management and threading bugs, and profile your programs in detail.  You can
 also use Valgrind to build new tools.")
     ;; https://valgrind.org/info/platforms.html
     (supported-systems (fold delete %supported-systems
-                             '("armhf-linux" "riscv64-linux")))
+                             '("i586-gnu" "armhf-linux" "riscv64-linux")))
     (license gpl2+)
 
     ;; Hide this variant so end users get the "interactive" Valgrind below.
@@ -96,5 +96,5 @@ also use Valgrind to build new tools.")
    valgrind
    (inputs
     ;; GDB is needed to provide a sane default for `--db-command'.
-    (list gdb `(,(canonical-package glibc) "debug")))
+    (list gdb `(,(canonical-package (libc-for-target)) "debug")))
    (properties '())))

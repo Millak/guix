@@ -40,7 +40,7 @@
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2021 Rovanion Luckey <rovanion.luckey@gmail.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
-;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
@@ -203,6 +203,46 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module ((srfi srfi-1) #:select (last)))
+
+(define-public alsa-scarlett-gui
+  (package
+    (name "alsa-scarlett-gui")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/geoffreybennett/alsa-scarlett-gui")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nd764vd7qfy2x8dqapiyh5yrxjimm8b4himhm1qkgpf5hvh734l"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there is no check target
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (substitute* "src/Makefile"
+                (("	cc -o")
+                 (string-append "	"
+                                #$(cc-for-target) " -o")))
+              (chdir "src")))
+          (delete 'configure))))
+    (inputs
+     (list alsa-lib glib gtk))
+    (native-inputs
+     (list `(,glib "bin") pkg-config))
+    (home-page "https://github.com/geoffreybennett/alsa-scarlett-gui")
+    (synopsis "ALSA Scarlett2 control panel")
+    (description "This package provides a Gtk4 GUI for the ALSA controls
+presented by the Linux kernel Focusrite Scarlett2 USB Protocol Mixer Driver.")
+    (license license:gpl3+)))
 
 (define-public audacious
   (package
@@ -538,7 +578,7 @@ list(APPEND ctrlrLibs \"iberty\")")))))
              freetype
              libiberty
              libx11
-             webkitgtk))
+             webkitgtk-for-gtk3))
       (native-inputs
        (list pkg-config))
       (home-page "https://ctrlr.org/")
@@ -553,7 +593,7 @@ you create custom user interfaces for your MIDI hardware.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.18")
+    (version "1.0.21")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -562,7 +602,7 @@ you create custom user interfaces for your MIDI hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1knijckphq2jxrz8nmv4cb64zl1rz3bjyq5ipac09hnj2gvv5rmw"))
+                "1ibs7x7i1zz2r13wg238c5bhr1j4x8vl7hvjg01vdl5hfrh2gk1i"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -619,6 +659,7 @@ you create custom user interfaces for your MIDI hardware.")
            gst-plugins-good
            icu4c
            libcdio
+           libebur128
            libmtp
            protobuf
            pulseaudio
@@ -1747,7 +1788,7 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
            python-pytest-cov
            python-pytest-helpers-namespace))
     (propagated-inputs
-     (list abjad jupyter))
+     (list abjad jupyter python-sphinx-autodoc-typehints))
     (home-page "https://abjad.github.io")
     (synopsis "Abjad IPython Extension")
     (description
@@ -1894,7 +1935,7 @@ complete studio.")
 
 (define-public tascam-gtk
   ;; This commit represents the latest version at the time of this writing.
-  (let ((commit "17b8575ff88dfd2ede0f7ef9c5c5597ab8a00702")
+  (let ((commit "69fb86f31efcdb27c7854d2a190457aab42b337a")
         (revision "0"))
     (package
       (name "tascam-gtk")
@@ -1907,10 +1948,10 @@ complete studio.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "07k7rccqqg7lnygkh97a200l1i6s1rl92n01v0q6n4257sinir6f"))))
+                  "05fbs5s24nwr6b10jgjhsfi7aj6y65kcickmygl7g84xvsnykdb0"))))
       (build-system gnu-build-system)
       (inputs
-       (list liblo gtkmm-3 alsa-lib libxml++-2))
+       (list liblo gtkmm-3 alsa-lib libxml++-3))
       (native-inputs
        (list `(,glib "bin") pkg-config))
       (home-page "https://github.com/onkelDead/tascam-gtk")
@@ -4981,7 +5022,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.0.2")
+    (version "4.1.1")
     (source
      (origin
        (method git-fetch)
@@ -4990,14 +5031,11 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yri94xs4xw0lsvmk5q7bqnpgmdadchfn08r7bb2y07jsi8qgm6w"))
+        (base32 "12h26k9qnsq027gdpch579nchwrqva1ymwm2fj5xmlh0aayrwy4d"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Remove unused libraries...
-           (for-each delete-file-recursively
-                     '("thirdparty/freetype"))
-           ;; ... and precompiled binaries.
+           ;; Delete precompiled binaries.
            (delete-file-recursively "src/diagnostics/crashpad_handler")
            (substitute* "src/diagnostics/CMakeLists.txt"
              (("install") "#install"))))))
@@ -6790,7 +6828,7 @@ plugin support, JACK support and chord assistance.")
 (define-public dragonfly-reverb
   (package
     (name "dragonfly-reverb")
-    (version "3.2.5")
+    (version "3.2.10")
     (source
      (origin
        (method git-fetch)
@@ -6802,7 +6840,7 @@ plugin support, JACK support and chord assistance.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14kia9wjs0nqfx4psnr3vf4x6hihkf80gb0mjzmdnnnk4cnrdydm"))))
+        (base32 "11i2k888m3zj4gz9si4y5mach8dwdq3yksbvjn1syrbwj99phwk1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target

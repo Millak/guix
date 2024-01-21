@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -15,12 +15,13 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -812,6 +813,94 @@ SentencePiece allows us to make a purely end-to-end system that does not
 depend on language-specific pre- or post-processing.")
     (license license:asl2.0)))
 
+(define-public python-hopcroftkarp
+  ;; This commit fixes a broken import, but has not been released to PyPI.
+  (let ((commit "2846e1dd3265d95d2bddb0cf4190b830cbb4efe6")
+        (revision "1"))
+    (package
+      (name "python-hopcroftkarp")
+      (version (git-version "1.2.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sofiatolaosebikan/hopcroftkarp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "018ilrp41fcclmb5lsml3aijwbmhbq3m7wy65hr1fryj0avic8fr"))))
+      (build-system pyproject-build-system)
+      (home-page "https://github.com/sofiatolaosebikan/hopcroftkarp")
+      (synopsis "Implementation of the Hopcroft-Karp algorithm")
+      (description
+       "This package implements the Hopcroft-Karp algorithm, producing a maximum
+cardinality matching from a bipartite graph.")
+      (license license:gpl3))))
+
+(define-public python-persim
+  (package
+    (name "python-persim")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "persim" version))
+       (sha256
+        (base32 "0q8wfakx8q4h3ryvw8cba0v6z7xn9139qkrzs3mi1ggyzacnx9d7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-deprecated
+                             python-hopcroftkarp
+                             python-joblib
+                             python-matplotlib
+                             python-numpy
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov))
+    (home-page "https://persim.scikit-tda.org")
+    (synopsis "Tools for analyzing persistence diagrams in Python")
+    (description
+     "This package includes a variety of tools used to analyze persistence diagrams.
+It currently houses implementations of
+@itemize
+@item Persistence images
+@item Persistence landscapes
+@item Bottleneck distance
+@item Modified Gromov–Hausdorff distance
+@item Sliced Wasserstein kernel
+@item Heat kernel
+@item Diagram plotting
+@end itemize
+")
+    (license license:expat))) ; MIT License
+
+(define-public python-ripser
+  (package
+    (name "python-ripser")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ripser" version))
+       (sha256
+        (base32 "1575nwsn6b29z7w1mjk23ri83bxq2b4ld979hpgm174642a3x6vs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-persim python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://ripser.scikit-tda.org")
+    (synopsis "Persistent homology library for Python")
+    (description
+     "This package implements a variety of persistent homology algorithms.  It
+provides an interface for
+@itemize
+@item computing persistence cohomology of sparse and dense data sets
+@item visualizing persistence diagrams
+@item computing lowerstar filtrations on images
+@item computing representative cochains
+@end itemize
+")
+    (license license:expat))) ; MIT License
+
 (define-public python-sacrebleu
   (package
     (name "python-sacrebleu")
@@ -1151,6 +1240,11 @@ in terms of new algorithms.")
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      ;; Does this difference really matter?
+                      (substitute* "requirements.txt"
+                        (("3.20.1") "3.20.2"))))
                   (add-before 'build 'pass-cmake-arguments
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; Pass options to the CMake-based build process.
@@ -1214,6 +1308,35 @@ an extensible computation graph model, as well as definitions of built-in
 operators and standard data types.")
     (license license:expat)))
 
+(define-public onnx-for-torch2
+  (package
+    (inherit onnx)
+    (name "onnx")
+    (version "1.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/onnx/onnx")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "16967dbq2j40diqd0s37r19llsab8q8vbxkg1ppgy0p9fpdhfhyp"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "onnx-1.13.1-use-system-googletest.patch"
+                                       "onnx-shared-libraries.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "third_party")
+                  (substitute* "onnx/backend/test/runner/__init__.py"
+                    (("urlretrieve\\(.*") "raise unittest.SkipTest('Skipping download')\n"))))))
+    (arguments
+     ;; reuse build system tweaks
+     (substitute-keyword-arguments (package-arguments onnx)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'relax-requirements)))))))
+
 (define-public python-onnx
   ;; This used to be called "python-onnx" because it provided nothing but
   ;; Python bindings.  The package now provides shared libraries and C++
@@ -1239,7 +1362,12 @@ operators and standard data types.")
               (modules '((guix build utils)))
               (snippet '(delete-file-recursively "third_party"))))
     (build-system python-build-system)
-    (arguments (package-arguments onnx))          ;reuse build system tweaks
+    (arguments
+     ;; reuse build system tweaks
+     (substitute-keyword-arguments (package-arguments onnx)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'relax-requirements)))))
     (native-inputs
      (list cmake python-pytest python-pytest-runner python-nbval
            python-coverage))
@@ -1258,6 +1386,13 @@ some will need additional backend-specific information---but many can, and the
 aim is to provide all such passes along with ONNX so that they can be re-used
 with a single function call.")
     (license license:expat)))
+
+(define-public onnx-optimizer-for-torch2
+  (package
+    (inherit onnx-optimizer)
+    (inputs
+     (modify-inputs (package-inputs onnx-optimizer)
+       (replace "onnx" onnx-for-torch2)))))
 
 (define-public rxcpp
   (package
@@ -1478,7 +1613,7 @@ computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.2.2")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1488,20 +1623,25 @@ computing environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0x7gfzvcdadf8jnvpz8m373bi37bc6sndfbjh9lzmn3p39pwm2hl"))))
-    (build-system python-build-system)
+         "1hr024vcilbjwlwn32ppadri0ypnzjmkfxhkkw8gih0qjvcvjbs7"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-m" "not network"
+             ;; This test tries to access the internet.
+             "-k" "not test_load_boston_alternative")
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'build 'configure
            (lambda _
              (setenv "SKLEARN_BUILD_PARALLEL"
                      (number->string (parallel-job-count)))))
          (add-after 'build 'build-ext
            (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace"
-                             "-j" (number->string (parallel-job-count)))))
+                        "-j" (number->string (parallel-job-count)))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
              (when tests?
                ;; Restrict OpenBLAS threads to prevent segfaults while testing!
                (setenv "OPENBLAS_NUM_THREADS" "1")
@@ -1512,14 +1652,11 @@ computing environments.")
                ;; Step out of the source directory to avoid interference;
                ;; we want to run the installed code with extensions etc.
                (with-directory-excursion "/tmp"
-                 (invoke "pytest" "-vv" "--pyargs" "sklearn"
-                         "-m" "not network"
-                         "-n" (number->string (parallel-job-count))
-                         ;; This test tries to access the internet.
-                         "-k" "not test_load_boston_alternative"))))))))
+                 (apply invoke "pytest" "--pyargs" "sklearn"
+                        test-flags))))))))
     (inputs (list openblas))
     (native-inputs
-     (list python-cython
+     (list python-cython-0.29.35
            python-pandas
            python-pytest
            python-pytest-xdist))
@@ -1530,6 +1667,54 @@ computing environments.")
     (description
      "Scikit-learn provides simple and efficient tools for data mining and
 data analysis.")
+    (license license:bsd-3)))
+
+(define-public python-scikit-learn-extra
+  (package
+    (name "python-scikit-learn-extra")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yy6ka94ss88f3r7b6mpjf1l8lnv7aabhsg844pigfj8lfiv0wvl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-ext
+                 (lambda _
+                   (invoke "python" "setup.py" "build_ext"
+                           "--inplace")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Restrict OpenBLAS threads to prevent segfaults while testing!
+                     (setenv "OPENBLAS_NUM_THREADS" "1")
+
+                     ;; Some tests require write access to $HOME.
+                     (setenv "HOME" "/tmp")
+
+                     ;; Step out of the source directory to avoid interference;
+                     ;; we want to run the installed code with extensions etc.
+                     (with-directory-excursion "/tmp"
+                       (invoke "pytest" "-vv" "--pyargs"
+                               "sklearn_extra"
+                               ;; ignore tests that require network
+                               "-k" "not test_build"))))))))
+    (propagated-inputs (list python-numpy python-scikit-learn python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov python-cython))
+    (home-page "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+    (synopsis "Set of tools for scikit-learn")
+    (description
+     "This package provides a Python module for machine learning that extends
+scikit-learn.  It includes algorithms that are useful but do not satisfy the
+scikit-learn inclusion criteria, for instance due to their novelty or lower
+citation number.")
     (license license:bsd-3)))
 
 (define-public python-thinc
@@ -1593,115 +1778,45 @@ number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
 
-(define-public python-tslearn
-  (package
-    (name "python-tslearn")
-    (version "0.6.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tslearn-team/tslearn")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0l9l21jy78mhajdfwyx8rskw08597vg55ff22bjkv6xrjjr9g4ac"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-              ;; This one fails because of a difference in accuracy.
-              "not test_all_estimators[LearningShapelets-LearningShapelets]"
-              ;; XXX: It's embarrassing to disable these two, but the truth is
-              ;; that there's only so much we can do to force this package to
-              ;; work with Tensorflow 1.9.  It's still worth having this
-              ;; package, because it can be used without the Tensorflow
-              ;; backend.
-              ;; TypeError: cannot pickle '_thread.RLock' object
-              " and not test_shapelets"
-              ;; TypeError: Expected binary or unicode string, got 2
-              " and not test_serialize_shapelets"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             (substitute* "tslearn/tests/sklearn_patches.py"
-               (("_pairwise_estimator_convert_X")
-                "_enforce_estimator_tags_X")
-               (("pairwise_estimator_convert_X\\(([^,]+), ([^,\\)]+)" _ a b)
-                (string-append "pairwise_estimator_convert_X(" b ", " a)))
-             (substitute* "tslearn/tests/test_shapelets.py"
-               (("tf.optimizers.Adam")
-                "tf.keras.optimizers.Adam"))
-             (substitute* "tslearn/shapelets/shapelets.py"
-               (("tf.keras.utils.set_random_seed")
-                "tf.set_random_seed")
-               (("def __call__\\(self, shape, dtype=None\\):")
-                "def __call__(self, shape, dtype=None, partition_info=None):")
-               (("tf.math.is_finite")
-                "tf.is_finite")))))))
-    (propagated-inputs (list python-cesium
-                             python-h5py
-                             python-joblib
-                             python-numba
-                             python-numpy
-                             python-pandas
-                             python-scipy
-                             python-scikit-learn
-                             tensorflow
-                             python-wheel))
-    (native-inputs (list python-pytest))
-    (home-page "https://github.com/tslearn-team/tslearn")
-    (synopsis "Machine learning toolkit for time series data")
-    (description "This is a Python library for time series data mining.
-It provides tools for time series classification, clustering
-and forecasting.")
-    (license license:bsd-2)))
-
 (define-public python-imbalanced-learn
   (package
     (name "python-imbalanced-learn")
-    (version "0.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "imbalanced-learn" version))
-              (sha256
-               (base32
-                "0qnrmysnqpc8ii1w5n8mci20gcjhmjr7khvk7f2apdbqc2pgf52f"))))
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "imbalanced-learn" version))
+       (sha256
+        (base32 "1p4gdgc8nsq0vjmw4y4d2bp9g0m1c23d0zgrzs90pnz6b24ax0km"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'unbreak-tests
-           (lambda _
-             ;; The doctests require tensorflow
-             (substitute* "setup.cfg"
-               (("--doctest-modules") ""))
-             ;; Some tests require a home directory
-             (setenv "HOME" (getcwd))
-             ;; We don't have keras
-             (delete-file "imblearn/keras/tests/test_generator.py")
-             ;; We don't have tensorflow
-             (delete-file "imblearn/tensorflow/tests/test_generator.py"))))))
-    (propagated-inputs
-     (list python-joblib
-           python-numpy
-           python-scikit-learn
-           python-scipy
-           python-threadpoolctl))
-    (native-inputs
-     (list python-black
-           python-flake8
-           python-mypy
-           python-pandas
-           python-pytest
-           python-pytest-cov))
+      #:test-flags '(list "-k"
+                     ;; Although we cannot satify the Tensorflow and Keras requirements
+                     ;; (python-keras >= 2.4.3 and tensorflow >= 2.4.3), all tests
+                     ;; besides these pass.
+                     "not balanced_batch_generator and not BalancedBatchGenerator")
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'unbreak-tests
+                    (lambda _
+                      ;; Some tests require a home directory
+                      (setenv "HOME"
+                              (getcwd)))))))
+    (propagated-inputs (list python-joblib python-numpy python-scikit-learn
+                             python-scipy python-threadpoolctl))
+    (native-inputs (list python-black
+                         python-flake8
+                         python-keras
+                         python-mypy
+                         python-numpydoc
+                         python-pandas
+                         python-pytest
+                         python-pytest-cov
+                         tensorflow))
     (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
     (synopsis "Toolbox for imbalanced dataset in machine learning")
-    (description "This is a Python package offering a number of re-sampling
+    (description
+     "This is a Python package offering a number of re-sampling
 techniques commonly used in datasets showing strong between-class imbalance.
 It is compatible with @code{scikit-learn}.")
     (license license:expat)))
@@ -1709,27 +1824,18 @@ It is compatible with @code{scikit-learn}.")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.10")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "1bc8aa6jfw28y6sb0nvfdrfgh66a42bqb4znvpimzx9yq21wcpax"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent"
-                       ;; wminkowski no longer exists in scipy 1.8.0 (see:
-                       ;; https://github.com/lmcinnes/pynndescent/issues/177)
-                       "-k" "not test_weighted_minkowski")))))))
+        (base32 "0l5dpdsk5vg7rpay81bncp04119hnl5z7zxjv63jrnm9spcwwi3g"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest))
     (propagated-inputs
-     (list python-joblib
+     (list python-importlib-metadata
+           python-joblib
            python-llvmlite
            python-numba
            python-scikit-learn
@@ -1744,7 +1850,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "0.7.1")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI release
@@ -1753,7 +1859,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12wp98mh67v6v683yi7wbv8zhpafrfz21z349bww4wgi2q7bl3il"))))
+        (base32 "05qzpq1zjs42bl0z8girfwcj3nfxs1a99c5525vp3589sglk351g"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1822,16 +1928,14 @@ standard feature selection algorithms.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX This requires pytest lazy_fixture
-             (delete-file "tests/test_multilabel_classification.py")
-             ;; Requires tensorflow
-             (delete-file "tests/test_frameworks.py")
+      #:test-flags
+      ;; This test fails because the newer version of scikit learn returns one
+      ;; more classification result than expected.  This should be harmless.
+      '(list "-k" "not test_aux_inputs"
+             ;; Requires Tensorflow
+             "--ignore=tests/test_frameworks.py"
              ;; Tries to download datasets from the internet at runtime.
-             (delete-file "tests/test_dataset.py"))))))
+             "--ignore=tests/test_dataset.py")))
     (propagated-inputs
      (list python-numpy
            python-pandas
@@ -1840,6 +1944,7 @@ standard feature selection algorithms.")
            python-tqdm))
     (native-inputs
      (list python-pytest
+           python-pytest-lazy-fixture
            python-pytorch
            python-torchvision))
     (home-page "https://cleanlab.ai")
@@ -1923,9 +2028,9 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
     (license license:expat)))
 
 (define-public python-autograd
-  (let* ((commit "442205dfefe407beffb33550846434baa90c4de7")
+  (let* ((commit "c6d81ce7eede6db801d4e9a92b27ec5d409d0eab")
          (revision "0")
-         (version (git-version "0.0.0" revision commit)))
+         (version (git-version "1.5" revision commit)))
     (package
       (name "python-autograd")
       (home-page "https://github.com/HIPS/autograd")
@@ -1936,19 +2041,14 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "189sv2xb0mwnjawa9z7mrgdglc1miaq93pnck26r28fi1jdwg0z4"))
+                  "04kljgydng42xlg044h6nbzxpban1ivd6jzb8ydkngfq88ppipfk"))
                 (file-name (git-file-name name version))))
       (version version)
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (native-inputs
        (list python-nose python-pytest))
       (propagated-inputs
        (list python-future python-numpy))
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (replace 'check
-                      (lambda _
-                        (invoke "py.test" "-v"))))))
       (synopsis "Efficiently computes derivatives of NumPy code")
       (description "Autograd can automatically differentiate native Python and
 NumPy code.  It can handle a large subset of Python's features, including loops,
@@ -2102,13 +2202,13 @@ discrete, and conditional dimensions.")
 (define-public python-deepxde
   (package
     (name "python-deepxde")
-    (version "1.9.3")
+    (version "1.10.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "DeepXDE" version))
               (sha256
                (base32
-                "1zw2gqssc0s3maf4gdjckxmzx1d3036hbp1iir26kd08hxj93vzs"))))
+                "1lgn4sa9bnmhsccddb9vjz7nsvdnccxqkvv7xssxmfb413dpg1mz"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests
@@ -3069,7 +3169,7 @@ advanced research.")
 (define-public tensorflow-lite
   (package
     (name "tensorflow-lite")
-    (version "2.13.0")
+    (version "2.13.1")
     (source
      (origin
        (method git-fetch)
@@ -3079,7 +3179,7 @@ advanced research.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07g6vlrs0aayrg2mfdl15gxg5dy103wx2xlqkran15dib40nkbj6"))
+         "09mfskmpvpbq919wibnw3bnhi1y3hkx3qrzm72gdr0gsivn1yb3w"))
        (patches (search-patches "tensorflow-lite-unbundle.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -3686,46 +3786,26 @@ methodxs at scale on CPU or GPU.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.5.3")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
        (uri (git-reference
              (url "https://github.com/lmcinnes/umap")
-             (commit version)))
+             (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1315jkb0h1b579y9m59632f0nnpksilm01nxx46in0rq8zna8vsb"))))
-    (build-system python-build-system)
+         "0ijyiaqycynwj1383cxp519c765gjbg1f6fjwbvqj1gims710w3d"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'numpy-compatibility
-            (lambda _
-              (substitute* "umap/tests/test_umap_metrics.py"
-                ;; See commit a714b59bd9e2ca2e63312bc3491b2b037a42f2f2
-                (("sparse_binary_data.todense\\(\\),")
-                 "np.asarray(sparse_binary_data.todense()),")
-                ;; See commit c7d05683325589ad432a55e109cacb9d631cfaa9
-                (("sparse_spatial_data.todense\\(\\),")
-                 "np.asarray(sparse_spatial_data.todense()),"))
-              ;; See commit 949abd082524fce8c45dfb147bcd8e8ef49eade3
-              (substitute* "umap/tests/test_umap_ops.py"
-                (("np.random,") "None,"))))
           ;; Numba needs a writable dir to cache functions.
           (add-before 'check 'set-numba-cache-dir
             (lambda _
-              (setenv "NUMBA_CACHE_DIR" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv" "umap"
-                        ;; This test can fail because trust may only be
-                        ;; 0.9679405204460967 >= 0.97
-                        "-k" "not test_densmap_trustworthiness_on_iris_supervised")))))))
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs (list python-pytest))
     (propagated-inputs
      (list python-numba
@@ -3837,6 +3917,34 @@ instead it provides low-level performance primitives for accelerating
 high-level machine learning frameworks, such as TensorFlow Lite,
 TensorFlow.js, PyTorch, and MediaPipe.")
       (license license:bsd-3))))
+
+(define-public xnnpack-for-torch2
+  ;; There's currently no tag on this repo.
+  (let ((version "0.0")
+        (commit "51a987591a6fc9f0fc0707077f53d763ac132cbf")
+        (revision "3"))
+    (package
+      (inherit xnnpack)
+      (name "xnnpack")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/google/XNNPACK") ;fork of QNNPACK
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rzby82xq8d0rl1d148yz88jh9cpsw5c8b2yw7yg39mi7qmr55rm"))
+                (patches (search-patches "xnnpack-for-torch2-system-libraries.patch"))))
+      (arguments
+       (list
+        #:tests? #false
+        #:configure-flags '(list "-DXNNPACK_USE_SYSTEM_LIBS=YES"
+                                 "-DBUILD_SHARED_LIBS=ON"
+                                 "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+                                 "-DXNNPACK_LIBRARY_TYPE=shared"
+                                 "-DXNNPACK_BUILD_TESTS=FALSE" ;FIXME: see below
+                                 "-DXNNPACK_BUILD_BENCHMARKS=FALSE"))))))
 
 ;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
@@ -3987,7 +4095,59 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
-(define-public python-pytorch-for-r-torch python-pytorch)
+(define-public python-pytorch-for-r-torch
+  (package
+    (inherit python-pytorch)
+    (name "python-pytorch")
+    (version "2.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14m7v54zyd2qg2xk9mqdpbf4ps7091mdzinzh4vq9p5k4bpznj65"))
+              (patches (search-patches "python-pytorch2-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-enum" "python-peachpy"
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+                  (substitute* "caffe2/CMakeLists.txt"
+                    (("target_link_libraries\\(\\$\\{test_name\\}_\\$\\{CPU_CAPABILITY\\} c10 sleef gtest_main\\)")
+                     "target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest gtest_main)"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))
+    (inputs
+     (modify-inputs (package-inputs python-pytorch)
+       (replace "xnnpack" xnnpack-for-torch2)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytorch)
+       (append python-filelock
+               python-jinja2
+               python-networkx
+               python-opt-einsum
+               python-sympy)
+       (replace "onnx" onnx-for-torch2)
+       (replace "onnx-optimizer" onnx-optimizer-for-torch2)))))
 
 (define-public python-lightning-cloud
   (package
@@ -4039,7 +4199,7 @@ Actions for the Lightning suite of libraries.")
 (define-public python-captum
   (package
     (name "python-captum")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4048,7 +4208,7 @@ Actions for the Lightning suite of libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h4n91ivhjxm6wj0vgqpfss2dmq4sjcp0appd08cd5naisabjyb5"))))
+                "0bgfwnlsi50hbmknn7qljiy93fi6ggwz3k7yk9kj7s37mhzaylym"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4058,7 +4218,8 @@ Actions for the Lightning suite of libraries.")
              ;; accuracy problems.
              "not test_softmax_classification_batch_multi_target\
  and not test_softmax_classification_batch_zero_baseline")))
-    (propagated-inputs (list python-matplotlib python-numpy python-pytorch))
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pytorch python-tqdm))
     (native-inputs (list jupyter
                          python-annoy
                          python-black
@@ -4400,70 +4561,74 @@ of Hidden Markov Models.")
 
 ;; Keep this in sync with the r-torch package.
 (define-public liblantern
-  (package
-    (name "liblantern")
-    (version "0.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mlverse/torch")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12480fac9xq7rgw0q5f2cnvmakhakjsnq1gvh2ncjfwxz34n8fl7"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #false                   ;no test target
-      #:phases
-      (let ((python-version (version-major+minor (package-version python))))
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _ (chdir "src/lantern")))
-            (add-after 'chdir 'do-not-download-binaries
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "CMakeLists.txt"
-                  (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
-                  (("retrieve_lib\\(.*") ""))
-                (let ((site-packages (string-append "/lib/python"
-                                                    #$python-version
-                                                    "/site-packages")))
-                  (setenv "LIBRARY_PATH"
-                          (string-append
-                           (search-input-directory
-                            inputs (string-append site-packages "/torch/lib"))
-                           ":" (or (getenv "LIBRARY_PATH") "")))
-                  (setenv "CPLUS_INCLUDE_PATH"
-                          (string-append
-                           (search-input-directory
-                            inputs (string-append
-                                    site-packages "/torch/include/torch/csrc/api/include/"))
-                           ":"
-                           (search-input-directory
-                            inputs (string-append site-packages "/torch/include/"))
-                           ":"
-                           (or (getenv "CPLUS_INCLUDE_PATH") "")))
-                  (setenv "C_INCLUDE_PATH"
-                          (string-append
-                           (search-input-directory
-                            inputs (string-append site-packages "/torch/include/"))
-                           ":"
-                           (or (getenv "C_INCLUDE_PATH") ""))))))
-            (replace 'install
-              (lambda _
-                (install-file
-                 "../build/liblantern.so"
-                 (string-append #$output "/lib"))
-                (copy-recursively
-                 "../lantern/include"
-                 (string-append #$output "/include"))))))))
-    (inputs (list python-pytorch-for-r-torch))
-    (home-page "https://github.com/mlverse/torch/")
-    (synopsis "C API to libtorch")
-    (description
-     "Lantern provides a C API to the libtorch machine learning library.")
-    (license license:expat)))
+  ;; There has been no release or tagged commit for r-torch 0.12.0.  The
+  ;; selected commit corresponds to the 0.12.0 release.
+  (let ((commit "4d83bd087be581f7db321c27f55897ff021d2537")
+        (revision "1"))
+    (package
+      (name "liblantern")
+      (version (git-version "0.11.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mlverse/torch")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1xxc6vr7sr2mg0va0hc2fs4f6v5b78mx43dp2shzzbcgw90mgpvk"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #false                 ;no test target
+        #:phases
+        (let ((python-version (version-major+minor (package-version python))))
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "src/lantern")))
+              (add-after 'chdir 'do-not-download-binaries
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "CMakeLists.txt"
+                    (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
+                    (("retrieve_lib\\(.*") ""))
+                  (let ((site-packages (string-append "/lib/python"
+                                                      #$python-version
+                                                      "/site-packages")))
+                    (setenv "LIBRARY_PATH"
+                            (string-append
+                             (search-input-directory
+                              inputs (string-append site-packages "/torch/lib"))
+                             ":" (or (getenv "LIBRARY_PATH") "")))
+                    (setenv "CPLUS_INCLUDE_PATH"
+                            (string-append
+                             (search-input-directory
+                              inputs (string-append
+                                      site-packages "/torch/include/torch/csrc/api/include/"))
+                             ":"
+                             (search-input-directory
+                              inputs (string-append site-packages "/torch/include/"))
+                             ":"
+                             (or (getenv "CPLUS_INCLUDE_PATH") "")))
+                    (setenv "C_INCLUDE_PATH"
+                            (string-append
+                             (search-input-directory
+                              inputs (string-append site-packages "/torch/include/"))
+                             ":"
+                             (or (getenv "C_INCLUDE_PATH") ""))))))
+              (replace 'install
+                (lambda _
+                  (install-file
+                   "../build/liblantern.so"
+                   (string-append #$output "/lib"))
+                  (copy-recursively
+                   "../lantern/include"
+                   (string-append #$output "/include"))))))))
+      (inputs (list python-pytorch-for-r-torch))
+      (home-page "https://github.com/mlverse/torch/")
+      (synopsis "C API to libtorch")
+      (description
+       "Lantern provides a C API to the libtorch machine learning library.")
+      (license license:expat))))
 
 (define-public python-lap
   (package

@@ -109,6 +109,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gtk)
@@ -1212,14 +1213,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.7")
+    (version "1.10.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/djcb/mu/releases/download/v"
                            version "/mu-" version ".tar.xz"))
        (sha256
-        (base32 "089w1m6sd0nk9l9j40d357fjym8kxmz7kwh3bclk58jxa6xckapa"))))
+        (base32 "129m6rz8vbd7370c3h3ma66bxqdkm6wsdix5qkmv1vm7sanxh4bb"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1227,7 +1228,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
            gnupg                        ; for tests
            texinfo))
     (inputs
-     (list glib gmime xapian))
+     (list glib gmime guile-3.0 xapian))
     (arguments
      (list
       #:modules '((guix build meson-build-system)
@@ -1235,6 +1236,8 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                   (guix build utils))
       #:imported-modules `(,@%meson-build-system-modules
                            (guix build emacs-utils))
+      #:configure-flags
+      #~(list (format #f "-Dguile-extension-dir=~a/lib" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-bin-references
@@ -1247,6 +1250,11 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (substitute* '("lib/tests/bench-indexer.cc"
                              "lib/utils/mu-test-utils.cc")
                 (("/bin/rm") (which "rm")))))
+          (add-after 'install 'fix-ffi
+            (lambda _
+              (substitute* (find-files #$output "mu.scm")
+                (("\"libguile-mu\"")
+                 (format #f "\"~a/lib/libguile-mu\"" #$output)))))
           (add-after 'install 'install-emacs-autoloads
             (lambda* (#:key outputs #:allow-other-keys)
               (emacs-generate-autoloads
@@ -1844,14 +1852,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.24")
+    (version "1.8.25")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "0nda218iz72pvh6v10s2qlihp1mdxzir6yb4hqdxc5xbmaql8rmx"))))
+        (base32 "0f6pa8kdlfingw6yf61dshnxgygx5v6ykcmnn3h6zllpnfxivzid"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
@@ -1873,7 +1881,8 @@ addons which can add many functionalities to the base client.")
                       (doc (string-append out "/share/doc/msmtp"))
                       (msmtpq "scripts/msmtpq")
                       (msmtpqueue "scripts/msmtpqueue")
-                      (vimfiles (string-append out "/share/vim/vimfiles/syntax")))
+                      (vimfiles (string-append
+                                  out "/share/vim/vimfiles/pack/guix/start/msmtp/syntax")))
                  (install-file (string-append msmtpq "/msmtpq") bin)
                  (install-file (string-append msmtpq "/msmtp-queue") bin)
                  (install-file (string-append msmtpqueue "/msmtp-enqueue.sh") bin)
@@ -3190,14 +3199,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.4.0p0")
+    (version "7.4.0p1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "0x731hi7i01mxaz07p1l5q3gwmyl422h404yc61ya4aa8g1wr0f1"))))
+        (base32 "1dbhvf73z9qi9pzj4h58bgnzsafiwpmy7n17rba83q8rjkna50ly"))))
     (build-system gnu-build-system)
     (inputs
      ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
@@ -3929,7 +3938,7 @@ tools and applications:
            libsecret
            openldap
            sqlite
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (native-inputs
      (list compface
            `(,glib "bin") intltool pkg-config yelp-tools))
@@ -4911,11 +4920,12 @@ remote SMTP server.")
                         (string-append
                          "\"" (search-input-file inputs "bin/sh")
                          "\"")))
-                     (substitute* "commands/z.go"
-                       (("\"zoxide\"")
-                        (string-append
-                         "\"" (search-input-file inputs "bin/zoxide")
-                         "\"")))
+                     (when (assoc-ref inputs "zoxide")
+                       (substitute* "commands/z.go"
+                         (("\"zoxide\"")
+                          (string-append
+                            "\"" (search-input-file inputs "bin/zoxide")
+                            "\""))))
                      (substitute* (list "lib/crypto/gpg/gpg.go"
                                         "lib/crypto/gpg/gpg_test.go"
                                         "lib/crypto/gpg/gpgbin/keys.go"
@@ -4935,45 +4945,49 @@ remote SMTP server.")
                    (invoke "make" "CC=gcc" "install" "-C"
                            (string-append "src/" import-path)
                            (string-append "PREFIX=" #$output)))))))
-    (inputs (list gnupg
-                  go-github-com-zenhack-go-notmuch
-                  go-golang-org-x-oauth2
-                  go-github-com-xo-terminfo
-                  go-github-com-stretchr-testify
-                  go-github-com-riywo-loginshell
-                  go-github-com-pkg-errors
-                  go-github-com-mitchellh-go-homedir
-                  go-github-com-miolini-datacounter
-                  go-github-com-mattn-go-runewidth
-                  go-github-com-mattn-go-isatty
-                  go-github-com-lithammer-fuzzysearch
-                  go-github-com-kyoh86-xdg
-                  go-github-com-imdario-mergo
-                  go-github-com-google-shlex
-                  go-github-com-go-ini-ini
-                  go-github-com-gdamore-tcell-v2
-                  go-github-com-gatherstars-com-jwz
-                  go-github-com-fsnotify-fsnotify
-                  go-github-com-emersion-go-smtp
-                  go-github-com-emersion-go-sasl
-                  go-github-com-emersion-go-pgpmail
-                  go-github-com-emersion-go-message
-                  go-github-com-emersion-go-maildir
-                  go-github-com-emersion-go-imap-sortthread
-                  go-github-com-emersion-go-imap
-                  go-github-com-emersion-go-msgauth
-                  go-github-com-emersion-go-mbox
-                  go-github-com-ddevault-go-libvterm
-                  go-github-com-danwakefield-fnmatch
-                  go-github-com-creack-pty
-                  go-github-com-arran4-golang-ical
-                  go-github-com-protonmail-go-crypto
-                  go-github-com-syndtr-goleveldb-leveldb
-                  go-git-sr-ht-sircmpwn-getopt
-                  go-git-sr-ht-rockorager-tcell-term
-                  python
-                  python-vobject
-                  zoxide))
+    (inputs
+     (append
+       (list gnupg
+             go-github-com-zenhack-go-notmuch
+             go-golang-org-x-oauth2
+             go-github-com-xo-terminfo
+             go-github-com-stretchr-testify
+             go-github-com-riywo-loginshell
+             go-github-com-pkg-errors
+             go-github-com-mitchellh-go-homedir
+             go-github-com-miolini-datacounter
+             go-github-com-mattn-go-runewidth
+             go-github-com-mattn-go-isatty
+             go-github-com-lithammer-fuzzysearch
+             go-github-com-kyoh86-xdg
+             go-github-com-imdario-mergo
+             go-github-com-google-shlex
+             go-github-com-go-ini-ini
+             go-github-com-gdamore-tcell-v2
+             go-github-com-gatherstars-com-jwz
+             go-github-com-fsnotify-fsnotify
+             go-github-com-emersion-go-smtp
+             go-github-com-emersion-go-sasl
+             go-github-com-emersion-go-pgpmail
+             go-github-com-emersion-go-message
+             go-github-com-emersion-go-maildir
+             go-github-com-emersion-go-imap-sortthread
+             go-github-com-emersion-go-imap
+             go-github-com-emersion-go-msgauth
+             go-github-com-emersion-go-mbox
+             go-github-com-ddevault-go-libvterm
+             go-github-com-danwakefield-fnmatch
+             go-github-com-creack-pty
+             go-github-com-arran4-golang-ical
+             go-github-com-protonmail-go-crypto
+             go-github-com-syndtr-goleveldb-leveldb
+             go-git-sr-ht-sircmpwn-getopt
+             go-git-sr-ht-rockorager-tcell-term
+             python
+             python-vobject)
+       (if (supported-package? zoxide)
+           (list zoxide)
+           '())))
     (native-inputs (list scdoc))
     (home-page "https://git.sr.ht/~rjarry/aerc")
     (synopsis "Email client for the terminal")

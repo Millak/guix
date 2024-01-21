@@ -4,6 +4,7 @@
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (guix packages))
@@ -170,22 +172,28 @@ belonging to various licenses.")
 (define-public reuse
   (package
     (name "reuse")
-    (version "1.1.2")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reuse" version))
        (sha256
-        (base32 "0ij2mpdnawjabnsy291157wzci9050dfclwib95phg7pnmd6xsw0"))))
+        (base32 "0vqawznn8zhh5m3hv51xjhkz0v4vbmsiz2z1smg52k4nmlly832r"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-poetry-core python-pytest))
-    (inputs
-     (list python-binaryornot
-           python-boolean.py
-           python-debian
-           python-jinja2
-           python-license-expression))
+    (arguments
+     ;; Change directory before running the test suite to avoid having both
+     ;; the local sources on GUIX_PYTHONPATH as well as the installed
+     ;; libraries confusing Pytest (ImportPathMismatchError).
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'chdir
+                          (lambda _
+                            (chdir "/tmp"))))))
+    (native-inputs (list python-poetry-core python-pytest))
+    (inputs (list python-binaryornot
+                  python-boolean.py
+                  python-debian
+                  python-jinja2
+                  python-license-expression))
     (home-page "https://reuse.software/")
     (synopsis "Provide and verify copyright and licensing information")
     (description

@@ -265,6 +265,28 @@ appropriate BLAS or optimised Julia linear algebra routines.  This supports a
 much wider class of matrix types than Julia's in-built @code{StridedArray}.")
     (license license:expat)))
 
+(define-public julia-astrolib
+  (package
+    (name "julia-astrolib")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/AstroLib.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zbivs79cw7qazrl9c8rz2n2kifxw3adwjf22nn24dp5i34fkw5d"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-staticarrays))
+    (home-page "https://github.com/JuliaAstro/AstroLib.jl")
+    (synopsis "Bundle of small astronomical and astrophysical routines")
+    (description "The aim of this package is to provide users with a set of small
+generic routines useful above all in astronomical and astrophysical context,
+written in Julia.")
+    (license license:expat)))
+
 (define-public julia-astrotime
   (package
     (name "julia-astrotime")
@@ -2292,7 +2314,7 @@ using finite difference.")
 (define-public julia-fitsio
   (package
     (name "julia-fitsio")
-    (version "0.17.0")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -2301,7 +2323,7 @@ using finite difference.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10w7cdb2cvcwpkcfdz2fwl4ji5rfdv8w9msc9gfd8d34k58bk8c5"))))
+        (base32 "1mvrr13qvzdpqdp01hzqqyx84cxagyvjwkbizsp3xaabckg48pnz"))))
     (build-system julia-build-system)
     (native-inputs
      (list julia-aqua julia-orderedcollections))

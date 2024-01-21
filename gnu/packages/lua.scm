@@ -1269,6 +1269,39 @@ simplicity, and reach of Lua with the flexibility of a Lisp syntax and macro
 system.")
     (license license:expat)))
 
+(define-public antifennel
+  (package
+    (version "0.2.0")
+    (name "antifennel")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~technomancy/antifennel")
+             (commit version)))
+       (sha256
+        (base32 "1hd9h17q31b3gg88c657zq4han4air2ag55rrakbmcpy6n8acsqc"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (inputs (list luajit))
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   ;; Tests pass after the fix introduced by the commit
+                   ;; ecd2169fcad1fa6616fdf6e6a8569f5b866601e5
+                   (delete 'check)
+                   (replace 'install
+                     (lambda _
+                       (install-file "antifennel"
+                                     (string-append #$output "/bin")))))))
+    (home-page "https://git.sr.ht/~technomancy/antifennel")
+    (synopsis "Turn Lua code into Fennel code")
+    (description
+     "This package provides a way to turn Lua code into Fennel code.
+This compiler does the opposite of what the Fennel compiler does.")
+    (license license:expat)))
+
 (define-public fnlfmt
   (package
     (name "fnlfmt")

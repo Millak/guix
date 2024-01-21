@@ -356,11 +356,11 @@ experience.")
   (sbcl-package->ecl-package sbcl-clunit))
 
 (define-public sbcl-clunit2
-  (let ((commit "c3159275a6c5af166e60b592c3b7e22eaa69c048")
+  (let ((commit "b24c56851ee6ee6c4a9dc3725a634c06b604f207")
         (revision "2"))
     (package
       (name "sbcl-clunit2")
-      (version (git-version "0.5.2" revision commit))
+      (version (git-version "0.6.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -369,7 +369,7 @@ experience.")
                (commit commit)))
          (file-name (git-file-name "cl-clunit2" version))
          (sha256
-          (base32 "0n92z98dqfik3kfp25nz7yqycx4bpxlqbn69i5skcdnrj2ywmv01"))))
+          (base32 "03k4wc2zz31wcqcxy8fhq095i8xzcaxrzgrlrn2va10lcjs4v51b"))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Unit testing framework for Common Lisp")
       (description
@@ -625,8 +625,8 @@ to make test code more informative.
   (sbcl-package->cl-source-package sbcl-kaputt))
 
 (define-public sbcl-lift
-  (let ((commit "2594160d6ca3a77d8750110dfa63214256aab852")
-        (revision "2"))
+  (let ((commit "a7941845a9de72be60e66ea941aa34cbee35bf23")
+        (revision "3"))
     (package
       (name "sbcl-lift")
       (version (git-version "1.7.1" revision commit))
@@ -634,10 +634,10 @@ to make test code more informative.
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/lift")
+               (url "https://github.com/hraban/lift")
                (commit commit)))
          (sha256
-          (base32 "01xvz9sl5l5lai4h9dabmcjnm659wf5zllaxqbs55lffskp6jwq3"))
+          (base32 "1513n46fkqw8rnvz69s7xnwj476qm8ibdlwsr63qj9yh0mib0q6x"))
          (file-name (git-file-name "lift" version))
          (modules '((guix build utils)))
          (snippet
@@ -1038,8 +1038,8 @@ interactive development.")
   (sbcl-package->ecl-package sbcl-stefil))
 
 (define-public sbcl-try
-  (let ((commit "a1fffad2ca328b3855f629b633ab1daaeec929c2")
-        (revision "1"))
+  (let ((commit "cf2a8887d091bf297b72ef69e15012e7e849ba3b")
+        (revision "2"))
     (package
       (name "sbcl-try")
       (version (git-version "0.0.1" revision commit))
@@ -1051,7 +1051,7 @@ interactive development.")
                (commit commit)))
          (file-name (git-file-name "cl-try" version))
          (sha256
-          (base32 "03dm2i2y4wiyzz9d25zdxm6gdglnvwali0ylp0rfwpk6wf29sj09"))))
+          (base32 "166i3fqwxfv9skz6yf95c95nx0jjqy1ak1131bd0sqmd582gi9mg"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-cl-ppcre))
@@ -1149,3 +1149,32 @@ on the XPTest package by Craig Brozensky and the JUnit package by Kent Beck.")
 
 (define-public ecl-xlunit
   (sbcl-package->ecl-package sbcl-xlunit))
+
+(define-public sbcl-lisp-critic
+  (let ((commit "ea19f82a168a6119ac1b10d0f457c01a7119602f")
+        (revision "1"))
+    (package
+      (name "sbcl-lisp-critic")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/g000001/lisp-critic")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15zg05pqfs2dhc5j7gfkwjmxawaizjpyb0p7386mpl4w93l9h84l"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Common Lisp linter")
+      (description "The Lisp Critic scans your code for instances of bad
+  Lisp programming practice.")
+      (home-page
+       "https://courses.cs.northwestern.edu/325/exercises/critic.html#critic")
+      (license license:expat))))
+
+(define-public cl-lisp-critic
+  (sbcl-package->cl-source-package sbcl-lisp-critic))
+
+(define-public ecl-lisp-critic
+  (sbcl-package->ecl-package sbcl-lisp-critic))

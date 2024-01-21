@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,13 +41,18 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bioconductor)
   #:use-module (gnu packages bioinformatics)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages docbook)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
@@ -55,6 +61,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-compression)
@@ -93,49 +100,102 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
 (define-public igraph
   (package
     (name "igraph")
-    (version "0.10.4")
+    (version "0.10.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/igraph/igraph/releases/"
-                           "download/" version "/igraph-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/igraph/igraph")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (patches (search-patches "igraph-fix-varargs-integer-size.patch"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
        (snippet '(begin
-                   ;; igraph insists on building its own copy of CxSparse
-                   ;; (see: https://github.com/igraph/igraph/commit/\
-                   ;; 334318b7dfe46501236272ca336580f4748114b0) and the build
-                   ;; has no support to use a system provided 'pcg'.
-                   (define keep-libraries '("cs" "pcg"))
-                   (define keep (append '("." ".." "CMakeLists.txt")
-                                        keep-libraries))
-                   (define keep? (cut member <> keep))
-                   (with-directory-excursion "vendor"
-                     (for-each delete-file-recursively
-                               (scandir "." (negate keep?))))
-                   (call-with-output-file "vendor/CMakeLists.txt"
-                     (cut format <> "~{add_subdirectory(~a)~%~}"
-                          keep-libraries))
+
+                   (delete-file-recursively "vendor")
+                   (delete-file-recursively "src/isomorphism/bliss")
                    (substitute* '("src/CMakeLists.txt"
                                   "etc/cmake/benchmark_helpers.cmake")
                      ;; Remove extraneous bundling related variables.
-                     ((".*_IS_VENDORED.*")
-                      ""))))
+                     ((".*_IS_VENDORED.*") "")
+                     ((".*add_sub.*isomorphism/bliss.*") "")
+                     (("(.*TARGETS.*)bliss(.*)cxsparse_vendored(.*)pcg(.*)"
+                       _ part1 part2 part3 part4)
+                      (string-append part1 part2 part3 part4))
+                     (("cxsparse_vendored") "cxsparse")
+                     ((" pcg ") " pcg_random "))
+                   (substitute* "CMakeLists.txt"
+                     (("add_sub.*vendor.*") ""))))
        (sha256
-        (base32 "1z1ay3l1h64jc2igbl2ibvi20sswy56v2yk3ykhis7jzijsh0mxa"))))
+        (base32
+         "025f9c2jsawniqkig4l5z3v9aw3ipazmnlsf80b653mns5bvj1yn"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
-                     #:test-target "check"))
-    (native-inputs (list pkg-config))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              ;; Use the same integer width as suitesparse-cxsparse, which
+              ;; uses int64_t in SuiteSparse v6.0.0 and later.
+              "-DIGRAPH_INTEGER_SIZE=64")
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'version-file
+            (lambda _
+              (let ((port (open-file "IGRAPH_VERSION" "w")))
+                (display #$version port)
+                (close port))))
+          (add-after 'unpack 'patch-suitesparse
+            (lambda _
+              (substitute* '("src/core/sparsemat.c"
+                             "include/igraph_sparsemat.h")
+                (("<cs/cs\\.h>") "<cs.h>")
+                (("cs_igraph") "cs_dl")
+                (("__BEGIN_DECLS.*" all)
+                 (string-append all "\n#define CS_LONG\n")))))
+          (add-after 'unpack 'patch-pcg
+            (lambda _
+              (substitute* '("src/random/rng_pcg32.c"
+                             "src/random/rng_pcg64.c")
+                (("#include \"pcg/(.*)\"" _ name)
+                 (string-append "#include <" name ">")))))
+          (add-after 'unpack 'patch-bliss
+            (lambda _
+              (substitute* "src/isomorphism/bliss.cc"
+                (("#include \"bliss.*")
+                 (string-append
+                  "#include <bliss/graph.hh>\n"
+                  "#include <bliss/digraph.hh>\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (invoke "cmake" "--build" "." "--target" "html")))
+          (add-after 'install 'install-doc
+            (lambda _
+              (copy-recursively
+               "doc/html"
+               (string-append #$output "/share/doc/"
+                              #$name "-" #$version "/html")))))))
+    (native-inputs
+     (list bison
+           docbook-xml-4.3
+           docbook-xsl
+           flex
+           pcg-c
+           pkg-config
+           ;; For the HTML documentation.
+           python
+           source-highlight
+           xmlto))
     (inputs
      (list arpack-ng
-           gmp
+           bliss
            glpk
-           libxml2
            lapack
            openblas
-           plfit))
+           plfit
+           suitesparse-cxsparse))
     ;; libxml2 is in the 'Requires.private' of igraph.pc.
     (propagated-inputs (list libxml2))
     (home-page "https://igraph.org")
@@ -366,6 +426,48 @@ algorithm for community detection in large networks.")
 large networks.")
     (license license:gpl3+)))
 
+(define-public python-louvain-igraph
+  (package
+    (name "python-louvain-igraph")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vtraag/louvain-igraph")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1j2ybihvvzggwjb9zvm829aqb5b94q10h8bw6v0h42xd9w75z9sv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-igraph
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              (substitute* "setup.py"
+                (("/usr/include/igraph")
+                 (string-append #$(this-package-input "igraph")
+                                "/include/igraph"))))))))
+    (propagated-inputs (list python-igraph))
+    (inputs (list igraph))
+    (native-inputs
+     (list python-ddt
+           python-setuptools-scm
+           pkg-config))
+    (home-page "https://github.com/vtraag/louvain-igraph")
+    (synopsis "Implementation of the Louvain algorithm")
+    (description "This package implements the Louvain algorithm for community
+detection in C++ and exposes it to Python.  Besides the relative flexibility
+of the implementation, it also scales well, and can be run on graphs of
+millions of nodes (as long as they can fit in memory).  The core function is
+@code{find_partition} which finds the optimal partition using the louvain
+algorithm for a number of different methods.")
+    (license license:gpl3+)))
+
 (define-public faiss
   (package
     (name "faiss")
@@ -389,8 +491,8 @@ large networks.")
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       (list "-DBUILD_WITH_GPU=OFF"  ; thanks, but no thanks, CUDA.
-             "-DBUILD_TUTORIAL=OFF") ; we don't need those
+       (list "-DBUILD_WITH_GPU=OFF"     ; thanks, but no thanks, CUDA.
+             "-DBUILD_TUTORIAL=OFF")    ; we don't need those
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'prepare-build
@@ -406,7 +508,7 @@ large networks.")
                                          '()))))))
                (substitute* "CMakeLists.txt"
                  (("-m64") "")
-                 (("-mpopcnt") "") ; only some architectures
+                 (("-mpopcnt") "")      ; only some architectures
                  (("-msse4")
                   (string-append
                    (string-join features)
@@ -625,7 +727,7 @@ transformed into common image formats for display or printing.")
 (define-public python-graph-tool
   (package
     (name "python-graph-tool")
-    (version "2.57")
+    (version "2.59")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -633,7 +735,7 @@ transformed into common image formats for display or printing.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0wmvzx509lvigja6cfxh45r4b7wns64vmik0x4rz4y4fnxrhw2m2"))))
+                "1bmck5fcihj9lr5kd8x624bdi9xhfc13pl4mwzv74jr5lz07kr6d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules (,@%gnu-build-system-modules

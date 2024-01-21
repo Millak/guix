@@ -39,7 +39,6 @@
 (define %zig-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build zig-build-system)
-    (guix build syscalls)
     ,@%gnu-build-system-modules))
 
 (define* (zig-build name inputs
@@ -84,6 +83,79 @@
                       #:system system
                       #:guile-for-build guile)))
 
+(define* (zig-cross-build name
+                          #:key
+                          source target
+                          build-inputs target-inputs host-inputs
+                          (phases '%standard-phases)
+                          (outputs '("out"))
+                          (search-paths '())
+                          (native-search-paths '())
+                          (tests? #t)
+                          (test-target #f)
+                          (zig-build-flags ''())
+                          (zig-test-flags ''())
+                          (zig-destdir "out")
+                          (zig-test-destdir "test-out")
+                          (zig-release-type #f)
+                          (system (%current-system))
+                          (guile #f)
+                          (imported-modules %zig-build-system-modules)
+                          (modules '((guix build zig-build-system)
+                                     (guix build utils))))
+  "Build SOURCE using Zig, and with INPUTS."
+  (define builder
+    (with-imported-modules imported-modules
+      #~(begin
+          (use-modules #$@(sexp->gexp modules))
+
+          (define %build-host-inputs
+            #+(input-tuples->gexp build-inputs))
+
+          (define %build-target-inputs
+            (append #$(input-tuples->gexp host-inputs)
+              #+(input-tuples->gexp target-inputs)))
+
+          (define %build-inputs
+            (append %build-host-inputs %build-target-inputs))
+
+          (define %outputs
+            #$(outputs->gexp outputs))
+
+          (zig-build #:name #$name
+                     #:source #+source
+                     #:system #$system
+                     #:phases #$phases
+                     #:outputs %outputs
+                     #:target #$target
+                     #:test-target #$test-target
+                     #:inputs %build-target-inputs
+                     #:native-inputs %build-host-inputs
+                     #:search-paths '#$(map search-path-specification->sexp
+                                            search-paths)
+                     #:native-search-paths '#$(map
+                                                search-path-specification->sexp
+                                                native-search-paths)
+                     #:zig-build-flags #$zig-build-flags
+                     #:zig-test-flags #$zig-test-flags
+                     #:zig-release-type #$zig-release-type
+                     #:zig-destdir #$zig-destdir
+                     #:zig-test-destdir #$zig-test-destdir
+                     #:tests? #$tests?
+                     #:search-paths '#$(sexp->gexp
+                                        (map search-path-specification->sexp
+                                             search-paths))))))
+
+  (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
+                                                  system #:graft? #f)))
+        (gexp->derivation name builder
+                          #:system system
+                          #:target target
+                          #:graft? #f
+                          #:substitutable? substitutable?
+                          #:guile-for-build guile)))
+
+
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
                 (zig (default-zig))
@@ -94,27 +166,30 @@
   (define private-keywords
     '(#:target #:zig #:inputs #:native-inputs #:outputs))
 
-  ;; TODO: support cross-compilation
-  ;; It's as simple as adding some build flags to `zig-build-flags`
-  ;; -Dtarget=aarch64-linux-musl, for example.
-  (and (not target)
-       (bag
-         (name name)
-         (system system)
-         (target target)
-         (host-inputs `(,@(if source
-                              `(("source" ,source))
-                              '())
-                        ,@inputs
-
-                        ;; Keep the standard inputs of 'gnu-build-system'
-                        ;; TODO: do we need this?
-                        ,@(standard-packages)))
-         (build-inputs `(("zig" ,zig)
-                         ,@native-inputs))
-         (outputs outputs)
-         (build zig-build)
-         (arguments (strip-keyword-arguments private-keywords arguments)))))
+  (bag
+    (name name)
+    (system system)
+    (target target)
+    (build-inputs `(,@(if source
+                        `(("source" ,source))
+                        '())
+                    ,@`(("zig" ,zig))
+                    ,@native-inputs
+                    ,@(if target '() inputs)
+                    ,@(if target
+                        ;; Use the standard cross inputs of
+                        ;; 'gnu-build-system'.
+                        (standard-cross-packages target 'host)
+                        '())
+                    ;; Keep the standard inputs of 'gnu-build-system'.
+                    ,@(standard-packages)))
+    (host-inputs (if target inputs '()))
+    (target-inputs (if target
+                     (standard-cross-packages target 'target)
+                     '()))
+    (outputs outputs)
+    (build (if target zig-cross-build zig-build))
+    (arguments (strip-keyword-arguments private-keywords arguments))))
 
 (define zig-build-system
   (build-system

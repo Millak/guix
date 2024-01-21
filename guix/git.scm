@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -29,15 +29,18 @@
   #:use-module (guix cache)
   #:use-module (gcrypt hash)
   #:use-module ((guix build utils)
-                #:select (mkdir-p delete-file-recursively))
+                #:select (mkdir-p delete-file-recursively invoke/quiet))
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix records)
+  #:use-module ((guix build syscalls)
+                #:select (terminal-string-width))
   #:use-module (guix gexp)
   #:autoload   (guix git-download)
   (git-reference-url git-reference-commit git-reference-recursive?)
+  #:autoload   (guix config) (%git)
   #:use-module (guix sets)
-  #:use-module ((guix diagnostics) #:select (leave warning))
+  #:use-module ((guix diagnostics) #:select (leave warning info))
   #:use-module (guix progress)
   #:autoload   (guix swh) (swh-download commit-id?)
   #:use-module (rnrs bytevectors)
@@ -154,7 +157,7 @@ the 'SSL_CERT_FILE' and 'SSL_CERT_DIR' environment variables."
   ;; TODO: Both should be handled & exposed by the PROGRESS-BAR API instead.
   (define width
     (max (- (current-terminal-columns)
-            (string-length label) 7)
+            (terminal-string-width label) 7)
          3))
 
   (define grain
@@ -428,6 +431,35 @@ could not be fetched from Software Heritage~%")
     (rename-file directory trashed)
     (delete-file-recursively trashed)))
 
+(define (packs-in-git-repository directory)
+  "Return the number of pack files under DIRECTORY, a Git checkout."
+  (catch 'system-error
+    (lambda ()
+      (let ((directory (opendir (in-vicinity directory ".git/objects/pack"))))
+        (let loop ((count 0))
+          (match (readdir directory)
+            ((? eof-object?)
+             (closedir directory)
+             count)
+            (str
+             (loop (if (string-suffix? ".pack" str)
+                       (+ 1 count)
+                       count)))))))
+    (const 0)))
+
+(define (maybe-run-git-gc directory)
+  "Run 'git gc' in DIRECTORY if needed."
+  ;; XXX: As of libgit2 1.3.x (used by Guile-Git), there's no support for GC.
+  ;; Each time a checkout is pulled, a new pack is created, which eventually
+  ;; takes up a lot of space (lots of small, poorly-compressed packs).  As a
+  ;; workaround, shell out to 'git gc' when the number of packs in a
+  ;; repository has become "too large", potentially wasting a lot of space.
+  ;; See <https://issues.guix.gnu.org/65720>.
+  (when (> (packs-in-git-repository directory) 25)
+    (info (G_ "compressing cached Git repository at '~a'...~%")
+          directory)
+    (invoke/quiet %git "-C" directory "gc")))
+
 (define* (update-cached-checkout url
                                  #:key
                                  (ref '())
@@ -514,6 +546,9 @@ it unchanged."
             (utime cache-directory
                    seconds seconds
                    nanoseconds nanoseconds))))
+
+       ;; Run 'git gc' if needed.
+       (maybe-run-git-gc cache-directory)
 
        ;; When CACHE-DIRECTORY is a sub-directory of the default cache
        ;; directory, remove expired checkouts that are next to it.

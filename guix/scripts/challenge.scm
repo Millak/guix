@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -504,7 +504,6 @@ Challenge the substitutes for PACKAGE... provided by one or more servers.\n"))
 
 (define %default-options
   `((system . ,(%current-system))
-    (substitute-urls . ,%default-substitute-urls)
     (difference-report . ,report-differing-files)))
 
 
@@ -539,7 +538,13 @@ Challenge the substitutes for PACKAGE... provided by one or more servers.\n"))
                             (G_ "no arguments specified, nothing to do~%"))
                            (exit 0))
                           (x
-                           files))))
+                           files)))
+                 (urls (or urls
+                           (substitute-urls store)
+                           (begin
+                             (warning (G_ "could not determine current \
+substitute URLs; using defaults~%"))
+                             %default-substitute-urls))))
              (set-build-options store
                                 #:use-substitutes? #f)
 

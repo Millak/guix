@@ -1,0 +1,123 @@
+From 03e598263e3878b6f5d58f5525577903edadc644 Mon Sep 17 00:00:00 2001
+From: Paul-Erwan Rio <paulerwan.rio@gmail.com>
+Date: Thu, 21 Dec 2023 08:26:11 +0100
+Subject: [PATCH] tools: fix build without LIBCRYPTO support
+
+Commit cb9faa6f98ae ("tools: Use a single target-independent config to
+enable OpenSSL") introduced a target-independent configuration to build
+crypto features in host tools.
+
+But since commit 2c21256b27d7 ("hash: Use Kconfig to enable hashing in
+host tools and SPL") the build without OpenSSL is broken, due to FIT
+signature/encryption features. Add missing conditional compilation
+tokens to fix this.
+
+Signed-off-by: Paul-Erwan Rio <paulerwan.rio@gmail.com>
+Tested-by: Alexander Dahl <ada@thorsis.com>
+Cc: Simon Glass <sjg@chromium.org>
+Reviewed-by: Tom Rini <trini@konsulko.com>
+Reviewed-by: Simon Glass <sjg@chromium.org>
+---
+ include/image.h    | 2 +-
+ tools/Kconfig      | 1 +
+ tools/fit_image.c  | 2 +-
+ tools/image-host.c | 4 ++++
+ tools/mkimage.c    | 5 +++--
+ 5 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/include/image.h b/include/image.h
+index 432ec927b1..21de70f0c9 100644
+--- a/include/image.h
++++ b/include/image.h
+@@ -1465,7 +1465,7 @@ int calculate_hash(const void *data, int data_len, const char *algo,
+  * device
+  */
+ #if defined(USE_HOSTCC)
+-# if defined(CONFIG_FIT_SIGNATURE)
++# if CONFIG_IS_ENABLED(FIT_SIGNATURE)
+ #  define IMAGE_ENABLE_SIGN	1
+ #  define FIT_IMAGE_ENABLE_VERIFY	1
+ #  include <openssl/evp.h>
+diff --git a/tools/Kconfig b/tools/Kconfig
+index f8632cd59d..f01ed783e6 100644
+--- a/tools/Kconfig
++++ b/tools/Kconfig
+@@ -51,6 +51,7 @@ config TOOLS_FIT_RSASSA_PSS
+ 	  Support the rsassa-pss signature scheme in the tools builds
+ 
+ config TOOLS_FIT_SIGNATURE
++	depends on TOOLS_LIBCRYPTO
+ 	def_bool y
+ 	help
+ 	  Enable signature verification of FIT uImages in the tools builds
+diff --git a/tools/fit_image.c b/tools/fit_image.c
+index 71e031c855..beef1fa86e 100644
+--- a/tools/fit_image.c
++++ b/tools/fit_image.c
+@@ -61,7 +61,7 @@ static int fit_add_file_data(struct image_tool_params *params, size_t size_inc,
+ 		ret = fit_set_timestamp(ptr, 0, time);
+ 	}
+ 
+-	if (!ret)
++	if (CONFIG_IS_ENABLED(FIT_SIGNATURE) && !ret)
+ 		ret = fit_pre_load_data(params->keydir, dest_blob, ptr);
+ 
+ 	if (!ret) {
+diff --git a/tools/image-host.c b/tools/image-host.c
+index ca4950312f..90bc9f905f 100644
+--- a/tools/image-host.c
++++ b/tools/image-host.c
+@@ -14,8 +14,10 @@
+ #include <image.h>
+ #include <version.h>
+ 
++#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
+ #include <openssl/pem.h>
+ #include <openssl/evp.h>
++#endif
+ 
+ /**
+  * fit_set_hash_value - set hash value in requested has node
+@@ -1131,6 +1133,7 @@ static int fit_config_add_verification_data(const char *keydir,
+ 	return 0;
+ }
+ 
++#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
+ /*
+  * 0) open file (open)
+  * 1) read certificate (PEM_read_X509)
+@@ -1239,6 +1242,7 @@ int fit_pre_load_data(const char *keydir, void *keydest, void *fit)
+  out:
+ 	return ret;
+ }
++#endif
+ 
+ int fit_cipher_data(const char *keydir, void *keydest, void *fit,
+ 		    const char *comment, int require_keys,
+diff --git a/tools/mkimage.c b/tools/mkimage.c
+index 6dfe3e1d42..ac62ebbde9 100644
+--- a/tools/mkimage.c
++++ b/tools/mkimage.c
+@@ -115,7 +115,7 @@ static void usage(const char *msg)
+ 		"          -B => align size in hex for FIT structure and header\n"
+ 		"          -b => append the device tree binary to the FIT\n"
+ 		"          -t => update the timestamp in the FIT\n");
+-#ifdef CONFIG_FIT_SIGNATURE
++#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
+ 	fprintf(stderr,
+ 		"Signing / verified boot options: [-k keydir] [-K dtb] [ -c <comment>] [-p addr] [-r] [-N engine]\n"
+ 		"          -k => set directory containing private keys\n"
+@@ -130,8 +130,9 @@ static void usage(const char *msg)
+ 		"          -o => algorithm to use for signing\n");
+ #else
+ 	fprintf(stderr,
+-		"Signing / verified boot not supported (CONFIG_FIT_SIGNATURE undefined)\n");
++		"Signing / verified boot not supported (CONFIG_TOOLS_FIT_SIGNATURE undefined)\n");
+ #endif
++
+ 	fprintf(stderr, "       %s -V ==> print version information and exit\n",
+ 		params.cmdname);
+ 	fprintf(stderr, "Use '-T list' to see a list of available image types\n");
+-- 
+2.41.0
+

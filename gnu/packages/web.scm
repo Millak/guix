@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
@@ -46,7 +46,7 @@
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
@@ -64,6 +64,8 @@
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -141,6 +143,7 @@
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -185,6 +188,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages skribilo)
@@ -1004,7 +1008,7 @@ similar to live activity monitoring provided with NGINX plus.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.72")
+    (version "1.4.73")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -1012,7 +1016,7 @@ similar to live activity monitoring provided with NGINX plus.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1v2m9vavrg3ibbl0kfq3rjlnqicbrlrkqih1iisa0m5pd56xxjpp"))))
+                "1a2cx3di07wf8qii7dpk4yr5wvaz8c9na1x7523smc0lng81d241"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1478,7 +1482,7 @@ efficiently.  It gives the application developer no more than 4 methods.")
                   "ImportTaxonomy"
                   "ImportText"
                   "ImportXML"))
-               (for-each 
+               (for-each
                 (lambda (directory)
                   (copy-recursively directory
                                     (string-append perl "/../" directory)))
@@ -4955,8 +4959,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "1c7539418743e0dfe3a9cad22c414fd732daef8f")
-        (revision "42"))
+  (let ((commit "e13febc81706fbfb7f073bc4e9ce73fbc80d5180")
+        (revision "44"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4968,7 +4972,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1gp4mhjssxky0jjjz916rfgz4w2f327wfd5ixb6lb00ydlfh5mws"))))
+                  "0pk86b44zg2yn73sxlcd9pqbz8xwprwzaib2npnq80y3yzc6qc22"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -5157,7 +5161,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
 (define-public jq
   (package
     (name "jq")
-    (version "1.7")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
@@ -5165,7 +5169,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
                            "/releases/download/jq-" version
                            "/jq-" version ".tar.gz"))
        (sha256
-        (base32 "0qnv8k9x8i6i24n9vx3cxgw0yjj1411silc4wksfcinrfmlhsaj0"))
+        (base32 "1hl0wppdwwrqf3gzg3xwc260s7i1br2lnc97zr1k8bpx56hrr327"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled onigurama.
@@ -5712,6 +5716,39 @@ project.")
     (description
      "Libnsbmp is a decoding library for BMP and ICO image file formats,
 written in C.  It is developed as part of the NetSurf project.")
+    (license license:expat)))
+
+(define-public libnsfb
+  (package
+    (name "libnsfb")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.netsurf-browser.org/libs/releases/"
+                           name "-" version "-src.tar.gz"))
+       (sha256
+        (base32 "16m3kv8x8mlic4z73h2s3z8lqmyp0z8i30x95lzr1pslxfinqi5y"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list netsurf-buildsystem pkg-config))
+    (inputs
+     ;; SDL is needed to accept any (keyboard, mouse) input.  Don't propagate it
+     ;; to satisfy libnsfb.pc: netsurf is the only user and not worth the pain.
+     (list sdl))
+    (arguments netsurf-buildsystem-arguments)
+    (home-page "https://www.netsurf-browser.org/projects/libnsfb/")
+    (synopsis "Framebuffer display abstraction library")
+    (description
+     "LibNSFB is a framebuffer abstraction library, written in C.  It is
+developed as part of the NetSurf project and is intended to be suitable for use
+in other projects too.
+
+The overall idea of the library is to provide a generic abstraction to a linear
+section of memory which corresponds to a visible array of pixel elements on a
+display device.  Different colour depths are supported and the library provides
+routines for tasks such as drawing onto the framebuffer and rectangle copy
+operations.")
     (license license:expat)))
 
 (define-public libnsgif
@@ -6585,6 +6622,28 @@ Depending on your architecture, it only requires about 40 bytes of data per
 message stream (in a web server that is per connection).")
       (license license:expat))))
 
+(define-public llhttp
+  (package
+    (name "llhttp")
+    (version "9.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nodejs/llhttp")
+                    (commit (string-append "release/v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nkv64c5fs8x6n5f9f6g28w5hvg776p55cwa0f82ni548nx279s1"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;FIXME: tests depend on node-mocha
+    (home-page "https://github.com/nodejs/llhttp")
+    (synopsis "Port of http_parser to llparse")
+    (description "@code{llparse} is a port of @code{http_parser} to
+@code{llparse} which aims making it more maintainable, verifiable and
+efficient where possible.")
+    (license license:expat)))
+
 (define-public python-httpretty
   (package
     (name "python-httpretty")
@@ -6662,7 +6721,10 @@ command-line arguments or read from stdin.")
                          (("^import re\n" line)
                           (string-append line "re._pattern_type = re.Pattern\n"))))
                      (find-files "." "\\.py$"))
-           #t))))
+           ;; Mapping got moved to collections.abc
+           (substitute* "internetarchive/utils.py"
+             (("from collections import Mapping")
+              "from collections.abc import Mapping"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -7910,6 +7972,35 @@ features include:
 @end enumerate\n")
     (license license:expat)))
 
+(define-public monsterid
+  (let ((commit "5597f177b473343ff5cad9a6e0e5b255312c6096")
+        (revision "0"))
+    (package
+      (name "monsterid")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/splitbrain/monsterID")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ixyrrcbw96plcdna2rx1pqwisqy9hnr57kvamgj13lzlv2whdb3"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("monsterid.php" "share/web/monsterid/")
+                          ("parts/" "share/web/monsterid/parts/"
+                           #:include-regexp ("\\.png$")))))
+      (home-page "https://www.splitbrain.org/projects/monsterid")
+      (synopsis "The original MonsterID implementation")
+      (description
+       "MonsterID is a method to generate a unique monster image based upon a
+certain identifier (IP address, email address, whatever).  It can be
+used to automatically provide personal avatar images in blog comments
+or other community services.")
+      (license license:expat))))
+
 (define-public cat-avatar-generator
   (let ((commit "9360ea33f79d1dad3e43494b09878b5e3f6b41fa")
         (revision "1"))
@@ -7958,8 +8049,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
 (define-public nghttp2
   (package
     (name "nghttp2")
-    (version "1.49.0")
-    (replacement nghttp2-1.57)
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
@@ -7968,7 +8058,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
                            "nghttp2-" version ".tar.xz"))
        (sha256
         (base32
-         "0vm692c7q2wc4xxz8c41nr8jps2fkwf51xp8fb233cghpf9d9kxh"))))
+         "1q4ps8acr7nyia7mf2z11m0yh3fn1imhyv855j3xjbx91l2a6s2a"))))
     (build-system gnu-build-system)
     (outputs (list "out"
                    "lib"))              ; only libnghttp2
@@ -8070,23 +8160,45 @@ compressed JSON header blocks.
                    (("print \\(ver >= '3\\.8'\\)")
                     "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
 
-(define-public nghttp2-1.57
+(define-public nghttp3
   (package
-    (inherit nghttp2)
-    (version "1.57.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/nghttp2/nghttp2/"
-                                  "releases/download/v" version "/"
-                                  "nghttp2-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0n598w7w8rqdqiay2fad3a11253hibakan5c4vjkpx09648v044j"))))))
+    (name "nghttp3")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ngtcp2/nghttp3/"
+                           "releases/download/v" version "/"
+                           "nghttp3-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fzvadnwb03jlm180313gg5m4fg09qdcc67fwcfrv9zs22anaa55"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config
+           ;; Required by tests.
+           cunit))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-lib-only")))
+    (home-page "https://nghttp2.org/nghttp3/")
+    (synopsis "HTTP/3 protocol library")
+    (description
+     "nghttp3 is an implementation of RFC 9114 HTTP/3 mapping over QUIC and
+RFC 9204 QPACK in C.  It does not depend on any particular QUIC transport
+implementation.
+
+It implements extensions specified in RFC 9218 and RFC 9220.  It supports
+SETTINGS_H3_DATAGRAM from RFC 9297.
+
+It does not support server push.")
+    (license license:expat)))
 
 (define-public hpcguix-web
   (package
     (name "hpcguix-web")
-    (version "0.3.0")
+    (version "0.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8095,7 +8207,7 @@ compressed JSON header blocks.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g1sd5d6fhrblqk3rc8hzkk1sxyiilbb45kdgbrfg7ccd1sbic30"))))
+                "13a4cwqdhpr7gc1z4cxs36qa50mzcdwwlj9qqzv818sx9d7r6vsw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -8117,13 +8229,14 @@ compressed JSON header blocks.
                     (guile    (assoc-ref inputs "guile"))
                     (gcrypt   (assoc-ref inputs "guile-gcrypt"))
                     (git      (assoc-ref inputs "guile-git"))
+                    (gnutls   (assoc-ref inputs "guile-gnutls"))
                     (bs       (assoc-ref inputs "guile-bytestructures"))
                     (json     (assoc-ref inputs "guile-json"))
                     (zlib     (assoc-ref inputs "guile-zlib"))
                     (syntax   (assoc-ref inputs "guile-syntax-highlight"))
                     (guile-cm (assoc-ref inputs
                                          "guile-commonmark"))
-                    (deps (list guile gcrypt git bs zlib guile-cm
+                    (deps (list guile gcrypt git gnutls bs zlib guile-cm
                                 syntax guix json))
                     (effective
                      (read-line
@@ -8155,6 +8268,7 @@ compressed JSON header blocks.
            guile-commonmark
            guile-json-4
            guile-syntax-highlight
+           guile-gnutls    ;used to connect to https://disarchive.guix.gnu.org
            bash-minimal))
     (home-page "https://github.com/UMCUGenetics/hpcguix-web")
     (synopsis "Web interface for cluster deployments of Guix")
@@ -8524,7 +8638,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.6")
+    (version "2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8532,7 +8646,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "1j0bgnixffz2lv5xgp5c88hl146c1vyk1988gyd70mhgyl9700jy"))))
+                "17cg07md6zac0j6ivawysy41jbk3a1ql3q794q1y0k01x8z23q5n"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"

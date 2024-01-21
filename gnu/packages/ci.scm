@@ -6,6 +6,7 @@
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,11 +60,11 @@
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR)))
 
 (define-public cuirass
-  (let ((commit "eb3f539dc95de705c89b07258efe4663e76f7dab")
-        (revision "0"))
+  (let ((commit "7bcd3d079f0ec45ac50f0dbc14eb4ec68c6a6b53")
+        (revision "2"))
     (package
       (name "cuirass")
-      (version "1.2.0")
+      (version (git-version "1.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -73,7 +74,7 @@
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0rvzcsm0zwwv8rb5z0jdgc7adzzx0cin9n2hhclp5d0kqn582hny"))))
+           "0x92dsck8ryyqz5cbs6i11wdrsbagrl85jddzc52rmwzqzrig9j2"))))
       (build-system gnu-build-system)
       (arguments
        (list #:modules `((guix build utils)
@@ -172,7 +173,7 @@ intended as a replacement for Hydra.")
 (define-public laminar
   (package
     (name "laminar")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -181,7 +182,7 @@ intended as a replacement for Hydra.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1sg0kccp3nczkn2vxcsqv10vyvmjnhpaykc1nfhh55jyda4xzf9w"))))
+               "0ya5nzl1qf11if564xd49l8ajxyish7pbn875js4f153z775d3ks"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; TODO Can't build tests

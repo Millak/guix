@@ -5,7 +5,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -62,7 +62,7 @@
 (define-public php
   (package
     (name "php")
-    (version "8.2.2")
+    (version "8.2.13")
     (home-page "https://www.php.net/")
     (source (origin
               (method url-fetch)
@@ -70,9 +70,7 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "0czflx9ikxymjfgnzaifjx9kc30ww2x4063075hcifjjwqwami5x"))
-              (patches
-               (search-patches "php-fix-streams-copy-length.patch"))
+                "0js5bm8r3kngsgmxhyr681vrpl4gib3318k8428pigqp06hvna96"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -177,98 +175,55 @@
              (substitute* "ext/standard/tests/streams/bug60602.phpt"
                (("'ls'") (string-append "'" (which "ls") "'")))
 
-             ,@(if (target-arm32?)
-                   ;; Drop tests known to fail on armhf.
-                   '((for-each delete-file
-                               (list
-                                "ext/calendar/tests/unixtojd_error1.phpt"
-                                "ext/opcache/tests/preload_006.phpt"
-                                "ext/opcache/tests/preload_011.phpt"
-                                ;; arm can be a lot slower, so a time-related test fails
-                                "ext/fileinfo/tests/cve-2014-3538-nojit.phpt"
-                                "ext/pcntl/tests/pcntl_unshare_01.phpt"
-                                "ext/pcre/tests/bug76514.phpt"
-                                "ext/pcre/tests/preg_match_error3.phpt"
-                                "ext/pcre/tests/cache_limit.phpt"
-                                "ext/sockets/tests/socket_getopt.phpt"
-                                "ext/sockets/tests/socket_sendrecvmsg_error.phpt"
-                                "ext/standard/tests/general_functions/var_export-locale.phpt"
-                                "ext/standard/tests/general_functions/var_export_basic1.phpt"
-                                "ext/intl/tests/timezone_getErrorCodeMessage_basic.phpt"
-                                "ext/intl/tests/timezone_getOffset_error.phpt"
-                                "sapi/cli/tests/cli_process_title_unix.phpt"
-                                "sapi/cli/tests/upload_2G.phpt"
-                                "Zend/tests/concat_003.phpt")))
-                   '())
-
-             ,@(if (target-x86-32?)
-                   ;; Drop tests known to fail on i686.
-                   '((for-each delete-file
-                               (list
-                                "ext/dba/tests/dba_gdbm.phpt")))
-                   '())
-
-             ,@(if (target-ppc64le?)
-                   ;; Drop tests known to fail on powerpc64le.
-                   '((for-each delete-file
-                               (list
-                                ;; phpdbg watchpoints don't work.
-                                ;; Bug tracked upstream at:
-                                ;; https://bugs.php.net/bug.php?id=81408
-                                "sapi/phpdbg/tests/watch_001.phpt"
-                                "sapi/phpdbg/tests/watch_003.phpt"
-                                "sapi/phpdbg/tests/watch_004.phpt"
-                                "sapi/phpdbg/tests/watch_005.phpt"
-                                "sapi/phpdbg/tests/watch_006.phpt")))
-                   '())
-
-             ,@(if (target-riscv64?)
-                   ;; Drop tests known to fail on riscv64.
-                   '((for-each delete-file
-                               (list "sapi/cli/tests/upload_2G.phpt")))
-                   '())
+             ;; Drop tests known to fail on different architectures:
+             (for-each delete-file
+             ,(cond
+                ((target-arm32?)
+                 `(list "ext/calendar/tests/unixtojd_error1.phpt"
+                        "ext/opcache/tests/preload_006.phpt"
+                        "ext/opcache/tests/preload_011.phpt"
+                        ;; arm can be a lot slower, so a time-related test fails
+                        "ext/fileinfo/tests/cve-2014-3538-nojit.phpt"
+                        "ext/pcntl/tests/pcntl_unshare_01.phpt"
+                        "ext/pcre/tests/bug76514.phpt"
+                        "ext/pcre/tests/preg_match_error3.phpt"
+                        "ext/pcre/tests/cache_limit.phpt"
+                        "ext/sockets/tests/socket_getopt.phpt"
+                        "ext/sockets/tests/socket_sendrecvmsg_error.phpt"
+                        "ext/standard/tests/general_functions/var_export-locale.phpt"
+                        "ext/standard/tests/general_functions/var_export_basic1.phpt"
+                        "ext/intl/tests/timezone_getErrorCodeMessage_basic.phpt"
+                        "ext/intl/tests/timezone_getOffset_error.phpt"
+                        "sapi/cli/tests/cli_process_title_unix.phpt"
+                        "Zend/tests/concat_003.phpt"))
+                ((target-x86-32?)
+                 `(list "ext/dba/tests/dba_gdbm.phpt"))
+                ((target-ppc32?)
+                 `(list "sapi/phpdbg/tests/watch_001.phpt"
+                        "sapi/phpdbg/tests/watch_003.phpt"
+                        "sapi/phpdbg/tests/watch_004.phpt"))
+                ((target-ppc64le?)
+                 `(list
+                    ;; phpdbg watchpoints don't work.
+                    ;; Bug tracked upstream at:
+                    ;; https://bugs.php.net/bug.php?id=81408
+                    "sapi/phpdbg/tests/watch_001.phpt"
+                    "sapi/phpdbg/tests/watch_003.phpt"
+                    "sapi/phpdbg/tests/watch_004.phpt"
+                    "sapi/phpdbg/tests/watch_005.phpt"
+                    "sapi/phpdbg/tests/watch_006.phpt"))
+                (else `'())))
 
              ;; Drop tests that are known to fail.
              (for-each delete-file
                        '("ext/posix/tests/posix_getgrgid.phpt"    ; Requires /etc/group.
                          "ext/posix/tests/posix_getgrnam_basic.phpt" ; Requires /etc/group.
                          "ext/sockets/tests/bug63000.phpt"        ; Fails to detect OS.
-                         "ext/sockets/tests/socket_shutdown.phpt" ; Requires DNS.
-                         "ext/sockets/tests/socket_send.phpt"     ; Likewise.
-                         "ext/sockets/tests/mcast_ipv4_recv.phpt" ; Requires multicast.
-                         ;; These needs /etc/services.
-                         "ext/standard/tests/general_functions/getservbyname_basic.phpt"
-                         "ext/standard/tests/general_functions/getservbyport_basic.phpt"
-                         "ext/standard/tests/general_functions/getservbyport_variation1.phpt"
-                         ;; And /etc/protocols.
-                         "ext/standard/tests/network/getprotobyname_basic.phpt"
-                         "ext/standard/tests/network/getprotobynumber_basic.phpt"
-                         ;; And exotic locales.
+                         ;; These need exotic locales.
                          "ext/standard/tests/strings/setlocale_basic1.phpt"
                          "ext/standard/tests/strings/setlocale_basic2.phpt"
                          "ext/standard/tests/strings/setlocale_basic3.phpt"
                          "ext/standard/tests/strings/setlocale_variation1.phpt"
-                         ;; This failing test is skipped on PHP's Travis CI as it is
-                         ;; supposedly inaccurate.
-                         "ext/standard/tests/file/disk_free_space_basic.phpt"
-                         ;; The following test erroneously expect the link
-                         ;; count of a sub-directory to increase compared to
-                         ;; its parent.
-                         "ext/standard/tests/file/lstat_stat_variation8.phpt"
-                         ;; This tests whether microseconds ‘differ enough’ and
-                         ;; fails inconsistently on ‘fast’ machines.
-                         "ext/date/tests/bug73837.phpt"
-
-                         ;; XXX: These gd tests fails.  Likely because our version
-                         ;; is different from the (patched) bundled one.
-                         ;; Here, gd quits immediately after "fatal libpng error"; while the
-                         ;; test expects it to additionally return a "setjmp" error and warning.
-                         "ext/gd/tests/bug39780_extern.phpt"
-                         "ext/gd/tests/libgd00086_extern.phpt"
-                         ;; Extra newline in gd-png output.
-                         "ext/gd/tests/bug45799.phpt"
-                         ;; Test expects generic "gd warning" but gets the actual function name.
-                         "ext/gd/tests/createfromwbmp2_extern.phpt"
                          ;; This bug should have been fixed in gd 2.2.2.
                          ;; Is it a regression?
                          "ext/gd/tests/bug65148.phpt"
@@ -291,47 +246,15 @@
                          "ext/gd/tests/xpm2gd.phpt"
                          "ext/gd/tests/xpm2jpg.phpt"
                          "ext/gd/tests/xpm2png.phpt"
-                         ;; Whitespace difference, probably caused by a very
-                         ;; long store path
-                         "ext/gd/tests/bug77479.phpt"
-                         ;; Expected invalid XBM but got EOF before image was
-                         ;; complete.  It's a warning in both cases and test
-                         ;; result is the same.
-                         "ext/gd/tests/bug77973.phpt"
-                         ;; Test expects uninitialized value to be false, but
-                         ;; instead gets "resource(5) of type (gd)".
-                         "ext/gd/tests/bug79067.phpt"
-                         ;; The following test fails with "The image size
-                         ;; differs: expected 114x115, got 117x117".
-                         "ext/gd/tests/bug79068.phpt"
                          ;; AVIF support disabled
                          "ext/gd/tests/avif_decode_encode.phpt"
                          ;; Typo in expected outputs
                          "ext/gd/tests/bug72339.phpt"
-                         "ext/gd/tests/bug77272.phpt"
-                         "ext/gd/tests/bug66356.phpt"
                          ;; AVIF support disabled
                          "ext/gd/tests/imagecreatefromstring_avif.phpt"
 
-                         ;; XXX: These iconv tests have the expected outcome,
-                         ;; but with different error messages.
-                         ;; Expects "illegal character", instead gets "unknown error (84)".
-                         "ext/iconv/tests/bug52211.phpt"
-                         "ext/iconv/tests/bug60494.phpt"
-                         ;; Expects "wrong charset", gets unknown error (22).
-                         "ext/iconv/tests/iconv_strlen_error2.phpt"
-                         "ext/iconv/tests/iconv_substr_error2.phpt"
-                         ;; Expects conversion error, gets "error condition Termsig=11".
-                         "ext/iconv/tests/iconv_strpos_error2.phpt"
-                         "ext/iconv/tests/iconv_strrpos_error2.phpt"
-                         ;; Expects "invalid multibyte sequence" but got
-                         ;; "unknown error".
-                         "ext/iconv/tests/bug76249.phpt"
-
                          ;; XXX: These test failures appear legitimate, needs investigation.
                          ;; open_basedir() restriction failure.
-                         "ext/curl/tests/bug61948-unix.phpt"
-                         ;; Same error reason but error code slightly different
                          "ext/curl/tests/curl_setopt_ssl.phpt"
 
                          ;; Fail because there is no "root" in the build container's
@@ -340,11 +263,6 @@
                          "sapi/fpm/tests/bug68591-conf-test-listen-group.phpt"
                          "sapi/fpm/tests/bug68591-conf-test-listen-owner.phpt"
 
-                         ;; Wrong error name
-                         "ext/dba/tests/dba_gdbm_creation_matrix.phpt"
-                         ;; Expects a false boolean, gets empty array from glob().
-                         "ext/standard/tests/file/bug41655_1.phpt"
-                         "ext/standard/tests/file/glob_variation5.phpt"
                          ;; The test expects an Array, but instead get the contents(?).
                          "ext/gd/tests/bug43073.phpt"
                          ;; imagettftext() returns wrong coordinates.
@@ -357,26 +275,12 @@
                          "ext/gd/tests/bug53504.phpt"
                          ;; Wrong image size after scaling an image.
                          "ext/gd/tests/bug73272.phpt"
-                         ;; Expects iconv to detect illegal characters, instead gets
-                         ;; "unknown error (84)" and heap corruption(!).
-                         "ext/iconv/tests/bug48147.phpt"
-                         ;; Expects illegal character ".", gets "=?utf-8?Q?."
-                         "ext/iconv/tests/bug51250.phpt"
-                         ;; iconv throws "buffer length exceeded" on some string checks.
-                         "ext/iconv/tests/iconv_mime_encode.phpt"
-                         ;; file_get_contents(): iconv stream filter
-                         ;; ("ISO-8859-1"=>"UTF-8") unknown error.
-                         "ext/standard/tests/file/bug43008.phpt"
-                         ;; Table data not created in sqlite(?).
-                         "ext/pdo_sqlite/tests/bug_42589.phpt"
-                         ;; Expects an Array with 3 preg_matches; gets 0.
-                         "ext/pcre/tests/bug79846.phpt"
-                         ;; Expects an empty Array; gets one with " " in it.
-                         "ext/pcre/tests/bug80118.phpt"
-                         ;; Renicing a process fails in the build environment.
-                         "ext/standard/tests/general_functions/proc_nice_basic.phpt"
-                         ;; Can fail on fast machines?
-                         "Zend/tests/bug74093.phpt"))
+                         ;; PCRE with/without JIT gives different result
+                         "ext/pcre/tests/gh11374.phpt"
+                         "ext/pcre/tests/gh11956.phpt"
+
+                         ;; This test fails on most architectures.
+                         "sapi/cli/tests/upload_2G.phpt"))
 
              ;; Accomodate two extra openssl errors flanking the expected one:
              ;; random number generator:RAND_{load,write}_file:Cannot open file
@@ -413,7 +317,7 @@
        ("libzip" ,libzip)
        ("oniguruma" ,oniguruma)
        ("openldap" ,openldap)
-       ("openssl" ,openssl-1.1)
+       ("openssl" ,openssl)
        ("pcre" ,pcre2)
        ("postgresql" ,postgresql)
        ("readline" ,readline)

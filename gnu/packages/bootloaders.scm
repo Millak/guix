@@ -15,9 +15,10 @@
 ;;; Copyright © 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,9 +55,12 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ninja)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -70,6 +74,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -294,6 +299,71 @@ menu to select one of the installed operating systems.")
                (system* "gunzip" "unifont.bdf.gz")
 
                #t))))))))
+
+(define-public grub-coreboot
+  (package
+    (inherit grub)
+    (name "grub-coreboot")
+    (synopsis "GRand Unified Boot loader (Coreboot payload version)")
+    (arguments
+     `(,@(substitute-keyword-arguments (package-arguments grub)
+           ((#:phases phases '%standard-phases)
+            `(modify-phases ,phases
+               (add-before 'check 'disable-broken-tests
+                 (lambda _
+                   (setenv "DISABLE_HARD_ERRORS" "1")
+                   (setenv
+                    "XFAIL_TESTS"
+                    (string-join
+                     ;; TODO: All the tests below use grub shell
+                     ;; (tests/util/grub-shell.in), and here grub-shell uses
+                     ;; QEMU and a Coreboot image to run the tests. Since we
+                     ;; don't have a Coreboot package in Guix yet these tests
+                     ;; are disabled. See the Guix bug #64667 for more details
+                     ;; (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=64667).
+                     (list
+                      "pata_test"
+                      "ahci_test"
+                      "uhci_test"
+                      "ehci_test"
+                      "example_grub_script_test"
+                      "ohci_test"
+                      "grub_script_eval"
+                      "grub_script_echo1"
+                      "grub_script_test"
+                      "grub_script_leading_whitespace"
+                      "grub_script_echo_keywords"
+                      "grub_script_vars1"
+                      "grub_script_for1"
+                      "grub_script_while1"
+                      "grub_script_if"
+                      "grub_script_comments"
+                      "grub_script_functions"
+                      "grub_script_continue"
+                      "grub_script_break"
+                      "grub_script_shift"
+                      "grub_script_blockarg"
+                      "grub_script_return"
+                      "grub_script_setparams"
+                      "grub_cmd_date"
+                      "grub_cmd_sleep"
+                      "grub_cmd_regexp"
+                      "grub_script_not"
+                      "grub_cmd_echo"
+                      "grub_script_expansion"
+                      "grub_script_gettext"
+                      "grub_script_escape_comma"
+                      "help_test"
+                      "grub_script_strcmp"
+                      "test_sha512sum"
+                      "grub_cmd_tr"
+                      "test_unset"
+                      "file_filter_test")
+                     " "))))))
+           ((#:configure-flags flags
+             ''())
+            `(cons* "--with-platform=coreboot"
+                    ,flags)))))))
 
 (define-public grub-efi
   (package
@@ -565,7 +635,7 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
 (define-public dtc
   (package
     (name "dtc")
-    (version "1.6.1")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -573,42 +643,56 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                     "dtc-" version ".tar.gz"))
               (sha256
                (base32
-                "0xm38h31jb29xfh2sfyk48d8wdfq4b8lmb412zx9vjr35izjb9iq"))))
-    (build-system gnu-build-system)
+                "0cij9399snpn672pdbda8qbxljdkfg068kvv3g5811rz6yslx124"))
+              (patches
+               (search-patches "dtc-meson-cell-overflow.patch"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:modules `(,@%gnu-build-system-modules (srfi srfi-26))
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
-              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
-              (string-append "PREFIX=" #$output)
-              (string-append "SETUP_PREFIX=" #$output)
-              "INSTALL=install")
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pkg-config
+          (add-after 'unpack 'preparations
             (lambda _
-              (substitute* '("Makefile"
-                             "tests/run_tests.sh")
-                (("pkg-config")
-                 #$(pkg-config-for-target)))))
-          (delete 'configure)           ;no configure script
-          (add-before 'build 'install-doc
+              ;; The version string is usually derived via setuptools-scm, but
+              ;; without the git metadata available this fails.
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+
+              ;; Needed by setup.py.
+              (setenv "DESTDIR" "/")
+
+              ;; Native gcc needed by run_test.sh.
+              (setenv "CC" "gcc")
+
+              ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib"))))
+          (add-after 'unpack 'install-doc
             (lambda _
               (with-directory-excursion "Documentation"
                 (for-each (cut install-file <> (string-append
                                                 #$output "/share/doc/dtc/"))
                           '("dts-format.txt"
                             "dt-object-internal.txt"
-                            "manual.txt"))))))))
+                            "manual.txt")))))
+          (add-after 'unpack 'patch-pkg-config
+            (lambda _
+              (substitute* '("tests/run_tests.sh")
+                (("pkg-config")
+                 #$(pkg-config-for-target))))))))
     (native-inputs
      (append
       (list bison
             flex
             libyaml
+            ninja
             pkg-config
-            swig)
+            python
+            python-setuptools-scm
+            swig
+            which)
       (if (member (%current-system) (package-supported-systems valgrind))
           (list valgrind)
           '())))
@@ -627,42 +711,31 @@ tree binary files.  These are board description files used by Linux and BSD.")
   ;; and https://patchwork.ozlabs.org/project/uboot/patch/20210406151059.1187379-1-icenowy@aosc.io
   (search-patch "u-boot-rockchip-inno-usb.patch"))
 
-(define %u-boot-sifive-prevent-relocating-initrd-fdt
-  ;; Fix boot in 2021.07 on Hifive unmatched, see
-  ;; https://bugs.launchpad.net/ubuntu/+source/u-boot/+bug/1937246
-  (search-patch "u-boot-sifive-prevent-reloc-initrd-fdt.patch"))
-
 (define %u-boot-allow-disabling-openssl-patch
   ;; Fixes build of u-boot 2021.10 without openssl
   ;; https://lists.denx.de/pipermail/u-boot/2021-October/462728.html
   (search-patch "u-boot-allow-disabling-openssl.patch"))
 
-(define %u-boot-rk3399-enable-emmc-phy-patch
-  ;; Fix emmc boot on rockpro64 and pinebook-pro, this was a regression
-  ;; therefore should hopefully be fixed when updating u-boot.
-  ;; https://lists.denx.de/pipermail/u-boot/2021-November/466329.html
-  (search-patch "u-boot-rk3399-enable-emmc-phy.patch"))
+(define %u-boot-build-without-libcrypto-patch
+  ;; Upstream commit to fix Amlogic builds in u-boot 2024.01.
+  (search-patch "u-boot-build-without-libcrypto.patch"))
 
 (define u-boot
   (package
     (name "u-boot")
-    (version "2023.07.02")
+    (version "2024.01")
     (source (origin
               (patches
                (list %u-boot-rockchip-inno-usb-patch
-                     %u-boot-allow-disabling-openssl-patch
-                     %u-boot-sifive-prevent-relocating-initrd-fdt
-                     %u-boot-rk3399-enable-emmc-phy-patch
-                     (search-patch "u-boot-fix-build-python-3.10.patch")
-                     (search-patch "u-boot-fix-u-boot-lib-build.patch")
-                     (search-patch "u-boot-patman-change-id.patch")))
+                     %u-boot-build-without-libcrypto-patch
+                     %u-boot-allow-disabling-openssl-patch))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "1m91w3fpywllkwm000dqsw3294j0szs1lz6qbgwv1aql3ic4hskb"))))
+                "1czmpszalc6b8cj9j7q6cxcy19lnijv3916w3dag6yr3xpqi35mr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -713,6 +786,7 @@ also initializes the boards (RAM etc).")
      (modify-inputs (package-native-inputs u-boot)
        (append fontconfig
                python-sphinx
+               python-sphinx-prompt
                texinfo
                which)))
     (synopsis "U-Boot documentation")
@@ -1135,6 +1209,21 @@ device while it's being turned on (and a while longer).")))
    #:append-description "This U-Boot is built for Novena.  Be advised that this
 version, contrary to Novena upstream, does not load u-boot.img from the first
 partition."))
+
+(define-public u-boot-orangepi-r1-plus-lts-rk3328
+  (let ((base (make-u-boot-package "orangepi-r1-plus-lts-rk3328" "aarch64-linux-gnu")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3328))))))
 
 (define-public u-boot-cubieboard
   (make-u-boot-package "Cubieboard" "arm-linux-gnueabihf"))

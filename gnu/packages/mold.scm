@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,7 +35,7 @@
 (define-public mold
   (package
     (name "mold")
-    (version "1.10.1")
+    (version "2.3.2")
     (source
      (origin
        (method git-fetch)
@@ -43,10 +44,22 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bqv1a93n3nks38k8fdc5i7v7ca2sav8n4xxaph0ikaqw1mkjcg7"))
+        (base32 "1p6w92caysy9h0vkl26iv3viv0lvwzvbd357yykls0p13hnzlzkr"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
+            ;; Fix detection of i686 systems.
+            ;; This can be removed with the next release of mold.
+            (substitute* "test/elf/common.inc"
+              (("echo i386") "echo i686"))
+            (substitute* '("test/elf/common.inc"
+                           "test/elf/global-offset-table.sh"
+                           "test/elf/i386_tls-module-base.sh"
+                           "test/elf/large-alignment-dso.sh"
+                           "test/elf/large-alignment.sh"
+                           "test/elf/nocopyreloc.sh"
+                           "test/elf/range-extension-thunk.sh")
+              (("MACHINE = i386") "MACHINE = i686"))
             (for-each
              (lambda (x)
                (delete-file-recursively (string-append "third-party/" x)))
@@ -55,7 +68,8 @@
     (arguments
      (list
       #:configure-flags #~(list "-DMOLD_USE_SYSTEM_MIMALLOC=ON"
-                                "-DMOLD_USE_SYSTEM_TBB=ON")
+                                "-DMOLD_USE_SYSTEM_TBB=ON"
+                                "-DBUILD_TESTING=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'force-system-xxhash
@@ -69,6 +83,10 @@
                 (("CC=\"\\$\\{TEST_CC:-cc\\}\"") "CC=gcc")
                 (("CXX=\"\\$\\{TEST_CXX:-c\\+\\+\\}\"")
                  "CXX=g++"))))
+          (add-before 'configure 'skip-tbb-lto-test
+            (lambda _
+              ;; This test needs tbb 2021.9.0 or newer
+              (delete-file "test/elf/lto-version-script.sh")))
           (add-before 'configure 'disable-rpath-test
             (lambda _
               ;; This test fails because mold expect the RUNPATH as-is,

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015, 2018 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,7 +71,6 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages tor)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
@@ -130,11 +130,10 @@
                   (symlink (string-append "lock-obj-pub." triplet ".h")
                            (string-append "src/syscfg/lock-obj-pub."
                                           source ".h")))
-                #$(let* ((target (%current-target-system))
-                         (architecture
-                          (string-take target (string-index target #\-))))
+                #$(let ((target (%current-target-system)))
                     (cond ((target-linux? target)
-                           (match architecture
+                           (match (string-take target
+                                               (string-index target #\-))
                              ("armhf"
                               `(link "arm-unknown-linux-gnueabi" "linux-gnu"))
                              ("mips64el"
@@ -238,6 +237,12 @@ generation.")
        (base32
         "1r1lvcp67gn5lfrj1g388sd77ca6qwnmxndirdysd71gk362z34f"))))
     (build-system gnu-build-system)
+    (arguments (if (%current-target-system)
+                   (list #:configure-flags
+                         #~(list (string-append
+                                  "--with-libgpg-error-prefix="
+                                  #$(this-package-input "libgpg-error"))))
+                   '()))
     (propagated-inputs
      (list libgpg-error pth))
     (home-page "https://gnupg.org")
@@ -1124,7 +1129,7 @@ files, to verify signatures, and to manage the private and public keys.")
            perl-try-tiny
            perl-type-tiny
            perl-types-path-tiny
-           torsocks))
+           (@ (gnu packages tor) torsocks))) ;avoid dependency loop
     (native-inputs
      (list perl-file-which
            perl-gnupg-interface

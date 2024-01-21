@@ -19,7 +19,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -860,25 +860,31 @@ and others.")
 (define-public gerbv
   (package
     (name "gerbv")
-    (version "2.7.0")
+    (version "2.10.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/gerbv/gerbv/gerbv-"
-                                  version "/gerbv-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gerbv/gerbv")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d2k43k7i4yvbpi4sw1263a8d0q98z2n7aqhmpinpkih8a681vn5"))))
+                "06bcm5zw7whsnnmfld3gl2j907lxc68gnsbzr2pc4w6qc923rgmj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("CFLAGS=-fcommon")))
-    (native-inputs
-     `(("glib:bin" ,glib "bin")         ; for glib-compile-schemas, etc.
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     `(("cairo" ,cairo)
-       ("gtk" ,gtk+-2)))
-    (home-page "http://gerbv.geda-project.org/")
+    (native-inputs (list autoconf
+                         automake
+                         desktop-file-utils
+                         gettext-minimal
+                         `(,glib "bin")
+                         libtool
+                         pkg-config))
+    (inputs (list cairo
+                  ;; As of 2.10.0 gerbv is still GTK+2 only.  GTK 3/4 porting
+                  ;; issue: https://github.com/gerbv/gerbv/issues/71.
+                  gtk+-2))
+    (home-page "https://gerbv.github.io/")
     (synopsis "Gerber file viewer")
     (description
      "Gerbv is a viewer for files in the Gerber format (RS-274X only), which
@@ -1092,7 +1098,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "7.0.8")
+    (version "7.0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1100,7 +1106,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1gaj833hm3avyb7gyjnl4jk9cckcmj8084y6q45ysjvh283rxsy4"))
+                "0rmlkgzgvpd70jzspyrrb2f618fimw52qrhpsp777flmpyh91wly"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1200,7 +1206,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ya9kwcbsh8cqbinjr1hr14sd0g6rls1awmvw8hwd7715f97x8fg"))))
+                "0lc7d6hn8ya8m51kjnf59v41pbp03l5ncxir75s21pb92l26xgnv"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1234,7 +1240,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "176zb7df25vz3wbhs94plmpabcgzxsnzbqmpdyssqr7m2wb2424a"))))
+                "0nlgmxf9z1vf4g350dfkxql1dawgmw275wqxkgszsfxmhdfpmi9v"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1263,7 +1269,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1560m5mwwq0jrjhr8zdh2xrm1w7pgr250p81xzhdc4wj7zsb0rrp"))))
+                "1az6fzh1lma71mj12bc4bblnmzjayrxhkb8w9rjvlhvvgv33cdmy"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1280,7 +1286,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ypy2nzs1x8i98jr5kmlxfd6y592qs22aq73yl8nq0s6640fc4kk"))))
+                "0xzyi4mgyifwc6dppdzh6jq294mkj0a71cwkqw2ymz1kfbksw626"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1297,7 +1303,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11582ldnv7hkljmhaym83962kixq1hjbfmdrn5laq7l4jk3l19vh"))))
+                "0mykfwwik7472i4r0isc5szj3dnmvd0538p0vlmzh4rcgj3pj3vm"))))
     (synopsis "Official KiCad project and worksheet templates")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
@@ -2000,7 +2006,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "41")
+    (version "42")
     (source
      (origin
        (method url-fetch)
@@ -2011,7 +2017,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "1i78im03kx6vp5yml0fiwvqnic8qhczl1893n8zc6l1gblwikqhw"))))
+        (base32 "02p5ar1cqwn70dw5xzx5v3qhm1p1xgb1xpzs1ljklcxjda2f6zvk"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -2675,7 +2681,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.29.1")
+    (version "0.30.0")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2683,7 +2689,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "11pbcgbq34xyjv5gjwi3a8cpgqqwmd73ps1fwyjajl26q2nkmcdh"))
+                "1fbws80glrakd08xzhifna831yk0bd8b0cizhfcjkg4km2nyx65c"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
@@ -2820,7 +2826,7 @@ comments.")))
 (define-public freecad
   (package
     (name "freecad")
-    (version "0.21.1")
+    (version "0.21.2")
     (source
      (origin
        (method git-fetch)
@@ -2829,7 +2835,7 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qwh6b1s432j5piwgfkphvz0slmxf0m8m8pdr3ny9zna9mghz42k"))))
+        (base32 "0s720q6vxlh78jzahqp69nl8wagb42l05dym5aqhfnr31dx666hc"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen

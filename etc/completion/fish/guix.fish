@@ -298,7 +298,7 @@ complete -f -c guix -n '__fish_guix_using_command publish' -l repl -d '[=PORT] s
 
 #### lint
 set -l remotecommands checkers list-checkers
-complete -f -c guix -n '__fish_guix_needs_command' -a lint -d 'Run a set of checkers on the specificied package.'
+complete -f -c guix -n '__fish_guix_needs_command' -a lint -d 'Run a set of checkers on the specified package.'
 complete -f -c guix -n '__fish_guix_using_command lint' -l list-checkers -d 'Display the list of available lint checkers.'
 complete -f -c guix -n '__fish_guix_using_command lint' -l checkers -d 'Only run the specified checkers.'
 complete -f -c guix -n '__fish_guix_using_command lint' -l description -d 'Validate package descriptions.'
@@ -327,7 +327,7 @@ complete -f -c guix -n '__fish_guix_using_command import; and not __fish_seen_su
 ##### import cpan
 complete -f -c guix -n '__fish_guix_using_command import; and not __fish_seen_subcommand_from $remotecommands' -a cpan -d 'Import and convert the CPAN package for PACKAGE-NAME.'
 ##### import hackage
-complete -f -c guix -n '__fish_guix_using_command import; and not __fish_seen_subcommand_from $remotecommands' -a hackage -d 'Import and convert the Hackage package for PACKAGE-NAME.  If PACKAGE-NAME includes a suffix constituted by a at-sign followed by a numerical version (as used with Guix packages), then a definition for the specified version of the package will be generated.  If no version suffix is pecified, then the generated package definition will correspond to the latest available version.'
+complete -f -c guix -n '__fish_guix_using_command import; and not __fish_seen_subcommand_from $remotecommands' -a hackage -d 'Import and convert the Hackage package for PACKAGE-NAME.  If PACKAGE-NAME includes a suffix constituted by a at-sign followed by a numerical version (as used with Guix packages), then a definition for the specified version of the package will be generated.  If no version suffix is specified, then the generated package definition will correspond to the latest available version.'
 complete -f -c guix -n '__fish_guix_using_command import; and __fish_seen_subcommand_from hackage' -s e -d 'ALIST specify environment for Cabal evaluation.'
 complete -f -c guix -n '__fish_guix_using_command import; and __fish_seen_subcommand_from hackage' -a "--cabal-environment=" -d 'ALIST specify environment for Cabal evaluation.'
 complete -f -c guix -n '__fish_guix_using_command import; and __fish_seen_subcommand_from hackage' -s s -l stdin -d 'Read from standard input.'

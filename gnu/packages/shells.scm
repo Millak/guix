@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
+;;; Copyright © 2024 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -273,16 +274,16 @@ and syntax highlighting.")
 (define-public fish-foreign-env
   (package
     (name "fish-foreign-env")
-    (version "0.20190116")
+    (version "0.20230823")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/oh-my-fish/plugin-foreign-env")
-             (commit "dddd9213272a0ab848d474d0cbde12ad034e65bc")))
+             (commit "7f0cf099ae1e1e4ab38f46350ed6757d54471de7")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00xqlyl3lffc5l0viin1nyp819wf81fncqyz87jx8ljjdhilmgbs"))))
+        (base32 "0d16mdgjdwln41zk44qa5vcilmlia4w15r8z2rc3p49i5ankksg3"))))
     (build-system trivial-build-system)
     (arguments
      '(#:modules ((guix build utils))
@@ -298,7 +299,6 @@ and syntax highlighting.")
 
            ;; Embed absolute paths.
            (substitute* `(,(string-append func-path "/fenv.fish")
-                          ,(string-append func-path "/fenv.apply.fish")
                           ,(string-append func-path "/fenv.main.fish"))
              (("bash")
               (search-input-file %build-inputs "/bin/bash"))
@@ -543,14 +543,14 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.14.0")
+    (version "0.14.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "1wcv1sk8igs5kb9fqb8njbxwiqbwzpn0kdx9xkaddq3wn6msma25"))
+           "0fddxzd45zvfr687mvd90f5s376yz0a8ln7qbpl94q89z7l0y77k"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
@@ -789,7 +789,7 @@ The OpenBSD Korn Shell is a cleaned up and enhanced ksh.")
 (define-public loksh
   (package
     (name "loksh")
-    (version "7.3")
+    (version "7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -801,7 +801,7 @@ The OpenBSD Korn Shell is a cleaned up and enhanced ksh.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1miydvb79wagckchinp189l8i81f08lqajg5jngn77m4x4gwjf3n"))))
+                "0arbncmgs3wzkwlqzp5za8rwh9px2r5mn3i979rabc4cms1bs0l1"))))
     (build-system meson-build-system)
     (inputs (list ncurses))
     (native-inputs (list pkg-config))

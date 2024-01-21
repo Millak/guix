@@ -6,7 +6,7 @@
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2014, 2015, 2016, 2024 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2014, 2015, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
@@ -78,7 +78,8 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -193,6 +194,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -230,6 +232,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)
@@ -2367,6 +2370,55 @@ Every puzzle has a complete solution, although there may be more than one.")
     "PrBoom+ is a Doom source port developed from the original PrBoom project.")
    (license license:gpl2+)))
 
+(define-public redeal
+  (let ((commit "e2e81a477fd31ae548a340b5f0f380594d3d0ad6")
+        (revision "1"))
+    (package
+      (name "redeal")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/anntzer/redeal")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1vac36bg4ah9gs4hgmp745xq6nnmd7s71vsq99d72ng3sxap0wa3"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'unbundle-dds
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "setup.py"
+                  (("cmdclass=.*") ""))
+                (let ((libdds (search-input-file inputs "lib/libdds.so")))
+                  (substitute* "redeal/dds.py"
+                    ((" and os.path.exists\\(dll_path\\)") "")
+                    (("dll = DLL\\(dll_path\\)")
+                     (format #f "dll = DLL(~s)" libdds))))))
+            (add-after 'install 'install-examples
+              (lambda _
+                (let* ((doc (string-append #$output "/share/doc/"))
+                       (examples
+                        (string-append doc #$name "-" #$version "/examples")))
+                  (mkdir-p examples)
+                  (copy-recursively "examples" examples)))))))
+      (inputs (list dds `(,python "tk")))
+      (propagated-inputs (list python-colorama))
+      (home-page "https://github.com/anntzer/redeal")
+      (synopsis
+       "Deal generator for bridge card game, written in Python")
+      (description
+       "Redeal is a deal generator written in Python.  It outputs deals
+satisfying whatever conditions you specify --- deals with a double void, deals
+with a strong 2♣ opener opposite a yarborough, etc.  Using Bo Haglund's double
+dummy solver, it can even solve the hands it has generated for you.")
+      (license license:gpl3))))
+
 (define-public retux
   (let ((release "1.6.1")
         (revision 0))
@@ -3385,25 +3437,29 @@ a C library, so they can easily be integrated into other programs.")
 (define-public taisei
   (package
     (name "taisei")
-    (version "1.3.2")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/taisei-project/"
                            "taisei/releases/download/v" version
-                           "/taisei-v" version ".tar.xz"))
+                           "/taisei-" version ".tar.xz"))
        (sha256
-        (base32 "1g53fcyrlzmvlsb40pw90gaglysv6n1w42hk263iv61ibhdmzh6v"))))
+        (base32 "1glrr99xiyz674d1izgvmk9w1zxanc94d34pacd0wya66bbml0nc"))))
     (build-system meson-build-system)
     (arguments
-     `(#:build-type "release"      ;comment out for bug-reporting (and cheats)
-       #:configure-flags
-       (list "-Dr_default=gles30"
-             "-Dr_gles20=true"
-             "-Dr_gles30=true"
-             "-Dshader_transpiler=true")))
+     (list
+      #:build-type "release" ;comment out for bug-reporting (and cheats)
+      #:configure-flags #~(list "-Dr_default=gles30"
+                                "-Dr_gles20=true"
+                                "-Dr_gles30=true"
+                                "-Dshader_transpiler=true")))
     (native-inputs
-     (list pkg-config python python-docutils python-pygments))
+     (list pkg-config
+           python
+           python-docutils
+           python-pygments
+           python-zstandard))
     (inputs
      (list cglm
            freetype
@@ -3417,21 +3473,23 @@ a C library, so they can easily be integrated into other programs.")
            sdl2-mixer
            shaderc
            spirv-cross
-           zlib))
+           zlib
+           (list zstd "lib")))
     (home-page "https://taisei-project.org/")
     (synopsis "Shoot'em up fangame and libre clone of Touhou Project")
     (description
      "The player controls a character (one of three: Good, Bad, and Dead),
 dodges the missiles (lots of it cover the screen, but the character's hitbox
 is very small), and shoot at the adversaries that keep appear on the screen.")
-    (license (list ;;game
-                   license:expat
-                   ;;resources/00-taisei.pkgdir/bgm/
-                   ;;atlas/portraits/
-                   license:cc-by4.0
-                   ;;miscellaneous
-                   license:cc0
-                   license:public-domain))))
+    (license (list
+              ;; game
+              license:expat
+              ;; resources/00-taisei.pkgdir/bgm/
+              ;; atlas/portraits/
+              license:cc-by4.0
+              ;; miscellaneous
+              license:cc0
+              license:public-domain))))
 
 (define-public cmatrix
   (package
@@ -3833,7 +3891,7 @@ for common mesh file formats, and collision detection.")
   (package
     (inherit irrlicht)
     (name "irrlicht-for-minetest")
-    (version "1.9.0mt10")
+    (version "1.9.0mt13")
     (source
      (origin
        (method git-fetch)
@@ -3843,7 +3901,7 @@ for common mesh file formats, and collision detection.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0y5vchz91khs8dmrkpgc7sqmvzx2yjj6svivvm80r4yppv7s03rw"))))
+         "11pxg0yh50ym1hvh8va5jbbcjz5dsshj3xxvm3qhkgg96vpism06"))))
     (build-system cmake-build-system)
     (arguments
      ;; No check target.
@@ -4060,7 +4118,8 @@ Widgets, and allows users to create more.")
                                   "fifengine/tar.gz/" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (patches (search-patches "fifengine-swig-compat.patch"
-                                       "fifengine-boost-compat.patch"))
+                                       "fifengine-boost-compat.patch"
+                                       "fifengine-python-3.9-compat.patch"))
               (sha256
                (base32
                 "1y4grw25cq5iqlg05rnbyxw1njl11ypidnlsm3qy4sm3xxdvb0p8"))))
@@ -4395,7 +4454,9 @@ also available.")
               (sha256
                (base32
                 "1n747p7h0qp48szgp262swg0xh8kxy1bw8ag1qczs4i26hyzs5x4"))
-              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"))))
+              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"
+                                       "unknown-horizons-python-3.9.patch"
+                                       "unknown-horizons-python-3.10.patch"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -4515,16 +4576,16 @@ falling, themeable graphics and sounds, and replays.")
 (define-public wesnoth
   (package
     (name "wesnoth")
-    (version "1.16.9")
+    (version "1.16.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wesnoth/wesnoth")
                     (commit version)))
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "06gfgkg8f98jsj9vnbglw5lqflqzf0229n6wf3xl12carjzgaq9g"))))
+                "0z0y2il4xq8fdj20fwfggpf6286hb099jh1kdywap9rlrybq142d"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;no test target
@@ -10115,6 +10176,36 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
    (home-page "https://github.com/bernds/q5Go")
    (license license:gpl2+)))
 
+(define-public qcheckers
+  (package
+    (name "qcheckers")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/portnov/qcheckers")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05wzql6abzdf6l0vdzki4rfy2zn31mcplh1wkw3ddk8w81pvaymw"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "qmake"
+                      (string-append "PREFIX=" #$output)))))))
+    (inputs (list qtbase-5 qtsvg-5))
+    (home-page "https://portnov.github.io/qcheckers/")
+    (synopsis "Qt-based checkers boardgame")
+    (description "QCheckers, formely known as KCheckers, is a is a Qt version
+of the classic boardgame checkers (also known as draughts).")
+    (license license:gpl2+)))
+
 (define-public xmoto
   (package
     (name "xmoto")
@@ -10414,6 +10505,31 @@ ChessX.")
 sunfish, but is written in C rather than Python.  It also has TUI tools for
 using any UCI engine and also to connect UCI engines to Lichess.")
       (license license:agpl3+))))
+
+(define-public morris
+  (package
+    (name "morris")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/farindk/morris")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kkcnpkzgybm7rqg7nafd7sqd5m4alns6l4j5zcf3p41jdc9s3iv"))))
+    (build-system glib-or-gtk-build-system)
+    (inputs (list automake autoconf pkg-config intltool
+		 gnu-gettext libtool glib gtk+-2 boost))
+    (arguments `(#:tests? #f))
+    (home-page "http://nine-mens-morris.net/downloads.html")
+    (synopsis "Morris is an implementation of the board game Nine Men's Morris")
+    (description "Morris is an implementation of the board game Nine Men's Morris.
+It supports not only the standard game, but also several rule-variants and different
+board layouts. You can play against the computer, or simply use the program to
+present the board, but play against another human opponent.")
+    (license license:gpl3)))
 
 (define-public barrage
   (package
@@ -10938,6 +11054,80 @@ game FPS.")
 implemented using ncurses user interface.  An SDL graphical version is also
 available.")
     (license license:gpl3+)))
+
+(define-public devours
+  (let ((commit "d50e745aa14aa48f7555ae12eb3d1000de1cc150")
+        (revision "0"))
+  (package
+    (name "devours")
+    (version (git-version "3" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://jxself.org/git/devours.git")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ksl6mh76jfx64rmasz2571f88ws45vby2977srhgkh355zp3lzn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; no configure
+          (replace 'build
+            (lambda _
+              (invoke "inform"
+                      (string-append "+include_path="
+                                     #$(this-package-native-input "informlib")
+                                     "/lib")
+                      "devours.inf")))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Create standalone executable.
+              (let* ((bash (search-input-file inputs "/bin/bash"))
+                     (share (string-append #$output "/share"))
+                     (scummvm (search-input-file inputs "/bin/scummvm"))
+                     (bin (string-append #$output "/bin"))
+                     (executable (string-append bin "/devours")))
+                (mkdir-p share)
+                (copy-file "devours.z5" (string-append share "/devours.z5"))
+                (mkdir-p bin)
+                (with-output-to-file executable
+                  (lambda ()
+                    (format #t "#!~a~%" bash)
+                    (format #t
+                            "exec ~a --path=~a glk:zcode~%"
+                            scummvm share)))
+                (chmod executable #o755))))
+          (add-after 'install-executable 'install-desktop-file
+            (lambda _
+              (let* ((apps (string-append #$output "/share/applications"))
+                     (share (string-append #$output "")))
+                (mkdir-p apps)
+                (make-desktop-entry-file
+                 (string-append apps "/devours.desktop")
+                 #:name "All Things Devours"
+                 #:generic-name "All Things Devours"
+                 #:exec (string-append #$output "/bin/devours")
+                 #:categories '("AdventureGame" "Game" "RolePlaying")
+                 #:keywords '("game" "adventure" "sci-fi")
+                 #:comment '((#f "Sci-fi text adventure game")))))))))
+    (inputs
+     (list bash scummvm))
+    (native-inputs
+     (list inform informlib))
+    (synopsis "All Things Devours")
+    (description
+     "All Things Devours is a short piece of sci-fi interactive fiction,
+leaning strongly towards the text-adventure end of the spectrum.
+Any move you make may put things into an unwinnable state.  You are therefore
+encouraged to save frequently, and also to realise that you will probably have
+to start over several times to find the most satisfactory ending.")
+    (home-page "https://jxself.org/git/devours.git")
+    (license license:agpl3+))))
 
 (define-public schiffbruch
   ;; There haven't been any releases for several years, so I've taken the most

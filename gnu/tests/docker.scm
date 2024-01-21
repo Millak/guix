@@ -212,7 +212,7 @@ inside %DOCKER-OS."
     (virtual-machine
      (operating-system os)
      (volatile? #f)
-     (disk-image-size (* 5500 (expt 2 20)))
+     (disk-image-size (* 6000 (expt 2 20)))
      (memory-size 2048)
      (port-forwardings '())))
 

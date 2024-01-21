@@ -31,7 +31,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -327,6 +327,28 @@ the @code{Clang/LLVM} infrastructure to extract the data, and emits it in
 various formats, including @code{json}.")
     (license license:gpl2+)))
 
+(define-public expected-lite
+  (package
+    (name "expected-lite")
+    (version "0.6.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martinmoene/expected-lite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d58nqh2fwdzdpln2wlnf898wyfxdnskq6ff33azbg92d5ibzys2"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/martinmoene/expected-lite")
+    (synopsis "Expected objects in C++11 and later")
+    (description "@i{expected lite} is a single-file header-only library for
+objects that either represent a valid value or an error that can be passed by
+value.  It is intended for use with C++11 and later.  The library is based on
+the @code{std::expected} proposal (@url{http://wg21.link/p0323}).")
+    (license license:boost1.0)))
+
 (define-public libzen
   (package
     (name "libzen")
@@ -484,7 +506,7 @@ operating on batches.")
 (define-public google-highway
   (package
     (name "google-highway")
-    (version "1.0.5")
+    (version "1.0.7")
     (source
      (origin
        (method git-fetch)
@@ -493,10 +515,11 @@ operating on batches.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01ig4iqicm57nycl9q8mx1b22gvl4wj5j1vfp1jczhmrga4bca8v"))))
+        (base32 "0cx38hnislqyd4vd47mlpgjpr1zmpf1fms2bj6nb00fjv53q1sb7"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
+     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on"
+                               "-DBUILD_SHARED_LIBS=ON")))
     (native-inputs
      (list googletest))
     (home-page "https://github.com/google/highway")
@@ -608,6 +631,47 @@ functions, class methods, and stl containers.
 container which uses the order in which keys were inserted to the container
 as ordering relation.")
     (license license:expat)))
+
+(define-public frozen
+  ;; The test suite fails to compile with the latest 1.1.1 release; use a
+  ;; newer commit (see:
+  ;; https://github.com/serge-sans-paille/frozen/issues/163).
+  (let ((commit "dd1f58c5f6c97fbf0832cc4e84676663839b913e")
+        (revision "0"))
+    (package
+      (name "frozen")
+      (version (git-version "1.1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/serge-sans-paille/frozen")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "06i307a7v6alxfy24d47b1sjkz5f4mrqwl2vb4j8zx7wlgnrf08b"))))
+      (build-system cmake-build-system)
+      (home-page "https://github.com/serge-sans-paille/frozen")
+      (synopsis "C++ constexpr alternative header-only library")
+      (description "@code{frozen} is a header-only library that provides zero
+cost initialization for immutable containers, fixed-size containers, and
+various algorithms.  It provides features such as:
+@itemize
+@item
+immutable (also known as frozen), @code{constexpr}-compatible versions of
+{std::set}, {std::unordered_set}, {std::map} and {std::unordered_map}
+@item
+fixed-capacity, @code{constinit}-compatible versions of @code{std::map} and
+@code{std::unordered_map} with immutable, compile-time selected keys mapped to
+mutable values.
+@item
+zero cost initialization version of @code{std::search} for frozen needles
+using Boyer-Moore or Knuth-Morris-Pratt algorithms.
+@end itemize
+The @code{unordered_*} containers are guaranteed perfect (no hash
+collision) and the extra storage is linear with respect to the number of
+keys.")
+      (license license:asl2.0))))
 
 (define-public json-dto
   (package
@@ -1222,7 +1286,7 @@ Google's C++ code base.")
          ((#:configure-flags flags)
           #~(cons* "-DCMAKE_CXX_STANDARD=11" #$flags)))))))
 
-(define-public abseil-cpp
+(define-public abseil-cpp-20220623.1
   (let ((base abseil-cpp-20200923.3))
     (package
       (inherit base)
@@ -1243,16 +1307,40 @@ Google's C++ code base.")
           `(cons* "-DABSL_BUILD_TESTING=ON"
                   (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
-(define (abseil-cpp-for-c++-standard version)
-  (let ((base abseil-cpp))
-    (hidden-package
-     (package/inherit base
-       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:configure-flags flags)
-           #~(cons* #$(string-append "-DCMAKE_CXX_STANDARD="
-                                     (number->string version))
-                    #$flags))))))))
+(define-public abseil-cpp
+  (let ((base abseil-cpp-20220623.1))
+    (package
+      (inherit base)
+      (name "abseil-cpp")
+      (version "20230802.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/abseil/abseil-cpp")
+                      (commit version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ydkkbanrpkp5i814arzsk973kyzhhjhagnp392rq6rrv16apldq"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-before 'check 'set-env-vars
+                (lambda* (#:key inputs #:allow-other-keys)
+                 ;; absl_time_test requires this environment variable.
+                 (setenv "TZDIR" (string-append #$(package-source base)
+                                                "/absl/time/internal/cctz/testdata/zoneinfo")))))))))))
+
+(define (abseil-cpp-for-c++-standard base version)
+  (hidden-package
+   (package/inherit base
+     (arguments
+      (substitute-keyword-arguments (package-arguments base)
+        ((#:configure-flags flags)
+         #~(cons* #$(string-append "-DCMAKE_CXX_STANDARD="
+                                   (number->string version))
+                  #$flags)))))))
 
 (define (make-static-abseil-cpp version)
   (let ((base abseil-cpp))
@@ -1265,10 +1353,10 @@ Google's C++ code base.")
                     (delete "-DBUILD_SHARED_LIBS=ON" #$flags)))))))))
 
 (define-public abseil-cpp-cxxstd17
-  (abseil-cpp-for-c++-standard 17))             ;XXX: the default with GCC 11?
+  (abseil-cpp-for-c++-standard abseil-cpp 17))  ;XXX: the default with GCC 11?
 
 (define-public abseil-cpp-cxxstd11
-  (abseil-cpp-for-c++-standard 11))
+  (abseil-cpp-for-c++-standard abseil-cpp-20220623.1 11)) ;last version on C++11
 
 (define-public static-abseil-cpp
   (make-static-abseil-cpp abseil-cpp))
@@ -1356,7 +1444,7 @@ standard GNU style syntax for options.")
 (define-public folly
   (package
     (name "folly")
-    (version "2022.10.31.00")
+    (version "2023.11.06.00")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1365,7 +1453,7 @@ standard GNU style syntax for options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06r9xnj8ilghc0vv6r17k5apl3w19iwd76nr02svnv96c74bz2aa"))))
+                "0z0jhkma2qacc2kc27qsiwqwqkv07i9mwpc4vwcbawyzdajq6hd0"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests must be explicitly enabled
@@ -2760,6 +2848,43 @@ Main features:
 @item No dependencies.
 @end itemize")
     (license license:expat)))
+
+(define-public mapbox-variant
+  (package
+    (name "mapbox-variant")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mapbox/variant")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "03cmxm34ralh8y07bs80gz3v4pql51206dn5h7lcnm7vishkk241"))
+              (modules '((guix build utils)))
+              (snippet #~(begin
+                           (delete-file "test/include/catch.hpp")
+                           (substitute* (find-files "test" "\\.[ch]pp")
+                             (("\"catch.hpp\"") "<catch/catch.hpp>"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'bootstrap)
+               (delete 'configure)
+               (delete 'build)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (copy-recursively "include"
+                                     (string-append (assoc-ref outputs "out")
+                                                    "/include")))))))
+    (native-inputs (list catch2-1))
+    (home-page "https://github.com/mapbox/variant")
+    (synopsis "Implementation of std::variant for C++11/14")
+    (description "This package provides a header-only implementation of
+std::variant (formerly boost::variant) for C++11/14.")
+    (license license:bsd-3)))
 
 (define-public mpark-variant
   (package

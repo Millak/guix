@@ -44,7 +44,7 @@
 (define-public agda
   (package
     (name "agda")
-    (version "2.6.3")
+    (version "2.6.4")
     (source
      (origin
        (method git-fetch)
@@ -53,12 +53,14 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s7zd01i8pmvi90ywx497kc07z50nah7h0fc2dn6jzb132k5sh1q"))
-       (patches (search-patches "agda-libdirs-env-variable.patch"))))
+        (base32 "0n4avd58j45rdcmnwgrmz5s0ril0z4n2z711mwwbahl50f7359ky"))
+       (patches (search-patches "agda-libdirs-env-variable.patch"
+                                "agda-use-sphinx-5.patch"))))
     (build-system haskell-build-system)
     (inputs
      (list ghc-aeson
            ghc-alex
+           ghc-ansi-terminal
            ghc-async
            ghc-blaze-html
            ghc-boxes
@@ -73,9 +75,11 @@
            ghc-monad-control
            ghc-murmur-hash
            ghc-parallel
+           ghc-peano
            ghc-regex-tdfa
            ghc-split
            ghc-strict
+           ghc-text-icu
            ghc-unordered-containers
            ghc-uri-encode
            ghc-vector-hashtables
@@ -91,6 +95,7 @@
                        (guix build utils)
                        (srfi srfi-26)
                        (ice-9 match))
+           #:configure-flags #~(list "-foptimise-heavily" "-fenable-cluster-counting")
            #:phases
            #~(modify-phases %standard-phases
                ;; This allows us to call the 'agda' binary before installing.
@@ -194,7 +199,7 @@ come from Agda's standard library.")
 (define-public agda-stdlib
   (package
     (name "agda-stdlib")
-    (version "1.7.2")
+    (version "1.7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -203,7 +208,7 @@ come from Agda's standard library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "065hf24xjpciwdrvk4isslgcgi01q0k93ql0y1sjqqvy5ryg5xmy"))))
+                "0y6rns64rrkh8hw7mamcf6797329pi4ravpak5zijpnkzdagmlmy"))))
     (build-system agda-build-system)
     (arguments
      (list
@@ -241,7 +246,8 @@ try agda-prelude instead.")
                (base32
                 "0xwgm2mfl2pxipsv31bin8p14y1yhd9n27lv3clvsxd4z9yc034m"))
               (patches (search-patches "agda-categories-remove-incompatible-flags.patch"
-                                       "agda-categories-use-find.patch"))))
+                                       "agda-categories-use-find.patch"
+                                       "agda-categories-use-stdlib-1.7.3.patch"))))
     (build-system agda-build-system)
     (arguments
      (list
@@ -259,12 +265,9 @@ try agda-prelude instead.")
     (license license:expat)))
 
 (define-public agda-cubical
-  ;; Upstream's HEAD follows the latest Agda release, but they don't release
-  ;; until a newer Agda release comes up, so their releases are always one
-  ;; version late.
   (package
     (name "agda-cubical")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -273,7 +276,7 @@ try agda-prelude instead.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yfg7gr55n08ly1qgzpcp16s15k1abycppbcdi9lzg1hjryqxcg3"))))
+                "0zq0z328zcjmm43mrv2ks27i1dnbylcf8mhzja2hd4gvz1kq1ays"))))
     (build-system agda-build-system)
     (arguments
      (list
@@ -290,10 +293,10 @@ agda-stdlib but using cubical methods.")
     (license license:expat)))
 
 (define-public agda-1lab
-  ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.3,
+  ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.4,
   ;; since they use Agda HEAD.
-  (let* ((revision "1")
-         (commit "47ca1d23640a6f49a3abe3c2fe27738bcc10c9c6"))
+  (let* ((revision "2")
+         (commit "549fdb1c948a975e90e70f871993a4a4239aa280"))
     (package
       (name "agda-1lab")
       (version (git-version "0.0" revision commit))
@@ -306,10 +309,12 @@ agda-stdlib but using cubical methods.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0j7mp6c0xd0849skdxzncklkxynxnyfrbpcjv4qp5p1xfn0dnfqx"))))
+           "1k4zj8dibyplakpxaw4a8hpsaqhakynjb83dqxrva4h4ssj6gkqj"))))
       (build-system agda-build-system)
       (arguments
-       (list #:plan '(("src/index\\.lagda\\.md$"))))
+       ;; Check files individually first, to avoid running out of heap :(
+       (list #:plan '(("src/.+/.+\\.lagda\\.md$")
+                      ("src/index\\.lagda\\.md$"))))
       (synopsis "Reference resource for mathematics done in Homotopy Type Theory")
       (description "A formalised, cross-linked reference resource for
 mathematics done in Homotopy Type Theory.  Unlike the HoTT book, the 1lab is

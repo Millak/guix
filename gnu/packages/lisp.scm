@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -67,7 +67,6 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dbm)
-  #:use-module (gnu packages ed)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -95,6 +94,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
@@ -439,14 +439,17 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.3.7")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1xwr1pnwd3xj375ainlad7mm479rk2mrks8dc6d92cash3xl90b9"))
+        (base32 "0xhpdnsg8idzxkn20iw8gd2rk470d7vc22vrp5clq9fj117vgn43"))
+       ;; TODO: Remove these patches when updating to sbcl > 2.4.0.
+       (patches (search-patches "sbcl-fix-ppc64-build.patch"
+                                "sbcl-fix-riscv-build.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -999,7 +1002,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "291")
+    (version "293")
     (source
      (origin
        (method git-fetch)
@@ -1008,7 +1011,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nsb302arpd2mw2z2l12j6yg9pp94lfb79h3sym72ih7rmklnfx7"))))
+        (base32 "1b3vhlnw4ymznnlh9d71qhkcdc1p69a53hilckc3rql9y4jsik57"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1024,15 +1027,6 @@ the HTML documentation of TXR.")
                       (string-append "INSTALL" match #$output
                                      "/share/doc/" #$name "-" #$version)))))
                (delete 'install-license-files)
-               (add-after 'unpack 'inhibit-doc-syms-generation
-                 (lambda _
-                   (substitute* "genman.txr"
-                     ;; Exit from genman.txr before it tries to write to
-                     ;; stdlib/doc-syms.tl, which is anyway kept up to date
-                     ;; with each release (and is already compiled to
-                     ;; stdlib/doc-syms.tlo when genman.txr is run).
-                     (("^@\\(output \"stdlib/doc-syms\\.tl\"\\).*" line)
-                      (string-append "@(do (exit))\n" line)))))
                (add-after 'unpack 'fix-paths
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "stream.c"
@@ -1061,8 +1055,9 @@ the HTML documentation of TXR.")
                                '("txr-manpage.html" "txr-manpage.pdf")))))
                (add-after 'install 'install-vim-files
                  (lambda _
-                   (let ((syntax (string-append #$output
-                                                "/share/vim/vimfiles/syntax")))
+                   (let ((syntax (string-append
+                                   #$output
+                                   "/share/vim/vimfiles/pack/guix/start/txr/syntax")))
                      (install-file "tl.vim" syntax)
                      (install-file "txr.vim" syntax)))))))
     (native-inputs
@@ -1246,7 +1241,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.29.1")
+    (version "1.32.1")
     (source
      (origin
        (method git-fetch)
@@ -1255,7 +1250,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18684mxnb0jk63mkzi36zlmd8rjjv0msx3xxpmn67mhrnwz4x861"))))
+        (base32 "1nnqbpql6749597m0lp56i2zqm003pg690399l0g8kb9kwvpv1yv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -1493,7 +1488,7 @@ includes a compiler as well as an interpreter.")
 
 (define-public s7-bootstrap
   ;; Need s7-bootstrap to build libc_s7.so (for the REPL) and run tests
-  (let ((commit "a5b4bb49f8bcd7c33ae2366065fc8c254b734460") ;no releases
+  (let ((commit "618de30e0f9851515724245e3ebbfa1be4de6906") ;no releases
         (revision "0"))
     (hidden-package
      (package
@@ -1507,7 +1502,7 @@ includes a compiler as well as an interpreter.")
                  (file-name (git-file-name name version))
                  (sha256
                   (base32
-                   "03n1axdlypzmbgzrhlwfqwa1xiw36hi25j2hwc7vw77mz90cd9f8"))))
+                   "0kh1f49g24ppjpr16v1nc9lr7pvr5nzb82bpw8c6q8ll7pqalqaf"))))
        (build-system gnu-build-system)
        (arguments
         (list #:tests? #f ;no tests in bootstrap

@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -108,6 +108,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -576,6 +577,35 @@ the API, and provides features such as:
 @item Local replication
 @end itemize")
     (license license:bsd-3)))
+
+(define-public python-prisma
+  (package
+    (name "python-prisma")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "prisma" version))
+       (sha256
+        (base32 "1y9m3bailnvid59dl4vx31vysaqbcg6gsppskyymaxg3m96808pc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-cached-property
+           python-click
+           python-dotenv
+           python-httpx
+           python-jinja2
+           python-nodeenv
+           python-pydantic
+           python-strenum
+           python-tomlkit
+           python-typing-extensions))
+    (home-page "https://github.com/RobertCraigie/prisma-client-py")
+    (synopsis "Fully type-safe database client")
+    (description
+     "Prisma Client Python is an auto-generated and fully type-safe database
+client.")
+    (license license:asl2.0)))
 
 (define-public python-pylibmc
   (package
@@ -1600,14 +1630,14 @@ types are supported, as is encryption.")
 (define-public emacs-rec-mode
   (package
     (name "emacs-rec-mode")
-    (version "1.9.1")
+    (version "1.9.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "rec-mode-" version ".tar"))
               (sha256
                (base32
-                "0f60bw07l6kk1kkjjxsk30p6rxj9mpngaxqy8piyabnijfgjzd3s"))
+                "15m0h84fcrcxpx67mc9any4ap2dcqysfjm1d2a7sx4clx8h3mgk0"))
               (snippet #~(begin (delete-file "rec-mode.info")))))
     (build-system emacs-build-system)
     (arguments
@@ -3596,7 +3626,11 @@ You might also want to install the following optional dependencies:
               (uri (pypi-uri "alchemy-mock" version))
               (sha256
                (base32
-                "0ylxygl3bcdapzz529n8wgk7vx9gjwb3ism564ypkpd7dbsw653r"))))
+                "0ylxygl3bcdapzz529n8wgk7vx9gjwb3ism564ypkpd7dbsw653r"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       (substitute* "alchemy_mock/comparison.py"
+                         (("collections\\.Mapping") "collections.abc.Mapping"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -4389,7 +4423,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "13.0.0")
+    (version "14.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4399,7 +4433,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03ykynzz01ar2y4blhcxjh6xsi0gqv380h5m669dddfz2isplsf8"))))
+         "08x01jcibmx03g9p0sjikp3dyynw6is6gyn0m3cy1gwkpkwk2ad2"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -5001,7 +5035,9 @@ The drivers officially supported by @code{libdbi} are:
      `(#:configure-flags
        ;; C++11 (-DSOCI_CXX11) is OFF by default.  hyperledger-iroha needs it.
        (list "-DCMAKE_CXX_STANDARD=17"
-             "-DSOCI_LIBDIR=lib")
+             "-DSOCI_LIBDIR=lib"
+             ;; This is for relocation when linking statically
+             "-DCMAKE_CXX_FLAGS=-fPIE")
        #:tests? #f))         ; may require running database management systems
     (synopsis "C++ Database Access Library")
     (description
@@ -5214,7 +5250,7 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "0.64.2")
+    (version "1.0a7")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -5223,7 +5259,7 @@ mechanism of @code{dogpile}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c8ajdaraynrjvsb8xxxnkb7zgm5fwq60qczaz00n465ki80j4h3"))))
+                "1wwdx2xqkxygbww1nzpr6h702ims6zcxpjskh8fldn1kby591qgg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5262,6 +5298,7 @@ mechanism of @code{dogpile}.")
      (list python-aiofiles
            python-asgi-csrf
            python-asgiref
+           python-asyncinject
            python-click
            python-click-default-group
            python-httpx
@@ -5273,6 +5310,7 @@ mechanism of @code{dogpile}.")
            python-pint
            python-pluggy
            python-pyyaml
+           python-sqlite-utils
            python-uvicorn))
     (native-inputs
      (list python-beautifulsoup4

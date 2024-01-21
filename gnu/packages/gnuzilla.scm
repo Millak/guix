@@ -20,6 +20,7 @@
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 SeerLite <seerlite@disroot.org>
+;;; Copyright © 2024 Aleksandr Vityazev <avityazew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,7 +98,8 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
-  #:autoload (json parser) (json->scm))
+  #:autoload (json parser) (json->scm)
+  #:export (all-mozilla-locales))
 
 (define-public mozjs
   (package
@@ -546,9 +548,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.4.0")
+(define %icecat-base-version "115.6.0")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20231024000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20231219000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -568,12 +570,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0ndf8b6qj0f178k5yq9s9mjgj9csb62f0igy74dzj28vlgrxn7y3"))))
+              "0rmw486yhkb1is1j2fy51djl5p5qggf2fhp2hgzfdj4s2bjydmv6"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.4.0")
-         (gnuzilla-commit "5b2ce0c4cefc73f996f260edfac368ecc3d86b24")
+         (upstream-icecat-base-version "115.6.0")
+         (gnuzilla-commit "6a76a10682b6e63f562e4b9f26f3ef12f88bd839")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -585,7 +587,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "13a0rv6b2vcf2mv7bfbb0rlx08pi0bz29dig0xrfdy3m1p39apla"))))
+              "15bvlz7c4d8mk10zc317rai91hd96wnchikcfdfxzl35zdnd315r"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1034,6 +1036,9 @@ variable defined below.  It requires guile-json to be installed."
                 (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
                 (setenv "MOZ_BUILD_DATE" #$%icecat-build-id) ; avoid timestamp
 
+                ;; WM_CLASS (default is "$MOZ_APP_NAME-$MOZ_UPDATE_CHANNEL").
+                (setenv "MOZ_APP_REMOTINGNAME" "Icecat")
+
                 ;; XXX TODO: Fix this to work on systems other than x86_64-linux.
                 (setenv "GUIX_PYTHONPATH"
                         (string-append (getcwd)
@@ -1057,10 +1062,12 @@ variable defined below.  It requires guile-json to be installed."
             (lambda* (#:key (make-flags '()) (parallel-build? #t)
                       #:allow-other-keys)
               (apply invoke "./mach" "build"
-                     ;; mach will use parallel build if possible by default
-                     `(,@(if parallel-build?
-                             '()
-                             '("-j1"))
+                     ;; mach will use a wide parallel build if possible by
+                     ;; default, so reign it in if requested.
+                     `(,(string-append
+                         "-j" (number->string (if parallel-build?
+                                                  (parallel-job-count)
+                                                  1)))
                        ,@make-flags))))
           (add-after 'build 'neutralise-store-references
             (lambda _
@@ -1089,18 +1096,22 @@ variable defined below.  It requires guile-json to be installed."
               (let* ((lib (string-append #$output "/lib"))
                      (gtk #$(this-package-input "gtk+"))
                      (gtk-share (string-append gtk "/share"))
-                     (ld-libs '#$(map (lambda (label)
-                                        (file-append (this-package-input label) "/lib"))
-                                      '("libpng-apng"
-                                        "libxscrnsaver"
-                                        "mesa"
-                                        "pciutils"
-                                        "mit-krb5"
-                                        "eudev"
-                                        "pulseaudio"
-                                        ;; For the integration of native notifications
-                                        ;; (same reason as icedove)
-                                        "libnotify"))))
+                     (ld-libs '#$(cons
+                                  (file-append
+                                   (this-package-input "libcanberra")
+                                   "/lib/gtk-3.0/modules")
+                                  (map (lambda (label)
+                                         (file-append (this-package-input label) "/lib"))
+                                       '("libpng-apng"
+                                         "libxscrnsaver"
+                                         "mesa"
+                                         "pciutils"
+                                         "mit-krb5"
+                                         "eudev"
+                                         "pulseaudio"
+                                         ;; For the integration of native notifications
+                                         ;; (same reason as icedove)
+                                         "libnotify")))))
                 (wrap-program (car (find-files lib "^icecat$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
                   ;; The following line is commented out because the icecat
@@ -1120,7 +1131,7 @@ variable defined below.  It requires guile-json to be installed."
                   (("NewWindow")        "new-window")
                   (("NewPrivateWindow") "new-private-window")
                   (("StartupNotify=true")
-                   "StartupNotify=true\nStartupWMClass=Navigator"))
+                   "StartupNotify=true\nStartupWMClass=Icecat"))
                 (install-file desktop-file applications))))
           (add-after 'install-desktop-entry 'install-icons
             (lambda _
@@ -1772,7 +1783,7 @@ ca495991b7852b855"))
                     (format #t
                             "[Desktop Entry]~@
                             Name=Icedove~@
-                            Exec=~a/bin/icedove~@
+                            Exec=~a/bin/icedove %u~@
                             Icon=icedove~@
                             GenericName=Mail/News Client~@
                             Categories=Network;Email;~@
@@ -2082,7 +2093,7 @@ associated with their name."))
             (call-with-output-file exe
               (lambda (port)
                 (format port "#!~a
- MOZ_ENABLE_WAYLAND=1 exec ~a $@"
+ MOZ_ENABLE_WAYLAND=1 exec ~a \"$@\""
                         #$(file-append bash-minimal "/bin/bash")
                         #$(file-append icedove "/bin/icedove"))))
             (chmod exe #o555)

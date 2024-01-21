@@ -100,13 +100,14 @@
 
 (define-public icedtea-7
   (let* ((version "2.6.13")
-         (drop (lambda (name hash)
+         (drop (lambda* (name hash #:optional (patches '()))
                  (origin
                    (method url-fetch)
                    (uri (string-append
                          "http://icedtea.classpath.org/download/drops"
                          "/icedtea7/" version "/" name ".tar.bz2"))
-                   (sha256 (base32 hash))))))
+                   (sha256 (base32 hash))
+                   (patches patches)))))
     (package
       (name "icedtea")
       (version version)
@@ -518,6 +519,8 @@
                                                    "/lib/arm")
                                                   ("aarch64-linux"
                                                    "/lib/aarch64")
+                                                  ("powerpc-linux"
+                                                   "/lib/ppc")
                                                   ;; We need a catch-all, dropping
                                                   ;; '-linux' works in most cases.
                                                   (_
@@ -612,7 +615,8 @@
                  "110j7jlz47x2gg6f7653x12mssan5kvj9l9h1m1c8c92drfxbqyk"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "0d1mca38ksxvdskp9im3pp7fdijhj1n3lwq9w13r9s4v3qyskgdd"))
+                 "0d1mca38ksxvdskp9im3pp7fdijhj1n3lwq9w13r9s4v3qyskgdd"
+                 (search-patches "jdk-currency-time-bomb.patch")))
          ("langtools-drop"
           ,(drop "langtools"
                  "0nq5236fzxn3p6x8cgncl56mzcmsj07q9gymysnws4c8byc6n0qj"))
@@ -685,13 +689,14 @@ IcedTea build harness.")
 
 (define-public icedtea-8
   (let* ((version "3.19.0")
-         (drop (lambda (name hash)
+         (drop (lambda* (name hash #:optional (patches '()))
                  (origin
                    (method url-fetch)
                    (uri (string-append
                          "http://icedtea.classpath.org/download/drops"
                          "/icedtea8/" version "/" name ".tar.xz"))
-                   (sha256 (base32 hash))))))
+                   (sha256 (base32 hash))
+                   (patches patches)))))
     (package (inherit icedtea-7)
       (version "3.19.0")
       (source (origin
@@ -837,7 +842,8 @@ new Date();"))
                  "1pc0pv4v2mn2mjc0vp19d94v2150xigyhxsmckqasy647zcm6w0r"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "1742lcm55l8zhi522x83v65ccr0rd6511q9rj7crw44x3ymdrhrv"))
+                 "1742lcm55l8zhi522x83v65ccr0rd6511q9rj7crw44x3ymdrhrv"
+                 (search-patches "jdk-currency-time-bomb2.patch")))
          ("langtools-drop"
           ,(drop "langtools"
                  "08iz7p2xcddlphipf6gahyabr5cawlnydap12p1n4f0md069b50b"))
@@ -867,18 +873,25 @@ new Date();"))
                                  (changeset "jdk-9+181")))
               (file-name (hg-file-name name version))
               (modules '((guix build utils)))
-              (snippet `(begin
-                          (for-each delete-file
-                                    (find-files "." ".*.(bin|exe|jar)$"))))
+              (snippet '(for-each delete-file
+                                  (find-files "." ".*.(bin|exe|jar)$")))
               (sha256
                (base32
                 "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))
               (patches (search-patches "openjdk-9-pointer-comparison.patch"
-                                       "openjdk-9-setsignalhandler.patch"))))
+                                       "openjdk-9-setsignalhandler.patch"
+                                       "openjdk-currency-time-bomb.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
-     `(#:tests? #f; require jtreg
+     `(#:imported-modules
+       ((guix build ant-build-system)
+        ,@%gnu-build-system-modules)
+       #:modules
+       ((guix build utils)
+        (guix build gnu-build-system)
+        (ice-9 popen))
+       #:tests? #f; require jtreg
        #:make-flags '("all")
        #:disallowed-references ,(list (gexp-input icedtea-8)
                                       (gexp-input icedtea-8 "jdk"))
@@ -902,8 +915,7 @@ new Date();"))
              ;; This file was "fixed" by patch-source-shebangs, but it requires
              ;; this exact first line.
              (substitute* "jdk/make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
-             #t))
+               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; TODO: unbundle libpng and lcms
@@ -919,14 +931,12 @@ new Date();"))
                      "--disable-hotspot-gtest"
                      "--with-giflib=system"
                      "--with-libjpeg=system"
-                     (string-append "--prefix=" (assoc-ref outputs "out")))
-             #t))
+                     (string-append "--prefix=" (assoc-ref outputs "out")))))
          (add-before 'build 'write-source-revision-file
            (lambda _
              (with-output-to-file ".src-rev"
                (lambda _
-                 (display ,version)))
-             #t))
+                 (display ,version)))))
          (replace 'build
            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
              (apply invoke "make"
@@ -969,8 +979,81 @@ new Date();"))
                               "warning: failed to substitute: ~a~%"
                               file))))
                 (find-files "."
-                            "\\.c$|\\.h$"))
-               #t)))
+                            "\\.c$|\\.h$")))))
+           ;; By default OpenJDK only generates an empty keystore.  In order to
+           ;; be able to use certificates in Java programs we need to generate a
+           ;; keystore from a set of certificates.  For convenience we use the
+           ;; certificates from the nss-certs package.
+           (add-after 'install 'install-keystore
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (use-modules (ice-9 rdelim))
+               (let* ((keystore  "cacerts")
+                      (certs-dir (search-input-directory inputs
+                                                         "etc/ssl/certs"))
+                      (keytool   (string-append (assoc-ref outputs "jdk")
+                                                "/bin/keytool")))
+                 (define (extract-cert file target)
+                   (call-with-input-file file
+                     (lambda (in)
+                       (call-with-output-file target
+                         (lambda (out)
+                           (let loop ((line (read-line in 'concat))
+                                      (copying? #f))
+                             (cond
+                              ((eof-object? line) #t)
+                              ((string-prefix? "-----BEGIN" line)
+                               (display line out)
+                               (loop (read-line in 'concat) #t))
+                              ((string-prefix? "-----END" line)
+                               (display line out)
+                               #t)
+                              (else
+                               (when copying? (display line out))
+                               (loop (read-line in 'concat) copying?)))))))))
+                 (define (import-cert cert)
+                   (format #t "Importing certificate ~a\n" (basename cert))
+                   (let ((temp "tmpcert"))
+                     (extract-cert cert temp)
+                     (let ((port (open-pipe* OPEN_WRITE keytool
+                                             "-import"
+                                             "-alias" (basename cert)
+                                             "-keystore" keystore
+                                             "-storepass" "changeit"
+                                             "-file" temp)))
+                       (display "yes\n" port)
+                       (when (not (zero? (status:exit-val (close-pipe port))))
+                         (format #t "failed to import ~a\n" cert)))
+                     (delete-file temp)))
+
+                 ;; This is necessary because the certificate directory contains
+                 ;; files with non-ASCII characters in their names.
+                 (setlocale LC_ALL "en_US.utf8")
+                 (setenv "LC_ALL" "en_US.utf8")
+
+                 (copy-file (string-append (assoc-ref outputs "out")
+                                           "/lib/security/cacerts")
+                            keystore)
+                 (chmod keystore #o644)
+                 (for-each import-cert (find-files certs-dir "\\.pem$"))
+                 (mkdir-p (string-append (assoc-ref outputs "out")
+                                         "/lib/security"))
+                 (mkdir-p (string-append (assoc-ref outputs "jdk")
+                                         "/lib/security"))
+
+                 ;; The cacerts files we are going to overwrite are chmod'ed as
+                 ;; read-only (444) in icedtea-8 (which derives from this
+                 ;; package).  We have to change this so we can overwrite them.
+                 (chmod (string-append (assoc-ref outputs "out")
+                                       "/lib/security/" keystore) #o644)
+                 (chmod (string-append (assoc-ref outputs "jdk")
+                                       "/lib/security/" keystore) #o644)
+
+                 (install-file keystore
+                               (string-append (assoc-ref outputs "out")
+                                              "/lib/security"))
+                 (install-file keystore
+                               (string-append (assoc-ref outputs "jdk")
+                                              "/lib/security")))))
          ;; Some of the libraries in the lib/ folder link to libjvm.so.
          ;; But that shared object is located in the server/ folder, so it
          ;; cannot be found.  This phase creates a symbolic link in the
@@ -990,8 +1073,7 @@ new Date();"))
                (symlink (string-append lib-jdk "/server/libjvm.so")
                         (string-append lib-jdk "/libjvm.so"))
                (symlink (string-append lib-out "/server/libjvm.so")
-                        (string-append lib-out "/libjvm.so")))
-             #t))
+                        (string-append lib-out "/libjvm.so")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -1001,8 +1083,7 @@ new Date();"))
                                             #:directories? #t))))
                (copy-recursively (string-append images "/images/jdk") jdk)
                (copy-recursively (string-append images "/images/jre") out)
-               (copy-recursively (string-append images "/images/docs") doc))
-             #t))
+               (copy-recursively (string-append images "/images/docs") doc))))
          (add-after 'install 'strip-zip-timestamps
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (zip)
@@ -1019,8 +1100,7 @@ new Date();"))
                            (with-directory-excursion dir
                              (let ((files (find-files "." ".*" #:directories? #t)))
                                (apply invoke "zip" "-0" "-X" zip files)))))
-                       (find-files (assoc-ref outputs "doc") ".*.zip$"))
-             #t)))))
+                       (find-files (assoc-ref outputs "doc") ".*.zip$")))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cups" ,cups)
@@ -1044,6 +1124,7 @@ new Date();"))
        ("icedtea-8:jdk" ,icedtea-8 "jdk")
        ;; XXX: The build system fails with newer versions of GNU Make.
        ("make@4.2" ,gnu-make-4.2)
+       ("nss-certs" ,nss-certs)
        ("unzip" ,unzip)
        ("which" ,which)
        ("zip" ,zip)))
@@ -1073,7 +1154,8 @@ new Date();"))
               (patches (search-patches
                         "openjdk-10-idlj-reproducibility.patch"
                         "openjdk-10-pointer-comparison.patch"
-                        "openjdk-10-setsignalhandler.patch"))))
+                        "openjdk-10-setsignalhandler.patch"
+                        "openjdk-currency-time-bomb2.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk9)
        ((#:phases phases)
@@ -1095,8 +1177,7 @@ new Date();"))
                ;; This file was "fixed" by patch-source-shebangs, but it requires
                ;; this exact first line.
                (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
-               #t))
+                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))
            (replace 'configure
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (invoke "bash" "./configure"
@@ -1126,6 +1207,7 @@ new Date();"))
      `(("openjdk9" ,openjdk9)
        ("openjdk9:jdk" ,openjdk9 "jdk")
        ("make@4.2" ,gnu-make-4.2)
+       ("nss-certs" ,nss-certs)
        ("unzip" ,unzip)
        ("which" ,which)
        ("zip" ,zip)))))
@@ -1144,7 +1226,9 @@ new Date();"))
                 "1prvqy0ysz0999wrhsrbz6vrknpqfihl9l74l16ph93g89dqi5ia"))
               (modules '((guix build utils)))
               (snippet
-               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
+               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
+              (patches (search-patches
+                        "openjdk-currency-time-bomb2.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
@@ -1152,6 +1236,7 @@ new Date();"))
       #:modules `((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 match)
+                  (ice-9 popen)
                   (srfi srfi-1)
                   (srfi srfi-26))
       #:disallowed-references (list (gexp-input openjdk10)
@@ -1394,6 +1479,7 @@ new Date();"))
            openjdk10
            `(,openjdk10 "jdk")
            gnu-make-4.2
+           nss-certs
            pkg-config
            unzip
            which
@@ -2224,7 +2310,9 @@ distribution.")))
                                         (string-append target new-name))))
                          (find-files "netbeans" "\\.so$"))))))))
     (propagated-inputs
-     (list java-openjfx-base java-swt))
+     (list java-openjfx-base))
+    (inputs
+     (list java-swt))
     ;; XXX: for unknown reasons
     ;; modules/graphics/src/main/native-prism-sw/JNativeSurface.c is missing
     ;; in this revision.
@@ -2378,8 +2466,7 @@ debugging, etc.")
        (modules '((guix build utils)))
        ;; Delete bundled jars.
        (snippet '(begin (for-each delete-file-recursively
-                                  '("bootstrap" "lib"))
-                        #t))))
+                                  '("bootstrap" "lib"))))))
     (arguments
      `(#:make-flags                     ; bootstrap from javacc-4
        ,#~(list (string-append "-Dbootstrap-jar="
@@ -2400,17 +2487,16 @@ debugging, etc.")
                  (lambda _
                    (display
                      (string-append "#!/bin/sh\n"
-                                    (assoc-ref inputs "jdk") "/bin/java"
+                                    (assoc-ref inputs "icedtea") "/bin/java"
                                     " -cp " dir "/javacc.jar" " `basename $0`" " $*"))))
                (chmod javacc #o755)
                ;; symlink to different names to affect the first argument and
                ;; change the behavior of the jar file.
                (symlink javacc (string-append bin "/jjdoc"))
-               (symlink javacc (string-append bin "/jjtree"))
-               #t))))))
-
+               (symlink javacc (string-append bin "/jjtree"))))))))
     (native-inputs
-     (list javacc-4))))
+     (list javacc-4))
+    (inputs (list icedtea-8))))
 
 (define-public java-ecj
   (package
@@ -3319,9 +3405,10 @@ declaratively, to be used in other frameworks.  Typical scenarios include
 testing frameworks, mocking libraries and UI validation rules.")
     (license license:bsd-2)))
 
-(define java-hamcrest-parent-pom
+(define-public java-hamcrest-parent-pom
   (package
     (inherit java-hamcrest-core)
+    (properties '((hidden? . #t)))
     (name "java-hamcrest-parent-pom")
     (propagated-inputs '())
     (native-inputs '())
@@ -4879,7 +4966,7 @@ transformations and analysis algorithms allow easily assembling custom
 complex transformations and code analysis tools.")
     (license license:bsd-3)))
 
-(define java-org-ow2-parent-pom-1.3
+(define-public java-org-ow2-parent-pom-1.3
   (package
     (name "java-org-ow2-parent-pom")
     (version "1.3")
@@ -4903,12 +4990,14 @@ complex transformations and code analysis tools.")
     (synopsis "Ow2.org parent pom")
     (description "This package contains the parent pom for projects from ow2.org,
 including java-asm.")
+    (properties '((hidden? . #t)))
     (license license:lgpl2.1+)))
 
-(define java-asm-bootstrap
+(define-public java-asm-bootstrap
   (package
     (inherit java-asm)
     (name "java-asm-bootstrap")
+    (properties '((hidden? . #t)))
     (arguments
      (substitute-keyword-arguments (package-arguments java-asm)
        ((#:tests? _) #f)))
@@ -13567,6 +13656,98 @@ and allows building a Java object model for JSON text using API classes
     (description "JSON Processing (JSON-P) is a Java API to process (e.g.
 parse, generate, transform and query) JSON messages.  This package contains
 a reference implementation of that API.")))
+
+(define-public java-jakarta-json
+  (package
+    (name "java-jakarta-json")
+    (version "2.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/jakartaee/jsonp-api")
+                     (commit (string-append version "-RELEASE"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q600harqfhlf763l75j4fx7ai7ybp7ga06aiky2a2hg8mhz0s5f"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jakarta-json.jar"
+       #:source-dir "api/src/main/java"
+       #:tests? #f; no tests
+       #:jdk ,openjdk11))
+    (home-page "https://github.com/jakartaee/jsonp-api")
+    (synopsis "Portable API for JSON handling in Java")
+    (description "This project contains API and Compatible Implementation of
+Jakarta JSON Processing specification.  Jakarta JSON Processing provides
+portable APIs to parse, generate, transform, and query JSON documents.")
+    ;; with classpath exception
+    (license license:epl2.0)))
+
+(define-public java-parsson
+  (package
+    (name "java-parsson")
+    (version "1.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/eclipse-ee4j/parsson")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06vvr6qv1ihnk212gdxg4x0sd61lgxk7wf062s7gym5k2h7fms0p"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "parsson.jar"
+       #:source-dir "impl/src/main/java"
+       #:test-dir "impl/src/test"
+       #:use-java-modules? #t
+       #:jdk ,openjdk11
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'copy-resources
+           (lambda _
+             (copy-recursively "impl/src/main/resources"
+                               "build/classes"))))))
+    (inputs
+      (list java-jakarta-json))
+    (native-inputs
+      (list java-junit))
+    (home-page "https://github.com/eclipse-ee4j/parsson")
+    (synopsis "Implementation of Jakarta JSON API")
+    (description "Eclipse Parsson is an implementation of the Jakarta JSON
+Processing specification.")
+    ;; with classpath exception
+    (license license:epl2.0)))
+
+(define-public java-jakarta-annotations-api
+  (package
+    (name "java-jakarta-annotations-api")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/jakartaee/common-annotations-api")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xq2n2pijal5p75vl9dz10i6hhdmaxw5q8j3aza717xkpxxby9p6"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jakarta-annotations-api.jar"
+       #:source-dir "api/src/main/java"
+       #:tests? #f; no tests
+       #:jdk ,openjdk11))
+    (home-page "https://github.com/jakartaee/common-annotations-api")
+    (synopsis "Collection of Java annotations")
+    (description "Jakarta Annotations defines a collection of annotations
+representing common semantic concepts that enable a declarative style of
+programming that applies across a variety of Java technologies.")
+    ;; with classpath exception
+    (license (list license:epl2.0
+                   license:gpl2))))
 
 (define-public java-xmp
   (package

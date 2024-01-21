@@ -46,6 +46,7 @@
             page-break
             page-break?
 
+            <comment>
             comment
             comment?
             comment->string
@@ -330,6 +331,7 @@ expressions and blanks that were read."
    ('add-after '(((modify-phases) . 3)))
    ('add-before '(((modify-phases) . 3)))
    ('replace '(((modify-phases) . 2)))         ;different from 'modify-inputs'
+   ('parameterize 2)
    ('substitute* 2)
    ('substitute-keyword-arguments 2)
    ('call-with-input-file 2)

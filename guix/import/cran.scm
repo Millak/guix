@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015-2017, 2019-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -55,6 +55,10 @@
   #:use-module (guix sets)
   #:export (%input-style
 
+            %bioconductor-version
+            download
+            fetch-description
+
             cran->guix-package
             bioconductor->guix-package
             cran-recursive-import
@@ -80,6 +84,21 @@
 
 (define %input-style
   (make-parameter 'variable)) ; or 'specification
+
+(define (format-inputs inputs)
+  "Generate a sorted list of package inputs from a list of upstream inputs."
+  (map (lambda (input)
+         (case (%input-style)
+           ((specification)
+            `(specification->package ,(upstream-input-name input)))
+           (else
+            ((compose string->symbol
+                       upstream-input-downstream-name)
+             input))))
+       (sort inputs
+             (lambda (a b)
+               (string-ci<? (upstream-input-name a)
+                            (upstream-input-name b))))))
 
 (define (string->licenses license-string license-prefix)
   (let ((licenses
@@ -173,17 +192,15 @@ package definition."
     (()
      '())
     ((package-inputs ...)
-     `((,input-type (list ,@(map (compose string->symbol
-                                          upstream-input-downstream-name)
-                                 package-inputs)))))))
+     `((,input-type (list ,@(format-inputs package-inputs)))))))
 
 (define %cran-url "https://cran.r-project.org/web/packages/")
 (define %cran-canonical-url "https://cran.r-project.org/package=")
 (define %bioconductor-url "https://bioconductor.org/packages/")
 
-;; The latest Bioconductor release is 3.17.  Bioconductor packages should be
+;; The latest Bioconductor release is 3.18.  Bioconductor packages should be
 ;; updated together.
-(define %bioconductor-version "3.17")
+(define %bioconductor-version "3.18")
 
 (define* (bioconductor-packages-list-url #:optional type)
   (string-append "https://bioconductor.org/packages/"
@@ -253,7 +270,7 @@ bioconductor package NAME, or #F if the package is unknown."
             ;; of the URLs is the /Archive CRAN URL.
             (any (cut download-to-store store <>) urls)))))))))
 
-(define (fetch-description-from-tarball url)
+(define* (fetch-description-from-tarball url #:key (download download))
   "Fetch the tarball at URL, extra its 'DESCRIPTION' file, parse it, and
 return the resulting alist."
   (match (download url)
@@ -271,7 +288,7 @@ return the resulting alist."
                 (call-with-input-file (string-append dir "/DESCRIPTION")
                   read-string)))))))))
 
-(define* (fetch-description repository name #:optional version)
+(define* (fetch-description repository name #:optional version replacement-download)
   "Return an alist of the contents of the DESCRIPTION file for the R package
 NAME at VERSION in the given REPOSITORY, or #f in case of failure.  NAME is
 case-sensitive."
@@ -293,7 +310,9 @@ from ~a: ~a (~a)~%")
                              (string-append "mirror://cran/src/contrib/Archive/"
                                             name "/"
                                             name "_" version ".tar.gz"))))
-             (fetch-description-from-tarball urls))
+             (fetch-description-from-tarball
+              urls #:download (or replacement-download
+                                  download)))
            (let* ((url    (string-append %cran-url name "/DESCRIPTION"))
                   (port   (http-fetch url))
                   (result (description->alist (read-string port))))
@@ -310,7 +329,9 @@ from ~a: ~a (~a)~%")
                 ;; TODO: Honor VERSION.
                 (version (latest-bioconductor-package-version name type))
                 (url     (car (bioconductor-uri name version type)))
-                (meta    (fetch-description-from-tarball url)))
+                (meta    (fetch-description-from-tarball
+                          url #:download (or replacement-download
+                                             download))))
        (if (boolean? type)
            meta
            (cons `(bioconductor-type . ,type) meta))))
@@ -383,7 +404,8 @@ empty list when the FIELD cannot be found."
 ;; The field for system dependencies is often abused to specify non-package
 ;; dependencies (such as c++11).  This list is used to ignore them.
 (define invalid-packages
-  (list "c++"
+  (list "build-essential"
+        "c++"
         "c++11"
         "c++14"
         "c++17"
@@ -392,7 +414,9 @@ empty list when the FIELD cannot be found."
         "gnu"
         "posix.1-2001"
         "linux"
+        "libR"
         "none"
+        "rtools"
         "unix"
         "windows"
         "xcode"
@@ -410,6 +434,9 @@ empty list when the FIELD cannot be found."
     ("freetype2" "freetype")
     ("gettext" "gnu-gettext")
     ("gmake" "gnu-make")
+    ("h5py" "python-h5py")
+    ("hmmer3" "hmmer")
+    ("leidenalg" "python-leidenalg")
     ("libarchive-devel" "libarchive")
     ("libarchive_dev" "libarchive")
     ("libbz2" "bzip2")
@@ -417,13 +444,27 @@ empty list when the FIELD cannot be found."
     ("libjpeg" "libjpeg-turbo")
     ("liblz4" "lz4")
     ("liblzma" "xz")
+    ("libssl-dev" "openssl")
+    ("libssl_dev" "openssl")
     ("libzstd" "zstd")
     ("libxml2-devel" "libxml2")
+    ("libxml2-dev" "libxml2")
     ("libz" "zlib")
+    ("libz-dev" "zlib")
     ("mariadb-devel" "mariadb")
     ("mysql56_dev" "mariadb")
+    ("nodejs" "node")
+    ("numpy" "python-numpy")
+    ("openssl-devel" "openssl")
+    ("openssl@1.1" "openssl-1.1")
+    ("packaging" "python-packaging")
+    ("pandas" "python-pandas")
     ("pandoc-citeproc" "pandoc")
     ("python3" "python-3")
+    ("pytorch" "python-pytorch")
+    ("scikit-learn" "python-scikit-learn")
+    ("scipy" "python-scipy")
+    ("sklearn" "python-scikit-learn")
     ("sqlite3" "sqlite")
     ("svn" "subversion")
     ("tcl/tk" "tcl")
@@ -432,6 +473,7 @@ empty list when the FIELD cannot be found."
     ("x11" "libx11")
     ("xml2" "libxml2")
     ("zlib-devel" "zlib")
+    ("zlib1g-dev" "zlib")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))

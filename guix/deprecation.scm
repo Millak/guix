@@ -103,7 +103,7 @@ This will write a deprecation warning to GUIX-WARNING-PORT."
        #'(define-deprecated variable alias alias)))))
 
 (define-syntax-rule (define-deprecated/public body ...)
-  "Like 'define/deprecated', but export all the newly introduced bindings."
+  "Like 'define-deprecated', but export all the newly introduced bindings."
   (define-deprecated public body ...))
 
 (define-syntax-rule (define-deprecated/alias deprecated replacement)

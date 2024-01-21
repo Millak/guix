@@ -9,7 +9,7 @@
 ;;; Copyright © 2018 Lprndn <guix@lprndn.info>
 ;;; Copyright © 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Oleh Malyi <astroclubzp@gmail.com>
@@ -832,14 +832,14 @@ due to its architecture which automatically parallelises the image workflows.")
 (define-public gmic
   (package
     (name "gmic")
-    (version "3.0.0")
+    (version "3.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gmic.eu/files/source/gmic_"
                            version ".tar.gz"))
        (sha256
-        (base32 "080inz0wisv3rhvbnzrgcs3j25wq86gybp68yi56gw6vwswnn19z"))))
+        (base32 "0pb474cdlxcp3m7gkxrfpnblag6r3wny7vih44gdyy2q8zb3ffch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -899,18 +899,6 @@ including 2D color images.")
        (prepend gmic qtbase-5)))
     (synopsis "Qt frontend for the G'MIC image processing framework")
     (license license:gpl3+)))
-
-(define-public gmic-qt-krita
-  (package
-    (inherit gmic-qt)
-    (name "gmic-qt-krita")
-    (arguments
-     (substitute-keyword-arguments (package-arguments gmic-qt)
-       ((#:configure-flags flags)
-        '(list "-DGMIC_QT_HOST=krita" "-DENABLE_DYNAMIC_LINKING=ON"
-               (string-append "-DGMIC_LIB_PATH="
-                              (assoc-ref %build-inputs "gmic") "/lib")))))
-    (synopsis "Krita plugin for the G'MIC image processing framework")))
 
 (define-public gmic-qt-gimp
   (package
@@ -1412,7 +1400,12 @@ combine the information contained in both.")
        (uri (string-append "mirror://sourceforge/itk/itk/4.12/"
                            "InsightToolkit-" version ".tar.xz"))
        (sha256
-        (base32 "1qw9mxbh083siljygahl4gdfv91xvfd8hfl7ghwii19f60xrvn2w"))))))
+        (base32 "1qw9mxbh083siljygahl4gdfv91xvfd8hfl7ghwii19f60xrvn2w"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments insight-toolkit-4)
+       ((#:configure-flags cf #~'())
+        ;; error: ISO C++17 does not allow dynamic exception specifications
+        #~(cons* "-DCMAKE_CXX_FLAGS=-std=c++14" #$cf))))))
 
 (define-public itk-snap
   (package
@@ -1685,7 +1678,13 @@ purposes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bm0wdv5p26i8nl4kx3145cz553v401sgbpgc96sddzjfmfiydcw"))))
+        (base32 "1bm0wdv5p26i8nl4kx3145cz553v401sgbpgc96sddzjfmfiydcw"))
+      (snippet
+       #~(begin (use-modules (guix build utils))
+                (substitute* "imgviz/draw.py"
+                  (("collections\\.Iterable") "collections.abc.Iterable"))
+                (substitute* "imgviz/tile.py"
+                  (("collections\\.Sequence") "collections.abc.Sequence"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases

@@ -21,15 +21,13 @@
 (define-module (gnu packages browser-extensions)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu build chromium-extension)
   #:use-module (gnu build icecat-extension)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages python))
@@ -60,8 +58,8 @@ supported content to the Kodi media center.")
   ;; Arbitrary commit of branch master,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-main-assets")
-         (commit "c8783488f377723165e3661062bd124ae6d57165")
-         (revision "0")
+         (commit "76bd7cb53036a36f7e7df5ee9173f588ba8aa966")
+         (revision "1")
          (version (git-version "0" revision commit)))
     (origin
       (method git-fetch)
@@ -70,14 +68,14 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1b6a1m6s060r49vg563f32rsy057af6i4jcyprym4sdci3z90nls")))))
+       (base32 "1kdzvflr1yxykyva5vsjqr0p2ik1200xbhxwpl3cx2jsiv8l95sk")))))
 
 (define ublock-prod-assets
   ;; Arbitrary commit of branch gh-pages,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-prod-assets")
-         (commit "fbcfe9229ab6b865ef349c01a4eac73943be8418")
-         (revision "0")
+         (commit "a379a168fc149ffbd6d10cd0700d4ab4801e57f2")
+         (revision "1")
          (version (git-version "0" revision commit)))
     (origin
       (method git-fetch)
@@ -86,12 +84,12 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0s5rvaz8lc9lk44yfc8463vah8yppy1ybmag0dpd4m1hyj6165h0")))))
+       (base32 "0syf3kbhvsbn5xka5knpclxby2kp92my1w7ixvf5fs9n08ylcip1")))))
 
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.51.0")
+    (version "1.54.0")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
@@ -101,7 +99,7 @@ supported content to the Kodi media center.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i8rnij3sbwg6vj6znprrsca0n5xjzhmhppaa8v6jyxg6wrrfch1"))))
+                "1yacqpf9z8lprwsj194bhlp2ba9ywzbagd6lwxj3h6g405s7zp2k"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (properties '((addon-id . "uBlock0@raymondhill.net")))
@@ -158,7 +156,7 @@ ungoogled-chromium.")
 (define-public passff-host
   (package
     (name "passff-host")
-    (version "1.2.3")
+    (version "1.2.4")
     (home-page "https://github.com/passff/passff-host")
     (source (origin
               (method git-fetch)
@@ -166,29 +164,27 @@ ungoogled-chromium.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p18l1jh20x4v8dj64z9qjlp96fxsl5h069iynxfpbkzj6hd74yl"))))
-    (build-system trivial-build-system)
+                "1lcwa1qzfxlifmj33qndp1wgi6yx6vj21ir0az79vhm5k03p961z"))))
+    (build-system copy-build-system)
     (arguments
-     (list
-      #:modules '((guix build utils))
-      #:builder
-      #~(begin
-          (use-modules (guix build utils))
-          (setenv "PATH" (string-join '(#$coreutils
-                                        #$grep
-                                        #$password-store
-                                        #$python
-                                        #$sed
-                                        #$which) "/bin:" 'suffix))
-          (copy-recursively #$source ".")
-          (patch-shebang "src/install_host_app.sh"
-                         (list (in-vicinity #$bash-minimal "bin")))
-          (substitute* "src/install_host_app.sh"
-            (("(TARGET_DIR_FIREFOX=).*" all var)
-             (string-append var #$output "/lib/icecat/native-messaging-hosts"
-                            "\n")))
-          (invoke #$(file-append gnu-make "/bin/make")
-                  (string-append "VERSION=" #$version) "install-unix"))))
+     (let ((native-manifests "lib/icecat/native-messaging-hosts"))
+       (list
+        #:install-plan
+        `'(("src" ,native-manifests #:include ("passff.json" "passff.py")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'substitute
+              (lambda _
+                (substitute* "src/passff.json"
+                  (("PLACEHOLDER")
+                   (format #f "~a/~a/passff.py" #$output #$native-manifests)))
+                (substitute* "src/passff.py"
+                  (("_VERSIONHOLDER_") #$version)
+                  (("^COMMAND = .*")
+                   (format #f "COMMAND = \"~a/bin/pass\"~%"
+                           #$(this-package-input "password-store"))))
+                (patch-shebang "src/passff.py")))))))
+    (inputs (list password-store python))
     (synopsis "Host app for the WebExtension PassFF")
     (description "This piece of software wraps around the zx2c4 pass shell
 command.  It has to be installed for the PassFF browser extension to work
@@ -198,7 +194,7 @@ properly.")
 (define passff
   (package
     (name "passff")
-    (version "1.15")
+    (version "1.16")
     (home-page "https://github.com/passff/passff")
     (source (origin
               (method git-fetch)
@@ -206,7 +202,7 @@ properly.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gymqyqppr8k9fqv5js7f6pk6hcc47qpf51x5cy6aahsk2v1qssj"))))
+                "0y3cbgy89lgvq6lfabp7mi1zhphdvihcccn3yw5mmaql9yrdm5kc"))))
     (propagated-inputs (list passff-host))
     (build-system copy-build-system)
     (properties '((addon-id . "passff@invicem.pro")))
@@ -226,3 +222,58 @@ fill and submit login forms if a matching password entry is found.")
 
 (define-public passff/icecat
   (make-icecat-extension passff))
+
+(define keepassxc-browser
+  (package
+    (name "keepassxc-browser")
+    (version "1.8.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/keepassxreboot/keepassxc-browser")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1059kcb95ig18izbchwlb7pz41l4l3vjwzlmhz3w8zw2qxm6hrvx"))))
+    (build-system copy-build-system)
+    (properties
+     '((addon-id . "keepassxc-browser@keepassxc.org")))
+    (arguments
+     `(#:install-plan
+       '(("keepassxc-browser" ,(assq-ref properties 'addon-id)))))
+    (synopsis "Browser extension for the KeePassXC password manager")
+    (description
+     "This package provides an extension allow the browser to work together
+with the @uref{https://keepassxc.org, KeePassXC} password manager.")
+    (home-page "https://keepassxc.org")
+    (license license:gpl3+)))
+
+(define-public keepassxc-browser/icecat
+  (make-icecat-extension keepassxc-browser))
+
+(define noscript
+  (package
+    (name "noscript")
+    (version "11.4.29")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://noscript.net/download/releases/noscript-" version
+                    ".xpi"))
+              (sha256
+               (base32
+                "1k94zvv2ypmhc29f5d2zrvigwh1xgi5kwm1kqfxarwjyn108if85"))))
+    (build-system copy-build-system)
+    (properties '((addon-id . "{73a6fe31-595d-460b-a920-fcc0f8843232}")))
+    (arguments
+     `(#:install-plan '(("." ,(assq-ref properties 'addon-id)))))
+    (home-page "https://noscript.net")
+    (synopsis "Software providing extra protection for various browsers.")
+    (description "The NoScript Security Suite is a software providing extra
+protection for web browsers.")
+    (license license:gpl3+)))
+
+(define-public noscript/icecat
+  (make-icecat-extension noscript))

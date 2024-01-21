@@ -168,6 +168,25 @@ human.")
               #~(list "-DWITH_XC_DOCS=NO")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'record-clipboard-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Record the file names of clipboard programs invoked by
+              ;; 'keepassxc-cli clip' and similar.
+              ;;
+              ;; Note: Use 'QString::fromUtf8' rather than 'QStringLiteral' so
+              ;; that the store reference is stored as ASCII instead of
+              ;; UTF-16, which would be invisible to the GC's scanner.
+              (substitute* "src/cli/Utils.cpp"
+                (("QStringLiteral\\(\"xclip\"\\)")
+                 (string-append
+                  "QString::fromUtf8(\""
+                  (search-input-file inputs "bin/xclip")
+                  "\")"))
+                (("QStringLiteral\\(\"wl-copy\"\\)")
+                 (string-append
+                  "QString::fromUtf8(\""
+                  (search-input-file inputs "bin/wl-copy")
+                  "\")")))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -199,6 +218,8 @@ human.")
            qtx11extras
            quazip-0                     ; XC_KEESHARE
            readline
+           wl-clipboard                 ;for 'wl-copy'
+           xclip                        ;for 'xclip'
            yubikey-personalization      ; XC_YUBIKEY
            zlib))
     (home-page "https://keepassxc.org")
@@ -678,7 +699,7 @@ any X11 window.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (requisites '("getopt" "git" "gpg" "qrencode" "sed"
-                                  "tree" "which" "wl-copy" "xclip"))
+                                  "tail" "tree" "which" "wl-copy" "xclip"))
                     (path (map (lambda (pkg)
                                  (dirname (search-input-file
                                            inputs (string-append "/bin/" pkg))))
@@ -699,7 +720,8 @@ any X11 window.")
             (separator #f)             ;single entry
             (files '("lib/password-store/extensions")))))
     (inputs
-     (list dmenu
+     (list coreutils
+           dmenu
            util-linux
            git
            gnupg
@@ -1101,7 +1123,7 @@ It supports both vim-like keybindings and the mouse.")
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list (string-append "CC=" ,(cc-for-target))
                           (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           "LIBRARY_REL=lib"
                           (string-append "ARGON2_VERSION=" ,version)

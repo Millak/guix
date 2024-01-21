@@ -123,6 +123,29 @@
 titling.")
     (license license:silofl1.1)))
 
+(define-public font-cardo
+  (package
+    (name "font-cardo")
+    (version "1.04")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://scholarsfonts.net/cardo"
+                                  (string-delete #\. version) ".zip"))
+              (sha256
+               (base32
+                "0ps55zjva4fzmg47w2i8srrh8sqxz1wkcclihwgzlwfbaxixn0cl"))))
+    (build-system font-build-system)
+    (home-page "https://scholarsfonts.net/cardofnt.html")
+    (synopsis "Unicode font for classical scholarship")
+    (description
+     "Cardo is a large unicode font specifically designed for the needs of
+classicists, biblical scholars, medievalists, and linguists.  Since it may be
+used to prepare materials for publication, it also contains features that are
+required for high-quality typography, such as ligatures, text figures (also
+known as old style numerals), true small capitals and a variety of punctuation
+and space characters.")
+    (license license:silofl1.1)))
+
 (define-public font-chivo
   (let ((commit "dc61c468d79781eb5183426e88e844af16cdc3e5")
         (revision "0"))
@@ -1015,15 +1038,16 @@ utilities to ease adding new glyphs to the font.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "20171025")
+    (version "23.11.1")
     (source
      (origin
-       (method url-fetch/zipbomb)
-       (uri (string-append "https://noto-website-2.storage.googleapis.com/"
-                           "pkgs/Noto-hinted.zip"))
-       (file-name (string-append name "-" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/notofonts/notofonts.github.io")
+             (commit (string-append "noto-monthly-release-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1bp42whyin7xcgmrbnfvz3rvd98xmxaz3ywqybbjmqzwaa9llyw3"))))
+        (base32 "0vvxhky35l4i0ha60yw0gj26f3v33hpf2zax17yyj16mww4cn4d8"))))
     (build-system font-build-system)
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
@@ -1951,15 +1975,15 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.42.1")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/be5invis/Sarasa-Gothic"
                            "/releases/download/v" version
-                           "/sarasa-gothic-ttc-" version ".7z"))
+                           "/Sarasa-TTC-" version ".7z"))
        (sha256
-        (base32 "0lrhipis21cafpsf8wsrdavlblfgzz424r23rj78ik8npbws1a3v"))))
+        (base32 "1cgqf15fhg567s2bwjpal3xfcdnbgyy0iav5181zkn6b4k56dgl4"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2493,7 +2517,7 @@ a different style of marking.")
 (define-public font-jetbrains-mono
   (package
     (name "font-jetbrains-mono")
-    (version "2.242")
+    (version "2.304")
     (source
      (origin
        (method url-fetch)
@@ -2501,7 +2525,7 @@ a different style of marking.")
         (string-append "https://github.com/JetBrains/JetBrainsMono/releases/"
                        "download/v" version "/JetBrainsMono-" version ".zip"))
        (sha256
-        (base32 "17qs985v38x3rcg3v4av3qynwr4gvixrj50vjzy7zkkny575ncaf"))))
+        (base32 "1gvv5w0vfzndzp8k7g15j5i3yvnpr5z3imrwjs5flq19xp37cqvg"))))
     (build-system font-build-system)
     (arguments
      `(#:phases
@@ -2523,7 +2547,7 @@ a different style of marking.")
      "JetBrains Mono is a font family dedicated to developers.  JetBrains
 Mono’s typeface forms are simple and free from unnecessary details.  Rendered
 in small sizes, the text looks crisper.")
-    (license license:asl2.0)))
+    (license license:silofl1.1)))
 
 (define-public font-juliamono
   (package
@@ -3158,7 +3182,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.310")
+    (version "1.315")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3166,7 +3190,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "10z8ilcpfxmll6j6ck4yj90x48vh3c7ck0lm61qjangpw9fcgfb1"))))
+                "0isb7rbg8yb6hv8xk1ngngkgzpyb3papkl19jczwrwm373m8bn3f"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -3180,7 +3204,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "1.010")
+    (version "1.011")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3188,7 +3212,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "1yppqrfmynai1canlq0hksl3yaj8kflbnj41ljl4lxwaz6q9i1ly"))))
+                "0x83a7zg1w82bpilk84ajlisccf90kl01gz89fipgqji9nii71bv"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description

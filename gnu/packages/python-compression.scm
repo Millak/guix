@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -415,6 +416,39 @@ the LZ4 frame format.")
     (synopsis "String compression")
     (description "Lz-string is a string compressor library for Python.")
     (license license:expat)))
+
+(define-public python-python-snappy
+  (package
+    ;; PyPI contains both `snappy' and `python-snappy' as completely distinct
+    ;; packages. To avoid a name collision in Guix, we use the variable name
+    ;; `python-python-snappy' for the package called `python-snappy' on PyPI.
+    (name "python-python-snappy")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-snappy" version))
+       (sha256
+        (base32 "0amv12w0ybn6n1lk36x70a3l8bdjv4mn7iflb59wqsi00smhg8dn"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv" "-k"
+                                ;; CFFI is only supported for PyPy builds.
+                                (string-append "not test_snappy_cffi_enum "
+                                               "and not test_snappy_all_cffi"))))))))
+    (inputs (list snappy))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/andrix/python-snappy")
+    (synopsis "Python bindings for the Snappy compression library")
+    (description
+     "@code{python-python-snappy} provides bindings to the Snappy library and
+can be used to compress and decompress files and streams.  It can also be used
+directly from the command line.")
+    (license license:bsd-3)))
 
 (define-public bitshuffle
   (package

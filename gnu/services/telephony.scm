@@ -34,6 +34,9 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:autoload   (guix least-authority) (least-authority-wrapper)
+  #:autoload   (gnu system file-systems) (file-system-mapping)
+  #:autoload   (gnu build linux-container) (%namespaces)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
@@ -258,9 +261,37 @@ consistent state."))
 (define (jami-configuration->command-line-arguments config)
   "Derive the command line arguments to used to launch the Jami daemon from
 CONFIG, a <jami-configuration> object."
+  (define (wrapper libjami)
+    (least-authority-wrapper
+     ;; XXX: 'gexp-input' is needed as the outer layer so that
+     ;; 'references-file' picks the right output of LIBJAMI.
+     (gexp-input (file-append (gexp-input libjami "bin") "/libexec/jamid")
+                 "bin")
+     #:mappings
+     (list (file-system-mapping
+            (source "/dev/log") ;for syslog
+            (target source))
+           (file-system-mapping
+            (source "/var/lib/jami")
+            (target source)
+            (writable? #t))
+           (file-system-mapping
+            (source "/var/run/jami")
+            (target source)
+            (writable? #t))
+           ;; Expose TLS certificates for GnuTLS.
+           (file-system-mapping
+            (source (file-append nss-certs "/etc/ssl/certs"))
+            (target "/etc/ssl/certs")))
+     #:preserved-environment-variables
+     '("DBUS_SESSION_BUS_ADDRESS" "SSL_CERT_DIR")
+     #:user "jami"
+     #:group "jami"
+     #:namespaces (fold delq %namespaces '(net user))))
+
   (match-record config <jami-configuration>
     (libjami dbus enable-logging? debug? auto-answer?)
-    `(,#~(string-append #$libjami:bin "/libexec/jamid")
+    `(,(wrapper libjami)
       "--persistent"                    ;stay alive after client quits
       ,@(if enable-logging?
             '()                         ;logs go to syslog by default
@@ -298,7 +329,28 @@ CONFIG, a <jami-configuration> object."
   (let* ((libjami (jami-configuration-libjami config))
          (nss-certs (jami-configuration-nss-certs config))
          (dbus (jami-configuration-dbus config))
-         (dbus-daemon (file-append dbus "/bin/dbus-daemon"))
+         (dbus-daemon (least-authority-wrapper
+                       (file-append dbus "/bin/dbus-daemon")
+                       #:name "dbus-daemon"
+                       #:user "jami"
+                       #:group "jami"
+                       #:preserved-environment-variables
+                       '("XDG_DATA_DIRS")
+                       #:mappings
+                       (list (file-system-mapping
+                              (source "/dev/log") ;for syslog
+                              (target source))
+                             (file-system-mapping
+                              (source "/var/run/jami")
+                              (target source)
+                              (writable? #t))
+                             (file-system-mapping
+                              (source (gexp-input libjami "bin"))
+                              (target source)))
+                       ;; 'dbus-daemon' wants to look up users in /etc/passwd
+                       ;; so run it in the global user namespace.
+                       #:namespaces
+                       (fold delq %namespaces '(net user))))
          (accounts (jami-configuration-accounts config))
          (declarative-mode? (maybe-value-set? accounts)))
 
@@ -310,7 +362,6 @@ CONFIG, a <jami-configuration> object."
       (with-imported-modules (source-module-closure
                               '((gnu build dbus-service)
                                 (gnu build jami-service)
-                                (gnu build shepherd)
                                 (gnu system file-systems)))
 
         (define list-accounts-action
@@ -490,8 +541,7 @@ argument, either a registered username or the fingerprint of the account.")
         (list (shepherd-service
                (documentation "Run a D-Bus session for the Jami daemon.")
                (provision '(jami-dbus-session))
-               (modules `((gnu build shepherd)
-                          (gnu build dbus-service)
+               (modules `((gnu build dbus-service)
                           (gnu build jami-service)
                           (gnu system file-systems)
                           ,@%default-modules))
@@ -499,26 +549,23 @@ argument, either a registered username or the fingerprint of the account.")
                ;; activation for D-Bus, such as a /etc/machine-id file.
                (requirement '(dbus-system syslogd))
                (start
-                #~(make-forkexec-constructor/container
-                   (list #$dbus-daemon "--session"
-                         "--address=unix:path=/var/run/jami/bus"
-                         "--syslog-only")
-                   #:pid-file "/var/run/jami/pid"
-                   #:mappings
-                   (list (file-system-mapping
-                          (source "/dev/log") ;for syslog
-                          (target source))
-                         (file-system-mapping
-                          (source "/var/run/jami")
-                          (target source)
-                          (writable? #t)))
-                   #:user "jami"
-                   #:group "jami"
-                   #:environment-variables
-                   ;; This is so that the cx.ring.Ring service D-Bus
-                   ;; definition is found by dbus-daemon.
-                   (list (string-append "XDG_DATA_DIRS="
-                                        #$libjami:bin "/share"))))
+                #~(lambda ()
+                    (define pid
+                      (fork+exec-command
+                       (list #$dbus-daemon "--session"
+                             "--address=unix:path=/var/run/jami/bus"
+                             "--syslog-only")
+                       #:environment-variables
+                       ;; This is so that the cx.ring.Ring service D-Bus
+                       ;; definition is found by dbus-daemon.
+                       (list (string-append "XDG_DATA_DIRS="
+                                            #$libjami:bin "/share"))))
+
+                    ;; The PID file contains the "wrong" PID (the one in the
+                    ;; separate PID namespace) so ignore it and return the
+                    ;; value returned by 'fork+exec-command'.
+                    (and (read-pid-file "/var/run/jami/pid")
+                         pid)))
                (stop #~(make-kill-destructor)))
 
               (shepherd-service
@@ -542,7 +589,6 @@ argument, either a registered username or the fingerprint of the account.")
                           (srfi srfi-26)
                           (gnu build dbus-service)
                           (gnu build jami-service)
-                          (gnu build shepherd)
                           (gnu system file-systems)
                           ,@%default-modules))
                (start
@@ -588,32 +634,14 @@ argument, either a registered username or the fingerprint of the account.")
 
                     ;; Start the daemon.
                     (define daemon-pid
-                      ((make-forkexec-constructor/container
-                        (list #$@(jami-configuration->command-line-arguments
-                                  config))
-                        #:mappings
-                        (list (file-system-mapping
-                               (source "/dev/log") ;for syslog
-                               (target source))
-                              (file-system-mapping
-                               (source "/var/lib/jami")
-                               (target source)
-                               (writable? #t))
-                              (file-system-mapping
-                               (source "/var/run/jami")
-                               (target source)
-                               (writable? #t))
-                              ;; Expose TLS certificates for GnuTLS.
-                              (file-system-mapping
-                               (source #$(file-append nss-certs "/etc/ssl/certs"))
-                               (target "/etc/ssl/certs")))
-                        #:user "jami"
-                        #:group "jami"
-                        #:environment-variables
-                        (list (string-append "DBUS_SESSION_BUS_ADDRESS="
-                                             "unix:path=/var/run/jami/bus")
-                              ;; Expose TLS certificates for OpenSSL.
-                              "SSL_CERT_DIR=/etc/ssl/certs"))))
+                      (fork+exec-command
+                       (list #$@(jami-configuration->command-line-arguments
+                                 config))
+                       #:environment-variables
+                       (list (string-append "DBUS_SESSION_BUS_ADDRESS="
+                                            "unix:path=/var/run/jami/bus")
+                             ;; Expose TLS certificates for OpenSSL.
+                             "SSL_CERT_DIR=/etc/ssl/certs")))
 
                     (setenv "DBUS_SESSION_BUS_ADDRESS"
                             "unix:path=/var/run/jami/bus")

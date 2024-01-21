@@ -26,6 +26,8 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +63,7 @@
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -71,6 +74,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nss)
@@ -102,6 +106,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system scons)
@@ -341,6 +346,61 @@ tables.  It includes a library and command-line utility.")
      "GNU fdisk provides a GNU version of the common disk partitioning tool
 fdisk.  fdisk is used for the creation and manipulation of disk partition
 tables, and it understands a variety of different formats.")
+    (license license:gpl3+)))
+
+(define-public findimagedupes
+  (package
+    (name "findimagedupes")
+    (version "2.20.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jhnc/findimagedupes")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zfxmc6c1z4hzsq3k85xxida1v291frq4wbmxv9cg4jmw0ddk5ic"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (delete 'build)
+                   (replace 'install
+                     ;; There's no ‘make install’ target.
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (install-file "findimagedupes"
+                                     (string-append #$output "/bin"))))
+                   (add-after 'unpack 'use-image-magick
+                     ;; TODO: package perl-graphics-magick and switch this out
+                     (lambda _
+                       (substitute* "findimagedupes"
+                         (("Graphics::Magick")
+                          "Image::Magick"))))
+                   (add-after 'unpack 'set-inline-dir
+                     (lambda _
+                       (substitute* "findimagedupes"
+                         (("/usr/local")
+                          #$output))))
+                   (add-after 'install 'inline-generation
+                     (lambda _
+                       (mkdir-p (string-append #$output "/lib/findimagedupes"))
+                       (invoke (string-append #$output "/bin/findimagedupes"))))
+                   (add-after 'install 'wrap-findimagedupes
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (wrap-program (string-append #$output
+                                                    "/bin/findimagedupes")
+                         `("PERL5LIB" ":" prefix
+                           (,(getenv "PERL5LIB") ,(string-append #$output
+                                                   "/lib/perl5/site_perl")))))))))
+    (inputs (list bash-minimal perl-db-file perl-file-mimeinfo
+                  perl-image-magick perl-inline-c))
+    (home-page "https://github.com/jhnc/findimagedupes")
+    (synopsis "Find visually similar or duplicate images")
+    (description "findimagedupes compares a list of files for visual
+similarity.")
     (license license:gpl3+)))
 
 (define-public gpart
@@ -784,18 +844,18 @@ systems.  Output format is completely customizable.")
        (base32 "17l5vspfcgfbkqg7bakp3gql29yb05gzawm8n3im30ilzdr53678"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'build 'build-extra
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "extra" make-flags)))
-         (add-after 'build 'install-extra
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "install-extra" make-flags))))))
+     (list #:tests? #f                      ; no check target
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)            ; no configure script
+               (add-after 'build 'build-extra
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "extra" make-flags)))
+               (add-after 'build 'install-extra
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "install-extra" make-flags))))))
     (inputs
      (list eudev parted))
     (home-page "http://oss.digirati.com.br/f3/")
@@ -1592,7 +1652,7 @@ gone and to help you to clean it up.")
 (define-public nwipe
   (package
     (name "nwipe")
-    (version "0.34")
+    (version "0.35")
     (source
      (origin
        (method git-fetch)
@@ -1601,7 +1661,7 @@ gone and to help you to clean it up.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1frwjgz4mpzwr9sigr693crmxsjl08wcikh6ik7dm0x40l1kqqpd"))))
+        (base32 "1bj20y52qzz2ja56yf1pxqjg3lsda35c2k5hcj3lqm69jpsla2wq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -1615,7 +1675,13 @@ gone and to help you to clean it up.")
                                   "sbin/hdparm"
                                   "sbin/smartctl")))))))))
     (inputs
-     (list bash-minimal dmidecode hdparm ncurses parted smartmontools))
+     (list bash-minimal
+           dmidecode
+           hdparm
+           libconfig
+           ncurses
+           parted
+           smartmontools))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/martijnvanbrummelen/nwipe")

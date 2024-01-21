@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2015, 2017-2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2020, 2022-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -849,56 +849,32 @@ string, you could instantiate a prosody service like this:
                                          (target conf)))
                        #:namespaces (delq 'net %namespaces))))
 
-       (with-imported-modules (source-module-closure
-                               '((gnu build shepherd)
-                                 (gnu system file-systems)))
-         (list (shepherd-service
-                (provision '(bitlbee))
+       (list (shepherd-service
+              (provision '(bitlbee))
 
-                ;; Note: If networking is not up, then /etc/resolv.conf
-                ;; doesn't get mapped in the container, hence the dependency
-                ;; on 'networking'.
-                (requirement '(user-processes networking))
+              ;; Note: If networking is not up, then /etc/resolv.conf
+              ;; doesn't get mapped in the container, hence the dependency
+              ;; on 'networking'.
+              (requirement '(user-processes networking))
 
-                (modules '((gnu build shepherd)
-                           (gnu system file-systems)))
-                (start #~(if (defined? 'make-inetd-constructor)
+              (start #~(make-inetd-constructor
+                        (list #$bitlbee* "-I" "-c" #$conf)
+                        (list (endpoint
+                               (addrinfo:addr
+                                (car (getaddrinfo #$interface
+                                                  #$(number->string port)
+                                                  (logior AI_NUMERICHOST
+                                                          AI_NUMERICSERV))))))
+                        #:requirements '#$requirement
+                        #:service-name-stem "bitlbee"
+                        #:user "bitlbee" #:group "bitlbee"
 
-                             (make-inetd-constructor
-                              (list #$bitlbee* "-I" "-c" #$conf)
-                              (list (endpoint
-                                     (addrinfo:addr
-                                      (car (getaddrinfo #$interface
-                                                        #$(number->string port)
-                                                        (logior AI_NUMERICHOST
-                                                                AI_NUMERICSERV))))))
-                              #:requirements '#$requirement
-                              #:service-name-stem "bitlbee"
-                              #:user "bitlbee" #:group "bitlbee"
-
-                              ;; Allow 'bitlbee-purple' to use libpurple plugins.
-                              #:environment-variables
-                              (list (string-append "PURPLE_PLUGIN_PATH="
-                                                   #$plugins "/lib/purple-2")
-                                    "GUIX_LOCPATH=/run/current-system/locale"))
-
-                             (make-forkexec-constructor/container
-                              (list #$(file-append bitlbee "/sbin/bitlbee")
-                                    "-n" "-F" "-u" "bitlbee" "-c" #$conf)
-
-                              ;; Allow 'bitlbee-purple' to use libpurple plugins.
-                              #:environment-variables
-                              (list (string-append "PURPLE_PLUGIN_PATH="
-                                                   #$plugins "/lib/purple-2"))
-
-                              #:pid-file "/var/run/bitlbee.pid"
-                              #:mappings (list (file-system-mapping
-                                                (source "/var/lib/bitlbee")
-                                                (target source)
-                                                (writable? #t))))))
-                (stop  #~(if (defined? 'make-inetd-destructor)
-                             (make-inetd-destructor)
-                             (make-kill-destructor))))))))))
+                        ;; Allow 'bitlbee-purple' to use libpurple plugins.
+                        #:environment-variables
+                        (list (string-append "PURPLE_PLUGIN_PATH="
+                                             #$plugins "/lib/purple-2")
+                              "GUIX_LOCPATH=/run/current-system/locale")))
+              (stop  #~(make-inetd-destructor))))))))
 
 (define %bitlbee-accounts
   ;; User group and account to run BitlBee.

@@ -42,6 +42,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (guix build-system dune)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -284,6 +285,32 @@ the Coq system.  It provides a comprehensive library of theorems on a multi-radi
 multi-precision arithmetic.  It also supports efficient numerical computations
 inside Coq.")
     (license license:lgpl3+)))
+
+;; Union of coq and coq-ide-server as vim-coqtail expects coqc and coqidetop
+;; to be in the same bin folder, when vim-coqtail is installed coqc and
+;; coqidetop will be in the "same" bin folder in the profile, so this is only
+;; required for testing the package.
+;;
+;; This is deeply ingrained in the internals of vim-coqtail so this is why
+;; it's necessary.
+(define-public coq-for-coqtail
+  (hidden-package
+    (package
+      (inherit coq)
+      (name "coq-for-coqtail")
+      (source #f)
+      (build-system trivial-build-system)
+      (arguments
+       '(#:modules ((guix build union))
+         #:builder
+         (begin
+           (use-modules (ice-9 match)
+                        (guix build union))
+           (match %build-inputs
+             (((names . directories) ...)
+              (union-build (assoc-ref %outputs "out")
+                           directories))))))
+      (inputs (list coq coq-ide-server)))))
 
 (define-public coq-gappa
   (package

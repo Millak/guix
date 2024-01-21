@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -995,13 +996,13 @@ and Cython.")
 (define-public txt2tags
   (package
     (name "txt2tags")
-    (version "3.7")
+    (version "3.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "txt2tags" version))
               (sha256
                (base32
-                "12hpnvdy7dgarq6ini9jp7dp2zcmvpax04zbl3jb84kd423r75i7"))))
+                "0ik7gpr3gymgxnj0p86k8768kyxncbncv93zq67sbak3dbdl8hky"))))
     (build-system python-build-system)
     (native-inputs (list python-tox))
     (home-page "https://txt2tags.org")
@@ -1129,13 +1130,13 @@ documents into plain text.")
           "0im3kzvhxkjlx57w6h13mc9584c74ma1dyymgvpq2y61av3gc35v"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no make check
-       #:make-flags (list "CC=gcc"
-                          (string-append "DESTDIR=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; no configure script
-         (delete 'configure))))
+     (list #:tests? #f ; no make check
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "DESTDIR=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; no configure script
+               (delete 'configure))))
     (inputs
      (list zlib))
     (home-page "https://github.com/dstosberg/odt2txt/")
@@ -1289,13 +1290,14 @@ Mainland China, Taiwan, and Hong-Kong.")
                   "0anw0knr1iy4p9w3d3b3pbwzh1c43p1i2q4c28kw9zviw8kx2rly"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; test for perl module
-         #:make-flags (list "CC=gcc" "CFLAGS=-O2 -Wall -pedantic"
-                            (string-append "prefix=" %output)
-                            "MKDIR=mkdir -p")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)))) ; No ./configure script
+       (list #:tests? #f ; test for perl module
+             #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                  "CFLAGS=-O2 -Wall -pedantic"
+                                  (string-append "prefix=" #$output)
+                                  "MKDIR=mkdir -p")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)))) ; No ./configure script
       (home-page "https://ja.osdn.net/projects/nkf/")
       (synopsis "Network Kanji Filter")
       (description "Nkf is yet another kanji code converter among networks,

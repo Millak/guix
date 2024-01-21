@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -60,6 +60,8 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +114,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
@@ -122,11 +125,13 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
@@ -154,7 +159,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
@@ -162,8 +166,10 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages telephony)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages upnp)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
@@ -327,42 +333,26 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
 (define-public lcsync
   (package
     (name "lcsync")
-    (version "0.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://codeberg.org/librecast/lcsync")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0bsd3dkir2i647nmrmyb7skbv16v0f6f3gfwkpxz8g42978dlms5"))))
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/librecast/lcsync")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rhk80ybd2zranay76z1ysifnnm786lg9kiiijcwv76qy95in9ks"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
-       #:configure-flags
-       (list
-        (string-append "--prefix="
-                       (assoc-ref %outputs "out")))
+       #:configure-flags (list (string-append "--prefix="
+                                              (assoc-ref %outputs "out")))
        #:make-flags (let ((target ,(%current-target-system)))
                       (list ,(string-append "CC="
                                             (cc-for-target))))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'use-prefix-from-configure-in-doc-makefile
-                    ;; Use prefix from configure. Fixed upstream:
-                    ;; https://codeberg.org/librecast/lcsync/commit/4ba00f6
-                    ;; XXX: Remove for 0.2.2+
-                    (lambda _
-                      (substitute* "doc/Makefile.in"
-                        (("PREFIX .= /usr/local") "PREFIX ?= @prefix@"))))
-                  (add-before 'build 'add-library-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let* ((librecast (assoc-ref inputs "librecast")))
-                        (substitute* (list "./src/Makefile" "./test/Makefile")
-                          (("-llibrecast")
-                           (string-append "-L" librecast "/lib -llibrecast")))))))))
-    (inputs (list lcrq librecast libsodium))
+       #:test-target "test"))
+    (inputs (list lcrq librecast libsodium libbsd))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
     (description
@@ -523,16 +513,16 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
 (define-public librecast
   (package
     (name "librecast")
-    (version "0.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://codeberg.org/librecast/librecast")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0y0km0fv39m3i227pyg7fcr7d94gbji51fkcywqyrjgmk4j1hp1n"))))
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/librecast/librecast")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01m0q4n2hy3csbzil8ivjyzb1mh4w9jlh9iiv6z53kasl7aas27i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -542,7 +532,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))))
        #:test-target "test"))
-    (inputs (list libsodium lcrq))
+    (inputs (list libsodium lcrq libbsd))
     (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
 networking.")
@@ -867,25 +857,9 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
        (sha256
         (base32 "01ddfzjlkf2dgijrmm3j3j8irccsnbgfvjcnwslsfaxnrmrq5s64"))))
     (build-system cmake-build-system)
-    (outputs '("out" "doc"))
     (arguments
      `(#:configure-flags
-       (list
-        "-DNN_ENABLE_COVERAGE=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'move-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share/doc"))
-               (rename-file
-                (string-append out "/share/doc/nanomsg")
-                (string-append doc "/share/doc/nanomsg"))
-               #t))))))
-    (native-inputs
-     `(("asciidoctor" ,ruby-asciidoctor)
-       ("pkg-config" ,pkg-config)))
+       (list "-DNN_ENABLE_COVERAGE=ON")))
     (synopsis "Scalable socket library")
     (description "Nanomsg is a socket library that provides several common
 communication patterns.  It aims to make the networking layer fast, scalable,
@@ -1444,39 +1418,50 @@ files contain direct mappings of the abstractions provided by the ØMQ C API.")
     (license license:expat)))
 
 (define-public libnatpmp
-  (package
-    (name "libnatpmp")
-    (version "20230423")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://miniupnp.free.fr/files/"
-                    name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0w7wvf4yi8qv659dg9d3ndqvh3bqhgm21gd135spwhq6hhnfv106"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)) ; no tests
-       #:make-flags
-       (let* ((target ,(%current-target-system))
-              (gcc (if target
-                       (string-append target "-gcc")
-                       "gcc")))
-         (list
-          (string-append "CC=" gcc)
-          (string-append "INSTALLPREFIX=" (assoc-ref %outputs "out"))
-          (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")))))
-    (home-page "http://miniupnp.free.fr/libnatpmp.html")
-    (synopsis "C library implementing NAT-PMP")
-    (description
-     "@code{libnatpmp} is a portable and asynchronous implementation of
+  ;; Install the latest commit as it provides a pkg-config (.pc) file.
+  (let ((base-version "20230423")
+        (commit "6a850fd2bd9b08e6edc886382a1dbae2a7df55ec")
+        (revision "0"))
+    (package
+      (name "libnatpmp")
+      (version (git-version base-version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/miniupnp/libnatpmp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "18hf9a3i3mncl3w80nzi1684iac3by86bv0hgmbm1v2w8gbfjyw0"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-build-system
+              ;; Have CMake install the natpmp_declspec.h missing header file
+              ;; that is referenced by natpmp.h (see:
+              ;; https://github.com/miniupnp/libnatpmp/issues/41).
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("install\\(FILES natpmp.h")
+                   "install(FILES natpmp.h natpmp_declspec.h"))))
+            (add-after 'unpack 'fix-version
+              (lambda _
+                (with-output-to-file "VERSION"
+                  (lambda ()
+                    (display #$base-version))))))))
+      (native-inputs (list which))
+      (home-page "https://miniupnp.tuxfamily.org/libnatpmp.html")
+      (synopsis "C library implementing NAT-PMP")
+      (description
+       "@code{libnatpmp} is a portable and asynchronous implementation of
 the Network Address Translation - Port Mapping Protocol (NAT-PMP)
 written in the C programming language.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public librdkafka
   (package
@@ -2708,7 +2693,7 @@ that block port 22.")
 (define-public iperf
   (package
     (name "iperf")
-    (version "3.15")
+    (version "3.16")
     (source
      (origin
        (method git-fetch)
@@ -2717,7 +2702,7 @@ that block port 22.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10fzz3j2kx36yhqd0mvwlawvhdbcm0qc41i3f6jf6a5whm70177q"))))
+        (base32 "0m8zhr050qgmkkaf0jgn2isrr7yyk8majx9c18pf1xsqpr00sxs6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3412,14 +3397,14 @@ eight bytes) tools
 (define-public asio
   (package
     (name "asio")
-    (version "1.22.2")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asio/asio/"
                            version " (Stable)/asio-" version ".tar.bz2"))
        (sha256
-        (base32 "0v5w9j4a02j2rkc7mrdj3ms0kfpqbgq2ipkixlz2l0p8xs0vfsvp"))))
+        (base32 "0cp2c4v0kz0ln4bays0s3fr1mcxl527ay2lp7s14qbxx38vc5pfh"))))
     (build-system gnu-build-system)
     (inputs
      (list boost openssl))
@@ -3671,13 +3656,10 @@ and check if the WLAN key or the master key was transmitted unencrypted.")
        (uri (string-append "https://www.inet.no/dante/files/dante-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0pbahkj43rx7rmv2x40mf5p3g3x9d6i2sz7pzglarf54w5ghd2j1"))))
+         (base32 "0pbahkj43rx7rmv2x40mf5p3g3x9d6i2sz7pzglarf54w5ghd2j1"))
+       (patches (search-patches "dante-non-darwin.patch"))))
     (build-system gnu-build-system)
-    (arguments
-     ;; XXX: The dynamic socks library doesn't work with 'libc.so' (GNU ld
-     ;; script).  When preloading is enabled, 'sockd' failed with:
-     ;;    … Failed to open library "libc.so": …: invalid ELF header
-     '(#:configure-flags '("--disable-preload")))
+    (arguments '(#:configure-flags '("--with-libc=libc.so.6")))
     (home-page "https://www.inet.no/dante/")
     (synopsis "SOCKS server and client")
     (description "Dante is a SOCKS client and server implementation.  It can
@@ -3734,61 +3716,103 @@ communication over HTTP.")
     (license license:agpl3+)))
 
 (define-public restinio
-  ;; Temporarily use an unreleased commit, which includes fixes to be able to
-  ;; run the test suite in the resolver-less Guix build environment.
-  (let ((revision "0")
-        (commit "eda471ec3a2815965ca02ec93a1124a342b7601d"))
-    (package
-      (name "restinio")
-      (version (git-version "0.6.18" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Stiffstream/restinio")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0f4w7714r0ic7csgxydw2vzfh35ssk34pns9jycmc08dzc3r7whb"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
-                                  "-DRESTINIO_INSTALL=ON"
-                                  "-DRESTINIO_TEST=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'change-directory
-              (lambda _
-                (chdir "dev"))))))
-      (native-inputs
-       (list catch2
-             clara
-             json-dto))
-      (inputs
-       (list openssl
-             sobjectizer))
-      (propagated-inputs
-       ;; These are all #include'd by restinio's .hpp header files.
-       (list asio
-             fmt
-             http-parser
-             pcre
-             pcre2
-             zlib))
-      (home-page "https://stiffstream.com/en/products/restinio.html")
-      (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
-      (description "RESTinio is a header-only C++14 library that gives you an embedded
+  (package
+    (name "restinio")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06p9gcnzgynsgfxxa1lk58pq5755px7sn00x2xh21qjnspwld1sy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DRESTINIO_INSTALL=ON"
+              "-DRESTINIO_TEST=ON"
+              "-DRESTINIO_DEP_LLHTTP=system"
+              "-DRESTINIO_DEP_FMT=system"
+              "-DRESTINIO_DEP_EXPECTED_LITE=system"
+              "-DRESTINIO_DEP_CATCH2=system"
+              ;; No support to use a system provided so_5
+              ;; (see:
+              ;; https://github.com/Stiffstream/restinio/issues/207).
+              "-DRESTINIO_WITH_SOBJECTIZER=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev")))
+          (add-after 'change-directory 'use-system-catch2
+            ;; It's not currently possible to select a system-provided catch2,
+            ;; so patch the build system (see:
+            ;; https://github.com/Stiffstream/restinio/issues/208).
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(catch2\\)")
+                 "find_package(Catch2 REQUIRED)")))))))
+    (native-inputs
+     (list catch2-3
+           expected-lite
+           json-dto))
+    (inputs
+     (list openssl
+           sobjectizer))
+    (propagated-inputs
+     ;; These are all #include'd by restinio's .hpp header files.
+     (list asio
+           fmt
+           llhttp
+           pcre
+           pcre2
+           zlib))
+    (home-page "https://stiffstream.com/en/products/restinio.html")
+    (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
+    (description "RESTinio is a header-only C++14 library that gives you an embedded
 HTTP/Websocket server.  It is based on standalone version of ASIO
 and targeted primarily for asynchronous processing of HTTP-requests.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
+
+(define-public restinio-0.6
+  (package
+    (inherit restinio)
+    (name "restinio")
+    (version "0.6.19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qrb1qr075r5059w984c4slgpsiwv94j6fmi9naa5l48dbi1p7jz"))))
+    (arguments
+     (list
+      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                "-DRESTINIO_INSTALL=ON"
+                                "-DRESTINIO_TEST=ON"
+                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev"))))))
+    (native-inputs (list catch2 clara json-dto))
+    ;; These are all #include'd by restinio's .hpp header files.
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs restinio)
+       (replace "llhttp" http-parser)))))
 
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.4.12")
+    (version "3.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3797,7 +3821,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yji5pziqxfvyfizk3fn9j59bqlfdwfa1a0y9jjfknb2mmlwwb9w"))))
+                "15jx62fm1frbbvpkxysvvwz1a8d605xi53aacf0bvp4mb1dzpddn"))))
     (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
@@ -3825,6 +3849,14 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (substitute* "tests/Makefile.am"
                 (("\\bdhtrunnertester\\.(h|cpp)\\b")
                  ""))))
+          (add-after 'unupack 'relax-test-timeouts
+            (lambda _
+              ;; At least the 'test_send_json' has been seen to fail
+              ;; non-deterministically, but it seems hard to reproducible that
+              ;; failure.
+              (substitute* "tests/httptester.cpp"
+                (("std::chrono::seconds\\(10)")
+                 "std::chrono::seconds(30)"))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
@@ -3868,8 +3900,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            fmt
            readline))
     (propagated-inputs
-     (list msgpack                      ;included in several installed headers
-           restinio                     ;included in opendht/http.h
+     (list msgpack-cxx                  ;included in several installed headers
+           restinio-0.6                 ;included in opendht/http.h
            ;; The following are listed in the 'Requires.private' field of
            ;; opendht.pc:
            argon2
@@ -3912,6 +3944,60 @@ library (get, put, etc.) with text values.
 A very simple IM client working over the DHT.
 @end table")
     (license license:gpl3+)))
+
+(define-public dhtnet
+  ;; There is no tag nor release; use the latest available commit.
+  (let ((revision "0")
+        (commit "8b6e99fd34f150fde5f21f3a57e0e9f28174c70c"))
+    (package
+      (name "dhtnet")
+      ;; The base version is taken from the CMakeLists.txt file.
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/savoirfairelinux/dhtnet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yhygsimcl9j6hbww1b77am1kgbcriczslcrfb838nbfh18n1780"))))
+      (outputs (list "out" "debug"))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DBUILD_DEPENDENCIES=OFF"
+                                  "-DBUILD_SHARED_LIBS=ON"
+                                  "-DBUILD_TESTING=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'delete-problematic-tests
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  ;; The connectionManager test currently segfaults (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/18).
+                  ((".*tests_connectionManager.*") "")
+                  ;; The fileutils test fail, asserting an unexpected returned
+                  ;; value for the removeAll call when the directory to be
+                  ;; removed is missing (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/17).
+                  ((".*tests_fileutils.*") "")))))))
+      (native-inputs (list cppunit pkg-config))
+      ;; This library depends on the Jami fork of pjproject that adds ICE
+      ;; support.
+      (inputs
+       (list asio
+             fmt
+             msgpack-cxx
+             opendht
+             libupnp
+             pjproject-jami
+             readline))
+      (home-page "https://github.com/savoirfairelinux/dhtnet/")
+      (synopsis "OpenDHT network library for C++")
+      (description "The @code{dhtnet} is a C++ library providing abstractions
+for interacting with an OpenDHT distributed network.")
+      (license license:gpl3+))))
 
 (define-public frrouting
   (package
@@ -3970,7 +4056,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "2.8")
+    (version "2.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3979,10 +4065,10 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bpksqyaqr624bj7zm9hi22rnp6wnjbngx4q08l7lbd0r7r93vcb"))))
+                "199pcs20054xhp5c0dnxf9ny5cf5cynkqpx68dpn46nq8ly76n2y"))))
     (build-system gnu-build-system)
     (inputs
-     (list dbus ell (package-source ell) readline))
+     (list dbus ell (package-source ell) openresolv readline))
     (native-inputs
      (list autoconf
            automake
@@ -3992,38 +4078,45 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
            python-docutils
            openssl))
     (arguments
-     `(#:configure-flags
-       ,#~(list "--disable-systemd-service"
-                "--enable-external-ell"
-                "--enable-hwsim"
-                "--enable-tools"
-                "--enable-wired"
-                "--localstatedir=/var"
-                (string-append "--with-dbus-datadir=" #$output "/share/")
-                (string-append "--with-dbus-busdir="
-                               #$output "/share/dbus-1/system-services"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'copy-ell-header-files
-           ;; Copy into the source tree two of ell's private header files that
-           ;; it shares with iwd, as is required to build with the
-           ;; "--enable-external-ell" configure option.
-           ;; See the definition of "ell_shared" in iwd's Makefile.am.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ell-header-dir (search-input-directory inputs "/ell"))
-                   (target-dir "ell"))
-               (mkdir target-dir)
-               (for-each
-                (lambda (file-name)
-                  (copy-file (string-append ell-header-dir "/" file-name)
-                             (string-append target-dir "/" file-name)))
-                '("asn1-private.h" "useful.h")))))
-         (add-after 'configure 'patch-Makefile
-           (lambda _
-             (substitute* "Makefile"
-               ;; Don't try to 'mkdir /var'.
-               (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
-    (home-page "https://git.kernel.org/pub/scm/network/wireless/iwd.git/")
+     (list #:configure-flags
+           #~(list "--disable-systemd-service"
+                   "--enable-external-ell"
+                   "--enable-hwsim"
+                   "--enable-tools"
+                   "--enable-wired"
+                   "--localstatedir=/var"
+                   (string-append "--with-dbus-datadir=" #$output "/share/")
+                   (string-append "--with-dbus-busdir="
+                                  #$output "/share/dbus-1/system-services"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-ell-header-files
+                 ;; Copy into the source tree two of ell's private header files
+                 ;; that it shares with iwd, as is required to build with the
+                 ;; "--enable-external-ell" configure option.  See the
+                 ;; definition of "ell_shared" in iwd's Makefile.am.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((ell-header-dir (search-input-directory inputs "/ell"))
+                         (target-dir "ell"))
+                     (mkdir target-dir)
+                     (for-each
+                      (lambda (file-name)
+                        (copy-file (string-append ell-header-dir "/" file-name)
+                                   (string-append target-dir "/" file-name)))
+                      '("asn1-private.h" "useful.h")))))
+               (add-after 'unpack 'patch-resolvconf-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/resolve.c"
+                     (("getenv\\(\"PATH\"\\)")
+                      (format #f "\"~a\""
+                              (dirname (search-input-file
+                                        inputs "sbin/resolvconf")))))))
+               (add-after 'configure 'patch-Makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     ;; Don't try to 'mkdir /var'.
+                     (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
+    (home-page "https://iwd.wiki.kernel.org/")
     (synopsis "iNet Wireless Daemon")
     (description "iwd is a wireless daemon for Linux that aims to replace WPA
 Supplicant.  It optimizes resource utilization by not depending on any external
@@ -4226,7 +4319,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
 (define-public traceroute
   (package
     (name "traceroute")
-    (version "2.1.2")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
@@ -4234,7 +4327,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
                            "traceroute-" version "/traceroute-"
                            version ".tar.gz"))
        (sha256
-        (base32 "07svkglyizxirgcmv6d4ih59f3ds8pnyprvkrqcf5d3p567jcz2h"))))
+        (base32 "17l5barragw0mfgsbjfndny3w4l7zs20l6s6rvim3azajq6jcv4w"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4415,10 +4508,37 @@ client and server.  It allows you to use remote block devices over a TCP/IP
 network.")
     (license license:gpl2)))
 
+(define-public ngtcp2
+  (package
+    (name "ngtcp2")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ngtcp2/ngtcp2/"
+                           "releases/download/v" version "/"
+                           "ngtcp2-" version ".tar.xz"))
+       (sha256
+        (base32 "1pppl6s25hz91w6321g1q7dqvfy4vccz9mmc5r8sfdvdc95fngl0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ;; openssl package does not support QUIC interface, so just gnutls
+      #~(list "--with-gnutls")))
+    (native-inputs (list cunit pkg-config))
+    (inputs (list gnutls))
+    (home-page "https://nghttp2.org/ngtcp2/")
+    (synopsis "QUIC protocol implementation")
+    (description
+     "The ngtcp2 project is an effort to implement the RFC9000 (IETF)
+QUIC protocol.")
+    (license license:expat)))
+
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.7")
+    (version "0.5.4")
     (source
      (origin
        (method git-fetch)
@@ -4429,8 +4549,8 @@ network.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01mllfrsr55lnfivxwa57cfrjas6w4shsvx9k81pw8jixc124myk"))
-       (patches (search-patches "yggdrasil-extra-config.patch"))))
+        (base32 "1vfzzj9vxsc41dkaasz4fg3mz8iab86xyy925mp51zqmvx79ggx2"))
+      (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
@@ -4456,18 +4576,19 @@ network.")
                       (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
-    ;; https://github.com/kardianos/minwinsvc is windows only
     (propagated-inputs
-     (list ;;("go-golang-zx2c4-com-wireguard-windows"
-           ;; ,go-golang-zx2c4-com-wireguard-windows)
-           go-golang-zx2c4-com-wireguard
+     (list go-golang-zx2c4-com-wireguard
            go-golang-org-x-text
-           go-golang-org-x-sys
            go-golang-org-x-net
            go-golang-org-x-crypto
            go-golang-org-x-tools
+           go-golang-org-x-sys
            go-netns
            go-netlink
+           go-github-com-bits-and-blooms-bitset
+           go-github-com-bits-and-blooms-bloom
+           go-github-com-quic-go-quic-go
+           go-github-com-hjson-hjson-go
            go-github-com-olekukonko-tablewriter
            go-github-com-mitchellh-mapstructure
            go-github-com-mattn-go-runewidth
@@ -4540,7 +4661,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public phantomsocks
   (package
     (name "phantomsocks")
-    (version "0.0.0-20230829023258-013a0002abe2")
+    (version "0.0.0-20231031033204-8b0ac27fc450")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4549,10 +4670,11 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pqq4mh6dr7fb7i001wggwkxpvavxq0ps9h2cmm4gv8ygh4v6f10"))))
+                "1q4i8pgj6hzry9wzlczx729dmmgqdqfb26rfaim2ngmp1dyy9drl"))))
     (build-system go-build-system)
     (arguments
-     (list #:install-source? #f
+     (list #:go go-1.20
+           #:install-source? #f
            #:import-path "github.com/macronut/phantomsocks"
            #:build-flags #~'("-tags" #$(if (target-linux?)
                                            "rawsocket"

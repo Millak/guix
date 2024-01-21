@@ -118,6 +118,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -510,14 +511,14 @@ avoiding password prompts when X11 forwarding has already been setup.")
 (define-public libxkbcommon
   (package
     (name "libxkbcommon")
-    (version "1.4.1")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0fbb2dyjvf71p42y2jmwdcylsvj03w52f5rb23c2d00rwahhfg4l"))))
+                "0awwz5pg9x5bj0d7dpg4a7bd4gl6k55mlpxwb12534fkrpn19p0f"))))
     (build-system meson-build-system)
     (inputs
      (list libx11
@@ -553,6 +554,19 @@ X11 (yet).")
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))
     (properties '((cpe-name . "xkbcommon")))))
+
+(define-public libxkbcommon-1.5
+  (package
+    (inherit libxkbcommon)
+    (version "1.5.0")
+    (source (origin
+              (inherit (package-source libxkbcommon))
+              (method url-fetch)
+              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "05z08rpa464x8myjxddhix7jp9jcmakd7xrybx4hz8dwpg2123sn"))))))
 
 (define-public libfakekey
   (package
@@ -665,14 +679,14 @@ options are given, the action applies to the focused window.")
 (define-public xeyes
   (package
     (name "xeyes")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.x.org/releases/individual/app/"
-                           name "-" version ".tar.bz2"))
+                           name "-" version ".tar.xz"))
        (sha256
-        (base32 "1nxn443pfhddmwl59wplpjkslhlyfk307qx18nrimvvb2hipx8gq"))))
+        (base32 "08rhfp5xlmdbyxkvxhgjxdn6vwzrbrjyd7jkk8b7wi1kpw0ccl09"))))
     (build-system gnu-build-system)
     (inputs
       (list libxext libxi libxmu libxrender libxt))
@@ -688,7 +702,7 @@ following the mouse.")
 (define-public pixman
   (package
     (name "pixman")
-    (version "0.40.0")
+    (version "0.42.2")
     (source
      (origin
        (method url-fetch)
@@ -697,7 +711,7 @@ following the mouse.")
          "https://www.cairographics.org/releases/pixman-"
          version ".tar.gz"))
        (sha256
-        (base32 "1z13n96m7x91j25qq9wlkxsbq04wfwjhw66ir17frna06zn0s83d"))
+        (base32 "0pk298iqxqr64vk3z6nhjwr6vjg1971zfrjkqy5r9zd2mppq057a"))
        (patches
         (search-patches
          "pixman-CVE-2016-5296.patch"))))
@@ -722,7 +736,7 @@ rasterisation.")
 (define-public libdrm
   (package
     (name "libdrm")
-    (version "2.4.114")
+    (version "2.4.117")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -730,7 +744,7 @@ rasterisation.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "09nhk3jx3qzggl5vyii3yh4zm0npjqsbxhzvxrg2xla77a2cyj9h"))))
+                "0ar4c4ikcbm1s4sg09ld406izq5s1yk7b2n0mmvql77bwdlqv252"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -744,6 +758,16 @@ rasterisation.")
              (_ ''()))
            #:phases
            #~(modify-phases %standard-phases
+               ;; A typo in a previous upstream commit disabled building
+               ;; libdrm_intel by default on supported platforms.  This was
+               ;; fixed by the following change in upstream commit
+               ;; 8a933c778a0eb36526bf3fc8a289e25add9ff8b0.
+               ;; TODO: Remove on next update of libdrm.
+               (add-after 'unpack 'build-intel-by-default
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("system\\(\\)\\.startswith")
+                      "cpu_family().startswith"))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
@@ -1709,7 +1733,7 @@ less if you are working in front of the screen at night.")
 (define-public xscreensaver
   (package
     (name "xscreensaver")
-    (version "6.04")
+    (version "6.08")
     (source
      (origin
        (method url-fetch)
@@ -1717,7 +1741,7 @@ less if you are working in front of the screen at night.")
         (string-append "https://www.jwz.org/xscreensaver/xscreensaver-"
                        version ".tar.gz"))
        (sha256
-        (base32 "0lmiyvp3qs2gngd53f191jmlizs9l04i2gnrqbn96mqckyr18w3q"))
+        (base32 "18vnbs2ns42cgnnsvwn0zh98wcfzxf2k9mib5x5zkv6f4njjpxaw"))
        (modules '((guix build utils)))
        (snippet
         ;; 'configure.ac' checks for $ac_unrecognized_opts and exits if it's
@@ -1764,14 +1788,13 @@ less if you are working in front of the screen at night.")
            libjpeg-turbo
            linux-pam
            pango
-           gdk-pixbuf-xlib
            gtk+
            perl
            cairo
            bc
            libxrandr
            glu
-           glib))
+           `(,glib "bin")))
     (home-page "https://www.jwz.org/xscreensaver/")
     (synopsis "Classic screen saver suite supporting screen locking")
     (description
@@ -2773,9 +2796,16 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
            #~(list (string-append "-Dzshcompletiondir=" #$output
                                   "/share/zsh/site-functions")
                    (string-append "-Dfishcompletiondir=" #$output
-                                  "/share/fish/completions"))
+                                  "/share/fish/vendor_completions.d"))
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-bash-completion-dir
+                 (lambda _
+                   (substitute* "completions/bash/meson.build"
+                     (("bash_completion_dir =.*")
+                      (string-append "bash_completion_dir = "
+                                     "join_paths(get_option('sysconfdir'), "
+                                     "'bash_completion.d')\n")))))
                (add-after 'unpack 'patch-file-names
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* (find-files "src" "\\.c$")
@@ -2901,6 +2931,62 @@ The cutbuffer and clipboard selection are always synchronized.")
 can optionally use some appearance settings from XSettings, tint2 and GTK.")
     (home-page "https://jgmenu.github.io/")
     (license license:gpl2)))
+
+(define-public x-resize
+  (package
+    (name "x-resize")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/Apteryks/x-resize")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10y2p55m5hbrma01kixsppq1a3ld0q1jk8hwx1d1jfgw9vd243j8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:modules `(((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  ,@%gnu-build-system-modules
+                  (srfi srfi-26))
+      #:phases
+      (with-imported-modules `((guix build guile-build-system)
+                               ,@%gnu-build-system-modules)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((version (target-guile-effective-version))
+                       (site-ccache (string-append "/lib/guile/" version
+                                                   "/site-ccache"))
+                       (site (string-append "/share/guile/site/" version))
+                       (dep-path
+                        (lambda (env path)
+                          (list env '=
+                                (map (cut string-append <> path)
+                                     (list #$output
+                                           #$(this-package-input
+                                              "guile-lib")
+                                           #$(this-package-input
+                                              "guile-udev"))))))
+                       (bin (string-append #$output "/bin/")))
+                  (wrap-program (string-append bin "x-resize")
+                    (dep-path "GUILE_LOAD_PATH" site)
+                    (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)
+                    (dep-path "GUILE_EXTENSIONS_PATH" "/lib")))))))))
+    (native-inputs (list autoconf automake guile-3.0 pkg-config))
+    (inputs (list guile-lib guile-udev xrandr))
+    (home-page "https://gitlab.com/Apteryks/x-resize/")
+    (synopsis "Dynamic display resizing leveraging udev events")
+    (description "The @command{x-resize} command detects physical display
+resolution changes via udev and invokes the @command{xrandr} command to
+reconfigure the active display resolution accordingly.  It can be used to
+implement dynamic resize support for desktop environments that lack native
+support such as Xfce.")
+    (license license:gpl3+)))
 
 (define-public xwallpaper
   (package
@@ -3195,6 +3281,7 @@ initialize programs.")
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake
+           dbus-glib ;; for dbus-binding-tool
            `(,glib "bin") pkg-config))
     (inputs
      (list dbus-glib glib libx11))

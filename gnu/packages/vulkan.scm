@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 dan <i@dan.games>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages wine)
@@ -152,6 +154,38 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
 SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
     (license license:asl2.0)))
 
+(define-public spirv-llvm-translator
+  (package
+    (name "spirv-llvm-translator")
+    (version "15.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lix3bpli7i9csz26bq0d9g1v7c0gim498m5bm2gp8kifj2yih1s"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR="
+                            (assoc-ref %build-inputs "spirv-headers")
+                            "/include/spirv")
+             (string-append "-DLLVM_EXTERNAL_LIT="
+                            (assoc-ref %build-inputs "python-lit")
+                            "/bin/lit")
+             "-DLLVM_SPIRV_INCLUDE_TESTS=ON")))
+    (inputs (list llvm-15))
+    (native-inputs (list clang-15 llvm-15 python-lit spirv-headers))
+    (home-page "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")
+    (synopsis "Bi-directional translation between SPIR-V and LLVM IR")
+    (description
+     "The LLVM/SPIR-V Bi-Directional Translator is a library and tool for
+translation between LLVM IR and SPIR-V.")
+    (license license:asl2.0)))
+
 (define-public glslang
   (package
     (name "glslang")
@@ -237,7 +271,9 @@ interpretation of the specifications for these languages.")
                              (dirname (dirname
                                        (search-input-directory
                                         %build-inputs "include/vulkan"))))
-              "-DBUILD_TESTS=ON")
+              #$@(if (%current-target-system)
+                     #~("-DBUILD_TESTS=OFF" "-DUSE_GAS=OFF")
+                     #~("-DBUILD_TESTS=ON")))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'fix-pkg-config-file
@@ -266,7 +302,7 @@ interpretation of the specifications for these languages.")
            python
            wayland))
     (inputs
-     (list vulkan-headers))
+     (list vulkan-headers libxrandr))
     (home-page
      "https://github.com/KhronosGroup/Vulkan-Loader")
     (synopsis "Khronos official ICD loader and validation layers for Vulkan")

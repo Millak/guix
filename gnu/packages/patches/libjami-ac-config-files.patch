@@ -1,0 +1,52 @@
+Forwarded here: https://lists.gnu.org/archive/html/jami/2024-01/msg00003.html
+
+From 20a1702d881b381979d31c456f1b8cf5e0f728ad Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Sun, 7 Jan 2024 16:40:41 -0500
+Subject: [PATCH] configure.ac: Expand AC_CONFIG_FILES to fix a race.
+
+The commands apparently run for each file listed, or something
+similar, leading to:
+
+  configure: creating ./config.status
+  config.status: creating test/agent/Makefile
+  chmod: cannot access 'test/agent/pre-inst-env': No such file or directory
+  chmod: cannot access 'test/agent/scenarios/bulk-calls/run-scenario': No such file or directory
+  config.status: creating test/agent/pre-inst-env
+  chmod: cannot access 'test/agent/scenarios/bulk-calls/run-scenario': No such file or directory
+
+* configure.ac [ENABLE_AGENT]: Separate AC_CONFIG_FILES uses per file.
+
+Series-to: jami@gnu.org
+Series-postfix: daemon
+Change-Id: Ib283955b73540248e09bf31ef44ef3d178b216fa
+---
+ configure.ac | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index cdea5ff1c..2ab96d817 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -61,11 +61,11 @@ AC_ARG_ENABLE([agent],
+     [Build agent]))
+ AM_CONDITIONAL([ENABLE_AGENT], [test "x$enable_agent" = "xyes"])
+ AM_COND_IF([ENABLE_AGENT],
+-           [AC_CONFIG_FILES([test/agent/Makefile
+-                             test/agent/pre-inst-env:test/agent/build-aux/pre-inst-env.in
+-                             test/agent/scenarios/bulk-calls/run-scenario],
+-                            [chmod +x test/agent/pre-inst-env
+-                             chmod +x test/agent/scenarios/bulk-calls/run-scenario])])
++  [AC_CONFIG_FILES([test/agent/Makefile])
++   AC_CONFIG_FILES([test/agent/pre-inst-env:test/agent/build-aux/pre-inst-env.in],
++                   [chmod +x test/agent/pre-inst-env])
++   AC_CONFIG_FILES([test/agent/scenarios/bulk-calls/run-scenario],
++                   [chmod +x test/agent/scenarios/bulk-calls/run-scenario])])
+ 
+ AC_ARG_ENABLE([tracepoints], AS_HELP_STRING([--enable-tracepoints], [Enable tracepoints]))
+ 
+
+base-commit: e246fb2e090c9b3de55e2d455eee5a6f05a5b286
+-- 
+2.41.0
+

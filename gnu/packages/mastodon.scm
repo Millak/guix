@@ -119,6 +119,7 @@ Features include:
      (list gdk-pixbuf ; so pixbuf loader cache (for webp) is generated
            gettext-minimal
            `(,glib "bin") ; for glib-compile-resources
+           gsettings-desktop-schemas    ; for the org.gnome.system.proxy schema
            pkg-config))
     (inputs
      (list gst-plugins-bad

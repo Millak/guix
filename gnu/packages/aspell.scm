@@ -398,14 +398,14 @@ dictionaries, including personal ones.")
 (define-public ispell
   (package
     (name "ispell")
-    (version "3.4.05")
+    (version "3.4.06")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.cs.hmc.edu/~geoff/tars/ispell-"
                            version ".tar.gz"))
        (sha256
-        (base32 "00jni7gvdswjd9sdwip5ixnvjg2qzv56mn3m8gdgl9gxwgnns36g"))))
+        (base32 "19pbhg3pbnykkk9hla2kfhfanm7wcdja2qria365l1y8shridj8p"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #f

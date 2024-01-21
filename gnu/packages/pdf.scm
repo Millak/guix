@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,6 +108,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -117,7 +119,7 @@
 (define-public capypdf
   (package
     (name "capypdf")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -125,7 +127,7 @@
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1mb3i0jq04gg5cm1l07mn9kal5s748miql97j6fpaf1x1j2lcrsx"))))
+               (base32 "15l8zwc83l65xh739s0qddlv5qv537wnx74s8fcwlm1r8y7kf2x4"))))
     (build-system meson-build-system)
     (arguments
      (list #:meson meson/newer
@@ -369,7 +371,23 @@ please install the @code{flyer-composer-gui} package.")))
                  (setenv "PKG_CONFIG" #$(pkg-config-for-target))))))))
    (synopsis "PDF rendering library")
    (description
-    "Poppler is a PDF rendering library based on the xpdf-3.0 code base.")
+    "Poppler is a PDF rendering library based on the xpdf-3.0 code base.
+Poppler gives access to the following binary programs:
+@itemize
+@item pdfattach
+@item pdfdetach
+@item pdffonts
+@item pdfimages
+@item pdfinfo
+@item pdfseparate
+@item pdfsig
+@item pdftocairo
+@item pdftohtml
+@item pdftoppm
+@item pdftops
+@item pdftotext
+@item pdfunite
+@end itemize")
    (license license:gpl2+)
    (home-page "https://poppler.freedesktop.org/")))
 
@@ -824,14 +842,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.23.3")
+    (version "1.23.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
-                           "mupdf-" version "-source.tar.gz"))
+                           "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "1b8ajj5xmi2p9c92l8fd46amfshmxdw6zcg1hqajg8y0kd0ady8y"))
+        (base32 "0d0ig1amxyy50jvfbn6rz49zd0980p6syqzcx5v7wg0c3pl2iwwm"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -976,6 +994,34 @@ configurable toolbars and shortcuts, continuous and multi‐page layouts,
 SyncTeX support, and rudimentary support for annotations and forms.")
     (license license:gpl2+)))
 
+(define-public unpaper
+  (package
+    (name "unpaper")
+    (version "7.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://www.flameeyes.com/files/unpaper-"
+                            version ".tar.xz"))
+        (sha256
+         (base32 "103awjdl2qrzi0qc32hi8zvwf04r5ih5jaw8rg8ij9y24szznx95"))))
+    (native-inputs
+     (list pkg-config python-sphinx))
+    (inputs
+     (list discount ffmpeg))
+    (build-system meson-build-system)
+    (home-page "https://www.flameeyes.com/projects/unpaper")
+    (synopsis "post-processing tool for scanned pages")
+    (description "@command{unpaper} is a post-processing tool for
+scanned sheets of paper, especially for book pages that have been
+scanned from previously created photocopies.
+
+Its main purpose is to make scanned book pages better readable on screen
+after conversion to PDF.  Additionally, unpaper might be useful to
+enhance the quality of scanned pages before performing
+@acronym{OCR, optical character recognition}.")
+    (license license:gpl2)))
+
 (define-public xournal
   (package
     (name "xournal")
@@ -1089,38 +1135,28 @@ optimize toolbar for portrait / landscape
 (define-public python-reportlab
   (package
     (name "python-reportlab")
-    (version "3.5.42")
+    (version "4.0.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "reportlab" version))
               (sha256
                (base32
-                "0i17qgm7gzy7pzp240mkpsx9rn8rr67jh5npp5bylv3sd41g48cw"))))
+                "0lq8fibbgp7bfasxjf33s4hzqr405y655bkxggxmjxqsga0lb68n"))))
     (build-system python-build-system)
     (arguments
-     '(;; FIXME: There is one test failure, building the pdf manual from source,
-       ;; but it does not cause the build to fail.
-       #:test-target "tests"
-       #:configure-flags (list "--use-system-libart")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-target "tests"
+      #:configure-flags '(list "--no-download-t1-files")
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'find-libraries
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libart (assoc-ref inputs "libart-lgpl"))
-                   (freetype (assoc-ref inputs "freetype"))
-                   (dlt1 (assoc-ref inputs "font-curve-files")))
+             (let ((dlt1 (assoc-ref inputs "font-curve-files")))
                (substitute* "setup.py"
-                 (("/usr/include/libart-\\*")
-                  (string-append libart "/include/libart-2.0"))
-                 (("/usr/include/freetype2")
-                  (string-append freetype "/include"))
                  (("http://www.reportlab.com/ftp/pfbfer-20180109.zip")
-                  (string-append "file://" dlt1)))
-               #t))))))
+                  (string-append "file://" dlt1)))))))))
     (inputs
-     `(("freetype" ,freetype)
-       ("libart-lgpl" ,libart-lgpl)
-       ("font-curve-files"
+     `(("font-curve-files"
         ,(origin
            (method url-fetch)
            (uri "http://www.reportlab.com/ftp/pfbfer-20180109.zip")
@@ -1128,7 +1164,7 @@ optimize toolbar for portrait / landscape
             (base32
              "1v0gy4mbx02ys96ssx89420y0njknlrxs2bx64bv4rp8a0al66w5"))))))
     (propagated-inputs
-     (list python-pillow))
+     (list python-chardet python-pillow))
     (home-page "https://www.reportlab.com")
     (synopsis "Python library for generating PDFs and graphics")
     (description "This is the ReportLab PDF Toolkit.  It allows rapid creation
@@ -1388,7 +1424,7 @@ manage or manipulate PDFs.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.9.2")
+    (version "1.10.1")
     (source
      (origin
        (method git-fetch)
@@ -1397,7 +1433,7 @@ manage or manipulate PDFs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zj1fdaqih9d878yxy96ivgqyg4j31slvh2gqsyz2l2vj3s8z54x"))))
+        (base32 "0bi3yyns05yamml5jcnqvdaf7i19jg636wb1fj2mwlial9ww7zwp"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1409,7 +1445,10 @@ manage or manipulate PDFs.")
               (let ((program (string-append #$output "/bin/pdfarranger")))
                 (wrap-program program
                   `("GI_TYPELIB_PATH" ":" prefix
-                    (,(getenv "GI_TYPELIB_PATH"))))))))))
+                    (,(getenv "GI_TYPELIB_PATH")))))))
+          (add-before 'sanity-check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list intltool python-distutils-extra))
     (inputs

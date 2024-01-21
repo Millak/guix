@@ -79,7 +79,7 @@
 (define-public wine-minimal
   (package
     (name "wine-minimal")
-    (version "8.16")
+    (version "8.18")
     (source
      (origin
        (method url-fetch)
@@ -91,7 +91,8 @@
               (string-append "https://dl.winehq.org/wine/source/" dir
                              "wine-" version ".tar.xz")))
        (sha256
-        (base32 "1zgkqflqgl2y3a90f2nvcc1vhzr9ni0lps276553j8zgbqvnd0hn"))))
+        (base32 "1nv06awb3hv26v64nqnks9yiz7w368scxznj77vxa3zpmhafzyih"))))
+    (properties '((upstream-name . "wine")))
     (build-system gnu-build-system)
     (native-inputs (list bison flex))
     (inputs `())
@@ -303,7 +304,7 @@ integrate Windows applications into your desktop.")
 (define-public wine-staging-patchset-data
   (package
     (name "wine-staging-patchset-data")
-    (version "8.0")
+    (version "8.18")
     (source
      (origin
        (method git-fetch)
@@ -312,10 +313,10 @@ integrate Windows applications into your desktop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11q9fa1jdrv1pd9piaicgqvidq1c08imkwpqhyzcj5r711rl7581"))))
+        (base32 "0qabyw5139xdfsvzbwbrn1nnqssgwk8mn88mxnq2cdkk9gbjvq56"))))
     (build-system trivial-build-system)
     (native-inputs
-     (list bash coreutils))
+     (list coreutils))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -323,16 +324,12 @@ integrate Windows applications into your desktop.")
          (use-modules (guix build utils))
          (let* ((build-directory ,(string-append name "-" version))
                 (source (assoc-ref %build-inputs "source"))
-                (bash (assoc-ref %build-inputs "bash"))
                 (coreutils (assoc-ref %build-inputs "coreutils"))
                 (out (assoc-ref %outputs "out"))
                 (wine-staging (string-append out "/share/wine-staging")))
            (copy-recursively source build-directory)
            (with-directory-excursion build-directory
-             (substitute* "patches/patchinstall.sh"
-               (("/bin/sh")
-                (string-append bash "/bin/sh")))
-             (substitute* "patches/gitapply.sh"
+             (substitute* '("patches/gitapply.sh" "staging/patchinstall.py")
                (("/usr/bin/env")
                 (string-append coreutils "/bin/env"))))
            (copy-recursively build-directory wine-staging)
@@ -362,7 +359,7 @@ integrate Windows applications into your desktop.")
                              "wine-" wine-version ".tar.xz"))
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
-          (base32 "0bkr3klvjy8h4djddr31fvapsi9pc2rsiyhaa7j1lwpq704w4wh2")))))
+          (base32 "1nv06awb3hv26v64nqnks9yiz7w368scxznj77vxa3zpmhafzyih")))))
     (inputs (modify-inputs (package-inputs wine)
               (prepend autoconf ; for autoreconf
                        ffmpeg
@@ -372,6 +369,9 @@ integrate Windows applications into your desktop.")
                        python
                        util-linux ; for hexdump
                        wine-staging-patchset-data)))
+    (native-inputs
+     (modify-inputs (package-native-inputs wine)
+       (prepend python-3)))
     (arguments
      (substitute-keyword-arguments (package-arguments wine)
        ((#:phases phases)
@@ -381,7 +381,7 @@ integrate Windows applications into your desktop.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (invoke (search-input-file
                          inputs
-                         "/share/wine-staging/patches/patchinstall.sh")
+                         "/share/wine-staging/staging/patchinstall.py")
                         "DESTDIR=."
                         "--all")))
             (add-after 'apply-wine-staging-patches 'patch-SHELL
@@ -416,7 +416,7 @@ integrated into the main branch.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (invoke (search-input-file
                          inputs
-                         "/share/wine-staging/patches/patchinstall.sh")
+                         "/share/wine-staging/staging/patchinstall.py")
                         "DESTDIR=."
                         "--all")))
             (add-after 'apply-wine-staging-patches 'patch-SHELL
@@ -424,87 +424,3 @@ integrated into the main branch.")
     (synopsis "Implementation of the Windows API (staging branch, WoW64
 version)")
     (supported-systems '("x86_64-linux" "aarch64-linux"))))
-
-(define dxvk32
-  ;; This package provides 32-bit dxvk libraries on 64-bit systems.
-  (package
-    (name "dxvk32")
-    (version "1.5.5")
-    (home-page "https://github.com/doitsujin/dxvk/")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1inl0qswgvbp0fs76md86ilqf9mbshkpjm8ga81khn9zd6v3fvan"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:system "i686-linux"
-       #:configure-flags (list "--cross-file"
-                               (string-append (assoc-ref %build-inputs "source")
-                                              "/build-wine32.txt"))))
-    (native-inputs
-     `(("glslang" ,glslang)))
-    (inputs
-     `(("wine" ,wine-staging)))
-    (synopsis "Vulkan-based D3D9, D3D10 and D3D11 implementation for Wine")
-    (description "A Vulkan-based translation layer for Direct3D 9/10/11 which
-allows running complex 3D applications with high performance using Wine.
-
-Use @command{setup_dxvk} to install the required libraries to a Wine prefix.")
-    (supported-systems '("x86_64-linux"))
-    (license license:zlib)))
-
-(define-public dxvk
-  (package
-    (inherit dxvk32)
-    (name "dxvk")
-    (arguments
-     `(#:configure-flags (list "--cross-file"
-                               (string-append (assoc-ref %build-inputs "source")
-                                              "/build-wine"
-                                              ,(match (%current-system)
-                                                 ("x86_64-linux" "64")
-                                                 (_ "32"))
-                                              ".txt"))
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (string=? (%current-system) "x86_64-linux")
-             `((add-after 'unpack 'install-32
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (dxvk32 (assoc-ref inputs "dxvk32")))
-                     (mkdir-p (string-append out "/lib32"))
-                     (copy-recursively (string-append dxvk32 "/lib")
-                                       (string-append out "/lib32"))
-                     #t))))
-             '())
-         (add-after 'install 'install-setup
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/setup_dxvk")))
-               (mkdir-p (string-append out "/bin"))
-               (copy-file "../source/setup_dxvk.sh"
-                          bin)
-               (chmod bin #o755)
-               (substitute* bin
-                 (("wine=\"wine\"")
-                  (string-append "wine=" (assoc-ref inputs "wine") "/bin/wine"))
-                 (("x32") ,(match (%current-system)
-                             ("x86_64-linux" "../lib32")
-                             (_ "../lib")))
-                 (("x64") "../lib"))))))))
-    (inputs
-     `(("wine" ,(match (%current-system)
-                  ;; ("x86_64-linux" wine64)
-                  ("x86_64-linux" wine64-staging)
-                  ;; ("x86_64-linux" mingw-w64-x86_64)
-                  (_ wine)))
-       ,@(match (%current-system)
-           ("x86_64-linux"
-            `(("dxvk32" ,dxvk32)))
-           (_ '()))))
-    (supported-systems '("i686-linux" "x86_64-linux"))))

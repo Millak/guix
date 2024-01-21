@@ -45,10 +45,10 @@
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pciutils)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xorg)
   #:use-module (gnu system locale)
@@ -85,9 +85,10 @@ version of this file."
   (define set-utf8-locale
     #~(begin
         (setenv "LOCPATH"
-                #$(file-append glibc-utf8-locales "/lib/locale/"
-                               (version-major+minor
-                                (package-version glibc-utf8-locales))))
+                #$(file-append
+                   (libc-utf8-locales-for-target) "/lib/locale/"
+                   (version-major+minor
+                    (package-version (libc-utf8-locales-for-target)))))
         (setlocale LC_ALL "en_US.utf8")))
 
   (define builder

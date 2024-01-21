@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -49,6 +49,7 @@
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -91,10 +93,10 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cook)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
-  #:use-module (gnu packages ed)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
@@ -105,6 +107,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -114,7 +117,6 @@
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
-  #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages web)
@@ -134,6 +136,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages emacs)
@@ -820,6 +823,52 @@ on @command{git}, and use any regular Git hosting service.")
 to GitHub contributions calendar.")
     (license license:expat)))
 
+(define-public xdiff
+  (let ((revision "0")
+        (commit "a137bc7ee6c76618ed1737c257548eaa10ac0089"))
+    (package
+      (name "xdiff")
+      ;; The base version is taken from the CMakeLists.txt file.
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libgit2/xdiff")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rxzpag2pih64qlgq40xg1z6mz0bzvps4baxw7bmykyhjhc2gx75"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:modules '((guix build cmake-build-system)
+                    (guix build utils)
+                    (srfi srfi-26))
+        #:tests? #f                     ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'create-shared-library
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("add_library\\(xdiff STATIC")
+                   "add_library(xdiff SHARED"))))
+            (replace 'install           ;no install target
+              (lambda _
+                (with-directory-excursion "../source"
+                  (for-each (cute install-file <>
+                                  (string-append #$output "/include"))
+                            (list "xdiff.h"
+                                  "git-xdiff.h"))) ;included by xdiff.h
+                (install-file "libxdiff.so"
+                              (string-append #$output "/lib")))))))
+      (home-page "https://github.com/libgit2/xdiff")
+      (synopsis "File differential library used by git")
+      (description "@code{xdiff} is the file differential library used by git,
+which has been extracted into a standalone library for compatibility with
+other git-like projects such as @code{libgit2}.")
+      (license license:lgpl2.1+))))
+
 (define-public libgit2
   (package
     (name "libgit2")
@@ -885,6 +934,48 @@ provided as a re-entrant linkable library with a solid API, allowing you to
 write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
+
+(define-public libgit2-1.7
+  (package
+    (inherit libgit2)
+    (version "1.7.1")
+    (source (origin
+              (inherit (package-source libgit2))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "1wq6a91k97gbsyafla39yvn1lnr559hqc41ksz1qxv7flf5kyvfx"))
+              ;; We need to use the bundled xdiff until an option is given
+              ;; to use the one from git.
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file-recursively
+                            '("deps/chromium-zlib"
+                              "deps/http-parser"
+                              "deps/ntlmclient"
+                              "deps/pcre"
+                              "deps/winhttp"
+                              "deps/zlib"))))))))
+
+(define-public libgit2-1.6
+  (package
+    (inherit libgit2)
+    (version "1.6.4")
+    (source (origin
+              (inherit (package-source libgit2))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "078jnis7lwzb38ha5lcrs8hzi4br3c8v7c9xaqkvkcaa8nifcvcm"))))))
 
 (define-public libgit2-1.4
   (package
@@ -1027,115 +1118,118 @@ collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
 
 (define-public cgit
-  (package
-    (name "cgit")
-    ;; Update the ‘git-source’ input as well.
-    (version "1.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.zx2c4.com/cgit/snapshot/cgit-"
-                    version ".tar.xz"))
-              (sha256
-               (base32
-                "193d990ym10qlslk0p8mjwp2j6rhqa7fq0y1iff65lvbyv914pss"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; XXX: fail to build the in-source git.
-      #:test-target "test"
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                           "SHELL_PATH=sh")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'unpack-git
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Unpack the source of git into the 'git' directory.
-              (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
-                      (assoc-ref inputs "git-source"))))
-          (add-after 'unpack 'patch-absolute-file-names
-            (lambda* (#:key inputs #:allow-other-keys)
-              (define (quoted-file-name input path)
-                (string-append "\"" input path "\""))
-              (substitute* "ui-snapshot.c"
-                (("\"gzip\"")
-                 (quoted-file-name (assoc-ref inputs "gzip") "/bin/gzip"))
-                (("\"bzip2\"")
-                 (quoted-file-name (assoc-ref inputs "bzip2") "/bin/bzip2"))
-                (("\"xz\"")
-                 (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
+  (let ((commit "793c420897e18eb3474c751d54cf4e0983f85433")
+        (rev "1"))
+    (package
+      (name "cgit")
+      ;; Update the ‘git-source’ input as well.
+      (version (git-version "1.2.3" rev commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.zx2c4.com/cgit")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1mhrm14wpqvralf9j33ih5ai6naiq3g2jg2z91gnw9dhh8f9ilwz"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                    ; XXX: fail to build the in-source git.
+        #:test-target "test"
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                             "SHELL_PATH=sh")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'unpack-git
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Unpack the source of git into the 'git' directory.
+                (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
+                        (assoc-ref inputs "git-source"))))
+            (add-after 'unpack 'patch-absolute-file-names
+              (lambda* (#:key inputs #:allow-other-keys)
+                (define (quoted-file-name input path)
+                  (string-append "\"" input path "\""))
+                (substitute* "ui-snapshot.c"
+                  (("\"gzip\"")
+                   (quoted-file-name (assoc-ref inputs "gzip") "/bin/gzip"))
+                  (("\"bzip2\"")
+                   (quoted-file-name (assoc-ref inputs "bzip2") "/bin/bzip2"))
+                  (("\"xz\"")
+                   (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
 
-              (substitute* "filters/about-formatting.sh"
-                (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
-                                                      "/lib/cgit/filters"))
-                (("\\| tr") (string-append "| " (which "tr"))))
+                (substitute* "filters/about-formatting.sh"
+                  (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
+                                                        "/lib/cgit/filters"))
+                  (("\\| tr") (string-append "| " (which "tr"))))
 
-              (substitute* "filters/html-converters/txt2html"
-                (("sed") (which "sed")))
+                (substitute* "filters/html-converters/txt2html"
+                  (("sed") (which "sed")))
 
-              (substitute* "filters/html-converters/man2html"
-                (("groff") (which "groff")))
+                (substitute* "filters/html-converters/man2html"
+                  (("groff") (which "groff")))
 
-              (substitute* "filters/html-converters/rst2html"
-                (("rst2html\\.py") (which "rst2html.py")))))
-          (delete 'configure) ; no configure script
-          (add-after 'build 'build-man
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke "make" "doc-man" make-flags)))
-          (replace 'install
-            (lambda* (#:key make-flags outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (apply invoke
-                       "make" "install" "install-man"
-                       (string-append "prefix=" out)
-                       (string-append "CGIT_SCRIPT_PATH=" out "/share/cgit")
-                       make-flags)
-                ;; Move the platform-dependent 'cgit.cgi' into lib to get it
-                ;; stripped.
-                (rename-file (string-append out "/share/cgit/cgit.cgi")
-                             (string-append out "/lib/cgit/cgit.cgi")))))
-          (add-after 'install 'wrap-python-scripts
-            (lambda* (#:key outputs #:allow-other-keys)
-              (for-each
-               (lambda (file)
-                 (wrap-program (string-append (assoc-ref outputs "out")
-                                              "/lib/cgit/filters/" file)
-                   `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
-               '("syntax-highlighting.py"
-                 "html-converters/md2html")))))))
-    (native-inputs
-     ;; For building manpage.
-     (list asciidoc))
-    (inputs
-     `(;; Building cgit requires a Git source tree.
-       ("git-source"
-        ,(origin
-           (method url-fetch)
-           ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
-           ;; which may not match the current (package-version git).
-           (uri "mirror://kernel.org/software/scm/git/git-2.25.4.tar.xz")
-           (sha256
-            (base32 "11am6s46wmn1yll5614smjhzlghbqq6gysgcs64igjr9y5wzpdxq"))))
-       ("bash-minimal" ,bash-minimal)
-       ("openssl" ,openssl)
-       ("python" ,python)
-       ("python-docutils" ,python-docutils)
-       ("python-markdown" ,python-markdown)
-       ("python-pygments" ,python-pygments)
-       ("zlib" ,zlib)
-       ;; bzip2, groff, gzip and xz are inputs (not native inputs)
-       ;; since they are actually substituted into cgit source and
-       ;; referenced by the built package output.
-       ("bzip2" ,bzip2)
-       ("groff" ,groff)
-       ("gzip" ,gzip)
-       ("xz" ,xz)))
-    (home-page "https://git.zx2c4.com/cgit/")
-    (synopsis "Web frontend for git repositories")
-    (description
-     "CGit is an attempt to create a fast web interface for the Git SCM, using
+                (substitute* "filters/html-converters/rst2html"
+                  (("rst2html\\.py") (which "rst2html.py")))))
+            (delete 'configure)         ; no configure script
+            (add-after 'build 'build-man
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "doc-man" make-flags)))
+            (replace 'install
+              (lambda* (#:key make-flags outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out")))
+                  (apply invoke
+                         "make" "install" "install-man"
+                         (string-append "prefix=" out)
+                         (string-append "CGIT_SCRIPT_PATH=" out "/share/cgit")
+                         make-flags)
+                  ;; Move the platform-dependent 'cgit.cgi' into lib to get it
+                  ;; stripped.
+                  (rename-file (string-append out "/share/cgit/cgit.cgi")
+                               (string-append out "/lib/cgit/cgit.cgi")))))
+            (add-after 'install 'wrap-python-scripts
+              (lambda* (#:key outputs #:allow-other-keys)
+                (for-each
+                 (lambda (file)
+                   (wrap-program (string-append (assoc-ref outputs "out")
+                                                "/lib/cgit/filters/" file)
+                     `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
+                 '("syntax-highlighting.py"
+                   "html-converters/md2html")))))))
+      (native-inputs
+       ;; For building manpage.
+       (list asciidoc))
+      (inputs
+       `( ;; Building cgit requires a Git source tree.
+         ("git-source"
+          ,(origin
+             (method url-fetch)
+             ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
+             ;; which may not match the current (package-version git).
+             (uri "mirror://kernel.org/software/scm/git/git-2.43.0.tar.xz")
+             (sha256
+              (base32 "1v3nkfm3gw8wr7595qy86qla8xyjvi85fmly4lfph4frfcz60ijl"))))
+         ("bash-minimal" ,bash-minimal)
+         ("openssl" ,openssl)
+         ("python" ,python)
+         ("python-docutils" ,python-docutils)
+         ("python-markdown" ,python-markdown)
+         ("python-pygments" ,python-pygments)
+         ("zlib" ,zlib)
+         ;; bzip2, groff, gzip and xz are inputs (not native inputs)
+         ;; since they are actually substituted into cgit source and
+         ;; referenced by the built package output.
+         ("bzip2" ,bzip2)
+         ("groff" ,groff)
+         ("gzip" ,gzip)
+         ("xz" ,xz)))
+      (home-page "https://git.zx2c4.com/cgit/")
+      (synopsis "Web frontend for git repositories")
+      (description
+       "CGit is an attempt to create a fast web interface for the Git SCM, using
 a built-in cache to decrease server I/O pressure.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public cgit-pink
   (package
@@ -1396,7 +1490,7 @@ management by roles and individual account maintenance.")
  (define-public shflags
    (package
      (name "shflags")
-    (version "1.2.3")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1405,7 +1499,7 @@ management by roles and individual account maintenance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ydx0sb6vz9s2dgp5bd64y7fpzh9qvmlfjxrbmzac8saknijrlly"))))
+                "0jj0zkly8yg42b8jvih2cmmafv95vm8mv80n3dyalvr5i14lzqd8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1474,6 +1568,91 @@ and releases in bigger software projects.  The git-flow library of git
 subcommands helps automate some parts of the flow to make working with it a
 lot easier.")
     (license license:bsd-2)))
+
+(define-public stgit-2
+  (package
+    (name "stgit")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stacked-git/stgit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cgv7chxqkjaqmzi4691in26j2fm8r0vanw8xzb9cqnz6350wvvj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-bzip2-rs" ,rust-bzip2-rs-0.1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-ctrlc" ,rust-ctrlc-3)
+                       ("rust-curl" ,rust-curl-0.4)
+                       ("rust-encoding_rs" ,rust-encoding-rs-0.8)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix" ,rust-gix-0.54)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-strsim" ,rust-strsim-0.10)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-extras
+           (lambda _
+             (substitute* "Documentation/Makefile"
+               (("docbook2x-texi") "docbook2texi"))
+             (setenv "PERL_PATH" "perl")
+             (invoke "make" "-C" "Documentation" "info")
+             (invoke "make" "-C" "completion" "stgit.bash")
+             (invoke "make" "-C" "completion" "stg.fish")))
+         (add-after 'install 'install-extras
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "make" "-C" "Documentation" "install-info"
+                       (string-append "prefix=" out))
+               (invoke "make" "-C" "completion" "install"
+                       (string-append "prefix=" out)
+                       (string-append "bashdir=" out "/etc/bash_completion.d/"))))))))
+    (native-inputs
+     (list pkg-config
+           ;; For the documentation
+           asciidoc
+           docbook2x
+           libxslt
+           perl
+           texinfo
+           xmlto))
+    (inputs (list openssl zlib curl))
+    (home-page "https://stacked-git.github.io/")
+    (synopsis "Stacked Git (StGit) manages Git commits as a stack of patches")
+    (description "StGit uses a patch stack workflow.  Each individual patch
+focuses on a single concern, while a stack of patches forms a series of commits.
+Patches are stored as normal git commits, allowing easy merging of StGit
+patches into other repositories using standard Git.
+
+Features include:
+@itemize
+@item Import and export patches from Git with @command{stg commit} and
+@command{stg uncommit}
+@item Create new patches and add them to the stack with @command{stg new}
+@item Update a patch from the working tree with @command{stg refresh} and
+@command{stg edit}
+@item See information about the stack or patch with @command{stg series} and
+@command{stg show}
+@item Export and send a series of patches by email using @command{stg email}
+@end itemize")
+    (license license:gpl2)))
 
 (define-public stgit
   (package
@@ -3188,26 +3367,33 @@ will reconstruct the object along its delta-base chain and return it.")
                #$(file-append (this-package-input "go-golang-org-x-net")
                               "/src/golang.org/x/net/publicsuffix/data")
                "src/golang.org/x/net/publicsuffix/data")))
-          (add-before 'build 'man-gen
-            ;; Without this, the binary generated in 'build
-            ;; phase won't have any embedded usage-text.
-            (lambda _
-              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-                (invoke "make" "mangen"))))
-          (add-after 'build 'build-man-pages
-            (lambda _
-              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-                (invoke "make" "man"))))
-          (add-after 'install 'install-man-pages
-            (lambda* (#:key outputs #:allow-other-keys)
-              (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
-                (for-each
-                 (lambda (manpage)
-                   (install-file manpage
-                                 (string-append #$output "/share/man/man1")))
-                 (find-files "." "^git-lfs.*\\.1$"))))))))
+          ;; Only build the man pages if ruby-asciidoctor is available.
+          #$@(if (this-package-native-input "ruby-asciidoctor")
+               #~((add-before 'build 'man-gen
+                    ;; Without this, the binary generated in 'build
+                    ;; phase won't have any embedded usage-text.
+                    (lambda _
+                      (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                        (invoke "make" "mangen"))))
+                  (add-after 'build 'build-man-pages
+                    (lambda _
+                      (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                        (invoke "make" "man"))))
+                  (add-after 'install 'install-man-pages
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
+                        (for-each
+                         (lambda (manpage)
+                           (install-file manpage
+                                         (string-append #$output "/share/man/man1")))
+                         (find-files "." "^git-lfs.*\\.1$"))))))
+               #~()))))
     ;; make `ronn` available during build for man page generation
-    (native-inputs (list ronn-ng git-minimal ruby-asciidoctor))
+    (native-inputs
+     (append (list git-minimal)
+             (if (supported-package? ruby-asciidoctor)
+               (list ronn-ng ruby-asciidoctor)
+               '())))
     (propagated-inputs
      (list go-github-com-xeipuuv-gojsonschema
            go-github-com-xeipuuv-gojsonreference
@@ -3719,7 +3905,7 @@ commit messages for style.")
 (define-public hut
   (package
     (name "hut")
-    (version "0.2.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3728,7 +3914,7 @@ commit messages for style.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ybngrwwmkm00dlkdhvkfcvcjhp5xzs8fh90zqr0h12ssqx9pll3"))))
+        (base32 "0klp7qlii07j8ka9g91m5xg3ybg6cq0p5lp1ibfihq2p4kwqj57m"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3751,6 +3937,7 @@ commit messages for style.")
     (inputs
      (list go-git-sr-ht-emersion-go-scfg
            go-git-sr-ht-emersion-gqlclient
+           go-github-com-dustin-go-humanize
            go-github-com-juju-ansiterm
            go-github-com-spf13-cobra
            go-golang-org-x-oauth2

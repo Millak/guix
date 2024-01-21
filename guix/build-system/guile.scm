@@ -88,7 +88,8 @@
                       (compile-flags %compile-flags)
                       (imported-modules %guile-build-system-modules)
                       (modules '((guix build guile-build-system)
-                                 (guix build utils))))
+                                 (guix build utils)))
+                      (substitutable? #t))
   "Build SOURCE using Guile taken from the native inputs, and with INPUTS."
   (define builder
     (with-imported-modules imported-modules
@@ -114,6 +115,7 @@
                       #:system system
                       #:target #f
                       #:graft? #f
+                      #:substitutable? substitutable?
                       #:guile-for-build guile)))
 
 (define* (guile-cross-build name
@@ -133,7 +135,8 @@
                             (compile-flags %compile-flags)
                             (imported-modules %guile-build-system-modules)
                             (modules '((guix build guile-build-system)
-                                       (guix build utils))))
+                                       (guix build utils)))
+                            (substitutable? #t))
   (define builder
     (with-imported-modules imported-modules
       #~(begin
@@ -173,6 +176,7 @@
                       #:system system
                       #:target target
                       #:graft? #f
+                      #:substitutable? substitutable?
                       #:guile-for-build guile)))
 
 (define guile-build-system

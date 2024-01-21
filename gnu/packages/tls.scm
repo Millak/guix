@@ -5,7 +5,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -200,7 +200,7 @@ living in the same process.")
   (package
     (name "gnutls")
     (version "3.7.7")
-    (replacement gnutls-3.8.1)
+    (replacement gnutls/fixed)
     (source (origin
               (method url-fetch)
               ;; Note: Releases are no longer on ftp.gnu.org since the
@@ -305,11 +305,12 @@ required structures.")
 (define-deprecated/public-alias gnutls-latest gnutls)
 
 ;; Replacement for gnutls@3.7.7 to address GNUTLS-SA-2020-07-14 /
-;; CVE-2023-0361
-(define-public gnutls-3.8.1
+;; CVE-2023-0361, GNUTLS-SA-2023-10-23 / CVE-2023-5981, GNUTLS-SA-2024-01-14 /
+;; CVE-2024-0553, and GNUTLS-SA-2024-01-09 / CVE-2024-0567
+(define gnutls/fixed
   (package
     (inherit gnutls)
-    (version "3.8.1")
+    (version "3.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/gnutls/v"
@@ -318,20 +319,7 @@ required structures.")
               (patches (search-patches "gnutls-skip-trust-store-test.patch"))
               (sha256
                (base32
-                "1742jiigwsfhx7nj5rz7dwqr8d46npsph6b68j7siar0mqarx2xs"))))
-    (arguments
-     (if (target-hurd?)
-         ;; Fix reference to undefined 'PATH_MAX'.  This is fixed in GnuTLS
-         ;; commit 3b6ec1e01de4e96d36276dfe34ee9e183f285264.
-         (substitute-keyword-arguments (package-arguments gnutls)
-           ((#:phases phases #~%standard-phases)
-            #~(modify-phases #$phases
-                (add-after 'unpack 'set-path-max
-                  (lambda _
-                    (substitute* "lib/pathbuf.h"
-                      (("^#define GNUTLS_PATH_MAX PATH_MAX")
-                       "#define GNUTLS_PATH_MAX 8192\n")))))))
-         (package-arguments gnutls)))))
+                "0ghpyhhfa3nsraph6dws50jb3dc8g2cfl7dizdnyrm179fawakzp"))))))
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
@@ -348,7 +336,7 @@ required structures.")
     ;; This package supersedes the Guile bindings that came with GnuTLS until
     ;; version 3.7.8 included.
     (name "guile-gnutls")
-    (version "3.7.12")
+    (version "3.7.14")
     (home-page "https://gitlab.com/gnutls/guile/")
     (source (origin
               ;; url-fetch is used here to avoid a circular dependency with
@@ -356,12 +344,11 @@ required structures.")
               (method url-fetch)
               (uri (string-append
                     "https://gitlab.com/gnutls/guile/uploads/"
-                    "3fe12c208bdc6155c5116cf5eac7a2ad"
+                    "1fdc941351d54cd7affda1bb912b9ca5"
                     "/guile-gnutls-" version ".tar.gz"))
               (sha256
                (base32
-                "0dp3zsbnwgb4q4p8n6i5vnlwq52v5hp8f5c44ngyag89fcaz2fjx"))
-              (patches (search-patches "gnutls-cross.patch"))))
+                "0ldnxq5qxzy92jd8w5c717bgx4038x9qmi43bzl6kmlkzpagqayy"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -429,6 +416,8 @@ OpenSSL for TARGET."
              (cond
               ((target-x86-32? target)
                "x86")
+              ((target-x32? target)
+               "x32")
               ((target-x86-64? target)
                "x86_64")
               ((target-mips64el? target)
@@ -991,7 +980,7 @@ number generator")
     (name "mbedtls-apache")
     ;; XXX Check whether ‘-Wformat-signedness’ still breaks mbedtls-for-hiawatha
     ;; when updating.
-    (version "2.28.0")
+    (version "2.28.5")
     (source
      (origin
        (method git-fetch)
@@ -1000,7 +989,7 @@ number generator")
              (commit (string-append "mbedtls-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s37dsi29v7146fi9k4frvx5rz2snxdm6c3rwq2fvnca2r80hfjl"))))
+        (base32 "1jlkvvyigpjvv404b8vmx68f1v6g1h2zr6rd78dhc0xgqi018phs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags

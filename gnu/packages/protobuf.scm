@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -156,8 +157,11 @@ data in motion, or as a file format for data at rest.")
                             (install-file file slib)
                             (delete-file file))
                           (find-files lib "\\.a$"))))))))
-    (native-inputs (list googletest))
-    (inputs (list zlib))
+    (native-inputs (append (if (%current-target-system)
+                               (list this-package)
+                               '())
+                           (list googletest)))
+    (inputs (list zlib googletest))
     (home-page "https://github.com/protocolbuffers/protobuf")
     (synopsis "Data encoding for remote procedure calls (RPCs)")
     (description
@@ -425,14 +429,14 @@ from protobuf specification files.")
 (define-public python-protobuf
   (package
     (name "python-protobuf")
-    (version "3.20.1")
+    (version "3.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "1ja2vpk9nklllmsirmil2s4l7ni9yfqvbvj47zz5xx17s1k1bhxd"))))
+         "0l0p2lczs5iahgkhzm3298pjl49bk9iiwngkglg7ll7fkqqwlbbi"))))
     (build-system python-build-system)
     (inputs (list protobuf))
     (arguments

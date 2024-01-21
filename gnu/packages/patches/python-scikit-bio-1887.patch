@@ -1,0 +1,109 @@
+From 290da0472e3a0af01b242cd1d3dd6a24588db0e5 Mon Sep 17 00:00:00 2001
+From: qiyunzhu <qiyunzhu@gmail.com>
+Date: Sat, 4 Nov 2023 12:59:54 -0700
+Subject: [PATCH 1/2] removed kulsinski
+
+---
+ CHANGELOG.md                      | 6 ++++++
+ ci/aarch64.conda_requirements.txt | 2 +-
+ ci/conda_requirements.txt         | 2 +-
+ setup.py                          | 2 +-
+ skbio/diversity/_driver.py        | 2 --
+ 5 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0ce69c2c6..cd9adea6c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,12 @@
+ 
+ ## Version 0.5.10
+ 
++### Features
++* SciPy 1.11+ is now supported.
++
++### Backward-incompatible changes [experimental]
++* Beta diversity metric `kulsinski` was removed. This was motivated by that SciPy replaced this distance metric with `kulczynski1` in version 1.11 (see SciPy issue [#2009](https://github.com/scipy/scipy/issues/2009)), and that both metrics do not return 0 on two identical vectors.
++
+ ### Bug fixes
+ 
+ * Re-enabled OpenMP support, which has been mistakenly disabled in 0.5.8  ([#1874](https://github.com/biocore/scikit-bio/pull/1874))
+diff --git a/ci/aarch64.conda_requirements.txt b/ci/aarch64.conda_requirements.txt
+index a329bc666..3564f4c3c 100644
+--- a/ci/aarch64.conda_requirements.txt
++++ b/ci/aarch64.conda_requirements.txt
+@@ -5,5 +5,5 @@ matplotlib >= 1.4.3
+ natsort >= 4.0.3
+ numpy >= 1.9.2
+ pandas >= 1.5.0
+-scipy <= 1.10.1
++scipy >= 1.9.0
+ h5py >= 3.6.0
+diff --git a/ci/conda_requirements.txt b/ci/conda_requirements.txt
+index 4402e4ebb..0f1bd715c 100644
+--- a/ci/conda_requirements.txt
++++ b/ci/conda_requirements.txt
+@@ -5,6 +5,6 @@ matplotlib >= 1.4.3
+ natsort >= 4.0.3
+ numpy >= 1.9.2
+ pandas >= 1.5.0
+-scipy <= 1.10.1
++scipy >= 1.9.0
+ h5py >= 3.6.0
+ hdmedians >= 0.14.1
+diff --git a/setup.py b/setup.py
+index 36600e427..fa4d5e0a7 100644
+--- a/setup.py
++++ b/setup.py
+@@ -221,7 +221,7 @@ def check_bin(ccbin, source, allow_dash):
+           'natsort >= 4.0.3',
+           'numpy >= 1.9.2',
+           'pandas >= 1.5.0',
+-          'scipy <= 1.10.1',
++          'scipy >= 1.9.0',
+           'h5py >= 3.6.0',
+           'hdmedians >= 0.14.1',
+       ],
+diff --git a/skbio/diversity/_driver.py b/skbio/diversity/_driver.py
+index 016020743..1a792efb6 100644
+--- a/skbio/diversity/_driver.py
++++ b/skbio/diversity/_driver.py
+@@ -296,7 +296,6 @@ def partial_beta_diversity(metric, counts, ids, id_pairs, validate=True,
+     "dice",
+     "hamming",
+     "jaccard",
+-    "kulsinski",
+     "mahalanobis",
+     "manhattan",  # aliases to "cityblock" in beta_diversity
+     "matching",
+@@ -314,7 +313,6 @@ def partial_beta_diversity(metric, counts, ids, id_pairs, validate=True,
+ _qualitative_beta_metrics = [
+     "dice",
+     "jaccard",
+-    "kulsinski",
+     "matching",
+     "rogerstanimoto",
+     "russellrao",
+
+From 9dd9c6dd68a015f1159f884c57878b8a00fad14c Mon Sep 17 00:00:00 2001
+From: Qiyun Zhu <qiyunzhu@gmail.com>
+Date: Tue, 7 Nov 2023 22:42:10 -0700
+Subject: [PATCH 2/2] fixing numpy exception
+
+---
+ skbio/stats/tests/test_composition.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/skbio/stats/tests/test_composition.py b/skbio/stats/tests/test_composition.py
+index 90921be5b..e720a594f 100644
+--- a/skbio/stats/tests/test_composition.py
++++ b/skbio/stats/tests/test_composition.py
+@@ -1222,7 +1222,7 @@ def test_ancom_fail_alpha(self):
+             ancom(self.table1, self.cats1, alpha=1.1)
+ 
+     def test_ancom_fail_multiple_groups(self):
+-        with self.assertRaises(TypeError):
++        with self.assertRaises((TypeError, np.AxisError)):
+             ancom(self.table4, self.cats4,
+                   significance_test=scipy.stats.ttest_ind)
+ 

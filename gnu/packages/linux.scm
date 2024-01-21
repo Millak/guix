@@ -76,7 +76,8 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -490,113 +491,130 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                         "linux-" version ".tar.xz"))
     (sha256 hash)))
 
+;; The current "mainline" kernel.
+
+(define-public linux-libre-6.7-version "6.7")
+(define-public linux-libre-6.7-gnu-revision "gnu")
+(define deblob-scripts-6.7
+  (linux-libre-deblob-scripts
+   linux-libre-6.7-version
+   linux-libre-6.7-gnu-revision
+   (base32 "0hwashmml56r74kgjb637b3ln2d7f9vgfl18sxvczyl84xlbcncj")
+   (base32 "0pivh1hjc5ylgcyjx0z7x1dqax614pai502idzil98j35pwa24za")))
+(define-public linux-libre-6.7-pristine-source
+  (let ((version linux-libre-6.7-version)
+        (hash (base32 "0s8hbcsg7fdvspqam8kzcxygjsznr4zfi60nqgc81l3n4m518cgg")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.7)))
+
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.5-version "6.5.9")
-(define-public linux-libre-6.5-gnu-revision "gnu")
-(define deblob-scripts-6.5
+(define-public linux-libre-6.6-version "6.6.12")
+(define-public linux-libre-6.6-gnu-revision "gnu")
+(define deblob-scripts-6.6
   (linux-libre-deblob-scripts
-   linux-libre-6.5-version
-   linux-libre-6.5-gnu-revision
-   (base32 "01mm6v67bcrhgm97axsw46x0iix9im7hmlb765f3bkjhwklpxdy7")
-   (base32 "066z5lw5vrfayhv23hpfcm6fh6b7zmn2v13kfv1g3z3jl1wblhfh")))
-(define-public linux-libre-6.5-pristine-source
-  (let ((version linux-libre-6.5-version)
-        (hash (base32 "1mcg0lpxr832mwyqlbn0s5gssvsk2nn2xhq9w0qbymizf5j2yrn6")))
+   linux-libre-6.6-version
+   linux-libre-6.6-gnu-revision
+   (base32 "0g8m0rb15b0231dv8ji456s75a67szsaim71may3yprplycz6pav")
+   (base32 "0kavbby960k7wg355p3hjb9v1c4gnk8dv3lkfhpz44ayhv7kihg5")))
+(define-public linux-libre-6.6-pristine-source
+  (let ((version linux-libre-6.6-version)
+        (hash (base32 "01a6czk6xz9syxvkb2yhbn3vypqy2mnjq7ni84x4nklw7n6frmqz")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
-                            deblob-scripts-6.5)))
+                            deblob-scripts-6.6)))
 
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.60")
+(define-public linux-libre-6.1-version "6.1.73")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
    (base32 "1sf80f2i4vf888xjcn84ymn4w5ynn30ib9033zwmv7f09yvfhapy")
-   (base32 "1c73516nbhnz0cxjz38b5794dxygb8sznv9idiibw7ablmjbhd11")))
+   (base32 "1jg2v1nxd6i5x536vmd1l14xhpzrcimpmjfipb1zkrwil102y25f")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "02pvymr1dgd36mp7yikxqqv0sfrpwi1grnvxvx6jbbx6wmx0wljq")))
+        (hash (base32 "11vyblm4nkjncdi3akcyizw7jkyxsqn2mjixc51f7kgiddq4ibbc")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.137")
+(define-public linux-libre-5.15-version "5.15.147")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
    (base32 "18ac30kxg2mf2f6gk3p935hzhz2qs110jy4xwk21kblnnkskbxj8")
-   (base32 "1c3lm0j401lv2lk39dmr4mlf5ic173snm7cc0cckl6czyvxr5ysy")))
+   (base32 "14pw0yl0yxdgcdp01rpi91ylil9irwzxfq04kfvn3gg2abaq37bn")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1xxjbxldrhmnh2q6rykpxyfbj8xqgl82q30n8sfavrzr14bb4jcp")))
+        (hash (base32 "1m7wznqiakarpar4a0nbwxql0hkvds0s79zx3r1xn0fj4mbfdhan")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.199")
+(define-public linux-libre-5.10-version "5.10.208")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
    (base32 "1b33rkn32b923025iiz4xzxiy8y5ii9j5qk4021mg575890rl4ch")
-   (base32 "0nnp46mn32yk436swd2qh34igmzinfgkwvbzp3lqyy45f06hbc2j")))
+   (base32 "0zmmqj5gyiy2q81f199c29b14isfiqbvl87y72k14yy0q5398276")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1h944syk7n6c4j1djlx19n77alzwbxcdza77c9ykicgfynhpgsm0")))
+        (hash (base32 "0vpvy47cmcinhs76cjl2n81zrlhbqgpi4v29izn2hzsl15x189ch")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.259")
+(define-public linux-libre-5.4-version "5.4.267")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
    linux-libre-5.4-gnu-revision
    (base32 "0xg5cz82k2cb0ikxvwv1hp5c3h377jkb5sd6aszvsk7hnabhk62v")
-   (base32 "0sw67b2pk3lng4y67diqqnhxaggnp3nbkx8dxc5fs27rinfxr4m1")))
+   (base32 "08wn4rjrmi8asmdkg92xbbm6v0sw44kackp69agbw57zy6fp2zys")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "195v4fidavzm637glj6580006mrcaygnbj4za874imb62bxf9rpz")))
+        (hash (base32 "0hqw8ww7y9mjrh1wgdkiwk8llxpf4lxwmsmzxm8j4l615kpqvlj2")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.297")
+(define-public linux-libre-4.19-version "4.19.305")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
    linux-libre-4.19-version
    linux-libre-4.19-gnu-revision
-   (base32 "0ghdizzs6969872rnjcv9p6sl9rcbs29v3ismk125yyvjaczd428")
-   (base32 "1425mhkfxn18vxn05bb4h3li7x1jl7l1hf1zi8xhnqv3wa31h9wl")))
+   (base32 "0pjal2cc2f99cvw8r4icb4l24j41k48jkj6bqk7pcahzcgx33ycb")
+   (base32 "07j33w4pq319gaypfsym6v0i2xqc5jagm47nxyy2010zn8k6y8kd")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0c9xxqgv2i36hrr06dwz7f3idc04xpv0a5pxg08xdh03cnyf12cx")))
+        (hash (base32 "1s6srmhd3visqchshg566c7gq5wnxr3m74854kxksqhhfif450ns")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.328")
+(define-public linux-libre-4.14-version "4.14.336")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
    linux-libre-4.14-version
    linux-libre-4.14-gnu-revision
    (base32 "1vbgykwzf7j0yjqcwn747cfhwj0rgw3s9h627q94wb9a19x9p0fr")
-   (base32 "1faagsj4i31z2bp83hflx3q9vrddjnn37a3ah2b47iaplva7z1nd")))
+   (base32 "1ir96bbhw77xw6lmsnh42gi130nnzjklpgfyd46pxmqckrpydcvx")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1igcpvnhwwrczfdsafmszvi0456k7f6j4cgpfw6v6afw09p95d8x")))
+        (hash (base32 "075nawgvln7ds32cmgg7042qfsf85nzizhc1h0rp8s8wjyvzs808")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -629,8 +647,13 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (patches (append (origin-patches source)
                      patches))))
 
-(define-public linux-libre-6.5-source
-  (source-with-patches linux-libre-6.5-pristine-source
+(define-public linux-libre-6.7-source
+  (source-with-patches linux-libre-6.7-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+
+(define-public linux-libre-6.6-source
+  (source-with-patches linux-libre-6.6-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
@@ -748,10 +771,15 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
 
-(define-public linux-libre-headers-6.5
-  (make-linux-libre-headers* linux-libre-6.5-version
-                             linux-libre-6.5-gnu-revision
-                             linux-libre-6.5-source))
+(define-public linux-libre-headers-6.7
+  (make-linux-libre-headers* linux-libre-6.7-version
+                             linux-libre-6.7-gnu-revision
+                             linux-libre-6.7-source))
+
+(define-public linux-libre-headers-6.6
+  (make-linux-libre-headers* linux-libre-6.6-version
+                             linux-libre-6.6-gnu-revision
+                             linux-libre-6.6-source))
 
 (define-public linux-libre-headers-6.1
   (make-linux-libre-headers* linux-libre-6.1-version
@@ -1092,19 +1120,27 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;;; Generic kernel packages.
 ;;;
 
-(define-public linux-libre-6.5
-  (make-linux-libre* linux-libre-6.5-version
-                     linux-libre-6.5-gnu-revision
-                     linux-libre-6.5-source
+(define-public linux-libre-6.6
+  (make-linux-libre* linux-libre-6.6-version
+                     linux-libre-6.6-gnu-revision
+                     linux-libre-6.6-source
                      '("x86_64-linux" "i686-linux" "armhf-linux"
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-version         linux-libre-6.5-version)
-(define-public linux-libre-gnu-revision    linux-libre-6.5-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-6.5-pristine-source)
-(define-public linux-libre-source          linux-libre-6.5-source)
-(define-public linux-libre                 linux-libre-6.5)
+(define-public linux-libre-version         linux-libre-6.6-version)
+(define-public linux-libre-gnu-revision    linux-libre-6.6-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-6.6-pristine-source)
+(define-public linux-libre-source          linux-libre-6.6-source)
+(define-public linux-libre                 linux-libre-6.6)
+
+(define-public linux-libre-6.7
+  (make-linux-libre* linux-libre-6.7-version
+                     linux-libre-6.7-gnu-revision
+                     linux-libre-6.7-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-6.1
   (make-linux-libre* linux-libre-6.1-version
@@ -1337,9 +1373,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-6.5-version
-          linux-libre-6.5-gnu-revision
-          linux-libre-6.5-source
+          linux-libre-6.6-version
+          linux-libre-6.6-gnu-revision
+          linux-libre-6.6-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
           #:extra-version "bpf"
@@ -3101,6 +3137,40 @@ Both commands are targeted at system administrators.")
      '((release-monitoring-url . "https://www.netfilter.org/pub/iptables/")))
     (license license:gpl2+)))
 
+(define-public iptables-nft
+  (package
+    (inherit iptables)
+    (name "iptables-nft")
+    (source #f)
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'unpack)
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (command-path)
+                 (let ((link-path (string-append #$output command-path)))
+                   (mkdir-p (dirname link-path))
+                   (symlink (search-input-file inputs "sbin/xtables-nft-multi")
+                            link-path)))
+               (apply append
+                      '("/bin/iptables-xml")
+                      (map (lambda (xtables)
+                             (list (string-append "/sbin/" xtables)
+                                   (string-append "/sbin/" xtables "-restore")
+                                   (string-append "/sbin/" xtables "-save")))
+                           '("arptables"
+                             "ebtables"
+                             "iptables"
+                             "ip6tables")))))))))
+    (inputs (list iptables))
+    (native-inputs '())
+    (synopsis
+     "Programs to configure Linux IP packet filtering rules (nftables API)")))
+
 (define-public bolt
   (package
     (name "bolt")
@@ -3599,7 +3669,7 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
     (inputs
      (list kmod libnl ncurses pciutils zlib))
     (home-page "https://01.org/powertop/")
-    (synopsis "Analyze power consumption on Intel-based laptops")
+    (synopsis "Analyze power consumption on x86-based laptops")
     (description
      "PowerTOP is a Linux tool to diagnose issues with power consumption and
 power management.  In addition to being a diagnostic tool, PowerTOP also has
@@ -6585,17 +6655,17 @@ by hand is no trivial task: @command{tmon} aims to make it understandable.")
     (source (package-source linux-libre))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-subdirectory
-           (lambda _
-             (chdir "tools/power/x86/turbostat")
-             #t))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _
+              (chdir "tools/power/x86/turbostat")))
+          (delete 'configure))))         ;no configure script
     (inputs
      (list libcap))
     (supported-systems '("i686-linux" "x86_64-linux"))
@@ -6716,7 +6786,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
 (define-public rdma-core
   (package
     (name "rdma-core")
-    (version "44.0")
+    (version "48.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/linux-rdma/rdma-core"
@@ -6724,7 +6794,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "12w5v74wz1akac09frw7qk1yd06b00239zh7bvbvqyzjc0g61mi5"))))
+                "0h281dw2yph8pzfsr1wblqy6pb8nd9yj1pdf5c62zwc1l9b2fa3q"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -7462,15 +7532,16 @@ running boot option, and more.")
 (define-public sysstat
   (package
     (name "sysstat")
-    (version "12.4.4")
+    (version "12.7.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://pagesperso-orange.fr/sebastien.godard/"
+       (uri (string-append "https://sysstat.github.io/sysstat-packages/"
                            "sysstat-" version ".tar.xz"))
        (sha256
-        (base32 "091xjip7l52dxal8dsfh5chksr4g9gclnssw3hjjxy84kr3yf4lm"))))
+        (base32 "0ssdrm3k0fclq5b5i0aznfwdkbac9l9cf88idaq3pls9lm040rjp"))))
     (build-system gnu-build-system)
+    (native-inputs (list gettext-minimal))
     (arguments
      `(#:tests? #f                      ; no test suite.
        ;; Without this flag, it tries to install the man pages with group 'root'
@@ -7487,7 +7558,7 @@ running boot option, and more.")
              (substitute* "Makefile"
                (("mkdir -p \\$\\(DESTDIR\\)\\$\\(SA_DIR\\)")
                 "")))))))
-    (home-page "http://sebastien.godard.pagesperso-orange.fr/")
+    (home-page "https://sysstat.github.io")
     (synopsis "Performance monitoring tools for Linux")
     (description "The sysstat utilities are a collection of performance
 monitoring tools for Linux.  These include @code{mpstat}, @code{iostat},
@@ -8539,7 +8610,7 @@ comparing system environments.")
 (define-public libfabric
   (package
     (name "libfabric")
-    (version "1.11.2")
+    (version "1.19.0")
     (source
      (origin
        (method url-fetch)
@@ -8547,7 +8618,7 @@ comparing system environments.")
         (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
                        version "/libfabric-" version ".tar.bz2"))
        (sha256
-        (base32 "1nnpfkwxhim2nqjkb1vwrb4wj4j3l6w6yvvy69fqam2snlhshazz"))))
+        (base32 "17pg0fb4fa77r1bmp0xk535m8n8fadpfdg93cb280ghhx55pck7i"))))
     (build-system gnu-build-system)
     (inputs `(("rdma-core" ,rdma-core)
               ,@(match (%current-system)
@@ -8828,16 +8899,17 @@ privileges.")
 (define-public psm2
   (package
     (name "psm2")
-    (version "11.2.230")
+    (version "12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/intel/opa-psm2")
-                    (commit (string-append "PSM2_" version))))
+                    ;; tag 'psm-v12.0' = commit ad5dd1b
+                    (commit (string-append "psm-v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bm7ndhi8qzmd0plnggj2h52yb34bab4k38530nsnkmv9smwdivl"))))
+                "04nar65ac11qqx41vkfs7iip8kfiah0zms7l4rmsxncpiz2iqfik"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -8956,7 +9028,8 @@ management tools in userspace.")
                 "0hpzghf1a4cwawzhkiwdzin80h6hd09fskl77d5ppgc084yvj8x0"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/vishvananda/netlink"))
+     `(#:tests? #f      ; Tests depend on specific kernel modules.
+       #:import-path "github.com/vishvananda/netlink"))
     (native-inputs
      (list go-golang-org-x-sys go-netns))
     (home-page "https://github.com/vishvananda/netlink")
@@ -9322,7 +9395,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.3.77")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9331,7 +9404,7 @@ types and interfaces and translates so that the X server can use them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11jdd9ljm6967cdp97qqf5fa02ad69kdgk3212ap5gfndky2h43m"))))
+                "0a8wvsnbgqanp2vjdpkaxpny0k17hz720rd20zdi00s9xjbcrycr"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9345,6 +9418,8 @@ types and interfaces and translates so that the X server can use them.")
     (native-inputs
      (list `(,glib "bin")
            pkg-config
+           doxygen
+           python
            python-docutils))
     (inputs (list alsa-lib
                   avahi
@@ -9385,7 +9460,7 @@ of Linux application development.")
 (define-public wireplumber
   (package
     (name "wireplumber")
-    (version "0.4.14")
+    (version "0.4.17")
     (source
      (origin
        (method git-fetch)
@@ -9395,7 +9470,7 @@ of Linux application development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jmnd6000j4wx68lxgz5b4g4hxkf243ivi9swaaf8rnx99cbx91w"))))
+        (base32 "00jzn0pxy2ws819yg4p8xxhngqai3labd1alaxb8zwzymr7m06my"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dsystemd=disabled"
@@ -9412,10 +9487,23 @@ providing convenience for writing the daemon's modules as well as external
 tools for managing PipeWire.")
     (license license:expat)))
 
+(define-public wireplumber-minimal
+  (let ((base wireplumber))
+    (package
+      (inherit base)
+      (name "wireplumber-minimal")
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags flags ''())
+          #~(cons "-Delogind=disabled" #$flags))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (delete "elogind"))))))
+
 (define-public ell
   (package
     (name "ell")
-    (version "0.59")
+    (version "0.61")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9424,7 +9512,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11xlkdvw7pyd9idq1zsnl946dry9aksnz29wbpzxqjc97xhhd5xq"))))
+                "1lkjf24ap40wk747z1iv8ds8z40alc5x8rzsgczjj1707x2ik6mj"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests launch dbus-daemon instances that all try to bind to
@@ -9807,7 +9895,7 @@ kernel side implementation.")
 (define-public erofs-utils
   (package
     (name "erofs-utils")
-    (version "1.7")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -9816,7 +9904,7 @@ kernel side implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bi8n1kb263v1gvis21pa9dxsf3p96d1nasm21icmv3rd9g2xh6p"))))
+        (base32 "1mvybd06cswxj0nzk9ph1pkb9mrs8lvcbn6cgsp7z3wl6jai9d6d"))))
     (build-system gnu-build-system)
     (inputs
      (list lz4

@@ -18,6 +18,7 @@
 ;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +62,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
+  #:use-module (gnu packages cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
@@ -189,7 +191,7 @@ rendering modes are: Bitmaps, Anti-aliased pixmaps, Texture maps, Outlines,
 Polygon meshes, and Extruded polygon meshes.")
     (license license:x11)))
 
-(define-public glad
+(define-public glad-0.1
   (package
     (name "glad")
     (version "0.1.36")
@@ -208,18 +210,44 @@ Polygon meshes, and Extruded polygon meshes.")
          "0m55ya1zrmg6n2cljkajy80ilmi5sblln8742fm0k1sw9k7hzn8n"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-cmakelists.txt
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/" ,name)))
-               (install-file "CMakeLists.txt" share)))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-cmakelists.txt
+                 (lambda _
+                   (let ((share (string-append #$output "/share/"
+                                               #$(package-name this-package))))
+                     (install-file "CMakeLists.txt" share)))))))
     (home-page "https://github.com/Dav1dde/glad")
     (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
     (description "Glad uses the official Khronos XML specifications to
 generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
     (license license:expat)))
+
+(define-public glad
+  (package
+    (inherit glad-0.1)
+    (name "glad")
+    (version "2.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Dav1dde/glad")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1pam6imhcmcyqrqi6wzzxprb23y8x6zdbvsjavnz26k72i9dbbja"))))
+    (build-system python-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments glad-0.1)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'install-cmakelists.txt
+              (lambda _
+                (let ((share (string-append #$output "/share/"
+                                            #$(package-name this-package))))
+                  (install-file "cmake/CMakeLists.txt" share))))))))
+    (propagated-inputs (list python-jinja2))))
 
 (define-public s2tc
   (package
@@ -267,7 +295,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "23.1.4")
+    (version "23.3.2")
     (source
       (origin
         (method url-fetch)
@@ -277,7 +305,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   "mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "0n89l7lvawh85hq2a7g5pp5v017s03qs3n4hbbff6rs8p5zs2qbj"))))
+          "1p4swrbmz3kb1805kdj973hf8virgmix4m9qprmcb2bgl4gviz1w"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -311,7 +339,8 @@ also known as DXTn or DXTC) for Mesa.")
             python-wrapper
             (@ (gnu packages base) which)
             (if (%current-target-system)
-              (list pkg-config-for-build
+              (list cmake-minimal-cross
+                    pkg-config-for-build
                     wayland
                     wayland-protocols)
               '())))
@@ -324,16 +353,16 @@ also known as DXTn or DXTC) for Mesa.")
              ((target-aarch64?)
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
-panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((target-arm32?)
               ;; Freedreno FTBFS when built on a 64-bit machine.
               '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,\
-r300,r600,swrast,tegra,v3d,vc4,virgl"))
+r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl,zink"))
              (else
               '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
-svga,swrast,virgl")))
+svga,swrast,virgl,zink")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio
          "-Dplatforms=x11,wayland"
@@ -388,10 +417,16 @@ svga,swrast,virgl")))
        #~(modify-phases %standard-phases
          #$@(if (%current-target-system)
               #~((add-after 'unpack 'fix-cross-compiling
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     ;; It isn't a problem to use the host's llvm-config.
-                     (setenv "LLVM_CONFIG"
-                             (search-input-file inputs "/bin/llvm-config")))))
+                   (lambda* (#:key native-inputs #:allow-other-keys)
+                     ;; When cross compiling, we use cmake to find llvm, not
+                     ;; llvm-config, because llvm-config cannot be executed
+                     ;; see https://github.com/llvm/llvm-project/issues/58984
+                     (substitute* "meson.build"
+                       (("method : host_machine\\.system.*")
+                        "method : 'cmake',\n"))
+                     (setenv "CMAKE"
+                             (search-input-file
+                              native-inputs "/bin/cmake")))))
               #~())
          (add-after 'unpack 'disable-failing-test
            (lambda _
@@ -663,7 +698,12 @@ glxdemo, glxgears, glxheads, and glxinfo.")
                   #t))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags #~(list (string-append "GLEW_PREFIX=" #$output)
+     (list #:make-flags #~(list #$@(if (%current-target-system)
+                                       #~((string-append "CC=" #$(cc-for-target))
+                                          (string-append "LD=" #$(cc-for-target))
+                                          (string-append "STRIP=" #$(strip-for-target)))
+                                       #~())
+                                (string-append "GLEW_PREFIX=" #$output)
                                 (string-append "GLEW_DEST=" #$output))
            #:phases
            #~(modify-phases %standard-phases
@@ -754,10 +794,14 @@ OpenGL graphics API.")
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((mesa (dirname (search-input-file inputs "lib/libGL.so"))))
+              (let ((mesa-lib
+                     (lambda (file)
+                       (search-input-file inputs (string-append "lib/" file)))))
                 (substitute* (find-files "." "\\.[ch]$")
-                  (("libGL.so.1") (string-append mesa "/libGL.so.1"))
-                  (("libEGL.so.1") (string-append mesa "/libEGL.so.1")))))))))
+                  (("libGL.so.1") (mesa-lib "libGL.so.1"))
+                  (("libEGL.so.1") (mesa-lib "libEGL.so.1"))
+                  (("libGLESv1_CM.so.1") (mesa-lib "libGLESv1_CM.so.1"))
+                  (("libGLESv2.so.2") (mesa-lib "libGLESv2.so.2")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python))
@@ -884,7 +928,7 @@ OpenGL.")
 (define-public glfw
   (package
     (name "glfw")
-    (version "3.3.4")
+    (version "3.3.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/glfw/glfw"
@@ -892,7 +936,7 @@ OpenGL.")
                                   "/glfw-" version ".zip"))
               (sha256
                (base32
-                "1kcrpl4d6b6h23ib5j9q670d9w3knd07whgbanbmwwhbcqnc9lmv"))))
+                "023dn97n4h14n5lbjpzjv0y6a2plj254c0w3rr3wraf3z08189jm"))))
     (build-system cmake-build-system)
     (arguments
      (list

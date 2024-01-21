@@ -61,6 +61,7 @@
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Tobias Kortkamp <tobias.kortkamp@gmail.com>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -372,14 +373,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.10
   (package
     (inherit shepherd-0.9)
-    (version "0.10.2")
+    (version "0.10.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0v9ld9gbqdp5ya380fbkdsxa0iqr90gi6yk004ccz3n792nq6wlj"))))
+                "1vxghlxnxajx2iciqmjia49c5hkir8li0gv29kl55frhn2zgxilf"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
                      (replace "guile-fibers"
                        ;; Work around
@@ -406,7 +407,7 @@ interface and is based on GNU Guile.")
 (define-public swineherd
   (package
     (name "swineherd")
-    (version "0.0.3")
+    (version "0.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -415,7 +416,7 @@ interface and is based on GNU Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0il1ikaj478n7xs4vqgawbshvmwq3nd0gp235mwqvmf4knra6j3g"))))
+                "0iij1pl0y410k1dk1ifa56dxmjb1blv0y3k5rxy794gwg6w6c480"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--localstatedir=/var")
@@ -745,7 +746,7 @@ console.")
 (define-public btop
   (package
     (name "btop")
-    (version "1.2.13")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -754,7 +755,7 @@ console.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aggzlxyfp213rknpbhkn8wbgzcnz181dyh9m2awz72w705axy8p"))))
+                "0fbrkzg03n2vamg1pfzdb8wxm3xffy6gp4izhqppl45zngy3c0s1"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no test suite
@@ -3942,7 +3943,7 @@ buffers.")
 (define-public igt-gpu-tools
   (package
     (name "igt-gpu-tools")
-    (version "1.27.1")
+    (version "1.28")
     (source
      (origin
        (method git-fetch)
@@ -3951,9 +3952,7 @@ buffers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d6jsj77qddccv0vfmqmbw3k2prvxzvmgc8zdi83gdi3wpp5i7zd"))
-       (patches
-        (search-patches "igt-gpu-tools-Use-libproc2.patch"))))
+        (base32 "15mnsgzlpd4jkr2zy3jzx0b021g89fa61b8sdm8rjp27gxqkl8mm"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f              ; many of the tests try to load kernel modules
@@ -3971,7 +3970,8 @@ buffers.")
            libdrm
            libpciaccess
            libunwind
-           procps))
+           procps
+           python))
     (native-inputs
      (list bison flex pkg-config python-docutils))
     (home-page "https://gitlab.freedesktop.org/drm/igt-gpu-tools")
@@ -4020,7 +4020,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.10")
+    (version "1.4.11")
     (source
      (origin
        (method git-fetch)
@@ -4030,7 +4030,7 @@ you are running, what theme or icon set you are using, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1lf1vrasinda9j6yazznpx54gg5j24xvkjb68dxhby9dg8ql1h87"))))
+         "1ymj72virh8y8gwgg3j3skf6j0zn7p0plcza57lln1drnjspycy7"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (inputs (list python-typing-extensions))
@@ -4432,6 +4432,9 @@ late.")
                      " *lmonpl = '\\0'"))
                   #t))))
     (build-system gnu-build-system)
+    (arguments
+     ;; GCC 11 defaults to c++17 but this package needs something older.
+     (list #:configure-flags #~'("CXXFLAGS=-std=c++14 -O2 -g")))
     (inputs
      (list openmpi
            munge
@@ -4439,7 +4442,7 @@ late.")
            libelf
            libgcrypt
            libgpg-error))
-    (synopsis "Infrastructue for large scale tool daemon launching")
+    (synopsis "Infrastructure for large-scale tool daemon launching")
     (description
      "LaunchMON is a software infrastructure that enables HPC run-time
 tools to co-locate tool daemons with a parallel job.  Its API allows a
@@ -4452,7 +4455,7 @@ launch daemons into the relevant nodes.")
 (define-public spindle
   (package
     (name "spindle")
-    (version "0.10")
+    (version "0.13")
     (source (origin
               ;; We use git checkout to avoid github auto-generated tarballs
               (method git-fetch)
@@ -4462,16 +4465,15 @@ launch daemons into the relevant nodes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15n3ay0qq81r5v7fif61q1vdjcq44pp2nynkh3fvbzc9fj3c39wd"))))
+                "1z594nhash1him9v00qmyqv9jvikzrs4wxqy1cvnfwqwnrrkp707"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-sec-launchmon"
                                      "--enable-sec-munge"
-                                     "--enable-sec-none")))
+                                     "--enable-sec-none"
+                                     ;; Fails to build as c++17.
+                                     "CXXFLAGS=-std=c++14 -O2 -g")))
     (inputs
-     `(("mpi" ,openmpi)
-       ("munge" ,munge)
-       ("launchmon" ,launchmon)
-       ("libgcrypt" ,libgcrypt)))
+     (list openmpi munge launchmon libgcrypt))
     (synopsis "Scalable library loading in HPC environments")
     (description
      "Spindle is a tool for improving the performance of dynamic library and
@@ -4485,7 +4487,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.30-1")
+      (version "3.3.31-2")
       (source
        (origin
          (method git-fetch)
@@ -4494,7 +4496,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "0k27m4a19p32c00w4jpmqy17v0ca4g5zixyw97yy12932c73d0dy"))))
+          (base32 "1fca5minalpmizbxh5kmjiv8xrl7k6g91zn8d84fxmbhsk8vn3kk"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
@@ -6004,7 +6006,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
 (define-public bfs
   (package
     (name "bfs")
-    (version "3.0.2")
+    (version "3.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6013,7 +6015,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "055qn2bhnyk9k96w8aviz7v4wip9hwsv7ak1m3yygm1x3fhdyhyz"))))
+                "0n2y9m81278j85m8vk242m9nsxdcw62rxsar4hzwszs6p5cjz5ny"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC="
@@ -6033,6 +6035,6 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
     (description
      "Bfs is a variant of the UNIX @command{find} command that operates
 breadth-first rather than depth-first.  It is otherwise compatible with many
-versions of command{find}, including POSIX, GNU, and *BSD find.")
+versions of @command{find}, including POSIX, GNU, and *BSD find.")
     (home-page "https://tavianator.com/projects/bfs.html")
     (license license:bsd-0)))

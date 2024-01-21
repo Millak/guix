@@ -103,6 +103,7 @@
                     (build-target "jar")
                     (jar-name #f)
                     (main-class #f)
+                    (use-java-modules? #f)
                     (test-include (list "**/*Test.java"))
                     (test-exclude (list "**/Abstract*.java"))
                     (source-dir "src")
@@ -131,6 +132,7 @@
                      #:build-target #$build-target
                      #:jar-name #$jar-name
                      #:main-class #$main-class
+                     #:use-java-modules? #$use-java-modules?
                      #:test-include (list #$@test-include)
                      #:test-exclude (list #$@test-exclude)
                      #:source-dir #$source-dir

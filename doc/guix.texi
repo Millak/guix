@@ -56,7 +56,7 @@ Copyright @copyright{} 2017 Andy Wingo@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2023 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
-Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*
+Copyright @copyright{} 2018, 2021, 2023 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
@@ -119,6 +119,11 @@ Copyright @copyright{} 2023 Tanguy Le Carrour@*
 Copyright @copyright{} 2023 Zheng Junjie@*
 Copyright @copyright{} 2023 Brian Cully@*
 Copyright @copyright{} 2023 Felix Lechner@*
+Copyright @copyright{} 2023 Foundation Devices, Inc.@*
+Copyright @copyright{} 2023 Thomas Ieong@*
+Copyright @copyright{} 2023 Saku Laesvuori@*
+Copyright @copyright{} 2023 Graham James Addis@*
+Copyright @copyright{} 2023 Tomas Volf@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -1796,7 +1801,7 @@ Setup}), or simply fail.
 When the build or substitution process remains silent for more than
 @var{seconds}, terminate it and report a build failure.
 
-The default value is @code{0}, which disables the timeout.
+The default value is @code{3600} (one hour).
 
 The value specified here can be overridden by clients (@pxref{Common
 Build Options, @option{--max-silent-time}}).
@@ -1805,7 +1810,7 @@ Build Options, @option{--max-silent-time}}).
 Likewise, when the build or substitution process lasts for more than
 @var{seconds}, terminate it and report a build failure.
 
-The default value is @code{0}, which disables the timeout.
+The default value is 24 hours.
 
 The value specified here can be overridden by clients (@pxref{Common
 Build Options, @option{--timeout}}).
@@ -2932,7 +2937,7 @@ Boot the USB installation image in an VM:
 qemu-system-x86_64 -m 1024 -smp 1 -enable-kvm \
   -nic user,model=virtio-net-pci -boot menu=on,order=d \
   -drive file=guix-system.img \
-  -drive media=cdrom,file=guix-system-install-@value{VERSION}.@var{system}.iso
+  -drive media=cdrom,readonly=on,file=guix-system-install-@value{VERSION}.@var{system}.iso
 @end example
 
 @code{-enable-kvm} is optional, but significantly improves performance,
@@ -4058,6 +4063,7 @@ guix-daemon}).  It can also be disabled temporarily by passing the
 
 @node Getting Substitutes from Other Servers
 @subsection Getting Substitutes from Other Servers
+@c Note: This section name appears in a hint printed by 'guix weather'.
 
 @cindex substitute servers, adding more
 Guix can look up and fetch substitutes from several servers.  This is
@@ -4156,6 +4162,21 @@ Now you're all set!  Substitutes will be preferably taken from
 can list as many substitute servers as you like, with the caveat that
 substitute lookup can be slowed down if too many servers need to be
 contacted.
+
+@quotation Troubleshooting
+To diagnose problems, you can run @command{guix weather}.  For example,
+running:
+
+@example
+guix weather coreutils
+@end example
+
+@noindent
+not only tells you which of the currently-configured servers has
+substitutes for the @code{coreutils} package, it also reports whether
+one of these servers is unauthorized.  @xref{Invoking guix weather}, for
+more information.
+@end quotation
 
 Note that there are also situations where one may want to add the URL of
 a substitute server @emph{without} authorizing its key.
@@ -4334,7 +4355,7 @@ There are several such multiple-output packages in the GNU distribution.
 Other conventional output names include @code{lib} for libraries and
 possibly header files, @code{bin} for stand-alone programs, and
 @code{debug} for debugging information (@pxref{Installing Debugging
-Files}).  The outputs of a packages are listed in the third column of
+Files}).  The outputs of a package are listed in the third column of
 the output of @command{guix package --list-available} (@pxref{Invoking
 guix package}).
 
@@ -4982,7 +5003,8 @@ environment} command to spawn an environment in a container running
 @command{guile} (@command{guix environment} has since been subsumed by
 @command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
 DeLorean@footnote{If you don't know what a DeLorean is, consider
-traveling back to the 1980's.}!  The first @command{guix time-machine}
+traveling back to the 1980's. (@uref{https://www.imdb.com/title/tt0088763/,
+Back to the Future (1985)})}!  The first @command{guix time-machine}
 invocation can be expensive: it may have to download or even build a
 large number of packages; the result is cached though and subsequent
 commands targeting the same commit are almost instantaneous.
@@ -7141,7 +7163,7 @@ What if the recipient of your pack does not have root privileges on
 their machine, and thus cannot unpack it in the root file system?  In
 that case, you will want to use the @option{--relocatable} option (see
 below).  This option produces @dfn{relocatable binaries}, meaning they
-they can be placed anywhere in the file system hierarchy: in the example
+can be placed anywhere in the file system hierarchy: in the example
 above, users can unpack your tarball in their home directory and
 directly run @file{./opt/gnu/bin/guile}.
 
@@ -7387,7 +7409,7 @@ execution engines listed above by setting the
 @env{GUIX_EXECUTION_ENGINE} environment variable accordingly.
 @end quotation
 
-@cindex entry point, for Docker images
+@cindex entry point, for Docker and Singularity images
 @item --entry-point=@var{command}
 Use @var{command} as the @dfn{entry point} of the resulting pack, if the pack
 format supports it---currently @code{docker} and @code{squashfs} (Singularity)
@@ -7409,6 +7431,41 @@ arguments will spawn @code{bin/guile}:
 docker load -i pack.tar.gz
 docker run @var{image-id}
 @end example
+
+@cindex entry point arguments, for docker images
+@item --entry-point-argument=@var{command}
+@itemx -A @var{command}
+Use @var{command} as an argument to @dfn{entry point} of the resulting pack.
+This option is only valid in conjunction with @code{--entry-point} and can
+appear multiple times on the command line.
+
+@example
+guix pack -f docker --entry-point=bin/guile --entry-point-argument="--help" guile
+@end example
+
+@cindex maximum layers argument, for docker images
+@item --max-layers=@code{n}
+Specifies the maximum number of Docker image layers allowed when
+building an image.
+
+@example
+guix pack -f docker --max-layers=100 guile
+@end example
+
+This option allows you to limit the number of layers in a Docker image.
+Docker images are comprised of multiple layers, and each layer adds to
+the overall size and complexity of the image.  By setting a maximum
+number of layers, you can control the following effects:
+
+@itemize
+@item Disk Usage:
+Increasing the number of layers can help optimize the disk space
+required to store multiple images built with a similar package graph.
+
+@item Pulling:
+When transferring images between different nodes or systems, having more
+layers can reduce the time required to pull the image.
+@end itemize
 
 @item --expression=@var{expr}
 @itemx -e @var{expr}
@@ -7975,6 +8032,10 @@ The exact set of supported keywords depends on the build system
 @code{#:phases}.  The @code{#:phases} keyword in particular lets you
 modify the set of build phases for your package (@pxref{Build Phases}).
 
+The REPL has dedicated commands to interactively inspect values of some
+of these arguments, as a convenient debugging aid (@pxref{Using Guix
+Interactively}).
+
 @quotation Compatibility Note
 Until version 1.3.0, the @code{arguments} field would typically use
 @code{quote} (@code{'}) or @code{quasiquote} (@code{`}) and no
@@ -8375,6 +8436,13 @@ hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
 the file name, or a generic name if @code{#f}.
 @end deffn
 
+@deffn {Procedure} git-fetch/lfs ref hash-algo hash
+This is a variant of the @code{git-fetch} procedure that supports the
+Git @acronym{LFS, Large File Storage} extension.  This may be useful to
+pull some binary test data to run the test suite of a package, for
+example.
+@end deffn
+
 @deftp {Data Type} git-reference
 This data type represents a Git reference for @code{git-fetch} to
 retrieve.
@@ -8766,6 +8834,23 @@ depended on and returns the resulting package.  The procedure stops recursion
 when @var{cut?} returns true for a given package.  When @var{deep?} is true, @var{proc} is
 applied to implicit inputs as well.
 @end deffn
+
+@quotation Tips
+Understanding what a variant really looks like can be difficult as one
+starts combining the tools shown above.  There are several ways to
+inspect a package before attempting to build it that can prove handy:
+
+@itemize
+@item
+You can inspect the package interactively at the REPL, for instance to
+view its inputs, the code of its build phases, or its configure flags
+(@pxref{Using Guix Interactively}).
+
+@item
+When rewriting dependencies, @command{guix graph} can often help
+visualize the changes that are made (@pxref{Invoking guix graph}).
+@end itemize
+@end quotation
 
 @node Writing Manifests
 @section Writing Manifests
@@ -9441,6 +9526,41 @@ e.g., install @file{foo/sub/file} to @file{share/my-app/sub/file}.
 @end itemize
 @end defvar
 
+@defvar vim-build-system
+This variable is exported by @code{(guix build-system vim)}.  It is an
+extension of the @code{copy-build-system}, installing Vim and Neovim plugins
+into locations where these two text editors know to find their plugins, using
+their packpaths.
+
+Packages which are prefixed with @code{vim-} will be installed in Vim's
+packpath, while those prefixed with @code{neovim-} will be installed in
+Neovim's packpath.  If there is a @code{doc} directory with the plugin then
+helptags will be generated automatically.
+
+There are a couple of keywords added with the @code{vim-build-system}:
+@itemize
+@item With @code{plugin-name} it is possible to set the name of the plugin.
+While by default this is set to the name and version of the package, it is
+often more helpful to set this to name which the upstream author calls their
+plugin.  This is the name used for @command{:packadd} from inside Vim.
+@item With @code{install-plan} it is possible to augment the built-in
+install-plan of the @code{vim-build-system}.  This is particularly helpful if
+you have files which should be installed in other locations.  For more
+information about using the @code{install-plan}, see the
+@code{copy-build-system} (@pxref{Build Systems, @code{copy-build-system}}).
+@item With @code{#:vim} it is possible to add this package to Vim's packpath,
+in addition to if it is added automatically because of the @code{vim-} prefix
+in the package's name.
+@item With @code{#:neovim} it is possible to add this package to Neovim's
+packpath, in addition to if it is added automatically because of the
+@code{neovim-} prefix in the package's name.
+@item With @code{#:mode} it is possible to adjust the path which the plugin is
+installed into.  By default the plugin is installed into @code{start} and other
+options are available, including @code{opt}.  Adding a plugin into @code{opt}
+will mean you will need to run, for example, @command{:packadd foo} to load the
+@code{foo} plugin from inside of Vim.
+@end itemize
+@end defvar
 
 @cindex Clojure (programming language)
 @cindex simple Clojure build system
@@ -9514,6 +9634,20 @@ parameter specifies in abstract terms the flags passed to the compiler;
 it defaults to @code{"RelWithDebInfo"} (short for ``release mode with
 debugging information''), which roughly means that code is compiled with
 @code{-O2 -g}, as is the case for Autoconf-based packages by default.
+@end defvar
+
+@defvar composer-build-system
+This variable is exported by @code{(guix build-system composer)}.  It
+implements the build procedure for packages using
+@url{https://getcomposer.org/, Composer}, the PHP package manager.
+
+It automatically adds the @code{php} package to the set of inputs.  Which
+package is used can be specified with the @code{#:php} parameter.
+
+The @code{#:test-target} parameter is used to control which script is run
+for the tests.  By default, the @code{test} script is run if it exists.  If
+the script does not exist, the build system will run @code{phpunit} from the
+source directory, assuming there is a @file{phpunit.xml} file.
 @end defvar
 
 @defvar dune-build-system
@@ -10061,8 +10195,8 @@ It also generates font metrics (i.e., @file{.tfm} files) out of Metafont
 files whenever possible.  Likewise, it can also create TeX formats
 (i.e., @file{.fmt} files) listed in the @code{#:create-formats}
 argument, and generate a symbolic link from @file{bin/} directory to any
-script located in located in @file{texmf-dist/scripts/}, provided its
-file name is listed in @code{#:link-scripts} argument.
+script located in @file{texmf-dist/scripts/}, provided its file name is
+listed in @code{#:link-scripts} argument.
 
 The build system adds @code{texlive-bin} from @code{(gnu packages tex)}
 to the native inputs.  It can be overridden with the
@@ -10542,6 +10676,11 @@ executable under a @file{/bin} directory among the package's inputs
 we have seen before.  @xref{Build Utilities}, for more about
 the helpers used by this phase, and for more examples of
 @code{modify-phases}.
+
+@quotation Tip
+You can inspect the code associated with a package's @code{#:phases}
+argument interactively, at the REPL (@pxref{Using Guix Interactively}).
+@end quotation
 
 @cindex code staging
 @cindex staging, of code
@@ -12096,6 +12235,11 @@ This is like the form above, but referring explicitly to the
 @var{output} of @var{obj}---this is useful when @var{obj} produces
 multiple outputs (@pxref{Packages with Multiple Outputs}).
 
+Sometimes a gexp unconditionally refers to the @code{"out"} output, but
+the user of that gexp would still like to insert a reference to another
+output.  The @code{gexp-input} procedure aims to address that.
+@xref{gexp-input}.
+
 @item #+@var{obj}
 @itemx #+@var{obj}:output
 @itemx (ungexp-native @var{obj})
@@ -12208,10 +12352,9 @@ When @var{references-graphs} is true, it must be a list of tuples of one of the
 following forms:
 
 @example
-(@var{file-name} @var{package})
-(@var{file-name} @var{package} @var{output})
-(@var{file-name} @var{derivation})
-(@var{file-name} @var{derivation} @var{output})
+(@var{file-name} @var{obj})
+(@var{file-name} @var{obj} @var{output})
+(@var{file-name} @var{gexp-input})
 (@var{file-name} @var{store-item})
 @end example
 
@@ -12489,6 +12632,39 @@ The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
 @end defmac
 
+@anchor{gexp-input}
+@deffn {Procedure} gexp-input @var{obj} [@var{output}] [#:native? #f]
+Return a @dfn{gexp input} record for the given @var{output} of file-like
+object @var{obj}, with @code{#:native?} determining whether this is a
+native reference (as with @code{ungexp-native}) or not.
+
+This procedure is helpful when you want to pass a reference to a
+specific output of an object to some procedure that may not know about
+that output.  For example, assume you have this procedure, which takes
+one file-like object:
+
+@lisp
+(define (make-symlink target)
+  (computed-file "the-symlink"
+                 #~(symlink #$target #$output)))
+@end lisp
+
+Here @code{make-symlink} can only ever refer to the default output of
+@var{target}---the @code{"out"} output (@pxref{Packages with Multiple
+Outputs}).  To have it refer to, say, the @code{"lib"} output of the
+@code{hwloc} package, you can call it like so:
+
+@lisp
+(make-symlink (gexp-input hwloc "lib"))
+@end lisp
+
+You can also compose it like any other file-like object:
+
+@lisp
+(make-symlink
+  (file-append (gexp-input hwloc "lib") "/lib/libhwloc.so"))
+@end lisp
+@end deffn
 
 Of course, in addition to gexps embedded in ``host'' code, there are
 also modules containing build tools.  To make it clear that they are
@@ -12721,6 +12897,30 @@ scheme@@(guix-user)> (scandir (string-append $3 "/bin"))
 $5 = ("." ".." "egrep" "fgrep" "grep")
 @end example
 
+As a packager, you may be willing to inspect the build phases or flags
+of a given package; this is particularly useful when relying a lot on
+inheritance to define package variants (@pxref{Defining Package
+Variants}) or when package arguments are a result of some computation,
+both of which can make it harder to foresee what ends up in the package
+arguments.  Additional commands let you inspect those package arguments:
+
+@example
+scheme@@(guix-user)> ,phases grep
+$1 = (modify-phases %standard-phases
+       (add-after 'install 'fix-egrep-and-fgrep
+         (lambda* (#:key outputs #:allow-other-keys)
+           (let* ((out (assoc-ref outputs "out"))
+                  (bin (string-append out "/bin")))
+             (substitute* (list (string-append bin "/egrep")
+                                (string-append bin "/fgrep"))
+               (("^exec grep")
+                (string-append "exec " bin "/grep")))))))
+scheme@@(guix-user)> ,configure-flags findutils
+$2 = (list "--localstatedir=/var")
+scheme@@(guix-user)> ,make-flags binutils
+$3 = '("MAKEINFO=true")
+@end example
+
 At a lower-level, a useful command is @code{lower}: it takes a file-like
 object and ``lowers'' it into a derivation (@pxref{Derivations}) or a
 store file:
@@ -12750,6 +12950,17 @@ Change build verbosity to @var{level}.
 This is similar to the @option{--verbosity} command-line option
 (@pxref{Common Build Options}): level 0 means total silence, level 1
 shows build events only, and higher levels print build logs.
+@end deffn
+
+@deffn {REPL command} phases @var{package}
+@deffnx {REPL command} configure-flags @var{package}
+@deffnx {REPL command} make-flags @var{package}
+These REPL commands return the value of one element of the
+@code{arguments} field of @var{package} (@pxref{package Reference}): the
+first one show the staged code associated with @code{#:phases}
+(@pxref{Build Phases}), the second shows the code for
+@code{#:configure-flags}, and @code{,make-flags} returns the code for
+@code{#:make-flags}.
 @end deffn
 
 @deffn {REPL command} run-in-store @var{exp}
@@ -13706,8 +13917,8 @@ happen because the daemon runs builds in containers where, unlike in our
 environment above, network access is missing, @file{/bin/sh} does not
 exist, etc. (@pxref{Build Environment Setup}).
 
-In such cases, you may need to run inspect the build process from within
-a container similar to the one the build daemon creates:
+In such cases, you may need to inspect the build process from within a
+container similar to the one the build daemon creates:
 
 @example
 $ guix build -K foo
@@ -14085,8 +14296,7 @@ should be checked closely.  If Perl is available in the store, then the
 @code{corelist} utility will be used to filter core modules out of the
 list of dependencies.
 
-The command command below imports metadata for the Acme::Boolean Perl
-module:
+The command below imports metadata for the Acme::Boolean Perl module:
 
 @example
 guix import cpan Acme::Boolean
@@ -14376,6 +14586,13 @@ Additional options include:
 Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
+@item --recursive-dev-dependencies
+If @option{--recursive-dev-dependencies} is specified, also the recursively
+imported packages contain their development dependencies, which are recursively
+imported as well.
+@item --allow-yanked
+If no non-yanked version of a crate is available, use the latest yanked
+version instead instead of aborting.
 @end table
 
 @item elm
@@ -14408,6 +14625,26 @@ in Guix.
 @cindex OCaml
 Import metadata from the @uref{https://opam.ocaml.org/, OPAM} package
 repository used by the OCaml community.
+
+Additional options include:
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
+@item composer
+@cindex Composer
+@cindex PHP
+Import metadata from the @uref{https://getcomposer.org/, Composer} package
+archive used by the PHP community, as in this example:
+
+@example
+guix import composer phpunit/phpunit
+@end example
 
 Additional options include:
 
@@ -15452,7 +15689,7 @@ Coreutils}).
 
 When the given packages are @emph{not} in the store, @command{guix size}
 reports information based on the available substitutes
-(@pxref{Substitutes}).  This makes it possible it to profile disk usage of
+(@pxref{Substitutes}).  This makes it possible to profile the disk usage of
 store items that are not even on disk, only available remotely.
 
 You can also specify several package names:
@@ -16395,7 +16632,10 @@ up building packages by yourself (@pxref{Substitutes}).  The
 specified servers so you can have an idea of whether you'll be grumpy
 today.  It can sometimes be useful info as a user, but it is primarily
 useful to people running @command{guix publish} (@pxref{Invoking guix
-publish}).
+publish}).  Sometimes substitutes @emph{are} available but they are not
+authorized on your system; @command{guix weather} reports it so you can
+authorize them if you want (@pxref{Getting Substitutes from Other
+Servers}).
 
 @cindex statistics, for substitutes
 @cindex availability of substitutes
@@ -16462,8 +16702,9 @@ The available options are listed below.
 @table @code
 @item --substitute-urls=@var{urls}
 @var{urls} is the space-separated list of substitute server URLs to
-query.  When this option is omitted, the default set of substitute
-servers is queried.
+query.  When this option is omitted, the URLs specified with the
+@option{--substitute-urls} option of @command{guix-daemon} are used or,
+as a last resort, the default set of substitute URLs.
 
 @item --system=@var{system}
 @itemx -s @var{system}
@@ -16552,7 +16793,7 @@ ChildCommand: guix offload x86_64-linux 7200 1 28800
 @end example
 
 In this example we see that @command{guix-daemon} has three clients:
-@command{guix environment}, @command{guix publish}, and the Cuirass continuous
+@command{guix shell}, @command{guix publish}, and the Cuirass continuous
 integration tool; their process identifier (PID) is given by the
 @code{ClientPID} field.  The @code{SessionPID} field gives the PID of the
 @command{guix-daemon} sub-process of this particular session.
@@ -16657,6 +16898,7 @@ The available targets are:
 
    - aarch64-linux-gnu
    - arm-linux-gnueabihf
+   - avr
    - i586-pc-gnu
    - i686-linux-gnu
    - i686-w64-mingw32
@@ -17369,7 +17611,7 @@ mounted.}.
 
 @findex file-system-label
 File system labels are created using the @code{file-system-label}
-procedure, UUIDs are created using @code{uuid}, and @file{/dev} node are
+procedure, UUIDs are created using @code{uuid}, and @file{/dev} nodes are
 plain strings.  Here's an example of a file system referred to by its
 label, as shown by the @command{e2label} command:
 
@@ -17750,6 +17992,30 @@ This defines LUKS block device encryption using the @command{cryptsetup}
 command from the package with the same name.  It relies on the
 @code{dm-crypt} Linux kernel module.
 @end defvar
+
+@deffn {Procedure} luks-device-mapping-with-options [#:key-file]
+Return a @code{luks-device-mapping} object, which defines LUKS block
+device encryption using the @command{cryptsetup} command from the
+package with the same name.  It relies on the @code{dm-crypt} Linux
+kernel module.
+
+If @code{key-file} is provided, unlocking is first attempted using that
+key file.  This has an advantage of not requiring a password entry, so
+it can be used (for example) to unlock RAID arrays automatically on
+boot.  If key file unlock fails, password unlock is attempted as well.
+Key file is not stored in the store and needs to be available at the
+given location at the time of the unlock attempt.
+
+@lisp
+;; Following definition would be equivalent to running:
+;;   cryptsetup open --key-file /crypto.key /dev/sdb1 data
+(mapped-device
+ (source "/dev/sdb1)
+ (target "data)
+ (type (luks-device-mapping-with-options
+        #:key-file "/crypto.key")))
+@end lisp
+@end deffn
 
 @defvar raid-device-mapping
 This defines a RAID device, which is assembled using the @code{mdadm}
@@ -19257,8 +19523,8 @@ few seconds when enough entropy is available and is only done once; you
 might want to turn it off for instance in a virtual machine that does
 not need it and where the extra boot time is a problem.
 
-@item @code{max-silent-time} (default: @code{0})
-@itemx @code{timeout} (default: @code{0})
+@item @code{max-silent-time} (default: @code{3600})
+@itemx @code{timeout} (default: @code{(* 3600 24)})
 The number of seconds of silence and the number of seconds of activity,
 respectively, after which a build process times out.  A value of zero
 disables the timeout.
@@ -19274,7 +19540,8 @@ and DNS-SD.
 @anchor{guix-configuration-build-machines}
 @item @code{build-machines} (default: @code{#f})
 This field must be either @code{#f} or a list of gexps evaluating to a
-@code{build-machine} record (@pxref{Daemon Offload Setup}).
+@code{build-machine} record or to a list of @code{build-machine} records
+(@pxref{Daemon Offload Setup}).
 
 When it is @code{#f}, the @file{/etc/guix/machines.scm} file is left
 untouched.  Otherwise, the list of of gexps is written to
@@ -19343,7 +19610,8 @@ A list of file-like objects where each element contains a public key.
 A list of strings where each element is a substitute URL.
 
 @item @code{build-machines} (default: @code{'()})
-A list of gexps that evaluate to @code{build-machine} records
+A list of gexps that evaluate to @code{build-machine} records or to a list of
+@code{build-machine} records.
 (@pxref{Daemon Offload Setup}).
 
 Using this field, a service may add new build machines to receive builds
@@ -19688,7 +19956,7 @@ in users, including:
 Special variation of @code{pam-mount} to mount @code{XDG_RUNTIME_DIR}
 @end itemize
 
-Here is example of switching from @code{mingetty-service-type} to
+Here is an example of switching from @code{mingetty-service-type} to
 @code{greetd-service-type}, and how different terminals could be:
 
 @lisp
@@ -20653,8 +20921,7 @@ package, which allows NetworkManager to manage VPNs @i{via} OpenVPN.
 This is the service type to run @url{https://01.org/connman,Connman},
 a network connection manager.
 
-Its value must be an
-@code{connman-configuration} record as in this example:
+Its value must be a @code{connman-configuration} record as in this example:
 
 @lisp
 (service connman-service-type
@@ -20882,7 +21149,7 @@ The WiFi channel to use.
 @item @code{driver} (default: @code{"nl80211"})
 The driver interface type.  @code{"nl80211"} is used with all Linux
 mac80211 drivers.  Use @code{"none"} if building hostapd as a standalone
-RADIUS server that does # not control any wireless/wired driver.
+RADIUS server that does not control any wireless/wired driver.
 
 @item @code{extra-settings} (default: @code{""})
 Extra settings to append as-is to the hostapd configuration file.  See
@@ -22123,10 +22390,6 @@ signing and encryption keys are defined in @file{/etc/yggdrasil-private.conf}
 @example
 # sample content for /etc/yggdrasil-private.conf
 @{
-  # Your public key. Your peers may ask you for this to put
-  # into their AllowedPublicKeys configuration.
-  PublicKey: 64277...
-
   # Your private key. DO NOT share this with anyone!
   PrivateKey: 5c750...
 @}
@@ -22148,7 +22411,7 @@ private keys in it}.  See the output of @code{yggdrasil -genconf} for a
 quick overview of valid keys and their default values.
 
 @item @code{autoconf?} (default: @code{#f})
-Whether to use automatic mode.  Enabling it makes Yggdrasil use adynamic IP
+Whether to use automatic mode.  Enabling it makes Yggdrasil use a dynamic IP
 and peer with IPv6 neighbors.
 
 @item @code{log-level} (default: @code{'info})
@@ -22165,14 +22428,8 @@ should be stored, which are necessary to specify if you don't want a
 randomized address after each restart.  Use @code{#f} to disable.  Options
 defined in this file take precedence over @code{json-config}.  Use the output
 of @code{yggdrasil -genconf} as a starting point.  To configure a static
-address, delete everything except these options:
+address, delete everything except PrivateKey option.
 
-@itemize
-@item @code{EncryptionPublicKey}
-@item @code{EncryptionPrivateKey}
-@item @code{SigningPublicKey}
-@item @code{SigningPrivateKey}
-@end itemize
 @end table
 @end deftp
 
@@ -24668,7 +24925,7 @@ List of possible UUIDs:
 @code{671b10b5-42c0-4696-9227-eb28d1b049d6}: BlueZ Experimental Simultaneous Central and Peripheral,
 
 @item
-@code{"15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
+@code{15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
 
 @item
 @code{330859bc-7506-492d-9370-9a6f0614037f}: BlueZ Experimental Bluetooth Quality Report,
@@ -25330,7 +25587,7 @@ Data type representing the configuration for the
 @code{postgresql-service-type}.
 
 @table @asis
-@item @code{postgresql}
+@item @code{postgresql} (default: @code{postgresql-10})
 PostgreSQL package to use for the service.
 
 @item @code{port} (default: @code{5432})
@@ -27521,6 +27778,66 @@ on TCP port 5232 of @code{localhost} and use the @code{htpasswd} file at
 
 @end table
 @end deftp
+
+@subsubheading Rspamd Service
+@cindex email
+@cindex spam
+
+@defvar rspamd-service-type
+This is the type of the @uref{https://rspamd.com/, Rspamd} filtering
+system whose value should be a @code{rspamd-configuration}.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} rspamd-configuration
+Available @code{rspamd-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{rspamd}) (type: file-like)
+The package that provides rspamd.
+
+@item @code{config-file} (default: @code{%default-rspamd-config-file}) (type: file-like)
+File-like object of the configuration file to use.  By default all
+workers are enabled except fuzzy and they are binded to their usual
+ports, e.g localhost:11334, localhost:11333 and so on
+
+@item @code{local.d-files} (default: @code{()}) (type: directory-tree)
+Configuration files in local.d, provided as a list of two element lists
+where the first element is the filename and the second one is a
+file-like object.  Settings in these files will be merged with the
+defaults.
+
+@item @code{override.d-files} (default: @code{()}) (type: directory-tree)
+Configuration files in override.d, provided as a list of two element
+lists where the first element is the filename and the second one is a
+file-like object.  Settings in these files will override the defaults.
+
+@item @code{user} (default: @code{%default-rspamd-account}) (type: user-account)
+The user to run rspamd as.
+
+@item @code{group} (default: @code{%default-rspamd-group}) (type: user-group)
+The group to run rspamd as.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Force debug output.
+
+@item @code{insecure?} (default: @code{#f}) (type: boolean)
+Ignore running workers as privileged users.
+
+@item @code{skip-template?} (default: @code{#f}) (type: boolean)
+Do not apply Jinja templates.
+
+@item @code{shepherd-requirements} (default: @code{(loopback)}) (type: list-of-symbols)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
 
 @node Messaging Services
 @subsection Messaging Services
@@ -30753,7 +31070,7 @@ the configuration.
                   (httpd-virtualhost
                     "*:80"
                     (list (string-join '("ServerName www.example.com"
-                                          "DocumentRoot /srv/http/www.example.com")
+                                         "DocumentRoot /srv/http/www.example.com")
                                        "\n")))))
 @end lisp
 @end defvar
@@ -33913,6 +34230,9 @@ The Laminar package to use.
 @item @code{home-directory} (default: @code{"/var/lib/laminar"})
 The directory for job configurations and run directories.
 
+@item @code{supplementary-groups} (default: @code{()})
+Supplementary groups for the Laminar user account.
+
 @item @code{bind-http} (default: @code{"*:8080"})
 The interface/port or unix socket on which laminard should listen for
 incoming connections to the web frontend.
@@ -34828,6 +35148,7 @@ Owner of the @command{mympd} process.
 
 The default @code{%mympd-user} is a system user with the name ``mympd'',
 who is a part of the group @var{group} (see below).
+
 @item @code{group} (default: @code{%mympd-group}) (type: user-group)
 Owner group of the @command{mympd} process.
 
@@ -34921,17 +35242,24 @@ services.
 @subsubheading Libvirt daemon
 
 @code{libvirtd} is the server side daemon component of the libvirt
-virtualization management system.  This daemon runs on host servers
-and performs required management tasks for virtualized guests.
+virtualization management system.  This daemon runs on host servers and
+performs required management tasks for virtualized guests.  To connect
+to the libvirt daemon as an unprivileged user, it must be added to the
+@samp{libvirt} group, as shown in the example below.
 
 @defvar libvirt-service-type
 This is the type of the @uref{https://libvirt.org, libvirt daemon}.
 Its value must be a @code{libvirt-configuration}.
 
 @lisp
+(users (cons (user-account
+              (name "user")
+              (group "users")
+              (supplementary-groups '("libvirt"
+                                      "audio" "video" "wheel")))
+             %base-user-accounts))
 (service libvirt-service-type
          (libvirt-configuration
-          (unix-sock-group "libvirt")
           (tls-port "16555")))
 @end lisp
 @end defvar
@@ -35013,7 +35341,7 @@ UNIX domain socket group ownership.  This can be used to allow a
 'trusted' set of users access to management capabilities without
 becoming root.
 
-Defaults to @samp{"root"}.
+Defaults to @samp{"libvirt"}.
 
 @end deftypevr
 
@@ -35781,7 +36109,7 @@ guix shell tigervnc-client -- vncviewer localhost:5900
 
 The default configuration (see @code{hurd-vm-configuration} below)
 spawns a secure shell (SSH) server in your GNU/Hurd system, which QEMU
-(the virtual machine emulator) redirects to port 10222 on the host.
+(the virtual machine emulator) redirects to port 10022 on the host.
 By default, the service enables @dfn{offloading} such that the host
 @code{guix-daemon} automatically offloads GNU/Hurd builds to the
 childhurd (@pxref{Daemon Offload Setup}).  This is what happens when
@@ -38513,58 +38841,6 @@ the coordinator database, and is used by the agent to authenticate.
 @end table
 @end deftp
 
-The Guix Build Coordinator package contains a script to query an
-instance of the Guix Data Service for derivations to build, and then
-submit builds for those derivations to the coordinator.  The service
-type below assists in running this script.  This is an additional tool
-that may be useful when building derivations contained within an
-instance of the Guix Data Service.
-
-@defvar guix-build-coordinator-queue-builds-service-type
-Service type for the
-guix-build-coordinator-queue-builds-from-guix-data-service script.  Its
-value must be a @code{guix-build-coordinator-queue-builds-configuration}
-object.
-@end defvar
-
-@deftp {Data Type} guix-build-coordinator-queue-builds-configuration
-Data type representing the options to the queue builds from guix data
-service script.
-
-@table @asis
-@item @code{package} (default: @code{guix-build-coordinator})
-The Guix Build Coordinator package to use.
-
-@item @code{user} (default: @code{"guix-build-coordinator-queue-builds"})
-The system user to run the service as.
-
-@item @code{coordinator} (default: @code{"http://localhost:8746"})
-The URI to use when connecting to the coordinator.
-
-@item @code{systems} (default: @code{#f})
-The systems for which to fetch derivations to build.
-
-@item @code{systems-and-targets} (default: @code{#f})
-An association list of system and target pairs for which to fetch
-derivations to build.
-
-@item @code{guix-data-service} (default: @code{"https://data.guix.gnu.org"})
-The Guix Data Service instance from which to query to find out about
-derivations to build.
-
-@item @code{guix-data-service-build-server-id} (default: @code{#f})
-The Guix Data Service build server ID corresponding to the builds being
-submitted.  Providing this speeds up the submitting of builds as
-derivations that have already been submitted can be skipped before
-asking the coordinator to build them.
-
-@item @code{processed-commits-file} (default: @code{"/var/cache/guix-build-coordinator-queue-builds/processed-commits"})
-A file to record which commits have been processed, to avoid needlessly
-processing them again if the service is restarted.
-
-@end table
-@end deftp
-
 @subsubheading Guix Data Service
 The @uref{http://data.guix.gnu.org,Guix Data Service} processes, stores
 and provides data about GNU Guix.  This includes information about
@@ -39503,6 +39779,9 @@ This must be a list of strings where each string has the form
       "TMPDIR=/tmp/dockerd")
 @end lisp
 
+@item @code{config-file} (type: maybe-file-like)
+JSON configuration file pass to @command{dockerd}.
+
 @end table
 @end deftp
 
@@ -39517,6 +39796,137 @@ The service does not install a daemon; instead, it installs helper programs as
 setuid-root (@pxref{Setuid Programs}) such that unprivileged users can invoke
 @command{singularity run} and similar commands.
 @end defvar
+
+@cindex OCI-backed, Shepherd services
+@subsubheading OCI backed services
+
+Should you wish to manage your Docker containers with the same consistent
+interface you use for your other Shepherd services,
+@var{oci-container-service-type} is the tool to use: given an
+@acronym{Open Container Initiative, OCI} container image, it will run it in a
+Shepherd service.  One example where this is useful: it lets you run services
+that are available as Docker/OCI images but not yet packaged for Guix.
+
+@defvar oci-container-service-type
+
+This is a thin wrapper around Docker's CLI that executes OCI images backed
+processes as Shepherd Services.
+
+@lisp
+(service oci-container-service-type
+         (list
+          (oci-container-configuration
+           (image "prom/prometheus")
+           (network "host")
+           (ports
+             '(("9000" . "9000")
+               ("9090" . "9090"))))
+          (oci-container-configuration
+           (image "grafana/grafana:10.0.1")
+           (network "host")
+           (ports
+             '(("3000" . "3000")))
+           (volumes
+             '("/var/lib/grafana:/var/lib/grafana")))))
+@end lisp
+
+In this example two different Shepherd services are going be added to the
+system.  Each @code{oci-container-configuration} record translates to a
+@code{docker run} invocation and its fields directly map to options.  You can
+refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run,upstream},
+documentation for the semantics of each value.  If the images are not found they
+will be
+@url{https://docs.docker.com/engine/reference/commandline/pull/,pulled}.  The
+spawned services are going to be attached to the host network and are supposed
+to behave like other processes.
+
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} oci-container-configuration
+Available @code{oci-container-configuration} fields are:
+
+@table @asis
+@item @code{user} (default: @code{"oci-container"}) (type: string)
+The user under whose authority docker commands will be run.
+
+@item @code{group} (default: @code{"docker"}) (type: string)
+The group under whose authority docker commands will be run.
+
+@item @code{command} (default: @code{()}) (type: list-of-strings)
+Overwrite the default command (@code{CMD}) of the image.
+
+@item @code{entrypoint} (default: @code{""}) (type: string)
+Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.
+
+@item @code{environment} (default: @code{()}) (type: list)
+Set environment variables. This can be a list of pairs or strings, even mixed:
+
+@lisp
+(list '("LANGUAGE" . "eo:ca:eu")
+      "JAVA_HOME=/opt/java")
+@end lisp
+
+String are passed directly to the Docker CLI. You can refer to the
+@uref{https://docs.docker.com/engine/reference/commandline/run/#env,upstream}
+documentation for semantics.
+
+@item @code{image} (type: string)
+The image used to build the container.  Images are resolved by the
+Docker Engine, and follow the usual format
+@code{myregistry.local:5000/testing/test-image:tag}.
+
+@item @code{provision} (default: @code{""}) (type: string)
+Set the name of the provisioned Shepherd service.
+
+@item @code{network} (default: @code{""}) (type: string)
+Set a Docker network for the spawned container.
+
+@item @code{ports} (default: @code{()}) (type: list)
+Set the port or port ranges to expose from the spawned container.  This can be a
+list of pairs or strings, even mixed:
+
+@lisp
+(list '("8080" . "80")
+      "10443:443")
+@end lisp
+
+String are passed directly to the Docker CLI.  You can refer to the
+@uref{https://docs.docker.com/engine/reference/commandline/run/#publish,upstream}
+documentation for semantics.
+
+@item @code{volumes} (default: @code{()}) (type: list)
+Set volume mappings for the spawned container.  This can be a
+list of pairs or strings, even mixed:
+
+@lisp
+(list '("/root/data/grafana" . "/var/lib/grafana")
+      "/gnu/store:/gnu/store")
+@end lisp
+
+String are passed directly to the Docker CLI.  You can refer to the
+@uref{https://docs.docker.com/engine/reference/commandline/run/#volume,upstream}
+documentation for semantics.
+
+@item @code{container-user} (default: @code{""}) (type: string)
+Set the current user inside the spawned container.  You can refer to the
+@url{https://docs.docker.com/engine/reference/run/#user,upstream}
+documentation for semantics.
+
+@item @code{workdir} (default: @code{""}) (type: string)
+Set the current working for the spawned Shepherd service.
+You can refer to the
+@url{https://docs.docker.com/engine/reference/run/#workdir,upstream}
+documentation for semantics.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
 
 @cindex Audit
 @subsubheading Auditd Service
@@ -39848,7 +40258,7 @@ Backend to use to detect changes in the @code{log-path}.  The default is
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package.
 
 @item @code{max-retry} (type: maybe-integer)
-The number of failures before a host get banned (e.g.  @code{(max-retry
+The number of failures before a host gets banned (e.g.  @code{(max-retry
 5)}).
 
 @item @code{max-matches} (type: maybe-integer)
@@ -40660,6 +41070,55 @@ This option in enabled by default.  In some cases involving the
 @code{u-boot} bootloader, where the device tree has already been loaded
 in RAM, it can be handy to disable the option by setting it to
 @code{#f}.
+
+@item @code{extra-initrd} (default: @code{#f})
+File name of an additional initrd to load during the boot.  It may or
+may not point to a file in the store, but the main use case is for
+out-of-store files containing secrets.
+
+In order to be able to provide decryption keys for the LUKS device, they
+need to be available in the initial ram disk.  However they cannot be
+stored inside the usual initrd, since it is stored in the store and
+being a world-readable (as files in the store are) is not a desired
+property for a initrd containing decryption keys.  You can therefore use
+this field to instruct GRUB to also load a manually created initrd not
+stored in the store.
+
+For any use case not involving secrets, you should use regular initrd
+(@pxref{operating-system Reference, @code{initrd}}) instead.
+
+Suitable image can be created for example like this:
+
+@example
+echo /key-file.bin | cpio -oH newc >/key-file.cpio
+chmod 0000 /key-file.cpio
+@end example
+
+After it is created, you can use it in this manner:
+
+@lisp
+;; Operating system with encrypted boot partition
+(operating-system
+  ...
+  (bootloader (bootloader-configuration
+               (bootloader grub-efi-bootloader)
+               (targets '("/boot/efi"))
+               ;; Load the initrd with a key file
+               (extra-initrd "/key-file.cpio")))
+  (mapped-devices
+   (list (mapped-device
+          (source (uuid "12345678-1234-1234-1234-123456789abc"))
+          (target "my-root")
+          (type (luks-device-mapping-with-options
+                 ;; And use it to unlock the root device
+                 #:key-file "/key-file.bin"))))))
+@end lisp
+
+Be careful when using this option, since pointing to a file that is not
+readable by the grub while booting will cause the boot to fail and
+require a manual edit of the initrd line in the grub menu.
+
+Currently only supported by GRUB.
 @end table
 
 @end deftp
@@ -40760,7 +41219,7 @@ Of course, these options can be combined:
 '("console=com0" "noide")
 @end lisp
 
-+@item @code{multiboot-modules} (default: @code{'()})
+@item @code{multiboot-modules} (default: @code{'()})
 The list of commands for loading Multiboot modules.  For example:
 
 @lisp
@@ -43126,7 +43585,7 @@ utilizing the configuration mechanism described in the previous chapter
 (@pxref{Defining Services}), but for user's dotfiles and packages.  It
 works both on Guix System and foreign distros and allows users to
 declare all the packages and services that should be installed and
-configured for the user.  Once a user has written a file containing
+configured for the user.  Once a user has written a file containing a
 @code{home-environment} record, such a configuration can be
 @dfn{instantiated} by an unprivileged user with the @command{guix home}
 command (@pxref{Invoking guix home}).
@@ -43449,8 +43908,8 @@ be used here, too.  Make sure that modules containing the specified
 packages are imported with @code{use-modules}.  To find a package or
 information about its module use @command{guix search} (@pxref{Invoking
 guix package}).  Alternatively, @code{specification->package} can be
-used to get the package record from string without importing related
-module.
+used to get the package record from a string without importing its
+related module.
 @end defvar
 
 There are few more essential services, but users are not expected to
@@ -44179,19 +44638,19 @@ running on this machine, then it @emph{may} take this file into account:
 this is what @command{sshd} does by default, but be aware that it can
 also be configured to ignore it.
 
-@item @code{add-keys-to-agent} (default: @code{``no''})
+@item @code{add-keys-to-agent} (default: @code{no})
 This string specifies whether keys should be automatically added to a
-running ssh-agent.  If this option is set to @code{``yes''} and a key is
+running ssh-agent.  If this option is set to @code{yes} and a key is
 loaded from a file, the key and its passphrase are added to the agent
 with the default lifetime, as if by @code{ssh-add}.  If this option is
-set to @code{``ask''}, @code{ssh} will require confirmation.  If this
-option is set to @code{``confirm''}, each use of the key must be
-confirmed.  If this option is set to @code{``no''}, no keys are added to
+set to @code{ask}, @code{ssh} will require confirmation.  If this
+option is set to @code{confirm}, each use of the key must be
+confirmed.  If this option is set to @code{no}, no keys are added to
 the agent.  Alternately, this option may be specified as a time interval
 to specify the key's lifetime in @code{ssh-agent}, after which it will
-automatically be removed.  The argument must be @code{``no''},
-@code{``yes''}, @code{``confirm''} (optionally followed by a time
-interval), @code{``ask''} or a time interval.
+automatically be removed.  The argument must be @code{no},
+@code{yes}, @code{confirm} (optionally followed by a time
+interval), @code{ask} or a time interval.
 @end table
 @end deftp
 
@@ -44475,6 +44934,40 @@ The @code{(gnu home services desktop)} module provides services that you
 may find useful on ``desktop'' systems running a graphical user
 environment such as Xorg.
 
+@cindex X Window, for Guix Home services
+@cindex X11, in Guix Home
+@defvar home-x11-service-type
+This is the service type representing the X Window graphical display
+server (also referred to as ``X11'').
+
+X Window is necessarily started by a system service; on Guix System,
+starting it is the responsibility of @code{gdm-service-type} and similar
+services (@pxref{X Window}).  At the level of Guix Home, as an
+unprivileged user, we cannot start X Window; all we can do is check
+whether it is running.  This is what this service does.
+
+As a user, you probably don't need to worry or explicitly instantiate
+@code{home-x11-service-type}.  Services that require an X Window
+graphical display, such as @code{home-redshift-service-type} below,
+instantiate it and depend on its corresponding @code{x11-display}
+Shepherd service (@pxref{Shepherd Home Service}).
+
+When X Window is running, the @code{x11-display} Shepherd service starts
+and sets the @env{DISPLAY} environment variable of the
+@command{shepherd} process, using its original value if it was already
+set; otherwise, it fails to start.
+
+The service can also be forced to use a given value for @env{DISPLAY},
+like so:
+
+@example
+herd start x11-display :3
+@end example
+
+In the example above, @code{x11-display} is instructed to set
+@env{DISPLAY} to @code{:3}.
+@end defvar
+
 @defvar home-redshift-service-type
 This is the service type for @uref{https://github.com/jonls/redshift,
 Redshift}, a program that adjusts the display color temperature
@@ -44706,6 +45199,7 @@ sound support.
 
 @cindex PulseAudio, home service
 @cindex RTP, for PulseAudio
+@subsubheading PulseAudio RTP Streaming Services
 
 The following services dynamically reconfigure the
 @uref{https://pulseaudio.org,PulseAudio sound server}: they let you
@@ -44793,27 +45287,98 @@ Stopping the Shepherd service turns off broadcasting.
 This is the multicast address used by default by the two services above.
 @end defvar
 
+@cindex PipeWire, home service
+@subsubheading PipeWire Home Service
+
+@uref{https://pipewire.org, PipeWire} provides a low-latency,
+graph-based audio and video processing service.  In addition to its
+native protocol, it can also be used as a replacement for both JACK and
+PulseAudio.
+
+While PipeWire provides the media processing and API, it does not,
+directly, know about devices such as sound cards, nor how you might want
+to connect applications, hardware, and media processing filters.
+Instead, PipeWire relies on a @dfn{session manager} to specify all these
+relationships.  While you may use any session manager you wish, for most
+people the @url{https://pipewire.pages.freedesktop.org/wireplumber/,
+WirePlumber} session manager, a reference implementation provided by the
+PipeWire project itself, suffices, and that is the one
+@code{home-pipewire-service-type} uses.
+
+PipeWire can be used as a replacement for PulseAudio by setting
+@code{enable-pulseaudio?} to @code{#t} in
+@code{home-pipewire-configuration}, so that existing PulseAudio clients
+may use it without any further configuration.
+
+In addition, JACK clients may connect to PipeWire by using the
+@command{pw-jack} program, which comes with PipeWire.  Simply prefix the
+command with @command{pw-jack} when you run it, and audio data should go
+through PipeWire:
+
+@example
+pw-jack mpv -ao=jack sound-file.wav
+@end example
+
+For more information on PulseAudio emulation, see
+@uref{https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PulseAudio},
+for JACK, see
+@uref{https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-JACK}.
+
+As PipeWire does not use @code{dbus} to start its services on demand
+(as PulseAudio does), @code{home-pipewire-service-type} uses Shepherd
+to start services when logged in, provisioning the @code{pipewire},
+@code{wireplumber}, and, if configured, @code{pipewire-pulseaudio}
+services.  @xref{Shepherd Home Service}.
+
+@defvar home-pipewire-service-type
+This provides the service definition for @command{pipewire}, which will
+run on login.  Its value is a @code{home-pipewire-configuration} object.
+
+To start the service, add it to the @code{service} field of your
+@code{home-environment}, such as:
+
+@lisp
+(service home-pipewire-service-type)
+@end lisp
+@end defvar
+
+@deftp {Data Type} home-pipewire-configuration
+Available @code{home-pipewire-configuration} fields are:
+
+@table @asis
+@item @code{pipewire} (default: @code{pipewire}) (type: file-like)
+The PipeWire package to use.
+
+@item @code{wireplumber} (default: @code{wireplumber}) (type: file-like)
+The WirePlumber package to use.
+
+@item @code{enable-pulseaudio?} (default: @code{#t}) (type: boolean)
+When true, enable PipeWire's PulseAudio emulation support, allowing
+PulseAudio clients to use PipeWire transparently.
+@end table
+@end deftp
+
 @node Mail Home Services
 @subsection Mail Home Services
- 
+
 The @code{(gnu home services mail)} module provides services that help
 you set up the tools to work with emails in your home environment.
- 
+
 @cindex msmtp
 @uref{https://marlam.de/msmtp, MSMTP} is a @acronym{SMTP, Simple Mail
 Transfer Protocol} client.  It sends mail to a predefined SMTP server
 that takes care of proper delivery.
- 
+
 The service reference is given below.
- 
+
 @defvar home-msmtp-service-type
 This is the service type for @command{msmtp}.  Its value must be a
 @code{home-msmtp-configuration}, as shown below.  It provides the
 @file{~/.config/msmtp/config} file.
- 
+
 As an example, here is how you would configure @code{msmtp} for a single
 account:
- 
+
 @lisp
 (service home-msmtp-service-type
          (home-msmtp-configuration
@@ -44831,101 +45396,101 @@ account:
 @end defvar
 
 @c %start of fragment
- 
+
 @deftp {Data Type} home-msmtp-configuration
 Available @code{home-msmtp-configuration} fields are:
- 
+
 @table @asis
 @item @code{defaults} (type: msmtp-configuration)
 The configuration that will be set as default for all accounts.
- 
+
 @item @code{accounts} (default: @code{'()}) (type: list-of-msmtp-accounts)
 A list of @code{msmtp-account} records which contain information about
 all your accounts.
- 
+
 @item @code{default-account} (type: maybe-string)
 Set the default account.
- 
+
 @item @code{extra-content} (default: @code{""}) (type: string)
 Extra content appended as-is to the configuration file.  Run
 @command{man msmtp} for more information about the configuration file
 format.
- 
+
 @end table
- 
+
 @end deftp
- 
-@c %end of fragment
- 
-@c %start of fragment
- 
-@deftp {Data Type} msmtp-account
-Available @code{msmtp-account} fields are:
- 
-@table @asis
-@item @code{name} (type: string)
-The unique name of the account.
- 
-@item @code{configuration} (type: msmtp-configuration)
-The configuration for this given account.
- 
-@end table
- 
-@end deftp
- 
+
 @c %end of fragment
 
 @c %start of fragment
- 
+
+@deftp {Data Type} msmtp-account
+Available @code{msmtp-account} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+The unique name of the account.
+
+@item @code{configuration} (type: msmtp-configuration)
+The configuration for this given account.
+
+@end table
+
+@end deftp
+
+@c %end of fragment
+
+@c %start of fragment
+
 @deftp {Data Type} msmtp-configuration
 Available @code{msmtp-configuration} fields are:
- 
+
 @table @asis
 @item @code{auth?} (type: maybe-boolean)
 Enable or disable authentication.
- 
+
 @item @code{tls?} (type: maybe-boolean)
 Enable or disable TLS (also known as SSL) for secured connections.
- 
+
 @item @code{tls-starttls?} (type: maybe-boolean)
 Choose the TLS variant: start TLS from within the session (‘on’,
 default), or tunnel the session through TLS (‘off’).
- 
+
 @item @code{tls-trust-file} (type: maybe-string)
 Activate server certificate verification using a list of trusted
 Certification Authorities (CAs).
- 
+
 @item @code{log-file} (type: maybe-string)
 Enable logging to the specified file.  An empty argument disables
 logging.  The file name ‘-’ directs the log information to standard
 output.
- 
+
 @item @code{host} (type: maybe-string)
 The SMTP server to send the mail to.
- 
+
 @item @code{port} (type: maybe-integer)
 The port that the SMTP server listens on.  The default is 25 ("smtp"),
 unless TLS without STARTTLS is used, in which case it is 465 ("smtps").
- 
+
 @item @code{user} (type: maybe-string)
 Set the user name for authentication.
- 
+
 @item @code{from} (type: maybe-string)
 Set the envelope-from address.
- 
+
 @item @code{password-eval} (type: maybe-string)
 Set the password for authentication to the output (stdout) of the
 command cmd.
- 
+
 @item @code{extra-content} (default: @code{""}) (type: string)
 Extra content appended as-is to the configuration block.  Run
 @command{man msmtp} for more information about the configuration file
 format.
- 
+
 @end table
- 
+
 @end deftp
- 
+
 @c %end of fragment
 
 @node Messaging Home Services
@@ -45531,6 +46096,11 @@ This optional string field is only relevant if the kernel is Linux.  In
 that case, it corresponds to the ARCH variable used when building Linux,
 @code{"mips"} for instance.
 
+@item @code{rust-target} (default: @code{#false})
+This optional string field is used to determine which rust target is best
+supported by this platform.  For example, the base level system targeted by
+@code{armhf-linux} system is closest to @code{armv7-unknown-linux-gnueabihf}.
+
 @item @code{glibc-dynamic-linker}
 This field is the name of the GNU C Library dynamic linker for the
 corresponding system, as a string.  It can be
@@ -45590,6 +46160,11 @@ from MinGW.
 @defvar i586-gnu
 Platform targeting x86 CPU running GNU/Hurd (also referred to as
 ``GNU'').
+@end defvar
+
+@defvar avr
+Platform targeting AVR CPUs without an operating system, with run-time support
+from AVR Libc.
 @end defvar
 
 @node System Images
@@ -46151,7 +46726,7 @@ missing.
 @node Separate Debug Info
 @section Separate Debug Info
 
-The problem with debugging information is that is takes up a fair amount
+The problem with debugging information is that it takes up a fair amount
 of disk space.  For example, debugging information for the GNU C Library
 weighs in at more than 60 MiB@.  Thus, as a user, keeping all the
 debugging info of all the installed programs is usually not an option.
@@ -46634,7 +47209,7 @@ traditional bootstrap of the rest of the Guix System.
 @c ./pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' | sed -re 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' > doc/images/gcc-core-mesboot0-graph.dot
 @image{images/gcc-core-mesboot0-graph,6in,,Dependency graph of gcc-core-mesboot0}
 
-Work is ongoing to to bring these bootstraps to the @code{arm-linux} and
+Work is ongoing to bring these bootstraps to the @code{arm-linux} and
 @code{aarch64-linux} architectures and to the Hurd.
 
 If you are interested, join us on @samp{#bootstrappable} on the Libera.Chat
@@ -46805,7 +47380,7 @@ bootstrap GCC with a sequence of assemblers, interpreters, and compilers
 of increasing complexity, which could be built from source starting from
 a simple and auditable assembler.
 
-Our first major achievement is the replacement of of GCC, the GNU C Library
+Our first major achievement is the replacement of GCC, the GNU C Library
 and Binutils by MesCC-Tools (a simple hex linker and macro assembler) and Mes
 (@pxref{Top, GNU Mes Reference Manual,, mes, GNU Mes}, a Scheme interpreter
 and C compiler in Scheme).  Neither MesCC-Tools nor Mes can be fully

@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Hendursaga <hendursaga@aol.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,7 +112,8 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system qt))
 
 (define-public vice
   (package
@@ -2445,16 +2447,16 @@ system.")
 (define-public exomizer
   (package
     (name "exomizer")
-    (version "3.1.1")
+    (version "3.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://bitbucket.org/magli143/exomizer.git")
-                     (commit "6a152b5605648f7a41eadd4b011a93ec92f74dd8")))
+                     (commit version)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1ynhkb5p2dypkikipc3krzif264l9rmx1wnjzzgw8n88i4zkymzg"))))
+                "04795l75nlbz0g5gp1xx8kiwbrm5pv5pj24ja02cnan6mglj7j0w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f  ; No target exists
@@ -2491,6 +2493,29 @@ on a Commodore C64, C128 etc.")
     ;; Some files are LGPL 2.1--but we aren't building from or installing those.
     ;; zlib license with an (non-)advertising clause.
     (license license:zlib)))
+
+(define-public qtrvsim
+  (package
+    (name "qtrvsim")
+    (version "0.9.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cvut/qtrvsim")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zi39q8ajkzl8d47sacj0dk1a2n5jmfgr29x9iby59v792g7p8ac"))
+              (modules '((guix build utils)))
+              (snippet #~(begin (delete-file-recursively "external/libelf")))))
+    (build-system qt-build-system)
+    (inputs (list libelf qtbase-5))
+    (home-page "https://github.com/cvut/qtrvsim")
+    (synopsis "RISC-V CPU simulator for education purposes")
+    (description "RISC-V CPU simulator for education purposes with pipeline and
+cache visualization.  Developed at FEE CTU for computer architecture classes.")
+    (license license:gpl3+)))
 
 (define-public cc65
   (package
