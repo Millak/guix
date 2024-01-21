@@ -2561,6 +2561,28 @@ Hash-based Message Authentication Code}.")
 Hash-based Message Authentication Code algorithm} for SHA1.")
     (license license:bsd-3)))
 
+(define-public rust-kuznyechik-0.8
+  (package
+    (name "rust-kuznyechik")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "kuznyechik" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0av39qh65xchvpfjkcwh861h9bzmmrgcrzl5h0sa5b692xabd0w4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "Kuznyechik (GOST R 34.12-2015) block cipher")
+    (description "Kuznyechik (GOST R 34.12-2015) block cipher")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-md-5-0.10
   (package
     (name "rust-md-5")
