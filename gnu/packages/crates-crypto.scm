@@ -1985,3 +1985,22 @@ implementation suitable for use with cryptographic private keys.")
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
+
+(define-public rust-ppv-lite86-0.2
+  (package
+    (name "rust-ppv-lite86")
+    (version "0.2.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "ppv-lite86" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1shj4q7jwj0azssr8cg51dk3kh7d4lg9rmbbz1kbqk971vc5wyi3"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/cryptocorrosion/cryptocorrosion")
+    (synopsis "Implementation of the crypto-simd API for x86")
+    (description "This crate provides an implementation of the crypto-simd API
+for x86.")
+    (license (list license:asl2.0 license:expat))))
