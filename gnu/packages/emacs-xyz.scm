@@ -14249,7 +14249,7 @@ in Emacs.")
 (define-public emacs-edit-indirect
   (package
     (name "emacs-edit-indirect")
-    (version "0.1.10")
+    (version "0.1.11")
     (source
      (origin
        (method git-fetch)
@@ -14258,7 +14258,7 @@ in Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13v0fvzh3nv3bm4c3ld7pknw2g76cjkx81hsrmbrd1irlv4s4b00"))))
+        (base32 "0w30lc8ikrxgbxgmhdxvnzs1b12fvbrg6qf3f9ybyq8v3n7lzi9y"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/Fanael/edit-indirect")
     (synopsis "Edit regions in separate buffers")
