@@ -5886,3 +5886,63 @@ One-Time Password library.")
        #:cargo-inputs
        (("rust-generic-array" ,rust-generic-array-0.12)
         ("rust-subtle" ,rust-subtle-2))))))
+
+(define-public rust-x25519-dalek-1
+  (package
+    (name "rust-x25519-dalek")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x25519-dalek" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xz0m1pczss9r25d1r52420dl2picdypbcn5ycmlwssp9awvd4i3"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("version = \"=1.3\"") "version = \"^1.3\""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-curve25519-dalek" ,rust-curve25519-dalek-3)
+        ("rust-rand-core" ,rust-rand-core-0.5)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://dalek.rs/")
+    (synopsis "X25519 elliptic curve Diffie-Hellman key exchange")
+    (description
+     "This crate provides a pure-Rust implementation of x25519 elliptic curve
+Diffie-Hellman key exchange, with curve operations provided by
+@code{curve25519-dalek}.")
+    (license license:bsd-3)))
+
+(define-public rust-x25519-dalek-ng-1
+  (package
+    (name "rust-x25519-dalek-ng")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "x25519-dalek-ng" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09n35vgrryjy0m6ascfaykc8s0i517rzgj64qdq2jrlri7g78w5z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-curve25519-dalek-ng" ,rust-curve25519-dalek-ng-4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://dalek.rs/")
+    (synopsis "Fork of x25519-dalek")
+    (description "This package provides a fork x25519-dalek, with an updated
+rand_core.")
+    (license license:bsd-3)))
