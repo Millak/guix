@@ -6125,7 +6125,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
            python-docutils))
     (inputs
      (list glib dbus eudev libical readline))
-    (home-page "http://www.bluez.org/")
+    (home-page "https://www.bluez.org/")
     (synopsis "Linux Bluetooth protocol stack")
     (description
      "BlueZ provides support for the core Bluetooth layers and protocols.  It
