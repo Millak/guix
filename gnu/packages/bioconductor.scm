@@ -1671,6 +1671,44 @@ dataset for the examples in package viper.")
 5 batches.  The data are used as an illustrative example for the sva package.")
     (license license:artistic2.0)))
 
+(define-public r-bodymaprat
+  (package
+    (name "r-bodymaprat")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "bodymapRat" version
+                              'experiment))
+       (sha256
+        (base32 "1sfq6vxkb68l0q5qbnpm3fi53k4q9a890bv2ff9c6clhc42wx3h6"))))
+    (properties `((upstream-name . "bodymapRat")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _
+             (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'avoid-internet-access
+           (lambda _
+             (setenv "GUIX_BUILD" "yes")
+             (substitute* "R/zzz.R"
+               (("createHubAccessors.*" m)
+                (string-append
+                 "if (Sys.getenv(\"GUIX_BUILD\") == \"\") {" m "}"))))))))
+    (propagated-inputs (list r-experimenthub r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/bodymapRat")
+    (synopsis "Experimental dataset from the rat BodyMap project")
+    (description
+     "This package contains a @code{SummarizedExperiment} from the Yu et
+al. (2013) paper that performed the rat @code{BodyMap} across 11 organs and 4
+developmental stages.  Raw FASTQ files were downloaded and mapped using
+STAR. Data is available on @code{ExperimentHub} as a data package.")
+    (license license:cc-by4.0)))
+
 (define-public r-biscuiteerdata
   (package
     (name "r-biscuiteerdata")
