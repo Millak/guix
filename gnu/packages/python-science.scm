@@ -213,7 +213,7 @@ genetic variation data.")
 (define-public python-scikit-fem
   (package
     (name "python-scikit-fem")
-    (version "8.1.0")
+    (version "9.0.1")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -222,13 +222,14 @@ genetic variation data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zpn0wpsvls5nkrav5a43z77yg9nc09dpyy9ri0dpmpm2ndh2mhs"))))
+                "1r1c88rbaa7vjfnljbzx8paf36yzpy33bragl99ykn6i2srmjrd4"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; Examples below require python-autograd and python-pyamg.
-     (list #:test-flags #~(list "-k" "not TestEx32 and not TestEx45")))
     (propagated-inputs (list python-meshio python-numpy python-scipy))
-    (native-inputs (list python-pytest))
+    (native-inputs
+     (list python-autograd
+           python-pyamg
+           python-pytest
+           python-shapely))
     (home-page "https://scikit-fem.readthedocs.io/en/latest/")
     (synopsis "Library for performing finite element assembly")
     (description
