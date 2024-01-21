@@ -767,6 +767,29 @@ BLAKE2bp hash functions.")
 based on Blake2s.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-block-cipher-0.7
+  (package
+    (name "rust-block-cipher")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "block-cipher" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "043zgfz1x4sxkdcsyabrcr440fcwhfpcqqa54jm7zp35wx4n84zs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-blobby" ,rust-blobby-0.1)
+        ("rust-generic-array" ,rust-generic-array-0.14))))
+    (home-page "https://github.com/RustCrypto/traits")
+    (synopsis "Traits for description of block ciphers")
+    (description "This package provides traits for description of block
+ciphers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-botan-0.10
   (package
     (name "rust-botan")
