@@ -997,10 +997,7 @@ specifies modules in scope when evaluating SNIPPET."
          (bzip2   (lookup-input "bzip2"))
          (lzip    (lookup-input "lzip"))
          (xz      (lookup-input "xz"))
-         (zstd    (or (lookup-input "zstd")
-                      ;; Fallback to xz in case zstd is not available, such as
-                      ;; for bootstrap packages.
-                      xz))
+         (zstd    (lookup-input "zstd"))
          (patch   (lookup-input "patch"))
          (comp    (and=> (compressor source-file-name) lookup-input))
          (patches (map instantiate-patch patches)))
@@ -1081,10 +1078,13 @@ specifies modules in scope when evaluating SNIPPET."
                           locale (system-error-errno args)))))
 
             (setenv "PATH"
-                    (string-append #+zstd "/bin"
-                                   (if #+comp
-                                       (string-append ":" #+comp "/bin")
-                                       "")))
+                    (string-join
+                     (map (cut string-append <> "/bin")
+                          ;; Fallback to xz in case zstd is not
+                          ;; available, such as for bootstrap packages.
+                          (delete-duplicates
+                           (filter-map identity (list #+zstd #+xz #+comp))))
+                     ":"))
 
             (setenv "ZSTD_NBTHREADS" (number->string (parallel-job-count)))
 
