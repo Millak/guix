@@ -20,7 +20,7 @@
 ;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2024 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -916,14 +916,14 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
 (define-public qpdf
   (package
     (name "qpdf")
-    (version "11.3.0")
+    (version "11.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qpdf/qpdf/" version
                                   "/qpdf-" version ".tar.gz"))
               (sha256
                (base32
-                "0vlk0cx7ldinipv620wmmbiwyj68p4npvr8p97pw9dbpvrkywz2l"))))
+                "0n8jfk4yf0m36rs9lg82pj9lv6pdqpfh8mhacc1ih9ahpigiycnr"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~'("-DBUILD_STATIC_LIBS=OFF")))
@@ -942,7 +942,7 @@ program capable of converting PDF into other formats.")
     ;; Prior to the 7.0 release, QPDF was licensed under Artistic 2.0.
     ;; Users can still choose to use the old license at their option.
     (license (list license:asl2.0 license:clarified-artistic))
-    (home-page "https://qpdf.sourceforge.net/")))
+    (home-page "https://qpdf.sourceforge.io/")))
 
 (define-public qpdfview
   (package
