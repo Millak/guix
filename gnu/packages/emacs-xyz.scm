@@ -4843,52 +4843,59 @@ that the binary uses instead of the actual binary contents.")
 
 (define-public emacs-org-fc
   (package
-      (name "emacs-org-fc")
-      (version "0.3.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.sr.ht/~l3kn/org-fc")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "17cdn4sdyb9fs9w725l155lb74inzdn86m8y62m6hn4dgb5l4spm"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:include #~(cons* "\\.awk$" "\\.org$" %default-include)
-        #:exclude #~(cons "^tests/" %default-exclude)
-        #:tests? #t
-        #:test-command #~(list "emacs" "--batch"
-                               "-L" "."
-                               "-L" "tests/"
-                               "-l" "tests/org-fc-filter-test.el"
-                               "-l" "tests/org-fc-indexer-test.el"
-                               "-l" "tests/org-fc-review-data-test.el"
-                               "-f" "ert-run-tests-batch-and-exit")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'qualify-paths
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((find (search-input-file inputs "/bin/find"))
-                      (gawk (search-input-file inputs "/bin/gawk"))
-                      (xargs (search-input-file inputs "/bin/xargs")))
-                  (substitute* "org-fc-awk.el"
-                    (("\"find ") (string-append "\"" find " "))
-                    (("\"gawk ") (string-append "\"" gawk " "))
-                    (("\"xargs ") (string-append "\"" xargs " ")))))))))
-      (inputs (list findutils gawk))
-      (propagated-inputs (list emacs-hydra))
-      (home-page "https://www.leonrische.me/fc/index.html")
-      (synopsis "Spaced repetition system for Emacs Org mode")
-      (description
-       "Org-fc is a spaced-repetition system for Emacs' Org mode.
+    (name "emacs-org-fc")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~l3kn/org-fc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09s493p2ccvc1zd297kldwinhn6imnmyik98qc56ndb7dp0dwa0x"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons* "\\.awk$" "\\.org$" %default-include)
+      #:exclude #~(cons "^tests/" %default-exclude)
+      #:tests? #t
+      #:test-command #~(list "emacs" "--batch"
+                             "-L" "."
+                             "-L" "tests/"
+                             "-l" "tests/org-fc-card-test.el"
+                             "-l" "tests/org-fc-filter-test.el"
+                             "-l" "tests/org-fc-indexer-test.el"
+                             "-l" "tests/org-fc-review-data-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'qualify-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((find (search-input-file inputs "/bin/find"))
+                    (gawk (search-input-file inputs "/bin/gawk"))
+                    (xargs (search-input-file inputs "/bin/xargs")))
+                (substitute* "org-fc-awk.el"
+                  (("\"find ") (string-append "\"" find " "))
+                  (("\"gawk ") (string-append "\"" gawk " "))
+                  (("\"xargs ") (string-append "\"" xargs " "))))))
+          (add-after 'unpack 'require-eieio
+            (lambda _
+              (substitute* "org-fc-core.el"
+                (("\\(require 'cl-lib\\)" line)
+                 (string-append line "\n(require 'eieio)"))))))))
+    (native-inputs (list emacs-el-mock))
+    (inputs (list findutils gawk))
+    (propagated-inputs (list emacs-hydra))
+    (home-page "https://www.leonrische.me/fc/index.html")
+    (synopsis "Spaced repetition system for Emacs Org mode")
+    (description
+     "Org-fc is a spaced-repetition system for Emacs' Org mode.
 It allows you to mark headlines in a file as flashcards, turning pieces of
 knowledge you want to learn into a question-answer test.  These cards are
 reviewed at regular interval.  After each review, the next review interval is
 calculated based on how well you remembered the contents of the card.")
-      (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public emacs-font-lock+
   (let ((commit "aa1c82d05c9222b09099a0ccd7468e955497940c")
