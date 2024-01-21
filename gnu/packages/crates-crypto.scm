@@ -2004,3 +2004,48 @@ implementation suitable for use with cryptographic private keys.")
     (description "This crate provides an implementation of the crypto-simd API
 for x86.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-rfc6979-0.4
+  (package
+    (name "rust-rfc6979")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rfc6979" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1chw95jgcfrysyzsq6a10b1j5qb7bagkx8h0wda4lv25in02mpgq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hmac" ,rust-hmac-0.12)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/RustCrypto/signatures/tree/master/rfc6979")
+    (synopsis "Pure Rust implementation of RFC6979")
+    (description
+     "This package provides a pure Rust implementation of RFC6979: Deterministic
+Usage of the @dfn{Digital Signature Algorithm} (DSA) and @dfn{Elliptic Curve
+Digital Signature Algorithm} (ECDSA).")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-rfc6979-0.3
+  (package
+    (inherit rust-rfc6979-0.4)
+    (name "rust-rfc6979")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rfc6979" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fzsp705b5lhwd2r9il9grc3lj6rm3b2r89vh0xv181gy5xg2hvp"))))
+    (arguments
+     `(#:cargo-inputs (("rust-crypto-bigint" ,rust-crypto-bigint-0.4)
+                       ("rust-hmac" ,rust-hmac-0.12)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-sha2" ,rust-sha2-0.10))))))
