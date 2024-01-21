@@ -1492,7 +1492,7 @@ new Date();"))
            unzip
            which
            zip))
-    (home-page "https://openjdk.java.net/projects/jdk/11/")
+    (home-page "https://openjdk.org/projects/jdk/11/")
     (synopsis "Java development kit")
     (description
      "This package provides the Java development kit OpenJDK.")
