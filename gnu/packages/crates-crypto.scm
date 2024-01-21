@@ -2510,6 +2510,73 @@ a cipher, can be used as a Message Authentication Code (MAC).")
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.3))))))
 
+(define-public rust-polyval-0.6
+  (package
+    (name "rust-polyval")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polyval" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iihmpn1h1ag5zl368yfq0jz1drfdw7xg7zpaqpcppqiikh39wky"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3)
+        ("rust-universal-hash" ,rust-universal-hash-0.5)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/universal-hashes")
+    (synopsis "GHASH-like universal hash")
+    (description "POLYVAL is a GHASH-like universal hash over GF(2^128) useful
+for constructing a Message Authentication Code (MAC).")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-polyval-0.4
+  (package
+    (inherit rust-polyval-0.6)
+    (name "rust-polyval")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polyval" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1kdpcjhc3666g8xaqichsyf6fhn8rry3z70dqhmvv6hb2jmc9g7f"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cpuid-bool" ,rust-cpuid-bool-0.2)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3)
+        ("rust-universal-hash" ,rust-universal-hash-0.4)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.2))))))
+
+(define-public rust-polyval-0.3
+  (package
+    (inherit rust-polyval-0.4)
+    (name "rust-polyval")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polyval" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256 (base32 "04m2wf4pk6gglvl12fj7ylc2iqhxmzqj46rds6zy73cpk0a39hvy"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-universal-hash" ,rust-universal-hash-0.3)
+        ("rust-zeroize" ,rust-zeroize-1))))))
+
 (define-public rust-ppv-lite86-0.2
   (package
     (name "rust-ppv-lite86")
