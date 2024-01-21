@@ -435,6 +435,7 @@ data types.")
                         "python-3-deterministic-build-info.patch"
                         "python-3-fix-tests.patch"
                         "python-3-hurd-configure.patch"
+                        "python-3-reproducible-build.patch"
                         "python-3-search-paths.patch"))
               (sha256
                (base32
