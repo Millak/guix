@@ -4526,6 +4526,53 @@ OIDs)")
        (("rust-blobby" ,rust-blobby-0.1)
         ("rust-generic-array" ,rust-generic-array-0.13))))))
 
+(define-public rust-streebog-0.10
+  (package
+    (name "rust-streebog")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "streebog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w7sxj3risp0zqm6r4mc73bd3fn3bnlxi4l10gp7661i5asr6ajz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.10))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "Streebog (GOST R 34.11-2012) hash function")
+    (description
+     "This package provides a streebog (GOST R 34.11-2012) hash function.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-streebog-0.9
+  (package
+    (inherit rust-streebog-0.10)
+    (name "rust-streebog")
+    (version "0.9.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "streebog" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0lz7ajfqdqbrnj01m1xc01ch1g0s9391ma36qqkiyf1074d1r8nr"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-block-buffer" ,rust-block-buffer-0.9)
+        ("rust-digest" ,rust-digest-0.9)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
+
 (define-public rust-subtle-2
   (package
     (name "rust-subtle")
