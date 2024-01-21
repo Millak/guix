@@ -739,3 +739,86 @@ PEM-encodings commonly used to store keys and certificates at rest.")
     (synopsis "Parser for the TLS protocol")
     (description "This package provides a Rust parser for the TLS protocol.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-x509-parser-0.15
+  (package
+    (name "rust-x509-parser")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "x509-parser" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d7nshccpnybbh8mypirplf4bqxiy36bgh4rrd7jzng19bsw5c5s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-asn1-rs" ,rust-asn1-rs-0.5)
+        ("rust-data-encoding" ,rust-data-encoding-2)
+        ("rust-der-parser" ,rust-der-parser-8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-oid-registry" ,rust-oid-registry-0.6)
+        ("rust-ring" ,rust-ring-0.16)
+        ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/rusticata/x509-parser")
+    (synopsis "X.509 parser written in pure Rust")
+    (description "This crate provides a parser for the X.509 v3 format (RFC
+5280 certificates).")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-x509-parser-0.14
+  (package
+    (inherit rust-x509-parser-0.15)
+    (name "rust-x509-parser")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j7b3xxpwik38y9rajglmhis551gj3zz5irw1vj1bqkwnsvvxv70"))))
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.5)
+                       ("rust-base64" ,rust-base64-0.13)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-der-parser" ,rust-der-parser-8)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-oid-registry" ,rust-oid-registry-0.6)
+                       ("rust-ring" ,rust-ring-0.16)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))))))
+
+(define-public rust-x509-parser-0.12
+  (package
+    (inherit rust-x509-parser-0.15)
+    (name "rust-x509-parser")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-parser" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vanwazknxwd1kmlp443bpph9qyas021ayqk6iljxdscm0v0ijgz"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-data-encoding" ,rust-data-encoding-2)
+        ("rust-der-parser" ,rust-der-parser-6)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-oid-registry" ,rust-oid-registry-0.2)
+        ("rust-ring" ,rust-ring-0.16)
+        ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+        ("rust-thiserror" ,rust-thiserror-1))))))
