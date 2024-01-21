@@ -1009,14 +1009,18 @@ specifies modules in scope when evaluating SNIPPET."
                          (ice-9 regex)
                          (srfi srfi-1)
                          (srfi srfi-26)
+                         (srfi srfi-34)
+                         (srfi srfi-35)
                          (guix build utils))
 
             ;; The --sort option was added to GNU tar in version 1.28, released
             ;; 2014-07-28.  During bootstrap we must cope with older versions.
             (define tar-supports-sort?
-              (zero? (system* (string-append #+tar "/bin/tar")
+              (guard (c ((message-condition? c) #f))
+                (invoke/quiet (string-append #+tar "/bin/tar")
                               "cf" "/dev/null" "--files-from=/dev/null"
-                              "--sort=name")))
+                              "--sort=name")
+                #t))
 
             (define (apply-patch patch)
               (format (current-error-port) "applying '~a'...~%" patch)
