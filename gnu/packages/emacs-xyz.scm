@@ -8731,9 +8731,10 @@ files which are intended to be packages.")
          "1pgg5z3z2pf0vps86lrkxfr36v4c24mpgvj551gixdlrm2s55p0l"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include '("\\.el$" "\\.org$")
-       #:tests? #t
-       #:test-command '("make" "test")))
+     (list
+      #:include #~(cons* "\\.org$" %default-include)
+      #:tests? #t
+      #:test-command #~(list "make" "test")))
     (home-page "https://github.com/xuchunyang/elisp-demos/")
     (synopsis "Enhance @code{*Help*} buffers with additional examples")
     (description
