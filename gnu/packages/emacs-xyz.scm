@@ -13980,7 +13980,7 @@ mode with the package emacs-julia-mode.")
 (define-public emacs-julia-snail
   (package
     (name "emacs-julia-snail")
-    (version "1.2.3")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13989,7 +13989,7 @@ mode with the package emacs-julia-mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07dj788hdfskn2k400q2fcfh18w7gflfrc5zqg8bqflhv755m30k"))))
+                "0h5lwc2hsk4rc82idhf9qj9553v7x76wmy9x2z1h60pdd93ilcyr"))))
     (build-system emacs-build-system)
     (arguments
      (list
