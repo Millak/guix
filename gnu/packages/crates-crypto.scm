@@ -3454,3 +3454,30 @@ cryptographic implementations.")
      "This package provides pure-Rust traits and utilities for constant-time
 cryptographic implementations.")
     (license license:bsd-3)))
+
+(define-public rust-tiger-0.1
+  (package
+    (name "rust-tiger")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tiger" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01bhc7h8kxc5kjqx9sqrb3g8h4f9av6hpxzyihjq7pprphf56gj4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-block-buffer" ,rust-block-buffer-0.9)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-digest" ,rust-digest-0.9))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "Tiger hash function")
+    (description
+     "This package provides the Tiger cryptographic hash function.")
+    (license (list license:expat license:asl2.0))))
