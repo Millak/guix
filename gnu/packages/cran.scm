@@ -26315,6 +26315,26 @@ using a lasso (L1) penalty.  Facilities are provided for estimates along a
 path of values for the regularization parameter.")
     (license license:gpl2)))
 
+(define-public r-glassofast
+  (package
+    (name "r-glassofast")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "glassoFast" version))
+       (sha256
+        (base32 "0nyvmmrw6cr5j1mkf1qv6hn3q24kyn6gn48q6r7az4vn1m141hzz"))))
+    (properties `((upstream-name . "glassoFast")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://cran.r-project.org/package=glassoFast")
+    (synopsis "Fast graphical LASSO")
+    (description
+     "This package provides a fast and improved implementation of the
+graphical LASSO.")
+    (license license:gpl3+)))
+
 (define-public r-gldex
   (package
     (name "r-gldex")
