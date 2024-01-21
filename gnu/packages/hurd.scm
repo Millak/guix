@@ -57,36 +57,38 @@
                  version ".tar.gz"))
 
 (define-public gnumach-headers
-  (package
-    (name "gnumach-headers")
-    (version "1.8+git20230410") ;; This is an upstream tag
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/hurd/gnumach.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "gnumach" version))
-       (sha256
-        (base32
-         "1s09256g2ny46idrn8frzs7r51la9ni45bmglmswlsmz9ii7dpi4"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           (lambda _
-             (invoke "make" "install-data" "install-data-hook")))
-         (delete 'build))
-       #:tests? #f))
-    (native-inputs
-     (list autoconf automake texinfo-4))
-    (supported-systems %hurd-systems)
-    (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
-    (synopsis "GNU Mach kernel headers")
-    (description
-     "Headers of the GNU Mach kernel.")
-    (license gpl2+)))
+  (let ((revision "0")
+        (commit "2556fdece900d67529d5eda01f1bdaae4ffe96b0"))
+    (package
+      (name "gnumach-headers")
+      (version (git-version "1.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/hurd/gnumach.git")
+               (commit commit)))
+         (file-name (git-file-name "gnumach" version))
+         (sha256
+          (base32
+           "1lzsbix0l4jhab38pvwnmk7ip1lsn7m5smhnrciqajsqnadsnlzs"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (replace 'install
+             (lambda _
+               (invoke "make" "install-data" "install-data-hook")))
+           (delete 'build))
+         #:tests? #f))
+      (native-inputs
+       (list autoconf automake texinfo-4))
+      (supported-systems %hurd-systems)
+      (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
+      (synopsis "GNU Mach kernel headers")
+      (description
+       "Headers of the GNU Mach kernel.")
+      (license gpl2+))))
 
 (define-public mig
   (package
@@ -251,14 +253,6 @@ Hurd-minimal package which are needed for both glibc and GCC.")
   (package
     (inherit gnumach-headers)
     (name "gnumach")
-    (source (origin
-              (inherit (package-source gnumach-headers))
-              (patches
-               (append
-                (search-patches "gnumach-support-noide.patch"
-                                "gnumach-fix-i686-linux-build.patch"
-                                "gnumach-fix-task_info.patch")
-                (origin-patches (package-source gnumach-headers))))))
     (arguments
      (substitute-keyword-arguments (package-arguments gnumach-headers)
        ((#:configure-flags flags ''())
