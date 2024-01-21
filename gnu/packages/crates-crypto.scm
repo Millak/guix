@@ -705,6 +705,65 @@ based on Blake2s.")
      "The ChaCha family of stream ciphers.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cipher-0.4
+  (package
+    (name "rust-cipher")
+    (version "0.4.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cipher" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "1b9x9agg67xq5nq879z66ni4l08m6m3hqcshk37d4is4ysd3ngvp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-crypto-common" ,rust-crypto-common-0.1)
+        ("rust-inout" ,rust-inout-0.1)
+        ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://docs.rs/cipher/")
+    (synopsis "Traits for describing block ciphers and stream ciphers")
+    (description "This package provides traits which define the functionality
+of block ciphers and stream ciphers.  See RustCrypto/block-ciphers and
+RustCrypto/stream-ciphers for algorithm implementations which use these
+traits.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-cipher-0.3
+  (package
+    (inherit rust-cipher-0.4)
+    (name "rust-cipher")
+    (version "0.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cipher" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "1dyzsv0c84rgz98d5glnhsz4320wl24x3bq511vnyf0mxir21rby"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-generic-array" ,rust-generic-array-0.14))))))
+
+(define-public rust-cipher-0.2
+  (package
+    (inherit rust-cipher-0.3)
+    (name "rust-cipher")
+    (version "0.2.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cipher" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "00b8imbmdg7zdrbaczlivmdfdy09xldg95wl4iijl15xgjcfgy0j"))))))
+
 (define-public rust-crypto-secretbox-0.1
   (package
     (name "rust-crypto-secretbox")

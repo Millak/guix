@@ -37,6 +37,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io))
 
 (define-public rust-anstyle-wincon-3
