@@ -58,7 +58,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 chris <chris@bumblehead.com>
-;;; Copyright © 2023 Luis Felipe López Acevedo <sirgazil@zoho.com>
+;;; Copyright © 2023, 2024 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3520,4 +3520,32 @@ that it can be a reference implementation.")
 for display purposes.  It features four weights (light, medium, bold,
 and black), a stylistic alternative, small caps, and many alternate
 glyphs.")
+      (license license:silofl1.1))))
+
+(define-public font-oswald
+  (let ((version "0")
+        (commit "6e65651c229e897dc55fb8d17097ee7f75b2769b")
+        (revision "0"))
+    (package
+      (name "font-oswald")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/OswaldFont")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0m5c98crw6df6hbhxv4smh6ldzk5fx434fyri8xgnsjjcrkqxy0h"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/OswaldFont")
+      (synopsis "Gothic typeface")
+      (description "Oswald is a reworking of the classic gothic typeface
+style historically represented by designs such as 'Alternate Gothic'.
+The characters of Oswald have been re-drawn and reformed to better fit
+the pixel grid of standard digital screens.  Oswald is designed to be
+used freely across the internet by web browsers on desktop computers,
+laptops and mobile devices.")
       (license license:silofl1.1))))
