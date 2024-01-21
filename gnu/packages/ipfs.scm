@@ -223,7 +223,7 @@ written in Go.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.16.0")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -231,7 +231,7 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0v8p4mjwsrqxzd6wdzafxnnfrv919x5p3r5342lbrjdv0k0yabhm"))
+        (base32 "0fx5a974hyg29xvwwsmh3zz3nk3391ifyk3l0wl36xskfdqdwg5a"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -316,6 +316,7 @@ written in Go.")
                   go-github-com-google-uuid
                   go-github-com-golang-groupcache-lru
                   go-github-com-golang-snappy
+                  go-github-com-gorilla-mux
                   go-github-com-gorilla-websocket
                   go-github-com-jackpal-go-nat-pmp
                   go-github-com-klauspost-compress
