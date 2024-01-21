@@ -32,6 +32,7 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-gtk)
   #:use-module (gnu packages crates-tls)

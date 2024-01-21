@@ -2876,3 +2876,249 @@ Digital Signature Algorithm} (ECDSA).")
         ("rust-untrusted" ,rust-untrusted-0.6)
         ;; build dependencies
         ("rust-cc" ,rust-cc-1))))))
+
+(define-public rust-sha-1-0.10
+  (package
+    (name "rust-sha-1")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha-1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1700fs5aiiailpd5h0ax4sgs2ngys0mqf3p4j0ry6j2p2zd8l1gm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-sha1-asm" ,rust-sha1-asm-0.5))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "SHA-1 hash function")
+    (description "This crate provides a SHA-1 hash function.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-sha-1-0.9
+  (package
+    (inherit rust-sha-1-0.10)
+    (name "rust-sha-1")
+    (version "0.9.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha-1" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "19jibp8l9k5v4dnhj5kfhaczdfd997h22qz0hin6pw9wvc9ngkcr"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-block-buffer" ,rust-block-buffer-0.9)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-digest" ,rust-digest-0.9)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3)
+        ("rust-sha1-asm" ,rust-sha1-asm-0.5))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.9)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
+
+(define-public rust-sha-1-0.8
+  (package
+    (inherit rust-sha-1-0.9)
+    (name "rust-sha-1")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha-1" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1pv387q0r7llk2cqzyq0nivzvkgqgzsiygqzlv7b68z9xl5lvngp"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
+       (("rust-block-buffer" ,rust-block-buffer-0.7)
+        ("rust-digest" ,rust-digest-0.8)
+        ("rust-fake-simd" ,rust-fake-simd-0.1)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-sha1-asm" ,rust-sha1-asm-0.4))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.8)
+        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
+
+(define-public rust-sha1-0.10
+  (package
+    (name "rust-sha1")
+    (version "0.10.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fnnxlfg08xhkmwf2ahv634as30l1i3xhlhkvxflmasi5nd85gz3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-sha1-asm" ,rust-sha1-asm-0.5))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/mitsuhiko/rust-sha1")
+    (synopsis "Minimal implementation of SHA1 for Rust")
+    (description
+     "This package provides a minimal implementation of SHA1 for Rust.")
+    (license license:bsd-3)))
+
+(define-public rust-sha1-0.6
+  (package
+    (inherit rust-sha1-0.10)
+    (name "rust-sha1")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "03gs2q4m67rn2p8xcdfxhip6mpgahdwm12bnb3vh90ahv9grhy95"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-openssl" ,rust-openssl-0.10)
+        ("rust-rand" ,rust-rand-0.4)
+        ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-sha1-0.2
+  (package
+    (inherit rust-sha1-0.6)
+    (name "rust-sha1")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0p09zfhd27z6yr5in07gfjcx345010rw51ivlcf14364x3hv2c6c"))))
+    (arguments
+     `(#:tests? #f  ; Tests require openssl-1.0
+       #:cargo-development-inputs
+       (("rust-openssl" ,rust-openssl-0.7)
+        ("rust-rand" ,rust-rand-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-cargo-toml
+           (lambda _
+             (substitute* "Cargo.toml"
+               ((", path =.*}") "}"))
+             #t)))))))
+
+(define-public rust-sha1-asm-0.5
+  (package
+    (name "rust-sha1-asm")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1-asm" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1b7ab7f4n87pqdmbl1a5jrc2axf27pvbndsz9qiwwgxw01qlygan"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/RustCrypto/asm-hashes")
+    (synopsis "Assembly implementation of SHA-1 compression function")
+    (description
+     "Assembly implementation of SHA-1 compression function.")
+    (license license:expat)))
+
+(define-public rust-sha1-asm-0.4
+  (package
+    (inherit rust-sha1-asm-0.5)
+    (name "rust-sha1-asm")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1-asm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z5vdimd7l0vmr2p7kjibi0rghf5frb1ld0gzdkxrxfmkllf5nmr"))))))
+
+(define-public rust-sha1-smol-1
+  (package
+    (name "rust-sha1-smol")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sha1_smol" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04nhbhvsk5ms1zbshs80iq5r1vjszp2xnm9f0ivj38q3dhc4f6mf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/mitsuhiko/sha1-smol")
+    (synopsis "Dependency free SHA1 implementation")
+    (description
+     "This package provides a minimal dependency free implementation of
+SHA1 for Rust.")
+    (license license:bsd-3)))
+
+(define-public rust-sha1collisiondetection-0.2
+  (package
+    (name "rust-sha1collisiondetection")
+    (version "0.2.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "sha1collisiondetection" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "10nh7s3d02136kkz93pxyfv628ls5xz8ndg27pkb6na0ghccz9np"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-digest" ,rust-digest-0.9)
+         ("rust-generic-array" ,rust-generic-array-0.14)
+         ("rust-libc" ,rust-libc-0.2)
+         ("rust-sha-1" ,rust-sha-1-0.9)
+         ("rust-structopt" ,rust-structopt-0.3))))
+    (home-page "https://docs.rs/sha1collisiondetection")
+    (synopsis "SHA-1 hash function with collision detection and mitigation")
+    (description
+      "This package implementation of the SHA-1 cryptographic hash algorithm.
+
+This is a port of Marc Stevens' sha1collisiondetection algorithm to Rust.  The
+code is translated from C to Rust using c2rust.")
+    (license license:expat)))
