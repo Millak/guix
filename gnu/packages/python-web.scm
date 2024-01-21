@@ -2760,6 +2760,57 @@ found in Python's standard library, and is more suitable to
 configuration-intensive applications.")
     (license license:zpl2.1)))
 
+(define-public python-zodb
+  (package
+    (name "python-zodb")
+    (version "5.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ZODB" version))
+       (sha256
+        (base32 "1pv4w8mnx6j4xvkcjbkh99pv8ljby7g9f7zjq7zhdmk06sykmiy6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (begin
+                            ;; This test does not work after installing the
+                            ;; package, since it expects the ZODB source code
+                            ;; to reside in the src/ directory.
+                            (delete-file-recursively
+                             "src/ZODB/tests/testdocumentation.py")
+                            (invoke "zope-testrunner" "-vv" "--test-path=src"
+                                    "--all"))
+                          (format #t "test suite not run~%")))))))
+    (propagated-inputs (list python-btrees
+                             python-persistent
+                             python-zconfig
+                             python-six
+                             python-transaction
+                             python-zc-lockfile
+                             python-zodbpickle
+                             python-zope-interface))
+    (native-inputs (list python-manuel python-zope-testing
+                         python-zope-testrunner))
+    (home-page "http://zodb-docs.readthedocs.io")
+    (synopsis "Object-oriented database for Python")
+    (description
+     "@code{ZODB} provides an object-oriented and @acronym{ACID,
+Atomicity Consistency Isolation Durability} compliant database for Python with
+a high degree of transparency.  @code{ZODB} is an object-oriented database,
+not an object-relational mapping.  This comes with several advantaged:
+
+@itemize
+@item no separate language for database operations
+@item very little impact on your code to make objects persistent
+@item no database mapper that partially hides the database.
+@item almost no seam between code and database.
+@end itemize")
+    (license license:zpl2.1)))
+
 (define-public python-zodbpickle
   (package
     (name "python-zodbpickle")
