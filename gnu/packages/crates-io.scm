@@ -76250,29 +76250,6 @@ makes them accessible for those who wants full control over the network.")
         ("rust-url" ,rust-url-2)
         ("rust-utf-8" ,rust-utf-8-0.7))))))
 
-(define-public rust-twofish-0.7
-  (package
-    (name "rust-twofish")
-    (version "0.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "twofish" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "04w0ii2c0c9ws08aw6c7illh9zql22il9lbwjk1mgir30aiq73m7"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cipher" ,rust-cipher-0.4))
-       #:cargo-development-inputs
-       (("rust-cipher" ,rust-cipher-0.4)
-        ("rust-hex-literal" ,rust-hex-literal-0.3))))
-    (home-page "https://github.com/RustCrypto/block-ciphers")
-    (synopsis "Twofish block cipher")
-    (description "Twofish block cipher")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-twoway-0.2
   (package
     (name "rust-twoway")
