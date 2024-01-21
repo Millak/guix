@@ -50467,32 +50467,6 @@ replacements, adding colorful diffs.")
 formatted tables in terminal.")
     (license license:bsd-3)))
 
-(define-public rust-primeorder-0.13
-  (package
-    (name "rust-primeorder")
-    (version "0.13.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "primeorder" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1ddz0d0fzzcpdlsj6c6989va8ykf702g3zmf7dszfa0y6rski3fg"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
-        ("rust-serdect" ,rust-serdect-0.2))))
-    (home-page
-     "https://github.com/RustCrypto/elliptic-curves/tree/master/primeorder")
-    (synopsis
-     "Rust implementation of addition formulas for prime order elliptic curves")
-    (description
-     "This package contains a pure Rust implementation of complete addition
-formulas for prime order elliptic curves (Renes-Costello-Batina 2015).  It
-provides a generic over field elements and curve equation coefficients.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-print-bytes-1
   (package
     (name "rust-print-bytes")
