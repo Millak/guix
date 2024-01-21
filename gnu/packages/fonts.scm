@@ -3113,14 +3113,11 @@ modified to cover most CJK unified ideograph characters.")
              ;; This directory, TrueType（サポート外）, is not properly encoded,
              ;; which makes rename-file fail. Instead, use shell globbing to
              ;; select and rename the directory.
-             (invoke "sh" "-c" "mv TrueType* TrueType")
-             #t))
+             (invoke "sh" "-c" "mv TrueType* TrueType")))
          (add-before 'install-license-files 'enter-license-directory
            (lambda _
              (chdir "IPAexfont00201"))))))
-    (native-inputs
-     `(("bash" ,bash-minimal)
-       ("coreutils" ,coreutils)))
+    (native-inputs (list bash-minimal coreutils))
     (home-page "http://www.fontna.com/blog/1122/")
     (synopsis "Mix font of gothic kanji and minchou kana")
     (description "Antique is a font that is popular to write manga bubbles,
