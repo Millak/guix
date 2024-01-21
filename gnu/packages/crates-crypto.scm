@@ -790,6 +790,29 @@ based on Blake2s.")
 ciphers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-blowfish-0.9
+  (package
+    (name "rust-blowfish")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "blowfish" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1mw7bvj3bg5w8vh9xw9xawqh7ixk2xwsxkj34ph96b9b1z6y44p4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-cipher" ,rust-cipher-0.4))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "Blowfish block cipher")
+    (description "Blowfish block cipher")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-botan-0.10
   (package
     (name "rust-botan")
