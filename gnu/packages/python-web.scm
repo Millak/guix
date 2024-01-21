@@ -2760,6 +2760,34 @@ found in Python's standard library, and is more suitable to
 configuration-intensive applications.")
     (license license:zpl2.1)))
 
+(define-public python-zodbpickle
+  (package
+    (name "python-zodbpickle")
+    (version "3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zodbpickle" version))
+       (sha256
+        (base32 "035bjrksl4h92mvjkx6id4gjcpc1k4mbci8ryjl6l9mki7ihx77b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "zope-testrunner" "-vv" "--test-path=src"
+                                  "--all")
+                          (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testrunner))
+    (home-page "https://github.com/zopefoundation/zodbpickle")
+    (synopsis "Uniform pickling interface for @code{zodb}")
+    (description
+     "This package is a fork of the @code{pickle} module (and the
+supporting C extension) from both Python 3.2 and Python 3.3.  The fork adds
+support for the @code{noload} operations used by @code{zodb}.")
+    (license (list license:psfl license:zpl2.1))))
+
 (define-public python-zope-event
   (package
     (name "python-zope-event")
