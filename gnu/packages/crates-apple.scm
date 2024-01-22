@@ -342,17 +342,17 @@ extension of blocks.")
 (define-public rust-cocoa-foundation-0.1
   (package
     (name "rust-cocoa-foundation")
-    (version "0.1.0")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cocoa-foundation" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0633ipbd28z35rsdmsl505f1aasrjsrrnirs826aa32nbnv4kpks"))))
+        (base32 "1xwk1khdyqw3dwsl15vr8p86shdcn544fr60ass8biz4nb5k8qlc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-block" ,rust-block-0.1)
