@@ -13921,27 +13921,6 @@ Supports Linux through either JACK or ALSA.")
      "This package provides a crate for demangling C++ symbols.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cpp-demangle-0.3
-  (package
-    (inherit rust-cpp-demangle-0.4)
-    (name "rust-cpp-demangle")
-    (version "0.3.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cpp_demangle" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zwvaqfawsfbnzmlhk9d8zngs4v3p5k9r9m2pxq8sygy7zpvgqg5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-afl" ,rust-afl-0.12)
-        ("rust-cfg-if" ,rust-cfg-if-1))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-4)
-        ("rust-diff" ,rust-diff-0.1))))))
-
 (define-public rust-cpufeatures-0.2
   (package
     (name "rust-cpufeatures")
