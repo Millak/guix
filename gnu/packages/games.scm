@@ -37,7 +37,7 @@
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2019, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
@@ -6293,11 +6293,11 @@ NVIDIA Shield.")
 
 (define-public moonlight-common
   ;; Used as submodule in https://github.com/moonlight-stream/moonlight
-  (let ((commit "8c55c086d596607041e4394fb62a1bc800b7f37c")
+  (let ((commit "5de4a5b85a28d8d639482a1a105c3a06eb67a2fd")
         (revision "1"))
     (package
       (name "moonlight-common")
-      (version (git-version "3.1.4" revision commit))
+      (version (git-version "5.0.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -6307,7 +6307,7 @@ NVIDIA Shield.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0pqm0a2p2sqvazv5gak6gl7d405kaaq6r13l7yhycm0myayqavrp"))))
+                  "05jm0vhyb6pizd8yj89rp6ak7bf5j9w06rrmbxh8jccxwqjgll92"))))
       (build-system cmake-build-system)
       (arguments
        (list #:tests? #f
