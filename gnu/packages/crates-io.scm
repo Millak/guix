@@ -60062,27 +60062,6 @@ diff output.")
 small to medium sized project")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-simplelog-0.11
-  (package
-    (inherit rust-simplelog-0.12)
-    (name "rust-simplelog")
-    (version "0.11.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "simplelog" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "11h8q8lykc829f4bd5llw35p4qi9g6mp0mk1p281fq8qi48w1azc"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-paris" ,rust-paris-1)
-        ("rust-termcolor" ,rust-termcolor-1))))))
-
 (define-public rust-simple-logger-4
   (package
     (name "rust-simple-logger")
