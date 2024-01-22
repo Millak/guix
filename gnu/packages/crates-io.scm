@@ -42694,27 +42694,6 @@ under its new name.")
            `(("rust-nix" ,rust-nix-0.15)
              ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-os-pipe-0.5
-  (package
-    (inherit rust-os-pipe-0.8)
-    (name "rust-os-pipe")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "os_pipe" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1ccwc7caq3hhgxyrglkl2fw8qzkx0kxanh9azs852w9f0jrzp2wr"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
-        ("rust-nix" ,rust-nix-0.8)
-        ("rust-winapi" ,rust-winapi-0.2))))))
-
 (define-public rust-os-release-0.1
   (package
     (name "rust-os-release")
