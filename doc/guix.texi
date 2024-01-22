@@ -14021,6 +14021,9 @@ the certificates of X.509 authorities from the directory pointed to by
 the @env{SSL_CERT_DIR} environment variable (@pxref{X.509
 Certificates}), unless @option{--no-check-certificate} is used.
 
+Alternatively, @command{guix download} can also retrieve a Git
+repository, possibly a specific commit, tag, or branch.
+
 The following options are available:
 
 @table @code
@@ -14045,6 +14048,26 @@ URL, which makes you vulnerable to ``man-in-the-middle'' attacks.
 @itemx -o @var{file}
 Save the downloaded file to @var{file} instead of adding it to the
 store.
+
+@item --git
+@itemx -g
+Checkout the Git repository at the latest commit on the default branch.
+
+@item --commit=@var{commit-or-tag}
+Checkout the Git repository at @var{commit-or-tag}.
+
+@var{commit-or-tag} can be either a tag or a commit defined in the Git
+repository.
+
+@item --branch=@var{branch}
+Checkout the Git repository at @var{branch}.
+
+The repository will be checked out at the latest commit of @var{branch},
+which must be a valid branch of the Git repository.
+
+@item --recursive
+@itemx -r
+Recursively clone the Git repository.
 @end table
 
 @node Invoking guix hash
