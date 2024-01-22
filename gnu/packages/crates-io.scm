@@ -64068,25 +64068,6 @@ values without proliferating generics.")
      "This package provides a no-std, object-safe serialization framework.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-sval-1
-  (package
-    (inherit rust-sval-2)
-    (name "rust-sval")
-    (version "1.0.0-alpha.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sval" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "025sy290xnn56nl15qkrkq0whxcwlvb4bzp996azbjl7gdyfxxj5"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-sval-derive" ,rust-sval-derive-1))))))
-
 (define-public rust-sval-buffer-2
   (package
     (name "rust-sval-buffer")
