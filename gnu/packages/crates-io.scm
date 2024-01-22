@@ -28296,14 +28296,14 @@ consistent, and reasonably well performing.")
 (define-public rust-hermit-abi-0.3
   (package
     (name "rust-hermit-abi")
-    (version "0.3.1")
+    (version "0.3.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hermit-abi" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "11j2v3q58kmi5mhjvh6hfrb7il2yzg7gmdf5lpwnwwv6qj04im7y"))))
+                "07v5vbwb9kx0yxgdpx15h38ynpzhaqx5ncriryipypi5707hwgax"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
