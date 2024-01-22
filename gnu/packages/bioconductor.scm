@@ -1735,13 +1735,13 @@ biscuiteer.")
 (define-public r-breakpointrdata
   (package
     (name "r-breakpointrdata")
-    (version "1.16.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "breakpointRdata" version 'experiment))
               (sha256
                (base32
-                "0f23i4ynb4vgn22c3d2l64z92rzv3qnwd4j8qyvalklrxkwilhfn"))))
+                "13w9vp436akpnywhsr6kz763c2yakrvpyiplggfb6w50wi2xm5xj"))))
     (properties `((upstream-name . "breakpointRdata")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
