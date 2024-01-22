@@ -76594,26 +76594,6 @@ languages.")
 extended attributes.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-xattr-0.2
-  (package
-    (inherit rust-xattr-1)
-    (name "rust-xattr")
-    (version "0.2.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "xattr" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0k556fb6f5jc907975j9c8iynl2fqz3rf0w6fiig83i4yi0kfk14"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-xcb-1
   (package
     (name "rust-xcb")
