@@ -465,14 +465,14 @@ CommonCrypto library.")
 (define-public rust-core-foundation-0.9
   (package
     (name "rust-core-foundation")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-foundation" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ii1ihpjb30fk38gdikm5wqlkmyr8k46fh4k2r8sagz5dng7ljhr"))))
+        (base32 "13zvbbj07yk3b61b8fhwfzhy35535a583irf23vlcg59j7h9bqci"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f             ;tests fail with a lot of "undefined reference"
