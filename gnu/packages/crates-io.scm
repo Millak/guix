@@ -48641,27 +48641,6 @@ macro use case.")
      "This package provides fetching active mounts and swaps on a Linux system.")
     (license license:expat)))
 
-(define-public rust-procedural-masquerade-0.1
-  (package
-    (name "rust-procedural-masquerade")
-    (version "0.1.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "procedural-masquerade" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "17dnfdk0qadh2h38bkwcy14cq8a1ild3j3hqmh1yjbq9ykgq64wg"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/servo/rust-cssparser")
-    (synopsis "Macro rules for proc-macro-derive")
-    (description
-     "This package provides @code{macro_rules} for making
-@code{proc_macro_derive} pretend to be @code{proc_macro}.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-prodash-26
   (package
     (name "rust-prodash")
