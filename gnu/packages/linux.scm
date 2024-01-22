@@ -79,6 +79,7 @@
 ;;; Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4399,22 +4400,33 @@ time.")
     (version "1.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "evdev" version))
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/gvalkov/python-evdev")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rig85aq6k7y75m3bm7gjpd2gljspwwf8wb0vpkpcif8yxsb2csv"))))
-    (build-system python-build-system)
+        (base32 "1cbakix48zxivbznzb02w7sbxmqfaiaahhvjnjz4yif4vyrdyjli"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ;no rule for tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-hard-coded-directory
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               (("/usr/include/linux")
-                (string-append
-                 (assoc-ref inputs "kernel-headers") "/include/linux")))
-             #t)))))
+     (list
+      #:test-flags
+      ;; Silent tests requiring access to /dev/uinput.
+      #~(list "-k" (string-append  "not test_open"
+                                   " and not test_open_context"
+                                   " and not test_enable_events"
+                                   " and not test_abs_values"
+                                   " and not test_write"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-hard-coded-directory
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "setup.py"
+                (("/usr/include/linux")
+                 (string-append
+                  (assoc-ref inputs "kernel-headers") "/include/linux"))))))))
+    (native-inputs
+     (list python-pytest))
     (home-page "https://github.com/gvalkov/python-evdev")
     (synopsis "Bindings to the Linux input handling subsystem")
     (description
