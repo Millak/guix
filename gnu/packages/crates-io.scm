@@ -21601,27 +21601,6 @@ supported in purely NFA-based implementations.")
 is defined in the HTML specification.")
     (license license:mpl2.0)))
 
-(define-public rust-fast-float-0.2
-  (package
-    (name "rust-fast-float")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "fast-float" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0g7kfll3xyh99kc7r352lhljnwvgayxxa6saifb6725inikmyxlm"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/aldanor/fast-float-rust")
-    (synopsis "Fast floating-point number parser")
-    (description
-     "This crate provides a fast decimal number parser from strings into
-floats.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-faster-hex-0.9
   (package
     (name "rust-faster-hex")
