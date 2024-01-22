@@ -58548,8 +58548,30 @@ shareable by multiple crates in a build graph and erased by @code{cargo
 clean}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-scroll-0.12
+  (package
+    (name "rust-scroll")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scroll" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19mix9vm4k23jkknpgbi0ylmhpf2hnlpzzrfj9wqcj88lj55kf3a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-scroll-derive" ,rust-scroll-derive-0.12))))
+    (home-page "https://github.com/m4b/scroll")
+    (synopsis "Endian-aware Read/Write traits for byte buffers")
+    (description
+     "This package provides a suite of powerful, extensible, generic,
+endian-aware Read/Write traits for byte buffers.")
+    (license license:expat)))
+
 (define-public rust-scroll-0.11
   (package
+    (inherit rust-scroll-0.12)
     (name "rust-scroll")
     (version "0.11.0")
     (source (origin
@@ -58559,19 +58581,12 @@ clean}.")
               (sha256
                (base32
                 "1nhrhpzf95pxbcjjy222blwf8rl3adws6vsqax0yzyxsa6snbi84"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-scroll-derive" ,rust-scroll-derive-0.11))
        #:cargo-development-inputs
        (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-rayon" ,rust-rayon-1))))
-    (home-page "https://github.com/m4b/scroll")
-    (synopsis "Endian-aware Read/Write traits for byte buffers")
-    (description
-     "This package provides a suite of powerful, extensible, generic,
-endian-aware Read/Write traits for byte buffers.")
-    (license license:expat)))
+        ("rust-rayon" ,rust-rayon-1))))))
 
 (define-public rust-scroll-0.10
   (package
