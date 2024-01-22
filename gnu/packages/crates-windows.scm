@@ -456,20 +456,20 @@ IOCP and Async I/O abstractions.")
   (package
     (inherit rust-miow-0.4)
     (name "rust-miow")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "miow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15sqdhh29dqgw5xh59clwv6scbsbvdkbmdc16hbfvyq7b2sw2css"))))
+        (base32 "08afp2xfpxmdw003111lxz6g9jgbj4zi2fpldvv7da6d4nqcbwdr"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-socket2" ,rust-socket2-0.3)
-        ("rust-winapi" ,rust-winapi-0.3))
+       (("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.4))))))
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-socket2" ,rust-socket2-0.4))))))
 
 (define-public rust-miow-0.2
   (package
