@@ -45582,7 +45582,15 @@ Format (MCF).")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1rr4kd52ld978a2xhcvlc54p1d92yhxl9kvbajba7ia6rs5b5q3p"))))
+                "1rr4kd52ld978a2xhcvlc54p1d92yhxl9kvbajba7ia6rs5b5q3p"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "Cargo.toml"
+                    (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                     " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                      _ version _)
+                     (string-append ">=" version)))))))
     (arguments
      (list #:cargo-inputs `(("rust-base64ct" ,rust-base64ct-1)
                             ("rust-subtle" ,rust-subtle-2)
