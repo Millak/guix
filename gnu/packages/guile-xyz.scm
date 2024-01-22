@@ -5997,7 +5997,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
@@ -6006,7 +6006,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1ic4f65kbziszi5cz1b7ypl6acph6kdq5pc3wasa1jns3gkzfl6l"))))
+         "1w1xf60i6an4fs2kr0cv7w01h2fhz1i23zp9w7nbmr32zqm8m59z"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -6015,7 +6015,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
      (list pkg-config texinfo))
     (inputs (list guile-3.0))
     (propagated-inputs
-     (list guile-fibers guile-gcrypt))
+     (list guile-fibers guile-gcrypt guile-gnutls))
     (home-page "https://spritely.institute/goblins")
     (synopsis "Distributed programming environment for Guile")
     (description
