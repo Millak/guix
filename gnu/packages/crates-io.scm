@@ -76399,30 +76399,6 @@ combinators library.")
                        ("rust-memchr" ,rust-memchr-2)
                        ("rust-terminal-size" ,rust-terminal-size-0.2))))))
 
-(define-public rust-write-json-0.1
-  (package
-    (name "rust-write-json")
-    (version "0.1.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "write-json" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1qxr1xwwyf7rd270rvjlcssm515pikf0sg70wpiymz4miy29l1h6"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page
-      "https://github.com/matklad/write-json")
-    (synopsis
-      "Simple {dependency,trait,macro}-less JSON serialization")
-    (description
-      "This package provides a simple {dependency,trait,macro}-less JSON
-serialization.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-wycheproof-0.5
   (package
     (name "rust-wycheproof")
