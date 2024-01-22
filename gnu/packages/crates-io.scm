@@ -36281,31 +36281,6 @@ proofs.  It automates the Fiat-Shamir transform, so that by using Merlin,
 non-interactive protocols can be implemented as if they were interactive.")
     (license license:expat)))
 
-(define-public rust-metadeps-1
-  (package
-    (name "rust-metadeps")
-    (version "1.1.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "metadeps" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1hjla9ypycqw1snd2qf87cckcc0d5z5qvxpcijn5yrrs3f825cbk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-error-chain" ,rust-error-chain-0.10)
-        ("rust-toml" ,rust-toml-0.2)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (home-page "https://github.com/joshtriplett/metadeps")
-    (synopsis "Run pkg-config from declarative dependencies in Cargo.toml")
-    (description "Run pkg-config from declarative dependencies in Cargo.toml.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-thousands-0.2
   (package
     (name "rust-thousands")
