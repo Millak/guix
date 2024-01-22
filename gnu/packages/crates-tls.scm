@@ -41,6 +41,221 @@
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls))
 
+(define-public rust-asn1-0.15
+  (package
+    (name "rust-asn1")
+    (version "0.15.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nzg1gjiyfvpvrf3i7i8j21165snf5livqg6x2sjf9m2i77cngmf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-asn1-derive" ,rust-asn1-derive-0.15))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/alex/rust-asn1")
+    (synopsis "ASN.1 (DER) parser and writer")
+    (description
+     "This is a Rust library for parsing and generating ASN.1 data (DER only).")
+    (license license:bsd-3)))
+
+(define-public rust-asn1-0.13
+  (package
+    (inherit rust-asn1-0.15)
+    (name "rust-asn1")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1idxxw14h3dvrj72k4g0hx1aqigd986a00cg0yxfw2gfc9gbmzra"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-asn1-derive" ,rust-asn1-derive-0.13)
+        ("rust-chrono" ,rust-chrono-0.4))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2))))))
+
+(define-public rust-asn1-derive-0.15
+  (package
+    (name "rust-asn1-derive")
+    (version "0.15.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1771kfjycjs4g2acqvxpjy3igfcgg8hychczl1lsqq64za4gj6l6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/alex/rust-asn1")
+    (synopsis "#[derive] support for asn1")
+    (description
+     "This package provides #[derive] support for @code{asn1}.")
+    (license license:bsd-3)))
+
+(define-public rust-asn1-derive-0.13
+  (package
+    (inherit rust-asn1-derive-0.15)
+    (name "rust-asn1-derive")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bvqriazb23gysygpzng1dhzjgnlv274q2yj5gpmlpl7jp0pkaxz"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-asn1-rs-0.5
+  (package
+    (name "rust-asn1-rs")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1w7zq0392qs7kkv0nzw50bfqvq7q9zxv48fsp3sxyl83mzfxavvz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-asn1-rs-derive" ,rust-asn1-rs-derive-0.4)
+        ("rust-asn1-rs-impl" ,rust-asn1-rs-impl-0.1)
+        ("rust-bitvec" ,rust-bitvec-1)
+        ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+        ("rust-displaydoc" ,rust-displaydoc-0.2)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs
+       (("rust-colored" ,rust-colored-2)
+        ("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-oid-registry" ,rust-oid-registry-0.6)
+        ("rust-pem" ,rust-pem-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Parser/encoder for ASN.1 BER/DER data")
+    (description "Parser/encoder for ASN.1 BER/DER data")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-asn1-rs-0.3
+  (package
+    (inherit rust-asn1-rs-0.5)
+    (name "rust-asn1-rs")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0czsk1nd4dx2k83f7jzkn8klx05wbmblkx1jh51i4c170akhbzrh"))))
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs-derive" ,rust-asn1-rs-derive-0.1)
+                       ("rust-asn1-rs-impl" ,rust-asn1-rs-impl-0.1)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-colored" ,rust-colored-2)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-oid-registry" ,rust-oid-registry-0.3)
+                                   ("rust-pem" ,rust-pem-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))))
+
+(define-public rust-asn1-rs-derive-0.4
+  (package
+    (name "rust-asn1-rs-derive")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1-rs-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0v7fgmnzk7jjxv51grhwzcx5bf167nlqwk3vcmq7xblf5s4karbj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-synstructure" ,rust-synstructure-0.12))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Derive macros for the `asn1-rs` crate")
+    (description
+     "This package provides derive macros for the @code{asn1-rs} crate.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-asn1-rs-derive-0.1
+  (package
+    (inherit rust-asn1-rs-derive-0.4)
+    (name "rust-asn1-rs-derive")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gzf9vab06lk0zjvbr07axx64fndkng2s28bnj27fnwd548pb2yv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-synstructure" ,rust-synstructure-0.12))))))
+
+(define-public rust-asn1-rs-impl-0.1
+  (package
+    (name "rust-asn1-rs-impl")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1-rs-impl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1va27bn7qxqp4wanzjlkagnynv6jnrhnwmcky2ahzb1r405p6xr7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/rusticata/asn1-rs")
+    (synopsis "Implementation details for the `asn1-rs` crate")
+    (description
+     "This package provides implementation details for the @code{asn1-rs} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-native-tls-0.3
   (package
     (name "rust-async-native-tls")
