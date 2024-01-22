@@ -8477,14 +8477,14 @@ be calculated to search in MS peak lists.")
 (define-public r-rhtslib
   (package
     (name "r-rhtslib")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhtslib" version))
        (sha256
         (base32
-         "1h0hzs4f4mmnpi436dgib9lakljacznkyyssy7c4mdd419431aq2"))))
+         "089b5amwxwac6wvdnndy9inc218919q9dz9x58i2cp7il18vjd0c"))))
     (properties `((upstream-name . "Rhtslib")))
     (build-system r-build-system)
     ;; Without this a temporary directory ends up in the Rhtslib.so binary,
