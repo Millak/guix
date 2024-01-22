@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
 ;;; Copyright © 2023, 2024 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2023 Daniel Ziltener <dziltener@lyrion.ch>
+;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34749,7 +34750,7 @@ server (LSP).")
 (define-public rust-lz4-1
   (package
     (name "rust-lz4")
-    (version "1.23.2")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
@@ -34757,13 +34758,15 @@ server (LSP).")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k3j1wsgn4c5ys4vma326r00g5rq5ggp7k385rmby08yk7b0xhma"))))
+        (base32 "1wad97k0asgvaj16ydd09gqs2yvgaanzcvqglrhffv7kdpc2v7ky"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-lz4-sys" ,rust-lz4-sys-1))))
+        ("rust-lz4-sys" ,rust-lz4-sys-1))
+       #:cargo-development-inputs
+       (("rust-docmatic" ,rust-docmatic-0.1)
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/10xGenomics/lz4-rs")
     (synopsis "Rust LZ4 bindings library")
     (description "This crate provides Rust LZ4 bindings.")
