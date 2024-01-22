@@ -35607,14 +35607,14 @@ explosion.")
   (package
     (inherit rust-loom-0.3)
     (name "rust-loom")
-    (version "0.2.13")
+    (version "0.2.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "loom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qwvwbpnxff5m6647v9rc9i6ak8ral4jy0br5xx1s9a5zcd3xddh"))))
+        (base32 "0x0071jgvhnmvngfmhzc7dkvvs6zsznpawqfrwmrc8156zzyyjch"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
