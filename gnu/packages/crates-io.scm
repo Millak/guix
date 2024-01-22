@@ -3301,6 +3301,28 @@ objects are the same.")
      "This package asserts that a value matches a pattern in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-assert2-macros-0.3
+  (package
+    (name "rust-assert2-macros")
+    (version "0.3.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "assert2-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dcjbac962smxr6pmnsd6mdglh6any36ifshqzqzi4ppwvrvsmbc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/de-vri-es/assert2-rs")
+    (synopsis "Procedural macros for assert2")
+    (description "This package provides procedural macros for assert2.")
+    (license license:bsd-2)))
+
 (define-public rust-associative-cache-1
   (package
     (name "rust-associative-cache")
