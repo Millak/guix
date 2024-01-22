@@ -1866,14 +1866,14 @@ GenomicRanges Bioconductor package.")
 (define-public r-flowsorted-blood-450k
   (package
     (name "r-flowsorted-blood-450k")
-    (version "1.36.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "FlowSorted.Blood.450k"
                                      version 'experiment))
               (sha256
                (base32
-                "1ha9qsp5g3g2yhnk574x6xhg95bb29ywvmg3ns1c50z69v6wbraq"))))
+                "08xli4a24kkyy5q1ka0vyrpk11yfkyp0gxbs0k8khycppsq9s9sn"))))
     (properties `((upstream-name . "FlowSorted.Blood.450k")))
     (build-system r-build-system)
     (propagated-inputs (list r-minfi))
