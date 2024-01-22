@@ -674,20 +674,18 @@ server functionality.")
   (package
     (inherit rust-uds-windows-1)
     (name "rust-uds-windows")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "uds_windows" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mdv9xyrf8z8zr2py5drbilkncgrkg61axq6h7hcvgggklv9f14z"))))
+        (base32 "1v7g9hl06s13xc4d2bn6khqn2cz6ha2f2d71j8l6mvlhypsjpch9"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
-        ("rust-tempdir" ,rust-tempdir-0.3)
-        ("rust-winapi" ,rust-winapi-0.2)
-        ("rust-ws2-32-sys" ,rust-ws2-32-sys-0.2))))))
+       (("rust-tempdir" ,rust-tempdir-0.3)
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-user32-sys-0.2
   (package
