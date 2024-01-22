@@ -32362,16 +32362,16 @@ macros on libc without stdlib.")
     (license (list license:asl2.0 license:expat))))
 
 ;; TODO: Unbundle libdeflate
-(define-public rust-libdeflate-sys-0.11
+(define-public rust-libdeflate-sys-1
   (package
     (name "rust-libdeflate-sys")
-    (version "0.11.0")
+    (version "1.19.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "libdeflate-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0xs2wdly73ar7r9qyrbwnkwjjz4wd92kv5h78cdxfrsbp2v88ryb"))))
+               (base32 "1hhwgzlpbw2nafylnjrhbyh7s6q9fb2cglf3xxcia30hhmzim4k7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
@@ -32382,6 +32382,20 @@ macros on libc without stdlib.")
 exposed as non-streaming buffer operations.  It contains bindings for raw
 deflate, zlib, and gzip data.")
     (license license:asl2.0)))
+
+(define-public rust-libdeflate-sys-0.11
+  (package
+    (inherit rust-libdeflate-sys-1)
+    (name "rust-libdeflate-sys")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflate-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0xs2wdly73ar7r9qyrbwnkwjjz4wd92kv5h78cdxfrsbp2v88ryb"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
 (define-public rust-libdeflate-sys-0.7
   (package
