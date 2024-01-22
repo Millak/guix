@@ -590,17 +590,16 @@ targets")
   (package
     (inherit rust-der-parser-8)
     (name "rust-der-parser")
-    (version "6.0.0")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "der-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gn465dncghmj52k8dlkl71wkmlz5zc6jfjgj9ra2knf22ryy1wq"))))
+        (base32 "1cik6kfx0bpp5gsw59h9b61widy09pqbggifn2r13d00ywhg3pac"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitvec" ,rust-bitvec-0.22)
         ("rust-cookie-factory" ,rust-cookie-factory-0.3)
         ("rust-der-oid-macro" ,rust-der-oid-macro-0.5)
@@ -610,7 +609,7 @@ targets")
         ("rust-rusticata-macros" ,rust-rusticata-macros-4))
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.3)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-test-case" ,rust-test-case-1))))))
 
 (define-public rust-native-tls-0.2
