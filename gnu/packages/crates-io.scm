@@ -76906,31 +76906,6 @@ file into an in-memory tree structure.")
      "This package provide a private implementation detail of xshell crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-xshell-0.1
-  (package
-    (name "rust-xshell")
-    (version "0.1.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "xshell" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1iilg7cjgz3342f3na500dp3c371jk198qh053kfy57b84dvn5gb"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-xshell-macros" ,rust-xshell-macros-0.1))))
-    (home-page "https://github.com/matklad/xshell")
-    (synopsis
-     "Utilities for quick shell scripting in Rust")
-    (description
-     "This package provide a utilities for quick shell scripting in Rust.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-xxhash-rust-0.8
   (package
     (name "rust-xxhash-rust")
