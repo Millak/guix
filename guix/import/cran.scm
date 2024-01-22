@@ -928,15 +928,25 @@ s-expression corresponding to that package, or #f on failure."
   (define upstream-name
     (package->upstream-name pkg))
 
+  (define type
+    (cond
+     ((bioconductor-data-package? pkg)
+      'annotation)
+     ((bioconductor-experiment-package? pkg)
+      'experiment)
+     ((bioconductor-package? pkg)
+      #true)
+     (else #false)))
+
   (define latest-version
-    (latest-bioconductor-package-version upstream-name))
+    (latest-bioconductor-package-version upstream-name type))
 
   (and latest-version
        ;; Bioconductor does not provide signatures.
        (upstream-source
         (package (package-name pkg))
         (version latest-version)
-        (urls (bioconductor-uri upstream-name latest-version))
+        (urls (bioconductor-uri upstream-name latest-version type))
         (inputs
          (let ((meta (fetch-description 'bioconductor upstream-name)))
            (cran-package-inputs meta 'bioconductor))))))
@@ -990,7 +1000,10 @@ s-expression corresponding to that package, or #f on failure."
   (upstream-updater
    (name 'bioconductor)
    (description "Updater for Bioconductor packages")
-   (pred bioconductor-package?)
+   (pred (lambda (pkg)
+           (or (bioconductor-package? pkg)
+               (bioconductor-data-package? pkg)
+               (bioconductor-experiment-package? pkg))))
    (import latest-bioconductor-release)))
 
 ;;; cran.scm ends here
