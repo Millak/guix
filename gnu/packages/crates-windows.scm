@@ -651,18 +651,19 @@ server functionality.")
 (define-public rust-uds-windows-1
   (package
     (name "rust-uds-windows")
-    (version "1.0.2")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "uds_windows" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "03ckj6vnzvm4r5xd17dxyyqqqcfgs3xqj53hcswykk6k4i1n0rff"))))
+                "1fb4y65pw0rsp0gyfyinjazlzxz1f6zv7j4zmb20l5pxwv1ypnl9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-tempfile" ,rust-tempfile-3)
+       (("rust-memoffset" ,rust-memoffset-0.9)
+        ("rust-tempfile" ,rust-tempfile-3)
         ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/haraldh/rust_uds_windows")
     (synopsis "Unix Domain Sockets for Windows")
