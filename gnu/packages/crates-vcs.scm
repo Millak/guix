@@ -3763,14 +3763,14 @@ feature toggles.")
 (define-public rust-gix-validate-0.8
   (package
     (name "rust-gix-validate")
-    (version "0.8.0")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-validate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1idq44xvqjf2pxw9kxxjvi5cwklzc4wallp0arhqcnx40cmsnp70"))))
+        (base32 "0m1qi0xp59sa3540zdhdshjhfj44nsdjiyd0vindkmbb95pw6z5c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
