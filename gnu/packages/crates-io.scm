@@ -16608,28 +16608,6 @@ hexadecimal, base32, and base64.")
      "Processing of data: URL according to WHATWG's Fetch Standard.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-data-url-0.1
-  (package
-    (inherit rust-data-url-0.2)
-    (name "rust-data-url")
-    (version "0.1.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "data-url" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "14z15yiyklp5dv0k0q6pd83irrn0y8hj9y3fj17akkrbf37byc1s"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-matches" ,rust-matches-0.1))
-       #:cargo-development-inputs
-       (("rust-rustc-test" ,rust-rustc-test-0.3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))))
-
 (define-public rust-datetime-0.5
   (package
     (name "rust-datetime")
