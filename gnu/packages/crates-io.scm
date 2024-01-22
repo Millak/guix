@@ -68367,9 +68367,6 @@ a C API.")
                (base32
                 "1z5yv6d9944md5zg6g0sbahv7xjga2k232x40x4l20kq8af1w7wj"))))
     (build-system cargo-build-system)
-    #;
-    (arguments
-     `(#:skip-build? #t))
     (home-page "https://github.com/la10736/temp_testdir")
     (synopsis "Use a temp directory")
     (description
