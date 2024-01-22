@@ -3363,7 +3363,7 @@ the Trust-DNS client to use rustls for TLS.")
   (package
     (inherit rust-trust-dns-rustls-0.20)
     (name "rust-trust-dns-rustls")
-    (version "0.19.5")
+    (version "0.19.7")
     (source
      (origin
        (method url-fetch)
@@ -3371,9 +3371,12 @@ the Trust-DNS client to use rustls for TLS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1hj4fx2x4ncj7v8pf6bbn7634zq76hjigm1s2h6b6yjzzmz4yprn"))))
+         "0d113r4j2821wzxl440bac1xk4c6s5qyx4va0srs6gjvbzhv143h"))))
     (arguments
-     `(#:tests? #false                  ;missing file
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=tests::test_tls_client_stream_ipv4")
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-log" ,rust-log-0.4)
