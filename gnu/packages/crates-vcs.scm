@@ -46,20 +46,19 @@
 (define-public rust-git-testament-0.2
   (package
     (name "rust-git-testament")
-    (version "0.2.4")
+    (version "0.2.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "git-testament" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1c9l10wpyz39vhb5cijvbym6gmpmw3y3nb35l2hg6w42h1ygaswq"))))
+                "13pwvfrfgm4s7f80gk4ygzrl0rlqlaks0fx6bcpycilfnv97h33i"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Not all files included.
+     `(#:tests? #f      ; cannot find value `None` in this scope
        #:cargo-inputs
-       (("rust-git-testament-derive" ,rust-git-testament-derive-0.1)
-        ("rust-no-std-compat" ,rust-no-std-compat-0.4))
+       (("rust-git-testament-derive" ,rust-git-testament-derive-0.2))
        #:cargo-development-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rand" ,rust-rand-0.8)
