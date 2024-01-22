@@ -10350,7 +10350,7 @@ recovery.")
 (define-public rust-chunked-transfer-1
   (package
     (name "rust-chunked-transfer")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
@@ -10358,9 +10358,10 @@ recovery.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0bkdlsrszfcscw3j6yhs7kj6jbp8id47jjk6h9k58px47na5gy7z"))))
+         "00a9h3csr1xwkqrzpz5kag4h92zdkrnxq4ppxidrhrx29syf6kbf"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
     (home-page "https://github.com/frewsxcv/rust-chunked-transfer")
     (synopsis "Encoder and decoder for HTTP chunked transfer coding")
     (description "This package provides an encoder and decoder for HTTP chunked
@@ -10378,7 +10379,8 @@ transfer coding.")
        (uri (crate-uri "chunked_transfer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11yghnd24w0i9p8g368c3pg7qh9nfz7kgri6pywja9pnmakj13a9"))))))
+        (base32 "11yghnd24w0i9p8g368c3pg7qh9nfz7kgri6pywja9pnmakj13a9"))))
+    (arguments `())))
 
 (define-public rust-ciborium-0.2
   (package
