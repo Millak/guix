@@ -9575,14 +9575,14 @@ optional dependency graph analysis.")
 (define-public rust-cargo-platform-0.1
   (package
     (name "rust-cargo-platform")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-platform" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dkdk4sf0brbd2zgqc6gmv4sh5aqbpv09hi9f5b6cxf98m34q0hj"))))
+        (base32 "0ga4qa3fx4bidnmix5gl8qclx2mma1a441swlpfsa645kpv8xvff"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
