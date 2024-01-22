@@ -210,16 +210,16 @@ extension of blocks.")
   (package
     (inherit rust-cocoa-0.25)
     (name "rust-cocoa")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cocoa" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cp8hsajmi7gini22bmlsf9dac7cap7x1k169vxhwlr3j8p90qvg"))))
+        (base32 "0flg2cwpqxyvsr1v3f54vi3d3qmbr1sn7gf3mr6nhb056xwxn9gl"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-block" ,rust-block-0.1)
