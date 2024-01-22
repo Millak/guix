@@ -1171,14 +1171,14 @@ is a pure Rust implementation of Git.")
 (define-public rust-gix-config-value-0.14
   (package
     (name "rust-gix-config-value")
-    (version "0.14.3")
+    (version "0.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-config-value" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03linqdbs6ci6ygj8qwmi0izz2ki55xypqyhi2g8y7ygyi3bxq2j"))))
+        (base32 "0n1rbwp35jwjwhx61r6vdgan22ladmxb73a6p386x91pzdxix2jv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
