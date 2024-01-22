@@ -1971,13 +1971,13 @@ downloaded from Encode.")
 (define-public r-hdcytodata
   (package
     (name "r-hdcytodata")
-    (version "1.18.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "HDCytoData" version 'experiment))
               (sha256
                (base32
-                "1fn8q6ds10z3ymdarkfyh88pcqnrry9yhzammp84vf86f0bl8mrc"))))
+                "1xqwkwxaaj5yylx9pzvka8pj9gxg1z4g23d2sralcvqzcz7q13zn"))))
     (properties `((upstream-name . "HDCytoData")))
     (build-system r-build-system)
     (arguments
