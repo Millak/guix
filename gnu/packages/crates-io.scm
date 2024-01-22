@@ -34821,7 +34821,7 @@ server (LSP).")
 (define-public rust-lz4-sys-1
   (package
     (name "rust-lz4-sys")
-    (version "1.9.2")
+    (version "1.9.4")
     (source
      (origin
        (method url-fetch)
@@ -34829,11 +34829,10 @@ server (LSP).")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bmc82bddx2lm0r9bn422cxbwlwq6qld6m6l78hjcclbbnlrm9yw"))))
+        (base32 "0059ik4xlvnss5qfh6l691psk4g3350ljxaykzv10yr0gqqppljp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/bozaro/lz4-rs")
