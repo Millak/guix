@@ -27,6 +27,7 @@
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1592,14 +1593,14 @@ rebase.")
   (package
     (inherit rust-cbindgen-0.26)
     (name "rust-cbindgen")
-    (version "0.24.3")
+    (version "0.24.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cbindgen" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))))
+                "13g1k2zljdp326b0cv1nhyh7jsacd364fh0cr2g828hiyfm2z4jb"))))))
 
 (define-public rust-cbindgen-0.23
   (package
