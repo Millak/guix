@@ -29398,6 +29398,41 @@ deordinalize, demodulize, foreign key, and pluralize/singularize are supported
 as both traits and pure functions acting on String types.")
     (license license:bsd-2)))
 
+(define-public rust-inline-c-0.1
+  (package
+    (name "rust-inline-c")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inline-c" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mcd7jcfwhkplgz1xb4iqrpc6m29v2k28w4q42yika9g23bd639l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-1)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-inline-c-macro" ,rust-inline-c-macro-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.3)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.11)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Hywan/inline-c-rs")
+    (synopsis "Write and execute C code inside Rust")
+    (description
+     "@code{inline-c} is a small crate that allows a user to write
+C (including C++) code inside Rust.  Both environments are strictly sandboxed.
+The C code is transformed into a string which is written to a temporary file.
+This file is then compiled into an object file, that is finally executed.
+
+The primary goal of @code{inline-c} is to ease the testing of a C API of a
+Rust program (generated with @code{cbindgen} for example).")
+    (license license:bsd-3)))
+
 (define-public rust-inline-c-macro-0.1
   (package
     (name "rust-inline-c-macro")
