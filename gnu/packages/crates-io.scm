@@ -25672,24 +25672,6 @@ Rust.")
         (base32
          "1gfpay78vijl9vrwl1k9v7fbvbhkhcmnrk4kfg9l6x24y4s9zpzz"))))))
 
-(define-public rust-generic-array-0.9
-  (package
-    (inherit rust-generic-array-0.14)
-    (name "rust-generic-array")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "generic-array" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "17avshwh41d1w9p75mw2k6pflmbaj9ra7svxplmhqmv76xlca9gg"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-typenum" ,rust-typenum-1))))))
-
 (define-public rust-generic-array-0.8
   (package
     (inherit rust-generic-array-0.12)
