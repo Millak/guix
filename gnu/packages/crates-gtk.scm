@@ -2766,18 +2766,17 @@ library.")
 (define-public rust-pango-0.18
   (package
     (name "rust-pango")
-    (version "0.18.0")
+    (version "0.18.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pango" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1l82j97pg7hyq2qnflg3lzyza307y8jvi5h02q3340qxhd5yba86"))))
+        (base32 "1r5ygq7036sv7w32kp8yxr6vgggd54iaavh3yckanmq4xg0px8kw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
-       #:cargo-inputs (("rust-gio" ,rust-gio-0.18)
+     `(#:cargo-inputs (("rust-gio" ,rust-gio-0.18)
                        ("rust-glib" ,rust-glib-0.18)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-once-cell" ,rust-once-cell-1)
