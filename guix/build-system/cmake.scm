@@ -116,6 +116,7 @@
                       (imported-modules %cmake-build-system-modules)
                       (modules '((guix build cmake-build-system)
                                  (guix build utils)))
+                      allowed-references
                       disallowed-references)
   "Build SOURCE using CMAKE, and with INPUTS. This assumes that SOURCE
 provides a 'CMakeLists.txt' file as its build system."
@@ -158,6 +159,7 @@ provides a 'CMakeLists.txt' file as its build system."
                       #:target #f
                       #:graft? #f
                       #:substitutable? substitutable?
+                      #:allowed-references allowed-references
                       #:disallowed-references disallowed-references
                       #:guile-for-build guile)))
 
@@ -193,6 +195,7 @@ provides a 'CMakeLists.txt' file as its build system."
                             (imported-modules %cmake-build-system-modules)
                             (modules '((guix build cmake-build-system)
                                        (guix build utils)))
+                            allowed-references
                             disallowed-references)
   "Cross-build NAME using CMAKE for TARGET, where TARGET is a GNU triplet and
 with INPUTS.  This assumes that SOURCE provides a 'CMakeLists.txt' file as its
@@ -250,6 +253,8 @@ build system."
                       #:target target
                       #:graft? #f
                       #:substitutable? substitutable?
+                      #:allowed-references allowed-references
+                      #:disallowed-references disallowed-references
                       #:guile-for-build guile)))
 
 (define cmake-build-system
