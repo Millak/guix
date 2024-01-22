@@ -370,7 +370,7 @@ reading and writing git repositories.")
 (define-public rust-git2-0.6
   (package
     (inherit rust-git2-0.11)
-    (name "rust-git2-6")
+    (name "rust-git2")
     (version "0.6.11")
     (source
      (origin
