@@ -1011,17 +1011,20 @@
 (define-public rust-gio-0.18
   (package
     (name "rust-gio")
-    (version "0.18.2")
+    (version "0.18.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1caryyr1sciqd25np4v4701nkb7h59gqzpwaiqjrp6g5x222y1ap"))))
+        (base32 "0wsc6mnx057s4ailacg99dwgna38dbqli5x7a6y9rdw75x9qzz6l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=settings::test::bool_set_get"
+         "--skip=settings::test::string_get")
        #:cargo-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
@@ -1038,7 +1041,7 @@
        (("rust-futures" ,rust-futures-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
-        ("rust-serial-test" ,rust-serial-test-1))))
+        ("rust-serial-test" ,rust-serial-test-2))))
     (native-inputs (list pkg-config))
     (inputs (list glib))
     (home-page "https://gtk-rs.org/")
