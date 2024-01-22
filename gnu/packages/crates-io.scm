@@ -9467,15 +9467,14 @@ metadata}.")
          (base32
           "1givpi2w7iwqqnl87x5yc15zcm5hs6yw490sb6abkfp1h39v9lg5"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-semver" ,rust-semver-0.9)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1))
        #:cargo-development-inputs
-       (;("rust-docopt" ,rust-docopt-0.8)
+       (("rust-docopt" ,rust-docopt-0.8)
         ("rust-clap" ,rust-clap-2))))))
 
 (define-public rust-cargo-lock-8
