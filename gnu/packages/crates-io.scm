@@ -481,46 +481,6 @@ syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
 Rust, using gimli.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-addr2line-0.17
-  (package
-    (inherit rust-addr2line-0.19)
-    (name "rust-addr2line")
-    (version "0.17.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "addr2line" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0sw16zqy6w0ar633z69m7lw6gb0k1y7xj3387a8wly43ij5div5r"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "Cargo.toml.orig"
-                    (("(cpp_demangle =.*)default-features = false,(.*)" _ first last)
-                     (string-append first last))
-                    ((".*auxiliary.*") ""))
-                  (copy-file "Cargo.toml.orig" "Cargo.toml")))))
-    (arguments
-     `(#:tests? #false  ; Not all files included.
-       #:cargo-inputs
-       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-cpp-demangle" ,rust-cpp-demangle-0.3)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-gimli" ,rust-gimli-0.26)
-        ("rust-object" ,rust-object-0.27)
-        ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
-        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-smallvec" ,rust-smallvec-1))
-       #:cargo-development-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-findshlibs" ,rust-findshlibs-0.10)
-        ("rust-memmap" ,rust-memmap-0.7)
-        ("rust-rustc-test" ,rust-rustc-test-0.3)
-        ("rust-typed-arena" ,rust-typed-arena-2))))))
-
 (define-public rust-addchain-0.2
   (package
     (name "rust-addchain")
