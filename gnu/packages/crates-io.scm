@@ -13621,19 +13621,6 @@ Supports Linux through either JACK or ALSA.")
 to the @code{is_x86_feature_detected!} macro.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cpufeatures-0.1
-  (package
-    (inherit rust-cpufeatures-0.2)
-    (name "rust-cpufeatures")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cpufeatures" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1j0i97325c2grndsfgnm3lqk0xbyvdl2dbgn8i5dd9yhnmycc07d"))))))
-
 (define-public rust-cpuid-bool-0.2
   (package
     (name "rust-cpuid-bool")
