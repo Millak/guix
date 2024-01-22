@@ -21071,28 +21071,6 @@ libraries generally do not give you a choice in terms of which standards/convent
 they follow.  Etcetera, on the other hand, gives you the choice.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ethereum-types-0.12
-  (package
-    (name "rust-ethereum-types")
-    (version "0.12.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ethereum-types" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1bxxacsmb9majw7vd4sndv4dhw3g9srhf7flwq39yy7yaxq6y4q5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t))
-    (home-page "https://github.com/paritytech/parity-common")
-    (synopsis "Rust crate exporting some Ethereum types")
-    (description "This crate exports Rust types for values in the Ethereum
-ecosystem.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-ethereum-types-serialize-0.2
   (package
     (name "rust-ethereum-types-serialize")
