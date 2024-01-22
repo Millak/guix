@@ -65855,32 +65855,6 @@ memory all at once.")
     (description "Get information on compilation target.")
     (license license:cc0)))
 
-(define-public rust-target-build-utils-0.3
-  (package
-    (name "rust-target-build-utils")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "target_build_utils" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0p7713x4bpbwi11l196z1mi8ym8qj1cdnab1mm2ffpm2wi516g81"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-phf" ,rust-phf-0.7)
-        ("rust-serde-json" ,rust-serde-json-0.9)
-        ("rust-phf-codegen" ,rust-phf-codegen-0.7))))
-    (home-page "https://github.com/nagisa/target_build_utils.rs")
-    (synopsis "Rust utility to handle TARGET environment variable")
-    (description
-     "Utility crate to handle the @code{TARGET} environment variable passed into
-@code{build.rs} scripts.")
-    (license (list license:isc license:asl2.0))))
-
 (define-public rust-target-lexicon-0.12
   (package
     (name "rust-target-lexicon")
