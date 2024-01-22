@@ -6233,7 +6233,7 @@ colors, pictures, and sounds.")
 (define-public moonlight-qt
   (package
     (name "moonlight-qt")
-    (version "3.1.4")
+    (version "5.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6242,32 +6242,27 @@ colors, pictures, and sounds.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02y2rbiiawhj1dvgxdaz8k9kpz6zkv20zsk17fbqj8259m3g5xr5"))))
+                "1g1y736vw36lmh2bjymsf4b4ypr76x9lqz7frzpj7sn0vb9y5315"))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f ;no test suite
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'configure
-                          (lambda* _
-                            (symlink (string-append #$(this-package-input
-                                                       "sdl2-gamecontrollerdb")
-                                                    "/share/sdl2/gamecontrollerdb.txt")
-                             "app/SDL_GameControllerDB/gamecontrollerdb.txt")
-                            ;; Unbundle libraries.
-                            (substitute* "moonlight-qt.pro"
-                              (("moonlight-common-c \\\\")
-                               "#moonlight-common-c \\")
-                              (("qmdnsengine \\\\")
-                               "#qmdnsengine \\")
-                              (("app \\\\")
-                               "app")
-                              (("app.depends")
-                               "INCLUDEPATH +=")
-                              (("h264bitstream \\\\")
-                               "#h264bitstream \\"))
-                            (invoke "qmake"
-                                    (string-append "PREFIX="
-                                                   #$output)))))))
+     (list
+      #:tests? #f ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* _
+              (symlink (string-append
+                        #$(this-package-input "sdl2-gamecontrollerdb")
+                        "/share/sdl2/gamecontrollerdb.txt")
+                       "app/SDL_GameControllerDB/gamecontrollerdb.txt")
+              ;; Unbundle libraries.
+              (substitute* "moonlight-qt.pro"
+                (("    moonlight-common-c.*\n") "")
+                (("    qmdnsengine.*\n") "")
+                (("    h264bitstream.*\n") "")
+                (("    app \\\\") "    app")
+                (("app.depends") "INCLUDEPATH +="))
+              (invoke "qmake" (string-append "PREFIX=" #$output)))))))
     (native-inputs (list pkg-config qttools-5))
     (inputs (list ffmpeg
                   h264bitstream
