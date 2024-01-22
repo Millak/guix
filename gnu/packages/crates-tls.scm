@@ -1275,20 +1275,21 @@ PEM-encodings commonly used to store keys and certificates at rest.")
   (package
     (inherit rust-rustls-webpki-0.101)
     (name "rust-rustls-webpki")
-    (version "0.100.1")
+    (version "0.100.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustls-webpki" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0sxlgpcczd1wihmnbgv5qz00jim32dap5wzq2rwcm39xxpapq86n"))))
+                "1qsa7bgwbkgiqh7zq7lihd9jsvjl8mlm25ihzrnjghgib315ysjz"))))
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
        (("rust-ring" ,rust-ring-0.16)
         ("rust-untrusted" ,rust-untrusted-0.7))
-       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.13))))))
+       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.13)
+                                   ("rust-rcgen" ,rust-rcgen-0.11))))))
 
 (define-public rust-tls-parser-0.11
   (package
