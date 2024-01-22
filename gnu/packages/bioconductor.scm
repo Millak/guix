@@ -884,7 +884,7 @@ from several related annotation packages.")
 (define-public r-illuminahumanmethylation450kanno-ilmn12-hg19
   (package
     (name "r-illuminahumanmethylation450kanno-ilmn12-hg19")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
@@ -893,7 +893,7 @@ from several related annotation packages.")
              version 'annotation))
        (sha256
         (base32
-         "059vlxsx3p3fcnywwirahsc6mlk813zpqnbv0jsrag6x5bb8z6r4"))))
+         "1272n72fvj4agszd9cv8l9h9qr2pzmd0rbvdz83x7x03cdddf9rn"))))
     (properties
      `((upstream-name
         . "IlluminaHumanMethylation450kanno.ilmn12.hg19")))
