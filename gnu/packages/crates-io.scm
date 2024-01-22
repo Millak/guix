@@ -3979,7 +3979,9 @@ futures.")
         (base32 "0pbgxhyb97h4n0451r26njvr20ywqsbm6y1wjllnp4if82s5nmk2"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:skip-build? #t
+     (list #:cargo-test-flags
+           `(list "--release" "--"
+                  "--skip=io_timeout_timedout")
            #:cargo-inputs
            `(("rust-async-attributes" ,rust-async-attributes-1)
              ("rust-async-channel" ,rust-async-channel-1)
@@ -3988,7 +3990,6 @@ futures.")
              ("rust-async-lock" ,rust-async-lock-2)
              ("rust-async-process" ,rust-async-process-1)
              ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-             ("rust-femme" ,rust-femme-2)
              ("rust-futures-channel" ,rust-futures-channel-0.3)
              ("rust-futures-core" ,rust-futures-core-0.3)
              ("rust-futures-io" ,rust-futures-io-0.3)
@@ -4000,11 +4001,16 @@ futures.")
              ("rust-once-cell" ,rust-once-cell-1)
              ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
              ("rust-pin-utils" ,rust-pin-utils-0.1)
-             ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
              ("rust-slab" ,rust-slab-0.4)
              ("rust-surf" ,rust-surf-2)
-             ("rust-wasm-bindgen-futures"
-              ,rust-wasm-bindgen-futures-0.4)
+             ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4))
+           #:cargo-development-inputs
+           `(("rust-femme" ,rust-femme-2)
+             ("rust-futures" ,rust-futures-0.3)
+             ("rust-getrandom" ,rust-getrandom-0.2)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+             ("rust-tempfile" ,rust-tempfile-3)
              ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://async.rs")
     (synopsis "Async version of the Rust standard library")
