@@ -2514,7 +2514,7 @@ the Trust-DNS client to use DNS over HTTPS.")
   (package
     (inherit rust-trust-dns-https-0.20)
     (name "rust-trust-dns-https")
-    (version "0.19.5")
+    (version "0.19.7")
     (source
      (origin
        (method url-fetch)
@@ -2522,12 +2522,15 @@ the Trust-DNS client to use DNS over HTTPS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0s6yiqy98wddc2vid0dypj4cdnvycd4vrrj6l9s7yymq0iqpky5g"))))
+         "1zfzykz7x6x7g90jl8f1l4w7qj3qxqr1r2w16j5qh2c409lsnqhz"))))
     (arguments
-     `(#:tests? #false
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Requires the internet.
+         "--skip=https_client_stream::tests::test_https_google")
        #:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bytes" ,rust-bytes-0.5)
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-data-encoding" ,rust-data-encoding-2)
         ("rust-futures" ,rust-futures-0.3)
         ("rust-h2" ,rust-h2-0.2)
