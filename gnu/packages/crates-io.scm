@@ -4830,23 +4830,6 @@ trace (backtrace) at runtime in a Rust program.")
 systems.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-bare-metal-0.2
-  (package
-    (inherit rust-bare-metal-1)
-    (name "rust-bare-metal")
-    (version "0.2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bare-metal" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1cy5pbb92fznnri72y6drfpjxj4qdmd62f0rrlgy70dxlppn9ssx"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.2))))))
-
 (define-public rust-barrel-0.6
   (package
     (name "rust-barrel")
