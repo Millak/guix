@@ -64113,25 +64113,6 @@ values without proliferating generics.")
     (description "This package provides custom derive for @code{sval}.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-sval-derive-1
-  (package
-    (inherit rust-sval-derive-2)
-    (name "rust-sval-derive")
-    (version "1.0.0-alpha.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sval_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1clarb8fqxlffa2i6p70l5nr6l3pcp90p98xkvdn8f65xkc0hhkp"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-sval-derive-macros-2
   (package
     (name "rust-sval-derive-macros")
