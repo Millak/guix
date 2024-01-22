@@ -7563,13 +7563,13 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "4.0.9")
+    (version "4.0.11")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "1jdpvswcnspiypk9c2wq01cgcv1l5061q9h8gc5khhk9jlyv44bg"))))
+                "15m4rxvdy3r9cgf9k9q3xhig60mph9pjbmdk0g3k6liaahwmmj0p"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
