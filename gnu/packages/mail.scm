@@ -1373,17 +1373,14 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.37")
+    (version "0.38.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1xl64xh0ijfkx265lcj9cqv1wkzha8gsn9jn4fw4xgvqigr6sxhf"))
-       (patches
-        ;; Output for some tests varies slightly in Emacs 29.
-        (search-patches "notmuch-emacs-test-output.patch"))))
+        (base32 "0zll3s39s065pl9228xpklkjklllkyb3bf1szh0fw0rbfkjfp0jj"))))
     (build-system gnu-build-system)
     (arguments
      (list
