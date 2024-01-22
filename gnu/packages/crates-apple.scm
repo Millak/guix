@@ -105,17 +105,17 @@ extension of blocks.")
 (define-public rust-block-sys-0.2
   (package
     (name "rust-block-sys")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "block-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14pddxc4rma833prvlbh5a22q6qwx32hhz7aqmnw1p9cj58czmrd"))))
+        (base32 "1rzp0218mwigdmfd5rhmj5h7c1vp0bq0nxaklhsvi8vydrls11df"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; Needs to bind to MacOS libraries.
+     `(#:tests? #f          ; Needs to bind to MacOS libraries.
        #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.3))))
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Raw bindings to Apple's C language extension of blocks")
