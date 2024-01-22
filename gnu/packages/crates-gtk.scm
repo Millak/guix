@@ -554,18 +554,17 @@
 (define-public rust-gdk-pixbuf-0.18
   (package
     (name "rust-gdk-pixbuf")
-    (version "0.18.0")
+    (version "0.18.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gdk-pixbuf" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wy68zaxd1914qayjz4jn6k0i2759sx7k26hcmmma7d8fgnw5jdv"))))
+        (base32 "1v7svvl0g7zybndmis5inaqqgi1mvcc6s1n8rkb31f5zn3qzbqah"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.18)
         ("rust-gio" ,rust-gio-0.18)
         ("rust-glib" ,rust-glib-0.18)
