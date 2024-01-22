@@ -326,39 +326,9 @@ reading and writing git repositories.")
     (inputs
      (list libgit2-1.3 libssh2 openssl zlib))))
 
-(define-public rust-git2-0.11
-  (package
-    (inherit rust-git2-0.13)
-    (name "rust-git2")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "git2" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1i0fgsr91r97hsjbgqnymkcyiyg0057m7m04116k3vmyqpvrwlbp"))))
-    (arguments
-     `(#:tests? #f      ; (signal: 11, SIGSEGV: invalid memory reference)
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-libgit2-sys" ,rust-libgit2-sys-0.10)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-openssl-probe" ,rust-openssl-probe-0.1)
-        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-url" ,rust-url-2))
-       #:cargo-development-inputs
-       (("rust-docopt" ,rust-docopt-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-thread-id" ,rust-thread-id-3)
-        ("rust-time" ,rust-time-0.1))))))
-
 (define-public rust-git2-0.9
   (package
-    (inherit rust-git2-0.11)
+    (inherit rust-git2-0.13)
     (name "rust-git2")
     (version "0.9.2")
     (source
