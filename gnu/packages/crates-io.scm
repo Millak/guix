@@ -29398,6 +29398,30 @@ deordinalize, demodulize, foreign key, and pluralize/singularize are supported
 as both traits and pure functions acting on String types.")
     (license license:bsd-2)))
 
+(define-public rust-inline-c-macro-0.1
+  (package
+    (name "rust-inline-c-macro")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inline-c-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05dfhfjmid31vybkycs4zmr9rhpmck02ca3w3n4dmb5dqwg65x8p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.3))))
+    (home-page "https://github.com/Hywan/inline-c-rs")
+    (synopsis "Macros used by @code{inline-c} to handle C code inside Rust")
+    (description
+     "This library contains the macros needed in @code{inline-c}, that allow
+writing and executing C code inside Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-inotify-0.10
   (package
     (name "rust-inotify")
