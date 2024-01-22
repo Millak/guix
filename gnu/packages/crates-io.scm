@@ -45557,7 +45557,14 @@ Format (MCF).")
        (uri (crate-uri "password-hash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n7ig9j5x2q0fk12nny40faggrs0ra5bbxp6gz5yghfwlqw1ay8x"))))
+        (base32 "1n7ig9j5x2q0fk12nny40faggrs0ra5bbxp6gz5yghfwlqw1ay8x"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
     (arguments
      `(#:cargo-inputs
        (("rust-base64ct" ,rust-base64ct-1.0.1)
