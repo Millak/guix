@@ -16565,41 +16565,6 @@ for Rust.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-dashmap-3
-  (package
-    (inherit rust-dashmap-4)
-    (name "rust-dashmap")
-    (version "3.11.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dashmap" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1ddrjj4khb0s263pw278g5dvbhaid40611h123s9w5shr0phw9hg"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Enable unstable features
-           (substitute* "src/lib.rs"
-             (("#!\\[cfg_attr" all)
-              (string-append "#![feature(map_get_key_value)]" "\n"
-                             "#![feature(inner_deref)]" "\n"
-                             all)))
-           #t))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-ahash" ,rust-ahash-0.3)
-        ("rust-hashbrown" ,rust-hashbrown-0.8)
-        ("rust-serde" ,rust-serde-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enable-unstable-features
-           (lambda _
-             (setenv "RUSTC_BOOTSTRAP" "1")
-             #t)))))))
-
 (define-public rust-data-encoding-2
   (package
     (name "rust-data-encoding")
