@@ -31322,21 +31322,6 @@ wasm-bindgen crate.")
 friction with idiomatic Rust structs to ease interopability.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-json-0.11
-  (package
-    (inherit rust-json-0.12)
-    (name "rust-json")
-    (version "0.11.15")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "json" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1rg9jxf6bpbwis3ixd5ak8rp37him7n4z8awz4ssrxl6hyplbhlj"))))
-    (arguments '(#:skip-build? #t))))
-
 (define-public rust-juliex-0.3
   (package
     (name "rust-juliex")
