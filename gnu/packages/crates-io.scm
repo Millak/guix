@@ -70275,29 +70275,6 @@ implementation of TLS for nonblocking I/O streams.")
         ("rust-security-framework" ,rust-security-framework-0.2)
         ("rust-tokio" ,rust-tokio-0.1))))))
 
-(define-public rust-tokio-trace-core-0.2
-  (package
-    (name "rust-tokio-trace-core")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tokio-trace-core" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "04y6c2r4ddzk02xb3hn60s9a1w92h0g8pzmxwaspqvwmsrba5j59"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1))))
-    (home-page "https://tokio.rs")
-    (synopsis "Core primitives for tokio-trace")
-    (description "Core primitives for tokio-trace.")
-    (license license:expat)))
-
 (define-public rust-tokio-tungstenite-0.19
   (package
     (name "rust-tokio-tungstenite")
