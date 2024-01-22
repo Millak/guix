@@ -64355,8 +64355,43 @@ in @code{stb_truetype.h} from C to Rust.")
 codebase.")
     (license license:expat)))
 
+(define-public rust-stderrlog-0.5
+  (package
+    (name "rust-stderrlog")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stderrlog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yrjf10zakwzacbfvi3jdin78mlvff1rgyja2s4x69z6dnznp8k9"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-atty" ,rust-atty-0.2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-thread-local" ,rust-thread-local-1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-3)
+                                   ("rust-docopt" ,rust-docopt-1)
+                                   ("rust-libc" ,rust-libc-0.2)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-structopt" ,rust-structopt-0.3))))
+    (home-page "https://github.com/cardoe/stderrlog-rs")
+    (synopsis "Logger that logs to stderr")
+    (description "This package provides logger that logs to stderr based
+on verbosity specified.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-stderrlog-0.4
   (package
+    (inherit rust-stderrlog-0.5)
     (name "rust-stderrlog")
     (version "0.4.3")
     (source
@@ -64365,8 +64400,7 @@ codebase.")
         (uri (crate-uri "stderrlog" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "09bzvmx2lzyycr1xfcvfwnvqsjg9kb4w22hb19bjqid5j2dyxr9j"))))
-    (build-system cargo-build-system)
+         (base32 "09bzvmx2lzyycr1xfcvfwnvqsjg9kb4w22hb19bjqid5j2dyxr9j"))))
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
@@ -64374,12 +64408,7 @@ codebase.")
          ("rust-chrono" ,rust-chrono-0.4)
          ("rust-log" ,rust-log-0.4)
          ("rust-termcolor" ,rust-termcolor-1)
-         ("rust-thread-local" ,rust-thread-local-0.3.4))))
-    (home-page "https://github.com/cardoe/stderrlog-rs")
-    (synopsis "Logger that logs to stderr")
-    (description "This package provides logger that logs to stderr based
-on verbosity specified")
-    (license (list license:expat license:asl2.0))))
+         ("rust-thread-local" ,rust-thread-local-0.3.4))))))
 
 (define-public rust-stdweb-0.4
   (package
