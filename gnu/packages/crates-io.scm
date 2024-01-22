@@ -35746,34 +35746,6 @@ async code in Rust.")
      "This package provides MaybeUninit for friends of backwards compatibility.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-measureme-0.7
-  (package
-    (name "rust-measureme")
-    (version "0.7.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "measureme" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0cmrrh86b3rvws6d7xp07wfn703yw02cakzirykvn4vh4p9hkxzy"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-memmap" ,rust-memmap-0.7)
-        ("rust-parking-lot" ,rust-parking-lot-0.9)
-        ("rust-rustc-hash" ,rust-rustc-hash-1))))
-    (home-page "https://github.com/rust-lang/measureme")
-    (synopsis "Support crate for rustc's self-profiling feature")
-    (description
-     "Record rustc compiler events and serializing them to a compact binary
-format with this support package.  It is integrated into rustc via the
-unstable -Z self-profile flag.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-memchr-2
   (package
     (name "rust-memchr")
