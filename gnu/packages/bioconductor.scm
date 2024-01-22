@@ -976,13 +976,13 @@ annotations for the genome of the model worm Caenorhabditis elegans.")
 (define-public r-org-dm-eg-db
   (package
     (name "r-org-dm-eg-db")
-    (version "3.7.0")
+    (version "3.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Dm.eg.db" version 'annotation))
               (sha256
                (base32
-                "1pqjrzlyg72bjpy8zsxvaglc7jsv176bnyi87xdajmkvsgxpm7b3"))))
+                "1n0rwynw3nl4js104295kff0jk8jwymjk8imm9di6dy6b9s3qsa6"))))
     (properties
      `((upstream-name . "org.Dm.eg.db")))
     (build-system r-build-system)
