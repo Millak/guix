@@ -637,16 +637,16 @@ CommonCrypto library.")
   (package
     (inherit rust-core-text-20)
     (name "rust-core-text")
-    (version "19.1.0")
+    (version "19.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-text" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q1sr55v8zq82y0dwnwwksz1radh515i0a45nbsda3w2idpg9iyj"))))
+        (base32 "09aa9gfw0zvjwncskr721ljnyj2vfsxbz2lgl7piqz70cvd4mmwr"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
        #:cargo-inputs
        (("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-core-graphics" ,rust-core-graphics-0.22)
