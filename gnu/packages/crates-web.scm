@@ -2650,7 +2650,7 @@ extension for the Trust-DNS client to use native-tls for TLS.")
   (package
     (inherit rust-trust-dns-native-tls-0.20)
     (name "rust-trust-dns-native-tls")
-    (version "0.19.5")
+    (version "0.19.7")
     (source
      (origin
        (method url-fetch)
@@ -2658,9 +2658,12 @@ extension for the Trust-DNS client to use native-tls for TLS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "173443yivsiyzvnai4h53v71br8jsz4zjwhp83q3x4hnh6306ymv"))))
+         "12rh378g144cmw8lpjnivndknlf56i4lzfwnhigp1zviyw5jb7lj"))))
     (arguments
-     `(#:tests? #false
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=tests::test_tls_client_stream_ipv4")
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-native-tls" ,rust-native-tls-0.2)
