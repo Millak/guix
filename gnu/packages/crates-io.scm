@@ -13461,20 +13461,17 @@ contents of the OS-level clipboard.")
 (define-public rust-cordic-0.1
   (package
     (name "rust-cordic")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cordic" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "13zvqn6c8d8lp18p9ik10q100wfsyv2m2n4fca16laq3yw7r231m"))))
+         (base32 "1l0jfhm6kynv61bp9ncmi25bdib40d9pfcajl1gwkidqq1va3l0f"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; rust-fixed fails to build
-       #:cargo-inputs (("rust-fixed" ,rust-fixed-1))))
+     `(#:cargo-inputs (("rust-fixed" ,rust-fixed-1))))
     (home-page "https://github.com/sebcrozet/cordic")
     (synopsis "Special functions for fixed-point numbers using the CORDIC method")
     (description "This package provides special functions for fixed-point
