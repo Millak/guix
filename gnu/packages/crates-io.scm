@@ -10635,26 +10635,6 @@ interoperation between crates in Rust.")
          (base32
           "0ls8zcqi5bmmrvrk3b6r1ym4wlivinbv590d2dvg2xn9f44mbpl1"))))))
 
-(define-public rust-clang-sys-0.26
-  (package
-    (inherit rust-clang-sys-0.28)
-    (name "rust-clang-sys")
-    (version "0.26.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "clang-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1r50dwy5hj5gq07dn0qf8222d07qv0970ymx0j8n9779yayc3w3f"))))
-    (arguments
-     `(#:tests? #f      ; Needs older clang
-       #:cargo-inputs
-       (("rust-glob" ,rust-glob-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-libloading" ,rust-libloading-0.5))))))
-
 (define-public rust-clap-cargo-0.12
   (package
     (name "rust-clap-cargo")
