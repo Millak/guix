@@ -8785,23 +8785,21 @@ spreadsheet file.")
 (define-public rust-camino-1
   (package
     (name "rust-camino")
-    (version "1.1.1")
+    (version "1.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "camino" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "07jc2jsyyhd2d0clpr0ama61b2hv09qzbfba2mx27pc87qg0xbc8"))))
+        (base32 "171vzfyrm2jmajd70q1m774297y028kadgm7cfw4kxc8lfsr57n5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-proptest" ,rust-proptest-1)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page
-     "https://github.com/withoutboats/camino")
+     `(#:cargo-inputs (("rust-proptest" ,rust-proptest-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-serde-bytes" ,rust-serde-bytes-0.11))))
+    (home-page "https://github.com/withoutboats/camino")
     (synopsis "UTF-8 paths")
     (description "This package provides a UTF-8 paths.")
     (license (list license:expat license:asl2.0))))
