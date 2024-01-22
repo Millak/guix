@@ -77266,17 +77266,16 @@ specified across Unix and Windows platforms.")
 (define-public rust-waker-fn-1
   (package
     (name "rust-waker-fn")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "waker-fn" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jpfiis0frk2b36krqvk8264kgxk2dyhfzjsr8g3wah1nii2qnwx"))))
+        (base32 "142n74wlmpwcazfb5v7vhnzj3lb3r97qy8mzpjdpg345aizm3i7k"))))
     (build-system cargo-build-system)
-    ;; (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/stjepang/waker-fn")
+    (home-page "https://github.com/smol-rs/waker-fn")
     (synopsis "Convert closures into wakers")
     (description
      "This package converts closures into wakers.")
