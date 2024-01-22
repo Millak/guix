@@ -16706,7 +16706,7 @@ to be a more complete implementation.")
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "orgalist-" version ".el"))
+                           "orgalist-" version ".tar"))
        (sha256
         (base32 "08gx8aqi7ph75vhhss2xl1lfypzy8a3zmj7w8flcrvz1nk0z738s"))))
     (build-system emacs-build-system)
