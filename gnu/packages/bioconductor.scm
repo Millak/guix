@@ -317,7 +317,7 @@ analysis.")
 (define-public r-org-bt-eg-db
   (package
     (name "r-org-bt-eg-db")
-    (version "3.13.0")
+    (version "3.18.0")
     (source
      (origin
        (method url-fetch)
@@ -327,7 +327,7 @@ analysis.")
              'annotation))
        (sha256
         (base32
-         "0pwvwyfah8fhvaxdc8zkp3lp1v4mchhzr84r3hb0jx97icdvhafi"))))
+         "0fgrpjfrsw837ay9cq3wd6gp6sxvwjc7r9spfs4m89vqs2xb0bfc"))))
     (properties `((upstream-name . "org.Bt.eg.db")))
     (build-system r-build-system)
     (propagated-inputs
