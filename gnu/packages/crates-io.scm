@@ -20277,21 +20277,26 @@ Emacs' support for dynamic modules.")
     (license license:bsd-3)))
 
 (define-public rust-emacs-module-0.10
-  (package (inherit rust-emacs-module-0.18)
+  (package
+    (inherit rust-emacs-module-0.18)
     (name "rust-emacs-module")
     (version "0.10.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "emacs_module" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1gf9lz735xbkyir53dyv362drfx3nin5an5cx39kd8q8kjjwix5g"))))
+          "1gf9lz735xbkyir53dyv362drfx3nin5an5cx39kd8q8kjjwix5g"))
+        (modules '((guix build utils)))
+        (snippet
+         ;; Force a newer version of bindgen.
+         '(begin (substitute* "Cargo.toml"
+                   (("0\\.48\\.1") "0.59"))))))
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.48))))))
+       (("rust-bindgen" ,rust-bindgen-0.59))))))
 
 (define-public rust-emacs-org-link-parser-0.1
   (package
