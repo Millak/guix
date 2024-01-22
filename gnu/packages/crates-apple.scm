@@ -443,18 +443,18 @@ CommonCrypto library.")
 (define-public rust-coreaudio-sys-0.2
   (package
     (name "rust-coreaudio-sys")
-    (version "0.2.12")
+    (version "0.2.15")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "coreaudio-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "091b4sq3kl8n4dy86l4mxq9vjzsn8w8b51xzfcpxwjkciqjv4d7h"))))
+                "1agmf1idf5m08rgkvsdxqni985acmrs629xzlpqgazq54x85h0bz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; Only builds for macos or ios.
-       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.64))))
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69))))
     (home-page "https://github.com/RustAudio/coreaudio-sys")
     (synopsis
      "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
