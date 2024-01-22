@@ -19905,29 +19905,6 @@ transport methods, unicode support, secure delivery with SMTP using encryption
 and authentication, easy email builders, and async support.")
     (license license:expat)))
 
-(define-public rust-embedded-hal-0.2
-  (package
-    (name "rust-embedded-hal")
-    (version "0.2.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "embedded-hal" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1faa71mvs9zklyiiy9l5br9f2bwmxwak0br7jb49cr8mzxignv73"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-nb" ,rust-nb-0.1)
-        ("rust-void" ,rust-void-1))))
-    (home-page "https://github.com/rust-embedded/embedded-hal")
-    (synopsis "Hardware Abstraction Layer (HAL) for embedded systems")
-    (description "This package provides a Hardware Abstraction Layer (HAL) for
-embedded systems.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-empfindung-0.2
   (package
     (name "rust-empfindung")
