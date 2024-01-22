@@ -27966,28 +27966,28 @@ their key-value pairs in a user controllable order.")
 (define-public rust-hdrhistogram-7
   (package
     (name "rust-hdrhistogram")
-    (version "7.5.2")
+    (version "7.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hdrhistogram" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1a1al1rfxcqmx0n9h100ggvg036f4rv69fq12kimazvw9zsvj6bz"))))
+        (base32 "07ai0r66l1n53f2757gv07za1l5g1bprb7zz4v75kpbky6c92p3n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
          "--skip=sync::mt_record_static")
        #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
+       (("rust-base64" ,rust-base64-0.21)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-nom" ,rust-nom-7)
         ("rust-num-traits" ,rust-num-traits-0.2))
        #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-3)
+       (("rust-clap" ,rust-clap-4)
         ("rust-ieee754" ,rust-ieee754-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rug" ,rust-rug-1))))
