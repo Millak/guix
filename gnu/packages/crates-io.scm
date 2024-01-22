@@ -9358,20 +9358,26 @@ metadata}.")
   (package
     (inherit rust-cargo-metadata-0.18)
     (name "rust-cargo-metadata")
-    (version "0.15.5")
+    (version "0.15.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo_metadata" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lsmvfznc6vlizxvjm5rvi8m6iyj0ldjhbh80h6bymdp08vl969g"))))
+        (base32 "0fm767r349p5rh50k21g8w2hpcg2970kjx0ff517mz163wzj9r7f"))))
     (arguments
-     `(#:tests? #f              ; Not all tests included.
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=advanced_feature_configuration"
+         "--skip=all_the_fields"
+         "--skip=basic_workspace_root_package_exists"
+         "--skip=current_dir")
        #:cargo-inputs
        (("rust-camino" ,rust-camino-1)
         ("rust-cargo-platform" ,rust-cargo-platform-0.1)
-        ("rust-derive-builder" ,rust-derive-builder-0.12)
+        ("rust-derive-builder" ,rust-derive-builder-0.11)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
