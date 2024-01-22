@@ -2498,14 +2498,14 @@ TCGAbiolinksGUI package.")
 (define-public r-tximportdata
   (package
     (name "r-tximportdata")
-    (version "1.24.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tximportData" version
                                      'experiment))
               (sha256
                (base32
-                "0mgbwpybg2xd6x1ijrflmjh5w63qz6ylnzszbbyp437n618m7riy"))))
+                "0ksmg3gblkqzz40pzm35y6wghjmszrimdx7bxhq5jv4piqwii0hg"))))
     (properties `((upstream-name . "tximportData")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
