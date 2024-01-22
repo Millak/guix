@@ -15139,23 +15139,6 @@ character.")
     (description "Helper macros for Rusticata.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rusticata-macros-3
-  (package
-    (inherit rust-rusticata-macros-4)
-    (name "rust-rusticata-macros")
-    (version "3.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rusticata-macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1b91k644rqblbam6rfhhmgcxs0zddldi2h0w93aapv1kqq9fbgpv"))))
-    (arguments
-     `(#:cargo-inputs (("rust-nom" ,rust-nom-6))))))
-
 (define-public rust-cssparser-0.29
   (package
     (name "rust-cssparser")
