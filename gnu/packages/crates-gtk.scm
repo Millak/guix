@@ -1609,19 +1609,19 @@
 (define-public rust-glib-macros-0.18
   (package
     (name "rust-glib-macros")
-    (version "0.18.2")
+    (version "0.18.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glib-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0iqyzyarmgvm2jlfglrpqkpmsialy7y571jic0ix8dmi48w91npq"))))
+        (base32 "1p5cla53fcp195zp0hkqpmnn7iwmkdswhy7xh34002bw8y7j5c0b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-heck" ,rust-heck-0.4)
-        ("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+        ("rust-proc-macro-crate" ,rust-proc-macro-crate-2)
         ("rust-proc-macro-error" ,rust-proc-macro-error-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
