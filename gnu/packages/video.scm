@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen@protonmail.com>
-;;; Copyright © 2020, 2021, 2023 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -4547,7 +4547,7 @@ of modern, widely supported codecs.")
 
 (define-public h264bitstream
   ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
-  (let ((commit "34f3c58afa3c47b6cf0a49308a68cbf89c5e0bff")
+  (let ((commit "ae72f7395f328876199a7e928d3b4a6dc6a7ce14")
         (revision "1"))
     (package
       (name "h264bitstream")
@@ -4560,7 +4560,7 @@ of modern, widely supported codecs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0rrhzckz2a89q0chw2bfl4g89yiv9a0dcqcj80lcpdr3a1ix8q85"))))
+                  "0pqzfzkgqk5zjh5ywc7l7mffs2vh6wlzssvq2jxildygvqxs3pjp"))))
       (build-system gnu-build-system)
       (arguments
        (list #:tests? #f ;no test suite
