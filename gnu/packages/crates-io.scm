@@ -58623,8 +58623,33 @@ endian-aware Read/Write traits for byte buffers.")
 endian-aware Read/Write traits for byte buffers.")
     (license license:expat)))
 
+(define-public rust-scroll-derive-0.12
+  (package
+    (name "rust-scroll-derive")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scroll_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cmr3hxk318s2ivv37cik2l1r0d8r0qhahnin5lpxbr5w3yw50bz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-scroll" ,rust-scroll-0.11))))
+    (home-page "https://github.com/m4b/scroll")
+    (synopsis "Pread and Pwrite traits from the scroll crate")
+    (description
+     "This package provides a macros 1.1 derive implementation for Pread and
+Pwrite traits from the scroll crate.")
+    (license license:expat)))
+
 (define-public rust-scroll-derive-0.11
   (package
+    (inherit rust-scroll-derive-0.12)
     (name "rust-scroll-derive")
     (version "0.11.1")
     (source (origin
@@ -58634,19 +58659,12 @@ endian-aware Read/Write traits for byte buffers.")
               (sha256
                (base32
                 "1bi5ljnzksvqhic6j7i2a2ap41s78xr0gifkgjxdxlj63pw4kc8x"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-2))
-       #:cargo-development-inputs (("rust-scroll" ,rust-scroll-0.11))))
-    (home-page "https://github.com/m4b/scroll")
-    (synopsis "Pread and Pwrite traits from the scroll crate")
-    (description
-     "This package provides a macros 1.1 derive implementation for Pread and
-Pwrite traits from the scroll crate.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-scroll" ,rust-scroll-0.11))))))
 
 (define-public rust-scroll-derive-0.10
   (package
