@@ -1386,16 +1386,14 @@
 (define-public rust-gir-format-check-0.1
   (package
     (name "rust-gir-format-check")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "gir-format-check" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0znl4qcgmg0656zk9vjkwdn9wj1zpkd0m0l5jnzmahd80ii7vf4b"))))
+         (base32 "05n4g8yqkyzrnxbqyrkjqjxsfxdy3q78jk0ny54ffv2qm09sjp9s"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/gtk-rs/gir-format-check")
     (synopsis "File format checker")
