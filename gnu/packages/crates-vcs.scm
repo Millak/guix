@@ -3739,17 +3739,19 @@ provides a crate for parsing and serialization of gix-url's.")
 (define-public rust-gix-utils-0.1
   (package
     (name "rust-gix-utils")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kz9sf2pwvinxv7dvarwzgqcw3v4653wrwfrlayfkdihvvi2aqny"))))
+        (base32 "1f3a4slyvxw72b1xz988h3ppd8c0wyzacg9625j2k2vrs3rkks2n"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2))))
+     `(#:cargo-inputs
+       (("rust-fastrand" ,rust-fastrand-2)
+        ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis
      "Crate with `gitoxide` utilities that don't need feature toggles")
