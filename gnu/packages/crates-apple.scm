@@ -716,22 +716,20 @@ Central Dispatch.")
 (define-public rust-fsevent-2
   (package
     (name "rust-fsevent")
-    (version "2.0.2")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fsevent" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0qsylfbhgha319q6a8yvkznbm3hf47gy3y8nq82qijcm5hh4gwwp"))))
+         "0pvpz0n4yl64yvx3acchxnfd28vhx88x4pvsa6zrb8d08zqx2dl8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-fsevent-sys" ,rust-fsevent-sys-3))
+        ("rust-fsevent-sys" ,rust-fsevent-sys-4))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3)
         ("rust-time" ,rust-time-0.2))))
