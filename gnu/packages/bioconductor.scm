@@ -1712,18 +1712,18 @@ STAR. Data is available on @code{ExperimentHub} as a data package.")
 (define-public r-biscuiteerdata
   (package
     (name "r-biscuiteerdata")
-    (version "1.10.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biscuiteerData" version 'experiment))
        (sha256
-        (base32 "0nda6b8mkv93s513y0xfgxvi7zn8v07jx323ii709rknlncm6qqw"))))
+        (base32 "1wqdj1499psnf9y816k05m6h38yfsin4rwzqm1209ddxza6jbw1x"))))
     (properties
      `((upstream-name . "biscuiteerData")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-annotationhub r-curl r-experimenthub))
+     (list r-annotationhub r-curl r-experimenthub r-genomicranges))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/biscuiteerData")
     (synopsis "Data package for Biscuiteer")
