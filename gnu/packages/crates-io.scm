@@ -9387,18 +9387,21 @@ metadata}.")
   (package
     (inherit rust-cargo-metadata-0.15)
     (name "rust-cargo-metadata")
-    (version "0.14.1")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo_metadata" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "04kfzvmh80pq0bw1cwzlz71wfrign2k7792mc4gi8hs1jkgfcams"))))
+        (base32 "1yl1y40vby9cas4dlfc44szrbl4m4z3pahv3p6ckdqp8ksfv1jsa"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=advanced_feature_configuration"
+         "--skip=all_the_fields"
+         "--skip=current_dir")
        #:cargo-inputs
        (("rust-camino" ,rust-camino-1)
         ("rust-cargo-platform" ,rust-cargo-platform-0.1)
