@@ -301,16 +301,14 @@ reading and writing git repositories.")
   (package
     (inherit rust-git2-0.15)
     (name "rust-git2")
-    (version "0.13.24")
+    (version "0.13.25")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "git2" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "07rlxwvl5iyyqwh0mci5v27lbicf9qiqm60maw1srz7i51x00pl4"))))
+        (base32 "1mppxyjzi69m879mwpin4d9jljanwaijlx3f5w3fdh143g62k4pj"))))
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -323,6 +321,7 @@ reading and writing git repositories.")
        #:cargo-development-inputs
        (("rust-paste" ,rust-paste-1)
         ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
         ("rust-time" ,rust-time-0.1))))
     (inputs
      (list libgit2-1.3 libssh2 openssl zlib))))
