@@ -1299,13 +1299,13 @@ track.  The database is exposed as a @code{TxDb} object.")
 (define-public r-txdb-hsapiens-ucsc-hg38-knowngene
   (package
     (name "r-txdb-hsapiens-ucsc-hg38-knowngene")
-    (version "3.15.0")
+    (version "3.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "TxDb.Hsapiens.UCSC.hg38.knownGene"
                                      version 'annotation))
               (sha256
-               (base32 "1y9fqhkk5wgny43bxc0j82afy49vz34rblcmcfmwavngdkpnj879"))))
+               (base32 "0ak6acjll2djamakpn60ks47lfs2y0r8xwhjazj6fvch34xkc2d5"))))
     (properties
      `((upstream-name . "TxDb.Hsapiens.UCSC.hg38.knownGene")))
     (build-system r-build-system)
