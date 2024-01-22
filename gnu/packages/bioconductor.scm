@@ -1088,18 +1088,18 @@ by UCSC (hg19, February 2009) and stored in Biostrings objects.")
 (define-public r-bsgenome-hsapiens-ucsc-hg38
   (package
     (name "r-bsgenome-hsapiens-ucsc-hg38")
-    (version "1.4.4")
+    (version "1.4.5")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome.Hsapiens.UCSC.hg38"
                                      version 'annotation))
               (sha256
-               (base32 "03xmh6q99nqjxz29m6j0ymxlk22jq0nlvpf4a2yhg3hgnxqkakh2"))))
+               (base32 "0lp94r9dsx8sl1ifysavgjf4aamhjc4n71zif5jyfnwmzpj7g4ml"))))
     (properties
      `((upstream-name . "BSgenome.Hsapiens.UCSC.hg38")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bsgenome))
+     (list r-bsgenome r-genomeinfodb))
     (home-page
      "https://www.bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg38/")
     (synopsis "Full genome sequences for Homo sapiens")
