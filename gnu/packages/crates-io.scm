@@ -28341,16 +28341,14 @@ It is used to build the target x86_64-unknown-hermit.")
   (package
     (inherit rust-hermit-abi-0.2)
     (name "rust-hermit-abi")
-    (version "0.1.20")
+    (version "0.1.19")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "hermit-abi" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "1ypkwpf5r7m0jqdn2wfa0070i412kn9snvi1hg52w1yfvc40k8y7"))))
+         (base32 "0cxcm8093nf5fyn114w8vxbrbcyvv91d4015rdnlgfll7cs6gd32"))))
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
