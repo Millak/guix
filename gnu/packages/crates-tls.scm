@@ -865,13 +865,13 @@ grammars and BER/DER encodings, for example.")
   (package
     (inherit rust-rustls-0.21)
     (name "rust-rustls")
-    (version "0.20.8")
+    (version "0.20.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustls" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0bqfymq5bjs1jxg1iw2nn4ab3kzz2lrk8a1vx3s98lhp9p3qzxzz"))))
+               (base32 "16byazb8jfr06kgbijy92bdk0ila806g6a00a6l9x64mqpgf700v"))))
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
