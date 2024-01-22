@@ -61987,28 +61987,29 @@ designed for @code{immutable.rs}.")
 (define-public rust-skeptic-0.13
   (package
     (name "rust-skeptic")
-    (version "0.13.4")
+    (version "0.13.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "skeptic" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0rai61hbs65nbvbhqlk1nap5hlav5qx3zmjjjzh9rhgxagc8xyyn"))))
+         (base32 "1a205720pnss0alxvbx0fcn3883cg3fbz5y1047hmjbnaq0kplhn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=tests::test_markdown_files_of_directory")
        #:cargo-inputs
        (("rust-error-chain" ,rust-error-chain-0.12)
-        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.2)
-        ("rust-glob" ,rust-glob-0.2)
-        ("rust-tempdir" ,rust-tempdir-0.3)
-        ("rust-bytecount" ,rust-bytecount-0.4)
-        ("rust-cargo-metadata" ,rust-cargo-metadata-0.6)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-walkdir" ,rust-walkdir-2))))
+        ("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-cargo-metadata" ,rust-cargo-metadata-0.14)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-unindent" ,rust-unindent-0.1))))
     (home-page "https://github.com/budziq/rust-skeptic")
     (synopsis "Test your Rust markdown documentation via Cargo")
     (description
