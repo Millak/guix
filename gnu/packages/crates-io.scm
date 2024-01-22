@@ -29208,16 +29208,17 @@ HTTP request or response body.")
 (define-public rust-httpdate-1
   (package
     (name "rust-httpdate")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "httpdate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08bln7b1ibdw26gl8h4dr6rlybvlkyhlha309xbh9ghxh9nf78f4"))))
+        (base32 "1aa9rd2sac0zhjqh24c9xvir96g188zldkx0hr6dnnlx5904cfyz"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
     (home-page "https://github.com/pyfisch/httpdate")
     (synopsis "HTTP date parsing and formatting")
     (description
