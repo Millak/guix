@@ -15256,28 +15256,6 @@ character.")
      "This package provides the procedural macros for rust-cssparser.")
     (license license:mpl2.0)))
 
-(define-public rust-cssparser-macros-0.3
-  (package
-    (inherit rust-cssparser-macros-0.6)
-    (name "rust-cssparser-macros")
-    (version "0.3.6")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cssparser-macros" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1vqyc5xm8a4va92vs1nn0cc46c930l2n21gccijnc5y7hx7cicav"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-phf-codegen" ,rust-phf-codegen-0.7)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-procedural-masquerade" ,rust-procedural-masquerade-0.1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-csv-index-0.1
   (package
     (name "rust-csv-index")
