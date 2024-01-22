@@ -2979,7 +2979,7 @@ DNS protocol library for all Trust-DNS projects.")
   (package
     (inherit rust-trust-dns-proto-0.20)
     (name "rust-trust-dns-proto")
-    (version "0.19.5")
+    (version "0.19.7")
     (source
      (origin
        (method url-fetch)
@@ -2987,11 +2987,12 @@ DNS protocol library for all Trust-DNS projects.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0a4zlv60kkbg1nvy3zh18fdg681z83yzppzy39rdkm7llqdhdmyd"))))
+         "1a8mhawa5bhavmhickmr8ncnvs5jiwpyidig3nabk2nnq2h73b8w"))))
     (arguments
      `(#:cargo-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
         ("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-data-encoding" ,rust-data-encoding-2)
         ("rust-enum-as-inner" ,rust-enum-as-inner-0.3)
         ("rust-futures" ,rust-futures-0.3)
