@@ -677,7 +677,9 @@ of META, a package in REPOSITORY."
 of package names for all input packages."
   (let ((rules
          (list (lambda ()
-                 (and (member "styler" input-names)
+                 (and (any (lambda (name)
+                             (member name '("styler" "ExperimentHub")))
+                           input-names)
                       '(add-after 'unpack 'set-HOME
                          (lambda _ (setenv "HOME" "/tmp")))))
                (lambda ()
