@@ -38329,16 +38329,16 @@ possible over the OS abstractions.")
   (package
     (inherit rust-mio-0.7)
     (name "rust-mio")
-    (version "0.6.21")
+    (version "0.6.23")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13q02a7cwc140aygf8amadpzpl5lyj3p2r4wnvgydfpnphifqb9h"))))
+        (base32 "1i2c1vl8lr45apkh8xbh9k56ihfsmqff5l7s2fya7whvp7sndzaa"))))
     (arguments
-     `(#:tests? #f
+     `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-fuchsia-zircon" ,rust-fuchsia-zircon-0.3)
