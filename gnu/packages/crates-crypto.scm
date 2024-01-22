@@ -1554,27 +1554,20 @@ Code} (MAC) algorithms.")
 
 (define-public rust-crypto-mac-0.4
   (package
+    (inherit rust-crypto-mac-0.11)
     (name "rust-crypto-mac")
     (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crypto-mac" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "160ixpghhz5kz16f38kzcyv6lx8wmi4cgbhlhq4nazf678iib43p"))))
-    (build-system cargo-build-system)
+        (base32 "160ixpghhz5kz16f38kzcyv6lx8wmi4cgbhlhq4nazf678iib43p"))))
     (arguments
      `(#:cargo-inputs
        (("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
-        ("rust-generic-array" ,rust-generic-array-0.8))))
-    (home-page "https://github.com/RustCrypto/traits")
-    (synopsis "Trait for Message Authentication Code (MAC) algorithms")
-    (description "This package provides traits for Message Authentication
-Code (MAC) algorithms.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-generic-array" ,rust-generic-array-0.8))))))
 
 (define-public rust-crypto-tests-0.5
   (package
