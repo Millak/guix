@@ -1839,14 +1839,14 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
 (define-public rust-gix-hashtable-0.4
   (package
     (name "rust-gix-hashtable")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-hashtable" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05ka2z2z1qcxmfw8abvc5fgvygrrjfiaaz61h6701ba11146i4j0"))))
+        (base32 "1jnk93sz53b28ajkn4yrvmh0hj3x2jcb81h6nbqc8zkdh601idpy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.13)
