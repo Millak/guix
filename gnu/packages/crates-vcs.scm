@@ -3221,14 +3221,14 @@ Gitoxide, a pure Rust implementation of Git.")
 (define-public rust-gix-sec-0.10
   (package
     (name "rust-gix-sec")
-    (version "0.10.0")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-sec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0a0g1b25hkgc68svxl2rx22a64d16703yyyislpc1a15q0m59fcj"))))
+        (base32 "1ln6lgb92xq2jlggqn5dkj5dhd3cpjfkk9yb44hmzw7a5x3bzngq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
@@ -3236,7 +3236,7 @@ Gitoxide, a pure Rust implementation of Git.")
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-windows" ,rust-windows-0.48))
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "Part of Gitoxide, this create provides a shared trust model")
