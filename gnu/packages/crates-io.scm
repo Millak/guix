@@ -22656,27 +22656,6 @@ test multiple times.")
      "A procedural macro to insert @code{flame::start_guard(_)} calls.")
     (license license:asl2.0)))
 
-(define-public rust-flamer-0.3
-  (package
-    (inherit rust-flamer-0.4)
-    (name "rust-flamer")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "flamer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1b2d7jx80f3p7hqpgdi7wksaiq18k9w23p0cs2sxf7jbx2jx3bgj"))))
-    (arguments
-     `(#:tests? #f      ; Uses features not available in stable Rust release
-       #:cargo-inputs
-       (("rust-flame" ,rust-flame-0.2)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))))))
-
 (define-public rust-flatbuffers-2
   (package
     (name "rust-flatbuffers")
