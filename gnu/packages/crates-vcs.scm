@@ -4168,7 +4168,7 @@ library.")
 (define-public rust-libgit2-sys-0.6
   (package
     (inherit rust-libgit2-sys-0.10)
-    (name "rust-libgit2-sys-6")
+    (name "rust-libgit2-sys")
     (version "0.6.19")
     (source
      (origin
