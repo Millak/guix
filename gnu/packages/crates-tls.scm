@@ -892,23 +892,26 @@ grammars and BER/DER encodings, for example.")
   (package
     (inherit rust-rustls-0.20)
     (name "rust-rustls")
-    (version "0.19.0")
+    (version "0.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02wqas2pcxk75s9l9c9f1r5am7258bmqprh68pnqfvkwz0gx4kq6"))))
+        (base32 "1mx6nzbplydy9khll4clsl35m6c1a2cgz9czr74swfgfzrsvdv9m"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.13)
         ("rust-log" ,rust-log-0.4)
         ("rust-ring" ,rust-ring-0.16)
         ("rust-sct" ,rust-sct-0.6)
-        ("rust-webpki" ,rust-webpki-0.21))))))
+        ("rust-webpki" ,rust-webpki-0.21))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-log" ,rust-log-0.4)
+                                   ("rust-webpki-roots" ,rust-webpki-roots-0.21))))))
 
 (define-public rust-rustls-0.18
   (package
