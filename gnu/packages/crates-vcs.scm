@@ -4081,35 +4081,9 @@ library.")
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
-(define-public rust-libgit2-sys-0.10
-  (package
-    (inherit rust-libgit2-sys-0.12)
-    (name "rust-libgit2-sys")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "libgit2-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0l9fvki7qxsl97vgzqwlv75nl213a5vxw7b1jaik97ala356pv6r"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (delete-file-recursively "libgit2") #t))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-libz-sys" ,rust-libz-sys-1)
-        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
-        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ;; Build dependencies:
-        ("rust-cc" ,rust-cc-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
-
 (define-public rust-libgit2-sys-0.8
   (package
-    (inherit rust-libgit2-sys-0.10)
+    (inherit rust-libgit2-sys-0.12)
     (name "rust-libgit2-sys")
     (version "0.8.2")
     (source
