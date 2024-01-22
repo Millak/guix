@@ -3698,14 +3698,14 @@ with webpki.")
   (package
     (inherit rust-webpki-roots-0.25)
     (name "rust-webpki-roots")
-    (version "0.22.2")
+    (version "0.22.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "webpki-roots" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jbll0ys9jakrvv3l1i216bbgj7jbxr7ad2dihw28xcm7s8fnb2m"))))
+        (base32 "11rd1aj73qzcvdj3x78crm1758sc4wrbc7rh0r8lmhyjsx01xixn"))))
     (arguments
      `(#:cargo-inputs
        (("rust-webpki" ,rust-webpki-0.22))))))
