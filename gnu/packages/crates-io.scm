@@ -32412,8 +32412,34 @@ deflate, zlib, and gzip data.")
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
 
+(define-public rust-libdeflater-1
+  (package
+    (name "rust-libdeflater")
+    (version "1.19.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflater" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0zdbiqq2fmjakwk7d1xwnakjnxzaba9rz18k9clyql13cqpv4c9s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libdeflate-sys" ,rust-libdeflate-sys-1))
+       #:cargo-development-inputs
+       (("rust-adler32" ,rust-adler32-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-flate2" ,rust-flate2-1))))
+    (home-page "https://github.com/adamkewley/libdeflater")
+    (synopsis "Bindings to libdeflate for DEFLATE")
+    (description "This package provides bindings to libdeflate for DEFLATE
+(de)compression exposed as non-streaming buffer operations.  Contains bindings
+for raw deflate, zlib, and gzip data.")
+    (license license:asl2.0)))
+
 (define-public rust-libdeflater-0.11
   (package
+    (inherit rust-libdeflater-1)
     (name "rust-libdeflater")
     (version "0.11.0")
     (source (origin
@@ -32422,19 +32448,12 @@ deflate, zlib, and gzip data.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "0385hpai7fsnpfvxd3hki43v1cj8w6z1cb2rn8wd6vq4dam8bqnq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libdeflate-sys" ,rust-libdeflate-sys-0.11))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-flate2" ,rust-flate2-1))))
-    (home-page "https://github.com/adamkewley/libdeflater")
-    (synopsis "Bindings to libdeflate for DEFLATE")
-    (description "This package provides bindings to libdeflate for DEFLATE
-(de)compression exposed as non-streaming buffer operations.  Contains bindings
-for raw deflate, zlib, and gzip data.")
-    (license license:asl2.0)))
+        ("rust-flate2" ,rust-flate2-1))))))
 
 (define-public rust-libflate-1
   (package
