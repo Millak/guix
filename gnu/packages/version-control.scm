@@ -1148,7 +1148,7 @@ collaboration using typical untrusted file hosts or services.")
                 (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
                         (assoc-ref inputs "git-source"))))
             (add-after 'unpack 'patch-absolute-file-names
-              (lambda* (#:key inputs #:allow-other-keys)
+              (lambda* (#:key inputs outputs #:allow-other-keys)
                 (define (quoted-file-name input path)
                   (string-append "\"" input path "\""))
                 (substitute* "ui-snapshot.c"
@@ -1160,7 +1160,7 @@ collaboration using typical untrusted file hosts or services.")
                    (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
 
                 (substitute* "filters/about-formatting.sh"
-                  (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
+                  (("\\$\\(dirname \\$0\\)") (string-append (assoc-ref outputs "out")
                                                         "/lib/cgit/filters"))
                   (("\\| tr") (string-append "| " (which "tr"))))
 
