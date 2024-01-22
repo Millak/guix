@@ -54150,32 +54150,6 @@ MIME Message Headers.")
 First In First Out} ring buffer with direct access to inner data.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-riscv-0.7
-  (package
-    (name "rust-riscv")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "riscv" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1fla10m2qkcf7zqw91rrribpdaavkv6qbbzjz9q2n09igbfwq1v9"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "bin")))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bare-metal" ,rust-bare-metal-1)
-        ("rust-bit-field" ,rust-bit-field-0.10)
-        ("rust-riscv-target" ,rust-riscv-target-0.1))))
-    (home-page "https://github.com/rust-embedded/riscv")
-    (synopsis "Low level access to RISC-V processors")
-    (description "This crate provides low level access to RISC-V processors.")
-    (license license:isc)))
-
 (define-public rust-riscv-target-0.1
   (package
     (name "rust-riscv-target")
