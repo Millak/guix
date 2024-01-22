@@ -739,14 +739,14 @@ default."  )
 (define-public r-bsgenome-mmusculus-ucsc-mm10
   (package
     (name "r-bsgenome-mmusculus-ucsc-mm10")
-    (version "1.4.0")
+    (version "1.4.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome.Mmusculus.UCSC.mm10"
                                      version 'annotation))
               (sha256
                (base32
-                "12s0nm2na9brjad4rn9l7d3db2aj8qa1xvz0y1k7gk08wayb6bkf"))))
+                "1vprkywr72nqf847vzmgymylcdb45g4hy30fwx6fzwddkyzh5xnw"))))
     (properties
      `((upstream-name . "BSgenome.Mmusculus.UCSC.mm10")))
     (build-system r-build-system)
