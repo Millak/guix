@@ -10855,14 +10855,14 @@ Command Line Argument Parser.")
   (package
     (inherit rust-clap-4)
     (name "rust-clap")
-    (version "3.2.23")
+    (version "3.2.25")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19bkwkj49ha7mlip0gxsqb9xmd3jpr7ghvcx1hkx6icqrd2mqrbi"))))
+        (base32 "08vi402vfqmfj9f07c4gl6082qxgf4c9x98pbndcnwbgaszq38af"))))
     (arguments
      (list #:cargo-test-flags
            '(list "--release" "--"
