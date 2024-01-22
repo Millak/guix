@@ -53632,40 +53632,6 @@ rust.")
 streaming service.")
     (license license:expat)))
 
-(define-public rust-rspotify-0.10
-  (package
-    (inherit rust-rspotify-0.11)
-    (name "rust-rspotify")
-    (version "0.10.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rspotify" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "196wd157l3fn6hlyixgffhl2x516g4fpa3s91arhcikiifsppzgf"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.10)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-derive-builder" ,rust-derive-builder-0.7)
-        ("rust-dotenv" ,rust-dotenv-0.13)
-        ("rust-env-logger" ,rust-env-logger-0.6)
-        ("rust-failure" ,rust-failure-0.1)
-        ("rust-itertools" ,rust-itertools-0.8)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-percent-encoding" ,rust-percent-encoding-1)
-        ("rust-rand" ,rust-rand-0.6)
-        ("rust-random" ,rust-random-0.12)
-        ("rust-reqwest" ,rust-reqwest-0.10)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-url" ,rust-url-1)
-        ("rust-webbrowser" ,rust-webbrowser-0.5))))))
-
 (define-public rust-rspotify-http-0.11
   (package
     (name "rust-rspotify-http")
