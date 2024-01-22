@@ -76884,28 +76884,6 @@ file into an in-memory tree structure.")
        (("rust-indexmap" ,rust-indexmap-1)
         ("rust-xml-rs" ,rust-xml-rs-0.7))))))
 
-(define-public rust-xshell-macros-0.1
-  (package
-    (name "rust-xshell-macros")
-    (version "0.1.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "xshell-macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0lkym5kfq446xymimxr226kppr3ynpi9n8iif32vrfbm5i5djzng"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/matklad/xshell")
-    (synopsis
-     "Private implementation detail of xshell crate")
-    (description
-     "This package provide a private implementation detail of xshell crate.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-xxhash-rust-0.8
   (package
     (name "rust-xxhash-rust")
