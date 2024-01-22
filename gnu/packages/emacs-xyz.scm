@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Adriano Peluso <catonano@gmail.com>
@@ -3974,6 +3974,30 @@ customizability and asynchronous upgrading.")
        "This package provides syntax highlighting, a minor mode for
 listing type errors via Flycheck, as well as REPL support for Carp.")
       (license license:asl2.0))))
+
+(define-public emacs-coterm
+  (package
+    (name "emacs-coterm")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/coterm-"
+                           version ".tar"))
+       (sha256
+        (base32 "0ikfm1acdsckflv1hcy9lmssyac2099x2yybhvb6vkghcgy99p00"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://repo.or.cz/emacs-coterm.git")
+    (synopsis "Terminal emulation for comint")
+    (description
+     "This package provides terminal emulation for comint.  If the global
+@code{coterm-mode} is enabled, proper terminal emulation will be supported for
+all newly spawned comint processes.  This allows you to use more complex
+console programs such as @code{less} and @code{mpv} and full-screen TUI
+programs such as @code{vi}, @code{top}, @code{htop} or even @code{emacs
+-nw}.")
+    (license license:gpl3+)))
 
 (define-public emacs-counsel-bbdb
   (package
