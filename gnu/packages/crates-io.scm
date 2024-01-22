@@ -21071,24 +21071,6 @@ libraries generally do not give you a choice in terms of which standards/convent
 they follow.  Etcetera, on the other hand, gives you the choice.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ethereum-types-serialize-0.2
-  (package
-    (name "rust-ethereum-types-serialize")
-    (version "0.2.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ethereum-types-serialize" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0l53rvzvwpxwkl7i3f9q5fafw663rcm5z4mdknkr265w69xxfwqq"))))
-    (build-system cargo-build-system)
-    (arguments `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/paritytech/primitives")
-    (synopsis "Rust library of Ethereum types")
-    (description "This package is a Rust library of Ethereum types.")
-    (license license:expat)))
-
 (define-public rust-evdev-0.12
   (package
     (name "rust-evdev")
