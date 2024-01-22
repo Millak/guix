@@ -292,23 +292,28 @@
 (define-public rust-async-tls-0.10
   (package
     (name "rust-async-tls")
-    (version "0.10.2")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-tls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "126by0la2wvfadazfnmw7b6ch07dk9ggny94a3vvzgk2qdpqn3fx"))))
+        (base32 "0lnc61fb16wg76hbqh2kjzc4d9kqkh8mz51zzn78gkpcl329fnnq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f  ; unresolved import `async_std::sync::channel`
        #:cargo-inputs
        (("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-io" ,rust-futures-io-0.3)
-        ("rust-rustls" ,rust-rustls-0.19)
+        ("rust-rustls" ,rust-rustls-0.18)
         ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.21))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.20))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1))))
     (home-page "https://github.com/async-std/async-tls")
     (synopsis "Asynchronous TLS/SSL streams using Rustls")
     (description
