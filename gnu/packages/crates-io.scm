@@ -3809,11 +3809,10 @@ crate.")
         (base32 "0vhmsscqx48dmxw0yir6az0pbwcq6qjvcv2f43vdpn95vd9bi7a7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #true      ;XXX: enable when rust-async-std-1 is packaged
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-event-listener" ,rust-event-listener-2))
        #:cargo-development-inputs
-       (;("rust-async-std" ,rust-async-std-1)
+       (("rust-async-std" ,rust-async-std-1)
         ("rust-futures" ,rust-futures-0.3)
         ("rust-futures-intrusive" ,rust-futures-intrusive-0.3)
         ("rust-futures-lite" ,rust-futures-lite-1)
