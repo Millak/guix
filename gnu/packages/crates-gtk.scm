@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -175,14 +175,14 @@
 (define-public rust-cairo-rs-0.18
   (package
     (name "rust-cairo-rs")
-    (version "0.18.2")
+    (version "0.18.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cairo-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k8wfv2ri8i417pwb1mvdl51x02nsx52f31rxzg7ivn0m3gnc10w"))))
+        (base32 "1qjfkcq3mrh3p01nnn71dy3kn99g21xx3j8xcdvzn8ll2pq6x8lc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
@@ -192,7 +192,9 @@
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-float-eq" ,rust-float-eq-1)
                        ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-float-eq" ,rust-float-eq-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
     (inputs (list cairo))
     (home-page "https://gtk-rs.org/")
