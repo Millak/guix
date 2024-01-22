@@ -1193,14 +1193,14 @@ PEM-encodings commonly used to store keys and certificates at rest.")
   (package
     (inherit rust-rustls-pemfile-2)
     (name "rust-rustls-pemfile")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustls-pemfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cplx6hgkr32nq31p3613b2sj7csrrq3zp6znx9vc1qx9c4qff9d"))))
+        (base32 "1324n5bcns0rnw6vywr5agff3rwfvzphi7rmbyzwnv6glkhclx0w"))))
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.21))
