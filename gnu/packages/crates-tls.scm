@@ -269,15 +269,21 @@
         (base32 "0cwv4vbrvcbv58b51y1azfbszzgzhrzxx92q5nl6hk6kkf97m7ly"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #true       ;XXX: build when rust-async-std-1 is packaged
+     `(#:tests? #f      ; Tests want internet access.
        #:cargo-inputs
-       (;;("rust-async-std" ,rust-async-std-1)
+       (("rust-async-std" ,rust-async-std-1)
         ("rust-native-tls" ,rust-native-tls-0.2)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-threadpool" ,rust-threadpool-1))))
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-tokio" ,rust-tokio-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
     (home-page "https://docs.rs/crate/async-native-tls/")
     (synopsis "Native TLS using futures")
     (description "Native TLS using futures.")
