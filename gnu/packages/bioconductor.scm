@@ -1775,13 +1775,13 @@ cancer study published in Wang et al. 2005 and Minn et al 2007.")
 (define-public r-celldex
   (package
     (name "r-celldex")
-    (version "1.6.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "celldex" version 'experiment))
        (sha256
-        (base32 "1fjldmhb9yg6yr3aq5ldvc8xwqw71ix4cdlr53xxckgwljjq7x10"))))
+        (base32 "1ckjdmiw9g1wdswijy3dvamv3kqi11j8b8p9dgr1yv5q2lfjbnwl"))))
     (properties `((upstream-name . "celldex")))
     (build-system r-build-system)
     (propagated-inputs
