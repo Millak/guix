@@ -391,14 +391,14 @@ Mapping50K_Xba240 (pd.mapping50k.xba240).")
 (define-public r-reactome-db
   (package
     (name "r-reactome-db")
-    (version "1.70.0")
+    (version "1.86.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "reactome.db" version 'annotation))
        (sha256
         (base32
-         "05wc4fp0faq6h3kq5rwafnips043as31yq11mrjngfxvf5i10srg"))))
+         "02p8ihds0hpcfj5mib0ifql9404svlavfyj36c15jzmbci0rnc8c"))))
     (properties `((upstream-name . "reactome.db")))
     (build-system r-build-system)
     (propagated-inputs
