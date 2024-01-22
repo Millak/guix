@@ -7931,28 +7931,6 @@ in a byte slice, fast.")
         ("rust-quickcheck" ,rust-quickcheck-0.8)
         ("rust-rand" ,rust-rand-0.6))))))
 
-(define-public rust-bytecount-0.4
-  (package
-    (inherit rust-bytecount-0.5)
-    (name "rust-bytecount")
-    (version "0.4.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "bytecount" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "13qpy38z5wx0rzcdvr2h0ixbfgi1dbrif068il3hwn3k2mah88mr"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-packed-simd" ,rust-packed-simd-0.3))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.2)
-        ("rust-quickcheck" ,rust-quickcheck-0.6)
-        ("rust-rand" ,rust-rand-0.4))))))
-
 (define-public rust-bytelines-2
   (package
     (name "rust-bytelines")
