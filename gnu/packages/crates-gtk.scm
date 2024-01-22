@@ -1403,17 +1403,19 @@
 (define-public rust-glib-0.18
   (package
     (name "rust-glib")
-    (version "0.18.2")
+    (version "0.18.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glib" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06dxrhispzz20n33b5k2gg723p27rprc87xbxb2ng06f07xnlc8w"))))
+        (base32 "1r8fw0627nmn19bgk3xpmcfngx3wkn7mcpq5a8ma3risx3valg93"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=structured_log")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
         ("rust-futures-channel" ,rust-futures-channel-0.3)
@@ -1432,7 +1434,7 @@
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
+       (("rust-criterion" ,rust-criterion-0.5)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-trybuild2" ,rust-trybuild2-1))))
