@@ -28023,26 +28023,24 @@ their key-value pairs in a user controllable order.")
 (define-public rust-headers-0.3
   (package
     (name "rust-headers")
-    (version "0.3.3")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "headers" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hyafm9q5havnbljfdzpkb7wrpx11ayzqzv02abycmklgk2rss32"))))
+        (base32 "0w62gnwh2p1lml0zqdkrx9dp438881nhz32zrzdy61qa0a9kns06"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
-        ("rust-bitflags" ,rust-bitflags-1)
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
         ("rust-bytes" ,rust-bytes-1)
         ("rust-headers-core" ,rust-headers-core-0.2)
         ("rust-http" ,rust-http-0.2)
+        ("rust-httpdate" ,rust-httpdate-1)
         ("rust-mime" ,rust-mime-0.3)
-        ("rust-sha-1" ,rust-sha-1-0.8)
-        ("rust-time" ,rust-time-0.1))))
+        ("rust-sha1" ,rust-sha1-0.10))))
     (home-page "https://hyper.rs")
     (synopsis "Typed HTTP headers")
     (description "This package provides typed HTTP headers.")
