@@ -9224,32 +9224,6 @@ metadata}.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
-(define-public rust-cargo-metadata-0.9
-  (package
-    (inherit rust-cargo-metadata-0.13)
-    (name "rust-cargo-metadata")
-    (version "0.9.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cargo_metadata" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "00pjms89lghvizh4d55lz80hvrih9r55xv9m5wd9vcsgc163gqs6"))))
-    (arguments
-     `(#:tests? #f
-       #:cargo-inputs
-       (("rust-semver" ,rust-semver-0.9)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-docopt" ,rust-docopt-1)
-        ("rust-structopt" ,rust-structopt-0.2))))))
-
 (define-public rust-cargo-lock-8
   (package
     (name "rust-cargo-lock")
