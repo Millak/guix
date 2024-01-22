@@ -119,20 +119,21 @@
 (define-public rust-git-version-0.3
   (package
     (name "rust-git-version")
-    (version "0.3.4")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "git-version" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qj1rd19v8vg094b3fj0gy6ca53v93lhrl31wg1fs7g0y61qx4cl"))))
+        (base32 "06ddi3px6l2ip0srn8512bsh8wrx4rzi65piya0vrz5h7nm6im8s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; not a git repository
        #:cargo-inputs
-       (("rust-git-version-macro" ,rust-git-version-macro-0.3)
-        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))
+       (("rust-git-version-macro" ,rust-git-version-macro-0.3))
+       #:cargo-development-inputs (("rust-assert2" ,rust-assert2-0.3)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/fusion-engineering/rust-git-version")
     (synopsis "Embed git information in your code at compile-time")
     (description
