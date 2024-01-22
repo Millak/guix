@@ -46,6 +46,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages golang)
