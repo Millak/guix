@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
@@ -2605,7 +2605,7 @@ memoized as a function of '%current-system'."
    (package
      (inherit gnumach-headers)
      (name "gnumach-headers-boot0")
-     (version "1.8+git20221224")
+     (version "1.8+git20230410")
      (source
       (origin
         (inherit (package-source gnumach-headers))
@@ -2618,7 +2618,7 @@ memoized as a function of '%current-system'."
                   "gnumach-" version ".tar.gz"))
             (sha256
              (base32
-              "0vb19ynvrxz302snqxkd0wgizwa5fw2x06a4zjsllqb9ijbq9mc8")))))))
+              "1s09256g2ny46idrn8frzs7r51la9ni45bmglmswlsmz9ii7dpi4")))))))
      (native-inputs (list autoconf-boot0 automake-boot0 texinfo-boot0))
      (arguments
       (substitute-keyword-arguments (package-arguments gnumach-headers)
