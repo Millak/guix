@@ -2751,7 +2751,7 @@ extension for the Trust-DNS client to use tokio-openssl for TLS.")
   (package
     (inherit rust-trust-dns-openssl-0.20)
     (name "rust-trust-dns-openssl")
-    (version "0.19.5")
+    (version "0.19.7")
     (source
      (origin
        (method url-fetch)
@@ -2759,7 +2759,7 @@ extension for the Trust-DNS client to use tokio-openssl for TLS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0as4jzrscjlmgj04l2aa2lf09vpd0fg5v0vfz019ybxgiqn89g45"))))
+         "1pn6q6ipgmjp35gbjbly3hc8lqz3f359wcwlj603f9nwahfnahif"))))
     (arguments
      `(#:cargo-inputs
        (("rust-futures" ,rust-futures-0.3)
