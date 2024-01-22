@@ -3218,7 +3218,7 @@ other queries.")
   (package
     (inherit rust-trust-dns-resolver-0.20)
     (name "rust-trust-dns-resolver")
-    (version "0.19.5")
+    (version "0.19.7")
     (source
      (origin
        (method url-fetch)
@@ -3226,18 +3226,17 @@ other queries.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0xqv31gndybcrr5gi6jjp47qcvdxsc147s69a0y0nc6qqgyws8qg"))))
+         "1sqcvwcfllypmjqnhf4dksggpykq57nkh2vdl99xnx8i6wxmj3vi"))))
     (arguments
      `(#:tests? #false                  ;network unreachable
        #:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-futures" ,rust-futures-0.3)
         ("rust-ipconfig" ,rust-ipconfig-0.2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-lru-cache" ,rust-lru-cache-0.1)
-        ("rust-resolv-conf" ,rust-resolv-conf-0.6)
+        ("rust-resolv-conf" ,rust-resolv-conf-0.7)
         ("rust-rustls" ,rust-rustls-0.17)
         ("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1)
