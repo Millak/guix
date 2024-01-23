@@ -84,13 +84,13 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.11.4")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1amfxpnni0cagwjpb0i1kdgnh4sh484ryn4gfkgbjcspgy7bg8lh"))))
+        (base32 "18rn15wg3lp58z204fbjjhy0h79c53yg3c4qqs9h3liniamspxab"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -135,7 +135,19 @@
                         (copy-recursively "build/html" html)))
                     (format #t "sphinx-build not found, skipping~%"))))))))
     (propagated-inputs
-     (list python-numpy python-matplotlib python-pyparsing python-pythran))
+     (list python-jupytext
+           python-matplotlib
+           python-mpmath
+           python-mypy
+           python-numpy
+           python-numpydoc
+           python-pydata-sphinx-theme
+           python-pydevtool
+           python-pythran
+           python-rich-click
+           python-sphinx
+           python-threadpoolctl
+           python-typing-extensions))
     (inputs (list openblas pybind11-2.10))
     (native-inputs
      (list gfortran
@@ -147,11 +159,14 @@
            python-click
            python-cython-0.29.35
            python-doit
+           python-hypothesis
            python-pooch
+           python-pycodestyle
            python-pydevtool
            python-pytest
-           python-pytest-xdist
-           python-threadpoolctl))
+           python-pytest-cov
+           python-pytest-timeout
+           python-pytest-xdist))
     (home-page "https://scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
