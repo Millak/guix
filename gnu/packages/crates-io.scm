@@ -65618,20 +65618,44 @@ system or application with the relevant platform APIs.  The library is also
 no_std compatible by default, only relying on alloc.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-syscallz-0.17
+  (package
+    (name "rust-syscallz")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "syscallz" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19zc9rdjxhddbmnkdhk2aixh8csqv4rhbll78smvy471qdvxhpx0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-seccomp-sys" ,rust-seccomp-sys-0.1)
+                       ("rust-strum" ,rust-strum-0.25)
+                       ("rust-strum-macros" ,rust-strum-macros-0.25))
+       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))
+    (inputs (list libseccomp))
+    (home-page "https://github.com/kpcyrd/syscallz-rs")
+    (synopsis "Simple seccomp library for rust")
+    (description "Simple seccomp library for rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-syscallz-0.16
   (package
+    (inherit rust-syscallz-0.17)
     (name "rust-syscallz")
     (version "0.16.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "syscallz" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
          "1bd6k8v52fwvzspz6g8rrlrc0wffcbx022xvi62bb0z5czrgf3qi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
@@ -65640,12 +65664,7 @@ no_std compatible by default, only relying on alloc.")
         ("rust-strum" ,rust-strum-0.21)
         ("rust-strum-macros" ,rust-strum-macros-0.21))
        #:cargo-development-inputs
-       (("rust-libc" ,rust-libc-0.2))))
-    (inputs (list libseccomp))
-    (home-page "https://github.com/kpcyrd/syscallz-rs")
-    (synopsis "Simple seccomp library for rust")
-    (description "Simple seccomp library for rust")
-    (license (list license:expat license:asl2.0))))
+       (("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-sysctl-0.4
   (package
