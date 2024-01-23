@@ -4728,6 +4728,45 @@ meso, or continuum scale.")
 files.")
     (license license:expat)))
 
+(define-public lsgkm
+  (package
+    (name "lsgkm")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Dongwon-Lee/lsgkm.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0b3m94kndvimdfjaf1q2yhmsn7lm5s9v81c5xgfjcp6ig7mh3sa5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags '(list "-C" "src")
+      #:tests? #false                   ;there are no executable tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (for-each (lambda (file)
+                            (install-file file bin))
+                          '("src/gkmtrain"
+                            "src/gkmpredict"))))))))
+    (home-page "https://github.com/Dongwon-Lee/lsgkm")
+    (synopsis "Predict regulatory DNA elements in large-scale data")
+    (description "gkm-SVM, a sequence-based method for predicting regulatory
+DNA elements, is a useful tool for studying gene regulatory mechanisms.
+LS-GKM is an effort to improve the method.  It offers much better scalability
+and provides further advanced gapped k-mer based kernel functions.  As a
+result, LS-GKM achieves considerably higher accuracy than the original
+gkm-SVM.")
+    (license license:gpl3+)))
+
 (define-public python-pybigwig
   (package
     (name "python-pybigwig")
