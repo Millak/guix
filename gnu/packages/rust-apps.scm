@@ -1247,21 +1247,25 @@ search tools like The Silver Searcher, @command{ack} and @command{grep}.")
 (define-public rot8
   (package
     (name "rot8")
-    (version "0.1.4")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rot8" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1m5kzpqq9pgc19lbnh20iaq654lzlmc1m5fc9f73w2vpwqdiw1qf"))))
+                "1bvb87sr9pkf6sj5ghgmga4nrp5kwiqnllzi672da5vs915xh8li"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-2)
-                       ("rust-glob" ,rust-glob-0.3)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1))))
+     `(#:install-source? #f
+       #:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-wayland-client" ,rust-wayland-client-0.31)
+        ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.2))))
     (home-page "https://github.com/efernau/rot8/")
     (synopsis "Automatic display rotation using built-in accelerometer")
     (description "@command{rot8} is a daemon that automates rotating screen and
