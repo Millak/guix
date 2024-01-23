@@ -996,14 +996,14 @@ obtained and installed separately.")
 (define-public python-pycups
   (package
     (name "python-pycups")
-    (version "1.9.74")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycups" version ".tar.bz2"))
        (sha256
         (base32
-         "1ffp7sswhdsfpy88zg0cc8kl04wygkjs01rlm9f0spbwk8jhy2c6"))))
+         "140c7073bkhx8w9qpaynllhynkkg0rzj3a4wjh9fnj15yvjlqhsp"))))
     (build-system python-build-system)
     (arguments
      '(;; Tests require CUPS to be running
