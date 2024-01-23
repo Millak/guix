@@ -1813,26 +1813,32 @@ revert and check changes.
 (define-public hex
   (package
     (name "hex")
-    (version "0.4.2")
+    (version "0.6.0")
     (source
      (origin
        ;; crates.io does not provide the test data.
+       ;; Not all releases are pushed to crates.io.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/sitkevij/hex")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03x27nixdlnkkrh85gy4152arp02kpjwq0i9dn9p73lyr24s64lv"))))
+        (base32 "0kv07ghibifs6rnskg1na6a0hdb0f8vqfbpv5k8g09lc2075gjv1"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; rusty-hook provides a git hook for CI.
+                   ((".*rusty-hook.*") ""))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-atty" ,rust-atty-0.2)
-        ("rust-clap" ,rust-clap-2)
+        ("rust-clap" ,rust-clap-4)
         ("rust-no-color" ,rust-no-color-0.1))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1))))
+       (("rust-assert-cmd" ,rust-assert-cmd-2))))
     (home-page "https://github.com/sitkevij/hex")
     (synopsis "Hexadecimal colorized view of a file")
     (description
