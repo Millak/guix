@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -43,6 +43,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pretty-print)
@@ -129,7 +130,7 @@ driver is known to work with these printers:
 (define-public cups-filters
   (package
     (name "cups-filters")
-    (version "1.28.15")
+    (version "1.28.16")
     (source
      (origin
        (method url-fetch)
@@ -137,7 +138,7 @@ driver is known to work with these printers:
         (string-append "https://openprinting.org/download/cups-filters/"
                        "cups-filters-" version ".tar.xz"))
        (sha256
-        (base32 "12s7s2jgnh4q7ws7r2is6xp3pqq818jhnm4vpyzyywmvkxvfq1x9"))
+        (base32 "1h4s35xkbxhxpid39yaiy0gmaj3lck8lhzfdfl3h58hxfpx0nh1s"))
        (modules '((guix build utils)))
        (snippet
         ;; Install backends, banners and filters to cups-filters output
@@ -180,7 +181,11 @@ driver is known to work with these printers:
                                   (assoc-ref %build-inputs "bash")
                                   "/bin/bash")
                    (string-append "--with-rcdir="
-                                  #$output "/etc/rc.d"))
+                                  #$output "/etc/rc.d")
+                   ;; QPDF headers include C++17 libraries such as
+                   ;; std::string_view.
+                   "CFLAGS=-std=gnu17"
+                   "CXXFLAGS=-std=gnu++17")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-foomatic-hardcoded-file-names
@@ -227,6 +232,7 @@ driver is known to work with these printers:
            grep
            ijs
            lcms
+           libexif
            libjpeg-turbo
            libpng
            libtiff
