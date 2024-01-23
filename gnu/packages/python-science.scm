@@ -50,6 +50,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages image)
@@ -411,28 +412,65 @@ of regular expressions from text data and automatic test generation.")
     (version "4.0.10")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "trimesh" version))
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/mikedh/trimesh")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1p3cnkajh2zmp6zwn23q3c73jcjlkq61h3r53ys0bmg58l8kpqrn"))))
+        (base32 "0ry04qaw0pb3hkxv4gmna87jwk97aqangd21wbr2dr4xshmkbyyb"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-numpy))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; XXX: When more optional modules are available review
+                    ;; disabled tests once again.
+                    ;;
+                    ;; Disable tests requiring optional, not packed modules.
+                    "not test_material_round"
+                    " and not test_bezier_example"
+                    " and not test_discrete"
+                    " and not test_dxf"
+                    " and not test_layer"
+                    " and not test_multi_nodupe"
+                    " and not test_obj_roundtrip"
+                    " and not test_roundtrip"
+                    " and not test_scene"
+                    " and not test_slice_onplane"
+                    " and not test_svg"
+                    " and not test_svg"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            (lambda _
+              (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
+                (("\\$MESH_PRE")
+                 "'$MESH_PRE'")))))))
     (native-inputs
      (list python-coveralls
            python-pyinstrument
            python-pytest
            python-pytest-cov))
-    (arguments
-     `(;; TODO: Get tests to work.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _
-             (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
-               (("\\$MESH_PRE")
-                "'$MESH_PRE'")))))))
+    (propagated-inputs
+     (list python-chardet
+           python-colorlog
+           python-httpx
+           python-jsonschema
+           python-lxml
+           python-networkx
+           python-numpy
+           python-pillow
+           ;; python-pycollada   ; not packed yet, optional
+           ;; python-pyglet      ; not packed yet, optional
+           python-requests
+           python-rtree
+           python-scipy
+           python-setuptools
+           python-shapely
+           ;; python-svg-path   ; not packed yet, optional
+           python-sympy
+           python-xxhash))
     (home-page "https://github.com/mikedh/trimesh")
     (synopsis "Python library for loading and using triangular meshes")
     (description
