@@ -1437,6 +1437,7 @@ ing, and tagging large collections of email messages.")
     (arguments
      (list
       #:exclude #~(cons* "make-deps.el" "rstdoc.el" %default-exclude)
+      #:include #~(cons* "notmuch-logo.svg" %default-include)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
