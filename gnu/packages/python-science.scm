@@ -2145,40 +2145,35 @@ functions, convolutions, artificial neural networks etc.")
               (sha256
                (base32
                 "18l26s53yf5j9yh2zwq83n74qq4f2iq0cfblamsw4y9k35l1c108"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (chdir "pydicom/tests")
-               (invoke "python3" "-m" "pytest" "-k" ;skip tests using web data
-                       (string-append
-                        "not test_jpeg_ls_pixel_data.py"
-                        " and not test_gdcm_pixel_data.py"
-                        " and not test_pillow_pixel_data.py"
-                        " and not test_rle_pixel_data.py"
-                        " and not Test_JPEG_LS_Lossless_transfer_syntax"
-                        " and not test_numpy_pixel_data.py"
-                        " and not test_data_manager.py"
-                        " and not test_handler_util.py"
-                        " and not test_overlay_np.py"
-                        " and not test_encoders_pydicom.py"
-                        " and not test_encaps.py"
-                        " and not test_reading_ds_with_known_tags_with_UN_VR"
-                        " and not TestDatasetOverlayArray"
-                        " and not TestReader"
-                        " and not test_filewriter.py"))))))))
+      #:test-flags
+      ;; Skip tests that require networking.
+      #~(list "-k" (string-append
+                    "not test_jpeg_ls_pixel_data.py"
+                    " and not test_gdcm_pixel_data.py"
+                    " and not test_pillow_pixel_data.py"
+                    " and not test_rle_pixel_data.py"
+                    " and not Test_JPEG_LS_Lossless_transfer_syntax"
+                    " and not test_numpy_pixel_data.py"
+                    " and not test_data_manager.py"
+                    " and not test_handler_util.py"
+                    " and not test_overlay_np.py"
+                    " and not test_encoders_pydicom.py"
+                    " and not test_encaps.py"
+                    " and not test_reading_ds_with_known_tags_with_UN_VR"
+                    " and not TestDatasetOverlayArray"
+                    " and not TestReader"
+                    " and not test_filewriter.py"))))
     (native-inputs (list python-pytest))
     (inputs (list gdcm libjpeg-turbo))
     (propagated-inputs (list python-numpy python-pillow))
     (home-page "https://github.com/pydicom/pydicom")
     (synopsis "Python library for reading and writing DICOM data")
     (description "@code{python-pydicom} is a Python library for reading and
-writing DICOM medical imaging data.  It lets developers read, modify and write
-DICOM data in a pythonic way.")
+writing DICOM medical imaging data.  It can read, modify and write DICOM
+data.")
     (license license:expat)))
 
 (define-public python-deepdish
