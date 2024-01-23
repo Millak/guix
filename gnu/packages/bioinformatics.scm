@@ -1100,6 +1100,43 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-scenic
+  (let ((commit "cedf8490a634da550cea2c831544e5f7f14467d2")
+        (revision "1"))
+    (package
+      (name "r-scenic")
+      (version (git-version "1.3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aertslab/SCENIC")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17ai0q260hdqbvm1km1s5dw93pgz4f546ycfii57jyy9m9jka7r0"))))
+      (properties `((upstream-name . "SCENIC")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-aucell
+                               r-data-table
+                               r-dynamictreecut
+                               r-genie3
+                               r-ggrepel
+                               r-mixtools
+                               r-nmf
+                               r-rcistarget
+                               r-rtsne))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/aertslab/SCENIC")
+      (synopsis
+       "SCENIC (Single Cell rEgulatory Network Inference and Clustering)")
+      (description "SCENIC (Single-cell regulatory network inference and
+clustering) is an R package to infer Gene Regulatory Networks and cell types
+from single-cell RNA-seq data.")
+      ;; As of commit cedf8490a634da550cea2c831544e5f7f14467d2 the license is
+      ;; GPLv3.
+      (license license:gpl3))))
+
 (define-public r-singlet
   (let ((commit "765a6c45081807a1522f0e8983e2417822a36f36")
         (revision "1"))
