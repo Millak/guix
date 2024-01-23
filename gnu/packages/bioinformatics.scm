@@ -1507,6 +1507,39 @@ cpp.find_library('hdf5_cpp', dirs : '~a'), "
      "Blasr is a genomic sequence aligner for processing PacBio long reads.")
     (license license:bsd-3)))
 
+(define-public randfold
+  (package
+    (name "randfold")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://bioinformatics.psb.ugent.be/"
+                           "supplementary_data/erbon/nov2003/downloads/"
+                           "randfold-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0gqixl4ncaibrxmn25d6lm2hrw4ml2fj13nrc9q1kilsxdfi91mj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests provided
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "randfold"
+                            (string-append #$output "/bin")))))))
+    (inputs (list eddylab-squid))
+    (home-page
+     "http://bioinformatics.psb.ugent.be/supplementary_data/erbon/nov2003/")
+    (synopsis "Minimum free energy of folding randomization test software")
+    (description "randfold computes the probability that, for a given
+sequence, the @dfn{Minimum Free Energy} (MFE) of the secondary structure is
+different from MFE computed with random sequences.")
+    (license license:gpl2)))
+
 (define-public ribotaper
   (package
     (name "ribotaper")
