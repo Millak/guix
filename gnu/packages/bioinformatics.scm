@@ -4767,6 +4767,25 @@ result, LS-GKM achieves considerably higher accuracy than the original
 gkm-SVM.")
     (license license:gpl3+)))
 
+(define-public python-fcsparser
+  (package
+    (name "python-fcsparser")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fcsparser" version))
+       (sha256
+        (base32 "1skk1k8phq9sj4ar0cnq8px89y3kcyh5zrbl6anz9wcdcyzkc16z"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-pandas))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/eyurtsev/fcsparser")
+    (synopsis "Package for reading raw fcs files")
+    (description
+     "This package provides a Python package for reading raw fcs files")
+    (license license:expat)))
+
 (define-public python-pybigwig
   (package
     (name "python-pybigwig")
