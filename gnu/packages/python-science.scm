@@ -408,14 +408,14 @@ of regular expressions from text data and automatic test generation.")
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "3.23.5")
+    (version "4.0.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trimesh" version))
        (sha256
-        (base32 "08967axlnmfv98n05dhrkynyrmcc814hl8184gzzmcy4rjg6dzdx"))))
-    (build-system python-build-system)
+        (base32 "1p3cnkajh2zmp6zwn23q3c73jcjlkq61h3r53ys0bmg58l8kpqrn"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numpy))
     (native-inputs
