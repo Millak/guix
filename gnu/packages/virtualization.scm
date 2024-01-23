@@ -1623,98 +1623,95 @@ virtualization library.")
                 "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))))
     (build-system python-build-system)
     (arguments
-     `(#:use-setuptools? #f          ; uses custom distutils 'install' command
-       #:tests? #f                      ; TODO The tests currently fail
-                                        ; RuntimeError: Loop condition wasn't
-                                        ; met
-       #:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((ice-9 match)
-                  (srfi srfi-26)
-                  (guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-setup
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "virtinst/buildconfig.py"
-               (("/usr") (assoc-ref outputs "out")))
-             #t))
-         (add-after 'unpack 'fix-default-uri
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Xen is not available for now - so only patch qemu.
-             (substitute* "virtManager/createconn.py"
-               (("/usr(/bin/qemu-system-[a-zA-Z0-9_-]+)" _ suffix)
-                (search-input-file inputs suffix)))
-             #t))
-         (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((bin       (string-append (assoc-ref outputs "out") "/bin"))
-                    (bin-files (find-files bin ".*"))
-                    (paths     (map (match-lambda
-                                      ((output . directory)
-                                       (let* ((girepodir (string-append
-                                                          directory
-                                                          "/lib/girepository-1.0")))
-                                         (if (file-exists? girepodir)
-                                             girepodir #f))))
-                                    inputs)))
-               (for-each (lambda (file)
-                           (format #t "wrapping ~a\n" file)
-                           (wrap-program file
-                             `("GI_TYPELIB_PATH" ":" prefix
-                               ,(filter identity paths))))
-                         bin-files))
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               (setenv "XDG_CACHE_HOME" "/tmp")
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1")
-               ;; Dogtail requires that Assistive Technology support be enabled
-               (setenv "GTK_MODULES" "gail:atk-bridge")
-               (invoke "dbus-run-session" "--" "pytest" "--uitests"))
-             #t))
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'wrap 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+     (list #:use-setuptools? #f      ; uses custom distutils 'install' command
+           #:tests? #f               ; TODO: The tests currently fail
+                                     ; RuntimeError: Loop condition wasn't met
+           #:imported-modules
+           `((guix build glib-or-gtk-build-system)
+             ,@%python-build-system-modules)
+           #:modules
+           '((ice-9 match)
+             (srfi srfi-26)
+             (guix build python-build-system)
+             ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+             (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-setup
+                 (lambda _
+                   (substitute* "virtinst/buildconfig.py"
+                     (("/usr") #$output))))
+               (add-after 'unpack 'fix-default-uri
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Xen is not available for now - so only patch qemu.
+                   (substitute* "virtManager/createconn.py"
+                     (("/usr(/bin/qemu-system-[a-zA-Z0-9_-]+)" _ suffix)
+                      (search-input-file inputs suffix)))))
+               (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let* ((bin       (string-append #$output "/bin"))
+                          (bin-files (find-files bin ".*"))
+                          (paths     (map (match-lambda
+                                            ((output . directory)
+                                             (let* ((girepodir (string-append
+                                                                directory
+                                                                "/lib/girepository-1.0")))
+                                               (if (file-exists? girepodir)
+                                                   girepodir #f))))
+                                          inputs)))
+                     (for-each (lambda (file)
+                                 (format #t "wrapping ~a\n" file)
+                                 (wrap-program file
+                                   `("GI_TYPELIB_PATH" ":" prefix
+                                     ,(filter identity paths))))
+                               bin-files))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" "/tmp")
+                     (setenv "XDG_CACHE_HOME" "/tmp")
+                     (system "Xvfb :1 &")
+                     (setenv "DISPLAY" ":1")
+                     ;; Dogtail requires that Assistive Technology support be enabled
+                     (setenv "GTK_MODULES" "gail:atk-bridge")
+                     (invoke "dbus-run-session" "--" "pytest" "--uitests"))))
+               (add-after 'install 'glib-or-gtk-compile-schemas
+                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+               (add-after 'wrap 'glib-or-gtk-wrap
+                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (inputs
      (list dconf
            gtk+
            gtk-vnc
            gtksourceview-4
+           libosinfo
            libvirt
            libvirt-glib
-           libosinfo
-           vte
            python-libvirt
-           python-requests
+           python-libxml2
            python-pycairo
            python-pygobject
-           python-libxml2
-           spice-gtk))
+           python-requests
+           spice-gtk
+           vte))
     ;; virt-manager searches for qemu-img or kvm-img in the PATH.
     (propagated-inputs
      (list qemu))
     (native-inputs
-     `(("glib" ,glib "bin")             ; glib-compile-schemas
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+" ,gtk+ "bin")             ; gtk-update-icon-cache
-       ("perl" ,perl)                   ; pod2man
-       ("intltool" ,intltool)
-       ("rst2man" ,python-docutils)
-       ;; The following are required for running the tests
-       ;; ("python-pytest" ,python-pytest)
-       ;; ("python-dogtail" ,python-dogtail)
-       ;; ("xvfb" ,xorg-server-for-tests)
-       ;; ("dbus" ,dbus)
-       ;; ("at-spi2-core" ,at-spi2-core)
-       ;; ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ))
+     (list `(,glib "bin")               ; glib-compile-schemas
+           gobject-introspection
+           `(,gtk+ "bin")               ; gtk-update-icon-cache
+           intltool
+           perl                         ; pod2man
+           python-docutils              ; rst2man
+           ;; The following are required for running the tests
+           ;; at-spi2-core
+           ;; dbus
+           ;; gsettings-desktop-schemas
+           ;; python-dogtail
+           ;; python-pytest
+           ;; xorg-server-for-tests        ; xvfb
+           ))
     (home-page "https://virt-manager.org/")
     (synopsis "Manage virtual machines")
     (description
