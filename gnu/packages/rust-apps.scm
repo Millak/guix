@@ -1170,14 +1170,14 @@ on the terminal in a visually appealing way.")
 (define-public ripgrep
   (package
     (name "ripgrep")
-    (version "14.0.3")
+    (version "14.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ripgrep" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "192n1lih9vzhf7r2ak985fap23x608qjdq9pqjcf43h3g9mjzjh0"))))
+        (base32 "1n3zb5jfb8pv65jm4zmrcxlgpppkpd9pmcpg1ifvv13sqhxbrg6p"))))
     (build-system cargo-build-system)
     (arguments
      (list
