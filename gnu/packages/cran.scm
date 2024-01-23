@@ -14964,14 +14964,14 @@ from the @code{stats} package (plus some extra parameters).")
 (define-public r-cmplot
   (package
     (name "r-cmplot")
-    (version "4.5.0")
+    (version "4.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CMplot" version))
        (sha256
         (base32
-         "1gg3pq55shh9khw5bsrdhk0yqgyr9xhdzqhaqksihka64wsqmhd3"))))
+         "0ml6n1wjxrnq13042jihpjlmm6vmkaiks9n49qp7v7rg47gn2ik8"))))
     (properties `((upstream-name . "CMplot")))
     (build-system r-build-system)
     (home-page "https://github.com/YinLiLin/CMplot")
