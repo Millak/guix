@@ -6343,6 +6343,43 @@ sequences to the genome---manipulating the sequences to produce better mapping
 results.  The FASTX-Toolkit tools perform some of these preprocessing tasks.")
     (license license:agpl3+)))
 
+(define-public flash
+  (package
+    (name "flash")
+    (version "1.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/flashpage/FLASH-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1b1ns9ghbcxy92xwa2a53ikqacvnyhvca0zfv0s7986xzvvscp38"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No configure script
+          (delete 'configure)
+          ;; No install target
+          (replace 'install
+            (lambda _
+              (install-file "flash"
+                            (string-append #$output "/bin")))))))
+    (inputs (list zlib))
+    (home-page "http://ccb.jhu.edu/software/FLASH/")
+    (synopsis "Merge paired-end nucleotide reads from NGS experiments")
+    (description "FLASH (Fast Length Adjustment of SHort reads) is a tool to
+merge paired-end reads from next-generation sequencing experiments.  FLASH is
+designed to merge pairs of reads when the original DNA fragments are shorter
+than twice the length of reads.  The resulting longer reads can significantly
+improve genome assemblies.  They can also improve transcriptome assembly when
+FLASH is used to merge RNA-seq data.")
+    (license license:gpl3+)))
+
 (define-public flexbar
   (package
     (name "flexbar")
