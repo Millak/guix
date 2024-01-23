@@ -10628,12 +10628,18 @@ Make @var{file} writable for its owner.
 @deffn {Procedure} copy-recursively source destination @
   [#:log (current-output-port)] [#:follow-symlinks? #f] @
   [#:copy-file copy-file] [#:keep-mtime? #f] [#:keep-permissions? #t]
+  [#:select? (const #t)]
 Copy @var{source} directory to @var{destination}.  Follow symlinks if
 @var{follow-symlinks?}  is true; otherwise, just preserve them.  Call
-@var{copy-file} to copy regular files.  When @var{keep-mtime?} is true,
-keep the modification time of the files in @var{source} on those of
-@var{destination}.  When @var{keep-permissions?} is true, preserve file
-permissions.  Write verbose output to the @var{log} port.
+@var{copy-file} to copy regular files.  Call @var{select?}, taking two
+arguments, @var{file} and @var{stat}, for each entry in @var{source},
+where @var{file} is the entry's absolute file name and @var{stat} is the
+result of @code{lstat} (or @code{stat} if @var{follow-symlinks?} is
+true); exclude entries for which @var{select?} does not return true.
+When @var{keep-mtime?} is true, keep the modification time of the files
+in @var{source} on those of @var{destination}.
+When @var{keep-permissions?} is true, preserve file permissions.  Write
+verbose output to the @var{log} port.
 @end deffn
 
 @deffn {Procedure} delete-file-recursively dir [#:follow-mounts? #f]
