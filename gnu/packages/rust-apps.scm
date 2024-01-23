@@ -1976,7 +1976,12 @@ runs a command whenever it detects modifications.")
        (uri (crate-uri "rbw" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p8bzpqgdc20l2vbb80gsb2ri5j16af958bixpnnp73mfvwzxvg1"))))
+        (base32 "1p8bzpqgdc20l2vbb80gsb2ri5j16af958bixpnnp73mfvwzxvg1"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
