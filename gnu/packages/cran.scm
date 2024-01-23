@@ -38258,20 +38258,18 @@ or into raw bitmap vectors for further processing in R.")
 (define-public r-antiword
   (package
     (name "r-antiword")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "antiword" version))
-        (sha256
-          (base32
-            "123v8zlczwh6fr1v3x7dl3885xlmddq1bqlcxih8zh07w0hlk1k2"))
-      (modules '((guix build utils)))
-      (snippet
-       '(begin
-           ;; unvendor libantiword
-          (delete-file-recursively "src")
-          #t))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "antiword" version))
+       (sha256
+        (base32
+         "1z1xfr2pb1k1k2v65l4bby4smkqg20i22jkvqzw4y2487gndx4cx"))
+       (modules '((guix build utils)))
+       ;; unvendor libantiword
+       (snippet
+        '(delete-file-recursively "src"))))
     (properties `((upstream-name . "antiword")))
     (build-system r-build-system)
     (arguments
@@ -38279,21 +38277,18 @@ or into raw bitmap vectors for further processing in R.")
        (modify-phases %standard-phases
          (add-after 'unpack 'use-system-antiword
            (lambda* (#:key inputs #:allow-other-keys)
-            (substitute* "R/antiword.R"
-             (("system.file\\(\"bin\", package = \"antiword\"\\)")
-              (string-append "\"" (assoc-ref inputs "antiword") "/bin\"")))
-             #t)))))
+             (substitute* "R/antiword.R"
+               (("system.file\\(\"bin\", package = \"antiword\"\\)")
+                (string-append "\"" (assoc-ref inputs "antiword") "/bin\""))))))))
     (inputs (list antiword))
     (propagated-inputs (list r-sys))
-    (home-page
-      "https://github.com/ropensci/antiword#readme")
-    (synopsis
-      "Extract Text from Microsoft Word Documents")
+    (home-page "https://github.com/ropensci/antiword#readme")
+    (synopsis "Extract text from Microsoft Word documents")
     (description
-      "Wraps the @code{AntiWord} utility to extract text from Microsoft Word
-documents.  The utility only supports the old @code{doc} format, not the new
-xml based @code{docx} format.  Use the @code{xml2} package to read the
-latter.")
+     "This package wraps the @code{AntiWord} utility to extract text from
+Microsoft Word documents.  The utility only supports the old @code{doc}
+format, not the new XML based @code{docx} format.  Use the @code{xml2} package
+to read the latter.")
     (license license:gpl2)))
 
 (define-public r-readtext
