@@ -6147,13 +6147,13 @@ some utility functions.")
 (define-public r-paletteer
   (package
     (name "r-paletteer")
-    (version "1.5.0")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "paletteer" version))
               (sha256
                (base32
-                "1mm0k651356cjasv7wibscw82m1k8mwpp4xafpv66dsq24h28ikl"))))
+                "1n4jim2fgyff6c5mjridq92jgvr5m2qgwfsgvhyj1pwk1hq21pmm"))))
     (properties `((upstream-name . "paletteer")))
     (build-system r-build-system)
     (propagated-inputs (list r-prismatic r-rematch2 r-rlang r-rstudioapi))
