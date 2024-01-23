@@ -2135,7 +2135,7 @@ functions, convolutions, artificial neural networks etc.")
 (define-public python-pydicom
   (package
     (name "python-pydicom")
-    (version "2.3.0")
+    (version "2.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2144,7 +2144,7 @@ functions, convolutions, artificial neural networks etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18l26s53yf5j9yh2zwq83n74qq4f2iq0cfblamsw4y9k35l1c108"))))
+                "0ksyyc1hbhyqy289a2frn84ss29fb7czirx3dkxx56f4ia33b4c8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
