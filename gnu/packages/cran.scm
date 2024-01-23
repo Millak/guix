@@ -8017,6 +8017,33 @@ for Environmental Statistics\" (Millard, 2013, Springer, ISBN
 @url{https://link.springer.com/book/10.1007/978-1-4614-8456-1}).")
     (license license:gpl3+)))
 
+(define-public r-suntools
+  (package
+    (name "r-suntools")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "suntools" version))
+       (sha256
+        (base32 "1qlp0q2ckqg5v3yvbr98k3nr9awgg7ks0l1103nqvm1ssadv7ds2"))))
+    (properties `((upstream-name . "suntools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-sf))
+    (home-page "https://github.com/adokter/suntools/")
+    (synopsis
+     "Calculate sun position, sunrise, sunset, solar noon and twilight")
+    (description
+     "This package provides a set of convenient functions for calculating
+sun-related information, including the sun's position (elevation and azimuth),
+and the times of sunrise, sunset, solar noon, and twilight for any given
+geographical location on Earth.  These calculations are based on equations
+provided by the National Oceanic & Atmospheric Administration (NOAA) as
+described in \"Astronomical Algorithms\" by Jean Meeus (1991).  A resource for
+researchers and professionals working in fields such as climatology, biology,
+and renewable energy.")
+    (license license:gpl3+)))
+
 (define-public r-suppdists
   (package
     (name "r-suppdists")
