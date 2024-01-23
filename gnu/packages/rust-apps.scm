@@ -1838,7 +1838,13 @@ revert and check changes.
         ("rust-clap" ,rust-clap-4)
         ("rust-no-color" ,rust-no-color-0.1))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2))))
+       (("rust-assert-cmd" ,rust-assert-cmd-2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-more
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "hx.1" (string-append out "/share/man/man1"))))))))
     (home-page "https://github.com/sitkevij/hex")
     (synopsis "Hexadecimal colorized view of a file")
     (description
