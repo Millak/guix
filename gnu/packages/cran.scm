@@ -3468,13 +3468,13 @@ the group sizes are small.")
 (define-public r-shadowtext
   (package
     (name "r-shadowtext")
-    (version "0.1.2")
+    (version "0.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "shadowtext" version))
               (sha256
                (base32
-                "0zdfidrcnmxmfhngv86ppxrjmpmz9kl78l4yfah2lc5vgmrlwg15"))))
+                "109bq4d3j7vw6rcj9cjby955bdzgghkxwvwrb974xqq16kzzc6l6"))))
     (properties `((upstream-name . "shadowtext")))
     (build-system r-build-system)
     (propagated-inputs
