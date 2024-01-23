@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -47,6 +47,7 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages groff)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages gv)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
@@ -304,7 +305,7 @@ a fast alternative to @code{IOStreams}.")
     ;; The ctags that comes with emacs does not support the --excmd options,
     ;; so can't be used
     (inputs
-     (list boost))
+     (list boost guile-3.0))
     (native-inputs
      (list bison flex))
     (arguments
@@ -336,7 +337,15 @@ a fast alternative to @code{IOStreams}.")
                    (substitute* '("tests/test.sh.html"
                                   "tests/test2.sh.html"
                                   "tests/test.tcl.html")
-                     (("#! */bin/sh") "#!/bin/sh")))))))
+                     (("#! */bin/sh") "#!/bin/sh"))))
+               (add-after 'install 'wrap-scripts
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (for-each
+                     (lambda (script)
+                       (wrap-script (string-append #$output "/bin/" script)
+                         `("PATH" ":" prefix (,(string-append #$output "/bin")))))
+                     (list "cpp2html" "java2html" "source-highlight-esc.sh"
+                           "src-hilite-lesspipe.sh")))))))
     (home-page "https://www.gnu.org/software/src-highlite/")
     (synopsis "Produce a document with syntax highlighting from a source file")
     (description
