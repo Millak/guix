@@ -14992,6 +14992,27 @@ tasks, sockets, files, locks, and queues.")
 designed to efficiently cope with extremely large amounts of data.")
     (license license:bsd-3)))
 
+(define-public python-tasklogger
+  (package
+    (name "python-tasklogger")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tasklogger" version))
+       (sha256
+        (base32 "1901mibcp6aiyjy8afnybrxnb0dkbdxlbvjqbr3gginlw7dr18xh"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-deprecated))
+    (native-inputs (list python-coverage python-coveralls python-nose2
+                         python-numpy))
+    (home-page "https://github.com/scottgigante/tasklogger")
+    (synopsis "Extension to the core Python logging library")
+    (description "This package provides an extension to the core Python
+logging library for logging the beginning and completion of tasks and
+subtasks.")
+    (license license:gpl2)))
+
 (define-public python-sniffio
   (package
     (name "python-sniffio")
