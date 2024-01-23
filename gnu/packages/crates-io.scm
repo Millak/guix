@@ -56310,6 +56310,23 @@ sub-processes using a fork-like interface.")
     (description "This package provides Rustyline macros implementation in Rust.")
     (license license:expat)))
 
+(define-public rust-rustyline-derive-0.7
+  (package
+    (inherit rust-rustyline-derive-0.9)
+    (name "rust-rustyline-derive")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustyline-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "139dpx6zp0v6p5wc5n317jivi52dz5sq79v2zagc02ipgxfksz0h"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-rustyline-derive-0.3
   (package
     (inherit rust-rustyline-derive-0.9)
