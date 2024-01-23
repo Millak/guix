@@ -10993,6 +10993,28 @@ or to a file as well.")
        (("rust-nix" ,rust-nix-0.19)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-close-fds-0.3
+  (package
+    (name "rust-close-fds")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "close_fds" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vd2i1gkvfcgdlzgrkgivhx3ky0zs98g8q3mwmwrxmg97pridi1v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/cptpcrd/close_fds")
+    (synopsis "Library that makes it easy to close all open file descriptors")
+    (description
+     "This package provides a library that makes it easy to close all open file
+descriptors.")
+    (license license:expat)))
+
 (define-public rust-cloudabi-0.1
   (package
     (name "rust-cloudabi")
