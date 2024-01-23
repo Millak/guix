@@ -64,6 +64,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -467,6 +468,43 @@ millions of nodes (as long as they can fit in memory).  The core function is
 @code{find_partition} which finds the optimal partition using the louvain
 algorithm for a number of different methods.")
     (license license:gpl3+)))
+
+(define-public python-pygsp
+  (package
+    (name "python-pygsp")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyGSP" version))
+       (sha256
+        (base32 "002q4z3p3ka81rzhgi66qqmz1ccrg9hwch4bax7jsqixg64asx28"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These all fail due to a type error in scipy.
+      '(list "-k" (string-append "not test_bunny"
+                                 " and not test_lowstretchtree"
+                                 " and not test_nngraph"
+                                 " and not test_plot_graphs"
+                                 " and not test_randomregular"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-doctests
+           (lambda _
+             (substitute* "pygsp/tests/test_all.py"
+               (("def test_docstrings.*") "def _disabled_test_docstrings():\n")
+               (("return doctest.DocFileSuite.*") "return False\n")
+               (("suites.append\\(test_docstrings.*")
+                "")))))))
+    (propagated-inputs (list python-numpy python-scikit-image python-scipy))
+    (native-inputs (list python-coverage python-coveralls python-flake8))
+    (home-page "https://github.com/epfl-lts2/pygsp")
+    (synopsis "Graph Signal Processing in Python")
+    (description "The PyGSP is a Python package to ease signal processing on
+graphs.")
+    (license license:bsd-3)))
 
 (define-public faiss
   (package
