@@ -6890,20 +6890,65 @@ comes with a strict specification.")
     (description "This package provides a safe FnOnce boxing for Rust.")
     (license license:expat)))
 
+(define-public rust-boxxy-0.13
+  (package
+    (name "rust-boxxy")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "boxxy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rhzv4c6xn6va4dikbq2a2cmd5sa3svl13lhpcrchdn23y744aq0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-base64" ,rust-base64-0.13)
+                       ("rust-bufstream" ,rust-bufstream-0.1)
+                       ("rust-caps" ,rust-caps-0.5)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-clap" ,rust-clap-3)
+                       ("rust-close-fds" ,rust-close-fds-0.3)
+                       ("rust-errno" ,rust-errno-0.2)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libflate" ,rust-libflate-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.24)
+                       ("rust-pledge" ,rust-pledge-0.4)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-rustls" ,rust-rustls-0.20)
+                       ("rust-rustyline" ,rust-rustyline-10)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-ctrlc" ,rust-ctrlc-3)
+                                   ("rust-elf" ,rust-elf-0.0.10)
+                                   ("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-pem" ,rust-pem-1)
+                                   ("rust-rustls" ,rust-rustls-0.20)
+                                   ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/kpcyrd/boxxy-rs")
+    (synopsis "Linkable sandbox explorer")
+    (description
+     "This library provides an interactive shell that can be linked into a
+program to verify sandboxing measures are adequate.")
+    (license license:lgpl3)))
+
 (define-public rust-boxxy-0.12
   (package
+    (inherit rust-boxxy-0.13)
     (name "rust-boxxy")
     (version "0.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "boxxy" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1q0wpz955y3iwd35bqk3pbx2vx904fhyj75j7d6mrb7ib5fs5kxg"))))
-    (build-system cargo-build-system)
+        (base32 "1q0wpz955y3iwd35bqk3pbx2vx904fhyj75j7d6mrb7ib5fs5kxg"))))
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
@@ -6933,13 +6978,7 @@ comes with a strict specification.")
         ("rust-elf" ,rust-elf-0.0.10)
         ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-rustls" ,rust-rustls-0.16)
-        ("rust-sha2" ,rust-sha2-0.9))))
-    (home-page "https://github.com/kpcyrd/boxxy-rs")
-    (synopsis "Linkable sandbox explorer")
-    (description
-     "This library provides an interactive shell that can be linked into a
-program to verify sandboxing measures are adequate.")
-    (license license:lgpl3)))
+        ("rust-sha2" ,rust-sha2-0.9))))))
 
 (define-public rust-bresenham-0.1
   (package
