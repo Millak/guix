@@ -56118,6 +56118,45 @@ sub-processes using a fork-like interface.")
      "Rustyline is a readline implementation based on the linenoise package.")
     (license license:expat)))
 
+(define-public rust-rustyline-10
+  (package
+    (inherit rust-rustyline-12)
+    (name "rust-rustyline")
+    (version "10.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustyline" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vvsd68cch0lpcg6mcwfvfdd6r4cxbwis3bf9443phzkqcr3rs61"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-clipboard-win" ,rust-clipboard-win-4)
+                       ("rust-dirs-next" ,rust-dirs-next-2)
+                       ("rust-fd-lock" ,rust-fd-lock-3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-nix" ,rust-nix-0.25)
+                       ("rust-radix-trie" ,rust-radix-trie-0.2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-skim" ,rust-skim-0.10)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-utf8parse" ,rust-utf8parse-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rustyline-derive" ,rust-rustyline-derive-0.7)
+        ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-rustyline-9
   (package
     (inherit rust-rustyline-12)
