@@ -35453,14 +35453,14 @@ object sizes.")
 (define-public r-yardstick
   (package
     (name "r-yardstick")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yardstick" version))
        (sha256
         (base32
-         "0aqxnxhyy0bdfm09b7jpzba6c4g5r6l4h48q2xfxsm353nni7wgb"))))
+         "0b0jdb6ybi3i76vycv13905xdkhqa1xz4b4b9675xqmnx2301yy4"))))
     (properties `((upstream-name . "yardstick")))
     (build-system r-build-system)
     (propagated-inputs
@@ -35472,7 +35472,8 @@ object sizes.")
            r-rlang
            r-tibble
            r-tidyselect
-           r-vctrs))
+           r-vctrs
+           r-withr))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/tidymodels/yardstick")
