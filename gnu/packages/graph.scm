@@ -57,6 +57,8 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -426,6 +428,57 @@ algorithm for community detection in large networks.")
      "Louvain is a general algorithm for methods of community detection in
 large networks.")
     (license license:gpl3+)))
+
+(define-public python-graphtools
+  (package
+    (name "python-graphtools")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KrishnaswamyLab/graphtools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aaxhij4y5z2vvc34qnb5py6nw3ciz35a3z4lfr223f9kvfpqgak"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Incompatibility with sklearn.
+               ;; 'kNNLandmarkGraph' object has no attribute '_landmark_op'
+               (delete-file "test/test_landmark.py")
+               (setenv "LOKY_MAX_CPU_COUNT" "1")
+               (invoke "nose2" "-v")))))))
+    (propagated-inputs
+     (list python-deprecated
+           python-future
+           python-numpy
+           python-pygsp
+           python-scikit-learn
+           python-scipy
+           python-tasklogger))
+    (native-inputs
+     (list util-linux ;for lscpu
+           python-anndata
+           python-black
+           python-coverage
+           python-coveralls
+           python-nose
+           python-nose2
+           python-pandas
+           python-parameterized
+           python-igraph))
+    (home-page "https://github.com/KrishnaswamyLab/graphtools")
+    (synopsis "Tools for building and manipulating graphs in Python")
+    (description "This package provides tools for building and manipulating
+graphs in Python.")
+    (license license:gpl3)))
 
 (define-public python-louvain-igraph
   (package
