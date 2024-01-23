@@ -926,7 +926,15 @@ safety and thread safety guarantees.")
              ;; Adjust vendored dependency to explicitly use rustix with libc backend.
              (substitute* "vendor/tempfile/Cargo.toml"
                (("features = \\[\"fs\"" all)
-                (string-append all ", \"use-libc\""))))))))))
+                (string-append all ", \"use-libc\"")))))))
+      (arguments
+       (if (target-riscv64?)
+         (substitute-keyword-arguments (package-arguments base-rust)
+           ((#:phases phases)
+            `(modify-phases ,phases
+               ;; This phase is no longer needed.
+               (delete 'revert-riscv-pause-instruction))))
+         (package-arguments base-rust))))))
 
 (define rust-1.75
   (let ((base-rust (rust-bootstrapped-package rust-1.74 "1.75.0"
