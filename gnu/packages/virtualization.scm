@@ -1645,8 +1645,8 @@ virtualization library.")
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; Xen is not available for now - so only patch qemu.
                    (substitute* "virtManager/createconn.py"
-                     (("/usr(/bin/qemu-system-[a-zA-Z0-9_-]+)" _ suffix)
-                      (search-input-file inputs suffix)))))
+                     (("/usr(/bin/qemu-system-\\*)" _ suffix)
+                      (string-append #$(this-package-input "qemu") suffix)))))
                (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let* ((bin       (string-append #$output "/bin"))
