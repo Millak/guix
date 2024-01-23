@@ -2149,6 +2149,45 @@ matplotlib Axes objects, making them easy to style and incorporate into
 multi-panel figures.")
     (license license:expat)))
 
+(define-public python-magic-impute
+  (package
+    (name "python-magic-impute")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KrishnaswamyLab/MAGIC")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1yjs16vg87lcg9g16bnblg1v9sk73j6dm229lkcz0bfjlzxjhv8w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "python"))))))
+    (propagated-inputs
+     (list python-future
+           python-graphtools
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-tasklogger))
+    (home-page "https://github.com/KrishnaswamyLab/MAGIC")
+    (synopsis "Markov affinity-based graph imputation of cells")
+    (description "MAGIC is an interactive tool to impute missing values in
+single-cell sequencing data and to restore the structure of the data.  It also
+provides data pre-processing functionality such as dimensionality reduction
+and gene expression visualization.")
+    (license license:gpl2+)))
+
 (define-public python-parabam
   (package
     (name "python-parabam")
