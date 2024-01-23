@@ -14254,17 +14254,23 @@ tidyverse workflow.")
 (define-public r-nodbi
   (package
     (name "r-nodbi")
-    (version "0.9.8")
+    (version "0.10.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "nodbi" version))
               (sha256
                (base32
-                "1ypwxy560pgn5zza1fv6ip0wh1y872lrf7a1blk2lvwf1q38dlkr"))))
+                "11sq2avgc8607ibi4193iynjfr51l435zmvdj1izf2ci0ca04azw"))))
     (properties `((upstream-name . "nodbi")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dbi r-jqr r-jsonlite r-stringi r-uuid))
+     (list r-dbi
+           r-jqr
+           r-jsonlite
+           r-r-utils
+           r-stringi
+           r-uuid
+           r-v8))
     (home-page "https://docs.ropensci.org/nodbi/")
     (synopsis "NoSQL database connector")
     (description
