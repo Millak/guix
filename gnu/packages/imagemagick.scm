@@ -65,23 +65,25 @@
      ;; The 7 release series has an incompatible API, while the 6 series is still
      ;; maintained. Don't update to 7 until we've made sure that the ImageMagick
      ;; users are ready for the 7-series API.
-     (version "6.9.12-91")
+     (version "6.9.13-5")
      (source (origin
                (method url-fetch)
                (uri (string-append "mirror://imagemagick/ImageMagick-"
                                    version ".tar.xz"))
                (sha256
                 (base32
-                 "0didbs10i9zb4dgripa851j7fivxb9jar7l3vvxz6i4kn6xvdv7r"))
-               (patches
-                (search-patches "imagemagick-fix-tests.patch"))))
+                 "1j1chkw33vjc37509vdwss28qywfvckvs73pvscldj8d0wnwypa8"))))
      (build-system gnu-build-system)
      (arguments
       (list
-       #:configure-flags #~(list "--with-frozenpaths" "--without-gcc-arch"
-
-                                 ;; Do not embed the build date in binaries.
-                                 "--enable-reproducible-build")
+       #:configure-flags
+       #~(list "--with-frozenpaths"
+               "--without-gcc-arch"
+               (string-append "--with-gs-font-dir="
+                              (search-input-directory %build-inputs
+                                                      "share/fonts/type1"))
+               ;; Do not embed the build date in binaries.
+               "--enable-reproducible-build")
        #:phases
        #~(modify-phases %standard-phases
            (add-before 'build 'pre-build
@@ -124,8 +126,11 @@
             libxml2
             pango
             xz
-            zlib))
-     (native-inputs (list pkg-config))
+            zlib
+            zstd))
+     (native-inputs
+      (list font-ghostscript
+            pkg-config))
      (outputs '("out"
                 "doc"))                 ; 26 MiB of HTML documentation
      (home-page "https://www.imagemagick.org/")
@@ -146,16 +151,14 @@ text, lines, polygons, ellipses and Bézier curves.")
     ;; The 7 release series has an incompatible API, while the 6 series is still
     ;; maintained. Don't update to 7 until we've made sure that the ImageMagick
     ;; users are ready for the 7-series API.
-    (version "6.9.12-91")
+    (version "6.9.13-5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://imagemagick/ImageMagick-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0didbs10i9zb4dgripa851j7fivxb9jar7l3vvxz6i4kn6xvdv7r"))
-              (patches
-               (search-patches "imagemagick-fix-tests.patch"))))))
+                "1j1chkw33vjc37509vdwss28qywfvckvs73pvscldj8d0wnwypa8"))))))
 
 (define-public perl-image-magick
   (package
