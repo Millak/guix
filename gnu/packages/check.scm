@@ -1227,14 +1227,14 @@ available via the @code{unittest.mock} module.")
 (define-public python-nose2
   (package
     (name "python-nose2")
-    (version "0.11.0")
+    (version "0.14.0")
       (source
         (origin
           (method url-fetch)
           (uri (pypi-uri "nose2" version))
           (sha256
            (base32
-            "1scxwvwbgfdj41acma41xzdhcfdwjj9irj6sfifdbyf9dryqs83d"))))
+            "1936fkrxg672bhp9i32ivna7jbydl9dpbhyn5f3059xrl1qdfa2w"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -1245,10 +1245,6 @@ available via the @code{unittest.mock} module.")
                      ;; Tests require nose2 itself.
                      (setenv "PYTHONPATH" (getcwd))
                      (invoke (string-append #$output "/bin/nose2") "-v")))))))
-    (native-inputs
-     (list python-coverage))
-    (propagated-inputs
-     (list python-six))
     (home-page "https://github.com/nose-devs/nose2")
     (synopsis "Next generation of nicer testing for Python")
     (description
