@@ -37,6 +37,7 @@
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix hg-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system mozilla)
@@ -491,23 +492,76 @@ the onion proxy and sets up proxy in user session, so you don't have to mess
 up with TOR on your system anymore.")
     (license license:gpl3+)))
 
+(define (mozilla-locale locale changeset hash-string)
+  (origin
+    (method hg-fetch)
+    (uri (hg-reference
+          (url (string-append "https://hg.mozilla.org/l10n-central/"
+                              locale))
+          (changeset changeset)))
+    (file-name (string-append "mozilla-locale-" locale))
+    (sha256 (base32 hash-string))))
+
+(define-syntax-rule (mozilla-locales (hash-string changeset locale) ...)
+  #~(list (cons #$locale #$(mozilla-locale locale changeset hash-string))
+          ...))
+
+;; See tor-browser-build/rbm.conf for the list.
+;; See browser/locales/l10n-changesets.json for the changeset.
+;; See update-mozilla-locales in gnuzilla.scm to automate updating changeset.
+(define %torbrowser-locales
+  (mozilla-locales
+   ;;                      sha256                            changeset    locale
+   ;;---------------------------------------------------------------------------
+   ("14wnjv13alaj04pd8i8ysillbr3ic2jqa867rbj5ncz8h4hxxfxc" "4c7e24ef78bd" "ar")
+   ("0mcc15n3p7yk4zdbr3na2fm7wq2184mbcrkk3cvppkl6p4k8654d" "24d50653ab5c" "ca")
+   ("0ray22hdb3nrv2yi5z98cvbmpk9kpsv96a8wzad5dr4sxy44ii0d" "0d96b6b04bfb" "cs")
+   ("0is7qbykv2pj0z9ll9r35vwjp0x29vmfr10yjl3s0amfaqzjqpqc" "0a0b774407cc" "da")
+   ("0yq7m4v7d7ayg90m66j73mflrnp709qw9n7skhpsl9h1wbhrd7q7" "633986260777" "de")
+   ("19g2ha32syq6rjcyl4ypmy7sc9w7xkvrpkic5lfc2yja6ll9116p" "e2f2d1541e38" "el")
+   ("018qi9zn24kzfcidsj9lbqfg5n97r295yr8fs953nyfdbim9jsfv" "accf5e4506c0" "es-ES")
+   ("11prhmh2cp95dpv6z0k479mb11zbfm541bvigs3gnkh3nazjvc8q" "37aa71d77cb6" "fa")
+   ("1lv9l98q88ixb0ph970yzphahgzbl97x0w069bkxa54kblkv1ch1" "dc40a4fd5d0e" "fi")
+   ("0wx4k7mwhvpv5w0wa4y5pca2q3jac62jv804nxqnfwh1bvi90wv0" "415c1f0e84bd" "fr")
+   ("17j68a6rbaphfcq38mgz6s1076fyy92fk0ldw8igql6gd85qjlaa" "d271f275cf48" "ga-IE")
+   ("0b7qdayljb4ryyqgalvi626lzg238gyn03m3a2f7afs9zi6px526" "46f8d7c031a6" "he")
+   ("14xbrzvc09fcp7qzllb65nis27hkg9pg5615y29xzwiz4g090my1" "086ac0260d6b" "hu")
+   ("0q5s4iz02xgmbw6nnpg6xg4pwz7n55nvxb9mj8vqdakq3faybbd5" "f03a6b3069a5" "id")
+   ("1lwklx3nkm56420xc3kbg892jm2b6202sjw33nvv766sm9hbvcap" "5c4b61165e1d" "is")
+   ("1n7l5idw9399n8ih1r1d6m8vzpzhwmnxmr9i7jvygkdc8d6adp1k" "07d5e1ff5f9b" "it")
+   ("1w6nw9cd92p1ndy82wwlq9xizyq3i8rq0nj7118gbxbx368mk2kj" "e6f9db9ce3e6" "ja")
+   ("1js99gbyc1dj33xc425wb08s1aw3bfznaacrqhw3l42yw1g1ghy4" "a15eb9feea2c" "ka")
+   ("116a8s0k2yvijy7qf0xpqm5w66gdzs32jhc06364sdar5v34lyhh" "805b85981696" "ko")
+   ("1yrjrhmmd0b810kxryja1j1md3rr2zpn1j9cbg05dgp5s8i89psk" "943a26276832" "lt")
+   ("08zccz7gflzpr20y0hvhmdsiz6ncags39kh83cay5ivchyib5qbi" "fbef80de5499" "mk")
+   ("100k4ibpwys9i4ghi5xvmgwr9api67ngav2hvb613rj6hdfd57f7" "20ec0915ec35" "ms")
+   ("0kk3cjlpghbi7j3ndb2s0c7g838fzd2mpzg01bp0cra8lzd0n2ac" "4ab6f0d05aa6" "my")
+   ("1i3r2ici95mazw07m2mrf192fc6bfa3x6j3c2pcc1zg7z9srihgh" "561b0cd86ec1" "nb-NO")
+   ("1c0m8jhn52h1dif5bswrdwrlzppgga01y61wlii4aaaw15imd6yd" "2a55df0cc389" "nl")
+   ("1gssvg306b80drp7kvc35kvcxwldb5sga0bapaxhv362irq1nya8" "a64a7dab01c4" "pl")
+   ("1dzh13x85a7src8szbrq5pjmrbak4isln9xdwjk7a1yq4g9h7jgs" "33bf2a9f4c49" "pt-BR")
+   ("0jx9y7fv44wxqapmcgr924wgb1l5cm95bgpmnhnjchp1zpmyfdl5" "a367feeadd33" "ro")
+   ("09x2jirf04kgc118a70z0xrb3msbm7vr4f41ig4xrwf2s5b816r3" "528b76d6aaca" "ru")
+   ("02y898f0ncjwka474r9lw361b0kywx1w56hj09i7im4j5jrsjnh1" "fa28d9d79cd3" "sq")
+   ("1cyimbd42aaq2amyhdbbx26jwsns77lsfl8g9a70bsjlpwzwzryg" "cc8e8962e59c" "sv-SE")
+   ("03mqrvcal7i172gf9239q9fnynfp5kg9b3r1w8gr9iz7rkr22gw5" "d361502c559e" "th")
+   ("12srgqkqwaidcwbz0y7zr59165f7aq5k5s3b81ql7ixdbwia91pm" "f6173aca4762" "tr")
+   ("1d91gfx5p6wyb455syw0b57wxl1sd4b4kcdvfk92pb050rqaqfgv" "c5ad4d4f70eb" "uk")
+   ("1dj8q2jw60a184f018jyldl51rfmvz1cndz3kbw0cc5l5sli7hwr" "0e75c226763d" "vi")
+   ("1dl2dpif4wwrlpx7zkz5qf8kk4vhxyf63016xcfpbhxizqqwc1ki" "df2d025ed631" "zh-CN")
+   ("1c63ngff9lsc1x3pi6lnkyxw19gdc65yc67p7alzvrka3cv292ia" "11f8d68148a4" "zh-TW")))
+
 ;; Must be of the form YYYYMMDDhhmmss as in `date +%Y%m%d%H%M%S`.
-(define %moz-build-date "20231219173144")
+(define %moz-build-date "20240123154553")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "13.0.8")
+(define %torbrowser-version "13.0.9")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "115.6.0esr-13.0-1-build2")
-
-;; Use the list in tor-browser-build/rbm.conf.
-(define %torbrowser-locales
-  '("ar" "ca" "cs" "da" "de" "el" "es-ES" "fa" "fi" "fr" "ga-IE" "he" "hu"
-    "id" "is" "it" "ja" "ka" "ko" "lt" "mk" "ms" "my" "nb-NO" "nl" "pl"
-    "pt-BR" "ro" "ru" "sq" "sv-SE" "th" "tr" "uk" "vi" "zh-CN" "zh-TW"))
+(define %torbrowser-firefox-version "115.7.0esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
 (define translation-base-browser
@@ -515,11 +569,11 @@ up with TOR on your system anymore.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "5490489a8d356a44d792300b4dfddba792d10f2e")))
+          (commit "cbd9b6c415ec2edb99237ef67ccd4f033a7b9c2a")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1knxary2zp2705xzzs76gpy37ri69yp32ajpmpxki3z5hp7mla7q"))))
+      "103dj1zzc68gxzjxwcpc4sbc6qca4zg8kkhdivzpq37ma07sp9sf"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define translation-tor-browser
@@ -527,11 +581,11 @@ up with TOR on your system anymore.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "273592eca488ca3bf535d3789b1130fd1970f09a")))
+          (commit "767ab5111f065b82151275775af5ecf7a529ef48")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "1mjqk4ljsjlwpqz29dnkhcvj24b75k2waicp0h07sll8qzv3rzz6"))))
+      "034s0ivbama497xq0904q8p6d7n2f2aa2vn2jcs9g4bvmhgwicw4"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -547,7 +601,7 @@ up with TOR on your system anymore.")
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "0v67x3pa0mga970andlz58k2wz8b8x7aman8gkkahnd003h9qgvq"))))
+         "0j143r24xzmq38nd5z1xqsa9zp35lws9rvlj6hb9xn3dnl67gh59"))))
     (arguments
      (list
       #:install-plan
@@ -577,7 +631,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "1c0p8aya7sh7nmawngkyzx2r02mvl9nd53hx2bl0jwvsj1vxxhca"))))
+         "0h05js9j1drzw5q98nlphsmvlp1k2a71z5jd06xk6pz29w6322pw"))))
     (build-system mozilla-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments icecat-minimal)
@@ -612,7 +666,7 @@ Browser.")
                 (setenv "MOZBUILD_STATE_PATH"
                         (in-vicinity (getcwd) ".mozbuild"))
                 (setenv "MOZ_CHROME_MULTILOCALE"
-                        (string-join '#$%torbrowser-locales))
+                        (string-join (map car #$%torbrowser-locales)))
                 ;; Make build reproducible.
                 (setenv "MOZ_BUILD_DATE" #$%moz-build-date)))
             (add-before 'configure 'mozconfig
@@ -633,11 +687,9 @@ Browser.")
                   (mkdir-p l10ncentral)
                   (for-each
                    (lambda (lang)
-                     (copy-recursively (find (lambda (path)
-                                               (string-suffix? lang path))
-                                             '#$all-mozilla-locales)
-                                       (in-vicinity l10ncentral lang)))
-                   '#$%torbrowser-locales))))
+                     (copy-recursively (cdr lang)
+                                       (in-vicinity l10ncentral (car lang))))
+                   #$%torbrowser-locales))))
             (add-after 'copy-firefox-locales 'copy-basebrowser-locales
               (lambda _
                 (let ((l10ncentral ".mozbuild/l10n-central"))
@@ -661,7 +713,7 @@ Browser.")
                              "translation-base-browser/~a/*"
                              "~a/~a/browser/chrome/browser/"))
                        lang l10ncentral lang)))
-                   '#$%torbrowser-locales))))
+                   (map car #$%torbrowser-locales)))))
             (add-after 'copy-basebrowser-locales 'copy-torbrowser-locales
               (lambda _
                 (let ((l10ncentral ".mozbuild/l10n-central"))
@@ -698,7 +750,7 @@ Browser.")
                        (format port "  locale/~a/ (chrome/locale/~a/*)~%"
                                lang lang)
                        (close port)))
-                   '#$%torbrowser-locales))))
+                   (map car #$%torbrowser-locales)))))
             (add-before 'build 'fix-addons-placeholder
               (lambda _
                 (substitute*
