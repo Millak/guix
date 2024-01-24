@@ -2681,7 +2681,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.30.0")
+    (version "0.31.0")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2689,7 +2689,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1fbws80glrakd08xzhifna831yk0bd8b0cizhfcjkg4km2nyx65c"))
+                "1cidv2373lwxy26kbzg4slaqvn2gpq67mvijgp0rydfx6mm6a89i"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
