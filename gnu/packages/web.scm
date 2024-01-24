@@ -123,6 +123,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-gtk)
   #:use-module (gnu packages crates-tls)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
