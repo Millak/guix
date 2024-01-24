@@ -23634,6 +23634,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:emacs emacs-no-x
       #:tests? #true
       #:test-command #~(list "emacs" "--batch" "-L" "."
                              "-l" "test/citar-test.el"
@@ -23643,10 +23644,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
       #:phases #~(modify-phases %standard-phases
                    (add-before 'build 'set-home
                      (lambda _
-                       (setenv "HOME" "/tmp")))
-                   ;; XXX: The following phase reports bogus errors. Suppress
-                   ;; it for now.
-                   (delete 'validate-compiled-autoloads))))
+                       (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list emacs-auctex
                              emacs-citeproc-el
                              emacs-embark
