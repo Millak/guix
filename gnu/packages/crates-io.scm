@@ -12164,14 +12164,14 @@ queue.")
   (package
     (inherit rust-concurrent-queue-2)
     (name "rust-concurrent-queue")
-    (version "1.2.2")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "concurrent-queue" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18w6hblcjjk9d0my3657ra1zdj79gwfjmzvc0b3985g01dahgv9h"))))
+        (base32 "176v15an6f686c9m5br57al23d7z3xzm3542walnwsdm9aj80ixg"))))
     (arguments
      `(#:cargo-inputs
        (("rust-cache-padded" ,rust-cache-padded-1))
