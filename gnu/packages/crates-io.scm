@@ -12135,24 +12135,24 @@ capabilities, for example to find out about its colored console abilities.")
 (define-public rust-concurrent-queue-2
   (package
     (name "rust-concurrent-queue")
-    (version "2.2.0")
+    (version "2.4.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "concurrent-queue" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0z0bnpgcblhrms6gph7x78yplj3qmlr5mvl38v9641zsxiqngv32"))))
+                "0qvk23ynj311adb4z7v89wk3bs65blps4n24q8rgl23vjk6lhq6i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-loom" ,rust-loom-0.5)
+        ("rust-loom" ,rust-loom-0.7)
         ("rust-portable-atomic" ,rust-portable-atomic-1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.4)
         ("rust-easy-parallel" ,rust-easy-parallel-3)
-        ("rust-fastrand" ,rust-fastrand-1))))
+        ("rust-fastrand" ,rust-fastrand-2))))
     (home-page "https://github.com/smol-rs/concurrent-queue")
     (synopsis "Concurrent multi-producer multi-consumer queue")
     (description
