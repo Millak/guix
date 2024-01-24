@@ -1863,7 +1863,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI release
@@ -1872,7 +1872,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05qzpq1zjs42bl0z8girfwcj3nfxs1a99c5525vp3589sglk351g"))))
+        (base32 "0xjp0l4rxk1s685skbx50m3m9hwlj78w74qwgswnkmkk6f7c8dsi"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
