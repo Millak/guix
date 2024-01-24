@@ -1820,6 +1820,93 @@ built on the Actix ecosystem.")
      "This package provides QUIC transport implementation based on Quinn.")
     (license license:expat)))
 
+(define-public rust-headers-0.3
+  (package
+    (name "rust-headers")
+    (version "0.3.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "headers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w62gnwh2p1lml0zqdkrx9dp438881nhz32zrzdy61qa0a9kns06"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-headers-core" ,rust-headers-core-0.2)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-httpdate" ,rust-httpdate-1)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-sha1" ,rust-sha1-0.10))))
+    (home-page "https://hyper.rs")
+    (synopsis "Typed HTTP headers")
+    (description "This package provides typed HTTP headers.")
+    (license license:expat)))
+
+(define-public rust-headers-0.2
+  (package
+    (inherit rust-headers-0.3)
+    (name "rust-headers")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "headers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hmnrra00cjqpsn05klnr9cysrv2bm19akxl5lncwcrgfbcafb48"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-bytes" ,rust-bytes-0.4)
+        ("rust-headers-core" ,rust-headers-core-0.1)
+        ("rust-http" ,rust-http-0.1)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-sha-1" ,rust-sha-1-0.8)
+        ("rust-time" ,rust-time-0.1))))))
+
+(define-public rust-headers-core-0.2
+  (package
+    (name "rust-headers-core")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "headers-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ab469xfpd411mc3dhmjhmzrhqikzyj8a17jn5bkj9zfpy0n9xp7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-http" ,rust-http-0.2))))
+    (home-page "https://hyper.rs")
+    (synopsis "Typed HTTP headers core trait")
+    (description "This package provides typed HTTP headers core trait.")
+    (license license:expat)))
+
+(define-public rust-headers-core-0.1
+  (package
+    (inherit rust-headers-core-0.2)
+    (name "rust-headers-core")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "headers-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ds20kg0igncs2r0jrcf26mq72k3j6ilanr0qwh7r7xak8kk2wcn"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.4)
+        ("rust-http" ,rust-http-0.1))))))
+
 (define-public rust-http-1
   (package
     (name "rust-http")
