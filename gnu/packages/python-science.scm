@@ -830,34 +830,16 @@ Python module with the same interface, but (hopefully) faster.")
 (define-public python-pyts
   (package
     (name "python-pyts")
-    (version "0.12.0")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyts" version))
               (sha256
                (base32
-                "1cb5jwp8g52a3hxay6mxbfzk16ly6yj6rphq8cwbwk1k2jdf11dg"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v"
-                       ;; XXX: This test fails for unknown reasons
-                       ;; Expected:
-                       ;;  (40, 9086)
-                       ;; Got:
-                       ;; (40, 9088)
-                       "-k"
-                       "not pyts.multivariate.transformation.weasel_muse.WEASELMUSE")))))))
+                "00pdzfkl0b4vhfdm8zas7b904jm2hhivdwv3wcmpik7l2p1yr85c"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-joblib
-           python-matplotlib
-           python-numba
-           python-numpy
+     (list python-joblib python-numba python-numpy
            python-scikit-learn
            python-scipy))
     (native-inputs
