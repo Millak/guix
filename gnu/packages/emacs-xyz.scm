@@ -33631,7 +33631,7 @@ federated microblogging social network.")
        (sha256
         (base32 "12sydb2lm571096gpb8r0jpg19wiqpl52rcnrhkvzlhzxgg18pg5"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-org-roam))
+    (inputs (list emacs-org-roam))
     (home-page "https://github.com/girzel/ebdb")
     (synopsis "EIEIO port of BBDB, Emacs's contact-management package")
     (description
