@@ -80,6 +80,8 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages lua)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
@@ -951,6 +953,73 @@ has been designed to be fast, light and unintrusive.")
       (description
        "This package provides a simple and limited unit-test framework for C++.")
       (license license:boost1.0))))
+
+(define-public kyua
+  (package
+    (name "kyua")
+    (version "0.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/freebsd/kyua")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jzdal9smhmivj18683a5gy8jd2p1dbni7kcpaxq4g9jgjdidcrq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* '("Makefile.am"
+                             "utils/process/isolation_test.cpp"
+                             "utils/stacktrace_test.cpp"
+                             "integration/utils.sh"
+                             "integration/cmd_test_test.sh")
+                (("/bin/sh")
+                 ;; The 'local-kyua' generated script in Makefile.am is used
+                 ;; to run the built kyua binary for tests.
+                 (which "sh")))))
+          (add-after 'unpack 'fix-to_absolute-test
+            ;; This test checks for the existence of /bin and /bin/ls.
+            (lambda _
+              (substitute* "utils/fs/path_test.cpp"
+                (("chdir\\(\"/bin\")")
+                 (format #f "chdir(~s)" (dirname (which "ls"))))
+                (("\"/bin/ls\"")
+                 (string-append "\"" (which "ls") "\"")))))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              ;; The test suite expects HOME to be writable.
+              (setenv "HOME" "/tmp")
+              ;; Generate the autom4te-generated testsuite script, which
+              ;; contains a '/bin/sh' shebang.
+              (invoke "make" "bootstrap/testsuite")
+              (substitute* "bootstrap/testsuite"
+                (("/bin/sh")
+                 (which "sh")))))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The stacktrace tests expect core files to be dumped to the
+              ;; current directory, which doesn't happen with our kernel
+              ;; configuration (see:
+              ;; https://github.com/freebsd/kyua/issues/214).
+              (substitute* "utils/Kyuafile"
+                ((".*atf_test_program.*stacktrace_test.*")
+                 "")))))))
+    (native-inputs (list autoconf automake gdb pkg-config))
+    (inputs (list atf lutok sqlite))
+    (home-page "https://github.com/freebsd/kyua")
+    (synopsis "Testing framework for infrastructure software")
+    (description "Kyua is a testing framework for infrastructure software.
+Kyua is lightweight and simple, and integrates well with various build systems
+and continuous integration frameworks.  Kyua features an expressive test suite
+definition language, a safe runtime engine for test suites and a powerful
+report generation engine.")
+    (license license:bsd-3)))
 
 (define-public python-gixy
   ;; The 0.1.20 release is missing some important fixes.
