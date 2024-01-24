@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Imran Iqbal <imran@imraniqbal.org>
 ;;;
@@ -37,6 +37,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ruby)
   #:use-module (guix utils)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages flex)
@@ -294,7 +295,7 @@ pages into HTML format.")
                         (("^PREFIX=.*")
                          (string-append "PREFIX=" (assoc-ref outputs "out")
                                         "\n"))))))))
-    (native-inputs (list perl))             ;used to run tests
+    (native-inputs (list (libc-utf8-locales-for-target) perl)) ;used to run tests
     (inputs (list zlib))
     (native-search-paths
      (list (search-path-specification
