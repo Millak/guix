@@ -27827,28 +27827,6 @@ characters in HTML, decoding and unescaping HTML entities as well.")
 and traversing, manipulating, and querying the document tree.")
     (license license:expat)))
 
-(define-public rust-httparse-1
-  (package
-    (name "rust-httparse")
-    (version "1.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "httparse" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "010rrfahm1jss3p022fqf3j3jmm72vhn4iqhykahb9ynpaag75yq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3))))
-    (home-page "https://github.com/seanmonstar/httparse")
-    (synopsis "Zero-copy HTTP/1.x parser")
-    (description
-     "This package provides a tiny, safe, speedy, zero-copy HTTP/1.x parser.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-httpdate-1
   (package
     (name "rust-httpdate")
