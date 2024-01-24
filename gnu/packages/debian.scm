@@ -2,6 +2,7 @@
 ;;; Copyright © 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
@@ -145,6 +147,29 @@ contains the archive keys used for that.")
 contains the archive keys used for that.")
     ;; "The keys in the keyrings don't fall under any copyright."
     (license license:public-domain)))
+
+(define-public trisquel-keyring
+  (package
+    (name "trisquel-keyring")
+    (version "2022.10.19")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://archive.trisquel.info/trisquel/"
+                    "pool/main/t/trisquel-keyring/trisquel-keyring_"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1qkqm3wb945i2izm47xni21hi3ad807bvl106r2mnwdxnjs4ij08"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("keyrings/trisquel-archive-keyring.gpg"
+                         "share/keyrings/"))))
+    (home-page "http://archive.trisquel.info/trisquel/pool/main/t/trisquel-keyring")
+    (synopsis "GnuPG archive keys of the Trisquel archive")
+    (description "The Trisquel distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license license:gpl2+)))     ;; see debian/copyright
 
 (define-public ubuntu-keyring
   (package
