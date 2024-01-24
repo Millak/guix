@@ -1390,7 +1390,7 @@ directory contents.")
 (define-public libdispatch
   (package
     (name "libdispatch")
-    (version "5.7")
+    (version "5.9.2")
     (source
      (origin
        (method git-fetch)
@@ -1400,7 +1400,7 @@ directory contents.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0skg1azbhbg7y0ql2a5sx6lmfip8l1rajqm95zzf9xv45n4dg9nn"))))
+         "02k90asz0yxrcmy67mmqqc68n8f16jf445l0n7jryb7nk30bgmm6"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
