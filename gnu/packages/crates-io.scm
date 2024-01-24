@@ -39882,16 +39882,14 @@ combinators library.")
   (package
     (inherit rust-nom-7)
     (name "rust-nom")
-    (version "6.2.1")
+    (version "6.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nom" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "19h3l5hajpcszwl6nzcmgs4mpng73ifn6akslq7n4g1s12wm2p4w"))
+        (base32 "0i0dmnj7wfdskwjhcf2pn4c9rw4x8as8pdlnc5683mc4gijsk9y6"))
        (modules '((guix build utils)))
        (snippet
         '(begin
