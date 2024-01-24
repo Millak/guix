@@ -4417,6 +4417,52 @@ makes them accessible for those who wants full control over the network.")
         ("rust-url" ,rust-url-2)
         ("rust-utf-8" ,rust-utf-8-0.7))))))
 
+(define-public rust-typed-headers-0.2
+  (package
+    (name "rust-typed-headers")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typed-headers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0jm2xzvvml3a9hhvzf9q4v22l5ifrxrx2kspy7aymknckqgacy9i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.11)
+        ("rust-bytes" ,rust-bytes-0.5)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-mime" ,rust-mime-0.3))))
+    (home-page "https://github.com/sfackler/typed-headers")
+    (synopsis "Typed HTTP header serialization and deserialization")
+    (description "This package provides typed HTTP header serialization and
+deserialization.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-typed-headers-0.1
+  (package
+    (inherit rust-typed-headers-0.2)
+    (name "rust-typed-headers")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typed-headers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g40nlq5iw0zxhwb7nfmfbr9m86abgwwhxwhzrm10nfq6bsmlvxx"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-bytes" ,rust-bytes-0.4)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-http" ,rust-http-0.1)
+        ("rust-mime" ,rust-mime-0.3))))))
+
 (define-public rust-warp-0.2
   (package
     (name "rust-warp")
