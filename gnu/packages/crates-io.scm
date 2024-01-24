@@ -3592,37 +3592,6 @@ AsyncSeek if the inner type does.")
 @code{async-executor} and @code{async-io}.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-async-h1-2
-  (package
-    (name "rust-async-h1")
-    (version "2.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "async-h1" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1p6ls50p1ixnxrhmx4sdb5d2kqrl1kfhcb0lkqlhzzqjz1sqmip5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-async-channel" ,rust-async-channel-1)
-        ("rust-async-dup" ,rust-async-dup-1)
-        ("rust-async-std" ,rust-async-std-1)
-        ("rust-byte-pool" ,rust-byte-pool-0.2)
-        ("rust-futures-core" ,rust-futures-core-0.3)
-        ("rust-http-types" ,rust-http-types-2)
-        ("rust-httparse" ,rust-httparse-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-pin-project" ,rust-pin-project-1))))
-    (home-page "https://github.com/http-rs/async-h1")
-    (synopsis "Asynchronous HTTP 1.1 parser")
-    (description
-     "This package provides an asynchronous HTTP 1.1 parser.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-async-io-1
   (package
     (name "rust-async-io")
