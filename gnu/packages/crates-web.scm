@@ -2619,12 +2619,14 @@ and locking in the core framework.")
        (uri (crate-uri "isahc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12iqz5fj0509pr813pds2fgdk649a0b6ipvy3pqjwb1ywh68m572"))))
+        (base32 "12iqz5fj0509pr813pds2fgdk649a0b6ipvy3pqjwb1ywh68m572"))
+    (snippet
+     #~(begin (use-modules (guix build utils))
+              (substitute* "Cargo.toml"
+                (("\"static-curl\", ") ""))))))
     (build-system cargo-build-system)
     (arguments
-     ;; Build fails with "failed to run custom build command for `curl-sys
-     ;; v0.4.39+curl-7.74.0`".  Skip for now.
-     `(#:skip-build? #true
+     `(#:tests? #f      ; use of undeclared crate or module `testserver`
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
         ("rust-chrono" ,rust-chrono-0.4)
