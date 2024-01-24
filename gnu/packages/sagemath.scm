@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2019, 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -173,7 +173,7 @@ represented as strings.")
 (define-public pynac
   (package
     (name "pynac")
-    (version "0.7.26")
+    (version "0.7.29")
     (source
      (origin
        (method git-fetch)
@@ -182,7 +182,7 @@ represented as strings.")
               (commit (string-append "pynac-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09d2p74x1arkydlxy6pw4p4byi7r8q7f29w373h4d8a215kadc6d"))))
+        (base32 "1h2b85rmmrsjnqk8z5d811r1lc0h64g7dyk7gfbwyapdcmx7pi51"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
