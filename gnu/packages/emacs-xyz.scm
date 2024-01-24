@@ -38094,6 +38094,26 @@ work on alists, hash-table and arrays.  All functions are prefixed with
 commands, in particular @code{find-definition}.")
     (license license:gpl3+)))
 
+(define-public emacs-xref-union
+  (package
+    (name "emacs-xref-union")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/xref-union-"
+                           version ".tar"))
+       (sha256
+        (base32
+         "0ghhasqs0xq2i576fp97qx6x3h940kgyp76a49gj5cdmig8kyfi8"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/xref-union.html")
+    (synopsis "Combine multiple Xref backends")
+    (description
+     "This package provides a way to combine multiple Xref source
+(e.g., Etags and Eglot) and have the results all at once.")
+    (license license:gpl3+)))
+
 (define-public emacs-burly
   (package
     (name "emacs-burly")
