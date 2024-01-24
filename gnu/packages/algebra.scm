@@ -592,12 +592,12 @@ matrices, and polynomials over the integers and over finite fields.")
 (define-public singular
   (package
    (name "singular")
-   (version "4.2.1")
+   (version "4.3.2p10")
    (source
     (origin
       (method url-fetch)
       (uri
-       (string-append "http://www.mathematik.uni-kl.de/ftp/pub/Math/"
+       (string-append "https://www.singular.uni-kl.de/ftp/pub/Math/"
                       "Singular/SOURCES/"
                       (string-join
                        (string-split
@@ -607,7 +607,7 @@ matrices, and polynomials over the integers and over finite fields.")
                         #\.) "-")
                       "/singular-" version ".tar.gz"))
              (sha256 (base32
-                      "13gy1gdng8zijwlr1fn5sixw53z0zf9czzlg0vh1dcc59zw6v998"))))
+                      "1a2j2pkp73rb1xdd5623gkk1snwd85yimssnz86y0m79zvyckhi8"))))
    (build-system gnu-build-system)
    (native-inputs
     (list doxygen graphviz perl))
