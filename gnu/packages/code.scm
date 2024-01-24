@@ -225,22 +225,6 @@ highlighting your own code that seemed comprehensible when you wrote it.")
                    (substitute* "globash/globash.in"
                      (("/bin/echo")
                       (search-input-file inputs "bin/echo")))))
-               (add-after 'post-install 'install-plugins
-                 (lambda _
-                   (with-directory-excursion "plugin-factory"
-                     (invoke "make" "install"))))
-               (add-before 'install 'dont-install-to-/var
-                 (lambda _
-                   (substitute* "gozilla/Makefile"
-                     (("DESTDIR\\)\\$\\{localstatedir\\}")
-                      "TMPDIR)"))))
-               (add-after 'install-plugins 'wrap-program
-                 (lambda _
-                   (wrap-program
-                       (string-append #$output
-                                      "/share/gtags/script/pygments_parser.py")
-                     `("GUIX_PYTHONPATH" ":" prefix
-                       (,(getenv "GUIX_PYTHONPATH"))))))
                (add-after 'install 'post-install
                  (lambda _
                    ;; Install the plugin files in the right place.
@@ -258,7 +242,23 @@ highlighting your own code that seemed comprehensible when you wrote it.")
                      (rename-file (string-append data "/gtags.vim")
                                   (string-append vim  "/gtags.vim"))
                      (rename-file (string-append data "/gtags-cscope.vim")
-                                  (string-append vim  "/gtags-cscope.vim"))))))))
+                                  (string-append vim  "/gtags-cscope.vim")))))
+               (add-after 'post-install 'install-plugins
+                 (lambda _
+                   (with-directory-excursion "plugin-factory"
+                     (invoke "make" "install"))))
+               (add-before 'install 'dont-install-to-/var
+                 (lambda _
+                   (substitute* "gozilla/Makefile"
+                     (("DESTDIR\\)\\$\\{localstatedir\\}")
+                      "TMPDIR)"))))
+               (add-after 'install-plugins 'wrap-program
+                 (lambda _
+                   (wrap-program
+                       (string-append #$output
+                                      "/share/gtags/script/pygments_parser.py")
+                     `("GUIX_PYTHONPATH" ":" prefix
+                       (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
       (list bash-minimal                ; for wrap-program
             coreutils
