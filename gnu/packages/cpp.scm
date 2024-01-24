@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
-;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
@@ -187,7 +187,7 @@ development effort.")
 (define-public range-v3
   (package
     (name "range-v3")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -195,9 +195,8 @@ development effort.")
              (url "https://github.com/ericniebler/range-v3.git")
              (commit version)))
        (file-name (git-file-name name version))
-       (patches (search-patches "range-v3-build-with-gcc10.patch"))
        (sha256
-        (base32 "18230bg4rq9pmm5f8f65j444jpq56rld4fhmpham8q3vr1c1bdjh"))))
+        (base32 "0r85s5rmp5ixmik2y5y4w760pa38j1sg9hbr1fss2flibzvrf53d"))))
     (build-system cmake-build-system)
     (arguments
      (list
