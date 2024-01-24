@@ -2500,7 +2500,7 @@ Full featured offline client with caching support.")
 (define-public git-absorb
   (package
     (name "git-absorb")
-    (version "0.6.6")
+    (version "0.6.11")
     (source
      (origin
        ;; crates.io does not include the manual page.
@@ -2510,13 +2510,19 @@ Full featured offline client with caching support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04v10bn24acify34vh5ayymsr1flcyb05f3az9k1s2m6nlxy5gb9"))))
+        (base32 "1mgqmbk2rz87blas86k340nshiy0zbw9pq76b8nqknpgghm4k029"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"~") "\""))
+                 (delete-file "Documentation/git-absorb.1")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-clap" ,rust-clap-2)
-        ("rust-git2" ,rust-git2-0.13)
+        ("rust-git2" ,rust-git2-0.18)
         ("rust-memchr" ,rust-memchr-2)
         ("rust-slog" ,rust-slog-2)
         ("rust-slog-async" ,rust-slog-async-2)
@@ -2525,19 +2531,17 @@ Full featured offline client with caching support.")
        (("rust-tempfile" ,rust-tempfile-3))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'relax-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("\"~") "\""))))
          (add-after 'install 'install-manual-page
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (man   (string-append out "/share/man/man1")))
+               (with-directory-excursion "Documentation"
+                 (invoke "a2x" "-L" "-d" "manpage" "-f" "manpage" "git-absorb.txt"))
                (install-file "Documentation/git-absorb.1" man)))))))
     (native-inputs
-     (list pkg-config))
+     (list asciidoc pkg-config))
     (inputs
-     (list libgit2-1.3 zlib))
+     (list libgit2-1.7 zlib))
     (home-page "https://github.com/tummychow/git-absorb")
     (synopsis "Git tool for making automatic fixup commits")
     (description
