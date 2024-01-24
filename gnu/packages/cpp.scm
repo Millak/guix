@@ -191,41 +191,36 @@ development effort.")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/ericniebler/range-v3.git")
-         (commit version)))
-       (file-name
-        (git-file-name name version))
+       (uri (git-reference
+             (url "https://github.com/ericniebler/range-v3.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (patches (search-patches "range-v3-build-with-gcc10.patch"))
        (sha256
         (base32 "18230bg4rq9pmm5f8f65j444jpq56rld4fhmpham8q3vr1c1bdjh"))))
     (build-system cmake-build-system)
     (arguments
      (list
-       #:configure-flags
-       #~(list "-DRANGES_NATIVE=OFF")))
-    (native-inputs
-     (list doxygen perl))
-    (inputs
-     (list boost))
+      #:configure-flags #~(list "-DRANGES_NATIVE=OFF")))
+    (native-inputs (list doxygen perl))
+    (inputs (list boost))
     (synopsis "Range library for C++14/17/20")
-    (description "Range-v3 is an extension of the Standard Template Library that
+    (description
+     "Range-v3 is an extension of the Standard Template Library that
 makes its iterators and algorithms more powerful by making them composable.
 Unlike other range-like solutions which, seek to do away with iterators, in
 range-v3 ranges are an abstraction layer on top of iterators.")
     (home-page "https://github.com/ericniebler/range-v3/")
-    (license
-     (list
-      ;; Elements of Programming
-      (license:x11-style "file:///LICENSE.txt")
-      ;; SGI STL
-      license:sgifreeb2.0
-;;; LibC++ (dual-licensed)
-      license:expat
-      license:ncsa
-      ;; Others
-      license:boost1.0))))
+    (license (list
+              ;; Elements of Programming
+              (license:x11-style "file:///LICENSE.txt")
+              ;; SGI STL
+              license:sgifreeb2.0
+              ;; LibC++ (dual-licensed)
+              license:expat
+              license:ncsa
+              ;; Others
+              license:boost1.0))))
 
 (define-public robin-hood-hashing
   (package
