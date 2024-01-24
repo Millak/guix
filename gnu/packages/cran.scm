@@ -2926,6 +2926,68 @@ method for preprocessing data for conos.")
 palettes, color maps, and tools to evaluate them.")
     (license license:gpl3)))
 
+(define-public r-papaja
+  (package
+    (name "r-papaja")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "papaja" version))
+       (sha256
+        (base32 "08ydk9fws5x37q120cdjdx1dsib0y2g9bp826vxzxcaymlwx3dl7"))))
+    (properties `((upstream-name . "papaja")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bookdown
+           r-broom
+           r-glue
+           r-knitr
+           r-rmarkdown
+           r-rmdfiltr
+           r-tinylabels
+           r-yaml
+           r-zip
+           texlive-amsmath
+           texlive-apa6
+           texlive-booktabs
+           texlive-caption
+           texlive-csquotes
+           texlive-endfloat
+           texlive-environ
+           texlive-etoolbox
+           texlive-fancyhdr
+           texlive-framed
+           texlive-geometry
+           texlive-graphics
+           texlive-grfext
+           texlive-hyperref
+           texlive-lineno
+           texlive-multirow
+           texlive-threeparttable
+           texlive-threeparttablex
+           texlive-titlesec
+           texlive-tools
+           texlive-trimspaces
+           texlive-was                  ; upgreek.sty
+           texlive-xcolor
+           texlive-xpatch
+           (texlive-updmap.cfg (list
+                                texlive-amsfonts
+                                texlive-times
+                                texlive-lm))))
+    (native-inputs (list r-knitr r-r-rsp))
+    (home-page "https://github.com/crsh/papaja")
+    (synopsis
+     "Prepare American Psychological Association journal articles with R Markdown")
+    (description
+     "This package provides tools to create dynamic, submission-ready
+manuscripts, which conform to American Psychological Association manuscript
+guidelines.  It provides R Markdown document formats for manuscripts (PDF and
+Word) and revision letters (PDF).  Helper functions facilitate reporting
+statistical analyses or create publication-ready tables and plots.")
+    (license license:expat)))
+
 (define-public r-paralleldist
   (package
     (name "r-paralleldist")
