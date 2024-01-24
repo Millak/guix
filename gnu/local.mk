@@ -1132,7 +1132,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-wordnut-require-adaptive-wrap.patch	\
   %D%/packages/patches/emacs-xelb-ignore-length-element.patch	\
   %D%/packages/patches/emacs-yasnippet-fix-empty-snippet-next.patch	\
-  %D%/packages/patches/emacs-yasnippet-fix-tests.patch	\
   %D%/packages/patches/enblend-enfuse-reproducible.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\

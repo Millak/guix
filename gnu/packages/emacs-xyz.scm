@@ -17919,39 +17919,40 @@ the Emacs TempEl package.")
       (license license:gpl3+))))
 
 (define-public emacs-yasnippet
-  (package
-    (name "emacs-yasnippet")
-    (version "0.14.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/joaotavora/yasnippet")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0via9dzw8m5lzymg1h78xkwjssh39zr3g6ccyamlf1rjzjsyxknv"))
-       (patches
-        (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"
-                        "emacs-yasnippet-fix-tests.patch"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #t
-       #:test-command '("emacs" "--batch"
-                        "-l" "yasnippet-tests.el"
-                        "-f" "ert-run-tests-batch-and-exit")
-       #:phases
-       (modify-phases %standard-phases
-         ;; Set HOME, otherwise test-rebindings fails.
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
-    (home-page "https://github.com/joaotavora/yasnippet")
-    (synopsis "Yet another snippet extension for Emacs")
-    (description "YASnippet is a template system for Emacs.  It allows you to
+  ;; The latest release is more than 5 years old, has test problems.
+  (let ((revision "0")
+        (commit "297546f0853a6a51f5b05e954d0c6aea8caa5ec2"))
+    (package
+      (name "emacs-yasnippet")
+      (version (git-version "0.14.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/joaotavora/yasnippet")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b1fdigwjshfim6zyzkn2wa6k8xd4qlafrf7zgj5bsx6alrzac8v"))
+         (patches
+          (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:tests? #t
+         #:test-command '("emacs" "--batch"
+                          "-l" "yasnippet-tests.el"
+                          "-f" "ert-run-tests-batch-and-exit")
+         #:phases
+         (modify-phases %standard-phases
+           ;; Set HOME, otherwise test-rebindings fails.
+           (add-before 'check 'set-home
+             (lambda _
+               (setenv "HOME" (getcwd)))))))
+      (home-page "https://github.com/joaotavora/yasnippet")
+      (synopsis "Yet another snippet extension for Emacs")
+      (description "YASnippet is a template system for Emacs.  It allows you to
 type an abbreviation and automatically expand it into function templates.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-yasnippet-snippets
   (package
