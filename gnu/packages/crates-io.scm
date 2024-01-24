@@ -6467,16 +6467,14 @@ streams in big-endian and little-endian formats.")
   (package
     (inherit rust-bitvec-0.22)
     (name "rust-bitvec")
-    (version "0.19.4")
+    (version "0.19.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bitvec" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "10bz751jbsy8fj203ibjwil07p2fwfzvx7b326wfssaravlkbfm7"))))
+        (base32 "0cvb24nanb50vq61d3ac3pz7rxjcy0w6lr3nb56kcg1nyc73vyam"))))
     (arguments
      `(#:cargo-inputs
        (("rust-funty" ,rust-funty-1.1)
