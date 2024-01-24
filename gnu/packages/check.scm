@@ -35,7 +35,7 @@
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
@@ -122,6 +122,44 @@
   #:use-module (guix deprecation)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
+
+(define-public atf
+  (package
+    (name "atf")
+    (version "0.21")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/freebsd/atf")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jwzz6g9jdi5f8v10y0wf3hq73vxyv5qqhkh832ddsj36gn8rlcz"))
+              (patches (search-patches "atf-execute-with-shell.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "ATF_SHELL="
+                                  #$(this-package-input "bash-minimal")
+                                  "/bin/sh"))))
+    (native-inputs (list autoconf automake libtool))
+    (inputs (list bash-minimal))
+    (home-page "https://github.com/freebsd/atf")
+    (synopsis "C/C++ Automated Testing Framework libraries")
+    (description "ATF, or Automated Testing Framework, is a collection of
+libraries to write test programs in C, C++ and POSIX shell.
+
+The ATF libraries offer a simple API.  The API is orthogonal through the
+various bindings, allowing developers to quickly learn how to write test
+programs in different languages.
+
+ATF-based test programs offer a consistent end-user command-line interface to
+allow both humans and automation to run the tests.
+
+ATF-based test programs rely on an execution engine to be run and this
+execution engine is not shipped with ATF.  Kyua is the engine of choice.")
+    (license (list license:bsd-2 license:bsd-3))))
 
 (define-public pict
   (package
