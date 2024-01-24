@@ -233,6 +233,7 @@ contains the archive keys used for that.")
            (add-after 'unpack 'patch-source
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let ((debian #$(this-package-input "debian-archive-keyring"))
+                     (trisquel #$(this-package-input "trisquel-keyring"))
                      (ubuntu #$(this-package-input "ubuntu-keyring")))
                  (substitute* "Makefile"
                    (("/usr") ""))
@@ -245,6 +246,11 @@ contains the archive keys used for that.")
                    (("/usr") debian))
                  (substitute* "scripts/gutsy"
                    (("/usr") ubuntu))
+                 (substitute* "scripts/robur"
+                   (("/usr/share/keyrings/trisquel-archive-keyring.gpg")
+                    (string-append
+                     trisquel
+                     "/share/keyrings/trisquel-archive-keyring.gpg")))
                  (substitute* "debootstrap"
                    (("=/usr") (string-append "=" #$output))
                    (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
@@ -252,6 +258,8 @@ contains the archive keys used for that.")
                  (substitute* (find-files "scripts")
                    (("keyring.*(debian-archive-keyring.gpg)"_ keyring)
                     (string-append "keyring " debian "/share/keyrings/" keyring))
+                   (("keyring.*(trisquel-archive-keyring.gpg)" _ keyring)
+                    (string-append "keyring " trisquel "/share/keyrings/" keyring))
                    (("keyring.*(ubuntu-archive-keyring.gpg)" _ keyring)
                     (string-append "keyring " ubuntu "/share/keyrings/" keyring)))
                  ;; Ensure PATH works both in guix and within the debian chroot
@@ -276,11 +284,14 @@ contains the archive keys used for that.")
          #:tests? #f))  ; no tests
     (inputs
      (list debian-archive-keyring
+           trisquel-keyring
            ubuntu-keyring
            bash-minimal
            dpkg
            tzdata
-
+           ;; Needed by dpkg-deb in extract_dpkg_deb_data for at least
+           ;; Trisquel 11 (aramo).
+           zstd
            ;; Called at run-time from various places, needs to be in PATH.
            gnupg
            wget))
