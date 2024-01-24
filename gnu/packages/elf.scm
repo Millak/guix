@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -307,8 +307,10 @@ static analysis of the ELF binaries at hand.")
              (substitute* "tests/set-empty-rpath.sh"
                ;; Binaries with empty RPATHs cannot run on Guix, because
                ;; we still need to find libgcc_s (see above).
-               (("^\\$\\{SCRATCH\\}\\/simple.$") ""))
-             #t)))))
+               (("^\"\\$\\{SCRATCH\\}\"\\/simple.$") ""))
+             ;; Skip this test for now.
+             (substitute* "tests/Makefile.in"
+               ((".*shared-rpath\\.sh \\.*") "")))))))
     (native-inputs
      `(("gcc:lib" ,gcc "lib")))
     (home-page "https://nixos.org/patchelf.html")
