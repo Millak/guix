@@ -7359,6 +7359,29 @@ installing the entire GSL.")
 a variety of different samplers.")
     (license license:expat)))
 
+(define-public r-rmdfiltr
+  (package
+    (name "r-rmdfiltr")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rmdfiltr" version))
+       (sha256
+        (base32 "0llnn4pdfznidalm4f7fpyxbhzsqv1096fkbsl1pgf4f7ll6w7a7"))))
+    (properties `((upstream-name . "rmdfiltr")))
+    (build-system r-build-system)
+    (inputs (list pandoc))
+    (propagated-inputs (list r-assertthat r-rmarkdown))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/crsh/rmdfiltr")
+    (synopsis "Lua filters for R Markdown")
+    (description
+     "This package provides a collection of Lua filters that extend the
+functionality of R Markdown templates (e.g., count words or post-process
+citations).")
+    (license license:expat)))
+
 (define-public r-rmtstat
   (package
     (name "r-rmtstat")
