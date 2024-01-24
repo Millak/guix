@@ -3199,6 +3199,168 @@ and speed.")
 responses, and headers for the Rocket web framework.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-stdweb-0.4
+  (package
+    (name "rust-stdweb")
+    (version "0.4.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stdweb" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1md14n9rzxzdskz3hpgln8vxfwqsw2cswc0f5nslh4r82rmlj8nh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-discard" ,rust-discard-1)
+        ("rust-futures-channel-preview" ,rust-futures-channel-preview-0.3)
+        ("rust-futures-core-preview" ,rust-futures-core-preview-0.3)
+        ("rust-futures-executor-preview" ,rust-futures-executor-preview-0.3)
+        ("rust-futures-util-preview" ,rust-futures-util-preview-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-stdweb-derive" ,rust-stdweb-derive-0.5)
+        ("rust-stdweb-internal-macros" ,rust-stdweb-internal-macros-0.2)
+        ("rust-stdweb-internal-runtime" ,rust-stdweb-internal-runtime-0.1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-rustc-version" ,rust-rustc-version-0.2))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-stdweb-internal-test-macro" ,rust-stdweb-internal-test-macro-0.1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.2))))
+    (home-page "https://github.com/koute/stdweb")
+    (synopsis "Standard library for the client-side Web")
+    (description
+     "This package provides a standard library for the client-side
+Web.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-stdweb-0.1
+  (package
+    (inherit rust-stdweb-0.4)
+    (name "rust-stdweb")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "stdweb" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gjk7ch31a3kgdc39kj4zqinf10yqaf717wanh9kwwbbwg430m7g"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs `(("rust-clippy" ,rust-clippy-0.0)
+                            ("rust-serde" ,rust-serde-1)
+                            ("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-stdweb-derive-0.5
+  (package
+    (name "rust-stdweb-derive")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stdweb-derive" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vsh7g0gaxn4kxqq3knhymdn02p2pfxmnd2j0vplpj6c1yj60yn8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/koute/stdweb")
+    (synopsis "Derive macros for the stdweb crate")
+    (description
+     "This crate currently defines a derive macro for @code{stdweb} which allows
+you to define custom reference types outside of the @code{stdweb} library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-stdweb-internal-macros-0.2
+  (package
+    (name "rust-stdweb-internal-macros")
+    (version "0.2.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stdweb-internal-macros" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "049fq8fl5ny9l5if2qv7kxwng7g6ns95h4fbm3zx360dmpv5zyjq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base-x" ,rust-base-x-0.2)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha1" ,rust-sha1-0.6)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/koute/stdweb")
+    (synopsis "Internal procedural macros for the stdweb crate")
+    (description
+     "Internal procedural macros for the @code{stdweb} crate.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-stdweb-internal-runtime-0.1
+  (package
+    (name "rust-stdweb-internal-runtime")
+    (version "0.1.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "stdweb-internal-runtime" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1h0nkppb4r8dbrbms2hw9n5xdcs392m0r5hj3b6lsx3h6fx02dr1"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/koute/stdweb")
+    (synopsis "Internal runtime for the @code{stdweb} crate")
+    (description "This crate provides internal runtime for the @code{stdweb}
+crate.")
+    (license (list license:asl2.0
+                   license:expat))))
+
+(define-public rust-stdweb-internal-test-macro-0.1
+  (package
+    (name "rust-stdweb-internal-test-macro")
+    (version "0.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "stdweb-internal-test-macro" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0wx3jlm98qrg1pdw149fprzs9x3x3igqkm5ll23jv2v62yddfrjf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1))))
+    (home-page "https://github.com/koute/stdweb")
+    (synopsis "Internal crate of the `stdweb` crate")
+    (description
+     "Internal crate of the @code{stdweb} crate.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-surf-2
   (package
     (name "rust-surf")
