@@ -105,61 +105,52 @@
         "1nwvpg5inpjzbq7r6wqsgmwcnfqyahcw9hi8discqvmrcq4nfg4y"))))
     (build-system gnu-build-system)
     (arguments
-     (cond
-      ((%current-target-system)
-       (list
-        #:modules '((guix build gnu-build-system)
-                    (guix build utils))
-        #:configure-flags #~(list "--enable-install-gpg-error-config")
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; If this is left out, some generated header
-            ;; files will be sprinkled with ‘\c’, which
-            ;; the compiler won't like.
-            (add-after 'unpack 'fix-gen-lock-obj.sh
-              (lambda _
-                (substitute* "src/gen-lock-obj.sh"
-                  (("if test -n `echo -n`") "if ! test -n `echo -n`"))))
-            ;; When cross-compiling, some platform specific properties cannot
-            ;; be detected. Create a symlink to the appropriate platform
-            ;; file if required. Note that these platform files depend on
-            ;; both the operating system and architecture!
-            ;;
-            ;; See Cross-Compiling section at:
-            ;; https://github.com/gpg/libgpg-error/blob/master/README
-            (add-after 'unpack 'cross-symlinks
-              (lambda _
-                (define (link triplet source)
-                  (symlink (string-append "lock-obj-pub." triplet ".h")
-                           (string-append "src/syscfg/lock-obj-pub."
-                                          source ".h")))
-                #$(let ((target (%current-target-system)))
-                    (cond ((target-linux? target)
-                           (match (string-take target
-                                               (string-index target #\-))
-                             ("armhf"
-                              `(link "arm-unknown-linux-gnueabi" "linux-gnu"))
-                             ("mips64el"
-                              `(link "mips-unknown-linux-gnu" "linux-gnu"))
-                             ;; Don't always link to the "linux-gnu"
-                             ;; configuration, as this is not correct for
-                             ;; all architectures.
-                             (_ #t)))
-                          (#t #t))))))))
-      ((system-hurd?)
-       (list
-        #:configure-flags #~(list "--enable-install-gpg-error-config")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'skip-tests
-              (lambda _
-                (substitute*
-                    "tests/t-syserror.c"
-                  (("(^| )main *\\(.*" all)
-                   (string-append all "{\n  exit (77);//"))))))))
-      (else
-       (list
-        #:configure-flags #~(list "--enable-install-gpg-error-config")))))
+     (list
+      #:configure-flags #~(list "--enable-install-gpg-error-config")
+      #:phases
+      #~(modify-phases %standard-phases
+      #$@(cond
+          ((%current-target-system)
+           ;; If this is left out, some generated header
+           ;; files will be sprinkled with ‘\c’, which
+           ;; the compiler won't like.
+           #~((add-after 'unpack 'fix-gen-lock-obj.sh
+                (lambda _
+                  (substitute* "src/gen-lock-obj.sh"
+                    (("if test -n `echo -n`") "if ! test -n `echo -n`"))))
+              ;; When cross-compiling, some platform specific properties cannot
+              ;; be detected. Create a symlink to the appropriate platform
+              ;; file if required. Note that these platform files depend on
+              ;; both the operating system and architecture!
+              ;;
+              ;; See Cross-Compiling section at:
+              ;; https://github.com/gpg/libgpg-error/blob/master/README
+              (add-after 'unpack 'cross-symlinks
+                (lambda _
+                  (define (link triplet source)
+                    (symlink (string-append "lock-obj-pub." triplet ".h")
+                             (string-append "src/syscfg/lock-obj-pub."
+                                            source ".h")))
+                  #$(let ((target (%current-target-system)))
+                      (cond ((target-linux? target)
+                             (match (string-take target
+                                                 (string-index target #\-))
+                                    ("armhf"
+                                     `(link "arm-unknown-linux-gnueabi" "linux-gnu"))
+                                    ("mips64el"
+                                     `(link "mips-unknown-linux-gnu" "linux-gnu"))
+                                    ;; Don't always link to the "linux-gnu"
+                                    ;; configuration, as this is not correct for
+                                    ;; all architectures.
+                                    (_ #t)))
+                            (#t #t)))))))
+          ((system-hurd?)
+           #~((add-after 'unpack 'skip-tests
+                (lambda _
+                  (substitute* "tests/t-syserror.c"
+                    (("(^| )main *\\(.*" all)
+                     (string-append all "{\n  exit (77);//")))))))
+          (else #~())))))
     (native-inputs (list gettext-minimal))
     (home-page "https://gnupg.org")
     (synopsis "Library of error values for GnuPG components")
