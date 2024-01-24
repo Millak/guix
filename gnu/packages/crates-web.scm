@@ -3135,6 +3135,184 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-url" ,rust-url-1))))))
 
+(define-public rust-tower-0.4
+  (package
+    (name "rust-tower")
+    (version "0.4.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "073wncyqav4sak1p755hf6vl66njgfc1z1g1di9rxx3cvvh9pymq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; no method named `map_request` found for struct `ServiceBuilder`
+       #:cargo-inputs
+       (("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-hdrhistogram" ,rust-hdrhistogram-7)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-slab" ,rust-slab-0.4)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-tower-layer" ,rust-tower-layer-0.3)
+        ("rust-tower-service" ,rust-tower-service-0.3)
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-hdrhistogram" ,rust-hdrhistogram-7)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4)
+        ("rust-tower-test" ,rust-tower-test-0.4)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/tower-rs/tower")
+    (synopsis "Library for building clients and servers")
+    (description
+     "Tower is a library of modular and reusable components for building
+robust clients and servers.")
+    (license license:expat)))
+
+(define-public rust-tower-layer-0.3
+  (package
+    (name "rust-tower-layer")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower-layer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l7i17k9vlssrdg4s3b0ia5jjkmmxsvv8s9y9ih0jfi8ssz8s362"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=layer_fn::layer_fn")
+       #:cargo-development-inputs
+       (("rust-tower" ,rust-tower-0.4)
+        ("rust-tower-service" ,rust-tower-service-0.3))))
+    (home-page "https://github.com/tower-rs/tower")
+    (synopsis "Easy composition between @code{Service}s")
+    (description "This package decorates a @code{Service} to allow easy
+composition between @code{Service}s.")
+    (license license:expat)))
+
+(define-public rust-tower-service-0.3
+  (package
+    (name "rust-tower-service")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower-service" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0lmfzmmvid2yp2l36mbavhmqgsvzqf7r2wiwz73ml4xmwaf1rg5n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tower-layer" ,rust-tower-layer-0.3))))
+    (home-page "https://github.com/tower-rs/tower")
+    (synopsis "Asynchronous, request / response based, client or server")
+    (description "This package provides a trait representing an asynchronous,
+request/response based, client or server.")
+    (license license:expat)))
+
+(define-public rust-tower-test-0.4
+  (package
+    (name "rust-tower-test")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19zgjwzr9216yg1ayrnsly06lqdv96m2z1xq0bmf9fgazxrnfm54"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4)
+        ("rust-tower-layer" ,rust-tower-layer-0.3)
+        ("rust-tower-service" ,rust-tower-service-0.3))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/tower-rs/tower")
+    (synopsis "Utilities for writing client and server @code{Service} tests")
+    (description "This package provides utilities for writing client and
+server @code{Service} tests.")
+    (license license:expat)))
+
+(define-public rust-tower-test-0.3
+  (package
+    (inherit rust-tower-test-0.4)
+    (name "rust-tower-test")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1j2k07g3z8ascq7r30bmw3b75v8lhd63mhfl60y59a74q71bp94v"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-pin-project" ,rust-pin-project-0.4)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tokio-test" ,rust-tokio-test-0.2)
+        ("rust-tower-layer" ,rust-tower-layer-0.3)
+        ("rust-tower-service" ,rust-tower-service-0.3))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-0.2))))))
+
+(define-public rust-tower-util-0.3
+  (package
+    (name "rust-tower-util")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0x4np2s7h891spvxaarcyainj12a7gvnh7jif9y80cvdh8ckq2fi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-pin-project" ,rust-pin-project-0.4)
+        ("rust-tower-service" ,rust-tower-service-0.3))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tokio-test" ,rust-tokio-test-0.2)
+        ("rust-tower-test" ,rust-tower-test-0.3))))
+    (home-page "https://github.com/tower-rs/tower")
+    (synopsis "Utilities for working with @code{Service}")
+    (description "This package provides utilities for working with
+@code{Service}.")
+    (license license:expat)))
+
 (define-public rust-trust-dns-client-0.22
   (package
     (name "rust-trust-dns-client")
