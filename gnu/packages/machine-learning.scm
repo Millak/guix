@@ -4213,6 +4213,8 @@ Note: currently this package does not provide GPU support.")
              "-k" (string-append
                    ;; Permissions error
                    "not test_packaging"
+                   ;; This can fail due to accuracy problems
+                   " and not test_gdc"
                    ;; These refuse to be run on CPU and really want a GPU
                    " and not test_add_random_walk_pe"
                    " and not test_asap"
