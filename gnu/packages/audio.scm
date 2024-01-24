@@ -313,34 +313,9 @@ displays a histogram of the roundtrip time jitter.")
         (string-append "http://freedesktop.org/software/pulseaudio/"
                        name "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xfvq5lxg612vfzk3zk6896zcb4cgrrb7fq76w9h40magz0jymcm"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; See:
-            ;; <https://gitlab.freedesktop.org/pulseaudio/webrtc-audio-processing/-/issues/4>.
-            (substitute* "meson.build"
-              (("absl_flags_registry") "absl_flags_reflection"))
-            (substitute* "webrtc/rtc_base/system/arch.h"
-              (("defined\\(__aarch64__\\)" all)
-               (string-append
-                ;; powerpc-linux
-                "(defined(__PPC__) && __SIZEOF_SIZE_T__ == 4)\n"
-                "#define WEBRTC_ARCH_32_BITS\n"
-                "#define WEBRTC_ARCH_BIG_ENDIAN\n"
-                ;; powerpc64-linux
-                "#elif (defined(__PPC64__) && defined(_BIG_ENDIAN))\n"
-                "#define WEBRTC_ARCH_64_BITS\n"
-                "#define WEBRTC_ARCH_BIG_ENDIAN\n"
-                ;; aarch64-linux
-                "#elif " all
-                ;; riscv64-linux
-                " || (defined(__riscv) && __riscv_xlen == 64)"
-                ;; powerpc64le-linux
-                " || (defined(__PPC64__) && defined(_LITTLE_ENDIAN))")))))
-       (patches
-        (search-patches "webrtc-audio-processing-big-endian.patch"))))
+        (base32 "0xfvq5lxg612vfzk3zk6896zcb4cgrrb7fq76w9h40magz0jymcm"))))
     (build-system meson-build-system)
+    (native-inputs (list pkg-config))
     (inputs (list abseil-cpp))
     (synopsis "WebRTC's Audio Processing Library")
     (description "WebRTC-Audio-Processing library based on Google's
