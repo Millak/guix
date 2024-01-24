@@ -172,14 +172,14 @@ exec ~a \"$@\""
 (define-public pkgconf
   (package
     (name "pkgconf")
-    (version "2.0.2")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append  "https://distfiles.dereferenced.org/"
                                    name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00a4cv1f8cxsb4jhpgxxrwrl92b1zdsirqn0gqvva7i5izpjanpa"))))
+                "0qbpczwrrsq2981mdv3iil26vq9ac8v1sfi9233jpiaixrhmhv96"))))
     (build-system gnu-build-system)
     (arguments (list #:tests? #f))      ;TODO: package kyua
     (home-page "http://pkgconf.org/")
