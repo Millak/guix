@@ -2087,6 +2087,26 @@ HTTP request or response body.")
      "This package provides a tiny, safe, speedy, zero-copy HTTP/1.x parser.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-httpdate-1
+  (package
+    (name "rust-httpdate")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "httpdate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1aa9rd2sac0zhjqh24c9xvir96g188zldkx0hr6dnnlx5904cfyz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/pyfisch/httpdate")
+    (synopsis "HTTP date parsing and formatting")
+    (description
+     "This crates parses and formats HTTP datetime strings.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hyper-0.14
   (package
     (name "rust-hyper")

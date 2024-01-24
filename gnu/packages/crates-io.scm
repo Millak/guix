@@ -27827,26 +27827,6 @@ characters in HTML, decoding and unescaping HTML entities as well.")
 and traversing, manipulating, and querying the document tree.")
     (license license:expat)))
 
-(define-public rust-httpdate-1
-  (package
-    (name "rust-httpdate")
-    (version "1.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "httpdate" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1aa9rd2sac0zhjqh24c9xvir96g188zldkx0hr6dnnlx5904cfyz"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
-    (home-page "https://github.com/pyfisch/httpdate")
-    (synopsis "HTTP date parsing and formatting")
-    (description
-     "This crates parses and formats HTTP datetime strings.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-human-format-1
   (package
     (name "rust-human-format")
