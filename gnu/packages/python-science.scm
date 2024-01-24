@@ -9,7 +9,7 @@
 ;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -1038,7 +1038,7 @@ and visualization with these data structures.")
 (define-public python-xarray-einstats
   (package
     (name "python-xarray-einstats")
-    (version "0.5.1")
+    (version "0.7.0")
     (source (origin
               (method git-fetch) ; no tests in PyPI
               (uri (git-reference
@@ -1047,7 +1047,7 @@ and visualization with these data structures.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gg7p2lq7zxic64nbr6a8ynizs8rjzb29fnqib7hw3lmp13wsfm0"))))
+                "14c424swpdginaz4pm3nmkizxy34x19q6xq3d4spx9s9031f6n3a"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-einops python-flit-core python-numba
                          python-pytest))
