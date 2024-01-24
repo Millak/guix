@@ -2,7 +2,7 @@
 ;;; Copyright © 2013-2019, 2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016-2018, 2021-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
@@ -1924,9 +1924,9 @@ order to add a suitable bootloader menu entry.")
   ;;
   ;; TODO: Bump this timestamp at each modifications of the package (not only
   ;; for updates) by running: date +%s.
-  (let ((timestamp "1678285400")
-        (commit "9e1f7a3659071004f4b8c76f2593da6287f0d575")
-        (revision "1"))
+  (let ((timestamp "1706118389")
+        (commit "de8a0821c7bc737e724fa3dfb6d89dc36f591d7a")
+        (revision "2"))
     (package
       (name "ipxe")
       (version (git-version "1.21.1" revision commit))
@@ -1938,7 +1938,7 @@ order to add a suitable bootloader menu entry.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1fp4bgwzy923m11dkkhk9dik7al7shzmmpqhp339z786z8bjzmkb"))))
+                  "0xiffdmf8hpmsw7nm9wp10wd0rs4avm2m3q5ncx0r5zfykannlbd"))))
       (build-system gnu-build-system)
       (arguments
        (list
