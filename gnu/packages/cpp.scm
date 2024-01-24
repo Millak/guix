@@ -206,7 +206,7 @@ development effort.")
        #:configure-flags
        #~(list "-DRANGES_NATIVE=OFF")))
     (native-inputs
-     (list doxygen gcc-9 perl))
+     (list doxygen perl))
     (inputs
      (list boost))
     (synopsis "Range library for C++14/17/20")
