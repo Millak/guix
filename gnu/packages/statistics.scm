@@ -2250,6 +2250,15 @@ inference (VI) algorithms.")
                (base32
                 "1bn4jmwygs5h0dskbniivj20qblgm75pyi9hcjf47r25kawd730m"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The deprecation warnings break the tests.
+          (add-after 'unpack 'dont-treat-deprecation-warnings-as-error
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"error::DeprecationWarning\",") "")))))))
     (propagated-inputs (list python-importlib-metadata python-numpoly
                              python-numpy python-scipy))
     (native-inputs (list python-pytest python-scikit-learn))
