@@ -10453,6 +10453,26 @@ their own grammars and easily expose them in R packages.")
 @dfn{Universally Unique Identifiers} (UUIDs).")
     (license license:expat)))
 
+(define-public r-tinylabels
+  (package
+    (name "r-tinylabels")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tinylabels" version))
+       (sha256
+        (base32 "01pvnirma3wzfqnnz8zvyqajjyysjm3sd6813bgdhz199lcg7hhz"))))
+    (properties `((upstream-name . "tinylabels")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mariusbarth/tinylabels")
+    (synopsis "Lightweight variable labels")
+    (description
+     "This package lets you assign, extract, or remove variable labels from R
+vectors.")
+    (license license:expat)))
+
 (define-public r-tinytex
   (package
     (name "r-tinytex")
