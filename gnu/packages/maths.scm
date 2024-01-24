@@ -1066,6 +1066,8 @@ halfspaces) or by their double description with both representations.")
                 "09smxilyn8v9xs3kpx3nlj2s7ql3v8z40mpc09kccbb6smyd35iv"))
               (patches (search-patches "arpack-ng-propagate-rng-state.patch"))))
     (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DICB=ON")))
     (native-inputs
      (list pkg-config))
     (inputs
