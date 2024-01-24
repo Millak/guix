@@ -2022,6 +2022,48 @@ convenient interface to SQL databases.  This package implements the interface
 for MySQL.")
     (license license:gpl2+)))
 
+(define-public guile-lmdb
+  (let ((commit "438143ca9ba157faec6f4c2740092c31c733fbfe")
+        (revision "0"))
+    (package
+      (name "guile-lmdb")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/aartaka/guile-lmdb")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0p43c8ppbhzpi944in0z2jqr7acl8pm7s1x0p5f0idqda6n6f828"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "modules"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'substitute-lmdb-so
+              (lambda _
+                (let ((lmdb (string-append
+                             #$(this-package-input "lmdb") "/lib/liblmdb.so")))
+                  (substitute* "modules/lmdb/lmdb.scm"
+                    (("liblmdb.so") lmdb))))))))
+      (native-inputs (list guile-3.0))
+      (inputs (list guile-3.0 lmdb))
+      (home-page "https://github.com/aartaka/guile-lmdb")
+      (synopsis "Bindings for Lightning Memory-Mapped Database in Guile")
+      (description "This package provides a Scheme wrapper around liblmdb.so.
+Most names are the same as LMDB ones, except for prefix absence.
+Several conveniences are added on top:
+@itemize
+@item @code{call-with-env-and-txn} and @code{call-with-cursor} wrappers.
+@item @code{for-cursor} procedure for cursor iteration.
+@item @code{val} and @code{stat} types.
+@item Error signaling instead of integer return values.
+@end itemize")
+      (license license:gpl3+))))
+
 (define-public guile-config
   (package
     (name "guile-config")
