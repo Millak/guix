@@ -541,7 +541,8 @@ ar = \"" binutils "/bin/ar" "\"
     ;; rustc invokes gcc, so we need to set its search paths accordingly.
     (native-search-paths
       %gcc-search-paths)
-    (supported-systems (delete "i586-gnu" %supported-systems))
+    ;; Limit this to systems where the final rust compiler builds successfully.
+    (supported-systems '("x86_64-linux" "aarch64-linux" "riscv64-linux"))
     (synopsis "Compiler for the Rust programming language")
     (description "Rust is a systems programming language that provides memory
 safety and thread safety guarantees.")
