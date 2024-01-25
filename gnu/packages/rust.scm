@@ -1351,84 +1351,84 @@ exec -a \"$0\" \"~a\" \"$@\""
       (outputs '("out"))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:tests? _ #f) #f)   ; This package for cross-building.
+         ((#:tests? _ #f) #f)           ; This package for cross-building.
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'unbundle-xz
-               (lambda _
-                 (delete-file-recursively "vendor/lzma-sys/xz-5.2")
-                 ;; Remove the option of using the static library.
-                 ;; This is necessary for building the sysroot.
-                 (substitute* "vendor/lzma-sys/build.rs"
-                   (("!want_static && ") ""))))
-             ,@(if (target-mingw? target)
-                 `((add-after 'set-env 'patch-for-mingw
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (setenv "LIBRARY_PATH"
-                         (string-join
-                           (delete
-                             (string-append
-                               (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
-                                   (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
-                               "/lib")
-                             (string-split (getenv "LIBRARY_PATH") #\:))
-                           ":"))
-                       (setenv "CPLUS_INCLUDE_PATH"
-                         (string-join
-                           (delete
-                             (string-append
-                               (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
-                                   (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
-                               "/include")
-                             (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                           ":"))
-                       ;; When building a rust-sysroot this crate is only used for
-                       ;; the rust-installer.
-                       (substitute* "vendor/num_cpus/src/linux.rs"
-                         (("\\.ceil\\(\\)") ""))
-                       ;; gcc doesn't recognize this flag.
-                       (substitute*
-                         "compiler/rustc_target/src/spec/base/windows_gnullvm.rs"
-                         ((", \"--unwindlib=none\"") "")))))
-                 `())
-             (replace 'set-env
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "SHELL" (which "sh"))
-                 (setenv "CONFIG_SHELL" (which "sh"))
-                 (setenv "CC" (which "gcc"))
-                 ;; The Guix LLVM package installs only shared libraries.
-                 (setenv "LLVM_LINK_SHARED" "1")
+          #~(modify-phases #$phases
+              (add-after 'unpack 'unbundle-xz
+                (lambda _
+                  (delete-file-recursively "vendor/lzma-sys/xz-5.2")
+                  ;; Remove the option of using the static library.
+                  ;; This is necessary for building the sysroot.
+                  (substitute* "vendor/lzma-sys/build.rs"
+                    (("!want_static && ") ""))))
+              #$@(if (target-mingw? target)
+                     `((add-after 'set-env 'patch-for-mingw
+                         (lambda* (#:key inputs #:allow-other-keys)
+                           (setenv "LIBRARY_PATH"
+                                   (string-join
+                                    (delete
+                                     (string-append
+                                      (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
+                                          (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
+                                      "/lib")
+                                     (string-split (getenv "LIBRARY_PATH") #\:))
+                                    ":"))
+                           (setenv "CPLUS_INCLUDE_PATH"
+                                   (string-join
+                                    (delete
+                                     (string-append
+                                      (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
+                                          (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
+                                      "/include")
+                                     (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                                    ":"))
+                           ;; When building a rust-sysroot this crate is only used for
+                           ;; the rust-installer.
+                           (substitute* "vendor/num_cpus/src/linux.rs"
+                             (("\\.ceil\\(\\)") ""))
+                           ;; gcc doesn't recognize this flag.
+                           (substitute*
+                               "compiler/rustc_target/src/spec/base/windows_gnullvm.rs"
+                             ((", \"--unwindlib=none\"") "")))))
+                     `())
+              (replace 'set-env
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "SHELL" (which "sh"))
+                  (setenv "CONFIG_SHELL" (which "sh"))
+                  (setenv "CC" (which "gcc"))
+                  ;; The Guix LLVM package installs only shared libraries.
+                  (setenv "LLVM_LINK_SHARED" "1")
 
-                 (setenv "CROSS_LIBRARY_PATH" (getenv "LIBRARY_PATH"))
-                 (setenv "CROSS_CPLUS_INCLUDE_PATH" (getenv "CPLUS_INCLUDE_PATH"))
-                 (when (assoc-ref inputs (string-append "glibc-cross-" ,target))
-                   (setenv "LIBRARY_PATH"
-                           (string-join
+                  (setenv "CROSS_LIBRARY_PATH" (getenv "LIBRARY_PATH"))
+                  (setenv "CROSS_CPLUS_INCLUDE_PATH" (getenv "CPLUS_INCLUDE_PATH"))
+                  (when (assoc-ref inputs (string-append "glibc-cross-" #$target))
+                    (setenv "LIBRARY_PATH"
+                            (string-join
                              (delete
-                               (string-append
-                                 (assoc-ref inputs
-                                            (string-append "glibc-cross-" ,target))
-                                 "/lib")
-                               (string-split (getenv "LIBRARY_PATH") #\:))
+                              (string-append
+                               (assoc-ref inputs
+                                          (string-append "glibc-cross-" #$target))
+                               "/lib")
+                              (string-split (getenv "LIBRARY_PATH") #\:))
                              ":"))
-                   (setenv "CPLUS_INCLUDE_PATH"
-                           (string-join
+                    (setenv "CPLUS_INCLUDE_PATH"
+                            (string-join
                              (delete
-                               (string-append
-                                 (assoc-ref inputs
-                                            (string-append "glibc-cross-" ,target))
-                                 "/include")
-                               (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                              (string-append
+                               (assoc-ref inputs
+                                          (string-append "glibc-cross-" #$target))
+                               "/include")
+                              (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
                              ":")))))
-             (replace 'configure
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (target-cc
-                         (search-input-file
-                           inputs (string-append "/bin/" ,(cc-for-target target)))))
-                   (call-with-output-file "config.toml"
-                     (lambda (port)
-                       (display (string-append "
+              (replace 'configure
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let* ((out (assoc-ref outputs "out"))
+                         (target-cc
+                          (search-input-file
+                           inputs (string-append "/bin/" #$(cc-for-target target)))))
+                    (call-with-output-file "config.toml"
+                      (lambda (port)
+                        (display (string-append "
 [llvm]
 [build]
 cargo = \"" (search-input-file inputs "/bin/cargo") "\"
@@ -1437,7 +1437,7 @@ docs = false
 python = \"" (which "python") "\"
 vendor = true
 submodules = false
-target = [\"" ,(platform-rust-target (lookup-platform-by-target target)) "\"]
+target = [\"" #$(platform-rust-target (lookup-platform-by-target target)) "\"]
 [install]
 prefix = \"" out "\"
 sysconfdir = \"etc\"
@@ -1446,65 +1446,64 @@ debug = false
 jemalloc = false
 default-linker = \"" target-cc "\"
 channel = \"stable\"
-[target." ,(platform-rust-target (lookup-platform-by-system (%current-system))) "]
+[target." #$(platform-rust-target (lookup-platform-by-system (%current-system))) "]
 # These are all native tools
 llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
 linker = \"" (which "gcc") "\"
 cc = \"" (which "gcc") "\"
 cxx = \"" (which "g++") "\"
 ar = \"" (which "ar") "\"
-[target." ,(platform-rust-target (lookup-platform-by-target target)) "]
+[target." #$(platform-rust-target (lookup-platform-by-target target)) "]
 llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
 linker = \"" target-cc "\"
 cc = \"" target-cc "\"
-cxx = \"" (search-input-file inputs (string-append "/bin/" ,(cxx-for-target target))) "\"
-ar = \"" (search-input-file inputs (string-append "/bin/" ,(ar-for-target target))) "\"
+cxx = \"" (search-input-file inputs (string-append "/bin/" #$(cxx-for-target target))) "\"
+ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target target))) "\"
 [dist]
 ") port))))))
-             (replace 'build
-               ;; Phase overridden to build the necessary directories.
-               (lambda* (#:key parallel-build? #:allow-other-keys)
-                 (let ((job-spec (string-append
-                                  "-j" (if parallel-build?
-                                           (number->string (parallel-job-count))
-                                           "1"))))
-                   ;; This works for us with the --sysroot flag
-                   ;; and then we can build ONLY library/std
-                   (invoke "./x.py" job-spec "build" "library/std"))))
-             (replace 'install
-               (lambda _
-                 (invoke "./x.py" "install" "library/std")))
-             (delete 'install-rust-src)
-             (delete 'wrap-rust-analyzer)
-             (delete 'wrap-rustc)))))
+              (replace 'build
+                ;; Phase overridden to build the necessary directories.
+                (lambda* (#:key parallel-build? #:allow-other-keys)
+                  (let ((job-spec (string-append
+                                   "-j" (if parallel-build?
+                                            (number->string (parallel-job-count))
+                                            "1"))))
+                    ;; This works for us with the --sysroot flag
+                    ;; and then we can build ONLY library/std
+                    (invoke "./x.py" job-spec "build" "library/std"))))
+              (replace 'install
+                (lambda _
+                  (invoke "./x.py" "install" "library/std")))
+              (delete 'install-rust-src)
+              (delete 'wrap-rust-analyzer)
+              (delete 'wrap-rustc)))))
       (inputs
        (modify-inputs (package-inputs base-rust)
-                      (prepend xz)))    ; for lzma-sys
+         (prepend xz)))                 ; for lzma-sys
       (propagated-inputs
        (if (target-mingw? target)
-         (modify-inputs (package-propagated-inputs base-rust)
-                        (prepend
-                          (if (string=? "i686-w64-mingw32" target)
-                              mingw-w64-i686-winpthreads
-                              mingw-w64-x86_64-winpthreads)))
-         (package-propagated-inputs base-rust)))
+           (modify-inputs (package-propagated-inputs base-rust)
+             (prepend
+              (if (string=? "i686-w64-mingw32" target)
+                  mingw-w64-i686-winpthreads
+                  mingw-w64-x86_64-winpthreads)))
+           (package-propagated-inputs base-rust)))
       (native-inputs
        (if (target-mingw? target)
-         (modify-inputs (package-native-inputs base-rust)
-                        (prepend (cross-gcc target
-                                            #:libc (cross-libc target))
-                                 (cross-binutils target)
-                                 (if (string=? "i686-w64-mingw32" target)
-                                     mingw-w64-i686-winpthreads
-                                     mingw-w64-x86_64-winpthreads)))
-         (modify-inputs (package-native-inputs base-rust)
-                        (prepend (cross-gcc target
-                                            #:libc (cross-libc target))
-                                 (cross-libc target)
-                                 (cross-binutils target)))))
+           (modify-inputs (package-native-inputs base-rust)
+             (prepend (cross-gcc target
+                                 #:libc (cross-libc target))
+                      (cross-binutils target)
+                      (if (string=? "i686-w64-mingw32" target)
+                          mingw-w64-i686-winpthreads
+                          mingw-w64-x86_64-winpthreads)))
+           (modify-inputs (package-native-inputs base-rust)
+             (prepend (cross-gcc target
+                                 #:libc (cross-libc target))
+                      (cross-libc target)
+                      (cross-binutils target)))))
       (properties
-       `((hidden? . #t)
-         ,(package-properties base-rust))))))
+       `((hidden? . #t) ,(package-properties base-rust))))))
 
 (define-public rust-analyzer
   (package
