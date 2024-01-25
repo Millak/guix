@@ -28777,14 +28777,14 @@ settings.")
 (define-public r-r-huge
   (package
     (name "r-r-huge")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "R.huge" version))
        (sha256
         (base32
-         "1wjcssvn76fblpivwkapdwcw08pygbkj7qskcl0wn8mda9w5f72b"))))
+         "1s3cg0kjaici6chgy21zhxwag9ldiif4103ajk121l8ambd1xjq5"))))
     (properties `((upstream-name . "R.huge")))
     (build-system r-build-system)
     (propagated-inputs
