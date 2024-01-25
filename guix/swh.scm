@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -583,6 +583,41 @@ directory identifier is deprecated."
         json->vault-reply
         http-post*))
 
+(define* (http-get/follow url
+                          #:key
+                          (verify-certificate? (%verify-swh-certificate?)))
+  "Like 'http-get' but follow redirects (HTTP 30x).  On success, return two
+values: an input port to read the response body and its 'Content-Length'.  On
+failure return #f and #f."
+  (define uri
+    (if (string? url) (string->uri url) url))
+
+  (let loop ((uri uri))
+    (define (resolve-uri-reference target)
+      (if (and (uri-scheme target) (uri-host target))
+          target
+          (build-uri (uri-scheme uri) #:host (uri-host uri)
+                     #:port (uri-port uri)
+                     #:path (uri-path target))))
+
+    (let*-values (((response port)
+                   (http-get* uri #:streaming? #t
+                              #:verify-certificate? verify-certificate?))
+                  ((code)
+                   (response-code response)))
+      (case code
+        ((200)
+         (values port (response-content-length response)))
+        ((301                                     ; moved permanently
+          302                                     ; found (redirection)
+          303                                     ; see other
+          307                                     ; temporary redirection
+          308)                                    ; permanent redirection
+         (close-port port)
+         (loop (resolve-uri-reference (response-location response))))
+        (else
+         (values #f #f))))))
+
 (define* (vault-fetch id
                       #:optional kind
                       #:key
@@ -604,16 +639,11 @@ for a tarball containing a bare Git repository corresponding to a revision."
        (match (vault-reply-status reply)
          ('done
           ;; Fetch the bundle.
-          (let-values (((response port)
-                        (http-get* (swh-url (vault-reply-fetch-url reply))
-                                   #:streaming? #t
-                                   #:verify-certificate?
-                                   (%verify-swh-certificate?))))
-            (if (= (response-code response) 200)
-                port
-                (begin                            ;shouldn't happen
-                  (close-port port)
-                  #f))))
+          (let-values (((port length)
+                        (http-get/follow (swh-url (vault-reply-fetch-url reply))
+                                         #:verify-certificate?
+                                         (%verify-swh-certificate?))))
+            port))
          ('failed
           ;; Upon failure, we're supposed to try again.
           (format log-port "SWH vault: failure: ~a~%"
