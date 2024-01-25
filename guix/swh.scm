@@ -123,6 +123,7 @@
             commit-id?
 
             swh-download-directory
+            swh-download-directory-by-nar-hash
             swh-download))
 
 ;;; Commentary:
@@ -805,3 +806,26 @@ wait until it becomes available, which could take several minutes."
              "SWH: revision ~s originating from ~a could not be found~%"
              reference url)
      #f)))
+
+(define* (swh-download-directory-by-nar-hash hash algorithm output
+                                             #:key
+                                             (log-port (current-error-port)))
+  "Download from Software Heritage the directory with the given nar HASH for
+ALGORITHM (a symbol such as 'sha256), and unpack it in OUTPUT.  Return #t on
+success and #f on failure.
+
+This procedure uses the \"vault\", which contains \"cooked\" directories in
+the form of tarballs.  If the requested directory is not cooked yet, it will
+wait until it becomes available, which could take several minutes."
+  (match (lookup-directory-by-nar-hash hash algorithm)
+    (#f
+     (format log-port
+             "SWH: directory with nar-~a hash ~a not found~%"
+             algorithm (bytevector->base16-string hash))
+     #f)
+    (swhid
+     (format log-port "SWH: found directory with nar-~a hash ~a at '~a'~%"
+             algorithm (bytevector->base16-string hash) swhid)
+     (swh-download-archive swhid output
+                           #:archive-type 'flat   ;SWHID denotes a directory
+                           #:log-port log-port))))
