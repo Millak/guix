@@ -43143,6 +43143,15 @@ shepherd, The GNU Shepherd Manual}, for more info.
 Whether to restart the service when it stops, for instance when the
 underlying process dies.
 
+@item @code{respawn-limit} (default: @code{#f})
+Set a limit on how many times and how frequently a service may be
+restarted by Shepherd before it is disabled.  @xref{Defining
+Services,,, shepherd, The GNU Shepherd Manual}, for details.
+
+@item @code{respawn-delay} (default: @code{#f})
+When true, this is the delay in seconds before restarting a failed
+service.
+
 @item @code{start}
 @itemx @code{stop} (default: @code{#~(const #f)})
 The @code{start} and @code{stop} fields refer to the Shepherd's
