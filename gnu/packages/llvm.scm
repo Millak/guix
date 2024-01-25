@@ -813,7 +813,8 @@ Library.")
 (define-public clang-runtime-13
   (clang-runtime-from-llvm
    llvm-13
-   "1z2xr9nn4mgc3hn9ark2k5y4wznpk47xppkp63bcbagr6589acvv"))
+   "1z2xr9nn4mgc3hn9ark2k5y4wznpk47xppkp63bcbagr6589acvv"
+   '("clang-runtime-13-glibc-2.36-compat.patch")))
 
 (define-public clang-13
   (clang-from-llvm llvm-13 clang-runtime-13
