@@ -29552,14 +29552,14 @@ conditional on one covariate, and multimodal regression.")
 (define-public r-rainbow
   (package
     (name "r-rainbow")
-    (version "3.7")
+    (version "3.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rainbow" version))
        (sha256
         (base32
-         "1cldipi3cb55d434wv03ymwygbisfwgq2b84gwwkgqpfal2xk78m"))))
+         "0gc25napmcgg1qr17z4zixzxcdiv9midi1x5fin4pzkhicl5d97c"))))
     (properties `((upstream-name . "rainbow")))
     (build-system r-build-system)
     (propagated-inputs
