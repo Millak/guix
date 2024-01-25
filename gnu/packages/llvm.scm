@@ -1214,7 +1214,8 @@ Library.")
   (clang-runtime-from-llvm
    llvm-6
    "1fcr3jn24yr8lh36nc0c4ikli4744i2q9m1ik67p1jymwwaixkgl"
-   '("clang-runtime-9-libsanitizer-mode-field.patch")))
+   '("clang-runtime-9-libsanitizer-mode-field.patch"
+     "clang-runtime-9-glibc-2.36-compat.patch")))
 
 (define-public clang-6
   (clang-from-llvm llvm-6 clang-runtime-6
