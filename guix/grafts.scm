@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,12 +96,6 @@
   "Return a derivation called NAME, which applies GRAFTS to the specified
 OUTPUTS of DRV.  This procedure performs \"shallow\" grafting in that GRAFTS
 are not recursively applied to dependencies of DRV."
-  (define glibc-locales
-    (module-ref (resolve-interface '(gnu packages commencement))
-                (if (target-hurd? system)
-                    'glibc-utf8-locales-final/hurd
-                    'glibc-utf8-locales-final)))
-
   (define mapping
     ;; List of store item pairs.
     (map (lambda (graft)
@@ -114,11 +108,8 @@ are not recursively applied to dependencies of DRV."
 
   (define set-utf8-locale
     (and (%graft-with-utf8-locale?)
-         #~(begin
-             ;; Let Guile interpret file names as UTF-8.
-             (setenv "GUIX_LOCPATH"
-                     #+(file-append glibc-locales "/lib/locale"))
-             (setlocale LC_ALL "en_US.utf8"))))
+         ;; Let Guile interpret file names as UTF-8.
+         #~(setlocale LC_ALL "C.UTF-8")))
 
 
   (define build
