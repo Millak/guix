@@ -439,6 +439,44 @@ programming} solver clingo.  Its goal is to make integration of clingo
 into Python programs easier.")
     (license license:expat)))
 
+(define-public python-plingo
+  (package
+    (name "python-plingo")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/plingo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mp0pdjzwpl7bpba20iwszx9x49gsyl2rhrp7w7xpwjqdjrp23r8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-script
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((script (string-append (assoc-ref outputs "out")
+                                                "/bin/plingo")))
+                     (mkdir-p (dirname script))
+                     (call-with-output-file script
+                       (lambda (port)
+                         (display "#!/usr/bin/env python\n" port)
+                         (display "from plingo import main\n" port)
+                         (display "main()\n" port)))
+                     (chmod script #o755)
+                     ;; XXX: Does this cross-compile?
+                     (patch-shebang script)))))))
+    (propagated-inputs (list python-clingo))
+    (home-page "https://potassco.org/")
+    (synopsis "Solve probabilistic logic programs")
+    (description "This package provides a system to solve probabilistic
+logic programs with clingo.  It can solve the reasoning tasks of finding
+the most probable model as well as finding all models and their probabilities.")
+    (license license:expat)))
+
 (define-public python-telingo
   (package
     (name "python-telingo")
