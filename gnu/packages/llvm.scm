@@ -1009,7 +1009,8 @@ Library.")
 (define-public clang-runtime-10
   (clang-runtime-from-llvm
    llvm-10
-   "1yjqjri753w0fzmxcyz687nvd97sbc9rsqrxzpq720na47hwh3fr"))
+   "1yjqjri753w0fzmxcyz687nvd97sbc9rsqrxzpq720na47hwh3fr"
+   '("clang-runtime-13-glibc-2.36-compat.patch")))
 
 (define-public clang-10
   (clang-from-llvm llvm-10 clang-runtime-10
