@@ -37,6 +37,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services base)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services dbus)
   #:use-module (gnu services avahi)
   #:use-module (gnu services xorg)
@@ -60,6 +61,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages xdisorg)
@@ -73,6 +75,7 @@
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages enlightenment)
   #:use-module (guix deprecation)
+  #:use-module (guix diagnostics)
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix store)
@@ -81,6 +84,7 @@
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-35)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (<upower-configuration>
@@ -139,6 +143,10 @@
 
             gnome-desktop-configuration
             gnome-desktop-configuration?
+            gnome-desktop-configuration-core-services
+            gnome-desktop-configuration-shell
+            gnome-desktop-configuration-utilities
+            gnome-desktop-configuration-extra-packages
             gnome-desktop-service
             gnome-desktop-service-type
 
@@ -1382,11 +1390,34 @@ rules.")
 ;;; GNOME desktop service.
 ;;;
 
-(define-record-type* <gnome-desktop-configuration> gnome-desktop-configuration
-  make-gnome-desktop-configuration
-  gnome-desktop-configuration?
-  (gnome gnome-desktop-configuration-gnome
-         (default gnome)))
+(define-maybe/no-serialization package)
+
+(define (extract-propagated-inputs package)
+  ;; Drop input labels.  Attempt to support outputs.
+  (map
+   (match-lambda
+     ((_ (? package? pkg)) pkg)
+     ((_ (? package? pkg) output) (list pkg output)))
+   (package-propagated-inputs package)))
+
+(define-configuration/no-serialization gnome-desktop-configuration
+  (core-services
+   (list-of-packages (extract-propagated-inputs gnome-meta-core-services))
+   "A list of packages that the GNOME Shell and applications may rely on.")
+  (shell
+   (list-of-packages (extract-propagated-inputs gnome-meta-core-shell))
+   "A list of packages that constitute the GNOME Shell, without applications.")
+  (utilities
+   (list-of-packages (extract-propagated-inputs gnome-meta-core-utilities))
+   "A list of packages that serve as applications to use on top of the \
+GNOME Shell.")
+  (gnome (maybe-package) "Deprecated.  Do not use.")
+  (extra-packages
+   (list-of-packages (extract-propagated-inputs gnome-essential-extras))
+   "A list of GNOME-adjacent packages to also include.  This field is intended
+for users to add their own packages to their GNOME experience.  Note, that it
+already includes some packages that are considered essential by some (most?)
+GNOME users."))
 
 (define (gnome-package gnome name)
   "Return the package NAME among the GNOME package inputs.  NAME can be a
@@ -1400,18 +1431,56 @@ denote the spice-gtk input of the gnome-boxes input of the GNOME meta-package."
 
 (define (gnome-udev-rules config)
   "Return the list of GNOME dependencies that provide udev rules."
-  (let ((gnome (gnome-desktop-configuration-gnome config)))
-    (gnome-packages gnome '("gnome-settings-daemon"))))
+  (let* ((gnome (gnome-desktop-configuration-gnome config))
+         (shell (gnome-desktop-configuration-shell config)))
+    (or (any (match-lambda
+               ((and pkg (= package-name "gnome-settings-daemon"))
+                (list pkg))
+               (_ #f))
+             shell)
+        (and (maybe-value-set? gnome)
+             (gnome-packages gnome '("gnome-settings-daemon")))
+        (raise
+         (condition
+          (&error-location
+           (location (gnome-desktop-configuration-source-location config)))
+          (&message (message (G_ "Missing gnome-settings-daemon"))))))))
 
 (define (gnome-polkit-settings config)
   "Return the list of GNOME dependencies that provide polkit actions and
 rules."
-  (let ((gnome (gnome-desktop-configuration-gnome config)))
-    (gnome-packages gnome
-                    '("gnome-settings-daemon"
-                      "gnome-control-center"
-                      "gnome-system-monitor"
-                      "gvfs"))))
+  (let ((gnome (gnome-desktop-configuration-gnome config))
+        (shell (gnome-desktop-configuration-shell config)))
+    (or (any (match-lambda ((and pkg (= package-name "gvfs")) (list pkg))
+                           (_ #f))
+              shell)
+        (and (maybe-value-set? gnome)
+             (gnome-packages gnome
+                             '("gnome-settings-daemon"
+                               "gnome-control-center"
+                               "gnome-system-monitor"
+                               "gvfs")))
+        (raise
+         (condition
+          (&error-location
+           (location (gnome-desktop-configuration-source-location config)))
+          (&message (message (G_ "Missing gvfs"))))))))
+
+(define (gnome-profile config)
+  "Return a list of packages propagated through CONFIG."
+  (append
+   (gnome-desktop-configuration-core-services config)
+   (gnome-desktop-configuration-shell config)
+   (gnome-desktop-configuration-utilities config)
+   (let ((gnome-meta (gnome-desktop-configuration-gnome config)))
+     (if (maybe-value-set? gnome-meta)
+         (begin
+           (warning
+            (gnome-desktop-configuration-source-location config)
+            (G_ "Using a meta-package for gnome-desktop is discouraged.~%"))
+           (list gnome-meta))
+         (list)))
+   (gnome-desktop-configuration-extra-packages config)))
 
 (define gnome-desktop-service-type
   (service-type
@@ -1422,7 +1491,7 @@ rules."
           (service-extension polkit-service-type
                              gnome-polkit-settings)
           (service-extension profile-service-type
-                             (compose list gnome-desktop-configuration-gnome))))
+                             gnome-profile)))
    (default-value (gnome-desktop-configuration))
    (description "Run the GNOME desktop environment.")))
 
