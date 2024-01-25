@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -1217,3 +1219,32 @@ the glProgramViewportFlip before it was replaced with glProgramViewportInfo.")
      "glmark2 is an OpenGL 2.0 and OpenGL ES 2.0 benchmark based on the
 original glmark benchmark by Ben Smith.")
     (license license:gpl3+)))
+
+(define-public waffle
+  (package
+    (name "waffle")
+    (version "1.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.freedesktop.org/mesa/waffle")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1mrw0arlrpm83cwaz7rnimkkjv3a134rcmi1h512y2g4yjzhnm8r"))
+              (modules '((ice-9 ftw)
+                         (guix build utils)))
+              (snippet #~(with-directory-excursion "third_party"
+                           (let ((keep '("." ".." "meson.build" "threads")))
+                             (for-each (lambda (f)
+                                         (unless (member f keep)
+                                           (delete-file-recursively f)))
+                                       (scandir ".")))))))
+    (build-system meson-build-system)
+    (propagated-inputs (list mesa wayland))
+    (native-inputs (list cmocka pkg-config))
+    (home-page "https://waffle.freedesktop.org/")
+    (synopsis "Choose OpenGL API at runtime")
+    (description "Waffle is a library that allows one to defer selection of an
+ OpenGL API and a window system until runtime.")
+    (license license:bsd-2)))
