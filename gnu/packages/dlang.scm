@@ -5,7 +5,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
-;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
@@ -192,8 +192,8 @@ to a minimal test case.")
        ("libedit" ,libedit)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("lld-wrapper" ,(make-lld-wrapper lld-14 #:lld-as-ld? #t))
-       ("llvm" ,llvm-14)
+     `(("lld-wrapper" ,(make-lld-wrapper lld-15 #:lld-as-ld? #t))
+       ("llvm" ,llvm-15)
        ("ldc" ,gdmd)
        ("ninja" ,ninja)
        ("python-wrapper" ,python-wrapper)
@@ -356,7 +356,7 @@ integration tests...\n")
      (append (delete "llvm"
                      (alist-replace "ldc" (list ldc-bootstrap)
                                     (package-native-inputs ldc-bootstrap)))
-         `(("clang" ,clang-14)          ;propagates llvm and clang-runtime
+         `(("clang" ,clang-15)          ;propagates llvm and clang-runtime
            ("python-lit" ,python-lit))))))
 
 (define-public dub
