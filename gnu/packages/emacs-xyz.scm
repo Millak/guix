@@ -26579,29 +26579,31 @@ autosuggestions with:
     (license license:gpl3+)))
 
 (define-public emacs-desktop-environment
-  (package
-    (name "emacs-desktop-environment")
-    (version "0.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DamienCassou/desktop-environment")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "03rl1z860jmirjrrg0xsjx0bqk73k043c8bz6049zhndh7pidri7"))))
-    (build-system emacs-build-system)
-    (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
-    (synopsis "Control your GNU/Linux desktop environment from Emacs")
-    (description
-     "This package helps you control your GNU/Linux desktop from Emacs.
+  (let ((commit "bc1153aa619b12456304cca642424a0d8d2eb416")
+        (revision "0"))
+    (package
+      (name "emacs-desktop-environment")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DamienCassou/desktop-environment")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0bslgm9rz7whk0ll21028dsl22wbd289cdc95qj8hhlk8m4hlp2h"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
+      (synopsis "Control your GNU/Linux desktop environment from Emacs")
+      (description
+       "This package helps you control your GNU/Linux desktop from Emacs.
 With @code{desktop-environment}, you can control the brightness and volume as
 well as take screenshots and lock your screen.  The package depends on the
 availability of shell commands to do the hard work for us.  These commands can
 be changed by customizing the appropriate variables.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-caldav
   (let ((commit "754989ae500b3f576bdb94fe2ef3059f12eaf7d7")) ;version bump
