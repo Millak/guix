@@ -78,6 +78,14 @@
             lookup-revision
             lookup-origin-revision
 
+            external-id?
+            external-id-value
+            external-id-type
+            external-id-version
+            external-id-target
+            lookup-external-id
+            lookup-directory-by-nar-hash
+
             content?
             content-checksums
             content-data-url
@@ -382,6 +390,15 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (permissions   directory-entry-permissions "perms")
   (target-url    directory-entry-target-url "target_url"))
 
+;; <https://archive.softwareheritage.org/api/1/extid/doc/>
+(define-json-mapping <external-id> make-external-id external-id?
+  json->external-id
+  (value         external-id-value "extid")
+  (type          external-id-type "extid_type")
+  (version       external-id-version "extid_version")
+  (target        external-id-target)
+  (target-url    external-id-target-url "target_url"))
+
 ;; <https://archive.softwareheritage.org/api/1/origin/save/>
 (define-json-mapping <save-reply> make-save-reply save-reply?
   json->save-reply
@@ -435,6 +452,24 @@ FALSE-IF-404? is true, return #f upon 404 responses."
 (define (json->directory-entries port)
   (map json->directory-entry
        (vector->list (json->scm port))))
+
+(define (lookup-external-id type id)
+  "Return the external ID record for ID, a bytevector, of the given TYPE
+(currently one of: \"bzr-nodeid\", \"hg-nodeid\", \"nar-sha256\",
+\"checksum-sha512\")."
+  (call (swh-url "/api/1/extid" type
+                 (string-append "hex:" (bytevector->base16-string id)))
+        json->external-id))
+
+(define* (lookup-directory-by-nar-hash hash #:optional (algorithm 'sha256))
+  "Return the SWHID of a directory---i.e., prefixed by \"swh:1:dir\"---for the
+directory that with the given HASH (a bytevector), assuming nar serialization
+and use of ALGORITHM."
+  ;; example:
+  ;; https://archive.softwareheritage.org/api/1/extid/nar-sha256/base64url:0jD6Z4TLMm5g1CviuNNuVNP31KWyoT_oevfr8TQwc3Y/
+  (and=> (lookup-external-id (string-append "nar-" (symbol->string algorithm))
+                             hash)
+         external-id-target))
 
 (define (origin-visits origin)
   "Return the list of visits of ORIGIN, a record as returned by
