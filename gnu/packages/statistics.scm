@@ -6681,14 +6681,14 @@ completion.")
 (define-public python-rpy2
   (package
     (name "python-rpy2")
-    (version "3.5.5")
+    (version "3.5.15")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rpy2" version))
         (sha256
          (base32
-          "0dyhb3xn2p6s67yxhgh4qd4hp45mhb5zvgqkdsn26kyg447c8lm2"))))
+          "0asvybb7kmr48pfkibp1qi3h3vlq2fl0mazaf0xj6zywhi5awks4"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -6717,9 +6717,15 @@ completion.")
            r-rsqlite
            r-dplyr
            r-dbplyr
-           python-numpy))
+           python-numpy
+           zlib))
     (native-inputs
-     (list zlib python-pytest))
+     (list python-coverage
+           python-ipython
+           python-numpy
+           python-pandas
+           python-pytest
+           python-pytest-cov))
     (home-page "https://rpy2.github.io")
     (synopsis "Python interface to the R language")
     (description "rpy2 is a redesign and rewrite of rpy.  It is providing a
