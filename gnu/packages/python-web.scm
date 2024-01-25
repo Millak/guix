@@ -1440,32 +1440,17 @@ Encryption} (JOSE) Web Standards.")
 (define-public python-pyscss
   (package
     (name "python-pyscss")
-    (version "1.3.7")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/Kronuz/pyScss")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0701hziiiw67blafgpmjhzspmrss8mfvif7fw0rs8fikddwwc9g6"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "scss/types.py"
-                   (("from collections import Iterable")
-                    "from collections.abc import Iterable"))))))
-    (build-system python-build-system)
-    (arguments
-     ;; XXX: error in test collection, possible incompatibility with Pytest 6.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "scss")))))))
+        (base32 "1vinddg8sbh3v9n1r1wmvjx6ydk8xp7scbvhb3csl4y9xz7vhk6g"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov))
     (inputs
