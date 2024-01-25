@@ -128,6 +128,92 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (srfi srfi-1))
 
+(define-public python-huggingface-hub
+  (package
+    (name "python-huggingface-hub")
+    (version "0.20.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/huggingface/huggingface_hub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00indl9labvqvm4m0y5jbzl68cgj8i60a6qy498gpnjj2pqk4l6v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; We don't have sentence_transformers...
+      '(list "--ignore=contrib/sentence_transformers/test_sentence_transformers.py"
+             ;; ...nor do we have InquirerPy...
+             "--ignore=tests/test_command_delete_cache.py"
+             ;; ...or timm...
+             "--ignore=contrib/timm/test_timm.py"
+             ;; ...or spacy_huggingface_hub
+             "--ignore=contrib/spacy/test_spacy.py"
+             ;; These all require internet access
+             "--ignore=tests/test_cache_no_symlinks.py"
+             "--ignore=tests/test_cache_layout.py"
+             "--ignore=tests/test_commit_scheduler.py"
+             "--ignore=tests/test_file_download.py"
+             "--ignore=tests/test_hf_api.py"
+             "--ignore=tests/test_hf_file_system.py"
+             "--ignore=tests/test_inference_api.py"
+             "--ignore=tests/test_inference_async_client.py"
+             "--ignore=tests/test_inference_client.py"
+             "--ignore=tests/test_login_utils.py"
+             "--ignore=tests/test_offline_utils.py"
+             "--ignore=tests/test_repocard.py"
+             "--ignore=tests/test_repository.py"
+             "--ignore=tests/test_snapshot_download.py"
+             "--ignore=tests/test_utils_cache.py"
+             "--ignore=tests/test_utils_git_credentials.py"
+             "--ignore=tests/test_utils_http.py"
+             "--ignore=tests/test_utils_pagination.py"
+             "--ignore=tests/test_webhooks_server.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           ;; Some tests need to write to HOME.
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-filelock
+           python-fsspec
+           python-packaging
+           python-pyyaml
+           python-requests
+           python-tqdm
+           python-typing-extensions))
+    (native-inputs
+     (list python-aiohttp
+           python-fastapi
+           python-jedi
+           python-jinja2
+           python-mypy
+           python-numpy
+           python-pillow
+           python-pydantic
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-env
+           python-pytest-rerunfailures
+           python-pytest-vcr
+           python-pytest-xdist
+           python-types-requests
+           python-types-toml
+           python-types-urllib3
+           python-typing-extensions
+           python-urllib3))
+    (home-page "https://github.com/huggingface/huggingface_hub")
+    (synopsis "Client library for accessing the huggingface.co hub")
+    (description
+     "This package provides a client library to download and publish models,
+datasets and other repos on the @url{huggingface.co} hub.")
+    (license license:asl2.0)))
+
 (define-public python-lazr-restfulclient
   (package
     (name "python-lazr-restfulclient")
