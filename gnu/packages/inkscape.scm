@@ -7,7 +7,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Boris A. Dekshteyn <boris.dekshteyn@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -323,4 +323,8 @@ as the native format.")
     (inputs (modify-inputs (package-inputs inkscape/stable)
               (append imagemagick         ;for libMagickCore and libMagickWand
                       python-cssselect))) ;to render qrcode
+    (native-inputs
+     (modify-inputs (package-native-inputs inkscape/stable)
+                    ;; Only use 1 imagemagick across the package build.
+                    (replace "imagemagick" imagemagick)))
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))
