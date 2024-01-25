@@ -6311,7 +6311,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.6.0")
+    (version "0.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6320,7 +6320,7 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17jl347rwagdyx6pgnp83l1ffhlyfl0s4jf7ii2i1j3s1m9sz7y0"))))
+                "0185hxbwqxhjiyym0s7bmrm50f3p4bnvx92qqmgvg3zd7r1x8m8s"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f))                ; no tests
