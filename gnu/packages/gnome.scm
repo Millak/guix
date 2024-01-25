@@ -237,6 +237,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -10284,7 +10285,7 @@ documents and diagrams, playing media, scanning, and much more.")
 a good GNOME experience, mixed from core dependencies and other implicitly
 relied-on packages.")))
 
-(define-public gnome
+(define-deprecated/public gnome #f
   (gnome-meta-package
    (name "gnome")
    (propagated-inputs
