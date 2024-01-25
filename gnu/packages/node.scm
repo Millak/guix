@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,10 @@
                     (("TRUE") "true")
                     (("FALSE") "false"))
 
+                  ;; Fix process.versions.XXXX assumption of always having
+                  ;; a version string of major.minor.patch and not major.minor.
+                  (substitute* "test/parallel/test-process-versions.js"
+                    (("\\\\d\\+\\\\.\\\\d\\+\\\\.") "(\\d+\\.)+"))
                   ;; Remove bundled software.
                   (for-each delete-file-recursively
                             '("deps/cares"
