@@ -1888,6 +1888,32 @@ progress bar and a percentage indicator object that let you track the progress
 of a loop structure or other iterative computation.")
     (license license:bsd-3)))
 
+(define-public python-gh-md-to-html
+  (package
+    (name "python-gh-md-to-html")
+    (version "1.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gh_md_to_html" version))
+       (sha256
+        (base32 "1cnaqnckpcrpc4b8ba18s5ds05w1yfiszcp7ql7pmx0jnrj25qax"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-emoji
+           python-pillow
+           python-requests
+           python-shellescape
+           python-webcolors))
+    (home-page "https://github.com/phseiff/github-flavored-markdown-to-html/")
+    (synopsis "Github-flavored Markdown")
+    (description
+     "This package provides a feature-rich Github-flavored Markdown to HTML
+Python library and command line interface.")
+    (license license:expat)))
+
 (define-public python-glymur
   (package
     (name "python-glymur")
