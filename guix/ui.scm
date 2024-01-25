@@ -531,7 +531,7 @@ See the \"Application Setup\" section in the manual, for more info.\n"))
       ;; We're now running in the "C" locale.  Try to install a UTF-8 locale
       ;; instead.  This one is guaranteed to be available in 'guix' from 'guix
       ;; pull'.
-      (false-if-exception (setlocale LC_ALL "en_US.utf8")))))
+      (false-if-exception (setlocale LC_ALL "C.UTF-8")))))
 
 (define (initialize-guix)
   "Perform the usual initialization for stand-alone Guix commands."
