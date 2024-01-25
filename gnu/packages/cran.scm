@@ -34093,13 +34093,13 @@ coefficients are constructed using multiplier bootstrap.")
 (define-public r-consrank
   (package
     (name "r-consrank")
-    (version "2.1.3")
+    (version "2.1.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ConsRank" version))
               (sha256
                (base32
-                "0v1dr7zj2fpgncymakv5qszdrlqzvc5zxfyc3yrsj09gbm0gvyby"))))
+                "001hmiii7khh1q2wav38737svzr0anr42nyp8hhplqfbiw0cc4y2"))))
     (properties `((upstream-name . "ConsRank")))
     (build-system r-build-system)
     (propagated-inputs (list r-gtools r-proxy r-rgl r-rlist r-tidyr))
