@@ -8319,6 +8319,41 @@ program for nucleotide and protein sequences.")
     ;; License information found in 'muscle -h' and usage.cpp.
     (license license:public-domain)))
 
+(define-public music
+  (let ((commit "b1caecdb164b1ab80acccb9463abe2526a56f69f")
+        (revision "1"))
+    (package
+      (name "music")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/gersteinlab/MUSIC.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0arj300h8cpbya7y98g066xsxcg2a65h3y0qs250rlj072f1b4ia"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no "check" target
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            ;; There is no "install" target.
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (install-file "bin/MUSIC" bin)))))))
+      (home-page "https://github.com/gersteinlab/MUSIC/")
+      (synopsis "Multiscale enrichment calling for ChIP-Seq datasets")
+      (description
+       "MUSIC is an algorithm for identification of enriched regions at
+multiple scales in the read depth signals from ChIP-Seq experiments.")
+      ;; See https://github.com/gersteinlab/MUSIC/issues/6
+      (license license:gpl2+))))
+
 (define-public newick-utils
   ;; There are no recent releases so we package from git.
   (let ((commit "da121155a977197cab9fbb15953ca1b40b11eb87"))
