@@ -4286,13 +4286,13 @@ want to migrate to S4.")
 (define-public r-r-oo
   (package
     (name "r-r-oo")
-    (version "1.25.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.oo" version))
               (sha256
                (base32
-                "1vxy8yw4yblb3vgl64yh0b6zf1d51rnc2c23kmyyw629fxhr1cdq"))))
+                "0ra3sjs7sqqif3dlcdry7p40vd4jxm0407d3s6sgn5i2ihw2nq7p"))))
     (properties `((upstream-name . "R.oo")))
     (build-system r-build-system)
     (propagated-inputs
