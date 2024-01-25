@@ -6257,7 +6257,7 @@ data serialization format.")
 (define-public go-google-golang-org-protobuf
   (package
     (name "go-google-golang-org-protobuf")
-    (version "1.28.0")
+    (version "1.31.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6266,16 +6266,22 @@ data serialization format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nzcc4qc00afi24nb7nlnwyzvvr6b8s8qdrn1sw085nygh2y2x8r"))))
+                "1xf18kzz96hgfy1vlbnydrizzpxkqj2iamfdbj3dx5a1zz5mi8n0"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "google.golang.org/protobuf"
-           #:tests? #f ; source-only package
-           #:phases #~(modify-phases %standard-phases
-                        ;; source-only package
-                        (delete 'build))))
-    (propagated-inputs (list go-github-com-google-go-cmp-cmp
-                             go-github-com-golang-protobuf-proto))
+     (list #:go go-1.21
+           #:import-path "google.golang.org/protobuf"
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX: Workaround for go-build-system's lack of Go modules
+               ;; support.
+               (delete 'build)
+               (replace 'check
+                 (lambda* (#:key tests? import-path #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion (string-append "src/" import-path)
+                       (invoke "go" "test" "-v" "./..."))))))))
+    (propagated-inputs (list go-github-com-google-go-cmp-cmp))
     (home-page "https://google.golang.org/protobuf")
     (synopsis "Go library for Protocol Buffers")
     (description
