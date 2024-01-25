@@ -36,6 +36,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -323,6 +324,29 @@ answer set programming.  It supports a subset of PDDL 3.1 and SAS 3.")
       "This package provides a major mode for editing answer set programs,
 in particular ones that can be solved by @command{clingo}.")
      (license license:gpl3+))))
+
+(define-public (make-lua-clingo name lua)
+  (package
+    (inherit clingo)
+    (name name)
+    (version (package-version clingo)) ; for #$version in arguments
+    (arguments
+     (substitute-keyword-arguments (package-arguments clingo)
+       ((#:configure-flags flags #~'())
+        #~(cons* "-DCLINGO_BUILD_WITH_LUA=yes"
+                 (string-append "-DLUACLINGO_INSTALL_DIR="
+                                #$output "/lib/lua/"
+                                #$(package-version lua))
+                 "-DCLINGO_USE_LIB=yes"
+                 #$flags))))
+    (inputs (list clingo lua))
+    (synopsis "Lua bindings for clingo")
+    (description "This package provides Lua bindings to the clingo package,
+making it so that you can write @acronym{ASPs, Answer Set Programs} through
+Lua code.")))
+
+(define-public lua5.1-clingo (make-lua-clingo "lua5.1-clingo" lua-5.1))
+(define-public lua5.2-clingo (make-lua-clingo "lua5.2-clingo" lua-5.2))
 
 (define-public python-clingo
   (package
