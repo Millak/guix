@@ -1432,6 +1432,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnome-tweaks-search-paths.patch		\
   %D%/packages/patches/gnulib-bootstrap.patch			\
   %D%/packages/patches/gnumach-fix-i686-linux-build.patch	\
+  %D%/packages/patches/gnumach-fix-task_info.patch		\
   %D%/packages/patches/gnumach-support-noide.patch		\
   %D%/packages/patches/gnupg-default-pinentry.patch		\
   %D%/packages/patches/gnupg-1-build-with-gcc10.patch		\

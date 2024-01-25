@@ -256,7 +256,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
               (patches
                (append
                 (search-patches "gnumach-support-noide.patch"
-                                "gnumach-fix-i686-linux-build.patch")
+                                "gnumach-fix-i686-linux-build.patch"
+                                "gnumach-fix-task_info.patch")
                 (origin-patches (package-source gnumach-headers))))))
     (arguments
      (substitute-keyword-arguments (package-arguments gnumach-headers)
