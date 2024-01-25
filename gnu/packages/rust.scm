@@ -1060,6 +1060,19 @@ safety and thread safety guarantees.")
                    (substitute* "patch.rs"
                      ,@(make-ignore-test-list
                         '("fn gitoxide_clones_shallow_old_git_patch"))))))
+             ,@(if (target-riscv64?)
+                   ;; Keep this phase separate so it can be adjusted without needing
+                   ;; to adjust the skipped tests on other architectures.
+                   `((add-after 'unpack 'disable-tests-broken-on-riscv64
+                       (lambda _
+                         (with-directory-excursion "src/tools/cargo/tests/testsuite"
+                           (substitute* "build.rs"
+                             ,@(make-ignore-test-list
+                                 '("fn uplift_dwp_of_bin_on_linux")))
+                           (substitute* "cache_lock.rs"
+                             ,@(make-ignore-test-list
+                                 '("fn multiple_download")))))))
+                   `())
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
                  (with-directory-excursion "src/tools/cargo/tests/testsuite/"
