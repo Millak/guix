@@ -375,32 +375,25 @@ timezone for given coordinates on earth entirely offline.")
 (define-public python-tzlocal
   (package
     (name "python-tzlocal")
-    (version "2.1")
+    (version "5.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tzlocal" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/regebro/tzlocal")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0i1fm4sl04y65qnaqki0w75j34w863gxjj8ag0vwgvaa572rfg34"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-symlink-test
-           ;; see: https://github.com/regebro/tzlocal/issues/53
-           (lambda _
-             (delete-file "tests/test_data/symlink_localtime/etc/localtime")
-             (symlink "../usr/share/zoneinfo/Africa/Harare"
-                      "tests/test_data/symlink_localtime/etc/localtime")
-             ;; And skip the test_fail test, it is known to fail
-             (substitute* "tests/tests.py"
-               (("def test_fail") "def _test_fail"))
-             #t)))))
+         "1apa3i5fsfw28jnaaaa7jr976y5wbifl3h04id0bvplvsb9zpmy7"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-pytz))
+     (list python-tzdata))
     (native-inputs
-     (list python-mock))
+     (list python-check-manifest
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock))
     (home-page "https://github.com/regebro/tzlocal")
     (synopsis "Local timezone information for Python")
     (description
