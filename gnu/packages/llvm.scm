@@ -950,7 +950,8 @@ Library.")
 (define-public clang-runtime-11
   (clang-runtime-from-llvm
    llvm-11
-   "0x1j8ngf1zj63wlnns9vlibafq48qcm72p4jpaxkmkb4qw0grwfy"))
+   "0x1j8ngf1zj63wlnns9vlibafq48qcm72p4jpaxkmkb4qw0grwfy"
+   '("clang-runtime-13-glibc-2.36-compat.patch")))
 
 (define-public clang-11
   (clang-from-llvm llvm-11 clang-runtime-11
