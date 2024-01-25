@@ -1248,3 +1248,55 @@ original glmark benchmark by Ben Smith.")
     (description "Waffle is a library that allows one to defer selection of an
  OpenGL API and a window system until runtime.")
     (license license:bsd-2)))
+
+(define-public piglit
+  (let ((revision "1")
+        (commit "814046fe6942eac660ee4a6cc5fcc54011a49945"))
+    (package
+     (name "piglit")
+     (version (git-version "0.0.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/mesa/piglit")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1bzaalcxskckfnwprw77sbbmfqi59by2j8imaq8ghnlzhlxv7mk7"))))
+     (build-system cmake-build-system)
+     (arguments
+      (list #:configure-flags #~(list "-DPIGLIT_SSE2=OFF")
+            ;; Tests are not invoked through cmake.  Instead, there are
+            ;; pytest/tox-based tests for the framework, but they require
+            ;; unpackaged plugins.
+            #:tests? #f
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'patch-source
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* (find-files "framework/" "\\.py$")
+                      (("'wflinfo'")
+                       (string-append "'"
+                                      (search-input-file inputs "/bin/wflinfo")
+                                      "'")))))
+                (add-after 'install 'wrap
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (wrap-script (string-append (assoc-ref outputs "out")
+                                                "/bin/piglit")
+                      `("GUIX_PYTHONPATH" prefix
+                        (,(getenv "GUIX_PYTHONPATH")))))))))
+     (inputs (list guile-3.0            ; for wrap-script
+                   libxkbcommon
+                   python python-lxml python-mako python-numpy
+                   glslang vulkan-headers vulkan-loader
+                   waffle))
+     (native-inputs (list pkg-config))
+     (home-page "https://piglit.freedesktop.org/")
+     (synopsis "Test OpenGL implementations")
+     (description "Piglit is a collection of automated tests for OpenGL and
+OpenCL implementations.")
+     ;; A mix of licenses for various tests
+     (license (list license:expat
+                    license:bsd-3
+                    license:gpl2+
+                    license:gpl3+)))))
