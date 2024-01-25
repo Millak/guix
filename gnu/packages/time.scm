@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages time)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages geo)
@@ -47,6 +49,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
@@ -124,6 +127,38 @@ expressions.")
     (description
      "This library provides a timezone database for Python.")
     (license expat)))
+
+(define-public python-tzdata
+  (package
+    (name "python-tzdata")
+    ;; This package should be kept in sync with tzdata in (gnu packages base).
+    (version "2022.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tzdata" version))
+       (sha256
+        (base32 "1lsjhlwzvzxpp4mpa9gy5b58z3qilf9l365k889pbh1xqs76llwb"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "src/tzdata/zoneinfo"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'ensure-no-mtimes-pre-1980 'unpack-tzdata
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (copy-recursively
+                    (search-input-directory inputs "share/zoneinfo")
+                    "src/tzdata/zoneinfo")
+                   (delete-file "src/tzdata/zoneinfo/posix")
+                   (call-with-output-file "src/tzdata/zoneinfo/__init__.py"
+                     (const #t)))))))
+    (inputs (list tzdata))
+    (native-inputs (list python-pytest python-pytest-subtests))
+    (home-page "https://github.com/python/tzdata")
+    (synopsis "Python wrapper of IANA time zone data")
+    (description "This package provides a thin Python wrapper around tzdata.")
+    (license asl2.0)))
 
 (define-public python-pytz
   (package
