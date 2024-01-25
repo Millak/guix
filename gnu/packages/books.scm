@@ -19,25 +19,25 @@
 
 (define-module (gnu packages books)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix utils)
-  #:use-module (guix gexp)
+  #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
-  #:use-module (guix build-system gnu)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages music)
+  #:use-module (gnu packages fonts)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages inkscape)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texlive)
-  #:use-module (gnu packages version-control)
-  #:use-module (gnu packages fonts)
-  #:use-module (gnu packages fontutils))
+  #:use-module (gnu packages version-control))
 
 (define-public book-sparc
   (package
@@ -81,6 +81,7 @@
            texlive-bibtex
            texlive-bibtexperllibs
            texlive-bigfoot
+           texlive-chngcntr
            texlive-circuitikz
            texlive-collection-langcyrillic
            texlive-fontspec
@@ -89,7 +90,6 @@
            texlive-glossaries-extra
            texlive-koma-script
            texlive-lilyglyphs
-           texlive-chngcntr
            texlive-minted
            texlive-multirow
            texlive-pgf
