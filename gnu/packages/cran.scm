@@ -18136,14 +18136,14 @@ mathematics.")
 (define-public r-rcppannoy
   (package
     (name "r-rcppannoy")
-    (version "0.0.21")
+    (version "0.0.22")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppAnnoy" version))
        (sha256
         (base32
-         "1xzhax5hmn79h6kmz7inrlaya5mdpzqj6j7n5ridyzc4vcrs412q"))))
+         "0rcgvmlp3by57k562pbxsncirww1vv8zarfxrjzfgly4hzbj28cz"))))
     (properties `((upstream-name . "RcppAnnoy")))
     (build-system r-build-system)
     (propagated-inputs
