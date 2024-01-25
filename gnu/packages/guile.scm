@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Taylan Kammer <taylan.kammer@gmail.com>
 ;;; Copyright © 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
+;;; Copyright © 2021, 2024 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -995,6 +995,28 @@ compression library.")
     (home-page "https://ngyro.com/software/guile-lzma.html")
     (synopsis "Guile bindings for liblzma (XZ)")
     (description "Guile-LZMA is a Guile wrapper for the liblzma (XZ)
+library.  It exposes an interface similar to other Guile compression
+libraries, like Guile-zlib.")
+    (license license:gpl3+)))
+
+(define-public guile-bzip2
+  (package
+    (name "guile-bzip2")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://files.ngyro.com/guile-bzip2/guile-bzip2-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1qnxk5fzg8m9ik1ckhjvi22kkhd810mrg8jzxiizhk920b69wbdh"))))
+    (build-system gnu-build-system)
+    (native-inputs (list guile-3.0 guile-bytestructures pkg-config))
+    (inputs (list guile-3.0 bzip2))
+    (propagated-inputs (list guile-bytestructures))
+    (home-page "https://ngyro.com/software/guile-bzip2.html")
+    (synopsis "Guile bindings for libbzip2")
+    (description "Guile-bzip2 is a Guile wrapper for the libbzip2
 library.  It exposes an interface similar to other Guile compression
 libraries, like Guile-zlib.")
     (license license:gpl3+)))
