@@ -1127,7 +1127,8 @@ Library.")
   (clang-runtime-from-llvm
    llvm-8
    "0dqqf8f930l8gag4d9qjgn1n0pj0nbv2anviqqhdi1rkhas8z0hi"
-   '("clang-runtime-9-libsanitizer-mode-field.patch")))
+   '("clang-runtime-9-libsanitizer-mode-field.patch"
+     "clang-runtime-9-glibc-2.36-compat.patch")))
 
 (define-public clang-8
   (clang-from-llvm llvm-8 clang-runtime-8
