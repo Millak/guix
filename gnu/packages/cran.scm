@@ -26395,30 +26395,27 @@ LargeVis method of Tang et al. (2016) is also provided.")
 (define-public r-kableextra
   (package
     (name "r-kableextra")
-    (version "1.3.4")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kableExtra" version))
        (sha256
         (base32
-         "1c5vzy95cbz36jwyssr927qicrayifinv861rvnmg4nghb1gl7q9"))))
+         "02blaamz6xkdwgyvw6akjhn5fvwy8l24k7nwqj2id6g8qagwrqlg"))))
     (properties `((upstream-name . "kableExtra")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest
-           r-glue
            r-htmltools
            r-knitr
            r-magrittr
            r-rmarkdown
            r-rstudioapi
-           r-rvest
            r-scales
            r-stringr
            r-svglite
            r-viridislite
-           r-webshot
            r-xml2))
     (native-inputs
      (list r-knitr))
