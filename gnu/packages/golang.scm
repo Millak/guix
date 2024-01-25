@@ -6232,7 +6232,7 @@ test results.")
 (define-public go-github-com-golang-protobuf-proto
   (package
     (name "go-github-com-golang-protobuf-proto")
-    (version "1.3.1")
+    (version "1.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6241,13 +6241,13 @@ test results.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15am4s4646qy6iv0g3kkqq52rzykqjhm4bf08dk0fy2r58knpsyl"))))
+                "03f1w2cd4s8a3xhl61x7yjx81kbzlrjpvnnwmbhqnz814yi7h43i"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/golang/protobuf/proto"
-       #:unpack-path "github.com/golang/protobuf"
-       ;; Requires unpackaged golang.org/x/sync/errgroup
-       #:tests? #f))
+       #:unpack-path "github.com/golang/protobuf"))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf))
     (synopsis "Go support for Protocol Buffers")
     (description "This package provides Go support for the Protocol Buffers
 data serialization format.")
