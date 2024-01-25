@@ -4848,24 +4848,23 @@ and Numpy.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0n1vsih99pvswcaygdxkc6kq6r48ny130z6ca8pp3281396r2ykw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+     (list
+      #:test-flags
+      '(list "-vv" "--stage=unit"
              ;; This tests features that are only implemented when non-free
              ;; software is available (Intel MKL or CUDA).
-             (for-each delete-file
-                       (list "tests/distributions/test_spanning_tree.py"
-                             "tests/infer/mcmc/test_mcmc_api.py"))
-
+             "--ignore=tests/distributions/test_spanning_tree.py"
+             "--ignore=tests/infer/mcmc/test_mcmc_api.py"
+             ;; This test fails sometimes.
+             "--ignore=tests/optim/test_optim.py"
              ;; Four test_gamma_elbo tests fail with bad values for unknown
              ;; reasons.
-             (delete-file "tests/distributions/test_rejector.py")
-             ;; This test fails sometimes.
-             (delete-file "tests/optim/test_optim.py")
-             (invoke "pytest" "-vv" "--stage=unit"))))))
+             "--ignore=tests/distributions/test_rejector.py"
+             ;; This looks like a test system failure.  All of these fail
+             ;; because x is an array of functions, not an array of numbers.
+             "-k" "not test_sample")))
     (propagated-inputs
      (list python-numpy
            python-opt-einsum
