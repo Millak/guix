@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022–2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
@@ -369,6 +369,40 @@ in particular ones that can be solved by @command{clingo}.")
     (description "This package provides Python bindings to the clingo package,
 making it so that you can write @acronym{ASPs, Answer Set Programs} through
 Python code.")))
+
+(define-public python-clingo-dl
+  (package
+    (inherit clingo-dl)
+    (name "python-clingo-dl")
+    (version (package-version clingo-dl))
+    (arguments
+     (list
+      #:configure-flags #~'("-DPYCLINGODL_ENABLE=pip")
+      #:tests? #f
+      #:imported-modules  `(,@%cmake-build-system-modules
+                            (guix build python-build-system))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-distinfo
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (python:site-packages inputs outputs)
+                (let ((dir (string-append "clingodl-" #$version ".dist-info")))
+                  (mkdir-p dir)
+                  (call-with-output-file (string-append dir "/METADATA")
+                    (lambda (port)
+                      (format port "Metadata-Version: 1.1~%")
+                      (format port "Name: clingodl~%")
+                      (format port "Version: ~a~%" #$version))))))))))
+    (inputs (modify-inputs (package-inputs clingo-dl)
+              (prepend python-wrapper)))
+    (propagated-inputs (list python-clingo python-cffi))
+    (synopsis "Python bindings for clingo-dl")
+    (description "This package allows users to add the clingo-dl propagator
+as a theory to clingo from Python code.  It also supports running clingo-dl
+directly from the python command line.")))
 
 (define-public python-clorm
   (package
