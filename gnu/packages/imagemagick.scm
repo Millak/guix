@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
@@ -82,6 +82,8 @@
                (string-append "--with-gs-font-dir="
                               (search-input-directory %build-inputs
                                                       "share/fonts/type1"))
+               ;; No documentation in the stable version.
+               "--disable-docs"
                ;; Do not embed the build date in binaries.
                "--enable-reproducible-build")
        #:phases
@@ -91,16 +93,7 @@
                (substitute* "Makefile"
                  ;; Clear the `LIBRARY_PATH' setting, which otherwise
                  ;; interferes with our own use.
-                 (("^LIBRARY_PATH[[:blank:]]*=.*$")
-                  "")
-
-                 ;; Since the Makefile overrides $docdir, modify it to
-                 ;; refer to what we want.
-                 (("^DOCUMENTATION_PATH[[:blank:]]*=.*$")
-                  (string-append "DOCUMENTATION_PATH = "
-                                 #$output:doc "/share/doc/"
-                                 #$name "-"
-                                 #$(package-version this-package) "\n")))))
+                 (("^LIBRARY_PATH[[:blank:]]*=.*$") ""))))
            (add-before 'configure 'strip-configure-xml
              (lambda _
                (substitute* "config/configure.xml.in"
@@ -131,8 +124,6 @@
      (native-inputs
       (list font-ghostscript
             pkg-config))
-     (outputs '("out"
-                "doc"))                 ; 26 MiB of HTML documentation
      (home-page "https://www.imagemagick.org/")
      (synopsis "Create, edit, compose, or convert bitmap images")
      (description
@@ -147,6 +138,7 @@ text, lines, polygons, ellipses and Bézier curves.")
 (define-public imagemagick
   (package
     (inherit imagemagick/stable)
+    (outputs '("out" "doc"))    ; 11 MiB of HTML documentation
     (properties (alist-delete 'hidden? (package-properties imagemagick/stable)))
     ;; The 7 release series has an incompatible API, while the 6 series is still
     ;; maintained. Don't update to 7 until we've made sure that the ImageMagick
@@ -158,7 +150,23 @@ text, lines, polygons, ellipses and Bézier curves.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1j1chkw33vjc37509vdwss28qywfvckvs73pvscldj8d0wnwypa8"))))))
+                "1j1chkw33vjc37509vdwss28qywfvckvs73pvscldj8d0wnwypa8"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments imagemagick/stable)
+       ((#:configure-flags flags #~'())
+        #~(delete "--disable-docs" #$flags))
+       ((#:phases phases #~'%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'set-doc-directory
+              (lambda _
+                (substitute* "Makefile"
+                  ;; Since the Makefile overrides $docdir, modify it to
+                  ;; refer to what we want.
+                  (("^DOCUMENTATION_PATH[[:blank:]]*=.*$")
+                   (string-append "DOCUMENTATION_PATH = "
+                                  #$output:doc "/share/doc/"
+                                  #$(package-name this-package) "-"
+                                  #$(package-version this-package) "\n")))))))))))
 
 (define-public perl-image-magick
   (package
