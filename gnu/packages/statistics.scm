@@ -5399,14 +5399,14 @@ Farebrother's algorithm or Liu et al.'s algorithm.")
 (define-public r-cowplot
   (package
     (name "r-cowplot")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cowplot" version))
        (sha256
         (base32
-         "1ppsg3rbqz9a16zq87izdj5w8ylb6jb6v13xb01k7m3n2h4mv4f6"))))
+         "0wxjynpbamyimpms7psbac7xgwswzlidczpc037q20y5yld9fml7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gtable r-rlang r-scales))
