@@ -494,7 +494,7 @@ real and complex numbers, with automatic, rigorous error control.")
 (define-public python-flint
   (package
     (name "python-flint")
-    (version "0.3.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -503,15 +503,14 @@ real and complex numbers, with automatic, rigorous error control.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v0anazbj1cfi68nl2j6dbd31kgkc1563xmr0zk5xk3xj78569pw"))
-              (patches (search-patches "python-flint-includes.patch"))))
+                "10370kqik6q6vdqrqv3gbznsyaxbgqb3rbrff4alpw0sqr5s07c7"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-cython))
+     (list python-cython-3))
     (propagated-inputs
      (list python-numpy))
     (inputs
-     (list arb flint))
+     (list flint))
     (synopsis "Python module wrapping ARB and FLINT")
     (description
      "Python-flint is a Python extension module wrapping FLINT
