@@ -25798,6 +25798,9 @@ The @code{(gnu services databases)} module provides the following services.
 
 @subsubheading PostgreSQL
 
+@defvar postgresql-service-type
+The service type for the PostgreSQL database server.  Its value should
+be a valid @code{postgresql-configuration} object, documented below.
 The following example describes a PostgreSQL service with the default
 configuration.
 
@@ -25824,6 +25827,7 @@ sudo -u postgres -s /bin/sh
 createuser --interactive
 createdb $MY_USER_LOGIN      # Replace appropriately.
 @end example
+@end defvar
 
 @deftp {Data Type} postgresql-configuration
 Data type representing the configuration for the
