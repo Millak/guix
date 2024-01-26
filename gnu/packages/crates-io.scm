@@ -22829,8 +22829,32 @@ test multiple times.")
      "A procedural macro to insert @code{flame::start_guard(_)} calls.")
     (license license:asl2.0)))
 
+(define-public rust-flatbuffers-23
+  (package
+    (name "rust-flatbuffers")
+    (version "23.5.26")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "flatbuffers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h46mg8yb9igda4ff5dajkzc6k5mf4ix472asqb8rmv24ki57b2d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://flatbuffers.dev/")
+    (synopsis "FlatBuffers Rust serialization library")
+    (description
+     "This crates provides FlatBuffers runtime serialization library.")
+    (license license:asl2.0)))
+
 (define-public rust-flatbuffers-2
   (package
+    (inherit rust-flatbuffers-23)
     (name "rust-flatbuffers")
     (version "2.0.0")
     (source
@@ -22840,18 +22864,12 @@ test multiple times.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xp5ppif0hvgh9kfvy1199gdmjc3dw1517022l1x3ynpphw5fk7g"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://google.github.io/flatbuffers/")
-    (synopsis "FlatBuffers Rust serialization library")
-    (description
-     "This crates provides FlatBuffers runtime serialization library.")
-    (license license:asl2.0)))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-flate2-1
   (package
