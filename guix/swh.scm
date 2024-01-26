@@ -446,7 +446,7 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   json->revision)
 
 (define-query (lookup-directory id)
-  "Return the directory with the given ID."
+  "Return the list of entries of the directory with the given ID."
   (path "/api/1/directory" id)
   json->directory-entries)
 
