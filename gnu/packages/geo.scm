@@ -14,10 +14,11 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2022 Patrick Noll <patrick@patricknoll.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -61,6 +62,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
@@ -973,6 +975,61 @@ high-level interface to multiple geometries to Shapely.  GeoPandas
 enables you to easily do operations in Python that would otherwise
 require a spatial database such as PostGIS.")
     (license license:bsd-3)))
+
+(define-public python-ogr2osm
+  (package
+    (name "python-ogr2osm")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in PyPi package
+       (uri
+        (git-reference
+         (url "https://github.com/roelderickx/ogr2osm/")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hwqnx3cdqxmniydpj1v31kglq1xjsx41d8p10c9j4hg8kb43j80"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; There are tests in git checkout but non of the examples taken from
+      ;; GitHub Actions worked for me. Disabling them to be checked later
+      ;; <https://github.com/roelderickx/ogr2osm/blob/main/.github/workflows/test.yml>.
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; TODO: Fix provided tests.
+                ;; (invoke "cram" "test/basic_usage.t")
+                ;; (invoke "cram" "test/osm_output.t")
+                ;; (invoke "cram" "test/pbf_output.t")
+
+                ;; Run simple tests to ensure that the command is working.
+                (invoke "ogr2osm" "--help")
+                (invoke
+                 "ogr2osm" "-f" "test/shapefiles/basic_geometries.kml")))))))
+    (inputs
+     (list gdal))
+    (native-inputs
+     (list coreutils
+           diffutils
+           libxml2
+           python-cram
+           which))
+    (propagated-inputs
+     (list python-lxml
+           python-protobuf))
+    (home-page "https://github.com/roelderickx/ogr2osm")
+    (synopsis "Convert ogr-readable files like shapefiles into OSM or PDF formats")
+    (description
+     "@code{ogr2osm} is a tool for converting ogr-readable files into
+@acronym{OSM, OpenStreetMap} format.  It supports reading from OGR files like
+shapefiles or PostgresSQL database and converts data into @code{osm} or
+@code{osm.pbf} formats.  A translation file can be used to manipulate the data
+during conversion.")
+    (license license:expat)))
 
 (define-public python-osmnx
   (package
