@@ -28601,10 +28601,11 @@ services:
 
 @subsubheading Jami
 
-@cindex jami, service
-
-This section describes how to configure a Jami server that can be used
-to host video (or audio) conferences, among other uses.  The following
+@defvar jami-service-type
+The service type for running Jami as a service.  It takes a
+@code{jami-configuration} object as a value, documented below.  This
+section describes how to configure a Jami server that can be used to
+host video (or audio) conferences, among other uses.  The following
 example demonstrates how to specify Jami account archives (backups) to
 be provisioned automatically:
 
@@ -28732,6 +28733,7 @@ Account_username: f3345f2775ddfe07a4b0d95daea111d15fbc1199
 The remaining actions should be self-explanatory.
 
 The complete set of available configuration options is detailed below.
+@end defvar
 
 @c TODO: Ideally, the following fragments would be auto-generated at
 @c build time, so that they needn't be manually duplicated.
