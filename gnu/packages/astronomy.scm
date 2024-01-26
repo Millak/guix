@@ -1616,6 +1616,50 @@ astronomy and astrophysics.")
     (description "This package provides HEALPix to the Astropy project.")
     (license license:bsd-3)))
 
+(define-public python-astropy-iers-data
+  (package
+    (name "python-astropy-iers-data")
+    ;; In case of changing the source method git-fetch, consider to check the
+    ;; tag as it's not following the PyPI version, see
+    ;; <https://github.com/astropy/astropy-iers-data/issues/17>.
+    (version "0.2024.2.19.0.28.47")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astropy-iers-data" version))
+       (sha256
+        (base32 "0j42hkl8z42x5n3aacld9cvacjzg79lqsivm3xn6bv1gjgy69br9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Dependencies cycle wit python-astropy, see
+      ;; <https://github.com/astropy/astropy-iers-data/issues/21>.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-env-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-pytest-remotedata
+           python-setuptools-scm))
+    (home-page "https://docs.astropy.org/en/latest/utils/iers.html")
+    (synopsis "IERS Earth Rotation and Leap Second tables for the astropy core package")
+    (description
+     "The @code{iers} package provides access to the tables provided by the
+@acronym{International Earth Rotation and Reference Systems, IERS} service, in
+particular the
+@url{https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html,
+Earth Orientation data} allowing interpolation of published UT1-UTC and polar
+motion values for given times.  The UT1-UTC values are used in
+@url{https://docs.astropy.org/en/latest/time/index.html#astropy-time, Time and
+Dates (astropy.time)} to provide UT1 values, and the polar motions are used in
+@code{astropy.coordinates} to determine Earth orientation for
+celestial-to-terrestrial coordinate transformations.")
+    (license license:bsd-3)))
+
 (define-public python-astroquery
   (package
     (name "python-astroquery")
