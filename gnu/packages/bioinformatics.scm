@@ -21742,7 +21742,7 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
 (define-public ccwl
   (package
     (name "ccwl")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
@@ -21750,7 +21750,7 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "1ar8rfz3zrksgygrv67zv77y8gfvvz54zcs546jn6j28y20basla"))))
+         "0za710mcn9di1njli3dk3660n3836ip8b4msb8f958498va95y7j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ; to prevent guild warnings
@@ -21761,6 +21761,12 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
                            ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
+         (add-after 'patch-source-shebangs 'patch-more-source-shebangs
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "scripts/ccwl"
+               (("^exec guile")
+                (string-append "exec "
+                               (search-input-file inputs "/bin/guile"))))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
