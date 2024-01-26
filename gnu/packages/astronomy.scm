@@ -4318,9 +4318,12 @@ install an implementation package such as asdf-astropy.")
         (base32 "061y7r1d2fqlr8a6gyaffqa3z5m0ymljahhvxzcb71355xkqig7v"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'set-home-env
-                          (lambda _ (setenv "HOME" "/tmp"))))))
+     (list
+      #:test-flags
+      #~(list "-n" "auto")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-home-env
+                     (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-coverage
            python-h5py
