@@ -28830,6 +28830,12 @@ account fingerprint for a registered username.
 This section describes how to set up and run a
 @uref{https://mumble.info, Mumble} server (formerly known as Murmur).
 
+@defvar mumble-server-service-type
+
+This is the service to run a Mumble server.  It takes a
+@code{mumble-server-configuration} object as its value, defined below.
+@end defvar
+
 @deftp {Data Type} mumble-server-configuration
 The service type for the Mumble server.  An example configuration can
 look like this:
