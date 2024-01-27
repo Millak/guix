@@ -46912,28 +46912,42 @@ replacements, adding colorful diffs.")
        (("rust-ansi-term" ,rust-ansi-term-0.9)
         ("rust-difference" ,rust-difference-1))))))
 
-(define-public rust-pretty-env-logger-0.4
+(define-public rust-pretty-env-logger-0.5
   (package
     (name "rust-pretty-env-logger")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pretty_env_logger" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "17gva1rlf9fhgr0jr19kv39f8bir3f4pa4jz02qbhl9qanwkcvcj"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pretty_env_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "076w9dnvcpx6d3mdbkqad8nwnsynb7c8haxmscyrz7g3vga28mw6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-log" ,rust-log-0.4))))
+     `(#:cargo-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-log" ,rust-log-0.4))))
     (home-page "https://github.com/seanmonstar/pretty-env-logger")
     (synopsis "Visually pretty env_logger")
     (description "This package provides a visually pretty env_logger.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-pretty-env-logger-0.4
+  (package
+    (inherit rust-pretty-env-logger-0.5)
+    (name "rust-pretty-env-logger")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pretty_env_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17gva1rlf9fhgr0jr19kv39f8bir3f4pa4jz02qbhl9qanwkcvcj"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-env-logger" ,rust-env-logger-0.7)
+                       ("rust-log" ,rust-log-0.4))))))
 
 (define-public rust-pretty-env-logger-0.3
   (package
