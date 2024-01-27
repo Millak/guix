@@ -10136,17 +10136,17 @@ for @code{rust-chrono}.")
         ("rust-parse-zoneinfo" ,rust-parse-zoneinfo-0.3)
         ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-chrono-tz-build-0.0.3
+(define-public rust-chrono-tz-build-0.2
   (package
     (name "rust-chrono-tz-build")
-    (version "0.0.3")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono-tz-build" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "031s51dd2vbxdhz7fxk1jpbbvr800w57an14bsq3fd5khwx9ql3g"))))
+        (base32 "03rmzd69cn7fp0fgkjr5042b3g54s2l941afjm3001ls7kqkjgj3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -10161,6 +10161,19 @@ for @code{rust-chrono}.")
      "This package contains the internal build script for
 chrono-tz Rust crate.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-chrono-tz-build-0.0.3
+  (package
+    (inherit rust-chrono-tz-build-0.2)
+    (name "rust-chrono-tz-build")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chrono-tz-build" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "031s51dd2vbxdhz7fxk1jpbbvr800w57an14bsq3fd5khwx9ql3g"))))))
 
 (define-public rust-chumsky-0.9
   (package
