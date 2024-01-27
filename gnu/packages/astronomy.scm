@@ -3686,13 +3686,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.12.5")
+    (version "1.13.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "0blrl00lz1snhcnr7j59nh05rnpqxdnfp8hhgagkr50h85q4smrn"))))
+                "0n5cfjayg15kf5p6pns7k2zfcldqz1464ndbldgzanc33fp9wnfz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
