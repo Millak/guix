@@ -39,6 +39,7 @@
 ;;; Copyright © 2023, 2024 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2023 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2182,66 +2183,64 @@ CLI parser, like @code{rust-clap}, by pre-processing the arguments, like
 (define-public rust-argh-shared-0.1
   (package
     (name "rust-argh-shared")
-    (version "0.1.6")
+    (version "0.1.12")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "argh_shared" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0crzkzr4mq9gyys3m0idgsfwwrwd4dk70scp7rspvb2fmgd01piq"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argh_shared" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cbmf3n5fd7ha014m303f4bmsmj0v84an4a1rh77d9dx868z74sn"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/google/argh")
     (synopsis "Derive-based argument parsing optimized for code size")
-    (description "Derive-based argument parsing optimized for code size")
+    (description "Derive-based argument parsing optimized for code size.")
     (license license:bsd-3)))
 
 (define-public rust-argh-derive-0.1
   (package
     (name "rust-argh-derive")
-    (version "0.1.6")
+    (version "0.1.12")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "argh_derive" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "13qz9i9frdjl1v9aqw5b2cs7wn3h34x2xkpsi9wcl1hcpjd23ba8"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argh_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ynq2f2f05ybhmvg5y4m1kdfihw4jsq3bnq6gp32yykbvzp0mpsn"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build?
-        #t
-        #:cargo-inputs
-        (("rust-argh-shared" ,rust-argh-shared-0.1)
-         ("rust-heck" ,rust-heck-0.3)
-         ("rust-proc-macro2" ,rust-proc-macro2-1)
-         ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))))
+     `(#:cargo-inputs (("rust-argh-shared" ,rust-argh-shared-0.1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/google/argh")
     (synopsis "Derive-based argument parsing optimized for code size")
-    (description "Derive-based argument parsing optimized for code size")
+    (description "Derive-based argument parsing optimized for code size.")
     (license license:bsd-3)))
 
 (define-public rust-argh-0.1
   (package
     (name "rust-argh")
-    (version "0.1.6")
+    (version "0.1.12")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "argh" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1gy9y69d38q7f5147kj823swgggc3m30x7z2z1lrjpwpsxncf8zh"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argh" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06fjmac07knqw7vahra9rkbfrrsv31yrqhf7wi623xvzjq3bmxbs"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:cargo-inputs
-        (("rust-argh-derive" ,rust-argh-derive-0.1)
-         ("rust-argh-shared" ,rust-argh-shared-0.1))))
+     `(#:cargo-inputs (("rust-argh-derive" ,rust-argh-derive-0.1)
+                       ("rust-argh-shared" ,rust-argh-shared-0.1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/google/argh")
     (synopsis "Derive-based argument parser optimized for code size")
-    (description "Derive-based argument parser optimized for code size")
+    (description "Derive-based argument parser optimized for code size.")
     (license license:bsd-3)))
 
 (define-public rust-argmax-0.3
