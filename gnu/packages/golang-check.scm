@@ -138,6 +138,18 @@ flag.")))
 reorders fields to minimize the amount of padding.  It can emit JSON to feed
 into @code{go-structlayout-pretty}.")))
 
+(define-public go-structlayout-pretty
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-structlayout-pretty")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Format the output of go-structlayout with ASCII art in Go")
+    (description "This package takes @code{go-structlayout}-like JSON and
+prints an ASCII fraphic representing the memory layout.")))
+
 (define-public go-github-com-alecthomas-assert
   (let ((commit "405dbfeb8e38effee6e723317226e93fff912d06")
         (revision "1"))
