@@ -4219,8 +4219,8 @@ install an implementation package such as asdf-astropy.")
 
 (define python-asdf-time-schemas
   ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "e9174083d9cfd3c6f7ded9eeb360d99ccb8d9d18")
-        (revision "2"))
+  (let ((commit "a3062066ee70f1b934f7339d1ce96a5c5f61f055")
+        (revision "3"))
     (package
       (name "python-asdf-time-schemas")
       (version (git-version "0.0.1" revision commit))
@@ -4233,7 +4233,7 @@ install an implementation package such as asdf-astropy.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1i40hcxp8sds2zq939fwczjlshfqb9r9pnzy3a44c3wqdbwhcbdb"))))
+           "1i8lm2d18r6fadsch52dxc2zp1swkfa8w40s03albn7p290n4a97"))))
       (build-system pyproject-build-system)
       (arguments
        (list
