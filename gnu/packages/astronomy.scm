@@ -2451,6 +2451,8 @@ Virtual observatory (VO) using Python.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-n" "auto")
       #:phases
       #~(modify-phases %standard-phases
           ;; This file is opened in both install and check phases.
@@ -2475,6 +2477,7 @@ Virtual observatory (VO) using Python.")
            python-pytest-arraydiff
            python-pytest-astropy
            python-pytest-runner
+           python-pytest-xdist
            python-setuptools-scm))
     (home-page "https://github.com/astropy/regions")
     (synopsis "Package for region handling")
