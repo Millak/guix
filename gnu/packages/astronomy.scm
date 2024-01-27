@@ -3909,18 +3909,29 @@ Features:
     (license license:expat)))
 
 (define-public python-pysynphot
+  ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
+  ;; time and it failed to build with python-astropy 6.0.0, use the latest
+  ;; upstream commit for now.
+  (let ((commit "54e9e2a624910c4d177ca70f8e9fb8110c8fae5b")
+        (revision "0"))
   (package
     (name "python-pysynphot")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pysynphot" version))
-              (sha256
-               (base32
-                "1rr29m63bnj47f6gvbvg3pm1296x14ad29c6qd0sdj4f4ilrzhj5"))))
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/spacetelescope/pysynphot")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09sivpfqilk86zp8k5wmrs4g48m4kypn34jcy95y5h4ygbn5zbzy"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'set-version
+                          (lambda _
+                            (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "2.0.0")))
                         (add-before 'check 'set-env-data-path
                           (lambda _
                             (setenv "PYSYN_CDBS"
@@ -3938,7 +3949,7 @@ IRAF.  @code{pysynphot} simulates photometric data and spectra as they are
 observed with the Hubble Space Telescope (HST).  Passbands for standard
 photometric systems are available, and users can incorporate their own filters,
 spectra, and data.")
-    (license license:bsd-3)))
+    (license license:bsd-3))))
 
 (define-public python-sep
   (package
