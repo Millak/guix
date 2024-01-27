@@ -2541,6 +2541,32 @@ ArrayVec and ArrayString.")
 format.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-buffer-47
+  (package
+    (name "rust-arrow-buffer")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-buffer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15b1km7kb7cys2pdxgq1p9syiw7yzf9cch85rcw12504a8i1k8gx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-half" ,rust-half-2)
+        ("rust-num" ,rust-num-0.4))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Buffer abstractions for Apache Arrow")
+    (description "This crate provides low-level buffer abstractions for the
+Rust implementation of Apache Arrow.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-format-0.3
   (package
     (name "rust-arrow-format")
