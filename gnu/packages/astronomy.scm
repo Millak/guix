@@ -1094,7 +1094,7 @@ crowded star fields.")
 (define-public siril
   (package
     (name "siril")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1102,7 +1102,7 @@ crowded star fields.")
                     (commit version)))
               (sha256
                (base32
-                "0ss1m9w4cz1752vp5738057nzmqc6k7fc9pi6kr9cwgspi1haall"))
+                "1lc6ga1n18br43rlj8qmg23chfniyvjz3vx73km6sv171z4c2fwy"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list cmake git glib libconfig pkg-config))
