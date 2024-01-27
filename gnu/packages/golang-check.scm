@@ -84,6 +84,18 @@ Using static analysis, it finds bugs and performance issues, offers
 simplifications, and enforces style rules.")
     (license license:expat)))
 
+(define-public go-keyify
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-keyify")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/keyify"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
+    (description "This package turns unkeyed struct literals (@code{T{1, 2,
+3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
+
 (define-public go-github-com-alecthomas-assert
   (let ((commit "405dbfeb8e38effee6e723317226e93fff912d06")
         (revision "1"))
