@@ -2541,6 +2541,41 @@ ArrayVec and ArrayString.")
 format.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-array-47
+  (package
+    (name "rust-arrow-array")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-array" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "139iwhc3j8mcn6avgjl4k3sc7g43kq92m02fbba05qgdadrglbnh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+        ("rust-half" ,rust-half-2)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-num" ,rust-num-0.4)
+        ("rust-packed-simd" ,rust-packed-simd-0.3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Array abstractions for Apache Arrow")
+    (description "The central type in Apache Arrow are arrays, which are a
+known-length sequence of values all having the same type.  This crate provides
+concrete implementations of each type, as well as an @code{Array} trait that
+can be used for type-erasure.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-buffer-47
   (package
     (name "rust-arrow-buffer")
