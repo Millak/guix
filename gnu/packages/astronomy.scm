@@ -4513,6 +4513,8 @@ channels
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-n" "auto")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-env
@@ -4529,6 +4531,7 @@ channels
     (native-inputs (list python-pytest
                          python-pytest-doctestplus
                          python-pytest-env
+                         python-pytest-xdist
                          python-semantic-version
                          python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/roman_datamodels")
