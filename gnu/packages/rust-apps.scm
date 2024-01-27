@@ -28,6 +28,7 @@
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -308,6 +309,36 @@ alternative zones.")
      "@command{bat} is a drop-in @command{cat} replacement featuring syntax
 highlighting for a large number of languages, git integration, and automatic
 paging.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public cargo-machete
+  (package
+    (name "cargo-machete")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri name version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lbymfxgcizmj1c1ydpzinjbjhc7c9j0wb5y1xq33j80s5hzayaz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;Error: No such file or directory (os error 2)
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-argh" ,rust-argh-0.1)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
+                       ("rust-cargo-toml" ,rust-cargo-toml-0.16)
+                       ("rust-grep" ,rust-grep-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-toml-edit" ,rust-toml-edit-0.20)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/est31/cargo-udeps")
+    (synopsis "Find unused dependencies in Cargo.toml")
+    (description "@code{cargo-machete} finds unused dependencies in Cargo.toml.")
     (license (list license:expat license:asl2.0))))
 
 (define-public diffr
