@@ -2676,6 +2676,35 @@ code of Apache Arrow spec.")
 Apache Arrow implementation in Rust.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-select-47
+  (package
+    (name "rust-arrow-select")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-select" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0231igp3fihf2kz1s9i2k6vhnlpmg662gr9rn6fpxrh26801xiym"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-num" ,rust-num-0.4))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Selection kernels for Apache Arrow arrays")
+    (description "This crate provides various selection kernels for Apache
+Arrow arrays.  Examples include @code{filter}, @code{concat} and @code{take}
+kernels, as well as @code{window} functions such as shifting.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow2-0.7
   (package
     (name "rust-arrow2")
