@@ -5141,7 +5141,15 @@ multiscript version of @code{biblatex-ms}.")
               "161056627w1lazfpld3lyjwfrl8j8gc4b6dzml46bzwf7mk9ifln")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:link-scripts #~(list "bibexport.sh")))
+    (arguments
+     (list
+      #:link-scripts #~(list "bibexport.sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'fix-bash-shebang
+            (lambda _
+              (substitute* "scripts/bibexport/bibexport.sh"
+                (("/bin/bash") (which "bash"))))))))
     (home-page "https://ctan.org/pkg/bibexport")
     (synopsis "Extract a BibTeX file based on a @file{.aux} file")
     (description
