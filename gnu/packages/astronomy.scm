@@ -505,6 +505,13 @@ in FITS files.")
        (sha256
         (base32 "0ph9jhv4q4i4z6nkqr6hjw9148kdlnayxsn83qgv5dqn0h3nc9r8"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: https://github.com/aplpy/aplpy/issues/492
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check))))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
