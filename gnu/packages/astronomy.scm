@@ -1478,13 +1478,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.3.4")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1n7iwvjari4xv37094cpiapmjhhm57b04hi4r40wqb5czbigg46l"))
+        (base32 "1nbpqx7ibm8zsyyy17y5rmfjamwz6mv0sy4drlisap9hald81k83"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1508,16 +1508,11 @@ accurately in real time at any rate desired.")
              ;; Some tests require a writable home.
              (setenv "HOME" "/tmp")
              ;; Relax xfail tests.
-             (substitute* "setup.cfg"
+             (substitute* "pyproject.toml"
                (("xfail_strict = true") "xfail_strict = false"))
-             ;; Replace all references to external ply.
-             (let ((ply-files '("coordinates/angle_formats.py"
-                                "utils/parsing.py")))
-               (with-directory-excursion "astropy"
-                 (map (lambda (file)
-                        (substitute* file (("astropy.extern.ply")
-                                           "ply")))
-                      ply-files)))
+             ;; Replace reference to external ply.
+             (substitute* "astropy/utils/parsing.py"
+               (("astropy.extern.ply") "ply"))
              ;; Replace reference to external configobj.
              (with-directory-excursion "astropy/config"
                (substitute* "configuration.py"
@@ -1541,22 +1536,26 @@ accurately in real time at any rate desired.")
                              " and not test_ignore_sigint"
                              " and not test_parquet_filter"
                              ;; See https://github.com/astropy/astropy/issues/15537
-                             " and not test_pvstar"))))))))
+                             " and not test_pvstar"
+                             ;; E ModuleNotFoundError: No module named 'wofz'
+                             " and not test_pickle_functional"))))))))
     (native-inputs
      (list pkg-config
            python-colorlog
            python-coverage
-           python-cython
+           python-cython-3
            python-extension-helpers
            python-h5py
            python-ipython
            python-jplephem
+           python-matplotlib
            python-objgraph
            python-pandas
            python-pyarrow
            python-pytest
            python-pytest-astropy
            python-pytest-astropy-header
+           python-pytest-mpl
            python-pytest-xdist
            python-scikit-image
            python-scipy
@@ -1567,7 +1566,8 @@ accurately in real time at any rate desired.")
     (inputs
      (list expat wcslib))
     (propagated-inputs
-     (list python-configobj
+     (list python-astropy-iers-data
+           python-configobj
            python-numpy
            python-packaging
            python-ply
