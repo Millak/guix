@@ -2651,6 +2651,36 @@ the Apache Arrow implementation in Rust.")
 code of Apache Arrow spec.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-ord-47
+  (package
+    (name "rust-arrow-ord")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-ord" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x3irbymxic9hjaakq0rvkcqxj1jq2hfpclywh066spa12j7mf03"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-arrow-select" ,rust-arrow-select-47)
+        ("rust-half" ,rust-half-2)
+        ("rust-num" ,rust-num-0.4))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Ordering kernels for Apache Arrow arrays")
+    (description "This crate provides various ordering kernels for Apache
+Arrow arrays.  Examples include @code{cmp}, @code{ord}, @code{partition},
+@code{rank} and @code{sort} kernels.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-schema-47
   (package
     (name "rust-arrow-schema")
