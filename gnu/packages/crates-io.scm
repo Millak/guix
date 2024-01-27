@@ -2567,6 +2567,30 @@ format.")
 Rust implementation of Apache Arrow.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-data-47
+  (package
+    (name "rust-arrow-data")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fpp09ykg6nb7jcaqnjzga242y7nlrfz3v0wlrf0kd68k4v4qnj7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-half" ,rust-half-2)
+        ("rust-num" ,rust-num-0.4))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Low-level array data abstractions for Apache Arrow")
+    (description "This crate contains low-level array data abstractions for
+the Apache Arrow implementation in Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-format-0.3
   (package
     (name "rust-arrow-format")
