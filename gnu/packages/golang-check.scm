@@ -77,11 +77,10 @@
            go-golang-org-x-mod
            go-golang-org-x-tools))
     (home-page "https://honnef.co/go/tools")
-    (synopsis "Staticcheck advanced Go linter")
+    (synopsis "Staticcheck advanced Go linter library")
     (description
-     "Staticcheck is a state of the art linter for the Go programming language.
-Using static analysis, it finds bugs and performance issues, offers
-simplifications, and enforces style rules.")
+     "This package provides the Go source code for the @code{go-staticcheck}
+advanced Go linter.")
     (license license:expat)))
 
 (define-public go-keyify
