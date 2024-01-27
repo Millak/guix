@@ -60,7 +60,7 @@
 ;;; Copyright © 2021 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021 David Pflug <david@pflug.io>
+;;; Copyright © 2021, 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Noisytoot <ron@noisytoot.org>
@@ -8096,26 +8096,31 @@ Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom.")
 (define-public odamex
   (package
     (name "odamex")
-    (version "0.9.5")
+    (version "10.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "mirror://sourceforge/odamex/Odamex/" version "/"
-             "odamex-src-" version ".tar.bz2"))
+             "odamex-src-" version ".tar.xz"))
        (sha256
-        (base32 "1x0c9vnwn336inkfamh4na8xjyfjmzfxfn49j4snqymkypjqw6jq"))))
+        (base32 "1isrmki18471yry48mmm7lxzp1kiqma9cc7fx38cvpm2mpgfyvzk"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f))          ; no tests
     (native-inputs
      (list deutex))
     (inputs
-     `(("sdl" ,sdl2)
-       ("sdl-mixer" ,sdl2-mixer)
-       ("zlib" ,zlib)
-       ("libpng" ,libpng)
+     `(("alsa-lib" ,alsa-lib)
        ("curl" ,curl)
-       ("alsa-lib" ,alsa-lib)))
+       ("fltk" ,fltk)
+       ("jsoncpp" ,jsoncpp)
+       ("libpng" ,libpng)
+       ("miniupnpc" ,miniupnpc)
+       ("portmidi" ,portmidi)
+       ("protobuf" ,protobuf)
+       ("sdl" ,sdl2)
+       ("sdl-mixer" ,sdl2-mixer)
+       ("zlib" ,zlib)))
     (home-page "https://odamex.net/")
     (synopsis "Multiplayer Doom port")
     (description "Odamex is a modification of the Doom engine that
