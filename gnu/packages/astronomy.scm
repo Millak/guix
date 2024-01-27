@@ -3229,8 +3229,6 @@ low quality ones")
        (sha256
         (base32 "1na3gyb3nzb5gdgccs1653j2gnz6w3v1mqzhyhkx3yqw8bs3q5x0"))))
     (build-system gnu-build-system)
-    (supported-systems '("i686-linux" "x86_64-linux"
-                         "armhf-linux" "aarch64-linux"))
     (arguments
      (list
       #:tests? #f ; no tests provided
@@ -3246,7 +3244,9 @@ low quality ones")
                '("CPU_TARGET=i386"))
               ("x86_64-linux"
                '("CPU_TARGET=x86_64"))
-              ((or "armhf-linux" "aarch64-linux")
+              ;; There is no a case for RISCV in upstream, attempt to treat it
+              ;; as ARM.
+              ((or "armhf-linux" "aarch64-linux" "riscv64")
                '("CPU_TARGET=armv7l"))
               (_ '()))
          (string-append "PREFIX=" #$output))
