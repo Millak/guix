@@ -10085,25 +10085,23 @@ Encoding Standard.")
 Python @code{arrow.humanize}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-chrono-tz-0.6
+(define-public rust-chrono-tz-0.8
   (package
     (name "rust-chrono-tz")
-    (version "0.6.3")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono-tz" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pmv434fhw9pwiqc12pvgaiskrq4v1dh1f238gfsg48r301r5hr9"))))
+        (base32 "1dv0yqhr60wrhm4sdlralqw1jf5plcxc91q6v93hvamzk6gbgmwi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       (list "--release" "--"
-             "--skip=tests::second_offsets")
-       #:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-chrono-tz-build" ,rust-chrono-tz-build-0.0.3)
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz-build" ,rust-chrono-tz-build-0.2)
         ("rust-phf" ,rust-phf-0.11)
         ("rust-serde" ,rust-serde-1)
         ("rust-uncased" ,rust-uncased-0.9))
@@ -10116,6 +10114,32 @@ Python @code{arrow.humanize}.")
      "Chrono-TZ is a library that provides implementors of the TimeZone trait
 for @code{rust-chrono}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-chrono-tz-0.6
+  (package
+    (inherit rust-chrono-tz-0.8)
+    (name "rust-chrono-tz")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chrono-tz" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pmv434fhw9pwiqc12pvgaiskrq4v1dh1f238gfsg48r301r5hr9"))))
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=tests::second_offsets")
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz-build" ,rust-chrono-tz-build-0.0.3)
+        ("rust-phf" ,rust-phf-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-uncased" ,rust-uncased-0.9))
+       #:cargo-development-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-chrono-tz-0.5
   (package
