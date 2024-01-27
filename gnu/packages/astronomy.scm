@@ -2973,7 +2973,7 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list opencv ;Provides OpenCV-Python
-           python-asdf-3.0
+           python-asdf
            python-astropy
            python-gwcs
            python-numpy
@@ -4057,7 +4057,7 @@ between image and reference catalogs. Currently only aligning images with
 @code{FITS WCS} and @code{JWST gWCS} are supported.")
     (license license:bsd-3)))
 
-(define-public python-asdf-3.0
+(define-public python-asdf
   (package
     (name "python-asdf")
     (version "3.0.1")
@@ -4094,34 +4094,6 @@ between image and reference catalogs. Currently only aligning images with
 interchange format for scientific data.  This package contains the Python
 implementation of the ASDF Standard.")
     (license license:bsd-3)))
-
-(define-public python-asdf-2.15
-  (package
-    (inherit python-asdf-3.0)
-    (version "2.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf" version))
-       (sha256
-        (base32 "11s56797l5330kkhppkyz0bsvms016knmyswj4gx91zrxf8iqvv8"))))
-    (arguments
-     (list #:test-flags
-           #~(list "-k" (string-append
-                         "not test_overwrite"
-                         " and not test_tagging_scalars"
-                         " and not test_info_command"
-                         " and not test_array_inline_threshold_recursive"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-asdf-3.0)
-       (prepend python-astropy python-pytest-openfiles)))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-asdf-3.0)
-       (prepend python-jsonschema python-importlib-resources)))))
-
-(define-public python-asdf
-  ;; Default version of ASDF..
-  python-asdf-2.15)
 
 (define-public python-asdf-standard
   (package
