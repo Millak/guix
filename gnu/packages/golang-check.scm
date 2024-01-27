@@ -125,6 +125,19 @@ the byte offset and size of each field, respecting padding.  This information
 is printed in human-readable form by default, or as JSON with the @code{-json}
 flag.")))
 
+(define-public go-structlayout-optimize
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-structlayout-optimize")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Reorder struct fields to minimize the amount of padding in Go")
+    (description "This package reads @code{go-structlayout} JSON on stdin and
+reorders fields to minimize the amount of padding.  It can emit JSON to feed
+into @code{go-structlayout-pretty}.")))
+
 (define-public go-github-com-alecthomas-assert
   (let ((commit "405dbfeb8e38effee6e723317226e93fff912d06")
         (revision "1"))
