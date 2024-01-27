@@ -96,6 +96,21 @@ simplifications, and enforces style rules.")
     (description "This package turns unkeyed struct literals (@code{T{1, 2,
 3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
 
+(define-public go-staticcheck
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-staticcheck")
+    (arguments
+     `(#:go ,go-1.18
+       #:import-path "honnef.co/go/tools/cmd/staticcheck"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Staticcheck advanced Go linter")
+    (description
+     "Staticcheck is a state of the art linter for the Go programming language.
+Using static analysis, it finds bugs and performance issues, offers
+simplifications, and enforces style rules.")))
+
 (define-public go-github-com-alecthomas-assert
   (let ((commit "405dbfeb8e38effee6e723317226e93fff912d06")
         (revision "1"))
