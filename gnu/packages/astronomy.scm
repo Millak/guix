@@ -3914,8 +3914,8 @@ Features:
   ;; upstream commit for now.
   (let ((commit "54e9e2a624910c4d177ca70f8e9fb8110c8fae5b")
         (revision "0"))
-  (package
-    (name "python-pysynphot")
+    (package
+      (name "python-pysynphot")
       (version (git-version "2.0.0" revision commit))
       (source
        (origin
@@ -3926,30 +3926,37 @@ Features:
          (file-name (git-file-name name version))
          (sha256
           (base32 "09sivpfqilk86zp8k5wmrs4g48m4kypn34jcy95y5h4ygbn5zbzy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'build 'set-version
-                          (lambda _
-                            (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "2.0.0")))
-                        (add-before 'check 'set-env-data-path
-                          (lambda _
-                            (setenv "PYSYN_CDBS"
-                                    (string-append #$output "/crds")))))))
-    (native-inputs (list python-pytest python-pytest-remotedata
-                         python-setuptools-scm))
-    (propagated-inputs (list python-astropy python-beautifulsoup4 python-numpy
-                             python-pytest-astropy-header python-six))
-    (home-page "https://github.com/spacetelescope/pysynphot")
-    (synopsis "Python Synthetic Photometry Utilities")
-    (description
-     "Astrolib PySynphot (hereafter referred to only as pysynphot) is an
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "2.0.0")))
+            (add-before 'check 'set-env-data-path
+              (lambda _
+                (setenv "PYSYN_CDBS" (string-append #$output "/crds")))))))
+      (native-inputs
+       (list python-pytest
+             python-pytest-remotedata
+             python-setuptools-scm))
+      (propagated-inputs
+       (list python-astropy
+             python-beautifulsoup4
+             python-numpy
+             python-pytest-astropy-header
+             python-six))
+      (home-page "https://github.com/spacetelescope/pysynphot")
+      (synopsis "Python Synthetic Photometry Utilities")
+      (description
+       "Astrolib PySynphot (hereafter referred to only as pysynphot) is an
 object-oriented replacement for STSDAS SYNPHOT synthetic photometry package in
 IRAF.  @code{pysynphot} simulates photometric data and spectra as they are
 observed with the Hubble Space Telescope (HST).  Passbands for standard
 photometric systems are available, and users can incorporate their own filters,
 spectra, and data.")
-    (license license:bsd-3))))
+      (license license:bsd-3))))
 
 (define-public python-sep
   (package
