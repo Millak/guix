@@ -2705,6 +2705,35 @@ Arrow arrays.  Examples include @code{filter}, @code{concat} and @code{take}
 kernels, as well as @code{window} functions such as shifting.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-string-47
+  (package
+    (name "rust-arrow-string")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-string" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ar1njf4biff3ylpyk2m2bhvqmsywl9akagljm429ffnharbpkn4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-arrow-select" ,rust-arrow-select-47)
+        ("rust-num" ,rust-num-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.7))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "String kernels for Apache Arrow arrays")
+    (description "This crate provides various string kernels for Apache Arrow
+arrays.  Examples include @code{concat_elements}, @code{length}, @code{like},
+@code{regexp} and @code{substring} kernels.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow2-0.7
   (package
     (name "rust-arrow2")
