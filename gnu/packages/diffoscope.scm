@@ -305,7 +305,7 @@ them in detail for later analysis.")
 (define-public trydiffoscope
  (package
    (name "trydiffoscope")
-   (version "67.0.1")
+   (version "67.0.6")
    (source
     (origin
       (method git-fetch)
@@ -315,7 +315,7 @@ them in detail for later analysis.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "03b66cjii7l2yiwffj6ym6mycd5drx7prfp4j2550281pias6mjh"))))
+        "0jzxgqraf727fvjcc9bgwz8zymjiix07x54xzqpvm52cv681nd9j"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
