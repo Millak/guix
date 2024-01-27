@@ -4093,6 +4093,10 @@ between image and reference catalogs. Currently only aligning images with
        (sha256
         (base32 "1jsk7b4mx04l0a08j832vnl309dba3gjnha9mbd61dzs9ridrfna"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto")))
     (native-inputs
      (list python-fsspec
            python-packaging
@@ -4100,6 +4104,7 @@ between image and reference catalogs. Currently only aligning images with
            python-pytest
            python-pytest-doctestplus
            python-pytest-remotedata
+           python-pytest-xdist
            python-semantic-version
            python-setuptools-scm))
     (propagated-inputs
