@@ -1499,46 +1499,52 @@ accurately in real time at any rate desired.")
              (for-each delete-file-recursively '("expat" "wcslib")))))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'preparations
-           (lambda _
-             ;; Use our own libraries in place of bundles.
-             (setenv "ASTROPY_USE_SYSTEM_ALL" "1")
-             ;; Some tests require a writable home.
-             (setenv "HOME" "/tmp")
-             ;; Relax xfail tests.
-             (substitute* "pyproject.toml"
-               (("xfail_strict = true") "xfail_strict = false"))
-             ;; Replace reference to external ply.
-             (substitute* "astropy/utils/parsing.py"
-               (("astropy.extern.ply") "ply"))
-             ;; Replace reference to external configobj.
-             (with-directory-excursion "astropy/config"
-               (substitute* "configuration.py"
-                 (("from astropy.extern.configobj ") "")))))
-         ;; This file is opened in both install and check phases.
-         (add-before 'install 'writable-compiler
-           (lambda _ (make-file-writable "astropy/_compiler.c")))
-         (add-before 'check 'writable-compiler
-           (lambda _ (make-file-writable "astropy/_compiler.c")))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Extensions have to be rebuilt before running the tests.
-               (invoke "python" "setup.py" "build_ext" "--inplace")
-               (invoke "python" "-m" "pytest" "--pyargs" "astropy"
-                       ;; Skip tests that need remote data.
-                       "-k" (string-append
-                             "not remote_data"
-                             ;; XXX: Check why this tests failing.
-                             " and not test_ignore_sigint"
-                             " and not test_parquet_filter"
-                             ;; See https://github.com/astropy/astropy/issues/15537
-                             " and not test_pvstar"
-                             ;; E ModuleNotFoundError: No module named 'wofz'
-                             " and not test_pickle_functional"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _
+              ;; Use our own libraries in place of bundles.
+              (setenv "ASTROPY_USE_SYSTEM_ALL" "1")
+              ;; Relax xfail tests.
+              (substitute* "pyproject.toml"
+                (("xfail_strict = true") "xfail_strict = false"))
+              ;; Replace reference to external ply.
+              (substitute* "astropy/utils/parsing.py"
+                (("astropy.extern.ply") "ply"))
+              ;; Replace reference to external configobj.
+              (substitute* "astropy/config/configuration.py"
+                (("from astropy.extern.configobj ") ""))))
+          ;; This file is opened in both install and check phases.
+          (add-before 'install 'writable-compiler
+            (lambda _
+              (make-file-writable "astropy/_compiler.c")))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              ;; Some tests require a writable home.
+              (setenv "HOME" "/tmp")
+              (make-file-writable "astropy/_compiler.c")
+              ;; Extensions have to be rebuilt before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"
+                      "-j" (number->string (parallel-job-count)))))
+          ;; TODO: The swap to pyproject-build-system introduced all tests
+          ;; failed due to pytest could not load conftest.py, find out how
+          ;; to resolve it and migrate completely to pyproject-build-system.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "pytest" "--pyargs" "astropy"
+                        ;; with    -n : 133.00s
+                        ;; without -n : 326.14s
+                        "-n" (number->string (parallel-job-count))
+                        "-k" (string-append
+                              ;; Skip tests that need remote data.
+                              "not remote_data"
+                              ;; E astropy.samp.errors.SAMPProxyError:
+                              ;; <SAMPProxyError 1: 'Timeout expired!'>
+                              " and not test_main"
+                              ;; E ModuleNotFoundError: No module named 'wofz'
+                              " and not test_pickle_functional"))))))))
     (native-inputs
      (list pkg-config
            python-colorlog
