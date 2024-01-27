@@ -982,7 +982,7 @@ programs for the manipulation and analysis of astronomical data.")
 (define-public phd2
   (package
     (name "phd2")
-    (version "2.6.12")
+    (version "2.6.13")
     (source
      (origin
        (method git-fetch)
@@ -991,7 +991,7 @@ programs for the manipulation and analysis of astronomical data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16695vyczl861fz5qinp23wqn6hzv5h1aspz9x21x67w0a3smbmy"))
+        (base32 "0shr50ngi7dliijy8fxrd1c4hzkm4vp4m0a4m0d9gvrx56vzyx0s"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
