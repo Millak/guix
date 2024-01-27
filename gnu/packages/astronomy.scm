@@ -4184,8 +4184,8 @@ install an implementation package such as asdf-astropy.")
 
 (define python-asdf-fits-schemas
   ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "572bb370d777f3a325b25c1af9d76e1b7d27dcea")
-        (revision "0"))
+  (let ((commit "d1b5e7a12a49fe61d43855045bab106be34cd252")
+        (revision "1"))
     (package
       (name "python-asdf-fits-schemas")
       (version (git-version "0.0.1" revision commit))
@@ -4198,7 +4198,7 @@ install an implementation package such as asdf-astropy.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1yqnzd0gcrdfl0jqm8m8kz5fd36i8lgh7xkglmp1chsi1cc6mkz2"))))
+           "1h2xbk9c9l2959i3sdnwviv3z0hp1f0lba2vz9hpzgcm46qadqp8"))))
       (build-system pyproject-build-system)
       (arguments
        (list
