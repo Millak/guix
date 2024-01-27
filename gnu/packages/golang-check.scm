@@ -73,7 +73,6 @@
                   (delete 'build))))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
-           go-github-com-kisielk-gotool
            go-golang-org-x-exp
            go-golang-org-x-mod
            go-golang-org-x-tools))

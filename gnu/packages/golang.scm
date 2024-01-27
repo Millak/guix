@@ -10091,30 +10091,6 @@ be used as both a binary and a library.")
     (native-inputs '())
     (inputs '())))
 
-(define-public go-github-com-kisielk-gotool
-  (package
-    (name "go-github-com-kisielk-gotool")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kisielk/gotool")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14af2pa0ssyp8bp2mvdw184s5wcysk6akil3wzxmr05wwy951iwn"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/kisielk/gotool"))
-    (home-page "https://github.com/kisielk/gotool")
-    (synopsis "Go library of utility functions")
-    (description
-     "This package contains utility functions used to implement the standard
-@code{cmd/go} tool, provided as a convenience to developers who want to write
-tools with similar semantics.")
-    (license license:expat)))
-
 (define-public go-go-uber-org-zap
   (package
     (name "go-go-uber-org-zap")
