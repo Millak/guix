@@ -2602,6 +2602,40 @@ can be used for type-erasure.")
 Rust implementation of Apache Arrow.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-cast-47
+  (package
+    (name "rust-arrow-cast")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-cast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vjdr0gqln3x60jlwan6vfb6f1alhww95by51gani24np58mv0hx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-arrow-select" ,rust-arrow-select-47)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-comfy-table" ,rust-comfy-table-7)
+        ("rust-half" ,rust-half-2)
+        ("rust-lexical-core" ,rust-lexical-core-0.8)
+        ("rust-num" ,rust-num-0.4))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-half" ,rust-half-2))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Cast kernels and utilities for Apache Arrow")
+    (description "This crate provides typecasting kernels and other utilities
+for Apache Arrow, such as prettyprinting, parsing, and Base64 encoding and
+decoding.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-data-47
   (package
     (name "rust-arrow-data")
