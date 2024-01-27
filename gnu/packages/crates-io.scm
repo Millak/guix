@@ -11863,8 +11863,41 @@ combinator.")
 and 1.0.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-comfy-table-7
+  (package
+    (name "rust-comfy-table")
+    (version "7.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "comfy-table" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11i6sm6vznv9982hqpbrba43vfd7vv7zqzlywdc4qykvdhyh8r3w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-console" ,rust-console-0.15)
+        ("rust-crossterm" ,rust-crossterm-0.27)
+        ("rust-strum" ,rust-strum-0.25)
+        ("rust-strum-macros" ,rust-strum-macros-0.25)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rstest" ,rust-rstest-0.18))))
+    (home-page "https://github.com/nukesor/comfy-table")
+    (synopsis "Library for building tables with automatic content wrapping")
+    (description
+     "Comfy-tables is an utility for building tables with automatic content
+wrapping.")
+    (license license:expat)))
+
 (define-public rust-comfy-table-4
   (package
+    (inherit rust-comfy-table-7)
     (name "rust-comfy-table")
     (version "4.1.1")
     (source
@@ -11874,20 +11907,13 @@ and 1.0.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1wzk894p2s725cpdip5968ydb50zczsl34040j6zs8klhqz5ms8i"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-crossterm" ,rust-crossterm-0.20)
         ("rust-strum" ,rust-strum-0.21)
         ("rust-strum-macros" ,rust-strum-macros-0.21)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
-    (home-page "https://github.com/nukesor/comfy-table")
-    (synopsis "Library for building tables with automatic content wrapping")
-    (description
-     "Comfy-tables is an utility for building tables with automatic content
-wrapping.")
-    (license license:expat)))
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
 (define-public rust-comfy-table-1
   (package
