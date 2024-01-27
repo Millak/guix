@@ -2730,9 +2730,17 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
        (sha256
         (base32 "0cqxgmk46gv2qa2kls8fph105lgwbwf13hvizh6w85mzgypyp740"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto")))
     (propagated-inputs
      (list python-astropy
-           python-aplpy
+           ;; XXX: Currently failing in upstream as it's optional silent
+           ;; until a new version is released, see:
+           ;; <https://github.com/aplpy/aplpy/issues/492>.
+           ;;
+           ;; python-aplpy
            python-casa-formats-io
            python-dask
            python-distributed
@@ -2752,6 +2760,7 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
            ;; in [noviz] option.
            ;; python-pvextractor
            python-pytest-astropy
+           python-pytest-xdist
            python-regions
            python-semantic-version
            python-setuptools-scm))
