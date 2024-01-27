@@ -2217,6 +2217,8 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-n" "auto")
       #:phases
       #~(modify-phases %standard-phases
           ;; This file is opened in both install and check phases.
@@ -2247,6 +2249,7 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
      (list python-cython
            python-extension-helpers
            python-pytest-astropy
+           python-pytest-xdist
            python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
