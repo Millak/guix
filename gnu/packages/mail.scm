@@ -32,7 +32,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -4102,80 +4102,78 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "2453a5a6686c035854e4d523b8faa8c47405bd76")
-        (revision "3"))
-    (package
-      (name "mumi")
-      (version (git-version "0.0.5" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix/mumi.git/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0dq87qn77c6qganhck048qxq5ghj3fh2v604f87hwv530lxifabr"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:modules '((guix build gnu-build-system)
-                    ((guix build guile-build-system)
-                     #:select (target-guile-effective-version))
-                    (guix build utils))
-        #:imported-modules `((guix build guile-build-system)
-                             ,@%gnu-build-system-modules)
+  (package
+    (name "mumi")
+    (version "0.0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/guix/mumi.git/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zhiwl37ybw3pn1j1mz6cnwbznfmhqzc87kq8lvzbk642nx43sn4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  ((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  (guix build utils))
+      #:imported-modules `((guix build guile-build-system)
+                           ,@%gnu-build-system-modules)
 
-        #:configure-flags '(list "--localstatedir=/var")
+      #:configure-flags '(list "--localstatedir=/var")
 
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'install-picocss
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((pico (dirname (search-input-file inputs "/scss/pico.scss"))))
-                  (mkdir-p "assets/pico/scss")
-                  (copy-recursively pico "assets/pico/scss"))))
-            (add-after 'install 'wrap-executable
-              (lambda _
-                (let* ((bin (string-append #$output "/bin"))
-                       (version (target-guile-effective-version))
-                       (scm (string-append #$output "/share/guile/site/" version))
-                       (go  (string-append #$output "/lib/guile/" version
-                                           "/site-ccache")))
-                  (wrap-program (string-append bin "/mumi")
-                    `("GUILE_LOAD_PATH" ":" prefix
-                      (,scm ,(getenv "GUILE_LOAD_PATH")))
-                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                      (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
-      (inputs
-       (list bash-minimal
-             guile-email
-             guile-fibers
-             guile-gcrypt
-             guile-gnutls
-             guile-json-4
-             guile-kolam
-             guile-redis
-             guile-syntax-highlight
-             guile-webutils
-             guile-xapian
-             guile-3.0
-             mailutils))
-      (native-inputs
-       (list autoconf automake pkg-config sassc
-             (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/picocss/pico.git")
-                     (commit "3052db4bd3439e236479dc0f98069f7d3b559486")))
-               (file-name (git-file-name "pico" "1.5.6"))
-               (sha256
-                (base32
-                 "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
-      (home-page "https://git.savannah.gnu.org/cgit/guix/mumi.git/")
-      (synopsis "Debbugs web interface")
-      (description "Mumi is a Debbugs web interface.")
-      (license license:agpl3+))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-picocss
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pico (dirname (search-input-file inputs "/scss/pico.scss"))))
+                (mkdir-p "assets/pico/scss")
+                (copy-recursively pico "assets/pico/scss"))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (version (target-guile-effective-version))
+                     (scm (string-append #$output "/share/guile/site/" version))
+                     (go  (string-append #$output "/lib/guile/" version
+                                         "/site-ccache")))
+                (wrap-program (string-append bin "/mumi")
+                  `("GUILE_LOAD_PATH" ":" prefix
+                    (,scm ,(getenv "GUILE_LOAD_PATH")))
+                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                    (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
+    (inputs
+     (list bash-minimal
+           guile-email
+           guile-fibers
+           guile-gcrypt
+           guile-gnutls
+           guile-json-4
+           guile-kolam
+           guile-redis
+           guile-syntax-highlight
+           guile-webutils
+           guile-xapian
+           guile-3.0
+           mailutils))
+    (native-inputs
+     (list autoconf automake pkg-config sassc
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/picocss/pico.git")
+                   (commit "3052db4bd3439e236479dc0f98069f7d3b559486")))
+             (file-name (git-file-name "pico" "1.5.6"))
+             (sha256
+              (base32
+               "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
+    (home-page "https://git.savannah.gnu.org/cgit/guix/mumi.git/")
+    (synopsis "Debbugs web interface")
+    (description "Mumi is a Debbugs web interface.")
+    (license license:agpl3+)))
 
 (define-public ytnef
   (package
