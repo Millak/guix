@@ -2566,6 +2566,31 @@ format.")
 code of Apache Arrow spec.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-schema-47
+  (package
+    (name "rust-arrow-schema")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-schema" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jyfw40m070zj2pv8mp3gvlnzs0mavnzn6qhw19qh5bv26f1f7ax"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Logical types for Apache Arrow arrays")
+    (description "This crate defines the logical types for arrays of the
+Apache Arrow implementation in Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow2-0.7
   (package
     (name "rust-arrow2")
