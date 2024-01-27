@@ -111,6 +111,20 @@ simplifications, and enforces style rules.")
 Using static analysis, it finds bugs and performance issues, offers
 simplifications, and enforces style rules.")))
 
+(define-public go-structlayout
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-structlayout")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Display the layout (field sizes and padding) of structs in Go")
+    (description "This package prints the layout of a struct in Go, which is
+the byte offset and size of each field, respecting padding.  This information
+is printed in human-readable form by default, or as JSON with the @code{-json}
+flag.")))
+
 (define-public go-github-com-alecthomas-assert
   (let ((commit "405dbfeb8e38effee6e723317226e93fff912d06")
         (revision "1"))
