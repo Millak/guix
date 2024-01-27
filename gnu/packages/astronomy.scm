@@ -4201,8 +4201,15 @@ package such as asdf-astropy.")
        (sha256
         (base32 "1x6mipg76c6qldq8s2p2wpsq0cpr9b5krp62xskljdz1f84abyg3"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto")))
     (native-inputs
-     (list python-pytest python-semantic-version python-setuptools-scm))
+     (list python-pytest
+           python-pytest-xdist
+           python-semantic-version
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf))
     (home-page "https://github.com/asdf-format/asdf-coordinates-schemas")
