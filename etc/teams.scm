@@ -299,10 +299,15 @@ asdf-build-system."
 (define-team go
   (team 'go
         #:name "Go team"
-        #:scope (list "gnu/packages/golang.scm"
+        #:scope (list "gnu/packages/configuration-management.scm"
                       "gnu/packages/golang-check.scm"
-                      "guix/build/go-build-system.scm"
+                      "gnu/packages/golang-crypto.scm"
+                      "gnu/packages/golang-web.scm"
+                      "gnu/packages/golang.scm"
+                      "gnu/packages/syncthing.scm"
+                      "gnu/packages/terraform.scm"
                       "guix/build-system/go.scm"
+                      "guix/build/go-build-system.scm"
                       "guix/import/go.scm"
                       "guix/scripts/import/go.scm"
                       "tests/go.scm")))
