@@ -589,7 +589,7 @@ your colleagues, or to generate pre-rendered animations.")
 (define-public gemmi
   (package
     (name "gemmi")
-    (version "0.5.7")
+    (version "0.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -598,7 +598,7 @@ your colleagues, or to generate pre-rendered animations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00km5q726bslrw7xbfwb3f3mrsk19qbimfnl3hvr4wi1y3z8i18a"))
+                "0wciqqswc4p4v4kglfv36gnvyyimqn4lnywdzd0pgrjn443i860y"))
               (patches
                (search-patches "gemmi-fix-sajson-types.patch"
                                "gemmi-fix-pegtl-usage.patch"))
@@ -625,7 +625,7 @@ your colleagues, or to generate pre-rendered animations.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-includes
             (lambda _
-              (substitute* (list "include/gemmi/sprintf.hpp"
+              (substitute* (list "src/sprintf.cpp"
                                  "include/gemmi/dirwalk.hpp"
                                  "include/gemmi/cif.hpp"
                                  "include/gemmi/json.hpp"
@@ -722,7 +722,7 @@ It can be used for working with
                 (("libfreesasa\\.a") "libfreesasa.la")
                 (("freesasa_LDADD \\+= libfreesasa\\.la" prev)
                  (string-append prev "\nlibfreesasa_la_LIBADD"
-                                " = -ljson-c ${libxml2_LIBS}\n"))
+                                " = -ljson-c -lgemmi_cpp ${libxml2_LIBS}\n"))
                 (("_a_SOURCES") "_la_SOURCES"))
               (substitute* "configure.ac"
                 (("AC_PROG_INSTALL" inst)
