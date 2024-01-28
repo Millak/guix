@@ -3821,7 +3821,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.10")
+    (version "2.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3829,7 +3829,7 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "0f9rvif9m83jhal9n9x8kks17c0cgcipi1hjqmki7a296lz175ss"))))
+                "0ppq2n9jf8c8r8p9dkpcyipd2psr9hg0zbd5hcdsicili25336j4"))))
     (build-system python-build-system)
     (arguments
      (list
