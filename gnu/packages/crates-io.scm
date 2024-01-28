@@ -2636,6 +2636,66 @@ for Apache Arrow, such as prettyprinting, parsing, and Base64 encoding and
 decoding.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-csv-47
+  (package
+    (name "rust-arrow-csv")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-csv" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wff8a151xspfrcc4lda6g0d9fa6vva63q23gwcxq9miqrfqbvs3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       ;; Test fixtures are not included in the crate tarball. We need to skip
+       ;; the tests that require these.
+       '("--release"
+         ;; Skip the doctests, since some of these also depend on the test
+         ;; fixtures.
+         "--lib" "--bins" "--tests"
+         "--"
+         "--exact"
+         "--skip=reader::tests::test_buffered"
+         "--skip=reader::tests::test_csv"
+         "--skip=reader::tests::test_csv_builder_with_bounds"
+         "--skip=reader::tests::test_csv_from_buf_reader"
+         "--skip=reader::tests::test_csv_reader_with_decimal"
+         "--skip=reader::tests::test_csv_schema_metadata"
+         "--skip=reader::tests::test_csv_with_dictionary"
+         "--skip=reader::tests::test_csv_with_projection"
+         "--skip=reader::tests::test_csv_with_schema_inference"
+         "--skip=reader::tests::test_csv_with_schema_inference_no_headers"
+         "--skip=reader::tests::test_custom_nulls"
+         "--skip=reader::tests::test_custom_nulls_with_inference"
+         "--skip=reader::tests::test_nulls"
+         "--skip=reader::tests::test_nulls_with_inference"
+         "--skip=reader::tests::test_parse_invalid_csv")
+       #:cargo-inputs
+       (("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-cast" ,rust-arrow-cast-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-csv-core" ,rust-csv-core-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-lexical-core" ,rust-lexical-core-0.8)
+        ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Parse CSV formatted data to and from the Arrow format")
+    (description "This crate enables support for transferring data between the
+Arrow memory format and CSV line-delimited records.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-data-47
   (package
     (name "rust-arrow-data")
