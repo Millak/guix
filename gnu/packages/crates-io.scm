@@ -2745,6 +2745,36 @@ the Apache Arrow implementation in Rust.")
 code of Apache Arrow spec.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-ipc-47
+  (package
+    (name "rust-arrow-ipc")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-ipc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0shnrpmkwicxcn12s6lw8xqj9xibjjfqah58nxlzhjf5i9f00j0j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-cast" ,rust-arrow-cast-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-flatbuffers" ,rust-flatbuffers-23)
+        ("rust-lz4" ,rust-lz4-1)
+        ("rust-zstd" ,rust-zstd-0.12))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Support for the Arrow IPC format")
+    (description "This crate provides support for the Arrow @acronym{IPC,
+Interprocess Communication} format.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-json-47
   (package
     (name "rust-arrow-json")
