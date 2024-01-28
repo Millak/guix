@@ -4907,6 +4907,33 @@ It can mount all local file systems supported by @command{mount}, as well as
 LUKS volumes encrypted with the user's log-in password.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public pam-uaccess
+  (let ((commit "54fbf043c63cc500b4850b0b4a12ea14078f2b53")
+        (revision "0"))
+    (package
+      (name "pam-uaccess")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~kennylevinsen/pam_uaccess")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "08068cw4nvcanym8b5dyccnnb3qc3f09pbvi6fcfiz227yx73npc"))))
+      (build-system meson-build-system)
+      (native-inputs (list pkg-config))
+      (inputs (list acl eudev linux-pam))
+      (home-page "https://git.sr.ht/~kennylevinsen/pam_uaccess")
+      (synopsis
+       "PAM module that grants access to devices tagged @code{uaccess} in udev")
+      (description
+       "@code{pam_uaccess} is a PAM module that grants access to devices tagged
+@code{uaccess} in udev for the duration of the users' session, replacing
+elogind's uaccess feature.")
+      (license license:expat))))
+
 (define-public jc
   (package
     (name "jc")
