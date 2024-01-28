@@ -44216,10 +44216,12 @@ to use alternative services to implement more advanced use cases like
 read-only home.  Feel free to experiment and share your results.
 @end defvar
 
+@cindex dot files in Guix Home
 It is often the case that Guix Home users already have a setup for versioning
-their user configuration files (also known as @emph{dotfiles}) in a single
+their user configuration files (also known as @emph{dot files}) in a single
 directory, and some way of automatically deploy changes to their user home.
 
+@cindex Stow-like dot file management
 The @code{home-dotfiles-service-type} from @code{(gnu home services dotfiles)}
 is designed to ease the way into using Guix Home for this kind of users,
 allowing them to point the service to their dotfiles directory, which must
