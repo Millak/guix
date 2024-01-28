@@ -1073,7 +1073,7 @@ other ring topology descriptions.")
 (define-public rdkit
   (package
     (name "rdkit")
-    (version "2022.03.5")
+    (version "2023.09.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1084,7 +1084,7 @@ other ring topology descriptions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19idgilabh04cbr1qj6zgrgsfjm248mmfz6fsr0smrd68d0xnml9"))
+                "1lgcgijlzzwpfxndsdlx13npdfk7hcii11zg25cvpmzhbpn6vyn8"))
               (patches
                (search-patches "rdkit-unbundle-external-dependencies.patch"))
               (modules '((guix build utils)))
@@ -1183,7 +1183,10 @@ other ring topology descriptions.")
                             "substructLibraryTest" "pyFeatures"
                             "pythonTestDirML" "pythonTestDirChem"
                             ;; Catching Python exception fails
-                            "pyRanker") "|")
+                            "pyRanker"
+                            ;; Flaky test depending on floating point rounding
+                            "testConrec"
+                            ) "|")
                          ")")))))))))
     (inputs
      (list avalon-toolkit
@@ -1200,7 +1203,7 @@ other ring topology descriptions.")
     (native-inputs
      (list bison
            boost
-           catch2
+           catch2-3
            eigen
            flex
            freesasa
@@ -1214,4 +1217,8 @@ other ring topology descriptions.")
     (description "RDKit is a C++ and Python library for cheminformatics, which
 includes (among other things) the analysis and modification of molecules in 2D
 and 3D and descriptor generation for machine learning.")
+    ;; For 32 bit systems, there is a bug in Boost.Python:
+    ;; https://github.com/boostorg/python/issues/312. Additionally, several
+    ;; other test fail.
+    (supported-systems %64bit-supported-systems)
     (license license:bsd-3)))
