@@ -10530,6 +10530,37 @@ for more information.")
 (define-public ecl-documentation-utils-extensions
   (sbcl-package->ecl-package sbcl-documentation-utils-extensions))
 
+(define-public sbcl-charje.documentation
+  (package
+    (name "sbcl-charje.documentation")
+    (version "0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~charje/documentation")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "149r9qdz5dyxsamhf5miaa9njr7kn7nc0ic448k133rs3nnwagqc"))
+       (file-name (git-file-name "cl-charje.documentation" version))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria))
+    (home-page "https://git.sr.ht/~charje/documentation")
+    (synopsis "Docstring parsing library for Common Lisp")
+    (description "Charje.documentation can used to parse Common Lisp
+docstrings the charje way, or it can be used to create custom docstring
+parsers.  Docstring parsers are composed using mixin classes and
+initialization methods.")
+    (license license:agpl3+)))
+
+(define-public cl-charje.documentation
+  (sbcl-package->cl-source-package sbcl-charje.documentation))
+
+(define-public ecl-charje.documentation
+  (sbcl-package->ecl-package sbcl-charje.documentation))
+
 (define-public sbcl-staple
   (let ((commit "0ee8e25fe6fe8fa83b2a6c93d4febd468c3eaa4e")
         (revision "1"))
