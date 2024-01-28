@@ -359,7 +359,7 @@ used to further tweak the behaviour of the different profiles.")
            wayland
            wayland-protocols))
     (native-inputs
-     (list doxygen pkg-config))
+     (list doxygen pkg-config scdoc))
     (home-page "https://github.com/Cloudef/bemenu")
     (synopsis "Dynamic menu library and client program inspired by dmenu")
     (description
