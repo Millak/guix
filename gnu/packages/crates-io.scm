@@ -51572,7 +51572,7 @@ owned memory.")
 (define-public rust-redox-termios-0.1
   (package
     (name "rust-redox-termios")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
       (origin
         (method url-fetch)
@@ -51580,12 +51580,8 @@ owned memory.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0xhgvdh62mymgdl3jqrngl8hr4i8xwpnbsxnldq0l47993z1r2by"))))
+          "1jzifsj7fqyksz4325l3azfzpyv027kjabf93zcmass3p9q5c510"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-redox-syscall" ,rust-redox-syscall-0.1))))
     (home-page "https://github.com/redox-os/termios")
     (synopsis "Rust library to access Redox termios functions")
     (description
