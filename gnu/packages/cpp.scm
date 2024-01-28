@@ -29,7 +29,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -2452,7 +2452,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
 (define-public fast-float
   (package
     (name "fast-float")
-    (version "3.5.1")
+    (version "6.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2461,7 +2461,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z3rxxd0pwvw70dbnv63rm67biw829vdqf50y16isxm6g3sbrz8g"))))
+                "1xf4gbllha760cr0ri53zsja46dypj45lj070ijb5f78xavfd8f8"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2477,9 +2477,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
                 (("if\\(NOT supplemental_test_files_POPULATED.*")
                  (string-append
                   "set(supplemental_test_files_BINARY_DIR "
-                  (search-input-directory (or native-inputs inputs)
-                                          "data")
-                  ")\nif(0)\n"))))))))
+                  #$fast-float-test-files ")\nif(0)\n"))))))))
     (native-inputs (list doctest fast-float-test-files))
     (home-page "https://github.com/fastfloat/fast_float")
     (synopsis "Floating point number parser for C++")
