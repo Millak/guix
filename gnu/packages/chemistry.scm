@@ -812,7 +812,7 @@ emphasis on quality rather than speed.")
 (define-public yaehmop
   (package
     (name "yaehmop")
-    (version "2022.09.1")
+    (version "2023.03.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -821,7 +821,7 @@ emphasis on quality rather than speed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x0d75m1hgdb411fiv7c5bwq1n4y0swrll0gigh8v5c73kjxrja0"))
+                "18xnxqn8i7vswy3iffapfh9q2iimpnd23ps45hn4xxbs6dqgzprb"))
               (modules '((guix build utils)))
               (snippet
                '(begin
