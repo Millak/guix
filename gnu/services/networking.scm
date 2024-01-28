@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
@@ -270,6 +270,14 @@
 ;;;
 ;;; Code:
 
+(define %unroutable-ipv4
+  ;; Unroutable address, as per <https://www.rfc-editor.org/rfc/rfc5737>.
+  "203.0.113.1")
+
+(define %unroutable-ipv6
+  ;; Unroutable address, as per <https://www.rfc-editor.org/rfc/rfc6666>.
+  "0100::")
+
 (define facebook-host-aliases
   ;; This is the list of known Facebook hosts to be added to /etc/hosts if you
   ;; are to block it.
@@ -282,7 +290,8 @@
     (append-map (lambda (name)
                   (map (lambda (addr)
                          (host addr name))
-                       (list "127.0.0.1" "::1"))) domains)))
+                       (list %unroutable-ipv4 %unroutable-ipv6)))
+                domains)))
 
 (define-deprecated %facebook-host-aliases
   block-facebook-hosts-service-type
