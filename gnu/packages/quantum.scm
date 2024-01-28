@@ -66,3 +66,50 @@ an efficient transport protocol by using ZeroMQ (ZMQ) sockets and MessagePack
 
 (define-public cl-rpcq
   (sbcl-package->cl-source-package sbcl-rpcq))
+
+(define-public sbcl-cl-quil
+  (package
+    (name "sbcl-cl-quil")
+    (version "1.26.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quil-lang/quilc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-quil" version))
+       (sha256
+        (base32 "1s99lk456sw9hhsx5cf3x9r97iw9s3ydqsd94zz3bjnq77wmkhz5"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+      ;; Requires cyclic dependency with qvm
+      #:tests? #f))
+    (inputs
+     (list sbcl-abstract-classes
+           sbcl-alexa
+           sbcl-alexandria
+           sbcl-cl-algebraic-data-type
+           sbcl-cl-grnm
+           sbcl-cl-heap
+           sbcl-cl-permutation
+           sbcl-cl-yacc
+           sbcl-global-vars
+           sbcl-magicl
+           sbcl-optima
+           sbcl-parse-float
+           sbcl-queues
+           sbcl-salza2
+           sbcl-split-sequence
+           sbcl-trivial-garbage
+           sbcl-yason))
+    (synopsis "The optimizing Quil compiler")
+    (description
+     "Quil is the quantum instruction language, originally developed at
+Rigetti Computing.  In Quil quantum algorithms are expressed using Quil's
+standard gates and instructions")
+    (home-page "https://github.com/quil-lang/quilc")
+    (license license:asl2.0)))
+
+(define-public cl-quil
+  (sbcl-package->cl-source-package sbcl-cl-quil))
