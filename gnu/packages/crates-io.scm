@@ -51617,21 +51617,20 @@ functionality")
   (package
     (inherit rust-redox-users-0.4)
     (name "rust-redox-users")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "redox_users" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cbl5w16l3bqm22i4vszclf6hzpljxicghmllw7j13az4s9k1ch9"))))
+        (base32 "179fxmyqaqzibp533ajgbn4ljah9lrzpqvd3i73h55bs7qrkf1yy"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t     ; redox-syscall no longer builds.
        #:cargo-inputs
        (("rust-getrandom" ,rust-getrandom-0.1)
         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
-        ("rust-rust-argon2" ,rust-rust-argon2-0.7))))))
+        ("rust-rust-argon2" ,rust-rust-argon2-0.8))))))
 
 (define-public rust-reduce-0.1
   (package
