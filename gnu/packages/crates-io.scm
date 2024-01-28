@@ -67544,10 +67544,22 @@ interoperable with the standard library, and is mostly compatible with
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0nl0pzv9yf56djy8y5dx25nka5pr2q1ivlandb3d24pksgx7ly8v"))))
+          "0nl0pzv9yf56djy8y5dx25nka5pr2q1ivlandb3d24pksgx7ly8v"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Cargo.toml"
+                    (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                     (string-append "\"^" version)))))))
+
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=tests::test_asctime"
+         "--skip=tests::test_at"
+         "--skip=tests::test_ctime"
+         "--skip=tests::test_dst"
+         "--skip=tests::test_strftime")
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
