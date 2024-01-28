@@ -2497,8 +2497,57 @@ ArrayVec and ArrayString.")
         ("rust-matches" ,rust-matches-0.1)
         ("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-arrow-47
+  (package
+    (name "rust-arrow")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0agq8c2q8nifsysnri8svh9m9dqkk55ww3d3slvqms4cpa9rxavz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       ;; Test fixtures are not included in the crate tarball. We need to skip
+       ;; the tests that require these.
+       '("--release" "--" "--exact"
+         "--skip=util::test_util::tests::test_happy")
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-arrow-arith" ,rust-arrow-arith-47)
+        ("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-cast" ,rust-arrow-cast-47)
+        ("rust-arrow-csv" ,rust-arrow-csv-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-ipc" ,rust-arrow-ipc-47)
+        ("rust-arrow-json" ,rust-arrow-json-47)
+        ("rust-arrow-ord" ,rust-arrow-ord-47)
+        ("rust-arrow-row" ,rust-arrow-row-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-arrow-select" ,rust-arrow-select-47)
+        ("rust-arrow-string" ,rust-arrow-string-47)
+        ("rust-pyo3" ,rust-pyo3-0.19)
+        ("rust-rand" ,rust-rand-0.8))
+       #:cargo-development-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-half" ,rust-half-2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Rust implementation of Apache Arrow")
+    (description "This crate provides a complete, safe and native Rust
+implementation of Apache Arrow.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-5
   (package
+    (inherit rust-arrow-47)
     (name "rust-arrow")
     (version "5.5.0")
     (source
@@ -2508,7 +2557,6 @@ ArrayVec and ArrayString.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0c8j4766cfjc04dmcyayigbn6mim9cfys78a64ilw26qrxpyhy16"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs
@@ -2533,13 +2581,7 @@ ArrayVec and ArrayString.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-flate2" ,rust-flate2-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/apache/arrow-rs")
-    (synopsis "Rust implementation of Apache Arrow")
-    (description
-     "This crate is a Rust implementation of Apache Arrow in-memory columnar
-format.")
-    (license license:asl2.0)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-arrow-arith-47
   (package
