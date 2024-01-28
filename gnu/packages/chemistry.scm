@@ -765,7 +765,7 @@ of the algorithms, the calculations give identical results.")
 (define-public maeparser
   (package
     (name "maeparser")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -774,7 +774,7 @@ of the algorithms, the calculations give identical results.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yv4y5hn49fhylziigsg922bb244lb57p69r7vg9q899zd3l5b7l"))))
+                "0mr5glg4br04ql5grby8yqni9fqq1l1cc75wyc159a1b9lwr7q7r"))))
     (build-system cmake-build-system)
     (inputs (list boost zlib))
     (home-page "https://github.com/schrodinger/maeparser")
