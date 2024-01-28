@@ -4316,18 +4316,27 @@ Astropy objects.")
 (define python-asdf-wcs-schemas
   (package
     (name "python-asdf-wcs-schemas")
-    (version "0.1.1")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_wcs_schemas" version))
        (sha256
-        (base32 "0khyab9mnf2lv755as8kwhk3lqqpd3f4291ny3b9yp3ik86fzhz1"))))
+        (base32 "1r9ls2skgwq6my68nfwfah1s0q6bm2qq97s0h79vwh997jy97rai"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "tests")))
     (native-inputs
-     (list python-pytest python-setuptools-scm python-semantic-version))
+     (list python-asdf
+           python-pytest
+           python-pytest-openfiles
+           python-semantic-version
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-asdf))
+     (list python-asdf-standard
+           python-asdf-transform-schemas
+           python-asdf-unit-schemas))
     (home-page "https://github.com/asdf-format/asdf-wcs-schemas")
     (synopsis "ASDF WCS Schemas")
     (description
