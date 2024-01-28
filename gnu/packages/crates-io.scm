@@ -74259,6 +74259,24 @@ result.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-wasi-0.10
+  (package
+    (inherit rust-wasi-0.11)
+    (name "rust-wasi")
+    (version "0.10.2+wasi-snapshot-preview1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ii7nff4y1mpcrxzzvbpgxm7a1nn3szjf1n21jnx37c2g6dbsvzx"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
+
 (define-public rust-wasi-0.9
   (package
     (inherit rust-wasi-0.11)
