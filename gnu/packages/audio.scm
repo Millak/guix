@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
@@ -3293,7 +3293,7 @@ lv2-c++-tools.")
 (define-public openal
   (package
     (name "openal")
-    (version "1.22.2")
+    (version "1.23.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3301,30 +3301,27 @@ lv2-c++-tools.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "081xgkma2a19dscwx21xdpklh8gq399w4f1fx737qsx7rnawr55f"))))
+                "08avhhfd96x4c18p8ys3va85nhx31xgpa3bz1ckmfkjc2f4lnvvr"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f  ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after
-          'unpack 'use-full-library-paths
-          (lambda* (#:key inputs #:allow-other-keys)
-            (substitute* "alc/backends/pulseaudio.cpp"
-              (("#define PALIB \"libpulse\\.so\\.0\"")
-               (string-append "#define PALIB \""
-                              (assoc-ref inputs "pulseaudio")
-                              "/lib/libpulse.so.0"
-                              "\"")))
-            (substitute* "alc/backends/alsa.cpp"
-              (("LoadLib\\(\"libasound\\.so\\.2\"\\)")
-               (string-append "LoadLib(\""
-                              (assoc-ref inputs "alsa-lib")
-                              "/lib/libasound.so.2"
-                              "\")")))
-            #t)))))
-    (inputs
-     (list alsa-lib pulseaudio))
+     (list
+      #:tests? #f                       ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-full-library-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "alc/backends/pulseaudio.cpp"
+                (("#define PALIB \"libpulse\\.so\\.0\"")
+                 (string-append "#define PALIB \""
+                                (search-input-file inputs "lib/libpulse.so.0")
+                                "\"")))
+              (substitute* "alc/backends/alsa.cpp"
+                (("LoadLib\\(\"libasound\\.so\\.2\"\\)")
+                 (string-append "LoadLib(\""
+                                (search-input-file inputs "lib/libasound.so.2")
+                                "/lib/libasound.so.2"
+                                "\")"))))))))
+    (inputs (list alsa-lib pulseaudio))
     (synopsis "3D audio API")
     (description
      "OpenAL provides capabilities for playing audio in a virtual 3D
