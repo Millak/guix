@@ -28,6 +28,7 @@
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>;;
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,14 +87,14 @@
 (define-public dos2unix
   (package
     (name "dos2unix")
-    (version "7.5.1")
+    (version "7.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://waterlan.home.xs4all.nl/dos2unix/"
                            "dos2unix-" version ".tar.gz"))
        (sha256
-        (base32 "05gwq7asks48l4iliw9cvbcaqa45yrkd2wb47zbb0ag0na5ph1ys"))))
+        (base32 "0fmzqhwq5y14gv5p4kin5flv6g1hvbv0mhlniys2wi08cr244ir6"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
