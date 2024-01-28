@@ -1853,7 +1853,7 @@ library}.")
 (define-public guile-yamlpp
   (package
     (name "guile-yamlpp")
-    (version "0.2")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -1862,7 +1862,7 @@ library}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14mlqi7hw7pi9scwk1g432issnqcn185pd8na2plijxq55cy0iq7"))))
+        (base32 "0ik69y0vddg0myp0zdbkmklma0qkkrqzwlqwkij1zirklz6hl1ss"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list guile-3.0 yaml-cpp))
