@@ -88,6 +88,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -20801,6 +20802,51 @@ permutation groups.")
 
 (define-public cl-permutation
   (sbcl-package->cl-source-package sbcl-cl-permutation))
+
+(define-public sbcl-magicl
+  (package
+    (name "sbcl-magicl")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quil-lang/magicl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-magicl" version))
+       (sha256
+        (base32 "0x9p55qin399jhr5md88nij8fv78b64xjhww7ys364pkjnx8ak9v"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list gfortran sbcl-fiasco))
+    (inputs
+     (list lapack
+           sbcl-alexandria
+           sbcl-abstract-classes
+           sbcl-cffi
+           sbcl-interface
+           sbcl-policy-cond
+           sbcl-static-vectors
+           sbcl-trivial-garbage))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/extensions/blas/load-libs.lisp"
+                (("libblas.so")
+                 (search-input-file inputs "/lib/libblas.so")))
+              (substitute* "src/extensions/lapack/load-libs.lisp"
+                (("liblapack.so")
+                 (search-input-file inputs "/lib/liblapack.so"))))))))
+    (synopsis "Matrix Algebra proGrams In Common Lisp")
+    (description
+     "This package provides matrix algebra functions for Common Lisp.")
+    (home-page "https://github.com/quil-lang/magicl")
+    (license license:bsd-3)))
+
+(define-public cl-magicl
+  (sbcl-package->cl-source-package sbcl-magicl))
 
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
