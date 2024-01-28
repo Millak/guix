@@ -39065,8 +39065,8 @@ Emacs.")
 
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
-  (let ((commit "d15603b8eb791f2057b48071c262996ad7767505")
-        (revision "247"))
+  (let ((commit "9063a4485b148a767ea924f0e7cc78d3524ba256")
+        (revision "248"))
     (package
       (name "emacs-semi-epg")
       (version (git-version "1.14.6" revision commit))
@@ -39078,7 +39078,7 @@ Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0cxrzgxflwgz9wsim84vrliwvkf53v242di4dvn2dfh65gccwqjx"))))
+                  "18km8jdxjcqnh378xxd7ivvvcxzrif8zpq9zgki9i7f0q8lsx677"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-flim-lb))
       (inputs (list emacs-bbdb-vcard))
