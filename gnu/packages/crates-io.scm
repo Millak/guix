@@ -29335,18 +29335,22 @@ over in-place and buffer-to-buffer modes of operation.")
   (package
     (inherit rust-insta-0.16)
     (name "rust-insta")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "insta" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "17rvqw9xm61prncbqi3cplphr3l2dl85sljdpyr3fz2mqjgbdfwb"))))
+        (base32 "1jk41bzid509y3s2r3hwh0s8cmcyywd0jzcgbs4ixb6sm2b7d0ll"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test_unnamed_yaml_vector"
+         "--skip=test_yaml_vector"
+         "--skip=test_yaml_inline"
+         "--skip=test_yaml_inline_redacted"
+         "--skip=test_with_random_value")
        #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-ci-info" ,rust-ci-info-0.3)
