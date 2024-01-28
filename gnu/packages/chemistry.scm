@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -785,7 +785,7 @@ of the algorithms, the calculations give identical results.")
 (define-public coordgenlibs
   (package
     (name "coordgenlibs")
-    (version "3.0.1")
+    (version "3.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -794,7 +794,7 @@ of the algorithms, the calculations give identical results.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d09x3v38i9y184bml020bq7xizdrdwng38qmdxlplzfhqkjdidv"))))
+                "1wjaxwaihjy9xm5ys23f5abl50zcar1h9pww5ajdkgygsqy0bavi"))))
     (build-system cmake-build-system)
     (arguments
      (list
