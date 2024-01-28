@@ -113,3 +113,68 @@ standard gates and instructions")
 
 (define-public cl-quil
   (sbcl-package->cl-source-package sbcl-cl-quil))
+
+(define-public sbcl-qvm
+  (package
+    (name "sbcl-qvm")
+    (version "1.17.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quil-lang/qvm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-qvm" version))
+       (sha256
+        (base32 "1cvmkqfcy7rv5jlim4kh4dvqhd3jk6mw1kwrphaqghjymrf72yp8"))))
+    (build-system asdf-build-system/sbcl)
+    (outputs '("out" "bin"))
+    (inputs
+     (list sbcl-abstract-classes
+           sbcl-alexandria
+           sbcl-cffi
+           sbcl-cl-quil
+           sbcl-global-vars
+           sbcl-ieee-floats
+           sbcl-lparallel
+           sbcl-magicl
+           sbcl-mt19937
+           sbcl-static-vectors
+           sbcl-trivial-features
+           sbcl-trivial-garbage
+
+           ;; qvm-app
+           sbcl-cl-syslog
+           sbcl-command-line-arguments
+           sbcl-hunchentoot
+           sbcl-slime-swank
+           sbcl-trivial-benchmark))
+    (arguments
+     (list
+      #:asd-systems ''("qvm" "qvm-app")
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-git-dependency
+            (lambda _
+              (substitute* "app/src/qvm-app-version.lisp"
+                (("\\(git-hash '#:qvm-app\\)")
+                 "\"unknown\""))))
+          (add-after 'create-asdf-configuration 'build-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              (build-program (string-append (assoc-ref outputs "bin")
+                                            "/bin/qvm")
+                             outputs
+                             #:dependencies '("qvm-app")
+                             #:entry-program '((qvm-app::asdf-entry-point))
+                             #:compress? #t))))))
+    (synopsis "Quil simulator")
+    (description
+     "This is the official Quil-Lang Quantum Virtual Machine (QVM),
+a flexible and efficient simulator for Quil.")
+    (home-page "https://github.com/quil-lang/qvm")
+    (license (list license:asl2.0
+                   license:agpl3))))
+
+(define-public cl-qvm
+  (sbcl-package->cl-source-package sbcl-qvm))
