@@ -2552,19 +2552,19 @@ track your position right from your laptop.")
         "-DLICENSING_PROVIDER:BOOL=OFF"
         "-DMapper_MANUAL_QTHELP:BOOL=OFF")))
     (inputs
-     `(("clipper" ,clipper)
-       ("cups" ,cups)
-       ("curl" ,curl)
-       ("gdal" ,gdal)
-       ("proj" ,proj)
-       ("qtbase" ,qtbase-5)
-       ("qtimageformats" ,qtimageformats-5)
-       ("qtlocation" ,qtlocation)
-       ("qtsensors" ,qtsensors)
-       ("zlib" ,zlib)))
+     (list clipper
+           cups
+           curl
+           gdal
+           proj
+           qtbase-5
+           qtimageformats-5
+           qtlocation
+           qtsensors
+           zlib))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("qttools-5" ,qttools-5)))
+     (list doxygen
+           qttools-5))
     (home-page "https://www.openorienteering.org/apps/mapper/")
     (synopsis "OpenOrienteering Mapper (OOM)")
     (description
