@@ -2685,6 +2685,73 @@ the Apache Arrow implementation in Rust.")
 code of Apache Arrow spec.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-json-47
+  (package
+    (name "rust-arrow-json")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "175ncx809i6gq7i4xr03kxkk3f2nxnd49zjlqg78qs6x0hxpwggh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       ;; Test fixtures are not included in the crate tarball. We need to skip
+       ;; the tests that require these.
+       '("--release"
+         ;; Skip the doctests, since some of these also depend on the test
+         ;; fixtures.
+         "--lib" "--bins" "--tests"
+         "--"
+         "--exact"
+         "--skip=reader::schema::tests::test_json_infer_schema"
+         "--skip=reader::tests::test_date_from_json_milliseconds"
+         "--skip=reader::tests::test_json_arrays"
+         "--skip=reader::tests::test_json_basic"
+         "--skip=reader::tests::test_json_basic_schema"
+         "--skip=reader::tests::test_json_basic_schema_projection"
+         "--skip=reader::tests::test_json_basic_with_nulls"
+         "--skip=reader::tests::test_json_empty_projection"
+         "--skip=reader::tests::test_json_iterator"
+         "--skip=reader::tests::test_time_from_json_nanoseconds"
+         "--skip=reader::tests::test_timestamp_from_json_milliseconds"
+         "--skip=reader::tests::test_timestamp_from_json_seconds"
+         "--skip=reader::tests::test_with_multiple_batches"
+         "--skip=writer::tests::test_write_multi_batches"
+         "--skip=writer::tests::test_write_single_batch"
+         "--skip=writer::tests::write_arrays"
+         "--skip=writer::tests::write_basic_nulls"
+         "--skip=writer::tests::write_basic_rows")
+       #:cargo-inputs
+       (("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-cast" ,rust-arrow-cast-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-half" ,rust-half-2)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-lexical-core" ,rust-lexical-core-0.8)
+        ("rust-num" ,rust-num-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Parse JSON formatted data to and from the Arrow format")
+    (description
+     "This crate enables support for transferring data between the Arrow
+memory format and JSON line-delimited records.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-ord-47
   (package
     (name "rust-arrow-ord")
