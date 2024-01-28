@@ -10311,7 +10311,7 @@ directly by @code{make localmodconfig} as described above.")
 (define-public kconfig-hardened-check
   (package
     (name "kconfig-hardened-check")
-    (version "0.6.1")
+    (version "0.6.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10320,7 +10320,7 @@ directly by @code{make localmodconfig} as described above.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bpdy2a7l75y5cqzzc92nh4gapzgza8ml5i8ximr6brf6pr3681z"))))
+                "1w9xx3xvx4wrfdkdwkfzjlfichgkvacil9b8s1fcgla63z65m5f6"))))
     (build-system python-build-system)
     (home-page "https://github.com/a13xp0p0v/kconfig-hardened-check")
     (synopsis
