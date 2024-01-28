@@ -1324,15 +1324,7 @@ utilities for data translation and processing.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0jsraqzq82pw19wvx84x7w5cs8agr44a9b5y0jjw540wim4xa73r"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This is the only test file.
-               (invoke "python" "-m" "pytest" "test_shapefile.py")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-runner))
     (home-page "https://github.com/GeospatialPython/pyshp")
