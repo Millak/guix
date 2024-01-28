@@ -2842,6 +2842,39 @@ Arrow arrays.  Examples include @code{cmp}, @code{ord}, @code{partition},
 @code{rank} and @code{sort} kernels.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-row-47
+  (package
+    (name "rust-arrow-row")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-row" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08jxyqvsm3pvz09jprqrxdhg1yczncyb5jlgj2vckrw1nn538jhi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-half" ,rust-half-2)
+        ("rust-hashbrown" ,rust-hashbrown-0.14))
+       #:cargo-development-inputs
+       (("rust-arrow-cast" ,rust-arrow-cast-47)
+        ("rust-arrow-ord" ,rust-arrow-ord-47)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Row-oriented Apache Arrow representation")
+    (description "This crate provides a comparable row-oriented representation
+of a collection of @code{Array}.  Rows are normalized for sorting, and can
+therefore be very efficiently compared, using @code{memcmp} under the hood, or
+used in non-comparison sorts such as radix sort.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-schema-47
   (package
     (name "rust-arrow-schema")
