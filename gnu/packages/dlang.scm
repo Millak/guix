@@ -478,6 +478,9 @@ integration tests...\n")
     (synopsis "Reference D Programming Language compiler")
     (description "@acronym{DMD, Digital Mars D compiler} is the reference
 compiler for the D programming language.")
+    ;; As reported by upstream:
+    ;; https://wiki.dlang.org/Compilers#Comparison
+    (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:boost1.0)))
 
 ;;; Second bootstrap of DMD, built using dmd-bootstrap, with its shared
