@@ -63,6 +63,7 @@
 # Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+# Copyright © 2024 David Elsing <david.elsing@posteo.net>
 #
 # This file is part of GNU Guix.
 #
@@ -957,6 +958,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/audiofile-function-signature.patch	\
   %D%/packages/patches/automake-skip-amhello-tests.patch	\
   %D%/packages/patches/avahi-localstatedir.patch		\
+  %D%/packages/patches/avalon-toolkit-rdkit-fixes.patch		\
   %D%/packages/patches/avidemux-install-to-lib.patch		\
   %D%/packages/patches/awesome-reproducible-png.patch		\
   %D%/packages/patches/awesome-4.3-fno-common.patch		\

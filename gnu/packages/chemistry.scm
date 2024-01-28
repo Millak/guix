@@ -917,90 +917,67 @@ calculations and analyzing the results.")
 (define-public avalon-toolkit
   (package
     (name "avalon-toolkit")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/avalontoolkit/"
-             "AvalonToolkit_" (substring version 0 3) "/AvalonToolkit_"
-             version ".source.tar"))
-       (sha256
-        (base32
-         "0rnnyy6axs2da7aa4q6l30ldavbk49v6l22llj1adn74h1i67bpv"))
-       (modules '((guix build utils) (ice-9 ftw)))
-       (snippet
-        #~(begin
-            (delete-file-recursively "../SourceDistribution/java")))))
+    (version "2.0.5a")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rohdebe1/ava-formake")
+                    (commit (string-append "AvalonToolkit_" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mfg40y5xc17sm59zdfc5sk22n9zm5zk0z1aw47chvl6hp465szk"))
+              (patches
+               (search-patches "avalon-toolkit-rdkit-fixes.patch"))
+              (modules '((guix build utils) (ice-9 ftw)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "src/main/java")
+                   (delete-file-recursively "src/test/target")))))
     (build-system gnu-build-system)
     (arguments
      (list
-      ;; There are no intended tests
+      ;; There is only one test, which is missing a file
       #:tests? #f
       #:phases
-      #~(let ((programs '("canonizer" "matchtest" "sketch" "smi2mol" "struchk")))
-          (modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _ (chdir "common")))
-            (delete 'configure)
-            (add-before 'build 'dont-free-static-memory
-              (lambda _
-                (substitute* "reaccsio.c"
-                  (("MyFree\\(.*tempdir\\)" m)
-                   (string-append "/* freeing memory from getenv is bad */"
-                                  "// " m)))))
-            ;; The makefile has incorrect compiler flags and is missing some
-            ;; object files, so we build it ourselves.
-            (replace 'build
-              (lambda _
-                (for-each
-                 (lambda (part)
-                   (format #t "Compiling ~a.c ~~> ~a.o~%" part part)
-                   (invoke #$(cc-for-target) "-c" "-fPIC" "-O2"
-                           (string-append part ".c")
-                           "-o" (string-append part ".o")))
-                 (list "aacheck" "casutils" "denormal" "depictutil"
-                       "didepict" "fixcharges" "forio" "geometry"
-                       "graph" "hashcode" "layout" "local" "pattern"
-                       "perceive" "reaccsio" "rtutils" "set" "shortcut"
-                       "sketch" "ssmatch" "stereo" "symbol_lists"
-                       "symboltable" "utilities"))
-                (display "Building libavalontoolkit.so\n")
-                (apply invoke "gcc" "-fPIC" "-shared" "-lm"
-                       "-o" "libavalontoolkit.so" "canonizer.c" "smi2mol.c"
-                       "struchk.c" "patclean.c" (find-files "." "\\.o$"))
-                ;; patclean is not built here as there is an undeclared
-                ;; variable in main().
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (mkdir "build")
+              (mkdir-p "target/executables")
+              (mkdir-p "target/libraries")
+              (invoke "make" "programs" "-j"
+                      (if parallel-build?
+                          (number->string (parallel-job-count))
+                          "1"))))
+          (replace 'install
+            (lambda _
+              ;; Executables
+              (let ((programs '("canonizer" "matchtest" "smi2mol" "struchk")))
                 (for-each
                  (lambda (program)
-                   (display (string-append "Building " program "\n"))
-                   (invoke "gcc" "-L." "-lavalontoolkit" "-lm" "-O2"
-                           (string-append "-Wl,-rpath=" #$output "/lib")
-                           "-DMAIN" (string-append program ".c") "-o" program))
-                 programs)))
-            (replace 'install
-              (lambda _
-                ;; Executables
-                (for-each
-                 (lambda (program)
-                   (install-file program (string-append #$output "/bin")))
-                 programs)
-                (for-each
-                 (lambda (name)
-                   (symlink (string-append #$output "/bin/smi2mol")
-                            (string-append #$output "/bin/" name)))
-                 '("mol2smi" "rdf2smi" "mol2tbl" "mol2sma" "smi2rdf"))
-                ;; Library
-                (install-file "libavalontoolkit.so"
-                              (string-append #$output "/lib"))
-                (for-each
-                 (lambda (file)
-                   (install-file file (string-append #$output
-                                                    "/include/avalontoolkit")))
-                 (find-files "." "\\.h$"))
-                (install-file "../license.txt"
-                              (string-append #$output "/share/doc/"
-                                             #$name "-" #$version "/"))))))))
+                   (install-file (string-append "target/executables/" program)
+                                 (string-append #$output "/bin")))
+                 programs))
+              (for-each
+               (lambda (name)
+                 (symlink (string-append #$output "/bin/smi2mol")
+                          (string-append #$output "/bin/" name)))
+               '("mol2smi" "rdf2smi" "mol2tbl" "mol2sma" "smi2rdf"))
+              ;; Library
+              (install-file "target/libraries/libavalon_tools.a"
+                            (string-append #$output "/lib"))
+              (install-file "target/libraries/libavalon4rdkit.a"
+                            (string-append #$output "/lib"))
+              (for-each
+               (lambda (file)
+                 (install-file file (string-append #$output
+                                                   "/include/avalontoolkit")))
+               (find-files "src/main/C/include" "\\.h$"))
+              (install-file "license.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version "/")))))))
     (home-page "https://sourceforge.net/projects/avalontoolkit/")
     (synopsis "Tools for SMILES and MOL files and for structure fingerprinting")
     (description "This package contains a library and programs for
