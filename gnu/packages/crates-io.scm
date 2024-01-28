@@ -56608,20 +56608,18 @@ Pwrite traits from the scroll crate.")
   (package
     (inherit rust-sct-0.7)
     (name "rust-sct")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sct" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0g4dz7las43kcpi9vqv9c6l1afjkdv3g3w3s7d2w7a7w77wjl173"))))
+        (base32 "1ki8qa7yf4d9i4ynsfvwwkpnnqw0m8ayx0jva4w9zrp0k0wbhqmk"))))
     (arguments
      `(#:cargo-inputs
        (("rust-ring" ,rust-ring-0.16)
-        ("rust-untrusted" ,rust-untrusted-0.7))
-       #:cargo-development-inputs
-       (("rust-cc" ,rust-cc-1))))))
+        ("rust-untrusted" ,rust-untrusted-0.7))))))
 
 (define-public rust-sct-0.5
   (package
