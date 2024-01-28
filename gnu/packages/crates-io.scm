@@ -66371,7 +66371,7 @@ writing colored text to a terminal.")
   (package
     (inherit rust-termion-2)
     (name "rust-termion")
-    (version "1.5.5")
+    (version "1.5.6")
     (source
       (origin
         (method url-fetch)
@@ -66379,13 +66379,13 @@ writing colored text to a terminal.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "01f9787d5nx445bqbj644v38bn0hl2swwjy9baz0dnbqi6fyqb62"))))
+          "0zk023f0zkws358ll399cawvwdnd0wg8wad4g61kz766xbi8aw87"))))
     (arguments
      (list #:tests? #f ;tests require a terminal
            #:cargo-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-numtoa" ,rust-numtoa-0.1)
-             ("rust-redox-syscall" ,rust-redox-syscall-0.1)
+             ("rust-redox-syscall" ,rust-redox-syscall-0.2)
              ("rust-redox-termios" ,rust-redox-termios-0.1))))))
 
 (define-public rust-termios-0.3
