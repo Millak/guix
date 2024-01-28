@@ -56586,19 +56586,19 @@ Pwrite traits from the scroll crate.")
 (define-public rust-sct-0.7
   (package
     (name "rust-sct")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sct" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "193w3dg2pcn7138ab4c586pl76nkryn4h6wqlwvqj5gqr6vwsgfm"))))
+        (base32 "056lmi2xkzdg1dbai6ha3n57s18cbip4pnmpdhyljli3m99n216s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-ring" ,rust-ring-0.16)
-        ("rust-untrusted" ,rust-untrusted-0.7))))
+       (("rust-ring" ,rust-ring-0.17)
+        ("rust-untrusted" ,rust-untrusted-0.9))))
     (home-page "https://github.com/ctz/sct.rs")
     (synopsis "Certificate transparency SCT verification library")
     (description "Certificate transparency SCT verification library.")
