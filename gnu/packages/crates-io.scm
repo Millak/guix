@@ -66369,21 +66369,21 @@ writing colored text to a terminal.")
 (define-public rust-termion-2
   (package
     (name "rust-termion")
-    (version "2.0.1")
+    (version "2.0.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "termion" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "147c0a9l2dj4l8xhd7bb1f0f611lv6k0szacx3jwf21lkwviz735"))))
+                "0zcxsj2mms9hv8gizg2x3358ibjynzwvj5w6asr4683gxxyqqr64"))))
     (build-system cargo-build-system)
     (arguments
      (list #:tests? #f ;tests require a terminal
            #:cargo-inputs
            `(("rust-libc" ,rust-libc-0.2)
+             ("rust-libredox" ,rust-libredox-0.0.2)
              ("rust-numtoa" ,rust-numtoa-0.1)
-             ("rust-redox-syscall" ,rust-redox-syscall-0.2)
              ("rust-redox-termios" ,rust-redox-termios-0.1)
              ("rust-serde" ,rust-serde-1))))
     (home-page "https://gitlab.redox-os.org/redox-os/termion")
