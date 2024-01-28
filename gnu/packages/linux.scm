@@ -10308,25 +10308,25 @@ text-based database (@file{$XDG_CONFIG_HOME/modprobed-db}), which can be read
 directly by @code{make localmodconfig} as described above.")
     (license license:expat)))
 
-(define-public kconfig-hardened-check
+(define-public kernel-hardening-checker
   (package
-    (name "kconfig-hardened-check")
+    (name "kernel-hardening-checker")
     (version "0.6.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/a13xp0p0v/kconfig-hardened-check")
+                    (url "https://github.com/a13xp0p0v/kernel-hardening-checker")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "1w9xx3xvx4wrfdkdwkfzjlfichgkvacil9b8s1fcgla63z65m5f6"))))
     (build-system python-build-system)
-    (home-page "https://github.com/a13xp0p0v/kconfig-hardened-check")
+    (home-page "https://github.com/a13xp0p0v/kernel-hardening-checker")
     (synopsis
      "Tool for checking the security hardening options of the Linux kernel")
     (description
-     "@code{kconfig-hardened-check} is a tool for checking the security
+     "@code{kernel-hardening-checker} is a tool for checking the security
 hardening options of the Linux kernel.  Provided preferences are based on
 suggestions from various sources, including:
 
@@ -10339,6 +10339,9 @@ suggestions from various sources, including:
 @end itemize\n
 This tool supports checking Kconfig options and kernel cmdline parameters.")
     (license license:gpl3)))
+
+(define-public kconfig-hardened-check
+  (deprecated-package "kconfig-hardened-check" kernel-hardening-checker))
 
 (define-public firejail
   (package
