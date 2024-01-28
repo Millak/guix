@@ -708,7 +708,12 @@ It can be used for working with
       #~(list "--enable-check"
               "--enable-parser-generator"
               "CXXFLAGS=-std=c++17"
-              "--enable-doxygen")
+              "--enable-doxygen"
+              ;; Some tests rely on replacing malloc with a wrapper which
+              ;; fails in a controlled way, but this does not work if the call
+              ;; is replaced. This was fixed upstream, remove once there is a
+              ;; new release.
+              "CFLAGS=-fno-builtin-malloc")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-libc++-linking
