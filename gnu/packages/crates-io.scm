@@ -32646,6 +32646,27 @@ suite of tools for the rapid, accurate and memory-frugal processing
 single-cell and single-nucleus sequencing data.")
     (license license:bsd-3)))
 
+(define-public rust-libredox-0.0.2
+  (package
+    (name "rust-libredox")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libredox" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01v6pb09j7dl2gnbvzz6zmy2k4zyxjjzvl7wacwjjffqsxajry9s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-redox-syscall" ,rust-redox-syscall-0.4))))
+    (home-page "https://gitlab.redox-os.org/redox-os/libredox.git")
+    (synopsis "Redox stable ABI")
+    (description "This package provides Redox's stable ABI.")
+    (license license:expat)))
+
 (define-public rust-librespot-audio-0.4
   (package
     (name "rust-librespot-audio")
