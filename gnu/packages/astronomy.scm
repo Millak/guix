@@ -2591,16 +2591,24 @@ orbits described in TLE files.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append
-                    ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
-                    ;; It struggles to find python-opencsv package info with
-                    ;; 'importlib.metadata'
-                    "not test_main_nonexisting_module"
-                    " and not test_main_stdlib_module")
-              ;; Requries SpicePy not packed in Guix yet.
-              "--ignore=sunpy/coordinates/tests/test_spice.py")
+      #~(list
+         "-n" "auto"
+         "-k" (string-append
+               ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
+               ;; It struggles to find python-opencsv package info with
+               ;; 'importlib.metadata'
+               "not test_main_nonexisting_module"
+               " and not test_main_stdlib_module")
+         ;; Requries SpicePy not packed in Guix yet.
+         "--ignore=sunpy/coordinates/tests/test_spice.py")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                ;; It's already updated in master branch, but not released yet.
+                ;; drms>=0.6.1,<0.7.0
+                (("0.7.0") "0.7.2"))))
           (add-before 'install 'writable-compiler
             (lambda _
               (make-file-writable "sunpy/_compiler.c")))
