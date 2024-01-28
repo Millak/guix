@@ -68142,16 +68142,16 @@ writing asynchronous I/O backed applications.")
   (package
     (inherit rust-tokio-0.3)
     (name "rust-tokio")
-    (version "0.2.21")
+    (version "0.2.25")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0n1dxsjv9fxv3kmr3nh4n8v8pqckwgdlls942msysavhp4kzm6fh"))))
+        (base32 "14l0rll6y1dyzh6qcd8rma2ch3wx0dxzxq8b54di744sjirs40v7"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; failed to resolve: could not find `test` in `tokio`
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
         ("rust-fnv" ,rust-fnv-1)
@@ -68164,7 +68164,7 @@ writing asynchronous I/O backed applications.")
         ("rust-mio-named-pipes" ,rust-mio-named-pipes-0.1)
         ("rust-mio-uds" ,rust-mio-uds-0.6)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-parking-lot" ,rust-parking-lot-0.10)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.1)
         ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
         ("rust-slab" ,rust-slab-0.4)
@@ -68172,6 +68172,7 @@ writing asynchronous I/O backed applications.")
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-test" ,rust-futures-test-0.3)
         ("rust-loom" ,rust-loom-0.3)
         ("rust-proptest" ,rust-proptest-0.9)
         ("rust-tempfile" ,rust-tempfile-3)
