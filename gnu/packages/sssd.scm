@@ -2,7 +2,7 @@
 ;;; Copyright © 2016, 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2021, 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2021, 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -139,7 +139,7 @@ fundamental object types for C.")
 (define-public sssd
   (package
     (name "sssd")
-    (version "2.9.3")
+    (version "2.9.4")
     (source
      (origin
        (method git-fetch)
@@ -148,7 +148,7 @@ fundamental object types for C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iixn262ycicy2fm96zvifd21p21069mhcsnk262qk79cjvlwdar"))
+        (base32 "11qchs59f8y8w5ns9mqg16nrv1kglfavzvqway0aj2z6ssfxk5al"))
        (patches (search-patches "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
     (arguments
