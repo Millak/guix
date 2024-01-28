@@ -51539,14 +51539,14 @@ owned memory.")
   (package
     (inherit rust-redox-syscall-0.3)
     (name "rust-redox-syscall")
-    (version "0.2.10")
+    (version "0.2.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "redox_syscall" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zq36bhw4c6xig340ja1jmr36iy0d3djp8smsabxx71676bg70w3"))))
+        (base32 "16jicm96kjyzm802cxdd1k9jmcph0db1a4lhslcnhjsvhp0mhnpv"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
