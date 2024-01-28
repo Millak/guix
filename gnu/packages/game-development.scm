@@ -1354,7 +1354,7 @@ and multimedia programs in the Python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "0w7imwxz8cvfv1l8v74abw8wbpribd5rhqhrmnh7z5if9ggs6pxw"))
+         (sha256 (base32 "17mc39c7ha83kzv2wmq61a15mn6p8wh2y33ixhf5sb4bvyr48mhy"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1403,7 +1403,7 @@ developed mainly for Ren'py.")
                            "/renpy-" version "-source.tar.bz2"))
        (sha256
         (base32
-         "19b2vwzk7fkiqayib5hdl8y18cqvn0r4xaa983gyzibb838rq1qy"))
+         "02v54qqjjigfqhdr50kzhkdvplk56bvprq65jl57kcs1qhvlf5s9"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
