@@ -3135,15 +3135,8 @@ using third-party geocoders and other data sources.")
               (sha256
                (base32
                 "0inxyj5n4jzgg5xiadqx9sk83gdx5ff989l9s04smdzbd3b8c0c8"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-numpy))
-    (arguments
-      (list #:phases
-            #~(modify-phases %standard-phases
-                (replace 'check
-                  (lambda* (#:key tests? inputs #:allow-other-keys)
-                    (when tests?
-                      (invoke "pytest")))))))
     (home-page "https://github.com/mapado/haversine")
     (synopsis "Calculate the distance between 2 points on Earth")
     (description "This package provides functions to calculate the
