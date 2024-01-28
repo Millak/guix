@@ -67479,7 +67479,7 @@ interoperable with the standard library, and is mostly compatible with
 (define-public rust-time-0.1
   (package
     (name "rust-time")
-    (version "0.1.43")
+    (version "0.1.45")
     (source
       (origin
         (method url-fetch)
@@ -67487,14 +67487,14 @@ interoperable with the standard library, and is mostly compatible with
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0f14wrgxj7ya2v4msg5mni7046bsm2angm7cn3pd3yv04gpm12na"))))
+          "0nl0pzv9yf56djy8y5dx25nka5pr2q1ivlandb3d24pksgx7ly8v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.1)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+        ("rust-wasi" ,rust-wasi-0.10)
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
        (("rust-log" ,rust-log-0.4)
