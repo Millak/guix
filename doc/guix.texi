@@ -44216,6 +44216,114 @@ to use alternative services to implement more advanced use cases like
 read-only home.  Feel free to experiment and share your results.
 @end defvar
 
+It is often the case that Guix Home users already have a setup for versioning
+their user configuration files (also known as @emph{dotfiles}) in a single
+directory, and some way of automatically deploy changes to their user home.
+
+The @code{home-dotfiles-service-type} from @code{(gnu home services dotfiles)}
+is designed to ease the way into using Guix Home for this kind of users,
+allowing them to point the service to their dotfiles directory, which must
+follow the layout suggested by
+@uref{https://www.gnu.org/software/stow/, GNU Stow},
+and have their dotfiles automatically deployed to their user home, without
+migrating them to Guix native configurations.
+
+The dotfiles directory layout is expected to be structured as follows. Please
+keep in mind that it is advisable to keep your dotfiles directories under
+version control, for example in the same repository where you'd track your
+Guix Home configuration.
+
+@example
+~$ tree -a ./dotfiles/
+dotfiles/
+├── git
+│   └── .gitconfig
+├── gpg
+│   └── .gnupg
+│       ├── gpg-agent.conf
+│       └── gpg.conf
+├── guile
+│   └── .guile
+├── guix
+│   └── .config
+│       └── guix
+│           └── channels.scm
+├── nix
+│   ├── .config
+│   │   └── nixpkgs
+│   │       └── config.nix
+│   └── .nix-channels
+├── tmux
+│   └── .tmux.conf
+└── vim
+    └── .vimrc
+
+13 directories, 10 files
+@end example
+
+For an informal specification please refer to the Stow manual
+(@pxref{Top,,, stow, Introduction}). A suitable configuration would then
+be:
+
+@lisp
+(home-environment
+  ;; @dots{}
+  (services
+    (service home-dotfiles-service-type
+             (home-dotfiles-configuration
+               (directories (list "./dotfiles"))))))
+@end lisp
+
+The expected home directory state would then be:
+
+@example
+.
+├── .config
+│   ├── guix
+│   │   └── channels.scm
+│   └── nixpkgs
+│       └── config.nix
+├── .gitconfig
+├── .gnupg
+│   ├── gpg-agent.conf
+│   └── gpg.conf
+├── .guile
+├── .nix-channels
+├── .tmux.conf
+└── .vimrc
+@end example
+
+@defvar home-dotfiles-service-type
+Return a service which is very similiar to @code{home-files-service-type}
+(and actually extends it), but designed to ease the way into using Guix
+Home for users that already track their dotfiles under some kind of version
+control.  This service allows users to point Guix Home to their dotfiles
+directory and have their files automatically deployed to their home directory
+just like Stow would, without migrating all of their dotfiles to Guix native
+configurations.
+@end defvar
+
+@deftp {Data Type} home-dotfiles-configuration
+Available @code{home-dotfiles-configuration} fields are:
+
+@table @asis
+@item @code{source-directory} (default: @code{(current-source-directory)})
+The path where dotfile directories are resolved. By default dotfile directories
+are resolved relative the source location where
+@code{home-dotfiles-configuration} appears.
+
+@item @code{directories} (type: list-of-strings)
+The list of dotfiles directories where @code{home-dotfiles-service-type} will
+look for application dotfiles.
+
+@item @code{exclude} (default: @code{'(".*~" ".*\\.swp" "\\.git" "\\.gitignore")})
+The list of file patterns @code{home-dotfiles-service-type} will exclude while
+visiting each one of the @code{directories}.
+
+@end table
+
+@end deftp
+
 @defvar home-xdg-configuration-files-service-type
 The service is very similar to @code{home-files-service-type} (and
 actually extends it), but used for defining files, which will go to

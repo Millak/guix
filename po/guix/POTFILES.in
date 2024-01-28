@@ -14,6 +14,7 @@ gnu/services/samba.scm
 gnu/services/version-control.scm
 gnu/home/services.scm
 gnu/home/services/desktop.scm
+gnu/home/services/dotfiles.scm
 gnu/home/services/fontutils.scm
 gnu/home/services/gnupg.scm
 gnu/home/services/guix.scm
