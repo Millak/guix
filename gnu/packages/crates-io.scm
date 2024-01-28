@@ -2541,6 +2541,35 @@ ArrayVec and ArrayString.")
 format.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-arith-47
+  (package
+    (name "rust-arrow-arith")
+    (version "47.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-arith" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mprvyxmnj3x84l6p8h34zz11kil71x5gf989zk9xbc7iqv4w7dw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrow-array" ,rust-arrow-array-47)
+        ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+        ("rust-arrow-data" ,rust-arrow-data-47)
+        ("rust-arrow-schema" ,rust-arrow-schema-47)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-half" ,rust-half-2)
+        ("rust-num" ,rust-num-0.4))))
+    (home-page "https://github.com/apache/arrow-rs")
+    (synopsis "Arithmetic and aggregation kernels Apache Arrow")
+    (description "This crate provides arithmetic and aggregation kernels for
+Apache Arrow.  Examples include time-related functions, logical operations for
+booleans, arithmetic functions such as addition and various aggregation
+functions.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-array-47
   (package
     (name "rust-arrow-array")
