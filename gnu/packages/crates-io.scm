@@ -11698,6 +11698,29 @@ literals.")
     (description "Assertions for const functions.")
     (license license:expat)))
 
+(define-public rust-const-format-proc-macros-0.2
+  (package
+    (name "rust-const-format-proc-macros")
+    (version "0.2.32")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const_format_proc_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0015dzbjbd773nn6096dwqv11fm8m3gy4a4a56cz5x10zl4gzxn7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-unicode-xid" ,rust-unicode-xid-0.2))
+       #:cargo-development-inputs (("rust-fastrand" ,rust-fastrand-1))))
+    (home-page "https://github.com/rodrimati1992/const_format_crates/")
+    (synopsis "Implementation detail of the @code{const_format} crate")
+    (description "Implementation detail of the @code{const_format} crate.")
+    (license license:zlib)))
+
 ;; This package requires features which are unavailable
 ;; on the stable releases of Rust.
 (define-public rust-compiler-builtins-0.1
