@@ -2712,7 +2712,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.8.9")
+    (version "0.8.14")
     (source
      (origin
        (method url-fetch)
@@ -2720,7 +2720,7 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1815hz1a93brj6v9102xypds1qslf6gxgk9vcvxhxlhy1c2pfxvj"))))
+         "1691clzqbwcywz66k0lf5wjz3q5cpbks0l090bfv42idzr5a0ghl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
@@ -2744,9 +2744,10 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
         ("rust-serde-with" ,rust-serde-with-3)
         ("rust-serde-yaml" ,rust-serde-yaml-0.9)
         ("rust-swayipc" ,rust-swayipc-3)
+        ("rust-toml" ,rust-toml-0.8)
         ("rust-wayland-client" ,rust-wayland-client-0.30)
         ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.1)
-        ("rust-x11rb" ,rust-x11rb-0.12)
+        ("rust-x11rb" ,rust-x11rb-0.13)
         ("rust-zbus" ,rust-zbus-1))
        #:phases
        (modify-phases %standard-phases
