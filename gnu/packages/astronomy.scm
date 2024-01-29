@@ -2705,6 +2705,50 @@ python_files = test_*.py"))))))))
 SolarSoft data analysis environment.")
     (license license:bsd-2)))
 
+(define-public python-sunpy-soar
+  (package
+    (name "python-sunpy-soar")
+    (version "1.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sunpy-soar" version))
+       (sha256
+        (base32 "0pb7dr06n20hdhlqf8npb4j1qb5034cgwqi3iciqdi1wxyy5pjc6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Disabe tests requireing network access.
+      #~(list "-k" (string-append
+                    "not test_search"
+                    " and not test_search_low_latency"
+                    " and not test_insitu_search"
+                    " and not test_no_results"
+                    " and not test_no_instrument"
+                    " and not test_download_path"
+                    " and not test_search_soop"
+                    " and not test_when_soar_provider_passed"
+                    " and not test_when_sdac_provider_passed"
+                    " and not test_when_wrong_provider_passed"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-sunpy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://docs.sunpy.org/projects/soar")
+    (synopsis "Solar Orbiter Archive plugin for SunPy")
+    (description
+     "This package provides a @code{sunpy} FIDO plugin for accessing data in the
+@acronym{Solar Orbiter Archive, SOAR}.")
+    (license license:bsd-2)))
+
 (define-public python-astral
   (package
     (name "python-astral")
