@@ -63871,17 +63871,17 @@ references")
 (define-public rust-swayipc-3
   (package
     (name "rust-swayipc")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "swayipc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16pf4r6svf99p73b8dhdannkvhfvmbjb4rx7gifxh8xj53rwy7db"))))
+        (base32 "0a9z67qp1kzmwnpnr973x72f2gif5q3rgqlma0i2wdqzi2gx39fs"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; `Err` value: SocketNotFound
        #:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
