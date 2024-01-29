@@ -657,7 +657,11 @@ defaults for 80% of the use cases.")
         (uri (crate-uri "hexyl" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0fhbc4ibpbbgcgx2v6wzxcn63jz76cvdp2f8jdg747h65hvp5bcm"))))
+         (base32 "0fhbc4ibpbbgcgx2v6wzxcn63jz76cvdp2f8jdg747h65hvp5bcm"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "doc/hexyl.1.md"
+                    (("0\\.12\\.0") "0.14.0"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -673,7 +677,25 @@ defaults for 80% of the use cases.")
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
         ("rust-predicates" ,rust-predicates-3)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'install 'install-manual
+          (lambda* (#:key inputs outputs #:allow-other-keys)
+            (let ((man1 (string-append (assoc-ref outputs "out")
+                                       "/share/man/man1")))
+              (when (assoc-ref inputs "pandoc")
+                (mkdir-p man1)
+                (with-output-to-file (string-append man1 "/hexyl.1")
+                  (lambda _
+                    (invoke "pandoc" "--standalone"
+                            "--from" "markdown"
+                            "--to" "man"
+                            "doc/hexyl.1.md"))))))))))
+    (native-inputs
+     (if (supported-package? pandoc)
+         (list pandoc)
+         '()))
     (home-page "https://github.com/sharkdp/hexyl")
     (synopsis "Command-line hex viewer")
     (description
