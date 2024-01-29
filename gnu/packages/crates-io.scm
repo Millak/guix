@@ -17821,7 +17821,7 @@ structs and enums.")
 (define-public rust-derive-where-1
   (package
     (name "rust-derive-where")
-    (version "1.2.5")
+    (version "1.2.7")
     (source
      (origin
        (method url-fetch)
@@ -17829,7 +17829,7 @@ structs and enums.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1jqck0b2vsyh85p6v5jlhcrmgphdvxzg2256919g782247b9hqql"))))
+         "09cx25r1zb8xrsgd9cj9j5zmg30n7lnvcmspqymyn9d887673mk2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
