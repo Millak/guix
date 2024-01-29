@@ -27986,7 +27986,7 @@ SystemTime}}.")
 (define-public rust-hyprland-0.3
   (package
     (name "rust-hyprland")
-    (version "0.3.8")
+    (version "0.3.12")
     (source
      (origin
        (method url-fetch)
@@ -27994,7 +27994,7 @@ SystemTime}}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0a6ay1cnpmj3v16hs6k65yxdg53wv438i2va5rpgjz9bk8aijhm8"))))
+         "01pvz7bpdwj6ja410mm2flrk43x6cq1xbp11mpf1ngwzi7klmafz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -28021,7 +28021,7 @@ SystemTime}}.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-repr" ,rust-serde-repr-0.1)
-        ("rust-strum" ,rust-strum-0.24)
+        ("rust-strum" ,rust-strum-0.25)
         ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/hyprland-community/hyprland-rs")
     (synopsis "An unofficial rust wrapper for Hyprland's IPC")
