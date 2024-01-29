@@ -19815,6 +19815,27 @@ transport methods, unicode support, secure delivery with SMTP using encryption
 and authentication, easy email builders, and async support.")
     (license license:expat)))
 
+(define-public rust-emojis-0.5
+  (package
+    (name "rust-emojis")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "emojis" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pdrhzlx53ksb41dx3qjl6qg9nj711vj28r8d92pv0lij5sbq1rl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-phf" ,rust-phf-0.11))))
+    (home-page "https://github.com/rossmacarthur/emojis")
+    (synopsis "Lookup emoji in O(1) time")
+    (description
+     "Lookup emoji in O(1) time, access metadata and @code{GitHub} shortcodes,
+iterate over all emoji, and more.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-empfindung-0.2
   (package
     (name "rust-empfindung")
