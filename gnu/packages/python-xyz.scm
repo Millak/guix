@@ -9303,7 +9303,7 @@ comparison.
        (method url-fetch)
        (uri (pypi-uri "matplotlib" version))
        (sha256
-        (base32 "18h78s5ld1i6mz00w258hy29909nfr3ddq6ry9kq18agw468bks8"))
+        (base32 "18amhxyxa6yzy1nwky4ggdgvvxnbl3qz2lki05vfx0dqf6w7ia81"))
        (patches (search-patches "python-matplotlib-fix-legend-loc-best-test.patch"))))
     (build-system pyproject-build-system)
     (arguments
