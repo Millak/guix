@@ -791,6 +791,37 @@ grammars and BER/DER encodings, for example.")
                                    ("rust-webpki" ,rust-webpki-0.22)
                                    ("rust-x509-parser" ,rust-x509-parser-0.14))))))
 
+(define-public rust-rcgen-0.9
+  (package
+    (inherit rust-rcgen-0.11)
+    (name "rust-rcgen")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rcgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pdwrza2j6bv94nxcfrb6dpbrrrjdnspb3hkwr137rfy3vgg64v4"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Don't use a vendored botan.
+                 (substitute* "Cargo.toml"
+                   ((".*vendored.*") ""))))))
+    (arguments
+     `(#:cargo-inputs (("rust-pem" ,rust-pem-1)
+                       ("rust-ring" ,rust-ring-0.16)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-x509-parser" ,rust-x509-parser-0.13)
+                       ("rust-yasna" ,rust-yasna-0.5)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-botan" ,rust-botan-0.8)
+                                   ("rust-openssl" ,rust-openssl-0.10)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rsa" ,rust-rsa-0.5)
+                                   ("rust-webpki" ,rust-webpki-0.22)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.13))))))
+
 (define-public rust-rcgen-0.8
   (package
     (inherit rust-rcgen-0.11)
