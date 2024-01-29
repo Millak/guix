@@ -27692,6 +27692,30 @@ characters in HTML, decoding and unescaping HTML entities as well.")
     (description "This package provides a Base32 encoder/decoder library.")
     (license license:gpl3+)))
 
+(define-public rust-konst-0.2
+  (package
+    (name "rust-konst")
+    (version "0.2.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "konst" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x3lxxk9vjaiiaabngv7ki2bv9xi36gnqzjzi0s8qfs8wq9hw3rk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-konst-macro-rules" ,rust-konst-macro-rules-0.2)
+                       ("rust-konst-proc-macros" ,rust-konst-proc-macros-0.2)
+                       ("rust-trybuild" ,rust-trybuild-1))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/rodrimati1992/konst/")
+    (synopsis
+     "Const equivalents of std functions, compile-time comparison, and parsing")
+    (description
+     "Const equivalents of std functions, compile-time comparison, and parsing.")
+    (license license:zlib)))
+
 (define-public rust-konst-macro-rules-0.2
   (package
     (name "rust-konst-macro-rules")
