@@ -2114,6 +2114,32 @@ for a table giving the position of a planet, asteroid, or comet for a series
 of dates.")
     (license license:expat)))
 
+(define-public python-extinction
+  (package
+    (name "python-extinction")
+    (version "0.4.6")
+    (source
+     (origin
+       (method git-fetch) ; No tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/kbarbary/extinction")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1adxq926jd469mxm6llvsljgf2jqb06905h61i9qzc7m2yrm4wga"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "test.py")))
+    (native-inputs (list python-cython python-pytest))
+    (propagated-inputs (list python-numpy))
+    (home-page "http://github.com/kbarbary/extinction")
+    (synopsis "Fast interstellar dust extinction laws")
+    (description
+     "This package provides a cython-optimized implementations of empirical dust
+exitinction laws found in the literature.")
+    (license license:expat)))
+
 (define-public python-hvpy
   (package
     (name "python-hvpy")
