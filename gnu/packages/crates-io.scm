@@ -37708,14 +37708,14 @@ linear algebra library.")
 (define-public rust-napi-derive-2
   (package
     (name "rust-napi-derive")
-    (version "2.13.0")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "napi-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rz3plhps1i1p5m02ffy97lcd3mzf8ihdkcgf2l9lm2dm27nl76s"))))
+        (base32 "056mmgqhqc4gmpql3j49r69lzsfywvp70j6nrpdg52lnw3dz08kn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
