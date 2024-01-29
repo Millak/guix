@@ -1384,6 +1384,31 @@ PEM-encodings commonly used to store keys and certificates at rest.")
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-time" ,rust-time-0.3))))))
 
+(define-public rust-x509-parser-0.13
+  (package
+    (inherit rust-x509-parser-0.15)
+    (name "rust-x509-parser")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "077bi0xyaa8cmrqf3rrw1z6kkzscwd1nxdxgs7mgz2ambg7bmfcz"))))
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.3)
+                       ("rust-base64" ,rust-base64-0.13)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-der-parser" ,rust-der-parser-7)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-oid-registry" ,rust-oid-registry-0.4)
+                       ("rust-ring" ,rust-ring-0.16)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))))))
+
 (define-public rust-x509-parser-0.12
   (package
     (inherit rust-x509-parser-0.15)
