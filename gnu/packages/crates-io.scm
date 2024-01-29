@@ -60916,8 +60916,39 @@ package provides derive macros.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-snafu-0.8
+  (package
+    (name "rust-snafu")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "snafu" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15ph0zr3zw6lh4cw0s0k1wvcvi18bmrzvjbx1l9jjh7560bwahnk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=backtrace_contains_function_names"
+         "--skip=delegation::backtrace_comes_from_delegated_error"
+         "--skip=delegation::backtrace_comes_from_renamed_delegated_error"
+         "--skip=whatever_nested::backtrace_method_delegates_to_nested_whatever"
+         "--skip=has_a_backtrace")
+         #:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-pin-project" ,rust-pin-project-1)
+                       ("rust-snafu-derive" ,rust-snafu-derive-0.8))))
+    (home-page "https://github.com/shepmaster/snafu")
+    (synopsis "Ergonomic error handling library")
+    (description "Snafu aims to be an ergonomic error handling library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-snafu-0.7
   (package
+    (inherit rust-snafu-0.8)
     (name "rust-snafu")
     (version "0.7.5")
     (source (origin
@@ -60927,7 +60958,6 @@ package provides derive macros.")
               (sha256
                (base32
                 "1mj2j2gfbf8mm1hr02zrbrqrh2zp01f61xgkx0lpln2w0ankgpp4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
@@ -60935,11 +60965,7 @@ package provides derive macros.")
         ("rust-futures" ,rust-futures-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-pin-project" ,rust-pin-project-1)
-        ("rust-snafu-derive" ,rust-snafu-derive-0.7))))
-    (home-page "https://github.com/shepmaster/snafu")
-    (synopsis "Ergonomic error handling library")
-    (description "Snafu aims to be an ergonomic error handling library.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-snafu-derive" ,rust-snafu-derive-0.7))))))
 
 (define-public rust-snap-1
   (package
