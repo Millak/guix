@@ -47,6 +47,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages chemistry)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
@@ -838,6 +839,62 @@ production-critical data pipelines or reproducible research settings.  With
 @item Integrate with a rich ecosystem of tools like @code{python-pydantic},
 @code{python-fastapi} and @code{python-mypy}.
 @end itemize")
+    (license license:expat)))
+
+(define-public python-pyjanitor
+  (package
+    (name "python-pyjanitor")
+    (version "0.26.0")
+    (source
+     (origin
+       ;; The build requires the mkdocs directory for the description in
+       ;; setup.py. This is not included in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyjanitor-devs/pyjanitor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f8xbl1k9l2z56bapp7v6bd3016zrk48igcaz6hb553r6yfl7vfx"))))
+    (build-system pyproject-build-system)
+    ;; Pyjanitor has an extensive test suite. For quick debugging, the tests
+    ;; marked turtle can be skipped using "-m" "not turtle".
+    (arguments
+     (list
+      #:test-flags '(list
+                     "-n" (number->string (parallel-job-count))
+                     ;; Tries to connect to the internet.
+                     "-k" "not test_is_connected"
+                     ;; PySpark has not been packaged yet.
+                     "--ignore=tests/spark/functions/test_clean_names_spark.py"
+                     "--ignore=tests/spark/functions/test_update_where_spark.py")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-env-ci
+                     (lambda _
+                       ;; Some tests are skipped if the JANITOR_CI_MACHINE
+                       ;; variable is not set.
+                       (setenv "JANITOR_CI_MACHINE" "1"))))))
+    (propagated-inputs (list python-multipledispatch
+                             python-natsort
+                             python-pandas-flavor
+                             python-scipy
+                             ;; Optional imports.
+                             python-biopython ;biology submodule
+                             python-unyt)) ;engineering submodule
+    (native-inputs (list python-pytest
+                         python-pytest-xdist
+                         ;; Optional imports. We do not propagate them due to
+                         ;; their size.
+                         python-numba ;speedup of joins
+                         rdkit)) ;chemistry submodule
+    (home-page "https://github.com/pyjanitor-devs/pyjanitor")
+    (synopsis "Tools for cleaning and transforming pandas DataFrames")
+    (description
+     "@code{pyjanitor} provides a set of data cleaning routines for
+@code{pandas} DataFrames.  These routines extend the method chaining API
+defined by @code{pandas} for a subset of its methods.  Originally, this
+package was a port of the R package by the same name and it is inspired by the
+ease-of-use and expressiveness of the @code{dplyr} package.")
     (license license:expat)))
 
 (define-public python-pythran
