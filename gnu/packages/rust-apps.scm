@@ -100,29 +100,35 @@
 (define-public agate
   (package
     (name "agate")
-    (version "2.5.2")
+    (version "3.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "agate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mhrl4j5r6wzsnwpqsbgzny5vqschyjm3gnk4y88har7skk7j19v"))))
+        (base32 "1wvbhzm4k3hdy8x7aq8rj3galhgfizdwf5fi419hzvg3kmvbawh1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-configparser" ,rust-configparser-2)
-        ("rust-env-logger" ,rust-env-logger-0.8)
+     `(#:install-source? #f
+       #:cargo-inputs
+       (("rust-configparser" ,rust-configparser-3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-getopts" ,rust-getopts-0.2)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-log" ,rust-log-0.4)
         ("rust-mime-guess" ,rust-mime-guess-2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rustls" ,rust-rustls-0.19)
+        ("rust-rcgen" ,rust-rcgen-0.9)
+        ("rust-rustls" ,rust-rustls-0.20)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
-        ("rust-url" ,rust-url-2))))
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
+        ("rust-url" ,rust-url-2)
+        ("rust-webpki" ,rust-webpki-0.22))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-gemini-fetch" ,rust-gemini-fetch-0.2))))
     (home-page "https://github.com/mbrubeck/agate")
     (synopsis "Very simple server for the Gemini hypertext protocol")
     (description
