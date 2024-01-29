@@ -37733,14 +37733,14 @@ linear algebra library.")
 (define-public rust-napi-derive-backend-1
   (package
     (name "rust-napi-derive-backend")
-    (version "1.0.52")
+    (version "1.0.59")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "napi-derive-backend" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05wy00faa3bz2lqcrwnlr3l9hzwrw3qcapljiy26ml38j73cgfr0"))))
+        (base32 "17ld99dgsxxpbbi0k6xm1y2wpil9mj1zdrsmprcsj66fbzb19icf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -37750,7 +37750,7 @@ linear algebra library.")
         ("rust-quote" ,rust-quote-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-semver" ,rust-semver-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://napi.rs")
     (synopsis "Codegen backend for napi procedural macro")
     (description "Codegen backend for napi procedural macro.")
