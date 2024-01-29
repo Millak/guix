@@ -44335,31 +44335,46 @@ in Rust.")
     (arguments
      `(#:cargo-inputs (("rust-quote" ,rust-quote-0.3))))))
 
-(define-public rust-peg-macros-0.6
+(define-public rust-peg-macros-0.8
   (package
     (name "rust-peg-macros")
-    (version "0.6.2")
+    (version "0.8.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "peg-macros" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0li8qrb8hyqr7v5mhrkym0xp7ijnbksqviqc2i3556cysdgick62"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "peg-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "141c76na4n9mfs1y22az59yanaz9kw5aabgnj28d2xlvhp71rrj6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-peg-runtime" ,rust-peg-runtime-0.6)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1))))
+     `(#:cargo-inputs (("rust-peg-runtime" ,rust-peg-runtime-0.8)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))))
     (home-page "https://github.com/kevinmehall/rust-peg")
     (synopsis "Procedural macros for rust-peg")
     (description
      "PEG provides a Parsing Expression Grammar.  This package provides
 procedural macros for rust-peg.  To use rust-peg, see the peg package.")
     (license license:expat)))
+
+(define-public rust-peg-macros-0.6
+  (package
+    (inherit rust-peg-macros-0.8)
+    (name "rust-peg-macros")
+    (version "0.6.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "peg-macros" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0li8qrb8hyqr7v5mhrkym0xp7ijnbksqviqc2i3556cysdgick62"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-peg-runtime" ,rust-peg-runtime-0.6)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1))))))
 
 (define-public rust-peg-runtime-0.6
   (package
