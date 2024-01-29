@@ -1667,6 +1667,34 @@ transfer coding.")
         (base32 "11yghnd24w0i9p8g368c3pg7qh9nfz7kgri6pywja9pnmakj13a9"))))
     (arguments `())))
 
+(define-public rust-gemini-fetch-0.2
+  (package
+    (name "rust-gemini-fetch")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gemini-fetch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1851jk1a7w6pcb9qcgmgp7vvg3dfihwr7ldlh5k9qxmyaymdy4ma"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-ring" ,rust-ring-0.16)
+                       ("rust-rustls" ,rust-rustls-0.19)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-webpki" ,rust-webpki-0.21)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.21)
+                       ("rust-x509-signature" ,rust-x509-signature-0.5))))
+    (home-page "https://github.com/jsvana/gemini-fetch/")
+    (synopsis "Fetch gemini pages")
+    (description "This package provides a library to fetch gemini pages.")
+    (license license:expat)))
+
 (define-public rust-h2-0.3
   (package
     (name "rust-h2")
