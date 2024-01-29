@@ -72,7 +72,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022, 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -7199,27 +7199,26 @@ monsters in a quest to find the mystifyingly fabulous Orb of Zot.")
     (version "1.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://bitbucket.org/osslugaru/lugaru/downloads/"
-                                  "lugaru-" version ".tar.xz"))
+              (uri (string-append "https://github.com/osslugaru/lugaru/releases"
+                                  "/download/" version
+                                  "/lugaru-" version ".tar.xz"))
               (sha256
-               (base32
-                "15zgcshy22q51rm72zi6y9z7qlgnz5iw3gczjdlir4bqmxy4gspk"))))
+               (base32 "15zgcshy22q51rm72zi6y9z7qlgnz5iw3gczjdlir4bqmxy4gspk"))
+              (patches
+               (search-patches "lugaru-fix-sound.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DSYSTEM_INSTALL=ON")
-       ;; no test target
-       #:tests? #f))
-    (native-inputs
-     (list pkg-config))
+     (list #:configure-flags #~(list "-DSYSTEM_INSTALL=ON")
+           #:tests? #f))                ;no test suite
+    (native-inputs (list pkg-config))
     (inputs
-     `(("sdl2" ,sdl2)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("openal" ,openal)
-       ("vorbis" ,libvorbis)
-       ("zlib" ,zlib)))
+     (list glu
+           libjpeg-turbo
+           libpng
+           libvorbis
+           openal
+           sdl2
+           zlib))
     (home-page "https://osslugaru.gitlab.io")
     (synopsis "Cross-platform third-person action game")
     (description "Lugaru is a third-person action game.  The main character,
@@ -7228,7 +7227,7 @@ In his quest to find those responsible for slaughtering his village, he uncovers
 a far-reaching conspiracy involving the corrupt leaders of the rabbit republic
 and the starving wolves from a nearby den.  Turner takes it upon himself to
 fight against their plot and save his fellow rabbits from slavery.")
-    (license (list license:gpl2+ ; code
+    (license (list license:gpl2+        ; code
                    ;; assets:
                    license:cc-by-sa3.0
                    license:cc-by-sa4.0))))
