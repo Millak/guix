@@ -4600,6 +4600,43 @@ channels
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-radiospectra
+  (package
+    (name "python-radiospectra")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "radiospectra" version))
+       (sha256
+        (base32 "0gq61ywk7li0gxwmp4hp2hc4zbrlqgn8zy0sz24qh55kn5l5gxjr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-cdflib
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-sunpy))
+    (native-inputs
+     (list python-pytest-astropy
+           python-setuptools-scm
+           python-sunpy-soar))
+    (home-page "https://docs.sunpy.org/projects/radiospectra")
+    (synopsis "Support for radio spectra on solar physics")
+    (description
+     "@code{radiospectra} provides support for some type of radio spectra in
+solar physics.")
+    (license license:bsd-2)))
+
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
