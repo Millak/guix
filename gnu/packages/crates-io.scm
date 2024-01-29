@@ -37649,14 +37649,19 @@ linear algebra library.")
 (define-public rust-napi-2
   (package
     (name "rust-napi")
-    (version "2.13.3")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "napi" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h1sbblg638h1pnhvf2yxy0lzk8hy9dwx5mswc296500p69kq1px"))))
+        (base32 "1lcj4k1q89bv75spssg202hkf98d0w8zpkgppd0w8p5qpkhrigzg"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; Stats was removed from tokio-1 around tokio-1.33.0.
+                   ((".*tokio_stats.*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
