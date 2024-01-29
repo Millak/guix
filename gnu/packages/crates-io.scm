@@ -2852,8 +2852,38 @@ extracted from Askama.")
              ("rust-proc-macro2" ,rust-proc-macro2-1)
              ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-askama-0.12
+  (package
+    (name "rust-askama")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "askama" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a1cmp0f1b01zzbzzp81ppa6r754zpax5372aykswz5933gr345p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-askama-derive" ,rust-askama-derive-0.12)
+                       ("rust-askama-escape" ,rust-askama-escape-0.10)
+                       ("rust-comrak" ,rust-comrak-0.18)
+                       ("rust-humansize" ,rust-humansize-2)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9))))
+    (home-page "https://github.com/djc/askama")
+    (synopsis "Type-safe, compiled Jinja-like templates for Rust")
+    (description
+     "This package provides a type-safe, compiled Jinja-like template
+library for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-askama-0.11
   (package
+    (inherit rust-askama-0.12)
     (name "rust-askama")
     (version "0.11.1")
     (source
@@ -2863,19 +2893,12 @@ extracted from Askama.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0f81mzccdadryzaf2dbad1araq4nadp9mssyvdvv31hj6w7z367v"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
            #:cargo-inputs
            `(("rust-askama-derive" ,rust-askama-derive-0.11)
              ("rust-askama-escape" ,rust-askama-escape-0.10)
-             ("rust-askama-shared" ,rust-askama-shared-0.12))))
-    (home-page "https://github.com/djc/askama")
-    (synopsis "Type-safe, compiled Jinja-like templates for Rust")
-    (description
-     "This package provides a type-safe, compiled Jinja-like template
-library for Rust.")
-    (license (list license:expat license:asl2.0))))
+             ("rust-askama-shared" ,rust-askama-shared-0.12))))))
 
 (define-public rust-as-raw-xcb-connection-1
   (package
