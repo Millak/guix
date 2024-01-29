@@ -37630,21 +37630,18 @@ linear algebra library.")
        (uri (crate-uri "nalgebra-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "063jvvvlwmzzxfr4wyiil2cn1yqj3arvghwsr2nk4ilv2jwc1z01"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "Cargo.toml"
-             ;; The resolver feature is not supported by our versions of Cargo.
-             (("resolver = \"2\".*") ""))))))
+        (base32 "063jvvvlwmzzxfr4wyiil2cn1yqj3arvghwsr2nk4ilv2jwc1z01"))))
     (arguments
-     `(#:skip-build? #t
+     `(;; no function or associated item named `from_array_storage` found for struct
+       ;; `Matrix` in the current scope
+       #:tests? #f
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-nalgebra" ,rust-nalgebra-0.26))))))
+       (("rust-nalgebra" ,rust-nalgebra-0.26)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-napi-2
   (package
