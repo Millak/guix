@@ -865,13 +865,13 @@ bar.  It is also compatible with sway.")
 (define-public just
   (package
     (name "just")
-    (version "1.17.0")
+    (version "1.23.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "just" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1nlwrbawgg6sysfydi2334y4pbsinq50axnqm0cz0m29r8n0ljxd"))))
+               (base32 "0wpjv098a2yymsb41h6104cdia4gb6hwwh05pkwj5fx7b7g41a2q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -886,6 +886,7 @@ bar.  It is also compatible with sway.")
         ("rust-clap" ,rust-clap-2)
         ("rust-ctrlc" ,rust-ctrlc-3)
         ("rust-derivative" ,rust-derivative-2)
+        ("rust-dirs" ,rust-dirs-5)
         ("rust-dotenvy" ,rust-dotenvy-0.15)
         ("rust-edit-distance" ,rust-edit-distance-2)
         ("rust-env-logger" ,rust-env-logger-0.10)
@@ -900,7 +901,7 @@ bar.  It is also compatible with sway.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha2" ,rust-sha2-0.10)
         ("rust-similar" ,rust-similar-2)
-        ("rust-snafu" ,rust-snafu-0.7)
+        ("rust-snafu" ,rust-snafu-0.8)
         ("rust-strum" ,rust-strum-0.25)
         ("rust-target" ,rust-target-2)
         ("rust-tempfile" ,rust-tempfile-3)
