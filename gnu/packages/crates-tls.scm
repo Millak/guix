@@ -1411,3 +1411,30 @@ PEM-encodings commonly used to store keys and certificates at rest.")
         ("rust-ring" ,rust-ring-0.16)
         ("rust-rusticata-macros" ,rust-rusticata-macros-4)
         ("rust-thiserror" ,rust-thiserror-1))))))
+
+(define-public rust-x509-signature-0.5
+  (package
+    (name "rust-x509-signature")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-signature" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "063mjzgddfam4xb88wr0li3k0q6nzyq3mvkiykajr69dj0mbrclz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `const_err` has been removed: converted into hard error
+       #:cargo-test-flags '("--release" "--"
+                            "--skip=tests::parses_openssl_generated_cert")
+       #:cargo-inputs (("rust-ring" ,rust-ring-0.16)
+                       ("rust-rustls" ,rust-rustls-0.18)
+                       ("rust-untrusted" ,rust-untrusted-0.7)
+                       ("rust-webpki" ,rust-webpki-0.21))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4))))
+    (home-page "https://github.com/paritytech/x509-signature")
+    (synopsis "Low-level X.509 parsing and signature verification library")
+    (description "This package provides a low-level X.509 parsing and signature
+verification library.")
+    (license (list license:expat license:asl2.0))))
