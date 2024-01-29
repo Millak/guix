@@ -5220,7 +5220,7 @@ application-facing EGL functions.")
 (define-public egl-wayland
   (package
     (name "egl-wayland")
-    (version "1.1.11")
+    (version "1.1.13")
     (source
      (origin
        (method git-fetch)
@@ -5229,7 +5229,7 @@ application-facing EGL functions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11a3j2rjai2vsway9ki5y3ncvhrwd300pz2zcq36mq3brbr1vgf5"))))
+        (base32 "0irmvp8g2wn18q6k3vcmg4a57q4ddmqccv3g7hbysqnsdsps63rl"))))
     (build-system meson-build-system)
     (native-inputs
      (cons* libglvnd ;needed for headers
