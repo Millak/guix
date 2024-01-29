@@ -44376,19 +44376,17 @@ procedural macros for rust-peg.  To use rust-peg, see the peg package.")
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1))))))
 
-(define-public rust-peg-runtime-0.6
+(define-public rust-peg-runtime-0.8
   (package
     (name "rust-peg-runtime")
-    (version "0.6.2")
+    (version "0.8.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "peg-runtime" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0r583cq923v0narrpq73qmp780yg4pablzklhrwnr64xwsbjh6hc"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "peg-runtime" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08l9sad4mh5f0niizjk1k44n2z2s9cn8pfbq8v79h8zsc0nfkfin"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/kevinmehall/rust-peg")
     (synopsis "Runtime support for rust-peg grammars")
@@ -44396,6 +44394,19 @@ procedural macros for rust-peg.  To use rust-peg, see the peg package.")
      "PEG provides a Parsing Expression Grammar.  This package provides
 runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
     (license license:expat)))
+
+(define-public rust-peg-runtime-0.6
+  (package
+    (inherit rust-peg-runtime-0.8)
+    (name "rust-peg-runtime")
+    (version "0.6.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "peg-runtime" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0r583cq923v0narrpq73qmp780yg4pablzklhrwnr64xwsbjh6hc"))))))
 
 (define-public rust-pem-3
   (package
