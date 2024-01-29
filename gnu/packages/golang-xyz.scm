@@ -33,6 +33,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -297,6 +298,30 @@ logind API.")))
     (synopsis "Go bindings to systemd for registering machines/containers")
     (description "Go bindings to systemd for registering
 machines/containers.")))
+
+(define-public go-github-com-coreos-go-systemd-sdjournal
+  (package
+    (inherit go-github-com-coreos-go-systemd-activation)
+    (name "go-github-com-coreos-go-systemd-sdjournal")
+    (arguments
+     '(#:tests? #f ;Tests require D-Bus daemon running.
+       #:import-path "github.com/coreos/go-systemd/sdjournal"
+       #:unpack-path "github.com/coreos/go-systemd"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-sdjournal-header
+           (lambda* (#:key import-path #:allow-other-keys)
+             (substitute* (format #f
+                                  "src/~a/journal.go"
+                                  import-path)
+               (("systemd/sd-journal.h")
+                "elogind/sd-journal.h")
+               (("systemd/sd-id128.h")
+                "elogind/sd-id128.h")))))))
+    (inputs (list elogind))
+    (synopsis "Go bindings to systemd for journald")
+    (description "Go bindings to systemd for reading from journald by wrapping
+its C API.")))
 
 (define-public go-github-com-coreos-go-systemd-unit
   (package
