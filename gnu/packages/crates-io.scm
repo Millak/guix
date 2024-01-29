@@ -27669,6 +27669,23 @@ characters in HTML, decoding and unescaping HTML entities as well.")
     (description "This package provides a Base32 encoder/decoder library.")
     (license license:gpl3+)))
 
+(define-public rust-konst-proc-macros-0.2
+  (package
+    (name "rust-konst-proc-macros")
+    (version "0.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "konst_proc_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dxp8mdh3q9d044ql203way4fgbc50n3j3pi2j1x2snlcaa10klq"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rodrimati1992/konst/")
+    (synopsis "Implementation detail of the @code{konst} crate")
+    (description "Implementation detail of the @code{konst} crate.")
+    (license license:zlib)))
+
 (define-public rust-kuchiki-0.8
   (package
     (name "rust-kuchiki")
