@@ -650,23 +650,30 @@ defaults for 80% of the use cases.")
 (define-public hexyl
   (package
     (name "hexyl")
-    (version "0.8.0")
+    (version "0.14.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "hexyl" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0sipag77196467idbznbk5q5lwhqz85zw7y1pwg9b27jxqyk04rp"))))
+         (base32 "0fhbc4ibpbbgcgx2v6wzxcn63jz76cvdp2f8jdg747h65hvp5bcm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-atty" ,rust-atty-0.2)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-libc" ,rust-libc-0.2))))
+     `(#:install-source? #f
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-const-format" ,rust-const-format-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-owo-colors" ,rust-owo-colors-3)
+        ("rust-supports-color" ,rust-supports-color-2)
+        ("rust-terminal-size" ,rust-terminal-size-0.2)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-predicates" ,rust-predicates-3)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://github.com/sharkdp/hexyl")
     (synopsis "Command-line hex viewer")
     (description
