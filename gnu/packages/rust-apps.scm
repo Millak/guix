@@ -2880,7 +2880,38 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
            `(("rust-assert-cmd" ,rust-assert-cmd-2)
              ("rust-rstest" ,rust-rstest-0.18)
              ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
-             ("rust-tempfile" ,rust-tempfile-3))))
+             ("rust-tempfile" ,rust-tempfile-3))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-more
+                 (lambda _
+                   (let* ((out #$output)
+                          (share (string-append out "/share"))
+                          (man1 (string-append share "/man/man1"))
+                          (bash-completions-dir
+                            (string-append out "/etc/bash-completion.d"))
+                          (zsh-completions-dir
+                            (string-append share "/zsh/site-functions"))
+                          (fish-completions-dir
+                            (string-append share "/fish/vendor_completions.d"))
+                          (elvish-completions-dir
+                            (string-append share "/elvish/lib")))
+                     ;; The completions are generated in build.rs.
+                     (mkdir-p man1)
+                     (mkdir-p bash-completions-dir)
+                     (mkdir-p elvish-completions-dir)
+                     (for-each (lambda (file)
+                                 (install-file file man1))
+                               (find-files "man/man1"))
+                     (copy-file "contrib/completions/zoxide.bash"
+                                (string-append bash-completions-dir "/zoxide"))
+                     (install-file "contrib/completions/zoxide.fish"
+                                   fish-completions-dir)
+                     (install-file "contrib/completions/_zoxide"
+                                   zsh-completions-dir)
+                     (copy-file "contrib/completions/zoxide.elv"
+                                (string-append elvish-completions-dir
+                                               "/zoxide"))))))))
     (home-page "https://github.com/ajeetdsouza/zoxide/")
     (synopsis "Fast way to navigate your file system")
     (description
