@@ -18367,15 +18367,16 @@ highlights quasi-quoted expressions.")
 (define-public emacspeak
   (package
     (name "emacspeak")
-    (version "53.0")
+    (version "59.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/tvraman/emacspeak/releases/download/"
-             version "/emacspeak-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tvraman/emacspeak")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0lasj4ggsh93ingf46n16wxfx5zzxvr1igikbmdqlz3i99j331gs"))))
+        (base32 "010c8hy8nmffaqn1h8n8hmyxvn7gx6ygx4pxgdfp1vl8bb1bz54y"))))
     (build-system gnu-build-system)
     (arguments
      (list
