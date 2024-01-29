@@ -11698,6 +11698,31 @@ literals.")
     (description "Assertions for const functions.")
     (license license:expat)))
 
+(define-public rust-const-format-0.2
+  (package
+    (name "rust-const-format")
+    (version "0.2.32")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const_format" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wvns8mzqwkyciwr00p2g5g4ak7zz8m473di85srj11xmz3i98p3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--features=__test")
+       #:cargo-inputs
+       (("rust-const-format-proc-macros" ,rust-const-format-proc-macros-0.2)
+        ("rust-konst" ,rust-konst-0.2))
+       #:cargo-development-inputs (("rust-arrayvec" ,rust-arrayvec-0.5)
+                                   ("rust-fastrand" ,rust-fastrand-1))))
+    (home-page "https://github.com/rodrimati1992/const_format_crates/")
+    (synopsis "Compile-time string formatting")
+    (description "This package provides compile-time string formatting.")
+    (license license:zlib)))
+
 (define-public rust-const-format-proc-macros-0.2
   (package
     (name "rust-const-format-proc-macros")
