@@ -37759,17 +37759,17 @@ linear algebra library.")
 (define-public rust-napi-sys-2
   (package
     (name "rust-napi-sys")
-    (version "2.2.3")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "napi-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qxs0wxlax3nj3b1q1vgr5ihzp8c0d58vzm98x85gd9s5bsmwsqn"))))
+        (base32 "12vb35l0rimi4h2dixys6y6vacz9mwi8ppw892vkzj2dydmgl0r5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-libloading" ,rust-libloading-0.7))))
+     `(#:cargo-inputs (("rust-libloading" ,rust-libloading-0.8))))
     (home-page "https://github.com/napi-rs/napi-rs")
     (synopsis "NodeJS N-API raw binding")
     (description "This package provides a NodeJS N-API raw binding.")
