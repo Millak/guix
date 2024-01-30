@@ -77913,38 +77913,39 @@ for locating fonts.")
 (define-public rust-zbus-3
   (package
     (name "rust-zbus")
-    (version "3.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "zbus" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0pl5ri4lihzzxzxgvw1m0lpq90pnack0hi6gg48jsqyb1iy5i79p"))))
+    (version "3.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j5rxgszrmkk5pbpwccrvj3gflwqw8jv8wfx9v84qbl75l53kpii"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
        (("rust-async-broadcast" ,rust-async-broadcast-0.5)
         ("rust-async-executor" ,rust-async-executor-1)
+        ("rust-async-fs" ,rust-async-fs-1)
         ("rust-async-io" ,rust-async-io-1)
         ("rust-async-lock" ,rust-async-lock-2)
+        ("rust-async-process" ,rust-async-process-1)
         ("rust-async-recursion" ,rust-async-recursion-1)
         ("rust-async-task" ,rust-async-task-4)
         ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-blocking" ,rust-blocking-1)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-derivative" ,rust-derivative-2)
-        ("rust-dirs" ,rust-dirs-4)
         ("rust-enumflags2" ,rust-enumflags2-0.7)
         ("rust-event-listener" ,rust-event-listener-2)
         ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-sink" ,rust-futures-sink-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-hex" ,rust-hex-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-nix" ,rust-nix-0.25)
+        ("rust-nix" ,rust-nix-0.26)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-ordered-stream" ,rust-ordered-stream-0.1)
+        ("rust-ordered-stream" ,rust-ordered-stream-0.2)
         ("rust-quick-xml" ,rust-quick-xml-0.27)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde" ,rust-serde-1)
@@ -77958,6 +77959,7 @@ for locating fonts.")
         ("rust-uds-windows" ,rust-uds-windows-1)
         ("rust-vsock" ,rust-vsock-0.3)
         ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-xdg-home" ,rust-xdg-home-1)
         ("rust-zbus-macros" ,rust-zbus-macros-3)
         ("rust-zbus-names" ,rust-zbus-names-2)
         ("rust-zvariant" ,rust-zvariant-3))
@@ -78014,26 +78016,25 @@ for locating fonts.")
 (define-public rust-zbus-macros-3
   (package
     (name "rust-zbus-macros")
-    (version "3.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "zbus_macros" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1y4cw7x8hrpz9xd43spd0vzvfbm1991bik1yb2873py0j0p2ljb6"))))
+    (version "3.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbus_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17dwc1vvvwxlgn78cpds72hcf7y1hxqkjnpm0zlc0y38ji57kla1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests need a running dbus instance.
-       #:cargo-inputs
-       (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-syn" ,rust-syn-1))
+       #:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-zvariant-utils" ,rust-zvariant-utils-1))
        #:cargo-development-inputs
        (("rust-async-io" ,rust-async-io-1)
-        ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
