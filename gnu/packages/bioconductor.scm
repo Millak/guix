@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2021 Nicolas Vallet <nls.vallet@gmail.com>
 ;;; Copyright © 2023 Navid Afkhami <Navid.Afkhami@mdc-berlin.de>
+;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -14504,6 +14505,30 @@ penalized least squares regression method.")
 algorithm to segment DNA copy number data and identify genomic regions with
 abnormal copy number.")
     (license license:gpl2+)))
+
+(define-public r-hmmcopy
+  (package
+    (name "r-hmmcopy")
+    (version "1.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "HMMcopy" version))
+       (sha256
+        (base32 "1nhm8bv6p5zcs7f9p1hqzyjgya6v3q8rl13blh135pk9gxjiad2c"))))
+    (properties `((upstream-name . "HMMcopy")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table))
+    (home-page "https://bioconductor.org/packages/HMMcopy")
+    (synopsis
+     "Copy number prediction with correction for GC and mappability bias for HTS data")
+    (description
+     "This package corrects GC and mappability biases for
+readcounts (i.e. coverage) in non-overlapping windows of fixed length for
+single whole genome samples, yielding a rough estimate of copy number for
+further analysis.  It was designed for rapid correction of high coverage whole
+genome tumor and normal samples.")
+    (license license:gpl3)))
 
 ;; This is a CRAN package, but it uncharacteristically depends on a
 ;; Bioconductor package.
