@@ -35746,8 +35746,35 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
      "This package provides a MagicString port driven by Rust and N-API.")
     (license license:expat)))
 
+(define-public rust-maildir-0.6
+  (package
+    (name "rust-maildir")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "maildir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dqlkvhcrigs4y5vg0jf8ccgwns8jj85cjp6vsgj3f1sfkk6m6l7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gethostname" ,rust-gethostname-0.2)
+                       ("rust-mailparse" ,rust-mailparse-0.14)
+                       ("rust-memmap2" ,rust-memmap2-0.5))
+       #:cargo-development-inputs
+       (("rust-percent-encoding" ,rust-percent-encoding-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/staktrace/maildir/blob/master/README.md")
+    (synopsis "Simple library for maildir manipulation")
+    (description
+     "This package provides a simple library for maildir manipulation")
+    (license license:bsd-0)))
+
 (define-public rust-maildir-0.5
   (package
+    (inherit rust-maildir-0.6)
     (name "rust-maildir")
     (version "0.5.0")
     (source
@@ -35757,7 +35784,6 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0pivq6njjmfnf0jn6i8sihbfgly6v674zwncd6f5nwiw79lz9p3a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gethostname" ,rust-gethostname-0.2)
@@ -35766,12 +35792,7 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
        #:cargo-development-inputs
        (("rust-percent-encoding" ,rust-percent-encoding-1)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/staktrace/maildir")
-    (synopsis "Simple library for maildir manipulation")
-    (description
-     "This package provides a simple library for maildir manipulation.")
-    (license license:bsd-0)))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-mailparse-0.14
   (package
