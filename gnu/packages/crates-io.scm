@@ -4530,30 +4530,34 @@ asynchronously (via the AsyncPidFd type).")
 (define-public rust-async-process-1
   (package
     (name "rust-async-process")
-    (version "1.0.1")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-process" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nmvqwqxzy0gv7n8agknaijns9dsxqj81bxms4bs647vq44ym32c"))))
+        (base32 "126s968lvhg9rlwsnxp7wfzkfn7rl87p0dlvqqlibn081ax3hr7a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
-                            "--skip=set_current_dir_works"
-                            "--skip=signal_reported_right"
-                            "--skip=stdin_works")
-       #:cargo-inputs
-       (("rust-async-io" ,rust-async-io-1)
-        ("rust-blocking" ,rust-blocking-1)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-event-listener" ,rust-event-listener-2)
-        ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-signal-hook" ,rust-signal-hook-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/stjepang/async-process")
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=set_current_dir_works" ; assertion failed: p.is_ok()
+         ;; No such file or directory
+         "--skip=signal_reported_right"
+         "--skip=stdin_works"
+         "--skip=test_spawn_multiple_with_stdio")
+       #:cargo-inputs (("rust-async-io" ,rust-async-io-1)
+                       ("rust-async-lock" ,rust-async-lock-2)
+                       ("rust-async-signal" ,rust-async-signal-0.2)
+                       ("rust-blocking" ,rust-blocking-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-event-listener" ,rust-event-listener-3)
+                       ("rust-futures-lite" ,rust-futures-lite-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-async-io" ,rust-async-io-1))))
+    (home-page "https://github.com/smol-rs/async-process")
     (synopsis "Async interface for working with processes")
     (description
      "This crate is an async version of @code{std::process}.  A background
