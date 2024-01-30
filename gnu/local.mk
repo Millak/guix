@@ -1237,6 +1237,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ffmpeg-jami-pipewiregrab-source-filter.patch	\
   %D%/packages/patches/ffmpeg-jami-remove-mjpeg-log.patch	\
   %D%/packages/patches/ffmpeg-jami-screen-sharing-x11-fix.patch	\
+  %D%/packages/patches/ffmpeg-remove-compressed_ten_bit_format.patch	\
   %D%/packages/patches/ffmpeg-4-binutils-2.41.patch	\
   %D%/packages/patches/fifengine-boost-compat.patch		\
   %D%/packages/patches/fifengine-python-3.9-compat.patch	\
