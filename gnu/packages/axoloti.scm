@@ -316,6 +316,8 @@ runtime.")
                               (toolchain (assoc-ref inputs "cross-toolchain"))
                               (includes  (string-append
                                           toolchain
+                                          "/arm-none-eabi/include/:"
+                                          toolchain
                                           "/arm-none-eabi/include/c++:"
                                           toolchain
                                           "/arm-none-eabi/include/c++/arm-none-eabi/armv7e-m")))
