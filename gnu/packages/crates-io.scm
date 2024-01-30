@@ -24251,6 +24251,31 @@ values to other threads.")
     (native-inputs
      (list pkg-config))))
 
+(define-public rust-from-variants-impl-0.6
+  (package
+    (name "rust-from-variants-impl")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "from_variants_impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06i4bjjxbq6c4hlx2ly04s64d1972zkskshc2v4xx7n8lfghf23y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-darling" ,rust-darling-0.10)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (home-page "https://github.com/TedDriggs/from_variants")
+    (synopsis "Internal helper crate for from_variants crate")
+    (description "This package is an internal helper crate for
+from_variants crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fs2-0.4
   (package
     (name "rust-fs2")
