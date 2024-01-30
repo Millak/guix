@@ -19261,23 +19261,23 @@ linear models to large data sets by updating algorithms.")
 (define-public r-densityclust
   (package
     (name "r-densityclust")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "densityClust" version))
        (sha256
         (base32
-         "05x2fi1zdnkrg2nimf8k904j3lpyw0f7nmk6ax5p7x7a98wb2iqs"))))
+         "0iiq2zal792741z1a23h7cy9jp4hsc7513dxain132526f1yrzsl"))))
     (properties `((upstream-name . "densityClust")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-fnn
+     (list r-cpp11
+           r-fnn
            r-ggplot2
            r-ggrepel
            r-gridextra
            r-rcolorbrewer
-           r-rcpp
            r-rtsne))
     (home-page "https://cran.r-project.org/web/packages/densityClust")
     (synopsis "Clustering by fast search and find of density peaks")
