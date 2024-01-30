@@ -60025,6 +60025,28 @@ functionality and without weak references.")
      "This package provides a Rust wrapper around Fontxonfig.")
     (license license:expat)))
 
+(define-public rust-sensors-0.2
+  (package
+    (name "rust-sensors")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sensors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l6nvmbbbbl9mdkd9806mmls68d6hvqb2nl0nm14chva5xwz8fks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-libsensors-sys" ,rust-libsensors-sys-0.2))))
+    (inputs (list (list lm-sensors "lib")))
+    (home-page "https://github.com/nyantec/sensors")
+    (synopsis "Rust-friendly interface to lm-sensors")
+    (description
+     "This package provides a Rust-friendly interface to lm-sensors.")
+    (license license:miros)))
+
 (define-public rust-shadow-rs-0.8
   (package
     (name "rust-shadow-rs")
