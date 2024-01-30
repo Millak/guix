@@ -24251,6 +24251,28 @@ values to other threads.")
     (native-inputs
      (list pkg-config))))
 
+(define-public rust-from-variants-0.6
+  (package
+    (name "rust-from-variants")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "from_variants" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qx4jmwljwmcdfc998ndf7iz8wyg7lmlc3vl3fy812f9lfqiw6i2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-from-variants-impl" ,rust-from-variants-impl-0.6))))
+    (home-page "https://github.com/TedDriggs/from_variants")
+    (synopsis "Macro to generate conversions for newtype enums")
+    (description
+     "This package provides a Rust macro to automatically generate
+conversions for newtype enums.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-from-variants-impl-0.6
   (package
     (name "rust-from-variants-impl")
