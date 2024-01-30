@@ -44280,6 +44280,26 @@ rustified API consider using pam.")
 sequence alignment library.")
     (license license:expat)))
 
+(define-public rust-pandoc-0.8
+  (package
+    (name "rust-pandoc")
+    (version "0.8.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pandoc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p56085drzwb143ximsvr5bni7k0cl9ld7dz7lh92hkslz8m6ga6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-itertools" ,rust-itertools-0.12))))
+    (home-page "https://github.com/oli-obk/rust-pandoc")
+    (synopsis "Library API that wraps calls to the pandoc executable")
+    (description "A library API that wraps calls to the pandoc 2.x
+executable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-parasailors-0.3
   (package
     (name "rust-parasailors")
