@@ -25063,8 +25063,38 @@ for the @code{futures-rs} library.")
 @code{try_join!} macro.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-futures-lite-2
+  (package
+    (name "rust-futures-lite")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "futures-lite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1flj85i6xm0rjicxixmajrp6rhq8i4bnbzffmrd6h23ln8jshns4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-parking" ,rust-parking-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs (("rust-spin-on" ,rust-spin-on-0.1)
+                                   ("rust-waker-fn" ,rust-waker-fn-1))))
+    (home-page "https://github.com/smol-rs/futures-lite")
+    (synopsis "Futures, streams, and async I/O combinators")
+    (description
+     "This crate is a subset of @code{futures} that compiles an order of
+magnitude faster, fixes minor warts in its API, fills in some obvious gaps,
+and removes almost all unsafe code from it.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-futures-lite-1
   (package
+    (inherit rust-futures-lite-2)
     (name "rust-futures-lite")
     (version "1.13.0")
     (source
@@ -25074,7 +25104,6 @@ for the @code{futures-rs} library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kkbqhaib68nzmys2dc8j9fl2bwzf2s91jfk13lb2q3nwhfdbaa9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-fastrand" ,rust-fastrand-1)
@@ -25085,14 +25114,7 @@ for the @code{futures-rs} library.")
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-waker-fn" ,rust-waker-fn-1))
        #:cargo-development-inputs
-       (("rust-spin-on" ,rust-spin-on-0.1))))
-    (home-page "https://github.com/stjepang/futures-lite")
-    (synopsis "Futures, streams, and async I/O combinators")
-    (description
-     "This crate is a subset of @code{futures} that compiles an order of
-magnitude faster, fixes minor warts in its API, fills in some obvious gaps,
-and removes almost all unsafe code from it.")
-    (license (list license:asl2.0 license:expat))))
+       (("rust-spin-on" ,rust-spin-on-0.1))))))
 
 (define-public rust-futures-lite-0.1
   (package
