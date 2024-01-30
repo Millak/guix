@@ -62,6 +62,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system r)
+  #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -11144,7 +11145,8 @@ sapa R packages.")
        (uri (cran-uri "sapa" version))
        (sha256
         (base32
-         "0kj681rd4c2lvqr926lb6f4qwp281x5274dg6vbk8pf5y7s0qlpc"))))
+         "0kj681rd4c2lvqr926lb6f4qwp281x5274dg6vbk8pf5y7s0qlpc"))
+       (patches (search-patches "r-sapa-lapack.patch"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ifultools r-splus2r))
