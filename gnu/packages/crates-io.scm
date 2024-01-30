@@ -44171,22 +44171,23 @@ derive macro for Parity SCALE Codec.")
 (define-public rust-parking-2
   (package
     (name "rust-parking")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "parking" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wnxxnizfxlax3n709s5r83f4n8awy3m4a18q4fdk0z7z693hz22"))))
+        (base32 "1blwbkq6im1hfxp5wlbr475mw98rsyc0bbr2d5n16m38z253p0dv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
+     `(#:cargo-inputs (("rust-loom" ,rust-loom-0.7))
+       #:cargo-development-inputs
        (("rust-easy-parallel" ,rust-easy-parallel-3))))
-    (home-page "https://github.com/stjepang/parking")
+    (home-page "https://github.com/smol-rs/parking")
     (synopsis "Thread parking and unparking")
-    (description "This package provides methods for thread parking and
-unparking.")
+    (description
+     "This package provides methods for thread parking and unparking.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-parking-1
