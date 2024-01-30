@@ -819,8 +819,53 @@ grammars and BER/DER encodings, for example.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-der-parser" ,rust-der-parser-6))))))
 
+(define-public rust-rcgen-0.12
+  (package
+    (name "rust-rcgen")
+    (version "0.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rcgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qg10xvayyxhkcjk1x3g6n59a5rq6iaw6vmmrmyvqg0zmjw6sh28"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Don't use a vendored botan.
+                  (substitute* "Cargo.toml"
+                    ((".*vendored.*") ""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
+        ("rust-pem" ,rust-pem-3)
+        ("rust-ring" ,rust-ring-0.17)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-x509-parser" ,rust-x509-parser-0.15)
+        ("rust-yasna" ,rust-yasna-0.5)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-botan" ,rust-botan-0.10)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-ring" ,rust-ring-0.17)
+        ("rust-rsa" ,rust-rsa-0.9)
+        ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
+        ("rust-x509-parser" ,rust-x509-parser-0.15))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list botan openssl))
+    (home-page "https://github.com/rustls/rcgen")
+    (synopsis "Rust X.509 certificate generator")
+    (description "Rust X.509 certificate generator.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rcgen-0.11
   (package
+    (inherit rust-rcgen-0.12)
     (name "rust-rcgen")
     (version "0.11.3")
     (source (origin
@@ -836,7 +881,6 @@ grammars and BER/DER encodings, for example.")
                   ;; Don't use a vendored botan.
                   (substitute* "Cargo.toml"
                     ((".*vendored.*") ""))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-pem" ,rust-pem-3)
@@ -851,15 +895,7 @@ grammars and BER/DER encodings, for example.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rsa" ,rust-rsa-0.9)
         ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
-        ("rust-x509-parser" ,rust-x509-parser-0.15))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list botan openssl))
-    (home-page "https://github.com/rustls/rcgen")
-    (synopsis "Rust X.509 certificate generator")
-    (description "Rust X.509 certificate generator.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-x509-parser" ,rust-x509-parser-0.15))))))
 
 (define-public rust-rcgen-0.10
   (package
