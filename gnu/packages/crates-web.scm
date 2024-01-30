@@ -5042,8 +5042,43 @@ Verification.")
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.9))))))
 
+(define-public rust-webpki-roots-0.26
+  (package
+    (name "rust-webpki-roots")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webpki-roots" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "029006qfs61q75gl60aap25m0gdqmvd1pcpljid9b0q44yp39pmk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `webpki_ccadb`
+       #:cargo-inputs (("rust-rustls-pki-types" ,rust-rustls-pki-types-1))
+       #:cargo-development-inputs (("rust-hex" ,rust-hex-0.4)
+                                   ("rust-percent-encoding" ,rust-percent-encoding-2)
+                                   ("rust-rcgen" ,rust-rcgen-0.12)
+                                   ("rust-ring" ,rust-ring-0.17)
+                                   ("rust-rustls" ,rust-rustls-0.22)
+                                   ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.15)
+                                   ("rust-yasna" ,rust-yasna-0.5))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
+    (home-page "https://github.com/rustls/webpki-roots")
+    (synopsis "Mozilla's CA root certificates for use with webpki")
+    (description "This package provides Mozilla's CA root certificates for use
+with webpki.")
+    (license license:mpl2.0)))
+
 (define-public rust-webpki-roots-0.25
   (package
+    (inherit rust-webpki-roots-0.26)
     (name "rust-webpki-roots")
     (version "0.25.1")
     (source (origin
@@ -5053,7 +5088,6 @@ Verification.")
               (sha256
                (base32
                 "15piy0vccppqb74li32gnn9l5a4ysxzwh8bp3qv6z8rhr2hyvin9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
@@ -5065,16 +5099,7 @@ Verification.")
         ("rust-ring" ,rust-ring-0.16)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
-        ("rust-tokio" ,rust-tokio-1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list openssl))
-    (home-page "https://github.com/rustls/webpki-roots")
-    (synopsis "Mozilla's CA root certificates for use with webpki")
-    (description "This package provides Mozilla's CA root certificates for use
-with webpki.")
-    (license license:mpl2.0)))
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-webpki-roots-0.24
   (package
