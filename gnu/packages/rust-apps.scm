@@ -768,7 +768,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
 (define-public i3status-rust
   (package
     (name "i3status-rust")
-    (version "0.20.1")
+    (version "0.32.3")
     (source
      (origin
        (method git-fetch)
@@ -776,42 +776,73 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
              (url "https://github.com/greshake/i3status-rust")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (patches (search-patches "i3status-rust-enable-unstable-features.patch"))
        (sha256
-        (base32 "00gzm3g297s9bfp13vnb623p7dfac3g6cdhz2b3lc6l0kmnnqs1s"))))
+        (base32 "11n32kkfwlv38mj9018hp5rbg4w3d1vq9f6x8rhqahs19mm5amqa"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; This comes a few commits after the 0.32.3 tag.
+            (substitute* "Cargo.toml"
+               (("^(wayrs-client = \\{ version = \")0\\.12\"" all most)
+                (string-append most "1.0\""))
+               (("^(wayrs-protocols = \\{ version = \")0\\.12\"" all most)
+                (string-append most "0.13\"")))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:features '("pulseaudio" "libpulse-binding")
-       #:install-source? #f
+     `(#:install-source? #f
        #:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-chrono-tz" ,rust-chrono-tz-0.5)
-        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-        ("rust-curl" ,rust-curl-0.4)
-        ("rust-dbus" ,rust-dbus-0.9)
-        ("rust-dbus-tree" ,rust-dbus-tree-0.9)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-nix" ,rust-nix-0.20)
-        ("rust-nl80211" ,rust-nl80211-0.0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-signal-hook" ,rust-signal-hook-0.3)
-        ("rust-swayipc" ,rust-swayipc-2)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-cpuprofiler" ,rust-cpuprofiler-0.0)
-        ("rust-inotify" ,rust-inotify-0.9)
+       (("rust-anyhow" ,rust-anyhow-1)              ; Dependency of xtask.
+        ("rust-async-once-cell" ,rust-async-once-cell-0.5)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-backon" ,rust-backon-0.4)
+        ("rust-calibright" ,rust-calibright-0.1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+        ("rust-clap" ,rust-clap-4)                  ; Dependency of xtask also.
+        ("rust-clap-mangen" ,rust-clap-mangen-0.2)  ; Dependency of xtask.
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-inotify" ,rust-inotify-0.10)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-libpulse-binding" ,rust-libpulse-binding-2)
-        ("rust-maildir" ,rust-maildir-0.5)
-        ("rust-notmuch" ,rust-notmuch-0.6)
-        ("rust-progress" ,rust-progress-0.2))
-       #:cargo-development-inputs
-       (("rust-assert-fs" ,rust-assert-fs-1))
+        ("rust-log" ,rust-log-0.4)
+        ("rust-maildir" ,rust-maildir-0.6)
+        ("rust-neli" ,rust-neli-0.6)
+        ("rust-neli-wifi" ,rust-neli-wifi-0.6)
+        ("rust-nix" ,rust-nix-0.27)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-notmuch" ,rust-notmuch-0.8)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pandoc" ,rust-pandoc-0.8)            ; Dependency of xtask.
+        ("rust-regex" ,rust-regex-1)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-sensors" ,rust-sensors-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-with" ,rust-serde-with-3)
+        ("rust-shellexpand" ,rust-shellexpand-3)
+        ("rust-signal-hook" ,rust-signal-hook-0.3)
+        ("rust-signal-hook-tokio" ,rust-signal-hook-tokio-0.3)
+        ("rust-smart-default" ,rust-smart-default-0.7)
+        ("rust-swayipc-async" ,rust-swayipc-async-2)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-toml" ,rust-toml-0.8)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-wayrs-client" ,rust-wayrs-client-1)
+        ("rust-wayrs-protocols" ,rust-wayrs-protocols-0.13)
+        ("rust-zbus" ,rust-zbus-3))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'enable-unstable-features
+         (add-after 'unpack 'remove-optional-icu-deps
            (lambda _
-             (setenv "RUSTC_BOOTSTRAP" "1")))
+             (substitute* "Cargo.toml"
+               (("^icu_calendar.*") "")
+               (("^icu_datetime.*") "")
+               (("^icu_locid.*") ""))))
          (add-after 'unpack 'fix-resources-path
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -827,11 +858,12 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
              (let ((out (assoc-ref outputs "out"))
                    (paths (map
                            (lambda (input)
-                             (string-append (assoc-ref inputs input) "/bin"))
-                           '("alsa-utils" "coreutils" "curl" "dbus" "ibus" "iproute"
-                             "kdeconnect" "lm-sensors" "pulseaudio"
-                             "openssl"
-                             "setxkbmap" "speedtest-cli" "xdg-utils" "xrandr"
+                             (string-append
+                               (assoc-ref inputs input) "/bin"))
+                           '("alsa-utils" "coreutils" "curl" "dbus"
+                             "ibus" "iproute" "kdeconnect" "lm-sensors"
+                             "pulseaudio" "openssl" "setxkbmap"
+                             "speedtest-cli" "xdg-utils" "xrandr"
                              "zlib"))))
                (wrap-program (string-append out "/bin/i3status-rs")
                  `("PATH" prefix ,paths))))))))
@@ -846,7 +878,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
        ("ibus" ,ibus)
        ("iproute" ,iproute)
        ("kdeconnect" ,kdeconnect)
-       ("lm-sensors" ,lm-sensors)
+       ("lm-sensors" ,lm-sensors "lib")
        ("pulseaudio" ,pulseaudio)
        ("openssl" ,openssl)
        ("setxkbmap" ,setxkbmap)
@@ -854,8 +886,8 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
        ("xdg-utils" ,xdg-utils)
        ("xrandr" ,xrandr)
        ("zlib" ,zlib)))
-    (home-page "https://github.com/greshake/i3status-rust")
-    (synopsis "i3status, written in pure Rust")
+    (home-page "https://github.com/greshake/i3status-rust/")
+    (synopsis "Replacement for i3status, written in Rust")
     (description "@code{i3status-rs} is a feature-rich and resource-friendly
 replacement for i3status, written in pure Rust.  It provides a way to display
 @code{blocks} of system information (time, battery status, volume, etc) on the i3
