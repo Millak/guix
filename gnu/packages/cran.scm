@@ -23968,32 +23968,20 @@ the corresponding outputs (tables and graphs).")
 (define-public r-rjava
   (package
     (name "r-rjava")
-    (version "1.0-10")
+    (version "1.0-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rJava" version))
        (sha256
         (base32
-         "0srrjfqrcp7b6k62qv3d18r97k6kbcz0g4pn2y0rv0f5wlc6i0mm"))
-       (snippet
-        '(for-each delete-file
-                   (list "inst/javadoc/jquery/jquery-ui.min.js"
-                         "inst/javadoc/jquery/jszip/dist/jszip.min.js"
-                         "inst/javadoc/jquery/jszip-utils/dist/jszip-utils-ie.min.js"
-                         "inst/javadoc/jquery/jszip-utils/dist/jszip-utils.min.js")))))
+         "05v4k0vzv1yx80b5dgmp6l7q3w64cr3k5a29hvggg1ixapswr84y"))))
     (properties `((upstream-name . "rJava")))
     (build-system r-build-system)
     (arguments
      (list
-      #:modules '((guix build r-build-system)
-                  (guix build minify-build-system)
-                  (guix build utils)
-                  (ice-9 match))
-      #:imported-modules `(,@%r-build-system-modules
-                           (guix build minify-build-system))
       #:phases
-      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+      #~(modify-phases %standard-phases
           (add-after 'unpack 'set-JAVA_HOME
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((jdk (assoc-ref inputs "jdk")))
@@ -24005,27 +23993,11 @@ the corresponding outputs (tables and graphs).")
                 (setenv "JAVA_CPPFLAGS"
                         (string-append "-I" jdk "/include "
                                        "-I" jdk "/include/linux"))
-                (setenv "JAVA_LIBS" (search-input-file inputs "/lib/libjvm.so")))))
-          (add-after 'unpack 'replace-bundled-minified-JavaScript
-            (lambda _
-              (with-directory-excursion "inst/javadoc"
-                (for-each (match-lambda
-                            ((source . target)
-                             (minify source #:target target)))
-                          `(("jquery/jquery-ui.js"
-                             . "jquery/jquery-ui.min.js")
-                            ("jquery/jszip/dist/jszip.js"
-                             . "jquery/jszip/dist/jszip.min.js")
-                            ("jquery/jszip-utils/dist/jszip-utils-ie.js"
-                             . "jquery/jszip-utils/dist/jszip-utils-ie.min.js")
-                            ("jquery/jszip-utils/dist/jszip-utils.js"
-                             . "jquery/jszip-utils/dist/jszip-utils.min.js")))))))))
+                (setenv "JAVA_LIBS" (search-input-file inputs "/lib/libjvm.so"))))))))
     (inputs
      `(("icu4c" ,icu4c)
        ("jdk" ,openjdk11 "jdk")
        ("zlib" ,zlib)))
-    (native-inputs
-     (list esbuild))
     (home-page "https://www.rforge.net/rJava/")
     (synopsis "Low-Level R to Java interface")
     (description
