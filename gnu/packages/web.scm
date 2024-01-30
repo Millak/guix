@@ -65,6 +65,7 @@
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -143,7 +144,9 @@
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -393,6 +396,23 @@ and its related documentation.")
 @item The number of features is voluntarily limited
 @end itemize\n")
     (license license:asl2.0)))
+
+(define-public minify
+  (package
+    (inherit go-github-com-tdewolff-minify-v2)
+    (name "minify")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-tdewolff-minify-v2)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/tdewolff/minify/v2")
+        "github.com/tdewolff/minify/cmd/minify")))
+    (inputs
+     (list go-github-com-djherbis-atime
+           go-github-com-dustin-go-humanize
+           go-github-com-fsnotify-fsnotify
+           go-github-com-matryer-try
+           go-github-com-spf13-pflag))))
 
 (define-public mod-wsgi
   (package
