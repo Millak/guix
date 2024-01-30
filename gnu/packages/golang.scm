@@ -3223,23 +3223,6 @@ specified.  Algorithms are included to calculate yahrzeits, birthdays,
 and anniversaries.")
       (license license:gpl2+))))
 
-(define-public go-github-com-go-jose-go-jose-v3
-  (package
-    (inherit go-gopkg-in-square-go-jose-v2)
-    (name "go-github-com-go-jose-go-jose-v3")
-    (version "3.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-jose/go-jose")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1fnw0p49wc9gmd2xcji2x9jf97dgg9igagd5m6bmq3nw9jjfqdc5"))))
-    (arguments
-     (list #:import-path "github.com/go-jose/go-jose/v3"))))
-
 (define-public go-gopkg.in-tomb.v2
   (let ((commit "d5d1b5820637886def9eef33e03a27a9f166942c")
         (revision "0"))

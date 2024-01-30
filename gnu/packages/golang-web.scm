@@ -577,6 +577,35 @@ logging system.")
 decompose request handling into many smaller layers.")
     (license license:expat)))
 
+(define-public go-github-com-go-jose-go-jose-v3
+  (package
+    (name "go-github-com-go-jose-go-jose-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-jose/go-jose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fnw0p49wc9gmd2xcji2x9jf97dgg9igagd5m6bmq3nw9jjfqdc5"))))
+    (build-system go-build-system)
+    (arguments
+     '( #:import-path "github.com/go-jose/go-jose/v3"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (native-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-jose/go-jose")
+    (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
+    (description
+     "This package provides a Golang implementation of the Javascript Object
+Signing and Encryption set of standards.  This includes support for JSON Web
+Encryption, JSON Web Signature, and JSON Web Token standards.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-telegram-bot-api-telegram-bot-api
   (package
     (name "go-github-com-go-telegram-bot-api-telegram-bot-api")
