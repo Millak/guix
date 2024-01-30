@@ -44,6 +44,7 @@
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4756,6 +4757,28 @@ similar word.")
 source files.  A neutral variety of English is used by default, but a US or UK
 locale can be selected.")
     (license license:expat)))
+
+(define-public go-github-com-cli-safeexec
+  (package
+    (name "go-github-com-cli-safeexec")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cli/safeexec")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j6hspjx9kyxn98nbisawx6wvbi1d6rpzr6p2rzhllm673wibwr3"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/cli/safeexec"))
+    (home-page "https://github.com/cli/safeexec")
+    (synopsis "Safe implementation of Go's exec.Command")
+    (description "This package provides a Go module that provides a stabler
+alternative to @@code{exec.LookPath()}.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-client9-misspell
   (package
