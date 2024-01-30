@@ -39404,6 +39404,27 @@ processing library for Rust.")
     (description "This crate provides procedural macros for neli.")
     (license license:bsd-3)))
 
+(define-public rust-neli-wifi-0.6
+  (package
+    (name "rust-neli-wifi")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "neli-wifi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w5wkg8vzdzmsy8g1g5f65fxdnxxb9nbvfi47m9fjqnsrwr2584y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-neli" ,rust-neli-0.6)
+                       ("rust-neli-proc-macros" ,rust-neli-proc-macros-0.1))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/MaxVerevkin/neli-wifi")
+    (synopsis "Communicate with nl80211")
+    (description "This package provides communication with nl80211.")
+    (license license:expat)))
+
 (define-public rust-neso-0.5
   (package
     (name "rust-neso")
