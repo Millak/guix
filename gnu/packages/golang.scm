@@ -9146,6 +9146,38 @@ Gemini clients and servers.")
 @code{getopt} for Go.")
     (license license:bsd-3)))
 
+(define-public go-go-uber-org-goleak
+  (package
+    (name "go-go-uber-org-goleak")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/uber-go/goleak")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lpqw7ygffak8qki9i4vw8b99l25l8jrw8iwcplqsclk6fzkl24p"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:tests? #f
+       #:import-path "go.uber.org/goleak"))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-kr-pretty
+           go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-testify
+           go-golang-org-x-lint
+           go-golang-org-x-tools
+           go-gopkg-in-check-v1
+           go-gopkg-in-yaml-v3))
+    (home-page "https://go.uber.org/goleak")
+    (synopsis "Goroutine leak detector")
+    (description "Go package to verify that there are no unexpected goroutines
+running at the end of a test.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-atomic
   (package
     (name "go-go-uber-org-atomic")
