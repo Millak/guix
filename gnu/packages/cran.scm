@@ -32153,14 +32153,14 @@ Haberman's interaction model when all items are dichotomously scored.")
 (define-public r-iheatmapr
   (package
     (name "r-iheatmapr")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iheatmapr" version))
        (sha256
         (base32
-         "0ym796kf6d8cwd7nmgzy3ga7r8fyywddl3rr2hbn4cfmwhggv02l"))
+         "1c4dvp0mvw3m6x0kdw05yja2rm1mkrjjmjfj67f0vvs5sqyaqwhv"))
        (snippet
         '(delete-file
           "inst/htmlwidgets/lib/plotlyjs/plotly-latest.min.js"))))
