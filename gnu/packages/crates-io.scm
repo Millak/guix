@@ -5303,6 +5303,34 @@ film grain data.")
     (description "This crate provides casts and checked casts.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-backon-0.4
+  (package
+    (name "rust-backon")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "backon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yfwd1idd5hf6aq2p0rbx4cv0n450canazr6b8cb42qjnabn26hc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-pin-project" ,rust-pin-project-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (inputs (list openssl))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/Xuanwo/backon")
+    (synopsis "Retry with backoff without effort")
+    (description "This package provides a retry with backoff without
+effort.")
+    (license license:asl2.0)))
+
 (define-public rust-backtrace-0.3
   (package
     (name "rust-backtrace")
