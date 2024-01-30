@@ -65076,7 +65076,7 @@ executed by swayipc.")
 
 (define-public rust-swayipc-types-1
   (package
-   (name "rust-swayipc-types")
+    (name "rust-swayipc-types")
     (version "1.3.1")
     (source
      (origin
@@ -65085,18 +65085,17 @@ executed by swayipc.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1fwzdifnaj9ayz6fq96vcxpzr4dqhq1zgbqk3xbgsdlg89b2ddmi"))))
-   (build-system cargo-build-system)
-   (arguments
-    `(#:cargo-inputs
-      (("rust-serde" ,rust-serde-1)
-       ("rust-serde-json" ,rust-serde-json-1)
-       ("rust-thiserror" ,rust-thiserror-1))))
-   (home-page "https://github.com/jaycefayne/swayipc-rs")
-   (synopsis "Library containing Type defintions from sway's IPC interface")
-   (description
-    "This package provides a library containing Type defintions from sway's IPC
-interface.")
-   (license license:expat)))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/jaycefayne/swayipc-rs")
+    (synopsis "Type definitions from sway's IPC interface")
+    (description
+     "This package provides a library containing type defintions from
+sway's IPC interface.")
+    (license license:expat)))
 
 (define-public rust-symlink-0.1
   (package
