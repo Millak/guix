@@ -1254,8 +1254,41 @@ grammars and BER/DER encodings, for example.")
     (description "Rustls bindings for non-Rust languages")
     (license (list license:asl2.0 license:isc license:expat))))
 
+(define-public rust-rustls-native-certs-0.7
+  (package
+    (name "rust-rustls-native-certs")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-native-certs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14ip15dcr6fmjzi12lla9cpln7mmkdid4a7wsp344v4kz9gbh7wg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests want network access.
+       #:cargo-inputs (("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-schannel" ,rust-schannel-0.1)
+                       ("rust-security-framework" ,rust-security-framework-2))
+       #:cargo-development-inputs (("rust-ring" ,rust-ring-0.16)
+                                   ("rust-rustls" ,rust-rustls-0.22)
+                                   ("rust-rustls-webpki" ,rust-rustls-webpki-0.102)
+                                   ("rust-serial-test" ,rust-serial-test-2)
+                                   ("rust-untrusted" ,rust-untrusted-0.7)
+                                   ("rust-webpki-roots" ,rust-webpki-roots-0.26)
+                                   ("rust-x509-parser" ,rust-x509-parser-0.15))))
+    (home-page "https://github.com/ctz/rustls-native-certs")
+    (synopsis "Use the platform native certificate store with rustls")
+    (description "@code{rustls-native-certs} allows rustls to use the platform
+native certificate store.")
+    (license (list license:asl2.0 license:isc license:expat))))
+
 (define-public rust-rustls-native-certs-0.6
   (package
+    (inherit rust-rustls-native-certs-0.7)
     (name "rust-rustls-native-certs")
     (version "0.6.3")
     (source
@@ -1265,7 +1298,6 @@ grammars and BER/DER encodings, for example.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "007zind70rd5rfsrkdcfm8vn09j8sg02phg9334kark6rdscxam9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests want network access.
        #:cargo-inputs
@@ -1280,13 +1312,7 @@ grammars and BER/DER encodings, for example.")
         ("rust-serial-test" ,rust-serial-test-2)
         ("rust-untrusted" ,rust-untrusted-0.7)
         ("rust-webpki-roots" ,rust-webpki-roots-0.23)
-        ("rust-x509-parser" ,rust-x509-parser-0.15))))
-    (home-page "https://github.com/ctz/rustls-native-certs")
-    (synopsis "Use the platform native certificate store with rustls")
-    (description "@code{rustls-native-certs} allows rustls to use the platform
-native certificate store.")
-    (license
-     (list license:asl2.0 license:isc license:expat))))
+        ("rust-x509-parser" ,rust-x509-parser-0.15))))))
 
 (define-public rust-rustls-native-certs-0.5
   (package
