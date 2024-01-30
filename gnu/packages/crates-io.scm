@@ -4612,6 +4612,41 @@ futures.")
     (description "This package provides recursion for async functions in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-async-signal-0.2
+  (package
+    (name "rust-async-signal")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-signal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i9466hiqghhmljjnn83a8vnxi8z013xga03f59c89d2cl7xjiwy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-io" ,rust-async-io-2)
+        ("rust-async-lock" ,rust-async-lock-2)
+        ("rust-atomic-waker" ,rust-atomic-waker-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
+        ("rust-slab" ,rust-slab-0.4)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-async-io" ,rust-async-io-2)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-signal-hook" ,rust-signal-hook-0.3))))
+    (home-page "https://github.com/smol-rs/async-signal")
+    (synopsis "Async signal handling")
+    (description "This package provides async signal handling.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-std-1
   (package
     (name "rust-async-std")
