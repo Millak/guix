@@ -39359,6 +39359,29 @@ processing library for Rust.")
         ("rust-mio" ,rust-mio-0.6)
         ("rust-tokio" ,rust-tokio-0.1))))))
 
+(define-public rust-neli-proc-macros-0.1
+  (package
+    (name "rust-neli-proc-macros")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "neli-proc-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m06j6vgy5zzr6dvnbpacpai6mgwwzd20h17hr3i67iv6x6ijs61"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-either" ,rust-either-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/jbaublitz/neli")
+    (synopsis "Procedural macros for neli")
+    (description "This crate provides procedural macros for neli.")
+    (license license:bsd-3)))
+
 (define-public rust-neso-0.5
   (package
     (name "rust-neso")
