@@ -60399,6 +60399,31 @@ words, like Python's shlex.")
     (description "This package is a backend crate for @code{signal-hook}.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-signal-hook-tokio-0.3
+  (package
+    (name "rust-signal-hook-tokio")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "signal-hook-tokio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07nggsi80jv39xisdk2r7cik7hx2d2qa2sivvqkpxqxidzvl2ci1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
+                                   ("rust-serial-test" ,rust-serial-test-0.5)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/vorner/signal-hook")
+    (synopsis "Tokio support for signal-hook")
+    (description "This package provides Tokio support for signal-hook.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-simba-0.8
   (package
     (name "rust-simba")
