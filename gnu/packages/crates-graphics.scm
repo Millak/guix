@@ -4970,6 +4970,27 @@ crate @code{rust-wayland-client} for usable bindings.")
 xml files.")
     (license license:expat)))
 
+(define-public rust-wayrs-protocols-0.13
+  (package
+    (name "rust-wayrs-protocols")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayrs-protocols" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1888h4wh3knjwh19v4y2gjpsv5j78c4vk08gls5f3aa1iryfpd7x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-wayrs-client" ,rust-wayrs-client-1))))
+    (home-page "https://github.com/MaxVerevkin/wayrs")
+    (synopsis "Collection of Wayland protocols to use with wayrs-client")
+    (description
+     "This package provides a collection of Wayland protocols to use
+with wayrs-client.")
+    (license license:expat)))
+
 (define-public rust-wayrs-scanner-0.13
   (package
     (name "rust-wayrs-scanner")
