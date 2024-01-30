@@ -65104,6 +65104,33 @@ interface.")
         ("rust-swayipc-command-builder" ,rust-swayipc-command-builder-0.1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-swayipc-async-2
+  (package
+    (name "rust-swayipc-async")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "swayipc-async" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yyv7jwsr2z5azjal5hj8hgxb06dqrnxsaxrnjfjnp1pmwvjch48"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Tests expect a running graphics stack.
+       #:cargo-inputs (("rust-async-io" ,rust-async-io-2)
+                       ("rust-async-pidfd" ,rust-async-pidfd-0.1)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-swayipc-types" ,rust-swayipc-types-1))))
+    (home-page "https://github.com/jaycefayne/swayipc-rs")
+    (synopsis "Library to control sway through IPC interface")
+    (description
+     "This package provides a library for controlling sway through its
+IPC interface.")
+    (license license:expat)))
+
 (define-public rust-swayipc-command-builder-0.1
   (package
     (name "rust-swayipc-command-builder")
