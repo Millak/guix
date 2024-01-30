@@ -1995,13 +1995,13 @@ times.")
 (define-public r-data-table
   (package
     (name "r-data-table")
-    (version "1.14.10")
+    (version "1.15.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "data.table" version))
               (sha256
                (base32
-                "0zk2g0lnjrw5wk6avwq07xw0cd7hpcpkmamf9d8avpd8f7ml2jq1"))))
+                "0qhh4ii10b6rbimhh83160gsax82gbrm3hqbqqddkzknpifxpdrr"))))
     (properties `((upstream-name . "data.table")))
     (build-system r-build-system)
     (inputs
