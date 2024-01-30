@@ -1436,8 +1436,39 @@ PEM-encodings commonly used to store keys and certificates at rest.")
     (description "Shared types for the rustls PKI ecosystem.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustls-webpki-0.102
+  (package
+    (name "rust-rustls-webpki")
+    (version "0.102.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-webpki" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nz9d3xhy8cg6anmvq64scyiva8bglrc6j3v6bdxw2f96xha4k7g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-aws-lc-rs" ,rust-aws-lc-rs-1)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-untrusted" ,rust-untrusted-0.9))
+       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.21)
+                                   ("rust-bencher" ,rust-bencher-0.1)
+                                   ("rust-bzip2" ,rust-bzip2-0.4)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-rcgen" ,rust-rcgen-0.12)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/rustls/webpki")
+    (synopsis "Web PKI X.509 Certificate Verification")
+    (description "Web PKI X.509 Certificate Verification.")
+    (license license:isc)))
+
 (define-public rust-rustls-webpki-0.101
   (package
+    (inherit rust-rustls-webpki-0.102)
     (name "rust-rustls-webpki")
     (version "0.101.7")
     (source (origin
@@ -1447,7 +1478,6 @@ PEM-encodings commonly used to store keys and certificates at rest.")
               (sha256
                (base32
                 "0rapfhpkqp75552i8r0y7f4vq7csb4k7gjjans0df73sxv8paqlb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
@@ -1459,11 +1489,7 @@ PEM-encodings commonly used to store keys and certificates at rest.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rcgen" ,rust-rcgen-0.11)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/rustls/webpki")
-    (synopsis "Web PKI X.509 Certificate Verification")
-    (description "Web PKI X.509 Certificate Verification.")
-    (license license:isc)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-rustls-webpki-0.100
   (package
