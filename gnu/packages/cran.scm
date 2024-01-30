@@ -6902,13 +6902,13 @@ provided for interactively exploring the constructed data.")
 (define-public r-powerlaw
   (package
     (name "r-powerlaw")
-    (version "0.70.6")
+    (version "0.80.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "poweRlaw" version))
        (sha256
-        (base32 "14d1myxllvm1grnfiszzzxaiqpb2jpmsi19wq70r8r2wki293h7g"))))
+        (base32 "1jvj2x22h6px1rcxmpz9h3x8r4486sb8zl3hjrsdxqa73ypmcdbi"))))
     (properties `((upstream-name . "poweRlaw")))
     (build-system r-build-system)
     (propagated-inputs
