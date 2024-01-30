@@ -18311,14 +18311,14 @@ interact with gated cytometry data.")
 (define-public r-flowcore
   (package
     (name "r-flowcore")
-    (version "2.14.0")
+    (version "2.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowCore" version))
        (sha256
         (base32
-         "11aic1nzlw0gdpcpmky5jzljxgxcrimi29f0zl3yjvgb48qa88bd"))))
+         "1g6qxzvzn1gnmqba150lj9nb6wlrdpzkc61l77d3fkzaf0q1h1n7"))))
     (properties `((upstream-name . "flowCore")))
     (build-system r-build-system)
     (propagated-inputs
