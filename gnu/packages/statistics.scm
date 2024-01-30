@@ -241,7 +241,12 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
               ;; This ensures that Guix can detect embedded store references;
               ;; see bug #28157 for details.
               (substitute* "src/library/base/makebasedb.R"
-                (("compress = TRUE") "compress = FALSE"))))
+                (("compress = TRUE") "compress = FALSE"))
+              (substitute* '("src/library/tools/Makefile.in"
+                             "share/make/basepkg.mk"
+                             "share/make/lazycomp.mk")
+                (("makeLazyLoading\\(")
+                 "makeLazyLoading(compress=FALSE,"))))
           (add-before 'configure 'patch-coreutils-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((uname-bin (search-input-file inputs "/bin/uname"))
