@@ -21988,6 +21988,29 @@ blocking data structures.")
        (("rust-futures" ,rust-futures-0.3)
         ("rust-waker-fn" ,rust-waker-fn-1))))))
 
+(define-public rust-event-listener-strategy-0.4
+  (package
+    (name "rust-event-listener-strategy")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "event-listener-strategy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lwprdjqp2ibbxhgm9khw7s7y7k4xiqj5i5yprqiks6mnrq4v3lm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-event-listener" ,rust-event-listener-4)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs
+       (("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/smol-rs/event-listener")
+    (synopsis "Block or poll on event_listener")
+    (description "This package provides block and poll on event_listener.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-executable-path-1
   (package
     (name "rust-executable-path")
