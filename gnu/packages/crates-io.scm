@@ -40840,8 +40840,45 @@ notification library.")
        (("rust-tempfile" ,rust-tempfile-3))))
     (license license:cc0)))
 
+(define-public rust-notmuch-0.8
+  (package
+    (name "rust-notmuch")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "notmuch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i6xc7lv10m2sq6vlpjr5wxmlxihvd0v4f5if75r2kwz8ji12pg2"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; Use a newer maildir.
+                   (("version = \"0.3.2\"") "version = \"0.5.0\""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-from-variants" ,rust-from-variants-0.6)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-dirs" ,rust-dirs-1)
+        ("rust-gethostname" ,rust-gethostname-0.2)
+        ("rust-lettre" ,rust-lettre-0.9)
+        ("rust-lettre-email" ,rust-lettre-email-0.9)
+        ("rust-maildir" ,rust-maildir-0.5)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl notmuch))
+    (home-page "https://github.com/vhdirk/notmuch-rs")
+    (synopsis "Rust interface and bindings for Notmuch")
+    (description
+     "This crate provides a Rust interface and bindings for Notmuch.")
+    (license license:gpl3+)))
+
 (define-public rust-notmuch-0.6
   (package
+    (inherit rust-notmuch-0.8)
     (name "rust-notmuch")
     (version "0.6.0")
     (source
@@ -40850,8 +40887,12 @@ notification library.")
        (uri (crate-uri "notmuch" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19q93iyvx4liksm09mhq9ibm8zj7i3dizc1s40f916z0kbpn9k5w"))))
-    (build-system cargo-build-system)
+        (base32 "19q93iyvx4liksm09mhq9ibm8zj7i3dizc1s40f916z0kbpn9k5w"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; Use a newer maildir.
+                   (("version = \"0.3.2\"") "version = \"0.5.0\""))))))
     (arguments
      `(#:tests? #f         ;see https://github.com/vhdirk/notmuch-rs/issues/35
        #:cargo-inputs
@@ -40863,22 +40904,7 @@ notification library.")
         ("rust-lettre" ,rust-lettre-0.9)
         ("rust-lettre-email" ,rust-lettre-email-0.9)
         ("rust-maildir" ,rust-maildir-0.5)
-        ("rust-tempfile" ,rust-tempfile-3))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-maildir-version
-           (lambda* _
-             (substitute* "Cargo.toml"
-               (("version = \"0.3.2\"") "version = \"0.5.0\"")))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list openssl notmuch))
-    (home-page "https://github.com/vhdirk/notmuch-rs")
-    (synopsis "Rust interface and bindings for Notmuch")
-    (description
-     "This crate provides a Rust interface and bindings for Notmuch.")
-    (license license:gpl3+)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-ntapi-0.4
   (package
