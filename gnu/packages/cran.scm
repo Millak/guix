@@ -27911,13 +27911,13 @@ such as Ghostscript is needed to use this package.")
 (define-public r-emoa
   (package
     (name "r-emoa")
-    (version "0.5-0.2")
+    (version "0.5-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "emoa" version))
               (sha256
                (base32
-                "0fr4ia3hkv8c7wkl64a51s6ynldppc812ynwldvbwy25dhlbvs6r"))))
+                "1a71xd8gdy27cfy09a4avjhc7d7idrljzan79cxb8qwb0pq9pvz9"))))
     (properties `((upstream-name . "emoa")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/emoa/")
