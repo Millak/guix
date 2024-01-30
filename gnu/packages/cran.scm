@@ -21377,14 +21377,14 @@ by change of variable.")
 (define-public r-listenv
   (package
     (name "r-listenv")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "listenv" version))
        (sha256
         (base32
-         "11s8cy259al6x98xcz93jw6p87si01gcgzccnxhx69879zh42a1m"))))
+         "0fqwikd3z6n5mia55s3fn5wxnmf2vbw3cmf0hcmm3iligd4ayaj2"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
