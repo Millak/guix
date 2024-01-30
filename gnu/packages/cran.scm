@@ -28836,18 +28836,27 @@ identify file sets and individual files.")
 (define-public r-r-devices
   (package
     (name "r-r-devices")
-    (version "2.17.1")
+    (version "2.17.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "R.devices" version))
        (sha256
         (base32
-         "02cwdhb9m97gxi4pki4kasc5j3a12r7yzsychzzk9h0ijc1mfziv"))))
+         "15gcvhmqwqyl3n299l9znwcjri8d8vixwwv915162sfxabsylgj0"))))
     (properties `((upstream-name . "R.devices")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This is needed for the vignette builder
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-base64enc r-r-methodss3 r-r-oo r-r-utils))
+    (native-inputs
+     (list r-r-rsp))
     (home-page "https://github.com/HenrikBengtsson/R.devices")
     (synopsis "Unified handling of graphics devices")
     (description
