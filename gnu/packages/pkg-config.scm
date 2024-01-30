@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -29,6 +29,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (guix memoization)
   #:export (pkg-config))
 
@@ -181,7 +182,13 @@ exec ~a \"$@\""
                (base32
                 "0qbpczwrrsq2981mdv3iil26vq9ac8v1sfi9233jpiaixrhmhv96"))))
     (build-system gnu-build-system)
-    (arguments (list #:tests? #f))      ;TODO: package kyua
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'set-HOME
+                          (lambda _
+                            ;; Kyua requires a writable HOME.
+                            (setenv "HOME" "/tmp"))))))
+    (native-inputs (list atf kyua))
     (home-page "http://pkgconf.org/")
     (synopsis "Package compiler and linker metadata toolkit")
     (description "@command{pkgconf} is a program which helps to configure
