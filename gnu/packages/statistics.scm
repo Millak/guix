@@ -228,157 +228,157 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                 "0aj51j34q2b28y28xvlf0dwdj8vpnhjwpvqf7xm05s7fq857dxdk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:disallowed-references (,tzdata-for-tests)
-       #:make-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/R/lib")
-             ;; This affects the embedded timestamp of only the core packages.
-             "PKG_BUILT_STAMP=1970-01-01")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'do-not-compress-serialized-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; This ensures that Guix can detect embedded store references;
-             ;; see bug #28157 for details.
-             (substitute* "src/library/base/makebasedb.R"
-               (("compress = TRUE") "compress = FALSE"))))
-         (add-before 'configure 'patch-coreutils-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((uname-bin (search-input-file inputs "/bin/uname"))
-                   (rm-bin (search-input-file inputs "/bin/rm")))
-               (substitute* "src/scripts/R.sh.in"
-                 (("uname") uname-bin))
-               (substitute* "src/unix/sys-std.c"
-                 (("rm -Rf ") (string-append rm-bin " -Rf ")))
-               (substitute* "src/library/parallel/R/detectCores.R"
-                 (("'grep")
-                  (string-append "'"
-                                 (search-input-file inputs "/bin/grep")))
-                 (("\\| wc -l")
-                  (string-append "| "
-                                 (search-input-file inputs "/bin/wc")
-                                 " -l"))))))
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; This is needed because R is run during the check phase and
-             ;; /bin/sh doesn't exist in the build container.
-             (substitute* "src/unix/sys-unix.c"
-               (("\"/bin/sh\"")
-                (string-append "\"" (which "sh") "\"")))
-             ;; This test fails because line numbers are off by two.
-             (substitute* "tests/reg-packages.R"
-               (("8 <= print" m) (string-append "## " m)))))
-         (add-after 'unpack 'build-reproducibly
-           (lambda _
-             ;; The documentation contains time stamps to demonstrate
-             ;; documentation generation in different phases.
-             (substitute* "src/library/tools/man/Rd2HTML.Rd"
-               (("\\\\%Y-\\\\%m-\\\\%d at \\\\%H:\\\\%M:\\\\%S")
-                "(removed for reproducibility)"))
+     (list
+      #:disallowed-references `(,tzdata-for-tests)
+      #:make-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib/R/lib")
+              ;; This affects the embedded timestamp of only the core packages.
+              "PKG_BUILT_STAMP=1970-01-01")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'do-not-compress-serialized-files
+            (lambda _
+              ;; This ensures that Guix can detect embedded store references;
+              ;; see bug #28157 for details.
+              (substitute* "src/library/base/makebasedb.R"
+                (("compress = TRUE") "compress = FALSE"))))
+          (add-before 'configure 'patch-coreutils-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((uname-bin (search-input-file inputs "/bin/uname"))
+                    (rm-bin (search-input-file inputs "/bin/rm")))
+                (substitute* "src/scripts/R.sh.in"
+                  (("uname") uname-bin))
+                (substitute* "src/unix/sys-std.c"
+                  (("rm -Rf ") (string-append rm-bin " -Rf ")))
+                (substitute* "src/library/parallel/R/detectCores.R"
+                  (("'grep")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/grep")))
+                  (("\\| wc -l")
+                   (string-append "| "
+                                  (search-input-file inputs "/bin/wc")
+                                  " -l"))))))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; This is needed because R is run during the check phase and
+              ;; /bin/sh doesn't exist in the build container.
+              (substitute* "src/unix/sys-unix.c"
+                (("\"/bin/sh\"")
+                 (string-append "\"" (which "sh") "\"")))
+              ;; This test fails because line numbers are off by two.
+              (substitute* "tests/reg-packages.R"
+                (("8 <= print" m) (string-append "## " m)))))
+          (add-after 'unpack 'build-reproducibly
+            (lambda _
+              ;; The documentation contains time stamps to demonstrate
+              ;; documentation generation in different phases.
+              (substitute* "src/library/tools/man/Rd2HTML.Rd"
+                (("\\\\%Y-\\\\%m-\\\\%d at \\\\%H:\\\\%M:\\\\%S")
+                 "(removed for reproducibility)"))
 
-             ;; Remove timestamp from tracing environment.  This fixes
-             ;; reproducibility of "methods.rd{b,x}".
-             (substitute* "src/library/methods/R/trace.R"
-               (("dateCreated = Sys.time\\(\\)")
-                "dateCreated = as.POSIXct(\"1970-1-1 00:00:00\", tz = \"UTC\")"))
+              ;; Remove timestamp from tracing environment.  This fixes
+              ;; reproducibility of "methods.rd{b,x}".
+              (substitute* "src/library/methods/R/trace.R"
+                (("dateCreated = Sys.time\\(\\)")
+                 "dateCreated = as.POSIXct(\"1970-1-1 00:00:00\", tz = \"UTC\")"))
 
-             ;; Ensure that gzipped files are reproducible.
-             (substitute* '("src/library/grDevices/Makefile.in"
-                            "doc/manual/Makefile.in")
-               (("R_GZIPCMD\\)" line)
-                (string-append line " -n")))
+              ;; Ensure that gzipped files are reproducible.
+              (substitute* '("src/library/grDevices/Makefile.in"
+                             "doc/manual/Makefile.in")
+                (("R_GZIPCMD\\)" line)
+                 (string-append line " -n")))
 
-             ;; The "srcfile" procedure in "src/library/base/R/srcfile.R"
-             ;; queries the mtime of a given file and records it in an object.
-             ;; This is acceptable at runtime to detect stale source files,
-             ;; but it destroys reproducibility at build time.
+              ;; The "srcfile" procedure in "src/library/base/R/srcfile.R"
+              ;; queries the mtime of a given file and records it in an object.
+              ;; This is acceptable at runtime to detect stale source files,
+              ;; but it destroys reproducibility at build time.
 
-             ;; Similarly, the "srcfilecopy" procedure records the current
-             ;; time.  We change both of them to respect SOURCE_DATE_EPOCH.
-             (substitute* "src/library/base/R/srcfile.R"
-               (("timestamp <- (timestamp.*|file.mtime.*)" _ time)
-                (string-append "timestamp <- \
+              ;; Similarly, the "srcfilecopy" procedure records the current
+              ;; time.  We change both of them to respect SOURCE_DATE_EPOCH.
+              (substitute* "src/library/base/R/srcfile.R"
+                (("timestamp <- (timestamp.*|file.mtime.*)" _ time)
+                 (string-append "timestamp <- \
 as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
   as.numeric(Sys.getenv(\"SOURCE_DATE_EPOCH\"))\
 } else { " time "}, origin=\"1970-01-01\")\n")))
 
-             ;; This library is installed using "install_package_description",
-             ;; so we need to pass the "builtStamp" argument.
-             (substitute* "src/library/tools/Makefile.in"
-               (("(install_package_description\\(.*\"')\\)\"" line prefix)
-                (string-append prefix ", builtStamp='1970-01-01')\"")))
+              ;; This library is installed using "install_package_description",
+              ;; so we need to pass the "builtStamp" argument.
+              (substitute* "src/library/tools/Makefile.in"
+                (("(install_package_description\\(.*\"')\\)\"" line prefix)
+                 (string-append prefix ", builtStamp='1970-01-01')\"")))
 
-             (substitute* "src/library/Recommended/Makefile.in"
-               (("INSTALL_OPTS =" m)
-                (string-append m " --built-timestamp=1970-01-01" m)))
+              (substitute* "src/library/Recommended/Makefile.in"
+                (("INSTALL_OPTS =" m)
+                 (string-append m " --built-timestamp=1970-01-01" m)))
 
-             ;; R bundles an older version of help2man, which does not respect
-             ;; SOURCE_DATE_EPOCH.  We cannot just use the latest help2man,
-             ;; because that breaks a test.
-             (with-fluids ((%default-port-encoding "ISO-8859-1"))
-               (substitute* "tools/help2man.pl"
-                 (("my \\$date = strftime \"%B %Y\", localtime" line)
-                  (string-append line " 1"))))
+              ;; R bundles an older version of help2man, which does not respect
+              ;; SOURCE_DATE_EPOCH.  We cannot just use the latest help2man,
+              ;; because that breaks a test.
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* "tools/help2man.pl"
+                  (("my \\$date = strftime \"%B %Y\", localtime" line)
+                   (string-append line " 1"))))
 
-             ;; The "References" section of this file when converted to
-             ;; package.rds is sometimes stored with a newline, sometimes with
-             ;; a space.  We avoid this problem by removing the line break
-             ;; that is suspected to be the culprit.
-             (substitute* "src/library/methods/DESCRIPTION.in"
-               (("\\(2008\\)\n") "(2008) ")
-               (("  ``Software") "``Software")
-               (("Data Analysis:.") "Data Analysis:\n")
-               (("Programming with R") "  Programming with R"))
-             (substitute* "src/library/tools/DESCRIPTION.in"
-               (("codetools, methods, xml2, curl, commonmark, knitr, xfun, mathjaxr")
-                "codetools, methods, xml2, curl, commonmark,
+              ;; The "References" section of this file when converted to
+              ;; package.rds is sometimes stored with a newline, sometimes with
+              ;; a space.  We avoid this problem by removing the line break
+              ;; that is suspected to be the culprit.
+              (substitute* "src/library/methods/DESCRIPTION.in"
+                (("\\(2008\\)\n") "(2008) ")
+                (("  ``Software") "``Software")
+                (("Data Analysis:.") "Data Analysis:\n")
+                (("Programming with R") "  Programming with R"))
+              (substitute* "src/library/tools/DESCRIPTION.in"
+                (("codetools, methods, xml2, curl, commonmark, knitr, xfun, mathjaxr")
+                 "codetools, methods, xml2, curl, commonmark,
     knitr, xfun, mathjaxr"))))
-         (add-before 'build 'set-locales
-           (lambda _
-             (setlocale LC_ALL "C")
-             (setenv "LC_ALL" "C")))
-         (add-before 'configure 'set-default-pager
-          ;; Set default pager to "cat", because otherwise it is "false",
-          ;; making "help()" print nothing at all.
-          (lambda _ (setenv "PAGER" "cat")))
-         (add-before 'configure 'set-timezone
-           ;; Some tests require the timezone to be set.  However, the
-           ;; timezone may not just be "UTC", or else a brittle regression
-           ;; test in reg-tests-1d will fail.
-           ;; We also need TZ during the configure step.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZ" "UTC+1")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo"))))
-         (add-before 'check 'set-home
-           ;; Some tests require that HOME be set.
-           (lambda _ (setenv "HOME" "/tmp")))
-         (add-after 'build 'make-info
-          (lambda _ (invoke "make" "info")))
-         (add-after 'build 'install-info
-          (lambda _ (invoke "make" "install-info"))))
+          (add-before 'build 'set-locales
+            (lambda _
+              (setlocale LC_ALL "C")
+              (setenv "LC_ALL" "C")))
+          (add-before 'configure 'set-default-pager
+            ;; Set default pager to "cat", because otherwise it is "false",
+            ;; making "help()" print nothing at all.
+            (lambda _ (setenv "PAGER" "cat")))
+          (add-before 'configure 'set-timezone
+            ;; Some tests require the timezone to be set.  However, the
+            ;; timezone may not just be "UTC", or else a brittle regression
+            ;; test in reg-tests-1d will fail.
+            ;; We also need TZ during the configure step.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC+1")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo"))))
+          (add-before 'check 'set-home
+            ;; Some tests require that HOME be set.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-after 'build 'make-info
+            (lambda _ (invoke "make" "info")))
+          (add-after 'build 'install-info
+            (lambda _ (invoke "make" "install-info"))))
        #:configure-flags
-       `(;; We build the recommended packages here, because they are needed in
-         ;; order to run the test suite.  We disable them in the r-minimal
-         ;; package.
-         "--with-cairo"
-         "--with-blas=-lopenblas"
-         "--with-libpng"
-         "--with-jpeglib"
-         "--with-libtiff"
-         "--with-ICU"
-         "--with-tcltk"
-         ,(string-append "--with-tcl-config="
-                         (assoc-ref %build-inputs "tcl")
+       #~(list
+          ;; We build the recommended packages here, because they are needed in
+          ;; order to run the test suite.  We disable them in the r-minimal
+          ;; package.
+          "--with-cairo"
+          "--with-blas=-lopenblas"
+          "--with-libpng"
+          "--with-jpeglib"
+          "--with-libtiff"
+          "--with-ICU"
+          "--with-tcltk"
+          (string-append "--with-tcl-config="
+                         #$(this-package-input "tcl")
                          "/lib/tclConfig.sh")
-         ,(string-append "--with-tk-config="
-                         (assoc-ref %build-inputs "tk")
+          (string-append "--with-tk-config="
+                         #$(this-package-input "tk")
                          "/lib/tkConfig.sh")
-         "--enable-R-shlib"
-         "--enable-BLAS-shlib"
-         "--with-system-tre")))
+          "--enable-R-shlib"
+          "--enable-BLAS-shlib"
+          "--with-system-tre")))
     ;; R has some support for Java.  When the JDK is available at configure
     ;; time environment variables pointing to the JDK will be recorded under
     ;; $R_HOME/etc and ./tools/getsp.java will be compiled which is used by "R
@@ -443,45 +443,44 @@ available, greatly increasing its breadth and scope.")
   (package (inherit r-with-tests)
     (name "r-minimal")
     (arguments
-     `(#:tests? #f
-       ,@(substitute-keyword-arguments (package-arguments r-with-tests)
-           ((#:disallowed-references refs '())
-            (cons perl refs))
-           ((#:configure-flags flags)
-            ;; Do not build the recommended packages.  The build system creates
-            ;; random temporary directories and embeds their names in some
-            ;; package files.  We build these packages with the r-build-system
-            ;; instead.
-            `(cons "--without-recommended-packages" ,flags))
-           ((#:phases phases '%standard-phases)
-            `(modify-phases ,phases
-               (add-after 'install 'remove-extraneous-references
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out")))
-                     (substitute* (string-append out "/lib/R/etc/Makeconf")
-                       (("^# configure.*")
-                        "# Removed to avoid extraneous references\n"))
-                     (substitute* (string-append out "/lib/R/bin/libtool")
-                       (((string-append
-                          "(-L)?("
-                          (format #false
-                                  "~a/[^-]+-(~{~a~^|~})-[^/]+"
-                                  (%store-directory)
-                                  '("bzip2"
-                                    "file"
-                                    "glibc-utf8-locales"
-                                    "graphite2"
-                                    "libselinux"
-                                    "libsepol"
-                                    "perl"
-                                    "texinfo"
-                                    "texlive-bin"
-                                    "util-macros"
-                                    "xz"))
-                          "|"
-                          (format #false "~a/[^-]+-glibc-[^-]+-static"
-                                  (%store-directory))
-                          ")/lib")) ""))))))))))))
+     (substitute-keyword-arguments (package-arguments r-with-tests)
+       ((#:tests? #f #f) #f)
+       ((#:disallowed-references refs '())
+        (cons perl refs))
+       ((#:configure-flags flags)
+        ;; Do not build the recommended packages.  The build system creates
+        ;; random temporary directories and embeds their names in some
+        ;; package files.  We build these packages with the r-build-system
+        ;; instead.
+        #~(cons "--without-recommended-packages" #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'remove-extraneous-references
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (substitute* (string-append #$output "/lib/R/etc/Makeconf")
+                  (("^# configure.*")
+                   "# Removed to avoid extraneous references\n"))
+                (substitute* (string-append #$output "/lib/R/bin/libtool")
+                  (((string-append
+                     "(-L)?("
+                     (format #false
+                             "~a/[^-]+-(~{~a~^|~})-[^/]+"
+                             (%store-directory)
+                             '("bzip2"
+                               "file"
+                               "glibc-utf8-locales"
+                               "graphite2"
+                               "libselinux"
+                               "libsepol"
+                               "perl"
+                               "texinfo"
+                               "texlive-bin"
+                               "util-macros"
+                               "xz"))
+                     "|"
+                     (format #false "~a/[^-]+-glibc-[^-]+-static"
+                             (%store-directory))
+                     ")/lib")) ""))))))))))
 
 (define-public rmath-standalone
   (package (inherit r-minimal)
