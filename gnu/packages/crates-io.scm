@@ -4400,6 +4400,32 @@ and lazy values.")
 async-aware oneshot channel.")
     (license license:mpl2.0)))
 
+(define-public rust-async-pidfd-0.1
+  (package
+    (name "rust-async-pidfd")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-pidfd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "168pylpf7n898szw32sva7kf9h3x1mnip54mfr8f7f4v55c705qj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-async-io" ,rust-async-io-1)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-futures-lite" ,rust-futures-lite-1))))
+    (home-page "https://github.com/joshtriplett/async-pidfd")
+    (synopsis "Process file descriptors (pidfd) for Linux")
+    (description
+      "@code{async-pidfd} provides Rust support for pidfd, and supports
+managing processes both synchronously (via the PidFd type) and
+asynchronously (via the AsyncPidFd type).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-process-1
   (package
     (name "rust-async-process")
