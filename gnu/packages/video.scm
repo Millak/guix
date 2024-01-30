@@ -1895,7 +1895,8 @@ audio/video codec library.")
              (sha256
               (base32
                "14xadxm1yaamp216nq09xwasxg5g133v86dbb33mdg5di1zrlhdg"))
-             (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
+             (patches (search-patches "ffmpeg-remove-compressed_ten_bit_format.patch"
+                                      "ffmpeg-4-binutils-2.41.patch"))))
     (inputs (modify-inputs (package-inputs ffmpeg)
               (replace "sdl2" sdl2-2.0)))
     (arguments
@@ -1913,7 +1914,8 @@ audio/video codec library.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0np0yalqdrm7rn7iykgfzz3ly4vbgigrajg48c1l6n7qrzqvfszv"))))
+               "0np0yalqdrm7rn7iykgfzz3ly4vbgigrajg48c1l6n7qrzqvfszv"))
+             (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-4)
        ((#:modules modules %default-gnu-modules)
@@ -1924,7 +1926,8 @@ audio/video codec library.")
                 '("--enable-libdav1d"
                   "--enable-libaom"
                   "--enable-librav1e"
-                  "--enable-libsrt")))))
+                  "--enable-libsrt"
+                  "--enable-libsvtav1")))))
     (inputs (modify-inputs (package-inputs ffmpeg-4)
               (delete "dav1d" "libaom" "rav1e" "srt")))))
 
@@ -1938,7 +1941,8 @@ audio/video codec library.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0c8m4hhv2k5fybha908wzrpnf3wqkq52hayl658jq4bah0igdfqz"))))
+                "0c8m4hhv2k5fybha908wzrpnf3wqkq52hayl658jq4bah0igdfqz"))
+              (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
     (arguments
      `(#:tests? #f               ; XXX: Enable them later, if required
        #:configure-flags
