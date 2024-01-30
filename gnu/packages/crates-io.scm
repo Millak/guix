@@ -10513,7 +10513,7 @@ how to behave across the three main input sources")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.4.11")
+    (version "4.4.16")
     (source
      (origin
        (method url-fetch)
@@ -10521,7 +10521,7 @@ how to behave across the three main input sources")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1wj5gb2fnqls00zfahg3490bdfc36d9cwpl80qjacb5jyrqzdbxz"))))
+         "0ialpybl8n8ybfikzy5f07d64pfdajls0s00bf4wgkh4q20liraq"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
