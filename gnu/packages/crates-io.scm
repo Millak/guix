@@ -8989,6 +8989,37 @@ others, add a tag, ensure/check a tag exists and get the state of a tag.")
 spreadsheet file.")
     (license license:expat)))
 
+(define-public rust-calibright-0.1
+  (package
+    (name "rust-calibright")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "calibright" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pqyr6zbgqpxyhszgkvmi1y0hnqrd1nnghxds62z125zkv7ygmsq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dirs" ,rust-dirs-5)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-notify" ,rust-notify-6)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smart-default" ,rust-smart-default-0.7)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-zbus" ,rust-zbus-3))))
+    (home-page "https://github.com/bim9262/calibright")
+    (synopsis "Brightness utility with calibration between monitors")
+    (description
+     "This package provides a brightness utility that allows you to calibrate
+brightness between monitors.")
+    (license license:gpl3)))
+
 (define-public rust-calloop-0.12
   (package
     (name "rust-calloop")
