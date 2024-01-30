@@ -4218,8 +4218,37 @@ types (and many other types) to use in async programs, and Timer, a future
 that expires at a point in time.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-async-lock-3
+  (package
+    (name "rust-async-lock")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yxflkfw46rad4lv86f59b5z555dlfmg1riz1n8830rgi0qb8d6h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-event-listener" ,rust-event-listener-4)
+        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.4)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs
+       (("rust-async-channel" ,rust-async-channel-2)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-waker-fn" ,rust-waker-fn-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/smol-rs/async-lock")
+    (synopsis "Async synchronization primitives")
+    (description "This package provides async synchronization primitives.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-lock-2
   (package
+    (inherit rust-async-lock-3)
     (name "rust-async-lock")
     (version "2.7.0")
     (source
@@ -4229,7 +4258,6 @@ that expires at a point in time.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mrd4kai92fcgl9974dpmibiq6ja9drz41v3crvv0c27a8kzf97s"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-event-listener" ,rust-event-listener-2))
@@ -4237,11 +4265,7 @@ that expires at a point in time.")
        (("rust-async-channel" ,rust-async-channel-1)
         ("rust-fastrand" ,rust-fastrand-1)
         ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
-    (home-page "https://github.com/stjepang/async-lock")
-    (synopsis "Async synchronization primitives")
-    (description "This package provides Async synchronization primitives.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
 
 (define-public rust-async-log-1
   (package
