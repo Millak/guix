@@ -37055,6 +37055,23 @@ possible over the OS abstractions.")
      "Unix domain socket bindings for mio.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-mirai-annotations-1
+  (package
+    (name "rust-mirai-annotations")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mirai-annotations" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lfkgarmzd7mdr739s9yidh0xhc9d3g4jjiwh246mwmkq5i0ign9"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/facebookexperimental/MIRAI")
+    (synopsis "Macros that provide source code annotations for MIRAI")
+    (description "Macros that provide source code annotations for MIRAI")
+    (license license:expat)))
+
 (define-public rust-mock-instant-0.2
   (package
     (name "rust-mock-instant")
