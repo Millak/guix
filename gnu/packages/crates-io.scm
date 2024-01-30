@@ -4352,6 +4352,28 @@ primitives:
      "Async networking primitives for TCP/UDP/Unix communication")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-async-once-cell-0.5
+  (package
+    (name "rust-async-once-cell")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-once-cell" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ss2ll9r92jiv4g0fdnwqggs3dn48sakij3fg0ba95dag077jf4k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags       ; Skip the doctests.
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs (("rust-critical-section" ,rust-critical-section-1))))
+    (home-page "https://github.com/danieldg/async-once-cell")
+    (synopsis "Async single assignment cells and lazy values")
+    (description "This package provides async single assignment cells
+and lazy values.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-oneshot-0.5
   (package
     (name "rust-async-oneshot")
