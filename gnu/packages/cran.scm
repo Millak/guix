@@ -9718,14 +9718,14 @@ where possible.")
 (define-public r-laeken
   (package
     (name "r-laeken")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "laeken" version))
        (sha256
         (base32
-         "1p3ccbaydlr52p8qmgmm2l6kryvq6jjjx7mqn2vv0gpjaxqhyy92"))))
+         "02z8jyya6xv0pyfqaalbry174fw44h13s7p1jk5b4h9a9x4myjb0"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot r-mass))
