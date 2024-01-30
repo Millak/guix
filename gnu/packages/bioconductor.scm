@@ -22088,14 +22088,14 @@ quality control.")
 (define-public r-scran
   (package
     (name "r-scran")
-    (version "1.30.1")
+    (version "1.30.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scran" version))
        (sha256
         (base32
-         "02840dw467dqdg09abxlzps1l1xnzhinlmpmqgfsq70pzqf7jywk"))))
+         "06b454ydd8n8xbswxf1hacm3g2nr0ik0gg08pr7crgnsm0r3vpvs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beachmat
