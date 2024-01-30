@@ -19620,13 +19620,13 @@ library which allows parsing of NEXUS, Newick and other phylogenetic tree
 (define-public r-phylobase
   (package
     (name "r-phylobase")
-    (version "0.8.10")
+    (version "0.8.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "phylobase" version))
               (sha256
                (base32
-                "0jzr1gdvmi4l640hwwzh9bxqmpja69bn3ygnaqx37awvyh7khi2s"))))
+                "084gfzq51acmvzbsfpkqv3kgghdbncnwr008f95yf5b2vihcm0cv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ade4 r-ape r-rcpp r-rncl r-rnexml))
