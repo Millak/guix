@@ -27087,14 +27087,14 @@ files is supported.")
 (define-public r-tidygraph
   (package
     (name "r-tidygraph")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidygraph" version))
        (sha256
         (base32
-         "11qlnpn54bdlkh2jcrk807z86vw54jrb6r9za1jkb03x9dqi9cwk"))))
+         "06mc31yb771midi8lq0zdfymcsm2s4y1mqdxxjz1n24njfxx9hda"))))
     (properties `((upstream-name . "tidygraph")))
     (build-system r-build-system)
     (propagated-inputs
