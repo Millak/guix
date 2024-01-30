@@ -1692,11 +1692,9 @@ virtualization library.")
            python-pycairo
            python-pygobject
            python-requests
+           qemu
            spice-gtk
            vte))
-    ;; virt-manager searches for qemu-img or kvm-img in the PATH.
-    (propagated-inputs
-     (list qemu))
     (native-inputs
      (list `(,glib "bin")               ; glib-compile-schemas
            gobject-introspection
