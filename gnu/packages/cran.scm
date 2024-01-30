@@ -10624,13 +10624,13 @@ implementation of an approximate nearest neighbor search using hierarchical
 (define-public r-nestedcv
   (package
     (name "r-nestedcv")
-    (version "0.7.3")
+    (version "0.7.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nestedcv" version))
        (sha256
-        (base32 "1f725r2f00ldp6pdk3ncvwxm4c2asz6rjs6g8afwh6plxwfkcjq8"))))
+        (base32 "0ymy1dbkcpiyq44zpvpkz1m5ivnchip07q6agh6ij50imddxb48s"))))
     (properties `((upstream-name . "nestedcv")))
     (build-system r-build-system)
     (propagated-inputs (list r-caret
@@ -10644,6 +10644,7 @@ implementation of an approximate nearest neighbor search using hierarchical
                              r-matrixtests
                              r-proc
                              r-rfast
+                             r-rhpcblasctl
                              r-rlang))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/myles-lewis/nestedcv")
