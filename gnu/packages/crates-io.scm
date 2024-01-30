@@ -3908,8 +3908,38 @@ Rust.")
     (description "This package provides async broadcast channels in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-async-channel-2
+  (package
+    (name "rust-async-channel")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-channel" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1337ywc1paw03rdlwh100kh8pa0zyp0nrlya8bpsn6zdqi5kz8qw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-concurrent-queue" ,rust-concurrent-queue-2)
+        ("rust-event-listener" ,rust-event-listener-4)
+        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.4)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs
+       (("rust-easy-parallel" ,rust-easy-parallel-3)
+        ("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/smol-rs/async-channel")
+    (synopsis "Async multi-producer multi-consumer channel")
+    (description "This package provides async multi-producer
+multi-consumer channels.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-channel-1
   (package
+    (inherit rust-async-channel-2)
     (name "rust-async-channel")
     (version "1.9.0")
     (source
@@ -3919,7 +3949,6 @@ Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0dbdlkzlncbibd3ij6y6jmvjd0cmdn48ydcfdpfhw09njd93r5c1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-concurrent-queue" ,rust-concurrent-queue-2)
@@ -3927,12 +3956,7 @@ Rust.")
         ("rust-futures-core" ,rust-futures-core-0.3))
        #:cargo-development-inputs
        (("rust-easy-parallel" ,rust-easy-parallel-3)
-        ("rust-futures-lite" ,rust-futures-lite-1))))
-    (home-page "https://github.com/smol-rs/async-channel")
-    (synopsis "Async multi-producer multi-consumer channel")
-    (description
-     "Async multi-producer multi-consumer channel")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-futures-lite" ,rust-futures-lite-1))))))
 
 (define-public rust-async-compression-0.4
   (package
