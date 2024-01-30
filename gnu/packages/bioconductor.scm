@@ -12852,18 +12852,18 @@ expressed genes in DNA microarray experiments.")
 (define-public r-ggm
   (package
     (name "r-ggm")
-    (version "2.5")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggm" version))
        (sha256
         (base32
-         "11wc6k2kj2ydy0dyks5mbvbhxm1r43id87anl1jg6dn0yv4m78di"))))
+         "1bp00m93mrx33gpd36qnrxx60y17aimlh6bd36cqyh6vpf0vpfvg"))))
     (properties `((upstream-name . "ggm")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-graph r-igraph))
+     (list r-biocmanager r-graph r-igraph))
     (home-page "https://cran.r-project.org/package=ggm")
     (synopsis "Functions for graphical Markov models")
     (description
