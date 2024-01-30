@@ -25859,21 +25859,23 @@ platforms.")
   (package
     (inherit rust-gethostname-0.3)
     (name "rust-gethostname")
-    (version "0.2.1")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gethostname" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0a609j9dhk816il2f2a01avvi5sqzxh0p38nxwrja7dcpybf54p6"))))
+        (base32 "0bl6wf7zclzmjriipzh98rr84xv2ilj664z8ffxh0vn46m7d7sy1"))))
     (arguments
-     `(#:tests? #f                      ; test panics
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included
+         "--skip=gethostname_matches_system_hostname")
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-getopts-0.2
   (package
