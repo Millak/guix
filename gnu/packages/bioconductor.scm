@@ -20518,13 +20518,13 @@ monograph.")
 (define-public r-bioccheck
   (package
     (name "r-bioccheck")
-    (version "1.38.0")
+    (version "1.38.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocCheck" version))
               (sha256
                (base32
-                "11d67dfwxc34n7yzpz58ficjk7sxnbxrajhnqlcxvsifgmybkb4d"))))
+                "1pkh7b27ynzpdfvyzqg36jm885r5lf2zw9rppdpj31rcv1640s0k"))))
     (properties
      `((upstream-name . "BiocCheck")))
     (build-system r-build-system)
@@ -20536,8 +20536,9 @@ monograph.")
            r-callr
            r-codetools
            r-graph
-           r-httr
+           r-httr2
            r-knitr
+           r-rvest
            r-stringdist))
     (native-inputs
      (list r-knitr))
