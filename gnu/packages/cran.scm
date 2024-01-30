@@ -38396,28 +38396,31 @@ or into raw bitmap vectors for further processing in R.")
 (define-public r-antiword
   (package
     (name "r-antiword")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "antiword" version))
        (sha256
         (base32
-         "1z1xfr2pb1k1k2v65l4bby4smkqg20i22jkvqzw4y2487gndx4cx"))
+         "1cc355sldhsbpx9wl5hkx0ydkgd3racxhkrriv58yw5xbb3b18ff"))
        (modules '((guix build utils)))
        ;; unvendor libantiword
        (snippet
         '(delete-file-recursively "src"))))
-    (properties `((upstream-name . "antiword")))
+    (properties
+     `((upstream-name . "antiword")
+       (updater-extra-inputs . ("antiword"))))
     (build-system r-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-system-antiword
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "R/antiword.R"
-               (("system.file\\(\"bin\", package = \"antiword\"\\)")
-                (string-append "\"" (assoc-ref inputs "antiword") "/bin\""))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-antiword
+            (lambda _
+              (substitute* "R/antiword.R"
+                (("system.file\\(\"bin\", package = \"antiword\"\\)")
+                 (string-append "\"" #$(this-package-input "antiword") "/bin\""))))))))
     (inputs (list antiword))
     (propagated-inputs (list r-sys))
     (home-page "https://github.com/ropensci/antiword#readme")
