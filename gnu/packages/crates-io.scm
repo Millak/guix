@@ -21939,8 +21939,41 @@ they follow.  Etcetera, on the other hand, gives you the choice.")
     (description "This package provides evdev interface for Linux.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-event-listener-4
+  (package
+    (name "rust-event-listener")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "event-listener" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vk4smw1vf871vi76af1zn7w69jg3zmpjddpby2qq91bkg21bck7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-concurrent-queue" ,rust-concurrent-queue-2)
+        ("rust-parking" ,rust-parking-2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-portable-atomic" ,rust-portable-atomic-1)
+        ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-waker-fn" ,rust-waker-fn-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/smol-rs/event-listener")
+    (synopsis "Notify async tasks or threads")
+    (description
+     "This is a synchronization primitive similar to @code{eventcounts}.
+You can use this crate to turn non-blocking data structures into async or
+blocking data structures.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-event-listener-2
   (package
+    (inherit rust-event-listener-4)
     (name "rust-event-listener")
     (version "2.5.3")
     (source
@@ -21950,18 +21983,10 @@ they follow.  Etcetera, on the other hand, gives you the choice.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1q4w3pndc518crld6zsqvvpy9lkzwahp2zgza9kbzmmqh9gif1h2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3)
-        ("rust-waker-fn" ,rust-waker-fn-1))))
-    (home-page "https://github.com/stjepang/event-listener")
-    (synopsis "Notify async tasks or threads")
-    (description
-     "This is a synchronization primitive similar to @code{eventcounts}.
-You can use this crate to turn non-blocking data structures into async or
-blocking data structures.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-waker-fn" ,rust-waker-fn-1))))))
 
 (define-public rust-executable-path-1
   (package
