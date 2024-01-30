@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -137,19 +137,22 @@
                         (copy-recursively "build/html" html)))
                     (format #t "sphinx-build not found, skipping~%"))))))))
     (propagated-inputs
-     (list python-jupytext
-           python-matplotlib
-           python-mpmath
-           python-mypy
-           python-numpy
-           python-numpydoc
-           python-pydata-sphinx-theme
-           python-pydevtool
-           python-pythran
-           python-rich-click
-           python-sphinx
-           python-threadpoolctl
-           python-typing-extensions))
+     (append
+       (if (supported-package? python-jupytext)  ; Depends on pandoc.
+           (list python-jupytext)
+           '())
+       (list python-matplotlib
+             python-mpmath
+             python-mypy
+             python-numpy
+             python-numpydoc
+             python-pydata-sphinx-theme
+             python-pydevtool
+             python-pythran
+             python-rich-click
+             python-sphinx
+             python-threadpoolctl
+             python-typing-extensions)))
     (inputs (list openblas pybind11-2.10))
     (native-inputs
      (list gfortran
