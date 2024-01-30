@@ -39312,8 +39312,36 @@ general elements and for numerics.")
 processing library for Rust.")
     (license license:expat)))
 
+(define-public rust-neli-0.6
+  (package
+    (name "rust-neli")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "neli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hzg86zg8rj14yklwm2r2yzg6w2wbnba8qfdpsrm0hb00sg2400i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-neli-proc-macros" ,rust-neli-proc-macros-0.1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/jbaublitz/neli")
+    (synopsis "Type safe netlink library written in Rust")
+    (description
+     "This crate is a type safe netlink library written in Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-neli-0.5
   (package
+    (inherit rust-neli-0.6)
     (name "rust-neli")
     (version "0.5.3")
     (source
@@ -39323,7 +39351,6 @@ processing library for Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "020m4axf6dd05i9l3lyhspp71s5xcmlj1cfskh6y3dywnm75alwh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
                        ("rust-futures" ,rust-futures-0.3)
@@ -39331,12 +39358,7 @@ processing library for Rust.")
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-simple-logger" ,rust-simple-logger-1)
-                       ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/jbaublitz/neli")
-    (synopsis "Type safe netlink library written in Rust")
-    (description
-     "This crate is a type safe netlink library written in Rust.")
-    (license license:bsd-3)))
+                       ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-neli-0.4
   (package
