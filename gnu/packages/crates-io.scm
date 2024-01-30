@@ -22107,6 +22107,31 @@ You can use this crate to turn non-blocking data structures into async or
 blocking data structures.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-event-listener-3
+  (package
+    (inherit rust-event-listener-4)
+    (name "rust-event-listener")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "event-listener" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hihkg6ihvb6p9yi7nq11di8mhd5y0iqv81ij6h0rf0fvsy7ff6r"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-concurrent-queue" ,rust-concurrent-queue-2)
+        ("rust-parking" ,rust-parking-2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-portable-atomic" ,rust-portable-atomic-1)
+        ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-futures-lite" ,rust-futures-lite-2)
+        ("rust-waker-fn" ,rust-waker-fn-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
+
 (define-public rust-event-listener-2
   (package
     (inherit rust-event-listener-4)
