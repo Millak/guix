@@ -44,110 +44,17 @@
 
 ;;; Commentary:
 ;;;
-;;; Golang packages to unit-test, mock, assert, lint processes for Golang itself.
+;;; Golang packages providing tools to unit-test, mock, assert, and lint
+;;; processes for the Golang itself. They may provide executables and
+;;; libraries, for which there are marked sections.
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
 ;;;
 ;;; Code:
 
-(define-public go-honnef-co-go-tools
-  (package
-    (name "go-honnef-co-go-tools")
-    (version "0.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dominikh/go-tools")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "099z04v7vvwwglnps315s9fmal68xvzlc1g8m26iqi980grbwn32"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "honnef.co/go/tools"
-       #:tests? #f
-       ;; Source-only package
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
-    (propagated-inputs
-     (list go-github-com-burntsushi-toml
-           go-golang-org-x-exp
-           go-golang-org-x-mod
-           go-golang-org-x-tools))
-    (home-page "https://staticcheck.dev/")
-    (synopsis "Staticcheck advanced Go linter library")
-    (description
-     "This package provides the Go source code for the @code{go-staticcheck}
-advanced Go linter.")
-    (license license:expat)))
-
-(define-public go-keyify
-  (package
-    (inherit go-honnef-co-go-tools)
-    (name "go-keyify")
-    (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/keyify"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
-    (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
-    (description "This package turns unkeyed struct literals (@code{T{1, 2,
-3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
-
-(define-public go-staticcheck
-  (package
-    (inherit go-honnef-co-go-tools)
-    (name "go-staticcheck")
-    (arguments
-     `(#:go ,go-1.18
-       #:import-path "honnef.co/go/tools/cmd/staticcheck"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
-    (synopsis "Staticcheck advanced Go linter")
-    (description
-     "Staticcheck is a state of the art linter for the Go programming language.
-Using static analysis, it finds bugs and performance issues, offers
-simplifications, and enforces style rules.")))
-
-(define-public go-structlayout
-  (package
-    (inherit go-honnef-co-go-tools)
-    (name "go-structlayout")
-    (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
-    (synopsis "Display the layout (field sizes and padding) of structs in Go")
-    (description "This package prints the layout of a struct in Go, which is
-the byte offset and size of each field, respecting padding.  This information
-is printed in human-readable form by default, or as JSON with the @code{-json}
-flag.")))
-
-(define-public go-structlayout-optimize
-  (package
-    (inherit go-honnef-co-go-tools)
-    (name "go-structlayout-optimize")
-    (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
-    (synopsis "Reorder struct fields to minimize the amount of padding in Go")
-    (description "This package reads @code{go-structlayout} JSON on stdin and
-reorders fields to minimize the amount of padding.  It can emit JSON to feed
-into @code{go-structlayout-pretty}.")))
-
-(define-public go-structlayout-pretty
-  (package
-    (inherit go-honnef-co-go-tools)
-    (name "go-structlayout-pretty")
-    (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
-       #:unpack-path "honnef.co/go/tools"
-       #:install-source? #f))
-    (synopsis "Format the output of go-structlayout with ASCII art in Go")
-    (description "This package takes @code{go-structlayout}-like JSON and
-prints an ASCII fraphic representing the memory layout.")))
+;;;
+;;; Libraries:
+;;;
 
 (define-public go-github-com-alecthomas-assert
   (let ((commit "405dbfeb8e38effee6e723317226e93fff912d06")
@@ -241,6 +148,29 @@ prints an ASCII fraphic representing the memory layout.")))
 tests.")
     (license license:expat)))
 
+(define-public go-github-com-golangplus-testing
+  (package
+    (name "go-github-com-golangplus-testing")
+    (version "1.0.0")
+    (home-page "https://github.com/golangplus/testing")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a29m4zplf9m14k74lrb55dids2l17vx28sv0g3y3qcv1xygksiv"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/golangplus/testing"))
+    (propagated-inputs
+     (list go-github-com-golangplus-fmt))
+    (synopsis "Additions to Go's standard testing package")
+    (description "This package provides additions to Go's stdlib testing.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-google-go-cmdtest
   (let ((commit "55ab3332a786118933ddf71544aae14951ba9bc5")
         (revision "0"))
@@ -295,29 +225,6 @@ also update a file with new \"golden\" output that is deemed correct.")
       (description "Gofuzz is a library for populationg Go objects with random
 values for the purpose of fuzz testing.")
       (license license:asl2.0))))
-
-(define-public go-github-com-golangplus-testing
-  (package
-    (name "go-github-com-golangplus-testing")
-    (version "1.0.0")
-    (home-page "https://github.com/golangplus/testing")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1a29m4zplf9m14k74lrb55dids2l17vx28sv0g3y3qcv1xygksiv"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/golangplus/testing"))
-    (propagated-inputs
-     (list go-github-com-golangplus-fmt))
-    (synopsis "Additions to Go's standard testing package")
-    (description "This package provides additions to Go's stdlib testing.")
-    (license license:bsd-3)))
 
 (define-public go-github-com-jacobsa-oglematchers
   (let ((commit "141901ea67cd4769c6800aa7bfdfc558fa22bda5")
@@ -444,6 +351,78 @@ builds on top of Go's builtin @code{testing} library and is complemented by the
 Gomega matcher library.")
     (license license:expat)))
 
+(define-public go-github-com-stretchr-testify
+  (package
+    (name "go-github-com-stretchr-testify")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stretchr/testify")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ixgjsvafr3513pz3r6pmgk074s2dxkll0dadvl25gkf30rkmh10"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/stretchr/testify"))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-objx
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/stretchr/testify")
+    (synopsis "Go helper library for tests and invariant checking")
+    (description "This package provide many tools for testifying that your
+code will behave as you intend.
+
+Features include:
+@itemize
+@item Easy assertions
+@item Mocking
+@item HTTP response trapping
+@item Testing suite interfaces and functions.
+@end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-stretchr-testify-bootstrap
+  (hidden-package
+    (package
+      (inherit go-github-com-stretchr-testify)
+      (arguments
+       '(#:import-path "github.com/stretchr/testify"
+         #:tests? #f
+         #:phases (modify-phases %standard-phases
+                    (delete 'build))))
+      (propagated-inputs
+       (list go-gopkg-in-yaml-v3)))))
+
+(define-public go-github-com-tdewolff-test
+  (package
+    (name "go-github-com-tdewolff-test")
+    (version "1.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tdewolff/test")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "10myz3zdkqmx37cvj507h7l2ncb0rq9shqvz9ggq1swijbsvazff"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/tdewolff/test"))
+    (home-page "https://github.com/tdewolff/test")
+    (synopsis "Go test helper functions")
+    (description
+     "This package implements a few functions that are useful for io testing,
+such as readers and writers that fail after N consecutive reads/writes.")
+    (license license:expat)))
+
 (define-public go-github.com-smartystreets-assertions
   (package
     (name "go-github.com-smartystreets-assertions")
@@ -530,77 +509,59 @@ makes extraction of setup/teardown behavior (as well as invoking the system
 under test) much simpler.")
     (license license:expat)))
 
-(define-public go-github-com-stretchr-testify
-  (package
-    (name "go-github-com-stretchr-testify")
-    (version "1.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/stretchr/testify")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0ixgjsvafr3513pz3r6pmgk074s2dxkll0dadvl25gkf30rkmh10"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/stretchr/testify"))
-    (propagated-inputs
-     (list go-github-com-davecgh-go-spew
-           go-github-com-pmezard-go-difflib
-           go-github-com-stretchr-objx
-           go-gopkg-in-yaml-v3))
-    (home-page "https://github.com/stretchr/testify")
-    (synopsis "Go helper library for tests and invariant checking")
-    (description "This package provide many tools for testifying that your
-code will behave as you intend.
-
-Features include:
-@itemize
-@item Easy assertions
-@item Mocking
-@item HTTP response trapping
-@item Testing suite interfaces and functions.
-@end itemize")
-    (license license:expat)))
-
-(define-public go-github-com-stretchr-testify-bootstrap
-  (hidden-package
+(define-public go-golang-org-sql-mock
+  (let ((commit "e98392b8111b45f8126e00af035a0dd95dc12e8b")
+        (version "1.3.3")
+        (revision "1"))
     (package
-      (inherit go-github-com-stretchr-testify)
+      (name "go-golang-org-sql-mock")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DATA-DOG/go-sqlmock")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "033vv29g2wf6fd757ajfmha30bqin3b07377037zkl051mk6mghs"))))
+      (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/stretchr/testify"
-         #:tests? #f
-         #:phases (modify-phases %standard-phases
-                    (delete 'build))))
-      (propagated-inputs
-       (list go-gopkg-in-yaml-v3)))))
+       '(#:import-path "github.com/DATA-DOG/go-sqlmock"))
+      (synopsis "Mock library implementing @code{sql/driver}")
+      (description "This library simulates SQL-driver behavior in tests
+without requiring a real database connection.")
+      (home-page "https://github.com/DATA-DOG/go-sqlmock")
+      (license license:expat))))
 
-(define-public go-github-com-tdewolff-test
-  (package
-    (name "go-github-com-tdewolff-test")
-    (version "1.0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tdewolff/test")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "10myz3zdkqmx37cvj507h7l2ncb0rq9shqvz9ggq1swijbsvazff"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/tdewolff/test"))
-    (home-page "https://github.com/tdewolff/test")
-    (synopsis "Go test helper functions")
-    (description
-     "This package implements a few functions that are useful for io testing,
-such as readers and writers that fail after N consecutive reads/writes.")
-    (license license:expat)))
+(define-public go-golang-org-x-lint
+  (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
+        (revision "0"))
+    (package
+      (name "go-golang-org-x-lint")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://go.googlesource.com/lint")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ms3rs5hvpnm9bxbr5f9743i7hn2bbmqdmvzxq6nmi0f24ypv1l3"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "golang.org/x/lint"
+         #:tests? #f)) ;; TODO: Fix tests
+      (propagated-inputs
+       (list go-golang-org-x-tools))
+      (home-page "https://golang.org/x/lint")
+      (synopsis "Linter for Go source code")
+      (description
+       "This is a linter for Go source code.  Unlike gofmt, it doesn't
+reformat the source code, it only prints out style mistakes.")
+      (license license:bsd-3))))
 
 (define-public go-gopkg-in-check-v1
   (package
@@ -658,59 +619,108 @@ such as readers and writers that fail after N consecutive reads/writes.")
 custom assertions to be used alongside native Go testing.")
     (license license:expat)))
 
-(define-public go-golang-org-sql-mock
-  (let ((commit "e98392b8111b45f8126e00af035a0dd95dc12e8b")
-        (version "1.3.3")
-        (revision "1"))
-    (package
-      (name "go-golang-org-sql-mock")
-      (version (git-version version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/DATA-DOG/go-sqlmock")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "033vv29g2wf6fd757ajfmha30bqin3b07377037zkl051mk6mghs"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/DATA-DOG/go-sqlmock"))
-      (synopsis "Mock library implementing @code{sql/driver}")
-      (description "This library simulates SQL-driver behavior in tests
-without requiring a real database connection.")
-      (home-page "https://github.com/DATA-DOG/go-sqlmock")
-      (license license:expat))))
+(define-public go-honnef-co-go-tools
+  (package
+    (name "go-honnef-co-go-tools")
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dominikh/go-tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "099z04v7vvwwglnps315s9fmal68xvzlc1g8m26iqi980grbwn32"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "honnef.co/go/tools"
+       #:tests? #f
+       ;; Source-only package
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-golang-org-x-exp
+           go-golang-org-x-mod
+           go-golang-org-x-tools))
+    (home-page "https://staticcheck.dev/")
+    (synopsis "Staticcheck advanced Go linter library")
+    (description
+     "This package provides the Go source code for the @code{go-staticcheck}
+advanced Go linter.")
+    (license license:expat)))
 
-(define-public go-golang-org-x-lint
-  (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
-        (revision "0"))
-    (package
-      (name "go-golang-org-x-lint")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://go.googlesource.com/lint")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0ms3rs5hvpnm9bxbr5f9743i7hn2bbmqdmvzxq6nmi0f24ypv1l3"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "golang.org/x/lint"
-         #:tests? #f)) ;; TODO: Fix tests
-      (propagated-inputs
-       (list go-golang-org-x-tools))
-      (home-page "https://golang.org/x/lint")
-      (synopsis "Linter for Go source code")
-      (description
-       "This is a linter for Go source code.  Unlike gofmt, it doesn't
-reformat the source code, it only prints out style mistakes.")
-      (license license:bsd-3))))
+;;;
+;;; Executables:
+;;;
+
+(define-public go-keyify
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-keyify")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/keyify"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
+    (description "This package turns unkeyed struct literals (@code{T{1, 2,
+3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
+
+(define-public go-staticcheck
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-staticcheck")
+    (arguments
+     `(#:go ,go-1.18
+       #:import-path "honnef.co/go/tools/cmd/staticcheck"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Staticcheck advanced Go linter")
+    (description
+     "Staticcheck is a state of the art linter for the Go programming language.
+Using static analysis, it finds bugs and performance issues, offers
+simplifications, and enforces style rules.")))
+
+(define-public go-structlayout
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-structlayout")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Display the layout (field sizes and padding) of structs in Go")
+    (description "This package prints the layout of a struct in Go, which is
+the byte offset and size of each field, respecting padding.  This information
+is printed in human-readable form by default, or as JSON with the @code{-json}
+flag.")))
+
+(define-public go-structlayout-optimize
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-structlayout-optimize")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Reorder struct fields to minimize the amount of padding in Go")
+    (description "This package reads @code{go-structlayout} JSON on stdin and
+reorders fields to minimize the amount of padding.  It can emit JSON to feed
+into @code{go-structlayout-pretty}.")))
+
+(define-public go-structlayout-pretty
+  (package
+    (inherit go-honnef-co-go-tools)
+    (name "go-structlayout-pretty")
+    (arguments
+     `(#:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
+       #:unpack-path "honnef.co/go/tools"
+       #:install-source? #f))
+    (synopsis "Format the output of go-structlayout with ASCII art in Go")
+    (description "This package takes @code{go-structlayout}-like JSON and
+prints an ASCII fraphic representing the memory layout.")))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
