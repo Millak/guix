@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,6 +88,35 @@
                           (body
                            (list "return 301 https://$host$request_uri;"))))))
 
+(define (certbot-deploy-hook name deploy-hook-script)
+  "Returns a gexp which creates symlinks for privkey.pem and fullchain.pem
+from /etc/certs/NAME to /etc/letsenctypt/live/NAME.  If DEPLOY-HOOK-SCRIPT is
+not #f then it is run after the symlinks have been created."
+  (program-file
+   (string-append name "-deploy-hook")
+   (with-imported-modules '((guix build utils))
+     #~(begin
+         (use-modules (guix build utils))
+         (mkdir-p #$(string-append "/etc/certs/" name))
+         (chmod #$(string-append "/etc/certs/" name) #o755)
+
+         ;; Create new symlinks
+         (symlink #$(string-append
+                     "/etc/letsencrypt/live/" name "/privkey.pem")
+                  #$(string-append "/etc/certs/" name "/privkey.pem.new"))
+         (symlink #$(string-append
+                     "/etc/letsencrypt/live/" name "/fullchain.pem")
+                  #$(string-append "/etc/certs/" name "/fullchain.pem.new"))
+
+         ;; Rename over the top of the old ones, if there are any.
+         (rename-file #$(string-append "/etc/certs/" name "/privkey.pem.new")
+                      #$(string-append "/etc/certs/" name "/privkey.pem"))
+         (rename-file #$(string-append "/etc/certs/" name "/fullchain.pem.new")
+                      #$(string-append "/etc/certs/" name "/fullchain.pem"))
+         #$@(if deploy-hook-script
+                (list #~(invoke #$deploy-hook-script))
+                '())))))
+
 (define certbot-command
   (match-lambda
     (($ <certbot-configuration> package webroot certificates email
@@ -118,7 +148,8 @@
                           `("--manual-auth-hook" ,authentication-hook)
                           '())
                       (if cleanup-hook `("--manual-cleanup-hook" ,cleanup-hook) '())
-                      (if deploy-hook `("--deploy-hook" ,deploy-hook) '()))
+                      (list "--deploy-hook"
+                            (certbot-deploy-hook name deploy-hook)))
                      (append
                       (list name certbot "certonly" "-n" "--agree-tos"
                             "--webroot" "-w" webroot
@@ -130,7 +161,8 @@
                           '("--register-unsafely-without-email"))
                       (if server `("--server" ,server) '())
                       (if rsa-key-size `("--rsa-key-size" ,rsa-key-size) '())
-                      (if deploy-hook `("--deploy-hook" ,deploy-hook) '()))))))
+                      (list "--deploy-hook"
+                            (certbot-deploy-hook name deploy-hook)))))))
               certificates)))
        (program-file
         "certbot-command"

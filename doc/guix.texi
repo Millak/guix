@@ -43,7 +43,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
 Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@*
 Copyright @copyright{} 2017, 2018, 2020, 2021, 2022 Mathieu Othacehe@*
 Copyright @copyright{} 2017 Federico Beffa@*
-Copyright @copyright{} 2017, 2018 Carlo Zancanaro@*
+Copyright @copyright{} 2017, 2018, 2024 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
@@ -28135,7 +28135,7 @@ Prosodyctl will also help you to import certificates from the
 them.  See @url{https://prosody.im/doc/letsencrypt}.
 
 @example
-prosodyctl --root cert import /etc/letsencrypt/live
+prosodyctl --root cert import /etc/certs
 @end example
 
 The available configuration parameters follow.  Each parameter
@@ -28846,8 +28846,8 @@ look like this:
           (welcome-text
             "Welcome to this Mumble server running on Guix!")
           (cert-required? #t) ;disallow text password logins
-          (ssl-cert "/etc/letsencrypt/live/mumble.example.com/fullchain.pem")
-          (ssl-key "/etc/letsencrypt/live/mumble.example.com/privkey.pem")))
+          (ssl-cert "/etc/certs/mumble.example.com/fullchain.pem")
+          (ssl-key "/etc/certs/mumble.example.com/privkey.pem")))
 @end lisp
 
 After reconfiguring your system, you can manually set the mumble-server
@@ -28965,12 +28965,12 @@ Should logged ips be obfuscated to protect the privacy of users.
 File name of the SSL/TLS certificate used for encrypted connections.
 
 @lisp
-(ssl-cert "/etc/letsencrypt/live/example.com/fullchain.pem")
+(ssl-cert "/etc/certs/example.com/fullchain.pem")
 @end lisp
 @item @code{ssl-key} (default: @code{#f})
 Filepath to the ssl private key used for encrypted connections.
 @lisp
-(ssl-key "/etc/letsencrypt/live/example.com/privkey.pem")
+(ssl-key "/etc/certs/example.com/privkey.pem")
 @end lisp
 
 @item @code{ssl-dh-params} (default: @code{#f})
@@ -32694,8 +32694,8 @@ example, @samp{"example.com www.example.com"}.
 @end deftp
 
 For each @code{certificate-configuration}, the certificate is saved to
-@code{/etc/letsencrypt/live/@var{name}/fullchain.pem} and the key is
-saved to @code{/etc/letsencrypt/live/@var{name}/privkey.pem}.
+@code{/etc/certs/@var{name}/fullchain.pem} and the key is
+saved to @code{/etc/certs/@var{name}/privkey.pem}.
 @node DNS Services
 @subsection DNS Services
 @cindex DNS (domain name system)
@@ -37381,9 +37381,9 @@ serve the default @file{/srv/git} over HTTPS might be:
              (listen '("443 ssl"))
              (server-name "git.my-host.org")
              (ssl-certificate
-              "/etc/letsencrypt/live/git.my-host.org/fullchain.pem")
+              "/etc/certs/git.my-host.org/fullchain.pem")
              (ssl-certificate-key
-              "/etc/letsencrypt/live/git.my-host.org/privkey.pem")
+              "/etc/certs/git.my-host.org/privkey.pem")
              (locations
               (list
                (git-http-nginx-location-configuration
@@ -38508,9 +38508,9 @@ footers.
            (nginx-server-block
              (nginx-server-configuration
                (ssl-certificate
-                 "/etc/letsencrypt/live/myweb.site/fullchain.pem")
+                 "/etc/certs/myweb.site/fullchain.pem")
                (ssl-certificate-key
-                 "/etc/letsencrypt/live/myweb.site/privkey.pem")
+                 "/etc/certs/myweb.site/privkey.pem")
                (listen '("443 ssl http2" "[::]:443 ssl http2"))
                (locations
                  (list
