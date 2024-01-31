@@ -26,7 +26,6 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
-  #:use-module (gnu packages commencement)
   #:use-module ((guix licenses)
                 #:prefix license:))
 
@@ -68,7 +67,11 @@
             (variable "CHICKEN_REPOSITORY_PATH")
             ;; TODO extract binary version into a module level definition.
             (files (list "var/lib/chicken/11")))))
-    (propagated-inputs (list gcc-toolchain))
+    ;; Reference gcc-toolchain lazily to avoid circular module dependency
+    ;; problems.
+    (propagated-inputs (list (module-ref (resolve-interface
+                                          '(gnu packages commencement))
+                                         'gcc-toolchain)))
     (home-page "https://www.call-cc.org/")
     (synopsis "R5RS Scheme implementation that compiles native code via C")
     (description

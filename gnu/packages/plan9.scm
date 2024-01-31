@@ -26,7 +26,6 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages commencement)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages linux)
@@ -180,7 +179,9 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
                     fontconfig libx11 libxext libxt))
       ;; Propagate gcc-toolchain because some programs, like the 9c compiler,
       ;; are just aliased scripts to gcc equivalents.
-      (propagated-inputs (list gcc-toolchain))
+      (propagated-inputs (list (module-ref (resolve-interface
+                                          '(gnu packages commencement))
+                                         'gcc-toolchain)))
       (home-page "https://9fans.github.io/plan9port/")
       (synopsis "Port of many Plan 9 libraries and programs")
       (description
