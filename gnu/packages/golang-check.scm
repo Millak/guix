@@ -76,7 +76,7 @@
            go-golang-org-x-exp
            go-golang-org-x-mod
            go-golang-org-x-tools))
-    (home-page "https://honnef.co/go/tools")
+    (home-page "https://staticcheck.dev/")
     (synopsis "Staticcheck advanced Go linter library")
     (description
      "This package provides the Go source code for the @code{go-staticcheck}
