@@ -3986,8 +3986,8 @@ A very simple IM client working over the DHT.
 
 (define-public dhtnet
   ;; There is no tag nor release; use the latest available commit.
-  (let ((revision "0")
-        (commit "8b6e99fd34f150fde5f21f3a57e0e9f28174c70c"))
+  (let ((revision "1")
+        (commit "41848a2c770d7eb0940d731014b81643f85e0d07"))
     (package
       (name "dhtnet")
       ;; The base version is taken from the CMakeLists.txt file.
@@ -4000,7 +4000,7 @@ A very simple IM client working over the DHT.
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1yhygsimcl9j6hbww1b77am1kgbcriczslcrfb838nbfh18n1780"))))
+                  "18v2pjrxfrd26p2z27s90marx7b593nz1xwi47lnp2ja7lm1pj4m"))))
       (outputs (list "out" "debug"))
       (build-system cmake-build-system)
       (arguments
@@ -4031,7 +4031,8 @@ A very simple IM client working over the DHT.
              opendht
              libupnp
              pjproject-jami
-             readline))
+             readline
+             yaml-cpp))
       (home-page "https://github.com/savoirfairelinux/dhtnet/")
       (synopsis "OpenDHT network library for C++")
       (description "The @code{dhtnet} is a C++ library providing abstractions
