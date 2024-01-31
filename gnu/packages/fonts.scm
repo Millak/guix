@@ -587,6 +587,30 @@ The unified Libertinus family consists of:
 @end enumerate\n")
     (license license:silofl1.1)))
 
+(define-public font-libre-franklin
+  (let ((commit "bfc61d6e403771c2e90aa6e0bd54975633974fb2")
+        (revision "0"))
+    (package
+      (name "font-libre-franklin")
+      (version (git-version "1.015" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/impallari/Libre-Franklin")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "07rm9fkhm8ckxpaj0zixl4vgzmj6bj4xzbaqm5hngdjds1bjv1ls"))))
+      (build-system font-build-system)
+      (home-page "https://fonts.google.com/specimen/Libre+Franklin")
+      (synopsis "Font family based on Franklin Gothic")
+      (description
+       "The Libre Franklin font family is an open source interpretation and
+expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
+      (license license:silofl1.1))))
+
 (define-public font-terminus
   (package
     (name "font-terminus")
