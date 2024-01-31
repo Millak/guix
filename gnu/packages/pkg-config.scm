@@ -189,6 +189,7 @@ exec ~a \"$@\""
                             ;; Kyua requires a writable HOME.
                             (setenv "HOME" "/tmp"))))))
     (native-inputs (list atf kyua))
+    (native-search-paths (list $PKG_CONFIG_PATH))
     (home-page "http://pkgconf.org/")
     (synopsis "Package compiler and linker metadata toolkit")
     (description "@command{pkgconf} is a program which helps to configure
