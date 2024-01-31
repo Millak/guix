@@ -191,9 +191,9 @@
                            (and (eq? (channel-name
                                       (channel-instance-channel instance))
                                      'test-channel)
-                                (string=? (channel-commit
-                                           (channel-instance-channel instance))
-                                          "abc1234")))
+                                (equal? (channel-commit
+                                         (channel-instance-channel instance))
+                                        "abc1234")))
                          instances)))))))
 
 (test-equal "latest-channel-instances #:validate-pull"
