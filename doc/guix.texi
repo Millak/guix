@@ -32690,6 +32690,12 @@ certificates and keys; the shell variable @code{$RENEWED_DOMAINS} will
 contain a space-delimited list of renewed certificate domains (for
 example, @samp{"example.com www.example.com"}.
 
+@item @code{start-self-signed?} (default: @code{#t})
+Whether to generate an initial self-signed certificate during system
+activation.  This option is particularly useful to allow @code{nginx} to
+start before @code{certbot} has run, because @code{certbot} relies on
+@code{nginx} running to perform HTTP challenges.
+
 @end table
 @end deftp
 

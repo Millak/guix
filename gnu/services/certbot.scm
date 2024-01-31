@@ -35,6 +35,7 @@
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (certbot-service-type
             certbot-configuration
@@ -64,7 +65,9 @@
   (cleanup-hook        certificate-cleanup-hook
                        (default #f))
   (deploy-hook         certificate-configuration-deploy-hook
-                       (default #f)))
+                       (default #f))
+  (start-self-signed?  certificate-configuration-start-self-signed?
+                       (default #t)))
 
 (define-record-type* <certbot-configuration>
   certbot-configuration make-certbot-configuration
@@ -91,7 +94,10 @@
 (define (certbot-deploy-hook name deploy-hook-script)
   "Returns a gexp which creates symlinks for privkey.pem and fullchain.pem
 from /etc/certs/NAME to /etc/letsenctypt/live/NAME.  If DEPLOY-HOOK-SCRIPT is
-not #f then it is run after the symlinks have been created."
+not #f then it is run after the symlinks have been created.  This wrapping is
+necessary for certificates with start-self-signed? set to #t, as it will
+overwrite the initial self-signed certificates upon the first successful
+deploy."
   (program-file
    (string-append name "-deploy-hook")
    (with-imported-modules '((guix build utils))
@@ -108,7 +114,8 @@ not #f then it is run after the symlinks have been created."
                      "/etc/letsencrypt/live/" name "/fullchain.pem")
                   #$(string-append "/etc/certs/" name "/fullchain.pem.new"))
 
-         ;; Rename over the top of the old ones, if there are any.
+         ;; Rename over the top of the old ones, just in case they were the
+         ;; original self-signed certificates.
          (rename-file #$(string-append "/etc/certs/" name "/privkey.pem.new")
                       #$(string-append "/etc/certs/" name "/privkey.pem"))
          (rename-file #$(string-append "/etc/certs/" name "/fullchain.pem.new")
@@ -184,6 +191,47 @@ not #f then it is run after the symlinks have been created."
    #~(job '(next-minute-from (next-hour '(0 12)) (list (random 60)))
           #$(certbot-command config))))
 
+(define (generate-certificate-gexp certbot-cert-directory rsa-key-size)
+  (match-lambda
+    (($ <certificate-configuration> name (primary-domain other-domains ...)
+                                    challenge
+                                    csr authentication-hook
+                                    cleanup-hook deploy-hook)
+     (let (;; Arbitrary default subject, with just the
+           ;; right domain filled in. These values don't
+           ;; have any real significance.
+           (subject (string-append
+                     "/C=US/ST=Oregon/L=Portland/O=Company Name/OU=Org/CN="
+                     primary-domain))
+           (alt-names (if (null? other-domains)
+                          #f
+                          (format #f "subjectAltName=~{DNS:~a~^,~}"
+                                  other-domains)))
+           (directory (string-append "/etc/certs/" (or name primary-domain))))
+       #~(when (not (file-exists? #$directory))
+           ;; We generate self-signed certificates in /etc/certs/{domain},
+           ;; because certbot is very sensitive to its directory
+           ;; structure. It refuses to write over the top of existing files,
+           ;; so we need to use a directory outside of its control.
+           ;;
+           ;; These certificates are overwritten by the certbot deploy hook
+           ;; the first time it successfully obtains a letsencrypt-signed
+           ;; certificate.
+           (mkdir-p #$directory)
+           (chmod #$directory #o755)
+           (invoke #$(file-append openssl "/bin/openssl")
+                   "req" "-x509"
+                   "-newkey" #$(string-append "rsa:" (or rsa-key-size "4096"))
+                   "-keyout" #$(string-append directory "/privkey.pem")
+                   "-out" #$(string-append directory "/fullchain.pem")
+                   "-sha256"
+                   "-days" "1" ; Only one day, because we expect certbot to run
+                   "-nodes"
+                   "-subj" #$subject
+                   #$@(if alt-names
+                          (list "-addext" alt-names)
+                          (list))))))))
+
 (define (certbot-activation config)
   (let* ((certbot-directory "/var/lib/certbot")
          (certbot-cert-directory "/etc/letsencrypt/live")
@@ -198,6 +246,14 @@ not #f then it is run after the symlinks have been created."
              (mkdir-p #$webroot)
              (mkdir-p #$certbot-directory)
              (mkdir-p #$certbot-cert-directory)
+
+             #$@(let ((rsa-key-size (and rsa-key-size
+                                         (number->string rsa-key-size))))
+                  (map (generate-certificate-gexp certbot-cert-directory
+                                                  rsa-key-size)
+                       (filter certificate-configuration-start-self-signed?
+                               certificates)))
+
              (copy-file #$(certbot-command config) #$script)
              (display #$message)))))))
 
