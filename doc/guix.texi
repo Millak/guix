@@ -32562,21 +32562,13 @@ A service type for the @code{certbot} Let's Encrypt client.  Its value
 must be a @code{certbot-configuration} record as in this example:
 
 @lisp
-(define %certbot-deploy-hook
-  (program-file "certbot-deploy-hook.scm"
-    (with-imported-modules '((gnu services herd))
-      #~(begin
-          (use-modules (gnu services herd))
-          (with-shepherd-action 'nginx ('reload) result result)))))
-
 (service certbot-service-type
          (certbot-configuration
           (email "foo@@example.net")
           (certificates
            (list
             (certificate-configuration
-             (domains '("example.net" "www.example.net"))
-             (deploy-hook %certbot-deploy-hook))
+             (domains '("example.net" "www.example.net")))
             (certificate-configuration
              (domains '("bar.example.net")))))))
 @end lisp

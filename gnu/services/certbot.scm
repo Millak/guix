@@ -100,9 +100,11 @@ overwrite the initial self-signed certificates upon the first successful
 deploy."
   (program-file
    (string-append name "-deploy-hook")
-   (with-imported-modules '((guix build utils))
+   (with-imported-modules '((gnu services herd)
+                            (guix build utils))
      #~(begin
-         (use-modules (guix build utils))
+         (use-modules (gnu services herd)
+                      (guix build utils))
          (mkdir-p #$(string-append "/etc/certs/" name))
          (chmod #$(string-append "/etc/certs/" name) #o755)
 
@@ -120,6 +122,10 @@ deploy."
                       #$(string-append "/etc/certs/" name "/privkey.pem"))
          (rename-file #$(string-append "/etc/certs/" name "/fullchain.pem.new")
                       #$(string-append "/etc/certs/" name "/fullchain.pem"))
+
+         ;; With the new certificates in place, tell nginx to reload them.
+         (with-shepherd-action 'nginx ('reload) result result)
+
          #$@(if deploy-hook-script
                 (list #~(invoke #$deploy-hook-script))
                 '())))))
