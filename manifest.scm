@@ -25,6 +25,11 @@
 ;;     guix shell --pure git git:send-email openssh
 
 (use-modules (guix profiles)
+             (gnu packages gnupg)
              (gnu packages package-management))
 
-(package->development-manifest guix)
+(concatenate-manifests
+ (list (package->development-manifest guix)
+
+       ;; Extra packages used by unit tests.
+       (packages->manifest (list gnupg))))
