@@ -3345,15 +3345,15 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define %boot5-inputs %boot4-inputs)
 (define with-boot5 with-boot4)
 
-(define gnu-make-final
-  ;; The final GNU Make, which uses the final Guile.
+(define (make-gnu-make-final)
+  "Compute the final GNU Make, which uses the final Guile."
   (let ((pkg-config (package
                       (inherit %pkg-config)       ;the native pkg-config
                       (inputs `(("guile" ,guile-final)
                                 ,@(%boot5-inputs)))
                       (arguments
                        `(#:implicit-inputs? #f
-                         ,@(package-arguments pkg-config))))))
+                         ,@(package-arguments %pkg-config))))))
     (package
       (inherit (package-with-bootstrap-guile gnu-make))
       (inputs `(("guile" ,guile-final)
@@ -3442,7 +3442,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
           ("grep" ,grep-final)
           ("xz" ,xz-final)
           ("coreutils" ,coreutils-final)
-          ("make" ,gnu-make-final)
+          ("make" ,(make-gnu-make-final))
           ("bash" ,bash-final)
           ("ld-wrapper" ,ld-wrapper)
           ("binutils" ,binutils-final)
