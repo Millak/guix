@@ -622,7 +622,7 @@ custom assertions to be used alongside native Go testing.")
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
-    (version "0.3.3")
+    (version "0.4.6")
     (source
      (origin
        (method git-fetch)
@@ -632,7 +632,7 @@ custom assertions to be used alongside native Go testing.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "099z04v7vvwwglnps315s9fmal68xvzlc1g8m26iqi980grbwn32"))))
+         "0qikkhanmc0vrpgvs0c44y853n88m8qqsk08zry6mvm8f41pgjhi"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "honnef.co/go/tools"
