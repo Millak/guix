@@ -551,8 +551,9 @@ up with TOR on your system anymore.")
    ("1dl2dpif4wwrlpx7zkz5qf8kk4vhxyf63016xcfpbhxizqqwc1ki" "df2d025ed631" "zh-CN")
    ("1c63ngff9lsc1x3pi6lnkyxw19gdc65yc67p7alzvrka3cv292ia" "11f8d68148a4" "zh-TW")))
 
-;; Must be of the form YYYYMMDDhhmmss as in `date +%Y%m%d%H%M%S`.
-(define %moz-build-date "20240123154553")
+;; We copy the official build id, which can be found there:
+;; https://aus1.torproject.org/torbrowser/update_3/release/.
+(define %moz-build-date "20240115174022")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
 (define %torbrowser-version "13.0.9")
