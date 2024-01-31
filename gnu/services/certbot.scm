@@ -180,15 +180,45 @@ deploy."
        (program-file
         "certbot-command"
         #~(begin
-            (use-modules (ice-9 match))
-            (let ((code 0))
+            (use-modules (ice-9 match)
+                         (ice-9 textual-ports))
+
+            (define (log format-string . args)
+              (apply format #t format-string args)
+              (force-output))
+
+            (define (file-contains? file string)
+              (string-contains (call-with-input-file file
+                                 get-string-all)
+                               string))
+
+            (define (connection-error?)
+              ;; Certbot errors are always exit code 1, so we need to look at
+              ;; the log file to see if there was a connection error.
+              (file-contains? "/var/log/letsencrypt/letsencrypt.log"
+                              "Failed to establish a new connection"))
+
+            (let ((script-code 0))
               (for-each
                (match-lambda
                  ((name . command)
-                  (begin
-                    (format #t "Acquiring or renewing certificate: ~a~%" name)
-                    (set! code (or (apply system* command) code)))))
-               '#$commands) code)))))))
+                  (log "Acquiring or renewing certificate: ~a~%" name)
+                  (cond
+                   ((zero? (status:exit-val (apply system* command)))
+                    (log "Certificate successfully acquired: ~a~%" name))
+                   ((connection-error?)
+                    ;; If we have a connection error, then bail early with
+                    ;; exit code 2. We don't expect this to resolve within the
+                    ;; timespan of this script.
+                    (log "Connection error - bailing out~%")
+                    (exit 2))
+                   (else
+                    ;; If we have any other type of error, then continue but
+                    ;; exit with a failing status code in the end.
+                    (log "Error: ~a - continuing with other domains~%" name)
+                    (set! script-code 1)))))
+               '#$commands)
+              (exit script-code))))))))
 
 (define (certbot-renewal-jobs config)
   (list
@@ -196,6 +226,40 @@ deploy."
    ;; within the hour.  See https://eff-certbot.readthedocs.io/.
    #~(job '(next-minute-from (next-hour '(0 12)) (list (random 60)))
           #$(certbot-command config))))
+
+(define (certbot-renewal-one-shot config)
+  (list
+   ;; Renew certificates when the system first starts. This is a one-shot
+   ;; service, because the mcron configuration will take care of running this
+   ;; periodically. This is most useful the very first time the system starts,
+   ;; to overwrite our self-signed certificates as soon as possible without
+   ;; user intervention.
+   (shepherd-service
+    (provision '(renew-certbot-certificates))
+    (requirement '(nginx))
+    (one-shot? #t)
+    (start #~(lambda _
+               ;; This needs the network, but there's no reliable way to know
+               ;; if the network is up other than trying. If we fail due to a
+               ;; connection error we retry a number of times in the hope that
+               ;; the network comes up soon.
+               (let loop ((attempt 0))
+                 (let ((code (status:exit-val
+                              (system* #$(certbot-command config)))))
+                   (cond
+                    ((and (= code 2)      ; Exit code 2 means connection error
+                          (< attempt 12)) ; Arbitrarily chosen max attempts
+                     (sleep 10)           ; Arbitrarily chosen retry delay
+                     (loop (1+ attempt)))
+                    ((zero? code)
+                     ;; Success!
+                     #t)
+                    (else
+                     ;; Failure.
+                     #f))))))
+    (auto-start? #t)
+    (documentation "Call certbot to renew certificates.")
+    (actions (list (shepherd-configuration-action (certbot-command config)))))))
 
 (define (generate-certificate-gexp certbot-cert-directory rsa-key-size)
   (match-lambda
@@ -240,9 +304,7 @@ deploy."
 
 (define (certbot-activation config)
   (let* ((certbot-directory "/var/lib/certbot")
-         (certbot-cert-directory "/etc/letsencrypt/live")
-         (script (in-vicinity certbot-directory "renew-certificates"))
-         (message (format #f (G_ "~a may need to be run~%") script)))
+         (certbot-cert-directory "/etc/letsencrypt/live"))
     (match config
       (($ <certbot-configuration> package webroot certificates email
                                   server rsa-key-size default-location)
@@ -258,10 +320,7 @@ deploy."
                   (map (generate-certificate-gexp certbot-cert-directory
                                                   rsa-key-size)
                        (filter certificate-configuration-start-self-signed?
-                               certificates)))
-
-             (copy-file #$(certbot-command config) #$script)
-             (display #$message)))))))
+                               certificates)))))))))
 
 (define certbot-nginx-server-configurations
   (match-lambda
@@ -294,7 +353,9 @@ deploy."
                        (service-extension activation-service-type
                                           certbot-activation)
                        (service-extension mcron-service-type
-                                          certbot-renewal-jobs)))
+                                          certbot-renewal-jobs)
+                       (service-extension shepherd-root-service-type
+                                          certbot-renewal-one-shot)))
                 (compose concatenate)
                 (extend (lambda (config additional-certificates)
                           (certbot-configuration
