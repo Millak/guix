@@ -9261,6 +9261,20 @@ commands and user options are usually not implemented here.")
        (sha256
         (base32 "0j2qrnx2w2al4f2n37b89q0pkabh5ccv00gsknvgaylhy0za5gq9"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons* "icons/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'move-doc 'install-doc-images
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((images (find-files "./images/small/" ".*\\.png$")))
+                (for-each
+                 (lambda (image)
+                   (install-file
+                    image
+                    (string-append #$output "/share/info/images/small")))
+                 images)))))))
     (home-page "https://company-mode.github.io/")
     (synopsis "Modular text completion framework")
     (description
