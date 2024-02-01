@@ -24563,14 +24563,14 @@ embeddings and functions to build new reference.")
 (define-public r-tximeta
   (package
     (name "r-tximeta")
-    (version "1.20.2")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tximeta" version))
        (sha256
         (base32
-         "1i6d1kw8wqcdzdhzlix29jl5ka8p54nb4b5zyn9ca356nkxf755q"))))
+         "0hlx5kvhspc62p68gz53n0scwji3zvfv915fm8rzw3l8h2hjh3y7"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
     (propagated-inputs
