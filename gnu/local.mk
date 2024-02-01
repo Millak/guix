@@ -1337,10 +1337,13 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-9-strmov-store-file-names.patch	\
   %D%/packages/patches/gcc-12-strmov-store-file-names.patch	\
   %D%/packages/patches/gcc-10-cross-environment-variables.patch \
+  %D%/packages/patches/gcc-10-libsanitizer-no-crypt.patch	\
   %D%/packages/patches/gcc-11-libstdc++-hurd-libpthread.patch   \
   %D%/packages/patches/gcc-12-cross-environment-variables.patch \
   %D%/packages/patches/gcc-11-libstdc++-powerpc.patch           \
   %D%/packages/patches/gcc-13-cross-system-header-dir.patch     \
+  %D%/packages/patches/gcc-12-libsanitizer-no-crypt.patch	\
+  %D%/packages/patches/gcc-13-libsanitizer-no-crypt.patch	\
   %D%/packages/patches/gcc-13.2.0-libstdc++-docbook-xsl-uri.patch	\
   %D%/packages/patches/gcc-13.2.0-libstdc++-info-install-fix.patch	\
   %D%/packages/patches/gcolor3-update-libportal-usage.patch	\

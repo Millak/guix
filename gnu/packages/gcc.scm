@@ -717,7 +717,8 @@ It also includes runtime support libraries for these languages.")
              (base32
               "1h87lcfaga0ydsf4pkhwlnjr8mky5ix8npbv6iy3jvzlzm1ra415"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
-                                     "gcc-5.0-libvtv-runpath.patch"))
+                                     "gcc-5.0-libvtv-runpath.patch"
+                                     "gcc-10-libsanitizer-no-crypt.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
@@ -742,6 +743,7 @@ It also includes runtime support libraries for these languages.")
               "1ncd7akww0hl5kkmw1dj3qgqp3phdrr5dfnm7jia9s07n0ib4b9z"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"
+                                     "gcc-10-libsanitizer-no-crypt.patch"
                                      "gcc-11-libstdc++-hurd-libpthread.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
@@ -767,6 +769,7 @@ It also includes runtime support libraries for these languages.")
                 "0xcida8l2wykvvzvpcrcn649gj0ijn64gwxbplacpg6c0hk6akvh"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"
+                                       "gcc-12-libsanitizer-no-crypt.patch"
                                        "gcc-11-libstdc++-hurd-libpthread.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
@@ -791,7 +794,8 @@ It also includes runtime support libraries for these languages.")
                (base32
                 "10y0l1hx1haz4cj4d4g9f2ci5h7z9555i52f90zs2hwm3iifji88"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
-                                       "gcc-5.0-libvtv-runpath.patch"))
+                                       "gcc-5.0-libvtv-runpath.patch"
+                                       "gcc-13-libsanitizer-no-crypt.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
     (arguments
