@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -44,10 +45,12 @@
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
 
@@ -1514,6 +1517,25 @@ programming language, which supports draft-04, draft-06 and draft-07.")
 Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
+
+(define-public go-minify
+  (package
+    (inherit go-github-com-tdewolff-minify-v2)
+    (name "go-minify")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-tdewolff-minify-v2)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/tdewolff/minify/v2")
+        "github.com/tdewolff/minify/cmd/minify")))
+    (inputs
+     (list go-github-com-djherbis-atime
+           go-github-com-dustin-go-humanize
+           go-github-com-fsnotify-fsnotify
+           go-github-com-matryer-try
+           go-github-com-spf13-pflag))
+    (description "This package provides a CLI binary executible built from
+go-github-com-tdewolff-minify-v2 source.")))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
