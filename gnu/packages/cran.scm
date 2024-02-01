@@ -6256,16 +6256,17 @@ Station Long Term Ecological Research (LTER) Program.")
 (define-public r-pastecs
   (package
    (name "r-pastecs")
-   (version "1.3.21")
+   (version "1.4.2")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "pastecs" version))
             (sha256
              (base32
-              "0z4dic94ar646w7zc2ggi5hgvf2qnznsani94c5pyql8zspz47lc"))))
+              "1y3nngdmslbs1rls0n2nbx8jpp9z3nvv11w1z6rff6v0ky05ddj3"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-boot))
+   (native-inputs (list r-knitr))
    (home-page "https://github.com/phgrosjean/pastecs")
    (synopsis "Analysis of space-time ecological series")
    (description
