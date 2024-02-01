@@ -15159,14 +15159,14 @@ through permutation testing.")
 (define-public r-intergraph
   (package
     (name "r-intergraph")
-    (version "2.0-3")
+    (version "2.0-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "intergraph" version))
        (sha256
         (base32
-         "1s578six6chn98ifgc8kdi2kxgim0mgw5di9sbk8c4aamjl40iim"))))
+         "1jarzhrgm5g8z2h10h8x7jk9q2al6rx5kgnwvwi2199am6gjypsq"))))
     (properties `((upstream-name . "intergraph")))
     (build-system r-build-system)
     (propagated-inputs
