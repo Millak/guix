@@ -9347,15 +9347,6 @@ configuration languages, but other uses may be possible too.")
     (description "This package implements a low-level key/value store in Go.")
     (license license:expat)))
 
-(define-public age-keygen
-  (package
-    (inherit go-filippo-io-age)
-    (name "age-keygen")
-    (arguments
-     `(#:import-path "filippo.io/age/cmd/age-keygen"
-       #:unpack-path "filippo.io/age"
-       #:install-source? #f))))
-
 (define-public go-github-com-bwesterb-go-ristretto
   (package
     (name "go-github-com-bwesterb-go-ristretto")
