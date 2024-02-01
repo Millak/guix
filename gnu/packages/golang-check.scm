@@ -674,7 +674,7 @@ advanced Go linter.")
     (inherit go-honnef-co-go-tools)
     (name "go-staticcheck")
     (arguments
-     `(#:go ,go-1.18
+     `(#:go ,go-1.20
        #:import-path "honnef.co/go/tools/cmd/staticcheck"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
