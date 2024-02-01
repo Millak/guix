@@ -661,7 +661,8 @@ advanced Go linter.")
     (inherit go-honnef-co-go-tools)
     (name "go-keyify")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/keyify"
+     `(#:go ,go-1.20
+       #:import-path "honnef.co/go/tools/cmd/keyify"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
