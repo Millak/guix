@@ -84,6 +84,10 @@
             libc-utf8-locales-for-target
             make-ld-wrapper
             libiconv-if-needed
+
+            ;; Beware: the following should not be used the top level to avoid
+            ;; introducing circular module dependencies.
+            canonical-package
             %final-inputs))
 
 ;;; Commentary:
@@ -1778,12 +1782,18 @@ package needs iconv ,@(libiconv-if-needed) should be added."
       (list libiconv)
       '()))
 
-(define-public (canonical-package package)
+;;; Beware: canonical-package should not be used at the top level, to avoid
+;;; eagerly resolving (gnu packages commencement), which would introduce
+;;; circular module dependencies.
+(define (canonical-package package)
   ;; Avoid circular dependency by lazily resolving 'commencement'.
   (let* ((iface (resolve-interface '(gnu packages commencement)))
          (proc  (module-ref iface 'canonical-package)))
     (proc package)))
 
+;;; Beware: %final-inputs should not be used at the top level, to avoid
+;;; eagerly resolving (gnu packages commencement), which would introduce
+;;; circular module dependencies.
 (define* (%final-inputs #:optional (system (%current-system)))
   "Return the list of \"final inputs\"."
   ;; Avoid circular dependency by lazily resolving 'commencement'.
