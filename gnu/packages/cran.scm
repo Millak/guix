@@ -31074,14 +31074,14 @@ first.")
 (define-public r-fracdiff
   (package
     (name "r-fracdiff")
-    (version "1.5-2")
+    (version "1.5-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fracdiff" version))
        (sha256
         (base32
-         "0dzl011c92skf7hmx1zvdwsrashmfkxy9p2wig35nzr8609qhpxc"))))
+         "1h3zpy6j6w4w09nfh42jb58q0z5l3g4s556hza9zzzlj81mr940g"))))
     (properties `((upstream-name . "fracdiff")))
     (build-system r-build-system)
     (home-page "https://github.com/mmaechler/fracdiff")
