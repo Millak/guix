@@ -704,7 +704,8 @@ flag.")))
     (inherit go-honnef-co-go-tools)
     (name "go-structlayout-optimize")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
+     `(#:go ,go-1.20
+       #:import-path "honnef.co/go/tools/cmd/structlayout-optimize"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Reorder struct fields to minimize the amount of padding in Go")
