@@ -2498,13 +2498,13 @@ functionalities needed to treat uncertainties in studies.")
 (define-public r-coda
   (package
     (name "r-coda")
-    (version "0.19-4")
+    (version "0.19-4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "coda" version))
               (sha256
                (base32
-                "13z5dwfpnyyhpsbpg4xr9g5c1685jhqj90f4x4qkcykr6kykqba2"))))
+                "1mlaf3ffql3phc12vlfss0vqqdj415mxsg84vsdgymmvdzc53d7l"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
