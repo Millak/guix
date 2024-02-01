@@ -689,7 +689,8 @@ simplifications, and enforces style rules.")))
     (inherit go-honnef-co-go-tools)
     (name "go-structlayout")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout"
+     `(#:go ,go-1.20
+       #:import-path "honnef.co/go/tools/cmd/structlayout"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Display the layout (field sizes and padding) of structs in Go")
