@@ -38237,17 +38237,22 @@ user streams, and to parse the output into data frames.")
 (define-public r-strex
   (package
     (name "r-strex")
-    (version "1.6.1")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "strex" version))
               (sha256
                (base32
-                "1vz5zrvf052bg2y48yvkci4hciknvyw5gpbvnklgyny5lzlqvyiq"))))
+                "1cxkpqwnpsqkg0i6n6bkkgbf3jkbgff5s8db95rz57lki8xwlqp9"))))
     (properties `((upstream-name . "strex")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-checkmate r-magrittr r-rlang r-stringi r-stringr))
+     (list r-checkmate
+           r-lifecycle
+           r-magrittr
+           r-rlang
+           r-stringi
+           r-stringr))
     (native-inputs (list r-knitr))
     (home-page "https://rorynolan.github.io/strex/")
     (synopsis "Extra string manipulation functions")
