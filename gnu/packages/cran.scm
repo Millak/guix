@@ -16608,13 +16608,13 @@ estimation problem.")
 (define-public r-quickjsr
   (package
     (name "r-quickjsr")
-    (version "1.1.0")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "QuickJSR" version))
               (sha256
                (base32
-                "1mkgj7ralipfpj7vwij6g9fyzzfp6yz8fnvd9078g63dn8g4lxby"))))
+                "0ccp7dx2jhlarfn48jc0mhci5kkj0r3ibh6rjnxswvp3yg2x2bgd"))))
     (properties `((upstream-name . "QuickJSR")))
     (build-system r-build-system)
     (propagated-inputs (list r-jsonlite r-r6 r-rcpp))
