@@ -741,21 +741,10 @@ It also includes runtime support libraries for these languages.")
              (base32
               "1ncd7akww0hl5kkmw1dj3qgqp3phdrr5dfnm7jia9s07n0ib4b9z"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
-                                     "gcc-5.0-libvtv-runpath.patch"))
+                                     "gcc-5.0-libvtv-runpath.patch"
+                                     "gcc-11-libstdc++-hurd-libpthread.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
-   (arguments
-    (substitute-keyword-arguments (package-arguments gcc-8)
-      ((#:phases phases #~%standard-phases)
-       (if (target-hurd?)
-           #~(modify-phases #$phases
-               (add-after 'unpack 'patch-hurd-libpthread
-                 (lambda _
-                   (define patch
-                     #$(local-file
-                        (search-patch "gcc-11-libstdc++-hurd-libpthread.patch")))
-                   (invoke "patch" "--force" "-p1" "-i" patch))))
-           phases))))
    (properties
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-11-aarch64-micro-architectures)
@@ -777,7 +766,8 @@ It also includes runtime support libraries for these languages.")
                (base32
                 "0xcida8l2wykvvzvpcrcn649gj0ijn64gwxbplacpg6c0hk6akvh"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
-                                       "gcc-5.0-libvtv-runpath.patch"))
+                                       "gcc-5.0-libvtv-runpath.patch"
+                                       "gcc-11-libstdc++-hurd-libpthread.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
