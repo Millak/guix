@@ -11551,6 +11551,42 @@ may contain sets, maps may be keyed by sets, etc.")
      ;; Tests fails on ECL with "The function FSET::MAKE-CHAR is undefined".
      '(#:tests? #f))))
 
+(define-public sbcl-modf
+  (let ((commit "dea93fe62c6bf7f66f32f52ac0c555aedbf7abad")
+        (revision "0"))
+    (package
+      (name "sbcl-modf")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/smithzvk/modf")
+               (commit commit)))
+         (file-name (git-file-name "cl-modf" version))
+         (sha256
+          (base32
+           "1aap7ldy7lv942khp026pgndgdzfkkqa9xcq1ykinrmflrgdazay"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-iterate))
+      (native-inputs
+       (list sbcl-stefil))
+      (home-page "https://github.com/smithzvk/modf")
+      (synopsis "SETF like macro for functional programming in Common Lisp")
+      (description "This library simplifies functional programming in Common
+Lisp by making it easier to make new data structures with specified changes in
+place.")
+      (license license:bsd-3))))
+
+(define-public cl-modf
+  (sbcl-package->cl-source-package sbcl-modf))
+
+(define-public ecl-modf
+  (sbcl-package->ecl-package sbcl-modf))
+
 (define-public sbcl-cl-cont
   (let ((commit "fc1fa7e6eb64894fdca13e688e6015fad5290d2a")
         (revision "1"))
