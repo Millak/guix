@@ -32387,14 +32387,14 @@ using the @code{rstan} and @code{rstanarm} packages).")
 (define-public r-rstantools
   (package
     (name "r-rstantools")
-    (version "2.3.1.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstantools" version))
        (sha256
         (base32
-         "0bp20jcdbscsm3s4ik86k3hfsdwkj2k6yzj41zwd0q8lq5afwq7j"))))
+         "1ajg7g425cmw9h9a8225szmacwyvdwl3x0k851fnqb1my2i2rxxz"))))
     (properties `((upstream-name . "rstantools")))
     (build-system r-build-system)
     (inputs (list pandoc))
