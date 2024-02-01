@@ -36150,18 +36150,19 @@ functions or computational engines (e.g. R, Spark, Stan, etc).")
 (define-public r-infer
   (package
     (name "r-infer")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "infer" version))
        (sha256
         (base32
-         "1zs1c22zc255m23in99cqp2chpdkski002rywmkdzwf6nd96mly7"))))
+         "0rlb7l6jl6f5kgzd9s08bifgvyafvjyfpazgqzl0w1ki875642n1"))))
     (properties `((upstream-name . "infer")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
+           r-cli
            r-dplyr
            r-generics
            r-ggplot2
