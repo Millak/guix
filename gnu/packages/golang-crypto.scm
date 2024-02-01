@@ -84,6 +84,15 @@ It features small explicit keys, no configuration options, and Unix-style
 composability.")
     (license license:bsd-3)))
 
+(define-public age
+  (package
+    (inherit go-filippo-io-age)
+    (name "age")
+    (arguments
+     `(#:import-path "filippo.io/age/cmd/age"
+       #:unpack-path "filippo.io/age"
+       #:install-source? #f))))
+
 (define-public go-filippo-io-edwards25519
   (package
     (name "go-filippo-io-edwards25519")
