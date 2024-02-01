@@ -8512,13 +8512,13 @@ dimensioned arrays.")
 (define-public r-magicaxis
   (package
     (name "r-magicaxis")
-    (version "2.2.14")
+    (version "2.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "magicaxis" version))
        (sha256
-        (base32 "1gqnivn6qjmf7axdi0pff6a40clklbipcr6qvm6ivzqbqhpbcb7v"))))
+        (base32 "04wj0g345mlndd1s7v7klxldxlp293xdgjyrnfpzxckg59804j3d"))))
     (properties `((upstream-name . "magicaxis")))
     (build-system r-build-system)
     (propagated-inputs
