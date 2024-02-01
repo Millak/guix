@@ -718,7 +718,8 @@ into @code{go-structlayout-pretty}.")))
     (inherit go-honnef-co-go-tools)
     (name "go-structlayout-pretty")
     (arguments
-     `(#:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
+     `(#:go ,go-1.20
+       #:import-path "honnef.co/go/tools/cmd/structlayout-pretty"
        #:unpack-path "honnef.co/go/tools"
        #:install-source? #f))
     (synopsis "Format the output of go-structlayout with ASCII art in Go")
