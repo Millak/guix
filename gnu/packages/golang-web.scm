@@ -57,12 +57,18 @@
 ;;; Commentary:
 ;;;
 ;;; Golang modules (libraries) related to HTML, CSS, SCSS, JavaScript, JSON,
-;;; Web-framework, REST-API or similar functionality.
+;;; Web-framework, REST-API or similar functionality. They may provide
+;;; executables and libraries, for which there are marked sections.
+
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
 ;;;
 ;;; Code:
 
+;;;
+;;; Libraries:
+;;;
+
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
@@ -1517,6 +1523,10 @@ programming language, which supports draft-04, draft-06 and draft-07.")
 Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
+
+;;;
+;;; Executables:
+;;;
 
 (define-public go-minify
   (package
