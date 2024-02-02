@@ -1667,8 +1667,10 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
            libtool
            perl
            pkg-config
-           python-3
-           python-passlib))
+           ;; Do not run tests needing python, since Python < 3.13 needs it
+           ;; for its crypt module
+           #;python-3
+           #;python-passlib))
     (synopsis
      "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
     (description
