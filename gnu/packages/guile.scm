@@ -488,7 +488,10 @@ without requiring the source code to be rewritten.")
                       (display #$version port)))))
               (add-before 'check 'skip-failing-tests
                 (lambda _
-                  (delete-file "test-suite/tests/version.test")))))))
+                  (delete-file "test-suite/tests/version.test")))
+              #$@(if (target-hurd?)
+                     #~((delete 'patch-posix-spawn-usage))
+                     #~())))))
       (native-inputs
        (modify-inputs (package-native-inputs guile-3.0)
          (prepend autoconf
