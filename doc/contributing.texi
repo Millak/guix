@@ -2339,7 +2339,7 @@ Perhaps the biggest action you can do to help GNU Guix grow as a project
 is to review the work contributed by others.  You do not need to be a
 committer to do so; applying, reading the source, building, linting and
 running other people's series and sharing your comments about your
-experience will give some confidence to committers.  Basically, you gmust
+experience will give some confidence to committers.  Basically, you must
 ensure the check list found in the @ref{Submitting Patches} section has
 been correctly followed.  A reviewed patch series should give the best
 chances for the proposed change to be merged faster, so if a change you
