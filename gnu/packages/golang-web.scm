@@ -1081,6 +1081,7 @@ Microsoft AD PAC authorization data.")
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-objx
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/jmespath/go-jmespath")
     (synopsis "Golang implementation of JMESPath")
