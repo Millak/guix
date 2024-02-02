@@ -82,6 +82,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
@@ -908,6 +909,7 @@ the freedesktop.org XDG Base Directory specification.")
           '())
       (list linux-pam
             libcap
+            libxcrypt
             `(,util-linux "lib")        ;for 'libmount'
             shadow                      ;for 'nologin'
             shepherd                    ;for 'halt' and 'reboot', invoked
