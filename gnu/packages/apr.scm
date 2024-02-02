@@ -33,14 +33,14 @@
 (define-public apr
   (package
     (name "apr")
-    (version "1.7.0")
+    (version "1.7.4")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/apr/apr-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1spp6r2a3xcl5yajm9safhzyilsdzgagc2dadif8x6z9nbq4iqg2"))
+               "0xsmqgjiyw3s6va5dm86djnjzg9r0qc1zsldwz4sd8pkhglqsr7w"))
              (patches
               (search-patches "apr-skip-getservbyname-test.patch"))
              (patch-flags '("-p0"))))
