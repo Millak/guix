@@ -21912,8 +21912,8 @@ Common Lisp.")
   (sbcl-package->cl-source-package sbcl-metacopy))
 
 (define-public sbcl-legit
-  (let ((commit "5f8a2d4c4f5fb8e53340eeef600433ee20e03fbe")
-        (revision "2"))
+  (let ((commit "9c677b9b798803d37ab6f5e0e0705441872f7230")
+        (revision "3"))
     (package
       (name "sbcl-legit")
       (version (git-version "1.0.0" revision commit))
@@ -21923,9 +21923,9 @@ Common Lisp.")
          (uri (git-reference
                (url "https://github.com/Shinmera/legit")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-legit" version))
          (sha256
-          (base32 "0crr7ya7dg15di7glk3w9sgf6j8dmny347gynmxxrdvjj9pa906m"))))
+          (base32 "0jy021ywrbnkgbgb63ip6j7kr40m4wz2pz1v5ybn6xkkn6dyprsz"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
