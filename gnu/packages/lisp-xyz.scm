@@ -1073,7 +1073,7 @@ options, e.g., by looking up an external key/value store
 (define-public sbcl-command-line-args
   (package
     (name "sbcl-command-line-args")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1082,7 +1082,7 @@ options, e.g., by looking up an external key/value store
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-command-line-args" version))
        (sha256
-        (base32 "0ncw32qaak878xg68p42m2sh0qv19hg1va9wrh74d92v7cqz08kw"))))
+        (base32 "140xnz2v0v3hfg3dp2fhidw8ns6lxd3a5knm07wqdp48ksg119wy"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("whereiseveryone.command-line-args")))
