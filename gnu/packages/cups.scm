@@ -33,6 +33,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages fonts)     ; font-dejavu
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages ghostscript)
@@ -334,7 +335,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
                           (if (%current-target-system)
                               (list this-package)
                               '())))
-    (inputs (list zlib gnutls))
+    (inputs (list zlib gnutls libxcrypt))
     (home-page "https://openprinting.github.io/cups")
     (synopsis "The Common Unix Printing System")
     (description
