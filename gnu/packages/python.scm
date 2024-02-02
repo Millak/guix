@@ -84,6 +84,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
@@ -211,7 +212,20 @@
              "CFLAGS=-fno-semantic-interposition"
              (string-append "LDFLAGS=-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib"
-                            " -fno-semantic-interposition"))
+                            " -fno-semantic-interposition")
+             ;; Add a reference to libxcrypt in LIBS so that the sysconfigdata
+             ;; file records it and propagates it to programs linking against
+             ;; Python.
+             (let ((libxcrypt
+                    (false-if-exception
+                     (dirname
+                      (search-input-file %build-inputs
+                                         "lib/libcrypt.so.1")))))
+               (string-append
+                "LIBS="
+                (if libxcrypt
+                    (string-append "-L" libxcrypt)
+                    ""))))
        ;; With no -j argument tests use all available cpus, so provide one.
        #:make-flags
        (list (string-append
@@ -312,6 +326,18 @@
                      '("email/test" "ctypes/test" "unittest/test" "tkinter/test"
                        "sqlite3/test" "bsddb/test" "lib-tk/test" "json/tests"
                        "distutils/tests"))))))))
+         (add-after 'install 'add-libxcrypt-reference-pkgconfig
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (define out (assoc-ref outputs "out"))
+             (define libxcrypt
+               (false-if-exception
+                (dirname (search-input-file inputs "lib/libcrypt.so.1"))))
+             (when libxcrypt
+               (substitute*
+                   (find-files (string-append out "/lib/pkgconfig")
+                               ".*\\.pc")
+                 (("-lcrypt")
+                  (string-append "-L" libxcrypt " -lcrypt"))))))
          (add-after 'remove-tests 'move-tk-inter
            (lambda* (#:key outputs #:allow-other-keys)
              ;; When Tkinter support is built move it to a separate output so
@@ -387,6 +413,8 @@
            expat
            gdbm
            libffi ; for ctypes
+           libxcrypt ; crypto module slated for removal in 3.13, re-enable
+                     ; python tests of libxcrypt when that happens
            sqlite ; for sqlite extension
            openssl-1.1
            readline
