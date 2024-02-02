@@ -5252,6 +5252,7 @@ similar word.")
                                         'build)
                              `(,@arguments #:import-path
                                "github.com/client9/misspell/cmd/misspell")))))))
+    (propagated-inputs (list go-github-com-gobwas-glob))
     (home-page "https://github.com/client9/misspell")
     (synopsis "Correct commonly misspelled English words in source files")
     (description
