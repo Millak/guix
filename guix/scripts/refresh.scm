@@ -43,7 +43,7 @@
   #:use-module (guix gnupg)
   #:use-module (guix hash)
   #:use-module (gnu packages)
-  #:use-module ((gnu packages commencement) #:select (%final-inputs))
+  #:use-module ((gnu packages base) #:select (%final-inputs))
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:use-module (ice-9 regex)
