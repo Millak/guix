@@ -43,6 +43,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6334,7 +6335,7 @@ representation suitable for computing diffs.")
 (define-public go-github-com-kr-text
   (package
     (name "go-github-com-kr-text")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6343,10 +6344,11 @@ representation suitable for computing diffs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gm5bsl01apvc84bw06hasawyqm4q84vx1pm32wr9jnd7a8vjgj1"))))
+                "0hf58ypz6rxsw6nx3i856whir9lvy4sdx946wbw1nfaf2rdmr9vx"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/kr/text"))
+    (propagated-inputs (list go-github-com-creack-pty))
     (synopsis "Text formatting in Go")
     (description "This package provides a text formatting functions in Go.")
     (home-page "https://github.com/kr/text")
