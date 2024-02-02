@@ -101,7 +101,7 @@ around or take advantage of platform-specific deficiencies or features.")
                "1dbjjwyfqvq7xa7xsxq2rv0clkwsmna2j12575n34ih7f7ipc454"))))
     (build-system gnu-build-system)
     (inputs
-     (list apr))
+     (list apr libxcrypt))
     (propagated-inputs
      (list expat))
     (arguments
