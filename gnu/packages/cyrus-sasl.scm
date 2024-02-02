@@ -23,6 +23,7 @@
 (define-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages tls)
@@ -45,7 +46,7 @@
                (base32
                 "135kbgyfpa1mwqp5dm223yr6ddzi4vjm7cr414d7rmhys2mwdkvw"))))
     (build-system gnu-build-system)
-    (inputs (list gdbm mit-krb5 openssl))
+    (inputs (list gdbm libxcrypt mit-krb5 openssl))
     (arguments
      (list
       #:configure-flags #~(list (string-append "--with-plugindir="
