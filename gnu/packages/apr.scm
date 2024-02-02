@@ -26,6 +26,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages autotools))
@@ -51,16 +52,25 @@
      ;; Thus, build sequentially.
      `(#:parallel-build? #f
        #:parallel-tests? #f
-       ,@(if (target-ppc32?)
-           `(#:phases
-             (modify-phases %standard-phases
-               (add-after 'unpack 'patch-sources
-                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                   (invoke "patch" "-p1" "--force" "--input"
-                           (assoc-ref (or native-inputs inputs)
-                                      "atomics-patch"))))))
-           '())))
-    (inputs (list perl libltdl))
+       #:phases
+       (modify-phases %standard-phases
+         ,@(if (target-ppc32?)
+               `((add-after 'unpack 'patch-sources
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     (invoke "patch" "-p1" "--force" "--input"
+                             (assoc-ref (or native-inputs inputs)
+                                        "atomics-patch")))))
+               '())
+         (add-after 'install 'patch-libxcrypt-reference
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (define out (assoc-ref outputs "out"))
+             (define libxcrypt
+               (dirname (search-input-file inputs "/lib/libcrypt.so.1")))
+             (substitute* (list (string-append out "/bin/apr-1-config")
+                                (string-append out "/lib/pkgconfig/apr-1.pc"))
+               (("-lcrypt")
+                (string-append "-L" libxcrypt " -lcrypt"))))))))
+    (inputs (list perl libltdl libxcrypt))
     (native-inputs
      `(,@(if (target-ppc32?)
            `(("atomics-patch"
