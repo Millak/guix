@@ -1976,17 +1976,17 @@ that allows you to run services and through them access the Bitcoin Cash network
        (patches (search-patches "beancount-disable-googleapis-fonts.patch"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f  ; Says test is missing, not sure why
-       #:phases
-       (modify-phases %standard-phases
-         ;; Not importing the googleapis package for now
-         (add-after 'unpack 'ignore-googleapis
-           (lambda _
-             (substitute* "setup.py"
-               (("'google-api-python-client',") ""))
-             #t))
-         ;; No module named 'google_auth_oauthlib'
-         (delete 'sanity-check))))
+     (list
+      #:tests? #f  ; Says test is missing, not sure why
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Not importing the googleapis package for now
+          (add-after 'unpack 'ignore-googleapis
+            (lambda _
+              (substitute* "setup.py"
+                (("'google-api-python-client',") ""))))
+          ;; No module named 'google_auth_oauthlib'
+          (delete 'sanity-check))))
     (inputs
      (list python-beautifulsoup4
            python-bottle
