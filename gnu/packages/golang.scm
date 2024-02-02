@@ -6764,6 +6764,8 @@ mutex, simply ignore the RLock/RUnlock functions.")
      '(#:import-path "github.com/cheekybits/genny"))
     (propagated-inputs
      (list go-golang-org-x-tools))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (synopsis "Generics for Go")
     (description "This package provides @code{genny}, a Go language
 implementation of generics.")
