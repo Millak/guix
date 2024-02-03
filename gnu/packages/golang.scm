@@ -4776,31 +4776,28 @@ to interact with distribution components.")
       (license license:asl2.0))))
 
 (define-public go-github-com-docker-go-connections
-  (let ((commit "3ede32e2033de7505e6500d6c868c2b9ed9f169d")
-        (revision "0"))
-    (package
-      (name "go-github-com-docker-go-connections")
-      (version (git-version "0.0.0" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/docker/go-connections")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-            (base32
-              "0v1pkr8apwmhyzbjfriwdrs1ihlk6pw7izm57r24mf9jdmg3fyb0"))))
-      (build-system go-build-system)
-      (arguments
-        '(#:import-path "github.com/docker/go-connections"))
-      (home-page "https://github.com/docker/go-connections")
-      (synopsis "Networking library for Go")
-      (description
-       "This package provides a library to work with network connections in
-the Go language.  In particular it provides tools to deal with network address
+  (package
+    (name "go-github-com-docker-go-connections")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/go-connections")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0svfa9g4xvbn87l5kiww1jkijmci9g5821wjp81xz1rfp13cqrk8"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/docker/go-connections"))
+    (home-page "https://github.com/docker/go-connections")
+    (synopsis "Networking library for Go")
+    (description
+     "This package provides a library to work with network connections in the
+Go language.  In particular it provides tools to deal with network address
 translation (NAT), proxies, sockets, and transport layer security (TLS).")
-      (license license:asl2.0))))
+    (license license:asl2.0)))
 
 (define-public go-github-com-docker-go-units
   (package
