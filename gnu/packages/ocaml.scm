@@ -30,6 +30,7 @@
 ;;; Copyright © 2023 Csepp <raingloom@riseup.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Arnaud DABY-SEESARAM <ds-ac@nanein.fr>
+;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2325,6 +2326,27 @@ defined in this library.")
      `(#:dune ,ocaml5.0-dune-bootstrap
        #:ocaml ,ocaml-5.0
        #:findlib ,ocaml5.0-findlib))))
+
+(define-public ocaml-iso8601
+  (package
+    (name "ocaml-iso8601")
+    (version "0.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml-community/ISO8601.ml")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nzadswspizi7s6sf67icn2xgc3w150x8vdg5nk1mjrm2s98n6d3"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-stdlib-shims ocaml-core-unix ocaml-ounit))
+    (synopsis "Parser and printer for date-times in ISO8601")
+    (description "This package allows parsing of dates that follow the ISO 8601
+and RFC 3339 formats in OCaml.")
+    (home-page "https://github.com/ocaml-community/ISO8601.ml")
+    (license license:expat)))
 
 (define-public ocaml-topkg
   (package
