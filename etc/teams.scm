@@ -716,6 +716,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "w@wmeyer.eu")
   kernel)
 
+(define-member (person "Mark H Weaver"
+                       "mhw@netris.org")
+  mozilla)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
