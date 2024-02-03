@@ -8713,6 +8713,8 @@ errors (warnings).")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/go-git/go-billy/v5"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://github.com/go-git/go-billy/")
