@@ -20,25 +20,20 @@
 (define-module (guix import composer)
   #:use-module (ice-9 match)
   #:use-module (json)
-  #:use-module (guix base32)
-  #:use-module (guix build git)
-  #:use-module (guix build utils)
-  #:use-module (guix build-system)
   #:use-module (guix build-system composer)
   #:use-module ((guix diagnostics) #:select (warning))
-  #:use-module (guix hash)
+  #:use-module ((guix download) #:select (download-to-store))
   #:use-module (guix i18n)
   #:use-module (guix import json)
   #:use-module (guix import utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix memoization)
   #:use-module (guix packages)
-  #:use-module (guix serialization)
+  #:use-module (guix store)
   #:use-module (guix upstream)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:export (composer->guix-package
             %composer-updater
@@ -135,55 +130,34 @@ COMPOSER-PACKAGE."
          (dependencies (map php-package-name
                             (composer-package-require composer-package)))
          (dev-dependencies (map php-package-name
-                                (composer-package-dev-require composer-package)))
-         (git? (equal? (composer-source-type source) "git")))
-    ((if git? call-with-temporary-directory call-with-temporary-output-file)
-     (lambda* (temp #:optional port)
-       (and (if git?
-               (begin
-                 (mkdir-p temp)
-                 (git-fetch (composer-source-url source)
-                            (composer-source-reference source)
-                            temp))
-               (url-fetch (composer-source-url source) temp))
-            `(package
-               (name ,(composer-package-name composer-package))
-               (version ,(composer-package-version composer-package))
-               (source
-                (origin
-                  ,@(if git?
-                        `((method git-fetch)
-                          (uri (git-reference
-                                (url ,(if (string-suffix?
-                                           ".git"
-                                           (composer-source-url source))
-                                          (string-drop-right
-                                           (composer-source-url source)
-                                           (string-length ".git"))
-                                          (composer-source-url source)))
-                                (commit ,(composer-source-reference source))))
-                          (file-name (git-file-name name version))
-                          (sha256
-                           (base32
-                            ,(bytevector->nix-base32-string
-                              (file-hash* temp)))))
-                        `((method url-fetch)
-                          (uri ,(composer-source-url source))
-                          (sha256 (base32 ,(guix-hash-url temp)))))))
-               (build-system composer-build-system)
-               ,@(if (null? dependencies)
-                     '()
-                     `((inputs
-                        (list ,@(map string->symbol dependencies)))))
-               ,@(if (null? dev-dependencies)
-                     '()
-                     `((native-inputs
-                        (list ,@(map string->symbol dev-dependencies)))))
-               (synopsis "")
-               (description ,(composer-package-description composer-package))
-               (home-page ,(composer-package-homepage composer-package))
-               (license ,(or (composer-package-license composer-package)
-                             'unknown-license!))))))))
+                                (composer-package-dev-require composer-package))))
+    `(package
+       (name ,(composer-package-name composer-package))
+       (version ,(composer-package-version composer-package))
+       (source
+        ,(if (string= (composer-source-type source) "git")
+             (git->origin (composer-source-url source)
+                          (const (composer-source-reference source)))
+             (let* ((source (composer-source-url source))
+                    (tarball (with-store store (download-to-store store source))))
+               `(origin
+                  (method url-fetch)
+                  (uri ,source)
+                  (sha256 (base32 ,(guix-hash-url tarball)))))))
+       (build-system composer-build-system)
+       ,@(if (null? dependencies)
+             '()
+             `((inputs
+                (list ,@(map string->symbol dependencies)))))
+       ,@(if (null? dev-dependencies)
+             '()
+             `((native-inputs
+                (list ,@(map string->symbol dev-dependencies)))))
+       (synopsis "")
+       (description ,(composer-package-description composer-package))
+       (home-page ,(composer-package-homepage composer-package))
+       (license ,(or (composer-package-license composer-package)
+                     'unknown-license!)))))
 
 (define composer->guix-package
   (memoize

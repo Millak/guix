@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 François Joulaud <francois.joulaud@radiofrance.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,7 +25,7 @@
   #:use-module (guix base32)
   #:use-module (guix build-system go)
   #:use-module (guix import go)
-  #:use-module (guix base32)
+  #:use-module (guix import utils)
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module (guix tests)
   #:use-module (ice-9 match)
@@ -407,13 +408,11 @@ package.")
             (mock-http-get fixtures-go-check-test))
          (mock ((guix http-client) http-fetch
                 (mock-http-fetch fixtures-go-check-test))
-             (mock ((guix git) update-cached-checkout
-                    (lambda* (url #:key ref)
-                      ;; Return an empty directory and its hash.
-                      (values checkout
-                              (nix-base32-string->bytevector
-                               "0sjjj9z1dhilhpc8pq4154czrb79z9cm044jvn75kxcjv6v5l2m5")
-                              #f)))
-                 (go-module->guix-package* "github.com/go-check/check")))))))
+             (mock ((guix import utils) git->origin
+                    ;; Mock an empty directory by replacing hash.
+                    (lambda* (url proc #:key ref #:rest args)
+                      (git-origin url (peek-body proc) "\
+0sjjj9z1dhilhpc8pq4154czrb79z9cm044jvn75kxcjv6v5l2m5")))
+                   (go-module->guix-package* "github.com/go-check/check")))))))
 
 (test-end "go")

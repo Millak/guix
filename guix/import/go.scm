@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -549,65 +550,33 @@ source."
       goproxy
       (module-meta-repo-root meta-data)))
 
-(define* (git-checkout-hash url reference algorithm)
-  "Return the ALGORITHM hash of the checkout of URL at REFERENCE, a commit or
-tag."
-  (define cache
-    (string-append (or (getenv "TMPDIR") "/tmp")
-                   "/guix-import-go-"
-                   (passwd:name (getpwuid (getuid)))))
-
-  ;; Use a custom cache to avoid cluttering the default one under
-  ;; ~/.cache/guix, but choose one under /tmp so that it's persistent across
-  ;; subsequent "guix import" invocations.
-  (mkdir-p cache)
-  (chmod cache #o700)
-  (let-values (((checkout commit _)
-                (parameterize ((%repository-cache-directory cache))
-                  (catch 'git-error
-                    (lambda ()
-                      (update-cached-checkout url
-                                              #:ref
-                                              `(tag-or-commit . ,reference)))
-                    (lambda (key err)
-                      (warning (G_ "failed to check out ~s from Git repository at '~a': ~a~%")
-                               reference url (git-error-message err))
-                      (values #f #f #f))))))
-        (if (and checkout commit)
-            (file-hash* checkout #:algorithm algorithm #:recursive? #true)
-            (nix-base32-string->bytevector
-             "0000000000000000000000000000000000000000000000000000"))))
-
 (define (vcs->origin vcs-type vcs-repo-url version subdir)
   "Generate the `origin' block of a package depending on what type of source
-control system is being used."
+control system is being used. Optionally use the function TRANSFORM-VERSION
+which takes version as an input."
   (case vcs-type
     ((git)
-     (let* ((plain-version? (string=? version (go-version->git-ref version
-                                                                   #:subdir subdir)))
+     ;; XXX: The version field of the package, which the generated quoted
+     ;; expression refers to, has been stripped of any 'v' prefixed.
+     (let* ((git-ref (go-version->git-ref version #:subdir subdir))
+            (plain-version? (string=? version git-ref))
             (v-prefixed?    (string-prefix? "v" version))
-            ;; This is done because the version field of the package,
-            ;; which the generated quoted expression refers to, has been
-            ;; stripped of any 'v' prefixed.
-            (version-expr   (if (and plain-version? v-prefixed?)
-                                '(string-append "v" version)
-                                `(go-version->git-ref version
-                                                      ,@(if subdir `(#:subdir ,subdir) '())))))
-       `(origin
-          (method git-fetch)
-          (uri (git-reference
-                (url ,vcs-repo-url)
-                ;; This is done because the version field of the package,
-                ;; which the generated quoted expression refers to, has been
-                ;; stripped of any 'v' prefixed.
-                (commit ,version-expr)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            ,(bytevector->nix-base32-string
-              (git-checkout-hash vcs-repo-url (go-version->git-ref version
-                                                                   #:subdir subdir)
-                                 (hash-algorithm sha256))))))))
+            (pure-version   (if v-prefixed?
+                                (string-drop version 1)
+                                version)))
+       (if (and plain-version? v-prefixed?)
+           (git->origin vcs-repo-url
+                        (peekable-lambda (version)
+                          (string-append "v" version))
+                        pure-version)
+           (git->origin vcs-repo-url
+                        (if subdir
+                            (peekable-lambda (version subdir)
+                              (go-version->git-ref version #:subdir subdir))
+                            (peekable-lambda (version subdir)
+                              (go-version->git-ref version)))
+                        pure-version
+                        subdir))))
     ((hg)
      `(origin
         (method hg-fetch)

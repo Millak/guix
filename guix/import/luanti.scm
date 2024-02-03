@@ -33,7 +33,6 @@
   #:use-module (guix import utils)
   #:use-module (guix import json)
   #:use-module (json)
-  #:use-module (guix base32)
   #:use-module (guix git)
   #:use-module ((guix git-download) #:prefix download:)
   #:use-module (guix hash)
@@ -278,12 +277,6 @@ results.  The return value is a list of <package-keys> records."
 
 
 
-;; XXX copied from (guix import elpa)
-(define* (download-git-repository url ref)
-  "Fetch the given REF from the Git repository at URL."
-  (with-store store
-    (latest-repository-commit store url #:ref ref)))
-
 (define (make-luanti-sexp author/name version repository commit
                             inputs home-page synopsis
                             description media-license license)
@@ -293,25 +286,7 @@ MEDIA-LICENSE and LICENSE."
   `(package
      (name ,(contentdb->package-name author/name))
      (version ,version)
-     (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url ,repository)
-                (commit ,commit)))
-         (sha256
-          (base32
-           ;; The git commit is not always available.
-           ,(and commit
-                 (bytevector->nix-base32-string
-                  (file-hash*
-                   (download-git-repository repository
-                                            `(commit . ,commit))
-                   ;; 'download-git-repository' already filtered out the '.git'
-                   ;; directory.
-                   #:select? (const #true)
-                   #:recursive? #true)))))
-         (file-name (git-file-name name version))))
+     (source ,(git->origin repository (const #f)))
      (build-system luanti-mod-build-system)
      ,@(maybe-propagated-inputs (map contentdb->package-name inputs))
      (home-page ,home-page)

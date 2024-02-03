@@ -61,11 +61,11 @@
       (origin
         (method git-fetch)
         (uri (git-reference
-              (url ,(and (not (eq? repo 'null)) repo))
-              (commit #f)))
+               (url ,(and (not (eq? repo 'null)) repo))
+               (commit #f)))
+        (file-name (git-file-name name version))
         (sha256
-         (base32 #f))
-        (file-name (git-file-name name version))))
+         (base32 #f))))
      (build-system luanti-mod-build-system)
      ,@(maybe-propagated-inputs inputs)
      (home-page ,home-page)

@@ -13,8 +13,8 @@
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2023, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
-;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +42,8 @@
   #:use-module (guix deprecation)
   #:use-module (guix discovery)
   #:use-module (guix build-system)
+  #:use-module (guix git)
+  #:use-module (guix hash)
   #:use-module ((guix i18n) #:select (G_))
   #:use-module (guix store)
   #:use-module (guix download)
@@ -69,6 +71,10 @@
 
             peekable-lambda
             peek-body
+
+            download-git-repository
+            git-origin
+            git->origin
 
             package-names->package-inputs
             maybe-inputs
@@ -176,6 +182,45 @@ thrown."
 
 (define (peek-body proc)
   (procedure-property proc 'body))
+
+(define (download-git-repository url ref)
+  "Fetch the given REF from the Git repository at URL.  Return three values :
+the commit hash, the downloaded directory and its content hash."
+  (with-store store
+    (let (((values checkout commit-hash)
+           (latest-repository-commit store url #:ref ref)))
+      (values commit-hash
+              checkout
+              (bytevector->nix-base32-string
+               (query-path-hash store checkout))))))
+
+(define (git-origin url commit hash)
+  "Simple helper to generate a Git origin s-expression."
+  `(origin
+     (method git-fetch)
+     (uri (git-reference
+            (url ,(and (not (eq? url 'null)) url))
+            (commit ,commit)))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 ,hash))))
+
+(define* (git->origin url proc #:key ref #:rest rest)
+  "Return a generated `origin' block of a package depending on the Git version
+control system, and the directory in the store where the package has been
+downloaded, in case further processing is necessary.
+
+Unless overwritten with REF, the ref (as defined by the (guix git) module)
+is calculated from the evaluation of PROC with trailing arguments.  PROC must
+be a procedure with a 'body property, used to generate the origin sexp."
+  (let* ((args (strip-keyword-arguments '(#:ref) rest))
+         (commit (apply proc args))
+         (ref (or ref (and commit `(tag-or-commit . ,commit))))
+         (_ directory hash
+            (if (or ref commit)
+                (download-git-repository url ref)
+                (values #f #f #f))))
+    (values (git-origin url (peek-body proc) hash) directory)))
 
 (define %spdx-license-identifiers
   ;; https://spdx.org/licenses/

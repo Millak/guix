@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -212,11 +213,6 @@ include VERSION."
                             url)))
       (_ #f))))
 
-(define* (download-git-repository url ref)
-  "Fetch the given REF from the Git repository at URL."
-  (with-store store
-    (latest-repository-commit store url #:ref ref)))
-
 (define (package-name->melpa-recipe package-name)
   "Fetch the MELPA recipe for PACKAGE-NAME, represented as an alist from
 keywords to values."
@@ -236,46 +232,34 @@ keywords to values."
     (close-port port)
     (data->recipe (cons ':name data))))
 
-(define (git-repository->origin recipe url)
-  "Fetch origin details from the Git repository at URL for the provided MELPA
-RECIPE."
-  (define ref
-    (cond
-     ((assoc-ref recipe #:branch)
-      => (lambda (branch) (cons 'branch branch)))
-     ((assoc-ref recipe #:commit)
-      => (lambda (commit) (cons 'commit commit)))
-     (else
-      '())))
-
-  (let-values (((directory commit) (download-git-repository url ref)))
-    `(origin
-       (method git-fetch)
-       (uri (git-reference
-             (url ,url)
-             (commit ,commit)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         ,(bytevector->nix-base32-string
-           (file-hash* directory #:recursive? #true)))))))
+(define (ref recipe)
+  "Create REF from MELPA RECIPE."
+  (cond
+   ((assoc-ref recipe #:branch)
+    => (lambda (branch) (cons 'branch branch)))
+   ((assoc-ref recipe #:commit)
+    => (lambda (commit) (cons 'commit commit)))
+   (else
+    '())))
 
 (define* (melpa-recipe->origin recipe)
   "Fetch origin details from the MELPA recipe and associated repository for
 the package named PACKAGE-NAME."
-  (define (github-repo->url repo)
-    (string-append "https://github.com/" repo ".git"))
-  (define (gitlab-repo->url repo)
-    (string-append "https://gitlab.com/" repo ".git"))
+  (define (recipe->origin url)
+    (git->origin url (const #f) #:ref (ref recipe)))
 
   (match (assq-ref recipe ':fetcher)
-    ('github (git-repository->origin recipe (github-repo->url (assq-ref recipe ':repo))))
-    ('gitlab (git-repository->origin recipe (gitlab-repo->url (assq-ref recipe ':repo))))
-    ('git    (git-repository->origin recipe (assq-ref recipe ':url)))
-    (#f #f)   ; if we're not using melpa then this stops us printing a warning
-    (_ (warning (G_ "unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%")
-                (assq-ref recipe ':fetcher))
-       #f)))
+    ('github (recipe->origin
+              (string-append "https://github.com/" (assq-ref recipe ':repo))))
+    ('gitlab (recipe->origin
+              (string-append "https://gitlab.com/" (assq-ref recipe ':repo))))
+    ('git    (recipe->origin (assq-ref recipe ':repo)))
+    ;; XXX: if we're not using melpa then this stops us printing a warning
+    (#f      #f)
+    (_       (warning (G_ "\
+unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%")
+                      (assq-ref recipe ':fetcher))
+             #f)))
 
 (define (elpa-dependency->upstream-input dependency)
   "Convert DEPENDENCY, an sexp as returned by 'elpa-package-inputs', into an
