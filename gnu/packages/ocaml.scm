@@ -2348,6 +2348,29 @@ and RFC 3339 formats in OCaml.")
     (home-page "https://github.com/ocaml-community/ISO8601.ml")
     (license license:expat)))
 
+(define-public ocaml-toml
+  (package
+    (name "ocaml-toml")
+    (version "7.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml-toml/To.ml")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z2873mj3i6h9cg8zlkipcjab8jympa4c4avhk4l04755qzphkds"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-base ocaml-mdx ocaml-menhir ocaml-iso8601))
+    (synopsis "TOML library for OCaml")
+    (description
+     "This package provides an OCaml library for interacting with files
+in the @acronym{TOML, Tom's Obvious Minimal Language} format.  Specifically,
+it provides a parser, a serializer, and a pretty printer.")
+    (home-page "https://github.com/ocaml-toml/To.ml")
+    (license license:expat)))
+
 (define-public ocaml-topkg
   (package
     (name "ocaml-topkg")
