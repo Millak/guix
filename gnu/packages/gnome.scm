@@ -1684,7 +1684,7 @@ to preview files on the GNOME desktop.")
 (define-public rygel
   (package
     (name "rygel")
-    (version "0.42.4")
+    (version "0.42.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1692,7 +1692,7 @@ to preview files on the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1xq36f0n42yall67ibqzqsdpvljbdanhy0lvkc8ncark5nmdy433"))))
+                "17yqnw802vp92cs7ci7kjrixbj446gcriai2dggal4375qnn0cqi"))))
     (build-system meson-build-system)
     (arguments
      ;; Disable the tracker plugin.
