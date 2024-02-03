@@ -1469,6 +1469,39 @@ libglade (and it an generate OCaml code from .glade files),
 libpanel, librsvg and quartz.")
     (license license:lgpl2.1)))
 
+(define-public binsec
+  (package
+    (name "binsec")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/binsec/binsec")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j6lwj20jaq0702v2fqvsrax1400zqbvz5q2cmjqhvrjzcfcl0kr"))))
+    (build-system dune-build-system)
+    (native-inputs (list gmp ocaml-qcheck ocaml-ounit2))
+    (propagated-inputs (list dune-site
+                             ocaml-base
+                             ocaml-menhir
+                             ocaml-graph
+                             ocaml-zarith
+                             ocaml-grain-dypgen
+                             ocaml-toml))
+    (synopsis "Binary-level analysis platform")
+    (description
+     "BINSEC is a binary analysis platform which implements analysis
+techniques such as symbolic execution.  The goal of BINSEC is to improve
+software security at the binary level through binary analysis.  BINSEC
+is a research tool which relies on prior work in binary code analysis
+at the intersection of formal methods, program analysis security and
+software engineering.")
+    (home-page "https://binsec.github.io/")
+    (license license:lgpl2.1)))
+
 (define-public unison
   (package
     (name "unison")
