@@ -2371,6 +2371,40 @@ it provides a parser, a serializer, and a pretty printer.")
     (home-page "https://github.com/ocaml-toml/To.ml")
     (license license:expat)))
 
+(define-public ocaml-grain-dypgen
+  (package
+    (name "ocaml-grain-dypgen")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grain-lang/dypgen")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jyxkvi75nchk5kmhqixmjy70z55gmlqa83pxn0hsv2qxvyqxavw"))))
+    (build-system ocaml-build-system)
+    (arguments
+     (list
+      ;; Upstream does not have a test suite.
+      #:tests? #f
+      #:make-flags #~(let ((out #$output))
+                       (list (string-append "OCAMLLIBDIR=" out
+                                            "/lib/ocaml/site-lib")
+                             (string-append "BINDIR=" out "/bin")
+                             (string-append "MANDIR=" out "/share/man")))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (properties `((upstream-name . "grain_dypgen")))
+    (home-page "https://github.com/grain-lang/dypgen")
+    (synopsis "Self-extensible parsers and lexers for OCaml")
+    (description
+     "This package provides a @acronym{GLR, generalized LR} parser generator
+for OCaml.  It is able to generate self-extensible parsers (also called
+adaptive parsers) as well as extensible lexers for the parsers it produces.")
+    (license license:cecill-b)))
+
 (define-public ocaml-topkg
   (package
     (name "ocaml-topkg")
