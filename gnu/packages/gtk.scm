@@ -993,7 +993,7 @@ application suites.")
   (package
     (inherit gtk+-2)
     (name "gtk+")
-    (version "3.24.38")
+    (version "3.24.41")
     (source
      (origin
        (method url-fetch)
@@ -1002,7 +1002,7 @@ application suites.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1rwfvm2098pkwnnxjm70ig44x1a2fbwa8i2ma3cbs9cb077xw4ff"))
+         "1ymna7b8p668wxbca1pgjqpw02ya4p86yaa9pja7l27kg9463nj7"))
        (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
                                 "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     ;; There is no "doc" output, because adding gtk-doc here would introduce a
