@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen@protonmail.com>
-;;; Copyright © 2020, 2021, 2023 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -154,6 +154,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -1564,13 +1565,10 @@ libebml is a C++ library to read and write EBML files.")
                                   "/share/vulkan/registry/vk.xml"))))
     (native-inputs
      (list glad python python-mako pkg-config))
-    (inputs
-     (list lcms
-           libepoxy
-           mesa
-           shaderc
-           vulkan-headers
-           vulkan-loader))
+    (inputs (list libepoxy mesa vulkan-headers))
+    ;; These are propagated as they are listed in 'Requires.private' of
+    ;; libplacebo.pc.
+    (propagated-inputs (list lcms shaderc vulkan-loader))
     (home-page "https://code.videolan.org/videolan/libplacebo")
     (synopsis "GPU-accelerated image/video processing library")
     (description "libplacebo is, in a nutshell, the core rendering algorithms
@@ -2642,31 +2640,43 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
               "-Ddvdnav=enabled"
               "-Dbuild-date=false")))
     (native-inputs
-     (list perl ; for zsh completion file
-           pkg-config python-docutils python-wrapper))
+     (list perl                         ;for zsh completion file
+           pkg-config
+           python-docutils
+           python-wrapper))
     ;; Missing features: libguess, V4L2.
     (inputs
-     (list alsa-lib
-           enca
-           ffmpeg
-           jack-1
+     (list enca
            ladspa
            lcms
+           libbs2b
+           mpg123
+           rsound
+           vulkan-headers
+           vulkan-loader
+           yt-dlp))
+    ;; XXX: These are propagated for the mpv pkg-config package, as they are
+    ;; listed in Requires.private and would break 'pkg-config --exists mpv' if
+    ;; unavailable.
+    (propagated-inputs
+     (list alsa-lib
+           ffmpeg
+           jack-1
            libass
            libbluray
            libcaca
-           libbs2b
            libcdio-paranoia
-           libdvdread
+           libdrm
            libdvdnav
+           libdvdread
            libjpeg-turbo
            libplacebo
            libva
            libvdpau
            libx11
            libxext
-           libxkbcommon
            libxinerama
+           libxkbcommon
            libxpresent
            libxrandr
            libxscrnsaver
@@ -2674,15 +2684,10 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            ;; XXX: lua > 5.2 is not currently supported; see meson.build
            lua-5.2
            mesa
-           mpg123
            pulseaudio
-           rsound
            shaderc
-           vulkan-headers
-           vulkan-loader
            wayland
            wayland-protocols
-           yt-dlp
            zimg
            zlib))
     (home-page "https://mpv.io/")
@@ -2781,18 +2786,35 @@ images and image hosting sites.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "1384y8n3l0xk8hbad1nsj9ljzb1h02g3ln3jysd8bd6shbl0x4mx"))))
-    (build-system copy-build-system)
+    (build-system gnu-build-system)
     (arguments
-     '(#:install-plan
-       '(("mpris.so" "lib/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'build
-           (lambda _
-             (setenv "CC" (which "gcc"))
-             (invoke "make"))))))
+     (list
+      #:make-flags
+      #~(list (string-append "SCRIPTS_DIR=" #$output "/lib")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key inputs native-inputs tests? #:allow-other-keys)
+              (if tests?
+                  (begin
+                    (setenv
+                     "MPV_MPRIS_TEST_PLAY"
+                     (search-input-file
+                      (or native-inputs inputs)
+                      "share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"))
+                    (invoke "make" "test"))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list pkg-config))
+     (list dbus
+           jq
+           pkg-config
+           playerctl
+           socat
+           sound-theme-freedesktop
+           xorg-server-for-tests
+           xvfb-run))
     (inputs
      (list ffmpeg glib mpv))
     (home-page "https://github.com/hoyon/mpv-mpris")
@@ -3332,10 +3354,8 @@ MPEG-2 stream containing VOB packets.")
                (base32
                 "0cv7j8irsv1n2dadlnhr6i1b8pann2ah6xpxic41f04my6ba6rp5"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libdvdread))
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list libdvdread)) ;in 'Requires.private' of dvdnav.pc
     (home-page "http://dvdnav.mplayerhq.hu/")
     (synopsis "Library for video DVD navigation features")
     (description
@@ -4542,6 +4562,39 @@ of modern, widely supported codecs.")
     ;; Some under GPLv2+, some under LGPLv2.1+, and portions under BSD3.
     ;; Combination under GPLv2.  See LICENSE.
     (license license:gpl2)))
+
+(define-public h264bitstream
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
+  (let ((commit "ae72f7395f328876199a7e928d3b4a6dc6a7ce14")
+        (revision "1"))
+    (package
+      (name "h264bitstream")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/aizvorski/h264bitstream")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pqzfzkgqk5zjh5ywc7l7mffs2vh6wlzssvq2jxildygvqxs3pjp"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no test suite
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'install 'fix-include-bs-h
+                            (lambda _
+                              (symlink (string-append #$output
+                                        "/include/h264bitstream/bs.h")
+                                       (string-append #$output "/include/bs.h")))))))
+      (native-inputs (list autoconf automake libtool pkg-config))
+      (inputs (list ffmpeg))
+      (synopsis "Library to read and write H.264 video bitstreams")
+      (description
+       "This package provides the GameStream code shared between Moonlight clients.")
+      (home-page "https://github.com/aizvorski/h264bitstream")
+      (license license:lgpl2.1+))))
 
 (define-public intel-vaapi-driver
   (package

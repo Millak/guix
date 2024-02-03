@@ -19,6 +19,7 @@
 
 (define-module (gnu packages uucp)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages texinfo)
   #:use-module (guix licenses)

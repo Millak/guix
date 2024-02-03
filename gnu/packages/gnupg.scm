@@ -71,6 +71,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tor)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
@@ -1129,7 +1130,7 @@ files, to verify signatures, and to manage the private and public keys.")
            perl-try-tiny
            perl-type-tiny
            perl-types-path-tiny
-           (@ (gnu packages tor) torsocks))) ;avoid dependency loop
+           torsocks))
     (native-inputs
      (list perl-file-which
            perl-gnupg-interface

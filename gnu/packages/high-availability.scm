@@ -64,7 +64,7 @@
 (define-public haproxy
   (package
     (name "haproxy")
-    (version "2.7.6")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -72,7 +72,7 @@
                            (version-major+minor version)
                            "/src/haproxy-" version ".tar.gz"))
        (sha256
-        (base32 "0kxpvrn6iaxhw2f2hrxblns6pnxmrds3vvs9h6nwbkrzvdykagqk"))))
+        (base32 "1aqfp1gslk4dfvrrzg51h0mn1j4n4in82z701bi7ycs63b6qm8gv"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -110,7 +110,7 @@ realistic with today's hardware.")
 (define-public libqb
   (package
     (name "libqb")
-    (version "2.0.7")
+    (version "2.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -118,7 +118,7 @@ realistic with today's hardware.")
                     version "/libqb-" version ".tar.xz"))
               (sha256
                (base32
-                "0xd51wh7gdindh6fzi62r4xp9lkayggb1rqsprqmjkh1m71gnvin"))))
+                "1rifa94zrdr7d5gsy4yvkgqfx8f4yx4xr96hqvs05b5q43y329dl"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libxml2))
@@ -137,7 +137,7 @@ applications.")
 (define-public kronosnet
   (package
     (name "kronosnet")
-    (version "1.24")
+    (version "1.28")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -146,7 +146,7 @@ applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b8rz7f2h3scrq0xcqz58ckzsvv08g31j5jgy2v4i6w87r9c75lw"))))
+                "05kws374sj0p3yg918kf2l2jp518k0c9j5qgzb9gl327cwlbwkls"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX: Multiple tests failed. Tests
@@ -197,7 +197,7 @@ applications.")
 (define-public nsq
   (package
     (name "nsq")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -206,7 +206,7 @@ applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ajqjwfn06zsmz21z9mkl4cblarypaf20228pqcd1293zl6y3ry8"))))
+        (base32 "1227ricbng8r5svnpr6hkmwjafa74jdp3ivijrk55qhw43rjk05a"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -223,7 +223,9 @@ applications.")
               (when tests?
                 (setenv "HOME" "/tmp")
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke #$@(if (target-x86?)
+                ;; go test: -race is only supported on linux/amd64,
+                ;; linux/ppc64le, linux/arm64
+                  (invoke #$@(if (not target-x86-32?)
                                  (list "go" "test" "-v" "-race" "./...")
                                  (list "go" "test" "-v" "./...")))))))
           (replace 'install
@@ -280,7 +282,7 @@ instrumentation
 (define-public corosync
   (package
     (name "corosync")
-    (version "3.1.6")
+    (version "3.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -289,7 +291,7 @@ instrumentation
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03g3qnm5acmk7jry6kspvkssbiv8k39749bic2f0cj3ckkwy2li4"))))
+                "02imkif6lzhr8mwbwphdp4m6w987pqnrhai8zx06vpygiasx6cyp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--disable-static")
@@ -329,7 +331,7 @@ lost.
 (define-public pacemaker
   (package
     (name "pacemaker")
-    (version "2.1.4")
+    (version "2.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -338,7 +340,7 @@ lost.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04gfd7i3w0zbzv7vi7728lgbyjq7cbqpr7jsp501piwg3z5j4mvb"))))
+                "0vhimylbkwabi0hksgs66awn9iq3ik02k1n4xghxh81nhz7kjmdz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-corosync" "--disable-static"

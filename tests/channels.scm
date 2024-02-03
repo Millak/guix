@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -191,10 +191,59 @@
                            (and (eq? (channel-name
                                       (channel-instance-channel instance))
                                      'test-channel)
-                                (string=? (channel-commit
-                                           (channel-instance-channel instance))
-                                          "abc1234")))
+                                (equal? (channel-commit
+                                         (channel-instance-channel instance))
+                                        "abc1234")))
                          instances)))))))
+
+(test-equal "latest-channel-instances reads dependencies from most-specific instance"
+  '(chan1 chan2)
+  ;; Here '.guix-channel' in DIRECTORY2 is less specific than the
+  ;; user-provided channel spec in ONE: the latter specifies a commit.  Since
+  ;; the most specific one "wins", the bogus '.guix-channel' file added in
+  ;; DIRECTORY1 as its second commit must not be taken into account.
+  ;; See <https://issues.guix.gnu.org/68822>.
+  (with-temporary-git-repository directory1
+      `((add "a.scm" "(define-module (a))")
+        (commit "first commit")
+        (add ".guix-channel"
+             ,(object->string
+               '(channel
+                 (version 0)
+                 (dependencies
+                  ;; Attempting to fetch this dependency would fail.
+                  (channel
+                   (name nonexistent-dependency)
+                   (url "http://guix.example.org/does-not-exist.git"))))))
+        (commit "second commit"))
+    (with-temporary-git-repository directory2
+        `((add ".guix-channel"
+               ,(object->string
+                 `(channel (version 0)
+                           (dependencies
+                            (channel
+                             (name chan1)
+                             ;; Note: no 'commit' field here.
+                             (url ,(string-append "file://" directory1)))))))
+          (commit "initial commit"))
+      (with-repository directory1 repository
+        (let* ((commit (find-commit repository "first"))
+               (one    (channel
+                        (url (string-append "file://" directory1))
+                        (commit (oid->string (commit-id commit))) ;<- specific
+                        (name 'chan1)))
+               (two    (channel
+                        (url (string-append "file://" directory2))
+                        (name 'chan2))))
+
+          (with-store store
+            (map (compose channel-name channel-instance-channel)
+                 (delete-duplicates
+                  (append (latest-channel-instances store (list one two))
+                          (latest-channel-instances store (list two one)))
+                  (lambda (instance1 instance2)
+                    (string=? (channel-instance-commit instance1)
+                              (channel-instance-commit instance2)))))))))))
 
 (test-equal "latest-channel-instances #:validate-pull"
   'descendant

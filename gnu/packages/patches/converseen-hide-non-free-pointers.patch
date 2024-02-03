@@ -2,10 +2,10 @@ Remove pointers to PayPal and Facebook.
 Upstream status: Guix-specific, not forwarded upstream.
 
 diff --git a/src/dialoginfo.cpp b/src/dialoginfo.cpp
-index 3302f55..b64f414 100755
+index 52dd628..b37c413 100755
 --- a/src/dialoginfo.cpp
 +++ b/src/dialoginfo.cpp
-@@ -31,7 +31,6 @@ DialogInfo::DialogInfo(QWidget *parent) :
+@@ -33,7 +33,6 @@ DialogInfo::DialogInfo(QWidget *parent) :
      setupUi(this);
  
      connect(pushClose, SIGNAL(clicked()), this, SLOT(close()));
@@ -13,44 +13,99 @@ index 3302f55..b64f414 100755
  
      QString appVersion;
      QString magickVersion;
-@@ -63,8 +62,3 @@ void DialogInfo::openFacebookPage()
-     QDesktopServices::openUrl(QUrl("https://www.facebook.com/converseen", QUrl::TolerantMode));
+@@ -66,62 +65,4 @@ DialogInfo::DialogInfo(QWidget *parent) :
+                                    .arg(qtVersionStrTr)
+                                    .arg(QT_VERSION_STR);
+     labelQtVersion->setText(qt_versionString);
+-
+-    // This section generates a Text + Png pixmap icon for the donazion button!
+-
+-    QString donateText = tr("Make a Donation!");
+-    QString donateDescriptionText = tr("Donate using PayPal, Ko-Fi or Cryptocurrencies.");
+-
+-    QString htmlDonationText = QString(R"(
+-        <style>
+-            table {
+-                border-collapse: collapse;
+-            }
+-            td {
+-                text-align: center;
+-                vertical-align: middle;
+-                padding: 5px;
+-            }
+-        </style>
+-
+-        <table>
+-            <tr>
+-                <td><img src=':/Images/res/heart.png' width='52' height='52'></td>
+-                <td>
+-                    <span style='font-weight: bold; font-size:18pt; text-align: center;'>%1</span><br />
+-                    <span style='font-style: italic; font-size:8pt; text-align: center;'>%2</span>
+-                </td>
+-            </tr>
+-        </table>
+-    )")
+-    .arg(donateText, donateDescriptionText);
+-
+-    QTextDocument donateHtmlText;
+-    donateHtmlText.setHtml(htmlDonationText);
+-
+-    QPixmap pixmapDonationText(donateHtmlText.size().width(), donateHtmlText.size().height());
+-    pixmapDonationText.fill( Qt::transparent );
+-
+-    QPainter painter( &pixmapDonationText );
+-    painter.setRenderHint(QPainter::Antialiasing, true);
+-
+-    donateHtmlText.drawContents(&painter, pixmapDonationText.rect());
+-
+-    QIcon donateButtonIcon(pixmapDonationText);
+-    pushDonatePayPal->setIcon(donateButtonIcon);
+-    pushDonatePayPal->setIconSize(pixmapDonationText.rect().size());
+-
+-    adjustSize();
+-    this->resize(512, 800);
+-}
+-
+-void DialogInfo::openFacebookPage()
+-{
+-    QDesktopServices::openUrl(QUrl("https://www.facebook.com/converseen", QUrl::TolerantMode));
  }
- 
+-
 -void DialogInfo::on_pushDonatePayPal_clicked()
 -{
--    QDesktopServices::openUrl(QUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HQA6TBT5354FC", QUrl::TolerantMode));
+-    QDesktopServices::openUrl(QUrl("https://converseen.fasterland.net/donate/", QUrl::TolerantMode));
 -}
 -
 diff --git a/src/dialoginfo.h b/src/dialoginfo.h
-index 4c13776..f1b7ea3 100755
+index 4d8ba15..ef6afa9 100755
 --- a/src/dialoginfo.h
 +++ b/src/dialoginfo.h
-@@ -33,7 +33,6 @@ public:
+@@ -32,8 +32,6 @@ public:
+     DialogInfo(QWidget *parent = 0);
  
  private slots:
-     void openFacebookPage();
+-    void openFacebookPage();
 -    void on_pushDonatePayPal_clicked();
  };
  
  #endif // DIALOGINFO_H
 diff --git a/src/mainwindowimpl.cpp b/src/mainwindowimpl.cpp
-index 83a365f..9a44492 100755
+index 71ddc2c..bd4294b 100755
 --- a/src/mainwindowimpl.cpp
 +++ b/src/mainwindowimpl.cpp
-@@ -162,7 +162,6 @@ void MainWindowImpl::createActions()
+@@ -163,7 +163,6 @@ void MainWindowImpl::createActions()
      connect(actionConvert, SIGNAL(triggered()), this, SLOT(elabora()));
  
      connect(actionInfo, SIGNAL(triggered()), this, SLOT(about()));
 -    connect(actionDonatePaypal, SIGNAL(triggered()), this, SLOT(openPaypalLink()));
      connect(actionReportBug, SIGNAL(triggered()), this, SLOT(bugReport()));
- }
- 
+     connect(actionCheckForUpdates, SIGNAL(triggered()), this, SLOT(checkForUpdates()));
+     connect(actionHelp, SIGNAL(triggered()), this, SLOT(onlineHelp()));
 diff --git a/ui/dialoginfo.ui b/ui/dialoginfo.ui
-index b2c7788..20b9d9d 100755
+index 2878670..0535a85 100755
 --- a/ui/dialoginfo.ui
 +++ b/ui/dialoginfo.ui
-@@ -254,122 +254,6 @@ p, li { white-space: pre-wrap; }
+@@ -273,146 +273,6 @@ p, li { white-space: pre-wrap; }
       </layout>
      </widget>
     </item>
@@ -69,13 +124,25 @@ index b2c7788..20b9d9d 100755
 -     <item>
 -      <layout class="QHBoxLayout" name="horizontalLayout_4">
 -       <item>
+-        <spacer name="horizontalSpacer_4">
+-         <property name="orientation">
+-          <enum>Qt::Horizontal</enum>
+-         </property>
+-         <property name="sizeHint" stdset="0">
+-          <size>
+-           <width>40</width>
+-           <height>20</height>
+-          </size>
+-         </property>
+-        </spacer>
+-       </item>
+-       <item>
 -        <widget class="QPushButton" name="pushDonatePayPal">
+-         <property name="cursor">
+-          <cursorShape>PointingHandCursor</cursorShape>
+-         </property>
 -         <property name="text">
 -          <string/>
--         </property>
--         <property name="icon">
--          <iconset resource="../resources.qrc">
--           <normaloff>:/Images/res/btn_donateCC_LG.png</normaloff>:/Images/res/btn_donateCC_LG.png</iconset>
 -         </property>
 -         <property name="iconSize">
 -          <size>
@@ -83,10 +150,26 @@ index b2c7788..20b9d9d 100755
 -           <height>50</height>
 -          </size>
 -         </property>
+-         <property name="autoDefault">
+-          <bool>false</bool>
+-         </property>
 -         <property name="flat">
 -          <bool>true</bool>
 -         </property>
 -        </widget>
+-       </item>
+-       <item>
+-        <spacer name="horizontalSpacer_5">
+-         <property name="orientation">
+-          <enum>Qt::Horizontal</enum>
+-         </property>
+-         <property name="sizeHint" stdset="0">
+-          <size>
+-           <width>40</width>
+-           <height>20</height>
+-          </size>
+-         </property>
+-        </spacer>
 -       </item>
 -      </layout>
 -     </item>
@@ -141,6 +224,9 @@ index b2c7788..20b9d9d 100755
 -           <height>32</height>
 -          </size>
 -         </property>
+-         <property name="autoDefault">
+-          <bool>false</bool>
+-         </property>
 -         <property name="flat">
 -          <bool>true</bool>
 -         </property>
@@ -163,34 +249,27 @@ index b2c7788..20b9d9d 100755
 -     </item>
 -    </layout>
 -   </item>
--   <item>
--    <widget class="Line" name="line">
--     <property name="orientation">
--      <enum>Qt::Horizontal</enum>
--     </property>
--    </widget>
--   </item>
     <item>
-     <widget class="QLabel" name="label_2">
-      <property name="text">
+     <widget class="Line" name="line">
+      <property name="orientation">
 diff --git a/ui/mainwindow.ui b/ui/mainwindow.ui
-index 28df8cc..0ee7f37 100755
+index 24bda6f..e8a072d 100755
 --- a/ui/mainwindow.ui
 +++ b/ui/mainwindow.ui
-@@ -1334,18 +1334,6 @@ p, li { white-space: pre-wrap; }
-     <string>F1</string>
+@@ -1408,18 +1408,6 @@ p, li { white-space: pre-wrap; }
+     <string>&amp;About</string>
     </property>
    </action>
 -  <action name="actionDonatePaypal">
 -   <property name="icon">
 -    <iconset resource="../resources.qrc">
--     <normaloff>:/Images/res/paypal_mini.png</normaloff>:/Images/res/paypal_mini.png</iconset>
+-     <normaloff>:/Images/res/heart.png</normaloff>:/Images/res/heart.png</iconset>
 -   </property>
 -   <property name="text">
--    <string>&amp;Donate via Paypal</string>
+-    <string>&amp;Donate!</string>
 -   </property>
 -   <property name="toolTip">
--    <string>Donate via Paypal</string>
+-    <string>Donate via Paypal, Ko-Fi, Cryptocurrencies</string>
 -   </property>
 -  </action>
    <action name="actionReportBug">

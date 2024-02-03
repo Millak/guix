@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022–2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -323,6 +325,29 @@ answer set programming.  It supports a subset of PDDL 3.1 and SAS 3.")
 in particular ones that can be solved by @command{clingo}.")
      (license license:gpl3+))))
 
+(define-public (make-lua-clingo name lua)
+  (package
+    (inherit clingo)
+    (name name)
+    (version (package-version clingo)) ; for #$version in arguments
+    (arguments
+     (substitute-keyword-arguments (package-arguments clingo)
+       ((#:configure-flags flags #~'())
+        #~(cons* "-DCLINGO_BUILD_WITH_LUA=yes"
+                 (string-append "-DLUACLINGO_INSTALL_DIR="
+                                #$output "/lib/lua/"
+                                #$(package-version lua))
+                 "-DCLINGO_USE_LIB=yes"
+                 #$flags))))
+    (inputs (list clingo lua))
+    (synopsis "Lua bindings for clingo")
+    (description "This package provides Lua bindings to the clingo package,
+making it so that you can write @acronym{ASPs, Answer Set Programs} through
+Lua code.")))
+
+(define-public lua5.1-clingo (make-lua-clingo "lua5.1-clingo" lua-5.1))
+(define-public lua5.2-clingo (make-lua-clingo "lua5.2-clingo" lua-5.2))
+
 (define-public python-clingo
   (package
     (inherit clingo)
@@ -369,40 +394,112 @@ in particular ones that can be solved by @command{clingo}.")
 making it so that you can write @acronym{ASPs, Answer Set Programs} through
 Python code.")))
 
+(define-public python-clingo-dl
+  (package
+    (inherit clingo-dl)
+    (name "python-clingo-dl")
+    (version (package-version clingo-dl))
+    (arguments
+     (list
+      #:configure-flags #~'("-DPYCLINGODL_ENABLE=pip")
+      #:tests? #f
+      #:imported-modules  `(,@%cmake-build-system-modules
+                            (guix build python-build-system))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-distinfo
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (python:site-packages inputs outputs)
+                (let ((dir (string-append "clingodl-" #$version ".dist-info")))
+                  (mkdir-p dir)
+                  (call-with-output-file (string-append dir "/METADATA")
+                    (lambda (port)
+                      (format port "Metadata-Version: 1.1~%")
+                      (format port "Name: clingodl~%")
+                      (format port "Version: ~a~%" #$version))))))))))
+    (inputs (modify-inputs (package-inputs clingo-dl)
+              (prepend python-wrapper)))
+    (propagated-inputs (list python-clingo python-cffi))
+    (synopsis "Python bindings for clingo-dl")
+    (description "This package allows users to add the clingo-dl propagator
+as a theory to clingo from Python code.  It also supports running clingo-dl
+directly from the python command line.")))
+
 (define-public python-clorm
   (package
-   (name "python-clorm")
-   (version "1.4.1")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url "https://github.com/potassco/clorm")
-                  (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "0jx99y71mrgdicn1da5dwz5nzgvvpabrikff783sg4shbv2cf0b5"))))
-   (build-system pyproject-build-system)
-   (arguments
-    (list #:phases
-          #~(modify-phases %standard-phases
-              (add-before 'check 'fix-breaking-tests
-                (lambda _
-                  ;; noclingo tests rely on this being set
-                  (setenv "CLORM_NOCLINGO" "1")
-                  (delete-file "tests/test_mypy_query.py")
-                  (substitute* "tests/test_clingo.py"
-                    (("self\\.assertTrue\\(os_called\\)" all)
-                     (string-append "# " all))))))))
-   (propagated-inputs (list python-clingo))
-   (native-inputs (list python-typing-extensions))
-   (home-page "https://potassco.org")
-   (synopsis "Object relational mapping to clingo")
-   (description "@acronym{Clorm, Clingo ORM} provides an @acronym{ORM,
+    (name "python-clorm")
+    (version "1.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/clorm")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jx99y71mrgdicn1da5dwz5nzgvvpabrikff783sg4shbv2cf0b5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'fix-breaking-tests
+                 (lambda _
+                   ;; noclingo tests rely on this being set
+                   (setenv "CLORM_NOCLINGO" "1")
+                   (delete-file "tests/test_mypy_query.py")
+                   (substitute* "tests/test_clingo.py"
+                     (("self\\.assertTrue\\(os_called\\)" all)
+                      (string-append "# " all))))))))
+    (propagated-inputs (list python-clingo))
+    (native-inputs (list python-typing-extensions))
+    (home-page "https://potassco.org")
+    (synopsis "Object relational mapping to clingo")
+    (description "@acronym{Clorm, Clingo ORM} provides an @acronym{ORM,
 Object Relational Mapping} interface to the @acronym{ASP, answer set
 programming} solver clingo.  Its goal is to make integration of clingo
 into Python programs easier.")
-   (license license:expat)))
+    (license license:expat)))
+
+(define-public python-plingo
+  (package
+    (name "python-plingo")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/plingo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mp0pdjzwpl7bpba20iwszx9x49gsyl2rhrp7w7xpwjqdjrp23r8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-script
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((script (string-append (assoc-ref outputs "out")
+                                                "/bin/plingo")))
+                     (mkdir-p (dirname script))
+                     (call-with-output-file script
+                       (lambda (port)
+                         (display "#!/usr/bin/env python\n" port)
+                         (display "from plingo import main\n" port)
+                         (display "main()\n" port)))
+                     (chmod script #o755)
+                     ;; XXX: Does this cross-compile?
+                     (patch-shebang script)))))))
+    (propagated-inputs (list python-clingo))
+    (home-page "https://potassco.org/")
+    (synopsis "Solve probabilistic logic programs")
+    (description "This package provides a system to solve probabilistic
+logic programs with clingo.  It can solve the reasoning tasks of finding
+the most probable model as well as finding all models and their probabilities.")
+    (license license:expat)))
 
 (define-public python-telingo
   (package
@@ -429,7 +526,7 @@ logic programs based on clingo.")
 (define-public python-clingraph
   (package
     (name "python-clingraph")
-    (version "1.1.0")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -438,7 +535,7 @@ logic programs based on clingo.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bdhli20nw9qnyxmpisgz7m97d7bwx6lbmxy9bgqvm6mipprnv3n"))))
+                "16q54rkwr84byzy27795rl9z08kcyxsg7lfk017yr8p5axh9a9rr"))))
     (build-system pyproject-build-system)
     (inputs (list dot2tex graphviz))
     (propagated-inputs (list python-clingo

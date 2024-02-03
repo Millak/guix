@@ -299,10 +299,16 @@ asdf-build-system."
 (define-team go
   (team 'go
         #:name "Go team"
-        #:scope (list "gnu/packages/golang.scm"
+        #:scope (list "gnu/packages/configuration-management.scm"
                       "gnu/packages/golang-check.scm"
-                      "guix/build/go-build-system.scm"
+                      "gnu/packages/golang-crypto.scm"
+                      "gnu/packages/golang-web.scm"
+                      "gnu/packages/golang-xyz.scm"
+                      "gnu/packages/golang.scm"
+                      "gnu/packages/syncthing.scm"
+                      "gnu/packages/terraform.scm"
                       "guix/build-system/go.scm"
+                      "guix/build/go-build-system.scm"
                       "guix/import/go.scm"
                       "guix/scripts/import/go.scm"
                       "tests/go.scm")))
@@ -592,7 +598,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il")
-  embedded bootstrap julia rust science)
+  embedded bootstrap julia rust)
 
 (define-member (person "jgart"
                        "jgart@dismail.de")
@@ -705,6 +711,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
 (define-member (person "Vivien Kraus"
                        "vivien@planete-kraus.eu")
   gnome)
+
+(define-member (person "Wilko Meyer"
+                       "w@wmeyer.eu")
+  kernel)
 
 
 (define (find-team name)

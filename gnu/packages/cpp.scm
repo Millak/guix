@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
-;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
@@ -187,45 +187,39 @@ development effort.")
 (define-public range-v3
   (package
     (name "range-v3")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/ericniebler/range-v3.git")
-         (commit version)))
-       (file-name
-        (git-file-name name version))
-       (patches (search-patches "range-v3-build-with-gcc10.patch"))
+       (uri (git-reference
+             (url "https://github.com/ericniebler/range-v3.git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18230bg4rq9pmm5f8f65j444jpq56rld4fhmpham8q3vr1c1bdjh"))))
+        (base32 "0r85s5rmp5ixmik2y5y4w760pa38j1sg9hbr1fss2flibzvrf53d"))))
     (build-system cmake-build-system)
     (arguments
      (list
-       #:configure-flags
-       #~(list "-DRANGES_NATIVE=OFF")))
-    (native-inputs
-     (list doxygen gcc-9 perl))
-    (inputs
-     (list boost))
+      #:configure-flags #~(list "-DRANGES_NATIVE=OFF")))
+    (native-inputs (list doxygen perl))
+    (inputs (list boost))
     (synopsis "Range library for C++14/17/20")
-    (description "Range-v3 is an extension of the Standard Template Library that
+    (description
+     "Range-v3 is an extension of the Standard Template Library that
 makes its iterators and algorithms more powerful by making them composable.
 Unlike other range-like solutions which, seek to do away with iterators, in
 range-v3 ranges are an abstraction layer on top of iterators.")
     (home-page "https://github.com/ericniebler/range-v3/")
-    (license
-     (list
-      ;; Elements of Programming
-      (license:x11-style "file:///LICENSE.txt")
-      ;; SGI STL
-      license:sgifreeb2.0
-;;; LibC++ (dual-licensed)
-      license:expat
-      license:ncsa
-      ;; Others
-      license:boost1.0))))
+    (license (list
+              ;; Elements of Programming
+              (license:x11-style "file:///LICENSE.txt")
+              ;; SGI STL
+              license:sgifreeb2.0
+              ;; LibC++ (dual-licensed)
+              license:expat
+              license:ncsa
+              ;; Others
+              license:boost1.0))))
 
 (define-public robin-hood-hashing
   (package
@@ -1628,7 +1622,7 @@ provides a number of utilities to make coding with expected cleaner.")
 (define-public immer
   (package
    (name "immer")
-   (version "0.8.0")
+   (version "0.8.1")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -1636,19 +1630,12 @@ provides a number of utilities to make coding with expected cleaner.")
                   (commit (string-append "v" version))))
             (file-name (git-file-name name version))
             (sha256
-             (base32 "11km3l5h3rgsbj8yfyzk3fnx9na55l6zs2sxpx922yvlvs2blh27"))
-            (modules '((guix build utils)))
-            (snippet #~(begin
-                         (delete-file "tools/include/doctest.h")
-                         (delete-file "tools/include/catch.hpp")
-                         (substitute* (find-files "test" "\\.[cih]pp")
-                           (("<catch.hpp>") "<catch2/catch.hpp>")
-                           (("<doctest.h>") "<doctest/doctest.h>"))
-                         (substitute* (find-files "test/oss-fuzz" "\\.cpp")
-                           ;; someone used the wrong header :)
-                           (("<fmt/printf.h>") "<fmt/ostream.h>"))))))
+             (base32 "03qkr42h0g6rivj3kq207gzgnv7hq88y69q16l2vg1lbvjcgca2g"))))
    (build-system cmake-build-system)
-   (arguments (list #:test-target "check"))
+   (arguments (list #:test-target "check"
+                    ;; -Werror appears to report false positives.
+                    ;; See <https://github.com/arximboldi/immer/issues/223>.
+                    #:configure-flags #~(list "-DDISABLE_WERROR=ON")))
    (inputs (list boost libgc c-rrb))
    (native-inputs (list catch2 doctest fmt pkg-config))
    (home-page "https://sinusoid.es/immer")

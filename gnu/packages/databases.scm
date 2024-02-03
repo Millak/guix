@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -577,6 +577,35 @@ the API, and provides features such as:
 @item Local replication
 @end itemize")
     (license license:bsd-3)))
+
+(define-public python-prisma
+  (package
+    (name "python-prisma")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "prisma" version))
+       (sha256
+        (base32 "1y9m3bailnvid59dl4vx31vysaqbcg6gsppskyymaxg3m96808pc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-cached-property
+           python-click
+           python-dotenv
+           python-httpx
+           python-jinja2
+           python-nodeenv
+           python-pydantic
+           python-strenum
+           python-tomlkit
+           python-typing-extensions))
+    (home-page "https://github.com/RobertCraigie/prisma-client-py")
+    (synopsis "Fully type-safe database client")
+    (description
+     "Prisma Client Python is an auto-generated and fully type-safe database
+client.")
+    (license license:asl2.0)))
 
 (define-public python-pylibmc
   (package
@@ -3763,7 +3792,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.42.0.1")
+    (version "3.45.1.0")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3773,11 +3802,11 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "0dr7zymn45x2793cilr709rnwn9g1c4n4vzln57y2lhj7420ykic"))))
+         "1vfrzb414pbh5k0cgcqkp039jvla2galapn4a551zgh8xi70bnrp"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.42 required.
+     (list unzip))
+    (inputs (list sqlite-next))         ;SQLite 3.45.1 required.
     (arguments
      (list
       #:phases
@@ -5221,7 +5250,7 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "0.64.2")
+    (version "1.0a7")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -5230,7 +5259,7 @@ mechanism of @code{dogpile}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c8ajdaraynrjvsb8xxxnkb7zgm5fwq60qczaz00n465ki80j4h3"))))
+                "1wwdx2xqkxygbww1nzpr6h702ims6zcxpjskh8fldn1kby591qgg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5269,6 +5298,7 @@ mechanism of @code{dogpile}.")
      (list python-aiofiles
            python-asgi-csrf
            python-asgiref
+           python-asyncinject
            python-click
            python-click-default-group
            python-httpx
@@ -5280,6 +5310,7 @@ mechanism of @code{dogpile}.")
            python-pint
            python-pluggy
            python-pyyaml
+           python-sqlite-utils
            python-uvicorn))
     (native-inputs
      (list python-beautifulsoup4

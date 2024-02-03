@@ -1344,7 +1344,7 @@ and multimedia programs in the Python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.1.3"))
+        (renpy-version "8.2.0"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
@@ -1354,7 +1354,7 @@ and multimedia programs in the Python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "0qlprs9n3w254ilizqzvr6s01zx72gh7an0bgwxsq4hm22qypdws"))
+         (sha256 (base32 "17mc39c7ha83kzv2wmq61a15mn6p8wh2y33ixhf5sb4bvyr48mhy"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1395,7 +1395,7 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.1.3")
+    (version "8.2.0")
     (source
      (origin
        (method url-fetch)
@@ -1403,7 +1403,7 @@ developed mainly for Ren'py.")
                            "/renpy-" version "-source.tar.bz2"))
        (sha256
         (base32
-         "1g6fz5dxp7yxhgv6q4brzf5hpfqq3l1g3dfv3fsiwwn6mj0b01z2"))
+         "02v54qqjjigfqhdr50kzhkdvplk56bvprq65jl57kcs1qhvlf5s9"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -3228,7 +3228,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
 (define-public raylib
   (package
     (name "raylib")
-    (version "4.5.0")
+    (version "5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3238,7 +3238,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
               ;; TODO: Unbundle src/external
               (sha256
                (base32
-                "00y8fsa4g9fk93s3wihbxl929m84hw3fflr0h409s3i1kfmv7ajj"))))
+                "0327licmylwlh5iyzw35pq7ci2d15rp3jms5i9p0vfg1rlv2sjw0"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f  ;no test

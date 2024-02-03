@@ -128,6 +128,92 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (srfi srfi-1))
 
+(define-public python-huggingface-hub
+  (package
+    (name "python-huggingface-hub")
+    (version "0.20.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/huggingface/huggingface_hub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00indl9labvqvm4m0y5jbzl68cgj8i60a6qy498gpnjj2pqk4l6v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; We don't have sentence_transformers...
+      '(list "--ignore=contrib/sentence_transformers/test_sentence_transformers.py"
+             ;; ...nor do we have InquirerPy...
+             "--ignore=tests/test_command_delete_cache.py"
+             ;; ...or timm...
+             "--ignore=contrib/timm/test_timm.py"
+             ;; ...or spacy_huggingface_hub
+             "--ignore=contrib/spacy/test_spacy.py"
+             ;; These all require internet access
+             "--ignore=tests/test_cache_no_symlinks.py"
+             "--ignore=tests/test_cache_layout.py"
+             "--ignore=tests/test_commit_scheduler.py"
+             "--ignore=tests/test_file_download.py"
+             "--ignore=tests/test_hf_api.py"
+             "--ignore=tests/test_hf_file_system.py"
+             "--ignore=tests/test_inference_api.py"
+             "--ignore=tests/test_inference_async_client.py"
+             "--ignore=tests/test_inference_client.py"
+             "--ignore=tests/test_login_utils.py"
+             "--ignore=tests/test_offline_utils.py"
+             "--ignore=tests/test_repocard.py"
+             "--ignore=tests/test_repository.py"
+             "--ignore=tests/test_snapshot_download.py"
+             "--ignore=tests/test_utils_cache.py"
+             "--ignore=tests/test_utils_git_credentials.py"
+             "--ignore=tests/test_utils_http.py"
+             "--ignore=tests/test_utils_pagination.py"
+             "--ignore=tests/test_webhooks_server.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           ;; Some tests need to write to HOME.
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-filelock
+           python-fsspec
+           python-packaging
+           python-pyyaml
+           python-requests
+           python-tqdm
+           python-typing-extensions))
+    (native-inputs
+     (list python-aiohttp
+           python-fastapi
+           python-jedi
+           python-jinja2
+           python-mypy
+           python-numpy
+           python-pillow
+           python-pydantic
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-env
+           python-pytest-rerunfailures
+           python-pytest-vcr
+           python-pytest-xdist
+           python-types-requests
+           python-types-toml
+           python-types-urllib3
+           python-typing-extensions
+           python-urllib3))
+    (home-page "https://github.com/huggingface/huggingface_hub")
+    (synopsis "Client library for accessing the huggingface.co hub")
+    (description
+     "This package provides a client library to download and publish models,
+datasets and other repos on the @url{huggingface.co} hub.")
+    (license license:asl2.0)))
+
 (define-public python-lazr-restfulclient
   (package
     (name "python-lazr-restfulclient")
@@ -1354,32 +1440,17 @@ Encryption} (JOSE) Web Standards.")
 (define-public python-pyscss
   (package
     (name "python-pyscss")
-    (version "1.3.7")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/Kronuz/pyScss")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0701hziiiw67blafgpmjhzspmrss8mfvif7fw0rs8fikddwwc9g6"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "scss/types.py"
-                   (("from collections import Iterable")
-                    "from collections.abc import Iterable"))))))
-    (build-system python-build-system)
-    (arguments
-     ;; XXX: error in test collection, possible incompatibility with Pytest 6.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "scss")))))))
+        (base32 "1vinddg8sbh3v9n1r1wmvjx6ydk8xp7scbvhb3csl4y9xz7vhk6g"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov))
     (inputs
@@ -2380,33 +2451,30 @@ RFC6455, regardless of your programming paradigm.")
   (package
     (name "hypercorn")
     (version "0.14.4")
-    (source (origin
-              (method git-fetch) ;PyPI does not have tests
-              (uri (git-reference
-                    (url "https://github.com/pgjones/hypercorn")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zyf5b8959sd12ycmqzvsb8746i3gn76rz55gxvix5cwj672m7yx"))))
+    (source
+     (origin
+       (method git-fetch) ;PyPI does not have tests
+       (uri (git-reference
+             (url "https://github.com/pgjones/hypercorn")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zyf5b8959sd12ycmqzvsb8746i3gn76rz55gxvix5cwj672m7yx"))))
     (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
-    (propagated-inputs
-     (list python-h11
-           python-h2
-           python-priority
-           python-toml
-           python-typing-extensions
-           python-wsproto))
-    (native-inputs
-     (list python-hypothesis
-           python-mock
-           python-poetry-core
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-cov
-           python-pytest-trio
-           python-trio))
+    (propagated-inputs (list python-exceptiongroup
+                             python-h11
+                             python-h2
+                             python-priority
+                             python-tomli
+                             python-wsproto))
+    (native-inputs (list python-hypothesis
+                         python-poetry-core
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-pytest-trio
+                         python-trio))
     (home-page "https://gitlab.com/pgjones/hypercorn/")
     (synopsis "ASGI Server based on Hyper libraries")
     (description
@@ -3300,15 +3368,21 @@ than Python’s urllib2 library.")
   (package
     (name "python-requests-kerberos")
     (version "0.14.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "requests-kerberos" version))
-              (sha256
-               (base32
-                "1lbgjs779cjxhz07lfl9dbyp3qfh8a3ir2393042wfg518jd3afd"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-cryptography python-pyspnego
-                             python-requests))
+    ;; No tests in the PyPI tarball.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/requests/requests-kerberos")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s30pcnlir3j2jmf7yh065f294cf3x0x5i3ldskn8mm0a3657mv3"))))
+    (build-system pyproject-build-system)
+     (propagated-inputs (list python-cryptography
+                              python-pyspnego
+                              python-requests))
+    (native-inputs (list python-pytest python-pytest-mock))
     (home-page "https://github.com/requests/requests-kerberos")
     (synopsis "Kerberos authentication handler for python-requests")
     (description "This package provides a Kerberos authentication handler for

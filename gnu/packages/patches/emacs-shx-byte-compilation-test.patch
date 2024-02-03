@@ -1,0 +1,35 @@
+From 6e8cb6f2175cd5c108de615a970a27877adfaea0 Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Fri, 19 Jan 2024 10:49:51 -0500
+Subject: [PATCH] tests: Fix byte-compilation test.
+
+* test/shx-test.el (shx-test-unit-byte-compile): Simply assert on the
+return value of byte-compile-file, which is non-nil when there are no
+errors.
+
+Fixes: <https://github.com/riscy/shx-for-emacs/issues/33>
+---
+ test/shx-test.el | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/test/shx-test.el b/test/shx-test.el
+index e18cefb..ed5aee3 100644
+--- a/test/shx-test.el
++++ b/test/shx-test.el
+@@ -83,10 +83,8 @@ Example:
+   "Test byte-compilation against the shx.el file."
+   (ignore-errors (kill-buffer "*Compile-Log*"))
+   (let ((file (replace-regexp-in-string ".elc$" ".el" (symbol-file 'shx-mode))))
+-    (byte-compile-file file)
+     (shx-test-assert "shx.el passes byte-compilation"
+-                     (with-current-buffer (get-buffer-create "*Compile-Log*")
+-                       (<= (- (point-max) (point)) 3)))))
++                     (byte-compile-file file))))
+ 
+ (defun shx-test-unit-declare-function ()
+   "Test `declare-function'."
+
+base-commit: b99d16f36bc278d668d8428c4bc9af77064c336a
+-- 
+2.41.0
+

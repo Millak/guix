@@ -25,7 +25,8 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
-;;; Copyright © 2023 Andrew Kravchuk <awkravchuk@gmail.com.
+;;; Copyright © 2023 Andrew Kravchuk <awkravchuk@gmail.com>
+;;; Copyright © 2024 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1488,12 +1489,12 @@ includes a compiler as well as an interpreter.")
 
 (define-public s7-bootstrap
   ;; Need s7-bootstrap to build libc_s7.so (for the REPL) and run tests
-  (let ((commit "618de30e0f9851515724245e3ebbfa1be4de6906") ;no releases
+  (let ((commit "23a64facfac06c4bc23a7de8f04691c55f88bd40") ;no releases
         (revision "0"))
     (hidden-package
      (package
        (name "s7-bootstrap")
-       (version (git-version "23.3" revision commit))
+       (version (git-version "24.1" revision commit))
        (source (origin
                  (method git-fetch)
                  (uri (git-reference
@@ -1502,7 +1503,8 @@ includes a compiler as well as an interpreter.")
                  (file-name (git-file-name name version))
                  (sha256
                   (base32
-                   "0kh1f49g24ppjpr16v1nc9lr7pvr5nzb82bpw8c6q8ll7pqalqaf"))))
+                   "0fiw8lb7rswglixvn271la2q2hgwszrf2ckykhr6jjxdvmb9a7d0"))
+                 (patches (search-patches "s7-flint-3.patch"))))
        (build-system gnu-build-system)
        (arguments
         (list #:tests? #f ;no tests in bootstrap
@@ -1533,7 +1535,7 @@ includes a compiler as well as an interpreter.")
                                (invoke #$(cc-for-target) "libarb_s7.c"
                                        "-I." "-O2" "-g"
                                        "-shared" "-o" "libarb_s7.so"
-                                       "-larb" "-lflint" "-lmpc" "-fPIC")
+                                       "-lflint" "-lmpc" "-fPIC")
                                (display "[BUILD] libnotcurses_s7.so\n")
                                (invoke #$(cc-for-target) "notcurses_s7.c"
                                        "-I." "-O2" "-g"
@@ -1572,7 +1574,7 @@ includes a compiler as well as an interpreter.")
                                  (install-file "s7.c" share)
                                  (install-file "s7.h" inc)
                                  (install-file "s7.html" doc)))))))
-       (inputs (list arb flint mpc notcurses))
+       (inputs (list flint mpc notcurses))
        (home-page "https://ccrma.stanford.edu/software/snd/snd/s7.html")
        (synopsis "Scheme interpreter intended as an extension language")
        (description

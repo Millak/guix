@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages time)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages geo)
@@ -47,6 +49,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
@@ -124,6 +127,38 @@ expressions.")
     (description
      "This library provides a timezone database for Python.")
     (license expat)))
+
+(define-public python-tzdata
+  (package
+    (name "python-tzdata")
+    ;; This package should be kept in sync with tzdata in (gnu packages base).
+    (version "2022.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tzdata" version))
+       (sha256
+        (base32 "1lsjhlwzvzxpp4mpa9gy5b58z3qilf9l365k889pbh1xqs76llwb"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "src/tzdata/zoneinfo"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'ensure-no-mtimes-pre-1980 'unpack-tzdata
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (copy-recursively
+                    (search-input-directory inputs "share/zoneinfo")
+                    "src/tzdata/zoneinfo")
+                   (delete-file "src/tzdata/zoneinfo/posix")
+                   (call-with-output-file "src/tzdata/zoneinfo/__init__.py"
+                     (const #t)))))))
+    (inputs (list tzdata))
+    (native-inputs (list python-pytest python-pytest-subtests))
+    (home-page "https://github.com/python/tzdata")
+    (synopsis "Python wrapper of IANA time zone data")
+    (description "This package provides a thin Python wrapper around tzdata.")
+    (license asl2.0)))
 
 (define-public python-pytz
   (package
@@ -340,32 +375,25 @@ timezone for given coordinates on earth entirely offline.")
 (define-public python-tzlocal
   (package
     (name "python-tzlocal")
-    (version "2.1")
+    (version "5.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tzlocal" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/regebro/tzlocal")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0i1fm4sl04y65qnaqki0w75j34w863gxjj8ag0vwgvaa572rfg34"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-symlink-test
-           ;; see: https://github.com/regebro/tzlocal/issues/53
-           (lambda _
-             (delete-file "tests/test_data/symlink_localtime/etc/localtime")
-             (symlink "../usr/share/zoneinfo/Africa/Harare"
-                      "tests/test_data/symlink_localtime/etc/localtime")
-             ;; And skip the test_fail test, it is known to fail
-             (substitute* "tests/tests.py"
-               (("def test_fail") "def _test_fail"))
-             #t)))))
+         "1apa3i5fsfw28jnaaaa7jr976y5wbifl3h04id0bvplvsb9zpmy7"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-pytz))
+     (list python-tzdata))
     (native-inputs
-     (list python-mock))
+     (list python-check-manifest
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock))
     (home-page "https://github.com/regebro/tzlocal")
     (synopsis "Local timezone information for Python")
     (description

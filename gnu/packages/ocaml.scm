@@ -1713,7 +1713,7 @@ full_split, cut, rcut, etc..")
     ;; where it says `mit'.
     (license license:expat)))
 
-(define dune-bootstrap
+(define-public dune-bootstrap
   (package
     (name "dune")
     (version "3.6.1")
@@ -1745,12 +1745,13 @@ full_split, cut, rcut, etc..")
     (description "Dune is a build system that was designed to simplify the
 release of Jane Street packages.  It reads metadata from @file{dune} files
 following a very simple s-expression syntax.")
+    (properties '((hidden? . #t)))
     (license license:expat)))
 
-(define ocaml4.09-dune-bootstrap
+(define-public ocaml4.09-dune-bootstrap
   (package-with-ocaml4.09 dune-bootstrap))
 
-(define ocaml5.0-dune-bootstrap
+(define-public ocaml5.0-dune-bootstrap
   (package-with-ocaml5.0 dune-bootstrap))
 
 (define-public dune-configurator

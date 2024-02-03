@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -1217,3 +1219,84 @@ the glProgramViewportFlip before it was replaced with glProgramViewportInfo.")
      "glmark2 is an OpenGL 2.0 and OpenGL ES 2.0 benchmark based on the
 original glmark benchmark by Ben Smith.")
     (license license:gpl3+)))
+
+(define-public waffle
+  (package
+    (name "waffle")
+    (version "1.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.freedesktop.org/mesa/waffle")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1mrw0arlrpm83cwaz7rnimkkjv3a134rcmi1h512y2g4yjzhnm8r"))
+              (modules '((ice-9 ftw)
+                         (guix build utils)))
+              (snippet #~(with-directory-excursion "third_party"
+                           (let ((keep '("." ".." "meson.build" "threads")))
+                             (for-each (lambda (f)
+                                         (unless (member f keep)
+                                           (delete-file-recursively f)))
+                                       (scandir ".")))))))
+    (build-system meson-build-system)
+    (propagated-inputs (list mesa wayland))
+    (native-inputs (list cmocka pkg-config))
+    (home-page "https://waffle.freedesktop.org/")
+    (synopsis "Choose OpenGL API at runtime")
+    (description "Waffle is a library that allows one to defer selection of an
+ OpenGL API and a window system until runtime.")
+    (license license:bsd-2)))
+
+(define-public piglit
+  (let ((revision "1")
+        (commit "814046fe6942eac660ee4a6cc5fcc54011a49945"))
+    (package
+     (name "piglit")
+     (version (git-version "0.0.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/mesa/piglit")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1bzaalcxskckfnwprw77sbbmfqi59by2j8imaq8ghnlzhlxv7mk7"))))
+     (build-system cmake-build-system)
+     (arguments
+      (list #:configure-flags #~(list "-DPIGLIT_SSE2=OFF")
+            ;; Tests are not invoked through cmake.  Instead, there are
+            ;; pytest/tox-based tests for the framework, but they require
+            ;; unpackaged plugins.
+            #:tests? #f
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'patch-source
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* (find-files "framework/" "\\.py$")
+                      (("'wflinfo'")
+                       (string-append "'"
+                                      (search-input-file inputs "/bin/wflinfo")
+                                      "'")))))
+                (add-after 'install 'wrap
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (wrap-script (string-append (assoc-ref outputs "out")
+                                                "/bin/piglit")
+                      `("GUIX_PYTHONPATH" prefix
+                        (,(getenv "GUIX_PYTHONPATH")))))))))
+     (inputs (list guile-3.0            ; for wrap-script
+                   libxkbcommon
+                   python python-lxml python-mako python-numpy
+                   glslang vulkan-headers vulkan-loader
+                   waffle))
+     (native-inputs (list pkg-config))
+     (home-page "https://piglit.freedesktop.org/")
+     (synopsis "Test OpenGL implementations")
+     (description "Piglit is a collection of automated tests for OpenGL and
+OpenCL implementations.")
+     ;; A mix of licenses for various tests
+     (license (list license:expat
+                    license:bsd-3
+                    license:gpl2+
+                    license:gpl3+)))))

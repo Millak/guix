@@ -1,0 +1,31 @@
+From bd54bd42c5933e4c571dcfd6a8afac8e52cf7366 Mon Sep 17 00:00:00 2001
+From: Andreas Enge <andreas@enge.fr>
+Date: Thu, 25 Jan 2024 12:13:18 +0100
+Subject: [PATCH] Adapt libarb_s7.c to FLINT 3.
+
+---
+ libarb_s7.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/libarb_s7.c b/libarb_s7.c
+index 7413ccc..d9e0084 100644
+--- a/libarb_s7.c
++++ b/libarb_s7.c
+@@ -6,10 +6,10 @@
+ #include <mpfr.h>
+ #include <mpc.h>
+ 
+-#include <arb.h>
+-#include <acb.h>
+-#include <acb_hypgeom.h>
+-#include <acb_elliptic.h>
++#include <flint/arb.h>
++#include <flint/acb.h>
++#include <flint/acb_hypgeom.h>
++#include <flint/acb_elliptic.h>
+ 
+ #define WITH_GMP 1
+ #include "s7.h"
+-- 
+2.41.0
+

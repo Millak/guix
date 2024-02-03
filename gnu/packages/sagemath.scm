@@ -170,33 +170,6 @@ represented as strings.")
     (license license:public-domain)
     (home-page "https://github.com/miguelmarco/libhomfly")))
 
-(define-public pynac
-  (package
-    (name "pynac")
-    (version "0.7.26")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/pynac/pynac/")
-              (commit (string-append "pynac-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "09d2p74x1arkydlxy6pw4p4byi7r8q7f29w373h4d8a215kadc6d"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     (list flint gmp python singular))
-    (synopsis "Sage fork of GiNaC")
-    (description "Pynac is a derivative of the C++ library GiNaC, which
-allows manipulation of symbolic expressions.  It currently provides the
-backend for symbolic expressions in Sage.  The main difference between
-Pynac and GiNaC is that Pynac relies on Sage to provide the operations
-on numerical types, while GiNaC depends on CLN for this purpose.")
-    (license license:gpl2+)
-    (home-page "http://pynac.org/")))
-
 ;; Sage has become upstream of the following package.
 (define-public zn-poly
   (package

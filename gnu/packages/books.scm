@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -19,30 +19,30 @@
 
 (define-module (gnu packages books)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix utils)
-  #:use-module (guix gexp)
+  #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
-  #:use-module (guix build-system gnu)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages music)
+  #:use-module (gnu packages fonts)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages inkscape)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texlive)
-  #:use-module (gnu packages version-control)
-  #:use-module (gnu packages fonts)
-  #:use-module (gnu packages fontutils))
+  #:use-module (gnu packages version-control))
 
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "1.1.0")
+    (version "2.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0k1miyrnh5362qy50jzp5j3ww0c8hr7wk3y5kg6xlqgk9f8msvag"))
+                "0bn3a3m0kcjybyaz1a7pj8n48jh1cg4szwi9px3zjhhm5818wi7z"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
@@ -81,6 +81,7 @@
            texlive-bibtex
            texlive-bibtexperllibs
            texlive-bigfoot
+           texlive-chngcntr
            texlive-circuitikz
            texlive-collection-langcyrillic
            texlive-fontspec

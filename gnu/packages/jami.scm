@@ -78,8 +78,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20231222.2")
-(define %jami-daemon-commit "317b7317dcda4afb733ddb9bd5b450d4635941ae")
+(define %jami-nightly-version "20240124.3")
+(define %jami-daemon-commit "205904ed4dd736b8a0ea6c913ecb91d637b79867")
 
 (define-public libjami
   (package
@@ -93,7 +93,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16qx50xz2mkw894irjsvql82iw7wpc5xncxpvw1nqd2sxhgfiq0i"))
+                "0knq84c5f11bgan0076mhi0kpc7l6wwxj41jpssdy0y1lfzgqd8a"))
               (patches (search-patches
                         "libjami-ac-config-files.patch"
                         "jami-disable-integration-tests.patch"))))
@@ -239,7 +239,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ypbbyqmq6x9zq4sr550k38v8pg7yq685bmwqmigqzhqgfazcg97"))
+                "06q4cdizpix12yzjrnhdwqwybskhc58cissffdnf1zw5pbv0mqag"))
               (patches (search-patches
                         "jami-libjami-headers-search.patch"
                         "jami-qml-tests-discovery.patch"

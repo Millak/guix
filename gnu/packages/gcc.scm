@@ -1102,6 +1102,12 @@ as the 'native-search-paths' field."
                "gfortran" '("fortran")
                %generic-search-paths)))
 
+(define-public gfortran-9
+  (hidden-package
+   (custom-gcc gcc-9
+               "gfortran" '("fortran")
+               %generic-search-paths)))
+
 (define-public gfortran-7
   (hidden-package
    (custom-gcc gcc-7
@@ -1116,6 +1122,12 @@ as the 'native-search-paths' field."
 (define-public gdc-11
   (hidden-package
    (custom-gcc gcc-11 "gdc" '("d")
+               %generic-search-paths)))
+
+;;; Alias tracking the latest GDC version.
+(define-public gdc
+  (hidden-package
+   (custom-gcc gcc "gdc" '("d")
                %generic-search-paths)))
 
 (define-public (make-libgccjit gcc)

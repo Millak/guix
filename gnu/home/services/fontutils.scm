@@ -81,10 +81,7 @@ of fontconfig's fonts.conf file."
                         add-fontconfig-config-file)
                        (service-extension
                         home-run-on-change-service-type
-                        regenerate-font-cache-gexp)
-                       (service-extension
-                        home-profile-service-type
-                        (const (list fontconfig)))))
+                        regenerate-font-cache-gexp)))
                 (compose concatenate)
                 (extend append)
                 (default-value '("~/.guix-home/profile/share/fonts"))

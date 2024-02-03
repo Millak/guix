@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2019, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -71,9 +71,11 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages dlang)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages enchant)
@@ -113,6 +115,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
@@ -154,6 +157,32 @@
     (description "QCoro is a C++ library that provide set of tools to make use
 of C++20 coroutines in connection with certain asynchronous Qt actions.")
     (license license:expat)))
+
+(define-public qmdnsengine
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
+  (let ((commit "b7a5a9f225d5e14b39f9fd1f905c4f505cf2ee99")
+        (revision "1"))
+    (package
+      (name "qmdnsengine")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/cgutman/qmdnsengine")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1f5v5n9w4aszcdjxmw81cwmd26ssywvfiyr8x0vbyamp4kqd8mww"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags (list "-DBUILD_TESTS=ON")))
+      (inputs (list qtbase-5))
+      (synopsis "Multicast DNS library for Qt application")
+      (description "This package provides multicast DNS library for Qt
+  applications.")
+      (home-page "https://github.com/moonlight-stream/moonlight-common-c")
+      (license license:expat))))
 
 (define-public qite
   (let ((commit "75fb3b6bbd5c6a5a8fc35e08a6efbfb588ed546a")
@@ -2998,14 +3027,14 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.5.2")
+    (version "6.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "17qxf3asyxq6kcqqvml170n7rnzih3nr4srp9r5v80pmas5l7jg7"))
+         "1ra5hyyg4vymp8pgzv08smjc3fl1axdavnkpj1i5zxym1ndww513"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -3377,8 +3406,8 @@ linux/libcurl_wrapper.h"
      (modify-inputs (package-native-inputs qtwebengine-5)
        (delete "python2" "python2-six")
        (replace "node" node-lts)
-       (append clang-14
-               lld-as-ld-wrapper
+       (append clang-15
+               lld-as-ld-wrapper-15
                python-wrapper
                python-beautifulsoup4
                python-html5lib)))
@@ -5042,7 +5071,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "11.0.1")
+    (version "12.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5056,7 +5085,6 @@ including @i{fix-its} for automatic refactoring.")
                            ;; Remove bundled libraries, where supported.
                            ;; TODO: package and unbundle litehtml
                            '("src/libs/3rdparty/yaml-cpp"
-                             "tests/unit/unittest/3rdparty"
                              ;; Marketplace recommends nonfree extensions;
                              ;; remove it.
                              "src/plugins/marketplace"))
@@ -5066,7 +5094,7 @@ including @i{fix-its} for automatic refactoring.")
                             ((".*marketplace/marketplace.qbs.*") ""))))
               (sha256
                (base32
-                "0j90dv9micqsvj4r7iqd11szixr0mlpna4w5s2lnyqckjs6a0mm6"))))
+                "04h35za3gliai5djxwmzqrbih2g26lcv68pp4wvljkdwkcjsscvb"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -5135,6 +5163,7 @@ including @i{fix-its} for automatic refactoring.")
                                       '("bin/clang-tidy"
                                         "bin/clazy-standalone"
                                         "bin/gdb"
+                                        "bin/kcachegrind"
                                         "bin/valgrind")))))))))
     (native-inputs
      (list googletest
@@ -5145,22 +5174,28 @@ including @i{fix-its} for automatic refactoring.")
            vulkan-headers
            xvfb-run))
     (inputs
-     (list bash-minimal
-           coreutils-minimal
-           clang
-           clazy
-           elfutils
-           gdb
-           libxkbcommon
-           llvm
-           qt5compat
-           qtdeclarative
-           qtshadertools
-           qtsvg
-           yaml-cpp
-           valgrind
-           vulkan-loader
-           `(,zstd "lib")))
+     (append
+      (list bash-minimal
+            coreutils-minimal
+            clang
+            clazy
+            d-demangler
+            elfutils
+            gdb
+            kcachegrind
+            libxkbcommon
+            llvm
+            qt5compat
+            qtdeclarative
+            qtshadertools
+            qtsvg
+            yaml-cpp
+            valgrind
+            vulkan-loader
+            `(,zstd "lib"))
+      (if (supported-package? rust-rustc-demangle-capi-0.1)
+          (list rust-rustc-demangle-capi-0.1)
+          '())))
     (home-page "https://www.qt.io/")
     (synopsis "Integrated development environment (IDE) for Qt")
     (description "Qt Creator is an IDE tailored to the needs of Qt developers.

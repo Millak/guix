@@ -12,7 +12,7 @@
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2018 Alex Branham <alex.branham@gmail.com>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -228,157 +228,162 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                 "0aj51j34q2b28y28xvlf0dwdj8vpnhjwpvqf7xm05s7fq857dxdk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:disallowed-references (,tzdata-for-tests)
-       #:make-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/R/lib")
-             ;; This affects the embedded timestamp of only the core packages.
-             "PKG_BUILT_STAMP=1970-01-01")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'do-not-compress-serialized-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; This ensures that Guix can detect embedded store references;
-             ;; see bug #28157 for details.
-             (substitute* "src/library/base/makebasedb.R"
-               (("compress = TRUE") "compress = FALSE"))))
-         (add-before 'configure 'patch-coreutils-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((uname-bin (search-input-file inputs "/bin/uname"))
-                   (rm-bin (search-input-file inputs "/bin/rm")))
-               (substitute* "src/scripts/R.sh.in"
-                 (("uname") uname-bin))
-               (substitute* "src/unix/sys-std.c"
-                 (("rm -Rf ") (string-append rm-bin " -Rf ")))
-               (substitute* "src/library/parallel/R/detectCores.R"
-                 (("'grep")
-                  (string-append "'"
-                                 (search-input-file inputs "/bin/grep")))
-                 (("\\| wc -l")
-                  (string-append "| "
-                                 (search-input-file inputs "/bin/wc")
-                                 " -l"))))))
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; This is needed because R is run during the check phase and
-             ;; /bin/sh doesn't exist in the build container.
-             (substitute* "src/unix/sys-unix.c"
-               (("\"/bin/sh\"")
-                (string-append "\"" (which "sh") "\"")))
-             ;; This test fails because line numbers are off by two.
-             (substitute* "tests/reg-packages.R"
-               (("8 <= print" m) (string-append "## " m)))))
-         (add-after 'unpack 'build-reproducibly
-           (lambda _
-             ;; The documentation contains time stamps to demonstrate
-             ;; documentation generation in different phases.
-             (substitute* "src/library/tools/man/Rd2HTML.Rd"
-               (("\\\\%Y-\\\\%m-\\\\%d at \\\\%H:\\\\%M:\\\\%S")
-                "(removed for reproducibility)"))
+     (list
+      #:disallowed-references `(,tzdata-for-tests)
+      #:make-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib/R/lib")
+              ;; This affects the embedded timestamp of only the core packages.
+              "PKG_BUILT_STAMP=1970-01-01")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'do-not-compress-serialized-files
+            (lambda _
+              ;; This ensures that Guix can detect embedded store references;
+              ;; see bug #28157 for details.
+              (substitute* "src/library/base/makebasedb.R"
+                (("compress = TRUE") "compress = FALSE"))
+              (substitute* '("src/library/tools/Makefile.in"
+                             "share/make/basepkg.mk"
+                             "share/make/lazycomp.mk")
+                (("makeLazyLoading\\(")
+                 "makeLazyLoading(compress=FALSE,"))))
+          (add-before 'configure 'patch-coreutils-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((uname-bin (search-input-file inputs "/bin/uname"))
+                    (rm-bin (search-input-file inputs "/bin/rm")))
+                (substitute* "src/scripts/R.sh.in"
+                  (("uname") uname-bin))
+                (substitute* "src/unix/sys-std.c"
+                  (("rm -Rf ") (string-append rm-bin " -Rf ")))
+                (substitute* "src/library/parallel/R/detectCores.R"
+                  (("'grep")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/grep")))
+                  (("\\| wc -l")
+                   (string-append "| "
+                                  (search-input-file inputs "/bin/wc")
+                                  " -l"))))))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; This is needed because R is run during the check phase and
+              ;; /bin/sh doesn't exist in the build container.
+              (substitute* "src/unix/sys-unix.c"
+                (("\"/bin/sh\"")
+                 (string-append "\"" (which "sh") "\"")))
+              ;; This test fails because line numbers are off by two.
+              (substitute* "tests/reg-packages.R"
+                (("8 <= print" m) (string-append "## " m)))))
+          (add-after 'unpack 'build-reproducibly
+            (lambda _
+              ;; The documentation contains time stamps to demonstrate
+              ;; documentation generation in different phases.
+              (substitute* "src/library/tools/man/Rd2HTML.Rd"
+                (("\\\\%Y-\\\\%m-\\\\%d at \\\\%H:\\\\%M:\\\\%S")
+                 "(removed for reproducibility)"))
 
-             ;; Remove timestamp from tracing environment.  This fixes
-             ;; reproducibility of "methods.rd{b,x}".
-             (substitute* "src/library/methods/R/trace.R"
-               (("dateCreated = Sys.time\\(\\)")
-                "dateCreated = as.POSIXct(\"1970-1-1 00:00:00\", tz = \"UTC\")"))
+              ;; Remove timestamp from tracing environment.  This fixes
+              ;; reproducibility of "methods.rd{b,x}".
+              (substitute* "src/library/methods/R/trace.R"
+                (("dateCreated = Sys.time\\(\\)")
+                 "dateCreated = as.POSIXct(\"1970-1-1 00:00:00\", tz = \"UTC\")"))
 
-             ;; Ensure that gzipped files are reproducible.
-             (substitute* '("src/library/grDevices/Makefile.in"
-                            "doc/manual/Makefile.in")
-               (("R_GZIPCMD\\)" line)
-                (string-append line " -n")))
+              ;; Ensure that gzipped files are reproducible.
+              (substitute* '("src/library/grDevices/Makefile.in"
+                             "doc/manual/Makefile.in")
+                (("R_GZIPCMD\\)" line)
+                 (string-append line " -n")))
 
-             ;; The "srcfile" procedure in "src/library/base/R/srcfile.R"
-             ;; queries the mtime of a given file and records it in an object.
-             ;; This is acceptable at runtime to detect stale source files,
-             ;; but it destroys reproducibility at build time.
+              ;; The "srcfile" procedure in "src/library/base/R/srcfile.R"
+              ;; queries the mtime of a given file and records it in an object.
+              ;; This is acceptable at runtime to detect stale source files,
+              ;; but it destroys reproducibility at build time.
 
-             ;; Similarly, the "srcfilecopy" procedure records the current
-             ;; time.  We change both of them to respect SOURCE_DATE_EPOCH.
-             (substitute* "src/library/base/R/srcfile.R"
-               (("timestamp <- (timestamp.*|file.mtime.*)" _ time)
-                (string-append "timestamp <- \
+              ;; Similarly, the "srcfilecopy" procedure records the current
+              ;; time.  We change both of them to respect SOURCE_DATE_EPOCH.
+              (substitute* "src/library/base/R/srcfile.R"
+                (("timestamp <- (timestamp.*|file.mtime.*)" _ time)
+                 (string-append "timestamp <- \
 as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
   as.numeric(Sys.getenv(\"SOURCE_DATE_EPOCH\"))\
 } else { " time "}, origin=\"1970-01-01\")\n")))
 
-             ;; This library is installed using "install_package_description",
-             ;; so we need to pass the "builtStamp" argument.
-             (substitute* "src/library/tools/Makefile.in"
-               (("(install_package_description\\(.*\"')\\)\"" line prefix)
-                (string-append prefix ", builtStamp='1970-01-01')\"")))
+              ;; This library is installed using "install_package_description",
+              ;; so we need to pass the "builtStamp" argument.
+              (substitute* "src/library/tools/Makefile.in"
+                (("(install_package_description\\(.*\"')\\)\"" line prefix)
+                 (string-append prefix ", builtStamp='1970-01-01')\"")))
 
-             (substitute* "src/library/Recommended/Makefile.in"
-               (("INSTALL_OPTS =" m)
-                (string-append m " --built-timestamp=1970-01-01" m)))
+              (substitute* "src/library/Recommended/Makefile.in"
+                (("INSTALL_OPTS =" m)
+                 (string-append m " --built-timestamp=1970-01-01" m)))
 
-             ;; R bundles an older version of help2man, which does not respect
-             ;; SOURCE_DATE_EPOCH.  We cannot just use the latest help2man,
-             ;; because that breaks a test.
-             (with-fluids ((%default-port-encoding "ISO-8859-1"))
-               (substitute* "tools/help2man.pl"
-                 (("my \\$date = strftime \"%B %Y\", localtime" line)
-                  (string-append line " 1"))))
+              ;; R bundles an older version of help2man, which does not respect
+              ;; SOURCE_DATE_EPOCH.  We cannot just use the latest help2man,
+              ;; because that breaks a test.
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* "tools/help2man.pl"
+                  (("my \\$date = strftime \"%B %Y\", localtime" line)
+                   (string-append line " 1"))))
 
-             ;; The "References" section of this file when converted to
-             ;; package.rds is sometimes stored with a newline, sometimes with
-             ;; a space.  We avoid this problem by removing the line break
-             ;; that is suspected to be the culprit.
-             (substitute* "src/library/methods/DESCRIPTION.in"
-               (("\\(2008\\)\n") "(2008) ")
-               (("  ``Software") "``Software")
-               (("Data Analysis:.") "Data Analysis:\n")
-               (("Programming with R") "  Programming with R"))
-             (substitute* "src/library/tools/DESCRIPTION.in"
-               (("codetools, methods, xml2, curl, commonmark, knitr, xfun, mathjaxr")
-                "codetools, methods, xml2, curl, commonmark,
+              ;; The "References" section of this file when converted to
+              ;; package.rds is sometimes stored with a newline, sometimes with
+              ;; a space.  We avoid this problem by removing the line break
+              ;; that is suspected to be the culprit.
+              (substitute* "src/library/methods/DESCRIPTION.in"
+                (("\\(2008\\)\n") "(2008) ")
+                (("  ``Software") "``Software")
+                (("Data Analysis:.") "Data Analysis:\n")
+                (("Programming with R") "  Programming with R"))
+              (substitute* "src/library/tools/DESCRIPTION.in"
+                (("codetools, methods, xml2, curl, commonmark, knitr, xfun, mathjaxr")
+                 "codetools, methods, xml2, curl, commonmark,
     knitr, xfun, mathjaxr"))))
-         (add-before 'build 'set-locales
-           (lambda _
-             (setlocale LC_ALL "C")
-             (setenv "LC_ALL" "C")))
-         (add-before 'configure 'set-default-pager
-          ;; Set default pager to "cat", because otherwise it is "false",
-          ;; making "help()" print nothing at all.
-          (lambda _ (setenv "PAGER" "cat")))
-         (add-before 'configure 'set-timezone
-           ;; Some tests require the timezone to be set.  However, the
-           ;; timezone may not just be "UTC", or else a brittle regression
-           ;; test in reg-tests-1d will fail.
-           ;; We also need TZ during the configure step.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZ" "UTC+1")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo"))))
-         (add-before 'check 'set-home
-           ;; Some tests require that HOME be set.
-           (lambda _ (setenv "HOME" "/tmp")))
-         (add-after 'build 'make-info
-          (lambda _ (invoke "make" "info")))
-         (add-after 'build 'install-info
-          (lambda _ (invoke "make" "install-info"))))
+          (add-before 'build 'set-locales
+            (lambda _
+              (setlocale LC_ALL "C")
+              (setenv "LC_ALL" "C")))
+          (add-before 'configure 'set-default-pager
+            ;; Set default pager to "cat", because otherwise it is "false",
+            ;; making "help()" print nothing at all.
+            (lambda _ (setenv "PAGER" "cat")))
+          (add-before 'configure 'set-timezone
+            ;; Some tests require the timezone to be set.  However, the
+            ;; timezone may not just be "UTC", or else a brittle regression
+            ;; test in reg-tests-1d will fail.
+            ;; We also need TZ during the configure step.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC+1")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo"))))
+          (add-before 'check 'set-home
+            ;; Some tests require that HOME be set.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-after 'build 'make-info
+            (lambda _ (invoke "make" "info")))
+          (add-after 'build 'install-info
+            (lambda _ (invoke "make" "install-info"))))
        #:configure-flags
-       `(;; We build the recommended packages here, because they are needed in
-         ;; order to run the test suite.  We disable them in the r-minimal
-         ;; package.
-         "--with-cairo"
-         "--with-blas=-lopenblas"
-         "--with-libpng"
-         "--with-jpeglib"
-         "--with-libtiff"
-         "--with-ICU"
-         "--with-tcltk"
-         ,(string-append "--with-tcl-config="
-                         (assoc-ref %build-inputs "tcl")
+       #~(list
+          ;; We build the recommended packages here, because they are needed in
+          ;; order to run the test suite.  We disable them in the r-minimal
+          ;; package.
+          "--with-cairo"
+          "--with-blas=-lopenblas"
+          "--with-libpng"
+          "--with-jpeglib"
+          "--with-libtiff"
+          "--with-ICU"
+          "--with-tcltk"
+          (string-append "--with-tcl-config="
+                         #$(this-package-input "tcl")
                          "/lib/tclConfig.sh")
-         ,(string-append "--with-tk-config="
-                         (assoc-ref %build-inputs "tk")
+          (string-append "--with-tk-config="
+                         #$(this-package-input "tk")
                          "/lib/tkConfig.sh")
-         "--enable-R-shlib"
-         "--enable-BLAS-shlib"
-         "--with-system-tre")))
+          "--enable-R-shlib"
+          "--enable-BLAS-shlib"
+          "--with-system-tre")))
     ;; R has some support for Java.  When the JDK is available at configure
     ;; time environment variables pointing to the JDK will be recorded under
     ;; $R_HOME/etc and ./tools/getsp.java will be compiled which is used by "R
@@ -443,45 +448,44 @@ available, greatly increasing its breadth and scope.")
   (package (inherit r-with-tests)
     (name "r-minimal")
     (arguments
-     `(#:tests? #f
-       ,@(substitute-keyword-arguments (package-arguments r-with-tests)
-           ((#:disallowed-references refs '())
-            (cons perl refs))
-           ((#:configure-flags flags)
-            ;; Do not build the recommended packages.  The build system creates
-            ;; random temporary directories and embeds their names in some
-            ;; package files.  We build these packages with the r-build-system
-            ;; instead.
-            `(cons "--without-recommended-packages" ,flags))
-           ((#:phases phases '%standard-phases)
-            `(modify-phases ,phases
-               (add-after 'install 'remove-extraneous-references
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out")))
-                     (substitute* (string-append out "/lib/R/etc/Makeconf")
-                       (("^# configure.*")
-                        "# Removed to avoid extraneous references\n"))
-                     (substitute* (string-append out "/lib/R/bin/libtool")
-                       (((string-append
-                          "(-L)?("
-                          (format #false
-                                  "~a/[^-]+-(~{~a~^|~})-[^/]+"
-                                  (%store-directory)
-                                  '("bzip2"
-                                    "file"
-                                    "glibc-utf8-locales"
-                                    "graphite2"
-                                    "libselinux"
-                                    "libsepol"
-                                    "perl"
-                                    "texinfo"
-                                    "texlive-bin"
-                                    "util-macros"
-                                    "xz"))
-                          "|"
-                          (format #false "~a/[^-]+-glibc-[^-]+-static"
-                                  (%store-directory))
-                          ")/lib")) ""))))))))))))
+     (substitute-keyword-arguments (package-arguments r-with-tests)
+       ((#:tests? #f #f) #f)
+       ((#:disallowed-references refs '())
+        (cons perl refs))
+       ((#:configure-flags flags)
+        ;; Do not build the recommended packages.  The build system creates
+        ;; random temporary directories and embeds their names in some
+        ;; package files.  We build these packages with the r-build-system
+        ;; instead.
+        #~(cons "--without-recommended-packages" #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'remove-extraneous-references
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (substitute* (string-append #$output "/lib/R/etc/Makeconf")
+                  (("^# configure.*")
+                   "# Removed to avoid extraneous references\n"))
+                (substitute* (string-append #$output "/lib/R/bin/libtool")
+                  (((string-append
+                     "(-L)?("
+                     (format #false
+                             "~a/[^-]+-(~{~a~^|~})-[^/]+"
+                             (%store-directory)
+                             '("bzip2"
+                               "file"
+                               "glibc-utf8-locales"
+                               "graphite2"
+                               "libselinux"
+                               "libsepol"
+                               "perl"
+                               "texinfo"
+                               "texlive-bin"
+                               "util-macros"
+                               "xz"))
+                     "|"
+                     (format #false "~a/[^-]+-glibc-[^-]+-static"
+                             (%store-directory))
+                     ")/lib")) ""))))))))))
 
 (define-public rmath-standalone
   (package (inherit r-minimal)
@@ -525,14 +529,14 @@ D.V. Hinkley (1997, CUP), originally written by Angelo Canty for S.")
 (define-public r-mass
   (package
     (name "r-mass")
-    (version "7.3-60")
+    (version "7.3-60.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MASS" version))
        (sha256
         (base32
-         "1hphf8m1zny4582rvfnl262ydf3f2w0kayxj2b8n855hx87l20mq"))))
+         "1gdd2gyqngvgnm0bxc3a33nykrx2rbfmxj82i7bh7f1961cr7pvl"))))
     (properties `((upstream-name . "MASS")))
     (build-system r-build-system)
     (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
@@ -673,14 +677,14 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-matrix
   (package
     (name "r-matrix")
-    (version "1.6-4")
+    (version "1.6-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Matrix" version))
        (sha256
         (base32
-         "00dv2xv69fr3c8h5a2qvr31lffamw5kx08q5v8vli3g6xkd7pjkh"))))
+         "0zdrrss4q0g7jify9bp1vvzrdpy62fc6fx3awzbd2wvfc938sv3j"))))
     (properties `((upstream-name . "Matrix")))
     (build-system r-build-system)
     (propagated-inputs
@@ -962,13 +966,13 @@ effects of different types of color-blindness.")
 (define-public r-digest
   (package
     (name "r-digest")
-    (version "0.6.33")
+    (version "0.6.34")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "digest" version))
        (sha256
-        (base32 "06bq696wpmn8ivbrpxw0qlcf835kc515m8jfv9zbwf8ndf42qw5y"))))
+        (base32 "1na47pywh059g9ymf56z232h5yxbj0gn755cb10ms5igjd97awqb"))))
     (build-system r-build-system)
     ;; Vignettes require r-knitr, which requires r-digest, so we have to
     ;; disable them and the tests.
@@ -1409,13 +1413,13 @@ evaluation (NSE) in R.")
 (define-public r-dbi
   (package
     (name "r-dbi")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "DBI" version))
               (sha256
                (base32
-                "1g4c2qfyjwbjwbsczhk83xmx74764nn53gnqzb6xxrwqjbxj4dpn"))))
+                "0w7dpp1zg8w0mback1mk0a0vp51hf4njmrxz1i3j1xq5b1jfyiz4"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -1991,13 +1995,13 @@ times.")
 (define-public r-data-table
   (package
     (name "r-data-table")
-    (version "1.14.10")
+    (version "1.15.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "data.table" version))
               (sha256
                (base32
-                "0zk2g0lnjrw5wk6avwq07xw0cd7hpcpkmamf9d8avpd8f7ml2jq1"))))
+                "0qhh4ii10b6rbimhh83160gsax82gbrm3hqbqqddkzknpifxpdrr"))))
     (properties `((upstream-name . "data.table")))
     (build-system r-build-system)
     (inputs
@@ -2134,7 +2138,7 @@ machine learning, computer vision, and high-dimensional statistics.")
 (define-public python-arviz
   (package
     (name "python-arviz")
-    (version "0.16.1")
+    (version "0.17.0")
     (source (origin
               (method git-fetch)        ; PyPI misses some test files
               (uri (git-reference
@@ -2143,7 +2147,7 @@ machine learning, computer vision, and high-dimensional statistics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19phaqbpls82300z7ghicrldjxyjq4ilmmwsmd9zkl8c7ld5cb4j"))))
+                "0rmv7nniciq2jjnmk3qslc777wm8mjp7vsbk5dqx87a94dp7198f"))))
     (build-system pyproject-build-system)
     (arguments
      ;; FIXME: matplotlib tests fail because of the "--save" test flag.
@@ -2182,7 +2186,7 @@ comparison and diagnostics.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.10.0")
+    (version "5.10.3")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -2191,7 +2195,7 @@ comparison and diagnostics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17gb7ny2isfgyps7qffdxq18a9p43qy1fhqhbh75cnqd5wv1yxzb"))))
+                "0ydngbki4xb0i4j0nayzqqrvwlxp30fp56kiwm95n2i7iwgmki02"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; tests are too computationally intensive
@@ -2250,6 +2254,15 @@ inference (VI) algorithms.")
                (base32
                 "1bn4jmwygs5h0dskbniivj20qblgm75pyi9hcjf47r25kawd730m"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The deprecation warnings break the tests.
+          (add-after 'unpack 'dont-treat-deprecation-warnings-as-error
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"error::DeprecationWarning\",") "")))))))
     (propagated-inputs (list python-importlib-metadata python-numpoly
                              python-numpy python-scipy))
     (native-inputs (list python-pytest python-scikit-learn))
@@ -2296,13 +2309,13 @@ building design matrices.")
 (define-public python-mapie
   (package
     (name "python-mapie")
-    (version "0.7.0")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MAPIE" version))
               (sha256
                (base32
-                "1nvi547avvwrck1n7rf5jh7d0ml6jaqjs2p59iwcq2a5xjmdsmsc"))))
+                "185nnsl6ag2xzkfxpmc86d9dd8wf2v87b2psan10sma399fbqd0x"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pandas python-pytest))
     (propagated-inputs (list python-numpy python-scikit-learn))
@@ -2485,13 +2498,13 @@ functionalities needed to treat uncertainties in studies.")
 (define-public r-coda
   (package
     (name "r-coda")
-    (version "0.19-4")
+    (version "0.19-4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "coda" version))
               (sha256
                (base32
-                "13z5dwfpnyyhpsbpg4xr9g5c1685jhqj90f4x4qkcykr6kykqba2"))))
+                "1mlaf3ffql3phc12vlfss0vqqdj415mxsg84vsdgymmvdzc53d7l"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
@@ -2780,14 +2793,14 @@ other packages.")
 (define-public r-commonmark
   (package
     (name "r-commonmark")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "commonmark" version))
        (sha256
         (base32
-         "13slfv9xpd5fhccw6xgm274d338gmpvc4sdzd943dm684rd1ml3d"))))
+         "0fxm1nn4al0yn79iqix9cp5j5chr8jq56d29ayqrpag49hzs25wm"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/commonmark")
     (synopsis "CommonMark and Github Markdown Rendering in R")
@@ -2803,13 +2816,13 @@ tables, autolinks and strikethrough text.")
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
-    (version "7.2.3")
+    (version "7.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roxygen2" version))
               (sha256
                (base32
-                "1nhn0jhnxzlyqx0qnpd7k7q3azzngyn0j4zs8awmlmyjfywzli6q"))))
+                "1j72arkadw93f4wrzxhryn3666jwnablr1bhk0zv6g77q2lrypi1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brew
@@ -2991,13 +3004,13 @@ tools to simplify the devolpment of R packages.")
 (define-public r-withr
   (package
     (name "r-withr")
-    (version "2.5.2")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "withr" version))
               (sha256
                (base32
-                "01a27nqlrrf1pws57hi9631f3aj33a9dashd640m5nlgf9nzmdnm"))))
+                "1rz0pgm1bg3cnc09s8q8yyg83lmf8bv9arlasciqqr0fdpgfwy4c"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -3342,13 +3355,13 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.3.4")
+    (version "2.3.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "1sy4zgacr7f7svv0a1vd7s40llk7g2989qwf19l6zkngncdwikbk"))))
+                "1wvfadwcr8iv0z6pddfpvl60dq4p8l68v16p9daa002srgzpwlw1"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3413,13 +3426,13 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 (define-public r-xml
   (package
     (name "r-xml")
-    (version "3.99-0.16")
+    (version "3.99-0.16.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "XML" version))
               (sha256
                (base32
-                "0ny93jlx0fpv0hs9qjm9cbcv4fh5rh0kkyhk6g0dm8wvp6x3f39m"))))
+                "1i7fs9i2f6bdkxb45w2bck7sshlwxy2s32hi9fwa4nfmw2iy62m3"))))
     (properties
      `((upstream-name . "XML")))
     (build-system r-build-system)
@@ -3534,14 +3547,14 @@ statements.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "2.0-1")
+    (version "2.0-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "0r3l39sihncrmhs6y3nydr6izp5ss86rfwjyhwf2x0clvqq2gkz9"))))
+         "0ym5z2zngkqvs1cd7c3k16k9ipsli6xc6qp0nmr77va34d8v0n4q"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-nlme))
     (home-page "https://cran.r-project.org/web/packages/segmented")
@@ -4277,13 +4290,13 @@ want to migrate to S4.")
 (define-public r-r-oo
   (package
     (name "r-r-oo")
-    (version "1.25.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.oo" version))
               (sha256
                (base32
-                "1vxy8yw4yblb3vgl64yh0b6zf1d51rnc2c23kmyyw629fxhr1cdq"))))
+                "0ra3sjs7sqqif3dlcdry7p40vd4jxm0407d3s6sgn5i2ihw2nq7p"))))
     (properties `((upstream-name . "R.oo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4430,13 +4443,13 @@ memory usage.")
 (define-public r-viridis
   (package
     (name "r-viridis")
-    (version "0.6.4")
+    (version "0.6.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "viridis" version))
               (sha256
                (base32
-                "1p6n85js15lx0zx07v2dxnb6wx4xzlbvrljf0x6vxy4gqf5si8hb"))))
+                "0p00s24d8bsifw3r0afwrx98bqixnf5krpbw42hfwp8ipsv5qaw6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gridextra r-viridislite))
@@ -4508,27 +4521,27 @@ selection.")
 (define-public r-tidyr
   (package
     (name "r-tidyr")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyr" version))
        (sha256
         (base32
-         "178a9sb07rph4mh7cz004ls0g7d4b7jk065m4ycfrlzxcs9jnlwd"))))
+         "0pc3ad9k36lk3c5qbgx4blhs8aihqyysfxljyirgahsmrdhw4878"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-cpp11
            r-dplyr
-           r-magrittr
            r-glue
            r-lifecycle
+           r-magrittr
            r-purrr
            r-rlang
            r-stringr
-           r-tidyselect
            r-tibble
+           r-tidyselect
            r-vctrs))
     (native-inputs
      (list r-knitr))
@@ -4592,13 +4605,13 @@ features present in other programming languages.")
 (define-public r-plotly
   (package
     (name "r-plotly")
-    (version "4.10.3")
+    (version "4.10.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "13sxmanx2xck8dn0prn2fplgx4bafb7h2kk2wjmci21h8hk6qylb"))
+                "0ryqcs9y7zan36zs6n1hxxy91pajldpax8q7cwcimlsmxnvrbafg"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib/"
@@ -4984,14 +4997,14 @@ hierarchical clustering dendrograms.")
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
-    (version "1.2.3")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastcluster" version))
        (sha256
         (base32
-         "009amz7i5yndqw2008fgd3p11n4fsb291k2ypg3pip6dw4lr28hz"))))
+         "06cd3w62ijf0yx2yq0xgx6qw5lcrnn1033ygx6bl9dmhix2haal5"))))
     (build-system r-build-system)
     (home-page "http://danifold.net/fastcluster.html")
     (synopsis "Fast hierarchical clustering routines")
@@ -5009,14 +5022,14 @@ existing packages provide.")
 (define-public r-sfsmisc
   (package
     (name "r-sfsmisc")
-    (version "1.1-16")
+    (version "1.1-17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sfsmisc" version))
        (sha256
         (base32
-         "0v2325f3115yp48s0ddiiqwxlg2zf5xzc21xxd0cbziw3rk4l6si"))))
+         "06ih8zljs57scy7jfnv32yxijgv1i60vggmlyyblwnff6mr2fm60"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/sfsmisc")
     (synopsis "Utilities from \"Seminar fuer Statistik\" ETH Zurich")
@@ -5390,14 +5403,14 @@ Farebrother's algorithm or Liu et al.'s algorithm.")
 (define-public r-cowplot
   (package
     (name "r-cowplot")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cowplot" version))
        (sha256
         (base32
-         "1ppsg3rbqz9a16zq87izdj5w8ylb6jb6v13xb01k7m3n2h4mv4f6"))))
+         "0wxjynpbamyimpms7psbac7xgwswzlidczpc037q20y5yld9fml7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gtable r-rlang r-scales))
@@ -5637,14 +5650,14 @@ can be efficiently implemented directly in the R language.")
 (define-public r-robustbase
   (package
     (name "r-robustbase")
-    (version "0.99-1")
+    (version "0.99-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robustbase" version))
        (sha256
         (base32
-         "0n3qxw633hk391mr07pd7c9572v3zgdffvmaq4q2w5q4x3n1n6mf"))))
+         "0i6dzri3bfkpmp7h0h5nyzigs9rjzdd3c4ilapmvadmfywl9d9mn"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
@@ -5682,14 +5695,14 @@ analysis} (PCA) by projection pursuit.")
 (define-public r-rrcov
   (package
     (name "r-rrcov")
-    (version "1.7-4")
+    (version "1.7-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rrcov" version))
        (sha256
         (base32
-         "0jkm2w38kbzicfx2542rb90r7kcrbm7hiaasajw1zq8gb7ffshb3"))))
+         "0cxhs0plbd8b01hmnpaphshhk34rw1bwg56rackb2pmngw3rbifz"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-mvtnorm r-pcapp r-robustbase))
@@ -6668,14 +6681,14 @@ completion.")
 (define-public python-rpy2
   (package
     (name "python-rpy2")
-    (version "3.5.5")
+    (version "3.5.15")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rpy2" version))
         (sha256
          (base32
-          "0dyhb3xn2p6s67yxhgh4qd4hp45mhb5zvgqkdsn26kyg447c8lm2"))))
+          "0asvybb7kmr48pfkibp1qi3h3vlq2fl0mazaf0xj6zywhi5awks4"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -6704,9 +6717,15 @@ completion.")
            r-rsqlite
            r-dplyr
            r-dbplyr
-           python-numpy))
+           python-numpy
+           zlib))
     (native-inputs
-     (list zlib python-pytest))
+     (list python-coverage
+           python-ipython
+           python-numpy
+           python-pandas
+           python-pytest
+           python-pytest-cov))
     (home-page "https://rpy2.github.io")
     (synopsis "Python interface to the R language")
     (description "rpy2 is a redesign and rewrite of rpy.  It is providing a
@@ -6819,7 +6838,9 @@ Java package that provides routines for various statistical distributions.")
           #~(modify-phases %standard-phases
               (delete 'configure)
               (add-before 'check 'skip-failing-tests
-                ;; XXX: Skip 10 failing tests (out of 187).
+                ;; The command-without-trailing-newline-test and other
+                ;; tests fail for unknown reasons (see:
+                ;; https://github.com/emacs-ess/ESS/issues/1272).
                 (lambda _
                   (let-syntax
                       ((disable-tests
@@ -6831,7 +6852,22 @@ Java package that provides routines for various statistical distributions.")
                              (((string-append "^\\(ert-deftest " test-name ".*")
                                all)
                               (string-append all "(skip-unless nil)\n"))
-                             ...)))))
+                             ...))))
+                       (disable-etests  ;different test syntax
+                        (syntax-rules ()
+                          ((_ file ())
+                           (syntax-error "test names list must not be empty"))
+                          ((_ file (test-name ...))
+                           (emacs-batch-edit-file file
+                             '(progn
+                               (mapc (lambda (test)
+                                       (goto-char (point-min))
+                                       (search-forward
+                                        (format "etest-deftest %s " test))
+                                       (beginning-of-line)
+                                       (kill-sexp))
+                                     (list test-name ...))
+                               (basic-save-buffer)))))))
                     (disable-tests (list "test/ess-test-inf.el"
                                          "test/ess-test-r.el")
                                    ("ess--derive-connection-path"
@@ -6841,26 +6877,18 @@ Java package that provides routines for various statistical distributions.")
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
                                     "ess-set-working-directory-test"
-                                    "ess-test-r-startup-directory")))
-                  ;; The two tests below use a different syntax.
-                  (emacs-batch-edit-file "test/ess-test-r-eval.el"
-                    '(progn
-                      (mapc (lambda (test)
-                              (goto-char (point-min))
-                              (search-forward (format "etest-deftest %s " test))
-                              (beginning-of-line)
-                              (kill-sexp))
-                            '("ess-r-eval-ns-env-roxy-tracebug-test"
-                              "ess-r-eval-sink-freeze-test"))
-                      (basic-save-buffer)))))
+                                    "ess-test-r-startup-directory"))
+                    (disable-etests "test/ess-test-r-eval.el"
+                                    ("ess-r-eval-ns-env-roxy-tracebug-test"
+                                     "ess-r-eval-sink-freeze-test"))
+                    (disable-etests
+                     "test/ess-test-inf.el"
+                     ("command-without-trailing-newline-test")))))
               (replace 'check
                 (lambda _ (invoke "make" "test")))))))
-      (native-inputs
-       (list perl r-roxygen2 texinfo))
-      (inputs
-       (list emacs-minimal r-minimal))
-      (propagated-inputs
-       (list emacs-julia-mode))
+      (native-inputs (list perl r-roxygen2 texinfo))
+      (inputs (list emacs-minimal r-minimal))
+      (propagated-inputs (list emacs-julia-mode))
       (home-page "https://ess.r-project.org/")
       (synopsis "Emacs mode for statistical analysis programs")
       (description
@@ -7197,14 +7225,14 @@ various statistical models with linear predictors.")
 (define-public r-bayesfactor
   (package
     (name "r-bayesfactor")
-    (version "0.9.12-4.6")
+    (version "0.9.12-4.7")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "BayesFactor" version))
         (sha256
           (base32
-            "1nvm26m5m8xi8iw1fj8ca79z3aqln4l3c0hvh38yvm9p584nwpzx"))))
+            "0z9p9vdcmcdwqmixaiqnhli2b06whbap6y4pqx4a5gcdgxlj09zr"))))
     (properties `((upstream-name . "BayesFactor")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7431,13 +7459,13 @@ Calculates confidence intervals for the difference in proportion.")
 (define-public r-desctools
   (package
     (name "r-desctools")
-    (version "0.99.52")
+    (version "0.99.53")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "DescTools" version))
         (sha256
-          (base32 "147p9brnzyhibffq15wcn0dza3cx14w57b2zc9na8wmmc3wpv6cl"))))
+          (base32 "0b7an97ns7zjc5qqqhrbb0wzzvcx7wcd0980fxlnpbzj5z2idl0p"))))
     (properties `((upstream-name . "DescTools")))
     (build-system r-build-system)
     (propagated-inputs

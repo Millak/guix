@@ -16,7 +16,7 @@
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
@@ -824,16 +824,26 @@ tables.")
            #~(list "GUILE_AUTO_COMPILE=0")
            #:phases
            (if (target-x86-64?)
-             #~%standard-phases
-             #~(modify-phases %standard-phases
-                 (add-before 'check 'disable-some-tests
-                   (lambda _
-                     ;; This test can take more than an hour on some systems.
-                     (substitute* "tests/basic.scm"
-                       ((".*spawn-fiber loop-to-1e4.*") ""))
-                     ;; These tests can take more than an hour and/or segfault.
-                     (substitute* "Makefile"
-                       (("tests/speedup.scm") ""))))))))
+               #~%standard-phases
+               #~(modify-phases %standard-phases
+                   (add-before 'check 'disable-some-tests
+                     (lambda _
+                       ;; This test can take more than an hour on some systems.
+                       (substitute* "tests/basic.scm"
+                         ((".*spawn-fiber loop-to-1e4.*") ""))
+
+                       ;; These tests can take more than an hour and/or segfault.
+                       (substitute* "Makefile"
+                         (("tests/speedup.scm") ""))
+
+                       (when #$(target-aarch64?)
+                         ;; The tests below have issues on aarch64 systems.
+                         ;; They pass on an Apple M1 but take a very long time
+                         ;; on a Hetzner aarch64 VM.  Skip them.
+                         (substitute* "tests/basic.scm"
+                           ((".*spawn-fiber-chain 5000000.*") ""))
+                         (substitute* "tests/channels.scm"
+                           ((".*assert-run-fibers-terminates .*pingpong.*") "")))))))))
     (native-inputs
      (list texinfo pkg-config autoconf-2.71 automake libtool
            guile-3.0            ;for 'guild compile
@@ -2012,6 +2022,48 @@ convenient interface to SQL databases.  This package implements the interface
 for MySQL.")
     (license license:gpl2+)))
 
+(define-public guile-lmdb
+  (let ((commit "438143ca9ba157faec6f4c2740092c31c733fbfe")
+        (revision "0"))
+    (package
+      (name "guile-lmdb")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/aartaka/guile-lmdb")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0p43c8ppbhzpi944in0z2jqr7acl8pm7s1x0p5f0idqda6n6f828"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "modules"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'substitute-lmdb-so
+              (lambda _
+                (let ((lmdb (string-append
+                             #$(this-package-input "lmdb") "/lib/liblmdb.so")))
+                  (substitute* "modules/lmdb/lmdb.scm"
+                    (("liblmdb.so") lmdb))))))))
+      (native-inputs (list guile-3.0))
+      (inputs (list guile-3.0 lmdb))
+      (home-page "https://github.com/aartaka/guile-lmdb")
+      (synopsis "Bindings for Lightning Memory-Mapped Database in Guile")
+      (description "This package provides a Scheme wrapper around liblmdb.so.
+Most names are the same as LMDB ones, except for prefix absence.
+Several conveniences are added on top:
+@itemize
+@item @code{call-with-env-and-txn} and @code{call-with-cursor} wrappers.
+@item @code{for-cursor} procedure for cursor iteration.
+@item @code{val} and @code{stat} types.
+@item Error signaling instead of integer return values.
+@end itemize")
+      (license license:gpl3+))))
+
 (define-public guile-config
   (package
     (name "guile-config")
@@ -2051,90 +2103,74 @@ above command-line parameters.")
               (replace "guile" guile-2.2)))))
 
 (define-public guile-hall
-  (package
-    (name "guile-hall")
-    (version "0.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/a-sassmannshausen/guile-hall")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0yrrik1v1xbik5h5q7w2cxrx6gvkmcdm32dl36i7xqdq8pr8sh2d"))))
-    (build-system gnu-build-system)
-    (arguments
-      `(#:modules
-        ((ice-9 match)
-         (ice-9 ftw)
-         ,@%gnu-build-system-modules)
+  ;; There are many unreleased bug fixes; use the latest commit for now.
+  (let ((commit "7558ba906d4281a5b825e3c1c87f2810312414b6")
+        (revision "1"))
+    (package
+      (name "guile-hall")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/a-sassmannshausen/guile-hall")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sqm6nyzc37p0xgjj21m9dar2iqik9gfwlcacp2v6y10lh2f1yps"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:modules `(((guix build guile-build-system)
+                     #:select
+                     (target-guile-effective-version))
+                    ,@%gnu-build-system-modules)
         #:phases
-        (modify-phases
-          %standard-phases
-          (add-after 'install 'hall-wrap-binaries
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((compiled-dir
-                       (lambda (out version)
-                         (string-append
-                           out "/lib/guile/" version "/site-ccache")))
-                     (uncompiled-dir
-                       (lambda (out version)
-                         (string-append
-                          out "/share/guile/site"
-                          (if (string-null? version) "" "/") version)))
-                     (dep-path
-                       (lambda (env modules path)
-                         (list env ":" 'prefix
-                               (cons modules
-                                     (map (lambda (input)
-                                            (string-append
-                                              (assoc-ref inputs input)
-                                              path))
-                                          ,''("guile-config"))))))
-                     (out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin/"))
-                     (site (uncompiled-dir out "")))
-                (match (scandir site)
-                       (("." ".." version)
-                        (for-each
-                          (lambda (file)
-                            (wrap-program
-                              (string-append bin file)
-                              (dep-path
-                                "GUILE_LOAD_PATH"
-                                (uncompiled-dir out version)
-                                (uncompiled-dir "" version))
-                              (dep-path
-                                "GUILE_LOAD_COMPILED_PATH"
-                                (compiled-dir out version)
-                                (compiled-dir "" version))))
-                          ,''("hall"))
-                        #t))))))))
-    (native-inputs
-      (list autoconf automake pkg-config texinfo))
-    (inputs (list guile-3.0))
-    (propagated-inputs
-     (list guile-config))
-    (synopsis "Guile project tooling")
-    (description
-     "Hall is a command-line application and a set of Guile libraries that
+        (with-imported-modules `((guix build guile-build-system)
+                                 ,@%gnu-build-system-modules)
+          #~(modify-phases %standard-phases
+              (add-after 'install 'hall-wrap-binaries
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let* ((version (target-guile-effective-version))
+                         (site-ccache (string-append "/lib/guile/"
+                                                     version "/site-ccache"))
+                         (site (string-append "/share/guile/site/" version))
+                         (dep-path
+                          (lambda (env path)
+                            (list env ":" 'prefix
+                                  (cons (string-append #$output path)
+                                        (map (lambda (input)
+                                               (string-append
+                                                (assoc-ref inputs input)
+                                                path))
+                                             (list "guile-config"
+                                                   "guile-lib"))))))
+                         (bin (string-append (ungexp output) "/bin/")))
+                    (wrap-program (string-append bin "hall")
+                      (dep-path "GUILE_LOAD_PATH" site)
+                      (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)))))))))
+      (native-inputs
+       (list autoconf
+             automake
+             gettext-minimal
+             guile-3.0
+             pkg-config
+             texinfo))
+      (inputs
+       (list bash-minimal
+             guile-3.0
+             guile-config
+             guile-lib))
+      (propagated-inputs
+       (list guile-config))
+      (synopsis "Guile project tooling")
+      (description
+       "Hall is a command-line application and a set of Guile libraries that
 allow you to quickly create and publish Guile projects.  It allows you to
 transparently support the GNU build system, manage a project hierarchy &
 provides tight coupling to Guix.")
-    (home-page "https://gitlab.com/a-sassmannshausen/guile-hall")
-    (license license:gpl3+)))
-
-(define-public guile2.2-hall
-  (package
-    (inherit guile-hall)
-    (name "guile2.2-hall")
-    (inputs (modify-inputs (package-inputs guile-hall)
-              (replace "guile" guile-2.2)))
-    (propagated-inputs
-     `(("guile-config" ,guile2.2-config)
-       ,@(alist-delete "guile-config"
-                       (package-propagated-inputs guile-hall))))))
+      (home-page "https://gitlab.com/a-sassmannshausen/guile-hall")
+      (license license:gpl3+))))
 
 (define-public guile-ics
   (package
@@ -3398,7 +3434,7 @@ from @code{tree-il}.")
 (define-public guile-hoot
   (package
     (name "guile-hoot")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://spritely.institute/files/releases"
@@ -3406,7 +3442,7 @@ from @code{tree-il}.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1byshh7092q2yzqwpi59j4xjsppvp1xqnqsv94yv541qfm0plnc2"))))
+                "1zgcp7xnx84gwdpxj0wga7xrcxcifp9fyp06b6d54gbxq4as8an1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"
@@ -6013,7 +6049,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
@@ -6022,7 +6058,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1ic4f65kbziszi5cz1b7ypl6acph6kdq5pc3wasa1jns3gkzfl6l"))))
+         "1w1xf60i6an4fs2kr0cv7w01h2fhz1i23zp9w7nbmr32zqm8m59z"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -6031,7 +6067,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
      (list pkg-config texinfo))
     (inputs (list guile-3.0))
     (propagated-inputs
-     (list guile-fibers guile-gcrypt))
+     (list guile-fibers guile-gcrypt guile-gnutls))
     (home-page "https://spritely.institute/goblins")
     (synopsis "Distributed programming environment for Guile")
     (description

@@ -57,6 +57,8 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -64,6 +66,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -426,6 +429,57 @@ algorithm for community detection in large networks.")
 large networks.")
     (license license:gpl3+)))
 
+(define-public python-graphtools
+  (package
+    (name "python-graphtools")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KrishnaswamyLab/graphtools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aaxhij4y5z2vvc34qnb5py6nw3ciz35a3z4lfr223f9kvfpqgak"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Incompatibility with sklearn.
+               ;; 'kNNLandmarkGraph' object has no attribute '_landmark_op'
+               (delete-file "test/test_landmark.py")
+               (setenv "LOKY_MAX_CPU_COUNT" "1")
+               (invoke "nose2" "-v")))))))
+    (propagated-inputs
+     (list python-deprecated
+           python-future
+           python-numpy
+           python-pygsp
+           python-scikit-learn
+           python-scipy
+           python-tasklogger))
+    (native-inputs
+     (list util-linux ;for lscpu
+           python-anndata
+           python-black
+           python-coverage
+           python-coveralls
+           python-nose
+           python-nose2
+           python-pandas
+           python-parameterized
+           python-igraph))
+    (home-page "https://github.com/KrishnaswamyLab/graphtools")
+    (synopsis "Tools for building and manipulating graphs in Python")
+    (description "This package provides tools for building and manipulating
+graphs in Python.")
+    (license license:gpl3)))
+
 (define-public python-louvain-igraph
   (package
     (name "python-louvain-igraph")
@@ -467,6 +521,43 @@ millions of nodes (as long as they can fit in memory).  The core function is
 @code{find_partition} which finds the optimal partition using the louvain
 algorithm for a number of different methods.")
     (license license:gpl3+)))
+
+(define-public python-pygsp
+  (package
+    (name "python-pygsp")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyGSP" version))
+       (sha256
+        (base32 "002q4z3p3ka81rzhgi66qqmz1ccrg9hwch4bax7jsqixg64asx28"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These all fail due to a type error in scipy.
+      '(list "-k" (string-append "not test_bunny"
+                                 " and not test_lowstretchtree"
+                                 " and not test_nngraph"
+                                 " and not test_plot_graphs"
+                                 " and not test_randomregular"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-doctests
+           (lambda _
+             (substitute* "pygsp/tests/test_all.py"
+               (("def test_docstrings.*") "def _disabled_test_docstrings():\n")
+               (("return doctest.DocFileSuite.*") "return False\n")
+               (("suites.append\\(test_docstrings.*")
+                "")))))))
+    (propagated-inputs (list python-numpy python-scikit-image python-scipy))
+    (native-inputs (list python-coverage python-coveralls python-flake8))
+    (home-page "https://github.com/epfl-lts2/pygsp")
+    (synopsis "Graph Signal Processing in Python")
+    (description "The PyGSP is a Python package to ease signal processing on
+graphs.")
+    (license license:bsd-3)))
 
 (define-public faiss
   (package
@@ -727,7 +818,7 @@ transformed into common image formats for display or printing.")
 (define-public python-graph-tool
   (package
     (name "python-graph-tool")
-    (version "2.58")
+    (version "2.59")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -735,7 +826,7 @@ transformed into common image formats for display or printing.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "05vsk2600wn790hk7gr2f0609bzcslyhhv9x157n43vxy4y6r8vj"))))
+                "1bmck5fcihj9lr5kd8x624bdi9xhfc13pl4mwzv74jr5lz07kr6d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules (,@%gnu-build-system-modules

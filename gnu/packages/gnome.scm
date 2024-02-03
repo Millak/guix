@@ -3394,7 +3394,7 @@ compiles to GTKBuilder XML.")
            python-pycairo
            python-pygobject
            python-lxml
-           webkitgtk
+           webkitgtk-for-gtk3
            webkitgtk))
     (native-inputs
      (list `(,glib "bin")

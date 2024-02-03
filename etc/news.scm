@@ -19,6 +19,7 @@
 ;; Copyright © 2021, 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;; Copyright © 2024 Oleg Pykhalov <go.wigust@gmail.com>
+;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -26,6 +27,18 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "10a193596368443f441077525ebbddf787d91e4b")
+        (title
+          (en "Linux-libre 4.14 removed due to end of upstream support")
+          (de "Linux-libre 4.14 wurde entfernt"))
+        (body
+          (en "The linux-libre 4.14 kernel series has reached the end of
+             its life, and is no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+          (de "Die @code{linux-libre} 4.14-Versionsreihe hat ihr
+Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
+Versionsreihe aus GNU Guix entfernt worden.")))
 
  (entry (commit "519e1e3eb88ec532fc83ebb742d9919269b57c87")
         (title

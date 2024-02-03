@@ -37,6 +37,7 @@
   #:use-module (guix memoization)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
 

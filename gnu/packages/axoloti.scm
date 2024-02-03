@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -18,6 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages axoloti)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -218,8 +219,9 @@ runtime.")
     (name "axoloti-patcher")
     (version (package-version axoloti-runtime))
     (arguments
-     `(#:tests? #f ; no check target
-       #:modules ((guix build gnu-build-system)
+     (list
+      #:tests? #f ; no check target
+      #:modules '((guix build gnu-build-system)
                   ((guix build ant-build-system) #:prefix ant:)
                   (guix build utils)
                   (srfi srfi-1)
@@ -229,113 +231,109 @@ runtime.")
                   (sxml simple)
                   (sxml xpath)
                   (sxml transform))
-       #:imported-modules ((guix build ant-build-system)
+      #:imported-modules `((guix build ant-build-system)
                            ,@%gnu-build-system-modules)
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
-         (delete 'configure)
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "JAVA_HOME" (assoc-ref inputs "icedtea"))
-             ;; We want to use our own jar files instead of the pre-built
-             ;; stuff in lib.  So we replace the zipfileset tags in the
-             ;; build.xml with new ones that reference our jars.
-             (let* ((build.xml (with-input-from-file "build.xml"
-                                 (lambda _
-                                   (xml->sxml #:trim-whitespace? #t))))
-                    (jars      (append-map (match-lambda
-                                             (((? (cut string-prefix? "java-" <>)
-                                                  label) . directory)
-                                              (find-files directory "\\.jar$"))
-                                             (_ '()))
-                                           inputs))
-                    (classpath (string-join jars ":"))
-                    (fileset   (map (lambda (jar)
-                                      `(zipfileset (@ (excludes "META-INF/*.SF")
-                                                      (src ,jar))))
-                                    jars)))
-               (call-with-output-file "build.xml"
-                 (lambda (port)
-                   (sxml->xml
-                    (pre-post-order
-                     build.xml
-                     `(;; Remove all zipfileset tags from the "jar" tree and
-                       ;; inject our own tags.
-                       (jar . ,(lambda (tag . kids)
-                                 `(jar ,@(append-map
-                                          (filter (lambda (e)
-                                                    (not (eq? 'zipfileset (car e)))))
-                                          kids)
-                                       ,@fileset)))
-                       ;; Skip the "bundle" target (and the "-post-jar" target
-                       ;; that depends on it), because we don't need it and it
-                       ;; confuses sxml->xml.
-                       (target . ,(lambda (tag . kids)
-                                    (let ((name ((sxpath '(name *text*))
-                                                 (car kids))))
-                                      (if (or (member "bundle" name)
-                                              (member "-post-jar" name))
-                                          '() ; skip
-                                          `(,tag ,@kids)))))
-                       (*default*  . ,(lambda (tag . kids) `(,tag ,@kids)))
-                       (*text*     . ,(lambda (_ txt)
-                                        (match txt
-                                          ;; Remove timestamp.
-                                          ("${TODAY}" "(unknown)")
-                                          (_ txt))))))
-                    port)))
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           (replace 'build
+             (lambda* (#:key inputs #:allow-other-keys)
+               (setenv "JAVA_HOME" (assoc-ref inputs "icedtea"))
+               ;; We want to use our own jar files instead of the pre-built
+               ;; stuff in lib.  So we replace the zipfileset tags in the
+               ;; build.xml with new ones that reference our jars.
+               (let* ((build.xml (with-input-from-file "build.xml"
+                                   (lambda _
+                                     (xml->sxml #:trim-whitespace? #t))))
+                      (jars      (append-map (match-lambda
+                                               (((? (cut string-prefix? "java-" <>)
+                                                    label) . directory)
+                                                (find-files directory "\\.jar$"))
+                                               (_ '()))
+                                             inputs))
+                      (classpath (string-join jars ":"))
+                      (fileset   (map (lambda (jar)
+                                        `(zipfileset (@ (excludes "META-INF/*.SF")
+                                                        (src ,jar))))
+                                      jars)))
+                 (call-with-output-file "build.xml"
+                   (lambda (port)
+                     (sxml->xml
+                      (pre-post-order
+                       build.xml
+                       `( ;; Remove all zipfileset tags from the "jar" tree and
+                         ;; inject our own tags.
+                         (jar . ,(lambda (tag . kids)
+                                   `(jar ,@(append-map
+                                            (filter (lambda (e)
+                                                      (not (eq? 'zipfileset (car e)))))
+                                            kids)
+                                         ,@fileset)))
+                         ;; Skip the "bundle" target (and the "-post-jar" target
+                         ;; that depends on it), because we don't need it and it
+                         ;; confuses sxml->xml.
+                         (target . ,(lambda (tag . kids)
+                                      (let ((name ((sxpath '(name *text*))
+                                                   (car kids))))
+                                        (if (or (member "bundle" name)
+                                                (member "-post-jar" name))
+                                            '() ; skip
+                                            `(,tag ,@kids)))))
+                         (*default*  . ,(lambda (tag . kids) `(,tag ,@kids)))
+                         (*text*     . ,(lambda (_ txt)
+                                          (match txt
+                                            ;; Remove timestamp.
+                                            ("${TODAY}" "(unknown)")
+                                            (_ txt))))))
+                      port)))
 
-               ;; Build it!
-               (invoke "ant"
-                       (string-append "-Djavac.classpath=" classpath)
-                       "-Dbuild.runtime=true"
-                       "-Dbuild.time=01/01/1970 00:00:00"
-                       "-Djavac.source=1.7"
-                       "-Djavac.target=1.7"
-                       (string-append "-Dtag.short.version="
-                                      ,version)))))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (share (string-append out "/share/axoloti/")))
-               (install-file "dist/Axoloti.jar" share)
+                 ;; Build it!
+                 (invoke "ant"
+                         (string-append "-Djavac.classpath=" classpath)
+                         "-Dbuild.runtime=true"
+                         "-Dbuild.time=01/01/1970 00:00:00"
+                         "-Djavac.source=1.7"
+                         "-Djavac.target=1.7"
+                         (string-append "-Dtag.short.version="
+                                        #$version)))))
+           (replace 'install
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((share (string-append #$output "/share/axoloti/")))
+                 (install-file "dist/Axoloti.jar" share)
 
-               ;; We do this to ensure that this package retains references to
-               ;; other Java packages' jar files.
-               (install-file "build.xml" share)
+                 ;; We do this to ensure that this package retains references to
+                 ;; other Java packages' jar files.
+                 (install-file "build.xml" share)
 
-               ;; Create a launcher script
-               (mkdir (string-append out "/bin"))
-               (let ((target (string-append out "/bin/Axoloti")))
-                 (with-output-to-file target
-                   (lambda ()
-                     (let* ((dir       (string-append (assoc-ref outputs "out")
-                                                      "/share/axoloti"))
-                            (runtime   (search-input-directory inputs
-                                                               "share/axoloti"))
-                            (toolchain (assoc-ref inputs "cross-toolchain"))
-                            (includes  (string-append
-                                        toolchain
-                                        "/arm-none-eabi/include/c++:"
-                                        toolchain
-                                        "/arm-none-eabi/include/c++/arm-none-eabi/armv7e-m")))
-                       (display
-                        (string-append "#!" (which "sh") "\n"
-                                       "export CROSS_CPATH=" includes "\n"
-                                       "export CROSS_CPLUS_INCLUDE_PATH=" includes "\n"
-                                       "export CROSS_LIBRARY_PATH="
-                                       toolchain "/arm-none-eabi/lib" "\n"
-                                       (which "java")
-                                       " -Daxoloti_release=" runtime
-                                       " -Daxoloti_runtime=" runtime
-                                       " -jar " dir "/Axoloti.jar")))))
-                 (chmod target #o555)))))
-         (add-after 'install 'strip-jar-timestamps
-           (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
+                 ;; Create a launcher script
+                 (mkdir (string-append #$output "/bin"))
+                 (let ((target (string-append #$output "/bin/Axoloti")))
+                   (with-output-to-file target
+                     (lambda ()
+                       (let* ((dir       (string-append #$output "/share/axoloti"))
+                              (runtime   (search-input-directory inputs
+                                                                 "share/axoloti"))
+                              (toolchain (assoc-ref inputs "cross-toolchain"))
+                              (includes  (string-append
+                                          toolchain
+                                          "/arm-none-eabi/include/:"
+                                          toolchain
+                                          "/arm-none-eabi/include/c++:"
+                                          toolchain
+                                          "/arm-none-eabi/include/c++/arm-none-eabi/armv7e-m")))
+                         (display
+                          (string-append "#!" (which "sh") "\n"
+                                         "export CROSS_CPATH=" includes "\n"
+                                         "export CROSS_CPLUS_INCLUDE_PATH=" includes "\n"
+                                         "export CROSS_LIBRARY_PATH="
+                                         toolchain "/arm-none-eabi/lib" "\n"
+                                         (which "java")
+                                         " -Daxoloti_release=" runtime
+                                         " -Daxoloti_runtime=" runtime
+                                         " -jar " dir "/Axoloti.jar")))))
+                   (chmod target #o555)))))
+           (add-after 'install 'strip-jar-timestamps
+             (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs
      `(("icedtea" ,icedtea "jdk")
        ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-4.9))

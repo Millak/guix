@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -417,41 +417,20 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "2.9.0")
+   (version "3.0.1")
    (source
     (origin
       (method url-fetch)
-      (uri (string-append "http://flintlib.org/flint-" version ".tar.gz"))
+      (uri (string-append "https://flintlib.org/flint-" version ".tar.gz"))
       (sha256
-       (base32 "0sp79ixaawjzna79afrlwlx9hg55jxil03f1wq435j9k23ar1h1g"))))
+       (base32 "1d4lawfvmjd4n7rp4z9xkwwjjbrjhkmxnxw1xf0ki1isa001lcbv"))))
    (build-system gnu-build-system)
    (inputs
     (list ntl))
    (propagated-inputs
     (list gmp mpfr)) ; header files from both are included by flint/arith.h
    (arguments
-    `(#:parallel-tests? #f              ; seems to be necessary on arm
-      #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'newer-c++
-           (lambda _
-             (substitute* "configure"
-               (("-ansi") ""))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gmp (assoc-ref inputs "gmp"))
-                   (mpfr (assoc-ref inputs "mpfr"))
-                   (ntl (assoc-ref inputs "ntl")))
-               ;; Do not pass "--enable-fast-install", which makes the
-               ;; homebrew configure process fail.
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       (string-append "--with-gmp=" gmp)
-                       (string-append "--with-mpfr=" mpfr)
-                       (string-append "--with-ntl=" ntl))
-               #t))))))
+    `(#:parallel-tests? #f))            ; seems to be necessary on arm
    (synopsis "Fast library for number theory")
    (description
     "FLINT is a C library for number theory.  It supports arithmetic
@@ -470,52 +449,12 @@ fast arithmetic.")
     '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
 
 (define-public arb
-  (package
-    (name "arb")
-    (version "2.23.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fredrik-johansson/arb")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1m9vskyf857gbm0cbh3z8c8m6cqkqa765wb9hqmsv7yzfmklzpvn"))))
-    (build-system gnu-build-system)
-    (propagated-inputs
-     (list flint))               ; flint.h is included by arf.h
-    (inputs
-     (list gmp mpfr))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (flint (assoc-ref inputs "flint"))
-                   (gmp (assoc-ref inputs "gmp"))
-                   (mpfr (assoc-ref inputs "mpfr")))
-               ;; Do not pass "--enable-fast-install", which makes the
-               ;; homebrew configure process fail.
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       (string-append "--with-flint=" flint)
-                       (string-append "--with-gmp=" gmp)
-                       (string-append "--with-mpfr=" mpfr))))))))
-    (home-page "https://arblib.org")
-    (synopsis "Arbitrary precision floating-point ball arithmetic")
-    (description
-     "Arb is a C library for arbitrary-precision floating-point ball
-arithmetic.  It supports efficient high-precision computation with
-polynomials, power series, matrices and special functions over the
-real and complex numbers, with automatic, rigorous error control.")
-    (license license:lgpl2.1+)))
+  (deprecated-package "arb" flint))
 
 (define-public python-flint
   (package
     (name "python-flint")
-    (version "0.3.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -524,15 +463,14 @@ real and complex numbers, with automatic, rigorous error control.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v0anazbj1cfi68nl2j6dbd31kgkc1563xmr0zk5xk3xj78569pw"))
-              (patches (search-patches "python-flint-includes.patch"))))
+                "10370kqik6q6vdqrqv3gbznsyaxbgqb3rbrff4alpw0sqr5s07c7"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-cython))
+     (list python-cython-3))
     (propagated-inputs
      (list python-numpy))
     (inputs
-     (list arb flint))
+     (list flint))
     (synopsis "Python module wrapping ARB and FLINT")
     (description
      "Python-flint is a Python extension module wrapping FLINT
@@ -592,12 +530,12 @@ matrices, and polynomials over the integers and over finite fields.")
 (define-public singular
   (package
    (name "singular")
-   (version "4.2.1")
+   (version "4.3.2p10")
    (source
     (origin
       (method url-fetch)
       (uri
-       (string-append "http://www.mathematik.uni-kl.de/ftp/pub/Math/"
+       (string-append "https://www.singular.uni-kl.de/ftp/pub/Math/"
                       "Singular/SOURCES/"
                       (string-join
                        (string-split
@@ -607,7 +545,7 @@ matrices, and polynomials over the integers and over finite fields.")
                         #\.) "-")
                       "/singular-" version ".tar.gz"))
              (sha256 (base32
-                      "13gy1gdng8zijwlr1fn5sixw53z0zf9czzlg0vh1dcc59zw6v998"))))
+                      "1a2j2pkp73rb1xdd5623gkk1snwd85yimssnz86y0m79zvyckhi8"))))
    (build-system gnu-build-system)
    (native-inputs
     (list doxygen graphviz perl))
@@ -936,7 +874,7 @@ algorithms from the FORTRAN library MINPACK.")
 (define-public symengine
   (package
     (name "symengine")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method git-fetch)
@@ -945,7 +883,7 @@ algorithms from the FORTRAN library MINPACK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "105rnnf33vx2n03wwv4962az7bfzgsn1gx6a6wyakmyrfdkb07jc"))))
+        (base32 "0j6vd72hjj9fnsw5iiykmkrw8vyjcyyycgib2zxlmlzi6sj4618b"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags

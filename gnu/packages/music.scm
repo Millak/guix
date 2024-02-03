@@ -1788,7 +1788,7 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
            python-pytest-cov
            python-pytest-helpers-namespace))
     (propagated-inputs
-     (list abjad jupyter))
+     (list abjad jupyter python-sphinx-autodoc-typehints))
     (home-page "https://abjad.github.io")
     (synopsis "Abjad IPython Extension")
     (description

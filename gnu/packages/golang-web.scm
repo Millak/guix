@@ -21,7 +21,8 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,21 +45,30 @@
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
 
 ;;; Commentary:
 ;;;
 ;;; Golang modules (libraries) related to HTML, CSS, SCSS, JavaScript, JSON,
-;;; Web-framework, REST-API or similar functionality.
+;;; Web-framework, REST-API or similar functionality. They may provide
+;;; executables and libraries, for which there are marked sections.
+
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
 ;;;
 ;;; Code:
 
+;;;
+;;; Libraries:
+;;;
+
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
@@ -576,6 +586,35 @@ logging system.")
 decompose request handling into many smaller layers.")
     (license license:expat)))
 
+(define-public go-github-com-go-jose-go-jose-v3
+  (package
+    (name "go-github-com-go-jose-go-jose-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-jose/go-jose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fnw0p49wc9gmd2xcji2x9jf97dgg9igagd5m6bmq3nw9jjfqdc5"))))
+    (build-system go-build-system)
+    (arguments
+     '( #:import-path "github.com/go-jose/go-jose/v3"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (native-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-jose/go-jose")
+    (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
+    (description
+     "This package provides a Golang implementation of the Javascript Object
+Signing and Encryption set of standards.  This includes support for JSON Web
+Encryption, JSON Web Signature, and JSON Web Token standards.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-telegram-bot-api-telegram-bot-api
   (package
     (name "go-github-com-go-telegram-bot-api-telegram-bot-api")
@@ -868,6 +907,34 @@ sessions, flash messages, custom backends, and more.")
 protocol.")
     (license license:bsd-2)))
 
+(define-public go-github-com-gregjones-httpcache
+  (let ((commit "901d90724c7919163f472a9812253fb26761123d")
+        (revision "0"))
+    (package
+      (name "go-github-com-gregjones-httpcache")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gregjones/httpcache")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05r0xq51vfb55di11m7iv19341d73f7in33vq1ihcqs1nffdwiq0"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/gregjones/httpcache"))
+      (home-page "https://github.com/gregjones/httpcache")
+      (synopsis "Transport for @code{http.Client} that will cache responses")
+      (description
+       "Package @code{httpcache} provides a @code{http.RoundTripper}
+implementation that works as a mostly @url{https://tools.ietf.org/html/rfc7234, RFC 7234}
+compliant cache for HTTP responses.  It is only suitable for use as a
+\"private\" cache (i.e. for a web-browser or an API-client and not for a
+shared proxy).")
+      (license license:expat))))
+
 (define-public go-github-com-hjson-hjson-go
   (package
     (name "go-github-com-hjson-hjson-go")
@@ -1117,6 +1184,31 @@ which produce colorized output using github.com/fatih/color.")
     (home-page "https://github.com/opentracing/opentracing-go")
     (synopsis "OpenTracing API for Go")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-pquerna-cachecontrol
+  (package
+    (name "go-github-com-pquerna-cachecontrol")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pquerna/cachecontrol")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d5zgv2w0sinh9m41pw3n015zzyabk7awgwwga7nmhjz452c9r5n"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/pquerna/cachecontrol"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/pquerna/cachecontrol")
+    (synopsis "Golang HTTP Cache-Control Parser and Interpretation")
+    (description
+     "This package implements RFC 7234 Hypertext Transfer Protocol (HTTP/1.1):
+Caching.")
     (license license:asl2.0)))
 
 (define-public go-github-com-puerkitobio-goquery
@@ -1459,6 +1551,29 @@ programming language, which supports draft-04, draft-06 and draft-07.")
 Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
+
+;;;
+;;; Executables:
+;;;
+
+(define-public go-minify
+  (package
+    (inherit go-github-com-tdewolff-minify-v2)
+    (name "go-minify")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-tdewolff-minify-v2)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/tdewolff/minify/v2")
+        "github.com/tdewolff/minify/cmd/minify")))
+    (inputs
+     (list go-github-com-djherbis-atime
+           go-github-com-dustin-go-humanize
+           go-github-com-fsnotify-fsnotify
+           go-github-com-matryer-try
+           go-github-com-spf13-pflag))
+    (description "This package provides a CLI binary executible built from
+go-github-com-tdewolff-minify-v2 source.")))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

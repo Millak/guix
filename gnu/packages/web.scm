@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
@@ -65,6 +65,7 @@
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1481,7 +1482,7 @@ efficiently.  It gives the application developer no more than 4 methods.")
                   "ImportTaxonomy"
                   "ImportText"
                   "ImportXML"))
-               (for-each 
+               (for-each
                 (lambda (directory)
                   (copy-recursively directory
                                     (string-append perl "/../" directory)))
@@ -8159,10 +8160,45 @@ compressed JSON header blocks.
                    (("print \\(ver >= '3\\.8'\\)")
                     "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
 
+(define-public nghttp3
+  (package
+    (name "nghttp3")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ngtcp2/nghttp3/"
+                           "releases/download/v" version "/"
+                           "nghttp3-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fzvadnwb03jlm180313gg5m4fg09qdcc67fwcfrv9zs22anaa55"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config
+           ;; Required by tests.
+           cunit))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-lib-only")))
+    (home-page "https://nghttp2.org/nghttp3/")
+    (synopsis "HTTP/3 protocol library")
+    (description
+     "nghttp3 is an implementation of RFC 9114 HTTP/3 mapping over QUIC and
+RFC 9204 QPACK in C.  It does not depend on any particular QUIC transport
+implementation.
+
+It implements extensions specified in RFC 9218 and RFC 9220.  It supports
+SETTINGS_H3_DATAGRAM from RFC 9297.
+
+It does not support server push.")
+    (license license:expat)))
+
 (define-public hpcguix-web
   (package
     (name "hpcguix-web")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8171,7 +8207,7 @@ compressed JSON header blocks.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19l9gvp2ngn7lc3jynrc16f3il2bgkhq1m8zfaqwxk9vwxiivwrn"))))
+                "13a4cwqdhpr7gc1z4cxs36qa50mzcdwwlj9qqzv818sx9d7r6vsw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -8193,13 +8229,14 @@ compressed JSON header blocks.
                     (guile    (assoc-ref inputs "guile"))
                     (gcrypt   (assoc-ref inputs "guile-gcrypt"))
                     (git      (assoc-ref inputs "guile-git"))
+                    (gnutls   (assoc-ref inputs "guile-gnutls"))
                     (bs       (assoc-ref inputs "guile-bytestructures"))
                     (json     (assoc-ref inputs "guile-json"))
                     (zlib     (assoc-ref inputs "guile-zlib"))
                     (syntax   (assoc-ref inputs "guile-syntax-highlight"))
                     (guile-cm (assoc-ref inputs
                                          "guile-commonmark"))
-                    (deps (list guile gcrypt git bs zlib guile-cm
+                    (deps (list guile gcrypt git gnutls bs zlib guile-cm
                                 syntax guix json))
                     (effective
                      (read-line
@@ -8231,6 +8268,7 @@ compressed JSON header blocks.
            guile-commonmark
            guile-json-4
            guile-syntax-highlight
+           guile-gnutls    ;used to connect to https://disarchive.guix.gnu.org
            bash-minimal))
     (home-page "https://github.com/UMCUGenetics/hpcguix-web")
     (synopsis "Web interface for cluster deployments of Guix")
@@ -8600,7 +8638,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.6")
+    (version "2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8608,7 +8646,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "1j0bgnixffz2lv5xgp5c88hl146c1vyk1988gyd70mhgyl9700jy"))))
+                "17cg07md6zac0j6ivawysy41jbk3a1ql3q794q1y0k01x8z23q5n"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
