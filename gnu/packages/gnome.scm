@@ -1142,7 +1142,7 @@ as a \"boring window manager for the adult in you.\"")
 (define-public mm-common
   (package
     (name "mm-common")
-    (version "1.0.5")
+    (version "1.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/mm-common/"
@@ -1150,7 +1150,7 @@ as a \"boring window manager for the adult in you.\"")
                                   "mm-common-" version ".tar.xz"))
               (sha256
                (base32
-                "1am5dmz7862hr2p4xbkdikpvd4kc0hdzqv73wjyjjshiyhlnsp3h"))))
+                "1rv211kalivq8zlq7s7bd3dhm4f33jhrwf1vxrfbrnmwgl1lcp5m"))))
     (build-system meson-build-system)
     (arguments
      (list
