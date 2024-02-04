@@ -963,6 +963,35 @@ compatibility check.")
 @code{Buffer.alloc(SIZE)}) in older versions.")
     (license license:expat)))
 
+(define-public node-segfault-handler
+  (package
+    (name "node-segfault-handler")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ddopson/node-segfault-handler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07nbw35wvrr18kmh8f388v4k5mpjgyy0260bx0xzjdv795i3xvfv"))))
+    (native-inputs
+     (list python))
+    (inputs
+     (list node-bindings node-nan))
+    (build-system node-build-system)
+    (arguments
+     ;; there are no tests
+     `(#:tests? #f))
+    (home-page "https://github.com/ddopson/node-segfault-handler")
+    (synopsis "Catches @code{SIGSEGV} and prints diagnostic information")
+    (description "This package is a tool for debugging Node.js C/C++ native
+code modules and getting stack traces when things go wrong.  If a
+@code{SIGSEGV} signal is raised, the module will print a native stack trace to
+both @file{stderr} and to a timestamped file.")
+    (license license:bsd-3)))
+
 (define-public node-sqlite3
   (package
     (name "node-sqlite3")
@@ -1282,35 +1311,6 @@ function with browser support.")
     (description "@code{path-key} provides an implementation to compute the
 particular cross-platform spellings of the PATH environment variable key.")
     (license license:expat)))
-
-(define-public node-segfault-handler
-  (package
-    (name "node-segfault-handler")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ddopson/node-segfault-handler")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07nbw35wvrr18kmh8f388v4k5mpjgyy0260bx0xzjdv795i3xvfv"))))
-    (native-inputs
-     (list python))
-    (inputs
-     (list node-bindings node-nan))
-    (build-system node-build-system)
-    (arguments
-     ;; there are no tests
-     `(#:tests? #f))
-    (home-page "https://github.com/ddopson/node-segfault-handler")
-    (synopsis "Catches @code{SIGSEGV} and prints diagnostic information")
-    (description "This package is a tool for debugging Node.js C/C++ native
-code modules and getting stack traces when things go wrong.  If a
-@code{SIGSEGV} signal is raised, the module will print a native stack trace to
-both @file{stderr} and to a timestamped file.")
-    (license license:bsd-3)))
 
 (define-public node-ms
   (package
