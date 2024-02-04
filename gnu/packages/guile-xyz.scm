@@ -38,7 +38,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Zelphir Kaltstahl <zelphirkaltstahl@posteo.de>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021, 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2021, 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -2175,7 +2175,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2185,7 +2185,7 @@ provides tight coupling to Guix.")
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "1ipryn69ad4viqai9pnwhkqqpf9wgw0m2qxrwkfrpm1bfdyilw9w"))))
+         "1gkz19iz3ncf9ddr731lsaw12ca7ygj3dxziz54s9xpp5cw19r0v"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -2197,7 +2197,7 @@ provides tight coupling to Guix.")
            gettext-minimal ;Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
            help2man
            pkg-config))
-    (inputs (list guile-3.0 which))
+    (inputs (list guile-3.0))
     (propagated-inputs (list guile-lib guile-smc guile-dsv))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
     (synopsis "Guile parser library for the iCalendar format")
@@ -2213,7 +2213,7 @@ The library is shipped with documentation in Info format and usage examples.")
   (package
     (inherit guile-ics)
     (name "guile2.2-ics")
-    (inputs (list guile-2.2 which))
+    (inputs (list guile-2.2))
     (propagated-inputs (list guile2.2-lib guile2.2-dsv guile2.2-smc))))
 
 (define-public guile-imanifest
