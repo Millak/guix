@@ -434,7 +434,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.11.2")
+    (version "3.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -442,7 +442,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1k744nwfa5sj4amzsdjxgac83wh6xfb9xi7z5bka7ic1jik7gw5i"))))
+                "00qdk9a4048pzfj2rhzkfw3lvm642znf6kr4x29i3d94494pxsnn"))))
     (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -450,7 +450,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                     'unpack 'patch-test-shebangs
                     (lambda _
                       (substitute* '("tests/xmltester/testrunner.sh"
-                                     "tests/geostest/testrunner.sh")
+                                     "tests/xmltester/safe_to_xml.sh")
                         (("/bin/sh") (which "sh"))))))))
     (inputs
      (list glib))
