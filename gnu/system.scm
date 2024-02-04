@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -197,15 +198,18 @@ VERSION is the target version of the boot-parameters record."
   ;; compatibility when producing bootloader configurations for older
   ;; generations.
   (define version>0? (> version 0))
-  (list (string-append (if version>0? "root=" "--root=")
-                       ;; Note: Always use the DCE format because that's what
-                       ;; (gnu build linux-boot) expects for the 'root'
-                       ;; kernel command-line option.
-                       (file-system-device->string root-device
-                                                   #:uuid-type 'dce))
-        #~(string-append (if #$version>0? "gnu.system=" "--system=") #$system)
-        #~(string-append (if #$version>0? "gnu.load=" "--load=")
-                         #$system "/boot")))
+  (let ((root (file-system-device->string root-device
+                                          #:uuid-type 'dce)))
+    (append
+     (if (string=? root "none")
+         '() ;  Ignore the case where the root is "none" (typically tmpfs).
+         ;; Note: Always use the DCE format because that's what
+         ;; (gnu build linux-boot) expects for the 'root'
+         ;; kernel command-line option.
+         (list (string-append (if version>0? "root=" "--root=") root)))
+     (list #~(string-append (if #$version>0? "gnu.system=" "--system=") #$system)
+           #~(string-append (if #$version>0? "gnu.load=" "--load=")
+                            #$system "/boot")))))
 
 ;; System-wide configuration.
 
