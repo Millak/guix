@@ -623,6 +623,39 @@ random number generator.")
 Javascript.")
     (license license:expat)))
 
+(define-public node-ms
+  (package
+    (name "node-ms")
+    (version "2.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vercel/ms")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l74kmmwffmzdz38lli0v5mdb9p9jmsjxpb48ncknqw2n74cgf08"))))
+    (build-system node-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies `("eslint"
+                                    "expect.js"
+                                    "husky"
+                                    "lint-staged"
+                                    "mocha"
+                                    "prettier")))))
+       #:tests? #f))
+    (home-page "https://github.com/vercel/ms")
+    (synopsis "Convert time to milliseconds")
+    (description "Use this package to easily convert various time formats to
+milliseconds.  A number supplied as integer or string is returned as-is, while
+a string consisting of a number and a time unit is converted to milliseconds.")
+    (license license:expat)))
+
 (define-public node-nan
   (package
     (name "node-nan")
@@ -1310,39 +1343,6 @@ function with browser support.")
     (synopsis "Cross-platform utility to compute the PATH environment variable key")
     (description "@code{path-key} provides an implementation to compute the
 particular cross-platform spellings of the PATH environment variable key.")
-    (license license:expat)))
-
-(define-public node-ms
-  (package
-    (name "node-ms")
-    (version "2.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/vercel/ms")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1l74kmmwffmzdz38lli0v5mdb9p9jmsjxpb48ncknqw2n74cgf08"))))
-    (build-system node-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (delete-dependencies `("eslint"
-                                    "expect.js"
-                                    "husky"
-                                    "lint-staged"
-                                    "mocha"
-                                    "prettier")))))
-       #:tests? #f))
-    (home-page "https://github.com/vercel/ms")
-    (synopsis "Convert time to milliseconds")
-    (description "Use this package to easily convert various time formats to
-milliseconds.  A number supplied as integer or string is returned as-is, while
-a string consisting of a number and a time unit is converted to milliseconds.")
     (license license:expat)))
 
 (define-public node-debug
