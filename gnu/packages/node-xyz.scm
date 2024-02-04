@@ -618,28 +618,6 @@ compatibility check.")
 protocol used in @code{node-lynx}.")
     (license license:asl2.0)))
 
-(define-public node-util-deprecate
-  (package
-    (name "node-util-deprecate")
-    (version "1.0.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/TooTallNate/util-deprecate")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1rk94nl3qc7znsk8400bnga30v0m7j2mmvz9ldwjinxv1d3n11xc"))))
-    (build-system node-build-system)
-    (arguments '(#:tests? #f)) ; No test suite.
-    (home-page "https://github.com/TooTallNate/util-deprecate")
-    (synopsis "Node.js `util.deprecate()` function with browser support")
-    (description "This package provides the Node.js @code{util.deprecate()}
-function with browser support.")
-    (license license:expat)))
-
 (define-public node-semver
   (package
     (name "node-semver")
@@ -668,6 +646,28 @@ function with browser support.")
      "@code{node-semver} is a JavaScript implementation of the
 @uref{https://semver.org/, SemVer.org} specification.")
     (license license:isc)))
+
+(define-public node-util-deprecate
+  (package
+    (name "node-util-deprecate")
+    (version "1.0.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/TooTallNate/util-deprecate")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "1rk94nl3qc7znsk8400bnga30v0m7j2mmvz9ldwjinxv1d3n11xc"))))
+    (build-system node-build-system)
+    (arguments '(#:tests? #f)) ; No test suite.
+    (home-page "https://github.com/TooTallNate/util-deprecate")
+    (synopsis "Node.js `util.deprecate()` function with browser support")
+    (description "This package provides the Node.js @code{util.deprecate()}
+function with browser support.")
+    (license license:expat)))
 
 (define-public node-wrappy
   (package
