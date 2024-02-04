@@ -33,6 +33,10 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system node))
 
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+
 (define-public node-acorn
   (package
     (name "node-acorn")
