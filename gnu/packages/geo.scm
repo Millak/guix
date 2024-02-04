@@ -13,7 +13,7 @@
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020–2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
@@ -740,7 +740,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "9.2.0")
+    (version "9.3.1")
     (source
      (origin
        (method url-fetch)
@@ -748,7 +748,7 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "03nm1sgvh237my7ss6kayn6887cbnayvjxrrxsrfcakkmbsida6y"))))
+         "1g0hkpiablvhsmw0kn5frwgdir3q7avc45p6lc1zhhhzkv5ikydh"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config))
     (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
