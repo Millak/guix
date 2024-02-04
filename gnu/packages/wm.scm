@@ -67,6 +67,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -208,7 +209,7 @@ the leaves of a full binary tree.")
        (sha256 (base32 "11sg9x08zl2nr7a723h462knz5lf58sgvkhv1mgc9z3hhkhvbsja"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config scdoc))
-    (inputs (list wayland wlroots libxkbcommon))
+    (inputs (list wayland wlroots-0.16 libxkbcommon))
     (home-page "https://github.com/cage-kiosk/cage")
     (synopsis "Wayland kiosk")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
@@ -1168,7 +1169,7 @@ the XDG Autostart specification.")
            tllist
            scdoc))
     (inputs
-     (list wlroots wayland fcft dbus libpng))
+     (list wlroots-0.16 wayland fcft dbus libpng))
     (home-page "https://codeberg.org/dnkl/fnott")
     (synopsis "Keyboard driven and lightweight Wayland notification daemon")
     (description "Fnott is a keyboard driven and lightweight notification daemon
@@ -1570,7 +1571,7 @@ started automatically on the first call via D-Bus.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list wlroots))
+     (list wlroots-0.16))
     (home-page "https://github.com/djpohly/dwl")
     (synopsis "Dynamic window manager for Wayland")
     (description
@@ -1676,7 +1677,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.16.2")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -1685,7 +1686,9 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
+        (base32 "1hj4gq5vx8in65622yvjm8bwqkw2vpc556k9my997a0hn0ricj37"))
+         ;; This patch can be removed once hwdata in Guix supports pkg-config
+         (patches (search-patches "wlroots-hwdata-fallback.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -1706,6 +1709,7 @@ functionality to display information about the most commonly used services.")
     (propagated-inputs
      (list ;; As required by wlroots.pc.
            eudev
+           libdisplay-info
            libinput-minimal
            libxkbcommon
            mesa
@@ -1730,6 +1734,23 @@ Wayland compositor")
     (description "wlroots is a set of pluggable, composable, unopinionated
 modules for building a Wayland compositor.")
     (license license:expat)))  ; MIT license
+
+(define-public wlroots-0.16
+  (package
+    (inherit wlroots)
+    (name "wlroots-0.16")
+    (version "0.16.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
+                         (delete libdisplay-info)))))
 
 (define-public sway
   (package
@@ -1775,7 +1796,7 @@ modules for building a Wayland compositor.")
                   pcre2
                   swaybg
                   wayland
-                  wlroots))
+                  wlroots-0.16))
     (native-inputs
      (cons* linux-pam mesa pkg-config scdoc wayland-protocols
             (if (%current-target-system)
@@ -2967,7 +2988,7 @@ shows a notification for the user on the screen.")
                 (("/etc/") (string-append #$output "/etc/"))
                 (("/usr/share/") (string-append #$output "/usr/share/"))))))))
     (native-inputs (list pkg-config scdoc))
-    (inputs (list libevdev pango wlroots))
+    (inputs (list libevdev pango wlroots-0.16))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
     (description
@@ -3107,7 +3128,7 @@ session.  Nor does it depend on any UI toolkits such as Qt or GTK.")
            linux-pam
            pango
            wayland
-           wlroots))
+           wlroots-0.16))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags

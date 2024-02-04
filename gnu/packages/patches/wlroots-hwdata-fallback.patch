@@ -1,0 +1,46 @@
+backend/drm: add hardcoded hwdata path fallback
+
+Add hardcoded fallback "/usr/share/hwdata/pnp.ids" as a
+temporary solution to get things working in Guix until
+hwdata ships with pkg-config file.
+
+diff --git a/backend/drm/meson.build b/backend/drm/meson.build
+index 6fcb2c15..ed95360a 100644
+--- a/backend/drm/meson.build
++++ b/backend/drm/meson.build
+@@ -1,8 +1,7 @@
+ hwdata = dependency(
+ 	'hwdata',
+-	required: 'drm' in backends,
++	required: false,
+ 	native: true,
+-	not_found_message: 'Required for the DRM backend.',
+ )
+ 
+ libdisplay_info = dependency(
+@@ -19,15 +18,21 @@ libliftoff = dependency(
+ 	required: false,
+ )
+ 
+-if not (hwdata.found() and libdisplay_info.found() and features['session'])
++if hwdata.found()
++	hwdata_dir = hwdata.get_variable(pkgconfig: 'pkgdatadir')
++	pnp_ids = files(hwdata_dir / 'pnp.ids')
++else
++	pnp_ids = files('/usr/share/hwdata/pnp.ids')
++endif
++
++if not (libdisplay_info.found() and features['session'])
+ 	subdir_done()
+ endif
+ 
+-hwdata_dir = hwdata.get_variable(pkgconfig: 'pkgdatadir')
+ pnpids_c = custom_target(
+ 	'pnpids.c',
+ 	output: 'pnpids.c',
+-	input: files(hwdata_dir / 'pnp.ids'),
++	input: pnp_ids,
+ 	feed: true,
+ 	capture: true,
+ 	command: files('gen_pnpids.sh'),
+

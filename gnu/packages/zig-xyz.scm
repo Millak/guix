@@ -71,7 +71,7 @@
                          scdoc
                          wayland
                          wayland-protocols
-                         wlroots))
+                         wlroots-0.16))
     (home-page "https://github.com/riverwm/river")
     (synopsis "Dynamic tiling Wayland compositor")
     (description
