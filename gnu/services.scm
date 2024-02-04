@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -692,6 +693,7 @@ ACTIVATION-SCRIPT-TYPE."
                       (use-modules (gnu build activation)
                                    (guix build utils))
 
+                      (mkdir-p "/var/run")
                       ;; Make sure the user accounting database exists.  If it
                       ;; does not exist, 'setutxent' does not create it and
                       ;; thus there is no accounting at all.
