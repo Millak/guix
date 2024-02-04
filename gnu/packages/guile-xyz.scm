@@ -2196,7 +2196,11 @@ provides tight coupling to Guix.")
            texinfo
            gettext-minimal ;Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
            help2man
-           pkg-config))
+           pkg-config
+           ;; needed when cross-compiling.
+           guile-3.0
+           guile-lib
+           guile-smc))
     (inputs (list guile-3.0))
     (propagated-inputs (list guile-lib guile-smc guile-dsv))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
@@ -2213,6 +2217,11 @@ The library is shipped with documentation in Info format and usage examples.")
   (package
     (inherit guile-ics)
     (name "guile2.2-ics")
+    (native-inputs
+     (modify-inputs (package-native-inputs guile-ics)
+       (replace "guile" guile-2.2)
+       (replace "guile-lib" guile2.2-lib)
+       (replace "guile-smc" guile2.2-smc)))
     (inputs (list guile-2.2))
     (propagated-inputs (list guile2.2-lib guile2.2-dsv guile2.2-smc))))
 
