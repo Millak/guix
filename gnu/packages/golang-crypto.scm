@@ -699,6 +699,8 @@ Architecture Processors\" by J. Guilford et al.")
                (delete-file-recursively
                 (string-append "src/" import-path "/testdata"))
                #t)))))
+      (native-inputs
+       (list go-golang-org-x-crypto))
       (home-page "https://github.com/OperatorFoundation/ed25519")
       (synopsis "Ed25519 for go")
       (description "Package ed25519 implements the Ed25519 signature
