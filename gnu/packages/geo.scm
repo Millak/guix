@@ -1323,7 +1323,7 @@ utilities for data translation and processing.")
 (define-public python-pyshp
   (package
     (name "python-pyshp")
-    (version "2.1.3")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1332,8 +1332,13 @@ utilities for data translation and processing.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jsraqzq82pw19wvx84x7w5cs8agr44a9b5y0jjw540wim4xa73r"))))
+        (base32 "02pbr091p8v4kfv1p6p2aa4asgm9r74dc12r35lvgmhs9y163z69"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This test requires internet access.
+      '(list "--deselect" "test_shapefile.py::test_reader_url")))
     (native-inputs
      (list python-pytest python-pytest-runner))
     (home-page "https://github.com/GeospatialPython/pyshp")
