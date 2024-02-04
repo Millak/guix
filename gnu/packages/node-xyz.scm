@@ -301,6 +301,32 @@ projects under a given directory.  It uses the gradle wrapper to execute the
 clean task of each project.")
     (license license:expat)))
 
+(define-public node-ieee754
+  (package
+    (name "node-ieee754")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/feross/ieee754")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19rlg59lavnwsvbblhvrqwinz2wzqlxhddqpwrc3cyqkscjgza7i"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dependencies
+                    (lambda _
+                      (delete-dependencies '("airtap" "standard" "tape")))))))
+    (home-page "https://github.com/feross/ieee754")
+    (synopsis "Read/write IEEE754 floating point numbers in Javascript")
+    (description "This package can read and write IEEE754 floating point
+numbers from/to a Buffer or array-like object in Javascript.")
+    (license license:bsd-3)))
+
 (define-public node-long-stack-traces
   (package
     (name "node-long-stack-traces")
@@ -752,32 +778,6 @@ function with browser support.")
     (description "@code{path-key} provides an implementation to compute the
 particular cross-platform spellings of the PATH environment variable key.")
     (license license:expat)))
-
-(define-public node-ieee754
-  (package
-    (name "node-ieee754")
-    (version "1.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/feross/ieee754")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "19rlg59lavnwsvbblhvrqwinz2wzqlxhddqpwrc3cyqkscjgza7i"))))
-    (build-system node-build-system)
-    (arguments
-     '(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'patch-dependencies 'delete-dependencies
-                    (lambda _
-                      (delete-dependencies '("airtap" "standard" "tape")))))))
-    (home-page "https://github.com/feross/ieee754")
-    (synopsis "Read/write IEEE754 floating point numbers in Javascript")
-    (description "This package can read and write IEEE754 floating point
-numbers from/to a Buffer or array-like object in Javascript.")
-    (license license:bsd-3)))
 
 (define-public node-inherits
   (package
