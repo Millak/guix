@@ -844,31 +844,36 @@ projections.")
 (define-public python-pyproj
   (package
     (name "python-pyproj")
-    (version "3.5.0")
+    (version "3.6.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyproj" version))
         (sha256
           (base32
-            "1xhvr0n5gb7v6x0wd7cqmc0zrky2fag7bq2shx6l2qqq3icx2ncq"))))
+            "1gq1spm5zdq9k8kl9cb31b9m08ybyrdggfw3sjrqyz9b9iq7raj4"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-proj-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((proj (assoc-ref inputs "proj")))
-               (setenv "PROJ_DIR" proj)
-               (substitute* "pyproj/datadir.py"
-                 (("(internal_datadir = ).*$" all var)
-                  (string-append var "Path(\"" proj "/share/proj\")\n")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-proj-path
+            (lambda* (#:key #:allow-other-keys)
+              (let ((proj #$(this-package-input "proj")))
+                (setenv "PROJ_DIR" proj)
+                (substitute* "pyproj/datadir.py"
+                  (("(internal_datadir = ).*$" all var)
+                   (string-append var "Path(\"" proj
+                                  "/share/proj\")\n")))))))))
     (inputs
       (list proj))
     (propagated-inputs
       (list python-certifi))
     (native-inputs
-      (list python-cython python-numpy python-pandas python-pytest
+      (list python-cython
+            python-numpy
+            python-pandas
+            python-pytest
             python-xarray))
     (home-page "https://github.com/pyproj4/pyproj")
     (synopsis
