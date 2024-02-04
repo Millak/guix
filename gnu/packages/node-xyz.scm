@@ -735,6 +735,39 @@ compatibility check.")
 protocol used in @code{node-lynx}.")
     (license license:asl2.0)))
 
+(define-public node-string-decoder
+  (package
+    (name "node-string-decoder")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nodejs/string_decoder")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0xxvyya9fl9rlkqwmxzqzbz4rdr3jgw4vf37hff7cgscxkhg266k"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies
+              '("tap" "core-util-is" "babel-polyfill")))))
+       ;; FIXME: Tests depend on node-tap
+       #:tests? #f))
+    (inputs (list node-safe-buffer node-inherits))
+    (home-page "https://github.com/nodejs/string_decoder")
+    (synopsis "Decode buffers while preserving multi-byte sequences")
+    (description "This package provides a user-land implementation of
+Node-core's @code{string_decoder}, which serves to decode buffers to
+strings so that the decoded string does not contain incomplete multibyte
+sequences.")
+    (license license:expat)))
+
 (define-public node-semver
   (package
     (name "node-semver")
@@ -836,39 +869,6 @@ function with browser support.")
     (synopsis "Cross-platform utility to compute the PATH environment variable key")
     (description "@code{path-key} provides an implementation to compute the
 particular cross-platform spellings of the PATH environment variable key.")
-    (license license:expat)))
-
-(define-public node-string-decoder
-  (package
-    (name "node-string-decoder")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nodejs/string_decoder")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0xxvyya9fl9rlkqwmxzqzbz4rdr3jgw4vf37hff7cgscxkhg266k"))))
-    (build-system node-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (delete-dependencies
-              '("tap" "core-util-is" "babel-polyfill")))))
-       ;; FIXME: Tests depend on node-tap
-       #:tests? #f))
-    (inputs (list node-safe-buffer node-inherits))
-    (home-page "https://github.com/nodejs/string_decoder")
-    (synopsis "Decode buffers while preserving multi-byte sequences")
-    (description "This package provides a user-land implementation of
-Node-core's @code{string_decoder}, which serves to decode buffers to
-strings so that the decoded string does not contain incomplete multibyte
-sequences.")
     (license license:expat)))
 
 (define-public node-readable-stream
