@@ -1071,6 +1071,35 @@ code modules and getting stack traces when things go wrong.  If a
 both @file{stderr} and to a timestamped file.")
     (license license:bsd-3)))
 
+(define-public node-semver
+  (package
+    (name "node-semver")
+    (version "7.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/npm/node-semver")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06biknqb05r9xsmcflm3ygh50pjvdk84x6r79w43kmck4fn3qn5p"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies '("tap")))))
+       ;; FIXME: Tests depend on node-tap
+       #:tests? #f))
+    (home-page "https://github.com/npm/node-semver")
+    (synopsis "Parses semantic versions strings")
+    (description
+     "@code{node-semver} is a JavaScript implementation of the
+@uref{https://semver.org/, SemVer.org} specification.")
+    (license license:isc)))
+
 (define-public node-sqlite3
   (package
     (name "node-sqlite3")
@@ -1287,35 +1316,6 @@ Node-core's @code{string_decoder}, which serves to decode buffers to
 strings so that the decoded string does not contain incomplete multibyte
 sequences.")
     (license license:expat)))
-
-(define-public node-semver
-  (package
-    (name "node-semver")
-    (version "7.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/npm/node-semver")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "06biknqb05r9xsmcflm3ygh50pjvdk84x6r79w43kmck4fn3qn5p"))))
-    (build-system node-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (delete-dependencies '("tap")))))
-       ;; FIXME: Tests depend on node-tap
-       #:tests? #f))
-    (home-page "https://github.com/npm/node-semver")
-    (synopsis "Parses semantic versions strings")
-    (description
-     "@code{node-semver} is a JavaScript implementation of the
-@uref{https://semver.org/, SemVer.org} specification.")
-    (license license:isc)))
 
 (define-public node-util-deprecate
   (package
