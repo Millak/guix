@@ -359,6 +359,60 @@ multiple node.js files, while providing useful information about output and exit
 codes.")
     (license license:expat)))
 
+(define-public node-file-uri-to-path
+  (package
+    (name "node-file-uri-to-path")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TooTallNate/file-uri-to-path")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08l779az44czm12xdhgcrnzpqw34s59hbrlfphs7g9y2k26drqav"))))
+    (native-inputs
+     (list esbuild))
+    (build-system node-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies `("@types/mocha"
+                                    "@types/node"
+                                    "@typescript-eslint/eslint-plugin"
+                                    "@typescript-eslint/parser"
+                                    "cpy-cli"
+                                    "eslint"
+                                    "eslint-config-airbnb"
+                                    "eslint-config-prettier"
+                                    "eslint-import-resolver-typescript"
+                                    "eslint-plugin-import"
+                                    "eslint-plugin-jsx-a11y"
+                                    "eslint-plugin-react"
+                                    "mocha"
+                                    "rimraf"
+                                    "typescript"))))
+         (replace 'build
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (copy-recursively "src" "dist")
+             (invoke (search-input-file (or native-inputs inputs)
+                                        "/bin/esbuild")
+                     "dist/index.ts"
+                     "--outfile=dist/src/index.js"
+                     "--format=cjs"
+                     "--sourcemap"
+                     "--platform=node"))))
+       #:tests? #f))
+    (home-page "https://github.com/TooTallNate/file-uri-to-path")
+    (synopsis "Convert a @code{file:} URI to a file path")
+    (description "This package provides a function to convert a @code{file:}
+URI to a file path.  It accepts a @code{file:} URI and returns a file path
+suitable for use with the @code{fs} module functions.")
+    (license license:expat)))
+
 (define-public node-global-gradle-clean
   (package
     (name "node-global-gradle-clean")
@@ -1227,60 +1281,6 @@ function with browser support.")
     (synopsis "Cross-platform utility to compute the PATH environment variable key")
     (description "@code{path-key} provides an implementation to compute the
 particular cross-platform spellings of the PATH environment variable key.")
-    (license license:expat)))
-
-(define-public node-file-uri-to-path
-  (package
-    (name "node-file-uri-to-path")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/TooTallNate/file-uri-to-path")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "08l779az44czm12xdhgcrnzpqw34s59hbrlfphs7g9y2k26drqav"))))
-    (native-inputs
-     (list esbuild))
-    (build-system node-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (delete-dependencies `("@types/mocha"
-                                    "@types/node"
-                                    "@typescript-eslint/eslint-plugin"
-                                    "@typescript-eslint/parser"
-                                    "cpy-cli"
-                                    "eslint"
-                                    "eslint-config-airbnb"
-                                    "eslint-config-prettier"
-                                    "eslint-import-resolver-typescript"
-                                    "eslint-plugin-import"
-                                    "eslint-plugin-jsx-a11y"
-                                    "eslint-plugin-react"
-                                    "mocha"
-                                    "rimraf"
-                                    "typescript"))))
-         (replace 'build
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (copy-recursively "src" "dist")
-             (invoke (search-input-file (or native-inputs inputs)
-                                        "/bin/esbuild")
-                     "dist/index.ts"
-                     "--outfile=dist/src/index.js"
-                     "--format=cjs"
-                     "--sourcemap"
-                     "--platform=node"))))
-       #:tests? #f))
-    (home-page "https://github.com/TooTallNate/file-uri-to-path")
-    (synopsis "Convert a @code{file:} URI to a file path")
-    (description "This package provides a function to convert a @code{file:}
-URI to a file path.  It accepts a @code{file:} URI and returns a file path
-suitable for use with the @code{fs} module functions.")
     (license license:expat)))
 
 (define-public node-segfault-handler
