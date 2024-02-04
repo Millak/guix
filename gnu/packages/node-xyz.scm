@@ -327,6 +327,36 @@ clean task of each project.")
 numbers from/to a Buffer or array-like object in Javascript.")
     (license license:bsd-3)))
 
+(define-public node-inherits
+  (package
+    (name "node-inherits")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/isaacs/inherits")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0cpsr5yqwkxpbbbbl0rwk4mcby6zbx841k2zb4c3gb1579i5wq9p"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies '("tap")))))
+       ;; FIXME: Tests depend on node-tap
+       #:tests? #f))
+    (home-page "https://github.com/isaacs/inherits")
+    (synopsis "Browser-friendly object inheritance")
+    (description "This package provides an alternative implementation of
+Node's @code{inherits} constructor that can be used in browsers, while
+defaulting to Node's implementation otherwise.")
+    (license license:isc)))
+
 (define-public node-long-stack-traces
   (package
     (name "node-long-stack-traces")
@@ -778,36 +808,6 @@ function with browser support.")
     (description "@code{path-key} provides an implementation to compute the
 particular cross-platform spellings of the PATH environment variable key.")
     (license license:expat)))
-
-(define-public node-inherits
-  (package
-    (name "node-inherits")
-    (version "2.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/isaacs/inherits")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0cpsr5yqwkxpbbbbl0rwk4mcby6zbx841k2zb4c3gb1579i5wq9p"))))
-    (build-system node-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (delete-dependencies '("tap")))))
-       ;; FIXME: Tests depend on node-tap
-       #:tests? #f))
-    (home-page "https://github.com/isaacs/inherits")
-    (synopsis "Browser-friendly object inheritance")
-    (description "This package provides an alternative implementation of
-Node's @code{inherits} constructor that can be used in browsers, while
-defaulting to Node's implementation otherwise.")
-    (license license:isc)))
 
 (define-public node-safe-buffer
   (package
