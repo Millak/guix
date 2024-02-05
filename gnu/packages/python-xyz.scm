@@ -8411,6 +8411,9 @@ provides additional functionality on the produced Mallard documents.")
     ;; because we need libpython3.3m.so
     (inputs
      (list python))
+    (native-inputs
+     ;; Needed for some tests that link against it.
+     (list libxcrypt))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
