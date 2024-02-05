@@ -501,7 +501,8 @@ asdf-build-system."
 and Thunderbird."
         #:scope (list "gnu/build/icecat-extension.scm"
                       "gnu/packages/browser-extensions.scm"
-                      "gnu/packages/gnuzilla.scm")))
+                      "gnu/packages/gnuzilla.scm"
+                      "gnu/packages/tor-browsers.scm")))
 
 (define-team racket
   (team 'racket
