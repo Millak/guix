@@ -308,6 +308,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/gnu-pw-mgr.scm			\
   %D%/packages/gobby.scm			\
   %D%/packages/golang.scm			\
+  %D%/packages/golang-build.scm		\
   %D%/packages/golang-check.scm		\
   %D%/packages/golang-crypto.scm	      	\
   %D%/packages/golang-web.scm	        	\
