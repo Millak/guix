@@ -30,6 +30,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto))
 

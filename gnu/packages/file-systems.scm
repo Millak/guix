@@ -72,6 +72,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages guile)

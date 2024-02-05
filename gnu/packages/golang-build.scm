@@ -1,4 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +40,67 @@
 ;;;
 ;;; Code:
 
+(define-public go-golang-org-x-net
+  (let ((commit "8e0e7d8d38f2b6d21d742845570dde2902d06a1d")
+        (revision "0"))
+    (package
+      (name "go-golang-org-x-net")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://go.googlesource.com/net")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fidlcn3vcz42v2lc0rpmqh3bz08bcklj6jvnmz2vvgc481ci5hy"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "golang.org/x/net"
+        ;; Source-only package
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Source-only package
+            (delete 'build))))
+      (home-page "https://go.googlesource.com/net")
+      (synopsis "Go supplemental networking libraries")
+      (description "This package provides supplemental Go networking libraries.")
+      (license license:bsd-3))))
+
+;; XXX: Not in use by any other packages, consider to remove or merge with
+;; go-golang-org-x-net.
+(define-public go-golang-org-x-net-0.17
+  (let ((commit "b225e7ca6dde1ef5a5ae5ce922861bda011cfabd")
+        (revision "0"))
+    (package
+      (inherit go-golang-org-x-net)
+      (name "go-golang-org-x-net")
+      (version (git-version "0.17.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://go.googlesource.com/net")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17zhim2m0r8nyy18g2lsawxm4rawix2qbjyn80x9vc6jc8fv05m9")))))))
+
+(define-public go-golang-org-x-net-html
+  (package
+    (inherit go-golang-org-x-net)
+    (name "go-golang-org-x-net-html")
+    (arguments
+     '(#:import-path "golang.org/x/net/html"
+       #:unpack-path "golang.org/x/net"))
+    (home-page "https://godoc.org/golang.org/x/net/html")
+    (synopsis "HTML5-compliant tokenizer and parser")
+    (description
+     "This package provides an HTML5-compliant tokenizer and parser.")))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
