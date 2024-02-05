@@ -13,6 +13,7 @@
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Andy Tai <lichengtai@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -949,7 +950,7 @@ different kinds of input files.")
 (define-public gnuastro
   (package
     (name "gnuastro")
-    (version "0.21")
+    (version "0.22")
     (source
      (origin
        (method url-fetch)
@@ -957,7 +958,7 @@ different kinds of input files.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "1zyk764pmfrsfj45gnc3qp4z1zfmgrv7kcsji2bxfzvs9inzzq4c"))))
+         "15rljx1mx9dyvni17qpj7y9gv086cvmjf9f5j34m1pbiyn989fqz"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
