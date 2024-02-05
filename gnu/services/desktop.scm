@@ -82,6 +82,7 @@
   #:use-module (guix ui)
   #:use-module (guix utils)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-35)
@@ -147,6 +148,7 @@
             gnome-desktop-configuration-shell
             gnome-desktop-configuration-utilities
             gnome-desktop-configuration-extra-packages
+            gnome-desktop-configuration-udev-ignorelist
             gnome-desktop-service
             gnome-desktop-service-type
 
@@ -1417,7 +1419,13 @@ GNOME Shell.")
    "A list of GNOME-adjacent packages to also include.  This field is intended
 for users to add their own packages to their GNOME experience.  Note, that it
 already includes some packages that are considered essential by some (most?)
-GNOME users."))
+GNOME users.")
+  (udev-ignorelist
+   (list-of-strings '())
+   "A list of regular expressions denoting udev rules or hardware file names
+provided by any package that should not be installed.  By default, every udev
+rule and hardware file specified by any package referenced in the other fields
+are installed."))
 
 (define (gnome-package gnome name)
   "Return the package NAME among the GNOME package inputs.  NAME can be a
@@ -1429,22 +1437,32 @@ denote the spice-gtk input of the gnome-boxes input of the GNOME meta-package."
   "Return the package NAMES among the GNOME package inputs."
   (map (cut gnome-package gnome <>) names))
 
-(define (gnome-udev-rules config)
-  "Return the list of GNOME dependencies that provide udev rules."
-  (let* ((gnome (gnome-desktop-configuration-gnome config))
-         (shell (gnome-desktop-configuration-shell config)))
-    (or (any (match-lambda
-               ((and pkg (= package-name "gnome-settings-daemon"))
-                (list pkg))
-               (_ #f))
-             shell)
-        (and (maybe-value-set? gnome)
-             (gnome-packages gnome '("gnome-settings-daemon")))
-        (raise
-         (condition
-          (&error-location
-           (location (gnome-desktop-configuration-source-location config)))
-          (&message (message (G_ "Missing gnome-settings-daemon"))))))))
+(define (gnome-udev-configuration-files config)
+  "Return the GNOME udev rules and hardware files as computed from its
+dependencies by filtering out the ignorelist."
+  (list
+   (computed-file
+    "gnome-udev-configurations"
+    (with-imported-modules
+        (source-module-closure '((guix build utils)
+                                 (guix build union)))
+      #~(begin
+          (use-modules (guix build utils)
+                       (guix build union))
+          ;; If rules.d or hwdb.d is not a proper directory but a symlink,
+          ;; then it will not be possible to delete individual files in this
+          ;; directory.
+          (union-build #$output
+                       (search-path-as-list
+                        (list "lib/udev" "libexec/udev")
+                        (list #$@(gnome-profile config)))
+                       #:create-all-directories? #t)
+          (for-each
+           (lambda (pattern)
+             (for-each
+              delete-file-recursively
+              (find-files #$output pattern)))
+           (list #$@(gnome-desktop-configuration-udev-ignorelist config))))))))
 
 (define (gnome-polkit-settings config)
   "Return the list of GNOME dependencies that provide polkit actions and
@@ -1487,7 +1505,7 @@ rules."
    (name 'gnome-desktop)
    (extensions
     (list (service-extension udev-service-type
-                             gnome-udev-rules)
+                             gnome-udev-configuration-files)
           (service-extension polkit-service-type
                              gnome-polkit-settings)
           (service-extension profile-service-type
