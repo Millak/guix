@@ -95,6 +95,7 @@
 
 (define-module (gnu packages gnome)
   #:use-module (gnu packages)
+  #:use-module (gnu packages accessibility)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages aspell)
@@ -11259,12 +11260,15 @@ accessibility infrastructure.")
            libxml2))
     (inputs
      (list at-spi2-core
+           brltty
            bash-minimal
            gsettings-desktop-schemas
            gstreamer
            gst-plugins-base
            gst-plugins-good
            gtk+
+           liblouis
+           `(,liblouis "python")
            procps                       ; for pgrep
            python
            python-pygobject
