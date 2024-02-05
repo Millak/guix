@@ -129,6 +129,11 @@ terminals.")
          "PYTHON_ROOT=/"
          (string-append "TCL_DIR=" #$output "/lib")
          "INSTALL_WRITABLE_DIRECTORY=no-thanks")
+      #:imported-modules `((guix build python-build-system)
+                           ,@%glib-or-gtk-build-system-modules)
+      #:modules '((guix build utils)
+                  (guix build glib-or-gtk-build-system)
+                  ((guix build python-build-system) #:prefix python:))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-errors
@@ -142,7 +147,10 @@ terminals.")
                  (string-append "extra_link_args = ['-Wl,-rpath="
                                 #$output
                                 "/lib'], "
-                                "extra_compile_args = "))))))))
+                                "extra_compile_args = ")))))
+          (add-before 'install 'set-pythonpath
+            (assoc-ref python:%standard-phases
+                       'add-install-to-pythonpath)))))
     (native-inputs
      (list clisp
            python-cython
