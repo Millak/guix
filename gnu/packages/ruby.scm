@@ -35,6 +35,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4800,6 +4801,25 @@ It allows writing tests, checking results and automated testing in Ruby.")
        (package-arguments ruby-test-unit)
        (list #:tests? #f)))
      (native-inputs '()))))
+
+(define-public ruby-test-unit-ruby-core
+  (package
+    (name "ruby-test-unit-ruby-core")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "test-unit-ruby-core" version))
+       (sha256
+        (base32 "1i7fa4hlj6xiqvjaikagwrmiyc21jzyswvd4grjbfqysziwsxygc"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f))  ; contains no tests
+    (synopsis "Additional test assertions for Ruby standard libraries")
+    (description "This package provides additional test assertions for Ruby
+standard libraries.")
+    (home-page "https://github.com/ruby/test-unit-ruby-core")
+    (license license:ruby)))
 
 (define-public ruby-mapping
   (package
