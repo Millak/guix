@@ -2622,8 +2622,10 @@ Providers}.")
     (home-page "https://github.com/mhe/pynrrd")
     (synopsis "Python module for reading and writing NRRD files")
     (description
-     "@code{pynrrd} is a Python module for reading and writing NRRD
-files into and from numpy arrays.")
+     "@code{pynrrd} is a Python module for reading and writing @acronym{NRRD,
+Nearly Raw Raster Data} files (format designed to support scientific
+visualization and image processing involving N-dimensional raster data) into
+and from numpy arrays.")
     (license license:expat)))
 
 (define-public python-libneuroml
