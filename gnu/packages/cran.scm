@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Sandeep Subramanian <sandeepsubramanian94@gmail.com>
 ;;; Copyright © 2018 Charlie Ritter <chewzeirta@posteo.net>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2018, 2020-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018, 2020-2024 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Laura Lazzati <laura.lazzati.15@gmail.com>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
@@ -17910,6 +17910,30 @@ the interfaces between R and C++.")
      "This package provides a set of tools for displaying, modeling and
 analysing multivariate abundance data in community ecology.")
     (license license:lgpl2.1+)))
+
+(define-public r-mvnfast
+  (package
+    (name "r-mvnfast")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mvnfast" version))
+       (sha256
+        (base32 "1869xqq2wd7yw23q4ma5qawcnbdp7myafk6rdxazqymqak7f0wc8"))))
+    (properties `((upstream-name . "mvnfast")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bh r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mfasiolo/mvnfast/")
+    (synopsis "Fast multivariate normal and Student's t methods")
+    (description
+     "This package provides computationally efficient tools related to the
+multivariate normal and Student's t distributions.  The main functionalities
+are: simulating multivariate random vectors, evaluating multivariate normal or
+Student's t densities and Mahalanobis distances.  These tools are developed
+using C++ code and of the OpenMP API.")
+    (license license:gpl2+)))
 
 (define-public r-afex
   (package
