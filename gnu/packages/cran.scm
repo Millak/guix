@@ -11768,6 +11768,41 @@ point} (IP), @dfn{majorize and minimize} (MM), @dfn{coordinate descent} (CD),
 and @dfn{alternating direction method of multipliers algorithms} (ADMM).")
     (license license:gpl2+)))
 
+(define-public r-imifa
+  (package
+    (name "r-imifa")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "IMIFA" version))
+       (sha256
+        (base32 "08h53w1axvmvnd4z1nf5bsps5sr6g8a77q6pvg39ss7jcfqm800v"))))
+    (properties `((upstream-name . "IMIFA")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-matrixstats
+           r-mvnfast
+           r-mclust
+           r-rfast
+           r-slam
+           r-viridislite))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=IMIFA")
+    (synopsis
+     "Infinite mixtures of infinite factor analysers and related models")
+    (description
+     "This package provides flexible Bayesian estimation of @acronym{IMIFA,
+infinite mixtures of infinite factor analysers} and related models, for
+nonparametrically clustering high-dimensional data.  The IMIFA model conducts
+Bayesian nonparametric model-based clustering with factor analytic covariance
+structures without recourse to model selection criteria to choose the number of
+clusters or cluster-specific latent factors, mostly via efficient Gibbs updates.
+Model-specific diagnostic tools are also provided, as well as many options for
+plotting results, conducting posterior inference on parameters of interest,
+posterior predictive checking, and quantifying uncertainty.")
+    (license license:gpl3+)))
+
 (define-public r-import
   (package
     (name "r-import")
