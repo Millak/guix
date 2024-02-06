@@ -40511,15 +40511,30 @@ After @command{guix system reconfigure} configure Nix for your user:
 
 @itemize
 @item Add a Nix channel and update it.  See
-@url{https://nixos.org/nix/manual/, Nix Package Manager Guide}.
+@url{https://nixos.wiki/wiki/Nix_channels, Nix channels} for more
+information about the available channels.  If you would like to use the
+unstable Nix channel you can do this by running:
+
+@example
+$ nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+$ nix-channel --update
+@end example
+
+@item Create your Nix profile directory:
+
+@example
+$ sudo mkdir -p /nix/var/nix/profiles/per-user/$USER
+$ sudo chown $USER:root /nix/var/nix/profiles/per-user/$USER
+@end example
 
 @item Create a symlink to your profile and activate Nix profile:
-@end itemize
 
 @example
 $ ln -s "/nix/var/nix/profiles/per-user/$USER/profile" ~/.nix-profile
 $ source /run/current-system/profile/etc/profile.d/nix.sh
 @end example
+
+@end itemize
 
 @end defvar
 
