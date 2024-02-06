@@ -2603,7 +2603,7 @@ Providers}.")
 (define-public python-pynrrd
   (package
     (name "python-pynrrd")
-    (version "0.4.3")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2612,13 +2612,10 @@ Providers}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12vlgx2k7jxbq9r9maiix4dbk8alixa0il420bqwhzln08s3chz1"))))
+                "09gdyi4kbi3512ydgqxkgr4j7b9a95qh83fk2n9s41bns4id9xj7"))))
     (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (delete 'ensure-no-mtimes-pre-1980))))
-    (propagated-inputs (list python-numpy))
+    (propagated-inputs
+     (list python-nptyping python-numpy python-typing-extensions))
     (home-page "https://github.com/mhe/pynrrd")
     (synopsis "Python module for reading and writing NRRD files")
     (description
