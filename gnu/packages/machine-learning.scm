@@ -73,6 +73,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -659,6 +660,53 @@ networks) based on simulation of (stochastic) flow in graphs.")
      "This package provides OCaml bindings for the MCL graph clustering
 algorithm.")
     (license license:gpl3)))
+
+(define-public openmm
+  (package
+    (name "openmm")
+    (version "8.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openmm/openmm")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "064vv6zaci30pj38z5lwfqscxssm67jqxkz30hcya9vm4ng831d5"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DOPENMM_BUILD_SHARED_LIB=TRUE"
+             "-DOPENMM_BUILD_C_AND_FORTRAN_WRAPPERS=TRUE"
+             "-DOPENMM_BUILD_PYTHON_WRAPPERS=TRUE"
+             "-DOPENMM_BUILD_CUDA_LIB=FALSE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-python-build-system
+            (lambda _
+              (substitute* "wrappers/python/CMakeLists.txt"
+                (("install --root=\\\\\\$ENV\\{DESTDIR\\}/")
+                 (string-append "install --prefix=" #$output
+                                " --root=/ --single-version-externally-managed")))))
+          (add-after 'install 'install-python
+            (lambda _
+              (invoke "make" "PythonInstall"))))))
+    (inputs
+     (list python-wrapper))
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list doxygen gfortran opencl-headers python-cython swig))
+    (home-page "https://github.com/openmm/openmm/")
+    (synopsis "Toolkit for molecular simulation")
+    (description
+     "OpenMM is a toolkit for molecular simulation.  It can be used either as
+a stand-alone application for running simulations, or as a library you call
+from your own code.")
+    ;; See https://github.com/openmm/openmm/issues/4278#issuecomment-1772982471
+    (license license:expat)))
 
 (define-public randomjungle
   (package
