@@ -224,7 +224,7 @@ written in Go.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.18.0")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -232,7 +232,7 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0fx5a974hyg29xvwwsmh3zz3nk3391ifyk3l0wl36xskfdqdwg5a"))
+        (base32 "0k0mw44fq6306pmfp6v4wawgigry9plnl2ij8i5f46606j55c31w"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -287,7 +287,7 @@ written in Go.")
      (list
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
-      #:go go-1.18
+      #:go go-1.20
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
