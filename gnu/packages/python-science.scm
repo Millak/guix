@@ -2153,16 +2153,11 @@ to do spectral analysis in Python.")
        (uri (pypi-uri "traittypes" version))
        (sha256
         (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This one test fails because it doesn't raise an expected
-               ;; exception.
-               (invoke "pytest" "-vv" "-k" "not test_bad_values")))))))
+     (list
+      ;; This one test fails because it doesn't raise an expected exception.
+      #:test-flags #~(list "-k" "not test_bad_values")))
     (propagated-inputs (list python-traitlets))
     (native-inputs
      (list python-numpy
