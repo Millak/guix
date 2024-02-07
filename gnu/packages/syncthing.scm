@@ -38,6 +38,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages python-crypto)
@@ -397,29 +398,6 @@ mechanism with caching and de-duplication that works across a set of peer
 processes.")
       (home-page "https://github.com/golang/groupcache")
       (license asl2.0))))
-
-(define-public go-github-com-golang-snappy
-  (package
-    (name "go-github-com-golang-snappy")
-    (version "0.0.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/golang/snappy")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "004cw699yz3pdpawhjhpa0y94c4w479nw1rf39zj6h6027kpwv2j"))
-              (patches (search-patches "go-github-com-golang-snappy-32bit-test.patch"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/golang/snappy"))
-    (synopsis "Snappy compression format in the Go programming language")
-    (description "This package provides a Go implementation of the Snappy
-compression format.")
-    (home-page "https://github.com/golang/snappy")
-    (license bsd-3)))
 
 (define-public go-github-com-jackpal-gateway
   (package

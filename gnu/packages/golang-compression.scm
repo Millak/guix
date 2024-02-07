@@ -1,4 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +33,29 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-golang-snappy
+  (package
+    (name "go-github-com-golang-snappy")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/snappy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "004cw699yz3pdpawhjhpa0y94c4w479nw1rf39zj6h6027kpwv2j"))
+       (patches (search-patches "go-github-com-golang-snappy-32bit-test.patch"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/golang/snappy"))
+    (home-page "https://github.com/golang/snappy")
+    (synopsis "Snappy compression format in the Go programming language")
+    (description "This package provides a Go implementation of the Snappy
+compression format.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
