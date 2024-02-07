@@ -33,6 +33,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto))
 
 ;;; Commentary:
@@ -376,6 +377,32 @@ very fast, and tries to be entropy pool friendly.")
 library which posts the metrics to the Prometheus client registry and just
 updates the registry.")
     (license license:asl2.0)))
+
+(define-public go-github-com-nsqio-go-nsq
+  (package
+    (name "go-github-com-nsqio-go-nsq")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nsqio/go-nsq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h9z3z225sdgg7fl3l7x11xn5ch6lm5flgmcj046cdp453qj2qhf"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:tests? #f                  ;tests require networking
+           #:import-path "github.com/nsqio/go-nsq"))
+    (propagated-inputs (list go-github-com-golang-snappy))
+    (home-page "https://github.com/nsqio/go-nsq")
+    (synopsis "Consumer/producer library for NSQ")
+    (description
+     "The @code{nsq} Go module provides a high-level @code{Consumer} and
+@code{Producer} types as well as low-level functions to communicate over the
+NSQ protocol @url{https://nsq.io/}.")
+    (license license:expat)))
 
 (define-public go-github-com-prometheus-client-model
   (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
