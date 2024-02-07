@@ -89,6 +89,28 @@ optimized for sparse nodes of
 @url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.")
     (license license:expat)))
 
+(define-public go-github-com-bitly-timer-metrics
+  (package
+    (name "go-github-com-bitly-timer-metrics")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bitly/timer_metrics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02fhx8hx8126m2cgxw9fm8q2401r7zfann8b5zy5yyark1sgkrb4"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/bitly/timer_metrics"))
+    (home-page "https://github.com/bitly/timer_metrics")
+    (synopsis "Capture timings and enable periodic metrics every @var{n} events")
+    (description "This package provides an efficient way to capture timing
+information and periodically output metrics")
+    (license license:expat)))
+
 (define-public go-github-com-blang-semver
   (let ((commit "60ec3488bfea7cca02b021d106d9911120d25fe9")
         (revision "0"))
