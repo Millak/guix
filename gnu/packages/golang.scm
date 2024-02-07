@@ -4020,30 +4020,6 @@ to use line-based tools such as grep to search for what you want and see the
 absolute \"path\" to it.")
     (license license:expat)))
 
-(define-public go-github-com-blang-semver
-  (let ((commit "60ec3488bfea7cca02b021d106d9911120d25fe9")
-        (revision "0"))
-    (package
-      (name "go-github-com-blang-semver")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/blang/semver")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "19pli07y5592g4dyjyj0jq5rn548vc3fz0qg3624vm1j5828p1c2"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/blang/semver"))
-      (home-page "https://github.com/blang/semver")
-      (synopsis "Semantic versioning library written in Go")
-      (description "Semver is a library for Semantic versioning written in Go.")
-      (license license:expat))))
-
 (define-public go-github-com-google-cadvisor
   (let ((commit "2ed7198f77395ee9a172878a0a7ab92ab59a2cfd")
         (revision "0"))
