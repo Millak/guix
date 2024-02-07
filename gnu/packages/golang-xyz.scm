@@ -89,6 +89,31 @@ optimized for sparse nodes of
 @url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.")
     (license license:expat)))
 
+(define-public go-github-com-bitly-go-hostpool
+  (package
+    (name "go-github-com-bitly-go-hostpool")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bitly/go-hostpool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iibj7dwymczw7cknrh6glc6sdpp4yap2plnyr8qphynwrzlz73w"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/bitly/go-hostpool"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/bitly/go-hostpool")
+    (synopsis "Pool among multiple hosts from Golang")
+    (description
+     "This package provides a Go package to intelligently and flexibly pool among
+multiple hosts from your Go application.  Host selection can operate in round
+robin or epsilon greedy mode, and unresponsive hosts are avoided.")
+    (license license:expat)))
+
 (define-public go-github-com-bitly-timer-metrics
   (package
     (name "go-github-com-bitly-timer-metrics")
