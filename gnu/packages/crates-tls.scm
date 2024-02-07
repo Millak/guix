@@ -2,7 +2,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
-;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -1581,14 +1581,14 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-x509-parser-0.15
   (package
     (name "rust-x509-parser")
-    (version "0.15.0")
+    (version "0.15.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "x509-parser" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0d7nshccpnybbh8mypirplf4bqxiy36bgh4rrd7jzng19bsw5c5s"))))
+                "1nk3ryam7yzsza735xdypkv1i4c35gqlygax5jyr74bbnsjznsbh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
