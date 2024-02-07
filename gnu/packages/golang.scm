@@ -3713,37 +3713,6 @@ packages.")
       (home-page "https://go.googlesource.com/sync/")
       (license license:bsd-3))))
 
-(define-public go-golang-org-x-sys
-  (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
-        (revision "0"))
-    (package
-      (name "go-golang-org-x-sys")
-      (version (git-version "0.8.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://go.googlesource.com/sys")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1p81niiin8dwyrjl2xsc95136w3vdw4kmj0w3mlh0vh5v134s4xq"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "golang.org/x/sys"
-        ;; Source-only package
-        #:tests? #f
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; Source-only package
-            (delete 'build))))
-      (synopsis "Go support for low-level system interaction")
-      (description "This package provides supplemental libraries offering Go
-support for low-level interaction with the operating system.")
-      (home-page "https://go.googlesource.com/sys")
-      (license license:bsd-3))))
-
 (define-public go-golang-org-x-text
   (package
     (name "go-golang-org-x-text")
