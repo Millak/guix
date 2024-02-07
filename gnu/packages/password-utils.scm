@@ -852,7 +852,7 @@ key URIs using the standard otpauth:// scheme.")
 (define-public qtpass
   (package
     (name "qtpass")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -861,8 +861,7 @@ key URIs using the standard otpauth:// scheme.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0748hjvhjrybi33ci3c8hcr74k9pdrf5jv8npf9hrsrmdyy1kr9x"))))
+        (base32 "10ixahm4ap0l1rrz4cyswblm22ns9z1baf5lv3dn23wprfdcp8m0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
