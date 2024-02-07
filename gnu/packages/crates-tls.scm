@@ -359,6 +359,39 @@ Cryptography team for AWS and their customers.  This is the FIPS validated
 version of AWS-LC.")
     (license (list license:isc license:openssl license:asl2.0))))
 
+(define-public rust-aws-lc-rs-1
+  (package
+    (name "rust-aws-lc-rs")
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jmwpin66yibpq0ha7i61g2ryz9gp4y6by4337fdjj2ckhwbm55v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Not all files included.
+       #:cargo-inputs (("rust-aws-lc-fips-sys" ,rust-aws-lc-fips-sys-0.12)
+                       ("rust-aws-lc-sys" ,rust-aws-lc-sys-0.13)
+                       ("rust-mirai-annotations" ,rust-mirai-annotations-1)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-untrusted" ,rust-untrusted-0.7)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-hex" ,rust-hex-0.4)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1))))
+    (native-inputs (list cmake-minimal))
+    (home-page "https://github.com/awslabs/aws-lc-rs")
+    (synopsis "AWS-LC is a general-purpose cryptographic library")
+    (description
+     "@code{aws-lc-rs} is a cryptographic library using AWS-LC for its
+cryptographic operations.  This library strives to be API-compatible with the
+popular Rust library named ring.")
+    (license (list license:isc license:openssl license:asl2.0))))
+
 ;; TODO: Unbundle aws-lc.
 (define-public rust-aws-lc-sys-0.13
   (package
