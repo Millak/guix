@@ -5114,26 +5114,34 @@ with webpki.")
   (package
     (inherit rust-webpki-roots-0.26)
     (name "rust-webpki-roots")
-    (version "0.25.1")
+    (version "0.25.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "webpki-roots" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "15piy0vccppqb74li32gnn9l5a4ysxzwh8bp3qv6z8rhr2hyvin9"))))
+                "1qgqa615gc1cgklls4bkjp9jv9pvv3jnl82lc6wd7dkximywa82z"))))
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
              ;; This test wants network access.
              "--skip=generated_code_is_fresh")
        #:cargo-development-inputs
-       (("rust-percent-encoding" ,rust-percent-encoding-2)
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-rcgen" ,rust-rcgen-0.11)
         ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-ring" ,rust-ring-0.16)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
-        ("rust-tokio" ,rust-tokio-1))))))
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-x509-parser" ,rust-x509-parser-0.15)
+        ("rust-yasna" ,rust-yasna-0.5))))))
 
 (define-public rust-webpki-roots-0.24
   (package
