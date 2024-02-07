@@ -71509,14 +71509,14 @@ etc. distance calculations and string search.")
 (define-public rust-trybuild-1
   (package
     (name "rust-trybuild")
-    (version "1.0.85")
+    (version "1.0.89")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trybuild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wfzxp704x165x2n0sa1absi234x6yv3903dpywysv4h18k5hshr"))))
+        (base32 "13s8pchqdkwr4zby1y5hamw0p8aywwczc0r3fbb86d4icak3p7cs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
