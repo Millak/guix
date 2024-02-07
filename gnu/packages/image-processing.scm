@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Oleh Malyi <astroclubzp@gmail.com>
-;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -1240,7 +1240,7 @@ programmatically.")
 (define-public vxl
   (package
     (name "vxl")
-    (version "2.0.2")
+    (version "3.5.0")
     (source
      (origin
        (method git-fetch)
@@ -1249,7 +1249,7 @@ programmatically.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0949hw57szq8943f1whwqaz591xjmb19kj803hcv74hdai2b0ycg"))
+        (base32 "0iqq4lm51l5gvkax6r79ypifqmgir3p3vman9gsc2085d2agjvbs"))
        (modules '((guix build utils)))
        ;; TODO: vxl includes an old version of dcmtk.  It won't build with
        ;; version 3.6.x.
