@@ -3808,29 +3808,6 @@ The specific case of loading packages should still be done by invoking the
 loading algorithms.")
       (license license:bsd-3))))
 
-(define-public go-github-com-burntsushi-toml
-  (package
-    (name "go-github-com-burntsushi-toml")
-    (version "1.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/BurntSushi/toml")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1v9czq4hsyvdz7yx70y6sgq77wmrgfmn09r9cj4w85z38jqnamv7"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/BurntSushi/toml"))
-    (home-page "https://github.com/BurntSushi/toml")
-    (synopsis "Toml parser and encoder for Go")
-    (description
-     "This package is toml parser and encoder for Go.  The interface
-is similar to Go's standard library @code{json} and @code{xml} package.")
-    (license license:expat)))
-
 (define-public go-github-com-hashicorp-go-uuid
   (package
     (name "go-github-com-hashicorp-go-uuid")

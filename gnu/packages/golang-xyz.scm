@@ -1,8 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
+;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -85,6 +87,29 @@ shell-like commands.")
     (description "This package provides a single @code{Tree} implementation,
 optimized for sparse nodes of
 @url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.")
+    (license license:expat)))
+
+(define-public go-github-com-burntsushi-toml
+  (package
+    (name "go-github-com-burntsushi-toml")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BurntSushi/toml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v9czq4hsyvdz7yx70y6sgq77wmrgfmn09r9cj4w85z38jqnamv7"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/BurntSushi/toml"))
+    (home-page "https://github.com/BurntSushi/toml")
+    (synopsis "Toml parser and encoder for Go")
+    (description
+     "This package is toml parser and encoder for Go.  The interface is
+similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
 (define-public go-github-com-cyberdelia-go-metrics-graphite
