@@ -69969,8 +69969,44 @@ implementation of TLS for nonblocking I/O streams.")
         ("rust-security-framework" ,rust-security-framework-0.2)
         ("rust-tokio" ,rust-tokio-0.1))))))
 
+(define-public rust-tokio-tungstenite-0.20
+  (package
+    (name "rust-tokio-tungstenite")
+    (version "0.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-tungstenite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v1v24l27hxi5hlchs7hfd5rgzi167x0ygbw220nvq0w5b5msb91"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tungstenite" ,rust-tungstenite-0.20)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-futures-channel" ,rust-futures-channel-0.3)
+                                   ("rust-hyper" ,rust-hyper-0.14)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/snapview/tokio-tungstenite")
+    (synopsis "Tokio binding for Tungstenite")
+    (description
+     "This package provides Tokio binding for Tungstenite, the lightweight
+stream-based @code{WebSocket} implementation.")
+    (license license:expat)))
+
 (define-public rust-tokio-tungstenite-0.19
   (package
+    (inherit rust-tokio-tungstenite-0.20)
     (name "rust-tokio-tungstenite")
     (version "0.19.0")
     (source
@@ -69980,7 +70016,6 @@ implementation of TLS for nonblocking I/O streams.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0b5iqjsprll88912jqb36xbjcflmgl907w3lgi14634sdv4rll7c"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
@@ -69998,13 +70033,7 @@ implementation of TLS for nonblocking I/O streams.")
         ("rust-futures-channel", rust-futures-channel-0.3)
         ("rust-hyper" ,rust-hyper-0.14)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-url" ,rust-url-2))))
-    (home-page "https://github.com/snapview/tokio-tungstenite")
-    (synopsis "Tokio binding for Tungstenite")
-    (description
-     "This package provides Tokio binding for Tungstenite, the lightweight
-stream-based WebSocket implementation.")
-    (license license:expat)))
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-tokio-tungstenite-0.11
   (package
