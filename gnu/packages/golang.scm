@@ -5345,44 +5345,6 @@ generation features.  This code generation is used to achieve:
 that's a lot faster (and only does simple bandwidth metrics).")
       (license license:expat))))
 
-(define-public go-github-com-davecgh-go-spew
-  (package
-    (name "go-github-com-davecgh-go-spew")
-    (version "1.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/davecgh/go-spew")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0hka6hmyvp701adzag2g26cxdj47g21x6jz4sc6jjz1mn59d474y"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:unpack-path "github.com/davecgh/go-spew"
-       #:import-path "github.com/davecgh/go-spew/spew"))
-    (home-page "https://github.com/davecgh/go-spew")
-    (synopsis "Deep pretty printer for Go data structures to aid in debugging")
-    (description "Package @command{spew} implements a deep pretty printer
-for Go data structures to aid in debugging.
-
-A quick overview of the additional features spew provides over the built-in printing facilities for Go data types are as follows:
-
-@itemize
-@item Pointers are dereferenced and followed.
-@item Circular data structures are detected and handled properly.
-@item Custom Stringer/error interfaces are optionally invoked, including on
-unexported types.
-@item Custom types which only implement the Stringer/error interfaces via a
-pointer receiver are optionally invoked when passing non-pointer variables.
-@item Byte arrays and slices are dumped like the hexdump -C command which
-includes offsets, byte values in hex, and ASCII output (only when using Dump
-style).
-@end itemize\n")
-    (license license:isc)))
-
 (define-public go-github-com-btcsuite-btclog
   (let ((commit "84c8d2346e9fc8c7b947e243b9c24e6df9fd206a")
         (revision "0"))
