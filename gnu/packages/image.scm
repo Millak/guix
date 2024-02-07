@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2816,3 +2817,38 @@ Graphics (PNGs), intended as an easy-to-use replacement for @code{libpng}.")
    (license license:bsd-2)
    ;; Supports SSE on x86-64 and NEON on AArch64.
    (properties '((tunable? . #t)))))
+
+(define-public libsixel
+  (package
+    (name "libsixel")
+    (version "1.10.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libsixel/libsixel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nny4295ipy4ajcxmmh04c796hcds0y7z7rv3qd17mj70y8j0r2d"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:build-type "release"
+      #:configure-flags #~(list "--buildtype=plain"
+                                "-Dtests=enabled"
+                                "-Dlibcurl=disabled"
+                                "-Dgdk-pixbuf2=enabled")))
+    (native-inputs (list pkg-config))
+    (inputs (list gdk-pixbuf libjpeg-turbo libpng python))
+    (home-page "https://github.com/libsixel/libsixel")
+    (synopsis
+     "Encoder and decoder implementation for DEC SIXEL graphics")
+    (description
+     "LibSIXEL is a an encoder/decoder implementation for DEC SIXEL graphics,
+and some converter programs.  SIXEL is one of image formats for printer and
+terminal imaging introduced by @acronym{DEC, Digital Equipment Corp.}.  Its
+data scheme is represented as a terminal-friendly escape sequence.  So if you
+want to view a SIXEL image file, all you have to do is @command{cat} it to
+your terminal.")
+    (license license:expat)))
