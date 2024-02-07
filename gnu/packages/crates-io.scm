@@ -15416,30 +15416,25 @@ character.")
 (define-public rust-csv-1
   (package
     (name "rust-csv")
-    (version "1.1.6")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "csv" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1q9nqn0qlamwl18v57p82c8yhxy43lkzf2z1mndmycsvqinkm092"))))
+        (base32 "1zjrlycvn44fxd9m8nwy8x33r9ncgk0k3wvy4fnvb9rpsks4ymxc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-0.2)
-        ("rust-csv-core" ,rust-csv-core-0.1)
-        ("rust-itoa" ,rust-itoa-0.4)
-        ("rust-ryu" ,rust-ryu-1)
-        ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-serde" ,rust-serde-1))))
+     `(#:cargo-inputs (("rust-csv-core" ,rust-csv-core-0.1)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bstr" ,rust-bstr-1)
+                                   ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/BurntSushi/rust-csv")
     (synopsis "Fast CSV parsing with support for serde")
-    (description
-     "Fast CSV parsing with support for serde.")
+    (description "Fast CSV parsing with support for serde.")
     (license (list license:unlicense license:expat))))
 
 (define-public rust-csv-0.14
