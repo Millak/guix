@@ -5082,14 +5082,14 @@ c6e7d37.  However, this package works only up to 128 bytes.")
 (define-public rust-basic-toml-0.1
   (package
     (name "rust-basic-toml")
-    (version "0.1.1")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "basic-toml" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1d2h378373x0i8j4mi4sfaq8np9hf5xqr2rh9pa7r5irfxk9p09f"))))
+        (base32 "1r8l5kz5lzfw66llq8b023vx38kh35gdf8jd428ma76lr8j1bcid"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
