@@ -11119,7 +11119,7 @@ weighted semantic.")
 (define-public rust-cmake-0.1
   (package
     (name "rust-cmake")
-    (version "0.1.44")
+    (version "0.1.50")
     (source
       (origin
         (method url-fetch)
@@ -11127,10 +11127,11 @@ weighted semantic.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1fv346ipxmvff6qrnh78rild0s8k72ilfjkdsrk869562y62cmhf"))))
+          "0c3i3548mqbizpgbff94jjgkcd2p6q9fxjjh89zzf5dqcfaph753"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (native-inputs (list cmake-minimal))
     (home-page "https://github.com/alexcrichton/cmake-rs")
     (synopsis "Rust build dependency for running cmake")
     (description
