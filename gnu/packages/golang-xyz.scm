@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
@@ -247,6 +248,29 @@ The package allows complete control over what is sent out to the @acronym{DNS,
 Domain Name Service}.  The API follows the less-is-more principle, by
 presenting a small interface.")
     (license license:bsd-3)))
+
+(define-public go-github-com-mreiferson-go-options
+  (package
+    (name "go-github-com-mreiferson-go-options")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mreiferson/go-options")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pxs9ybrh196qy14ijn4zn51h2z28lj31y6vxrz2xxhgvpmfmxyl"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/mreiferson/go-options"))
+    (home-page "https://github.com/mreiferson/go-options")
+    (synopsis "Go package to structure and resolve options")
+    (description
+     "The @code{options} Go package resolves configuration values set via
+command line flags, config files, and default struct values.")
+    (license license:expat)))
 
 (define-public go-github-com-nats-io-nats-go
   (package
