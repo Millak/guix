@@ -15466,27 +15466,21 @@ character.")
 (define-public rust-csv-core-0.1
   (package
     (name "rust-csv-core")
-    (version "0.1.10")
+    (version "0.1.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "csv-core" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "145wcc3560v1kmysqqspvddppiysr2rifqzy4nnlh3r6kxanc91b"))))
+        (base32 "0w7s7qa60xb054rqddpyg53xq2b29sf3rbhcl8sbdx02g4yjpyjy"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-memchr" ,rust-memchr-2))
-       #:cargo-development-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.5))))
+     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))
+       #:cargo-development-inputs (("rust-arrayvec" ,rust-arrayvec-0.5))))
     (home-page "https://github.com/BurntSushi/rust-csv")
-    (synopsis
-     "Bare bones CSV parsing with no_std support")
-    (description
-     "Bare bones CSV parsing with no_std support.")
+    (synopsis "Bare bones CSV parsing with no_std support")
+    (description "Bare bones CSV parsing with no_std support.")
     (license (list license:unlicense license:expat))))
 
 (define-public rust-cstr-core-0.2
