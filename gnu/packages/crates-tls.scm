@@ -359,6 +359,35 @@ Cryptography team for AWS and their customers.  This is the FIPS validated
 version of AWS-LC.")
     (license (list license:isc license:openssl license:asl2.0))))
 
+;; TODO: Unbundle aws-lc.
+(define-public rust-aws-lc-sys-0.13
+  (package
+    (name "rust-aws-lc-sys")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05a7z5hg00zpk4gvqggzv7j6bvljplx2c1kw44ifmxjnf5469rdn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fs-extra" ,rust-fs-extra-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-paste" ,rust-paste-1))))
+    (native-inputs (list cmake-minimal))
+    (home-page "https://github.com/aws/aws-lc-rs")
+    (synopsis "AWS-LC is a general-purpose cryptographic library")
+    (description
+     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
+Cryptography team for AWS and their customers.  It is based on code from the
+Google @code{BoringSSL} project and the @code{OpenSSL} project.")
+    (license (list license:isc license:openssl license:asl2.0))))
+
 (define-public rust-der-0.7
   (package
     (name "rust-der")
