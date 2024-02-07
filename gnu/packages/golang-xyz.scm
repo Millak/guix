@@ -378,6 +378,29 @@ library which posts the metrics to the Prometheus client registry and just
 updates the registry.")
     (license license:asl2.0)))
 
+(define-public go-github-com-nsqio-go-diskqueue
+  (package
+    (name "go-github-com-nsqio-go-diskqueue")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nsqio/go-diskqueue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hp66hkmfn0nyf3c53a40f94ah11a9rj01r5zp3jph9p54j8rany"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/nsqio/go-diskqueue"))
+    (home-page "https://github.com/nsqio/go-diskqueue")
+    (synopsis "Go package providing a file system backed FIFO queue")
+    (description
+     "The @code{diskqueue} Go package provides a file system backed FIFO
+queue.")
+    (license license:expat)))
+
 (define-public go-github-com-nsqio-go-nsq
   (package
     (name "go-github-com-nsqio-go-nsq")
