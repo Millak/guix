@@ -68,6 +68,7 @@
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,6 +114,7 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
@@ -3584,3 +3586,47 @@ notable features include:
       (description "velox is a simple window manager for Wayland based on swc.
 It is inspired by dwm and xmonad.")
       (license license:expat))))
+
+(define-public yambar-wayland
+  (package
+    (name "yambar-wayland")
+    (version "1.10.0")
+    (home-page "https://codeberg.org/dnkl/yambar")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14lxhgyyia7sxyqjwa9skps0j9qlpqi8y7hvbsaidrwmy4857czr"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:build-type "release"
+      #:configure-flags #~'("-Db_lto=true"
+                            "-Dbackend-x11=disabled"
+                            "-Dbackend-wayland=enabled")))
+    (native-inputs (list pkg-config
+                         tllist
+                         flex
+                         bison
+                         scdoc
+                         wayland-protocols))
+    (inputs (list fcft
+                  wayland
+                  pipewire
+                  libyaml
+                  pixman
+                  alsa-lib
+                  json-c
+                  libmpdclient
+                  eudev))
+    (synopsis "X11 and Wayland status panel")
+    (description
+     "@command{yambar} is a lightweight and configurable status panel (bar,
+for short) for X11 and Wayland, that goes to great lengths to be both CPU and
+battery efficient---polling is only done when absolutely necessary.")
+    (license license:expat)))
