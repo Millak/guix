@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,12 +32,15 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls))
@@ -319,6 +323,41 @@
     (description
      "This package provides asynchronous TLS/SSL streams using Rustls.")
     (license (list license:expat license:asl2.0))))
+
+;; TODO: Unbundle aws-lc-fips.
+(define-public rust-aws-lc-fips-sys-0.12
+  (package
+    (name "rust-aws-lc-fips-sys")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aws-lc-fips-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fv2z5gcm9wm45hbsjhm657p6diqiq1vw5a2rzrzfg8j4vxdzz07"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-fs-extra" ,rust-fs-extra-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-paste" ,rust-paste-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-home-directory
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (native-inputs (list cmake-minimal go perl))
+    (home-page "https://github.com/aws/aws-lc-rs")
+    (synopsis
+     "AWS-LC is a general-purpose cryptographic library (FIPS version)")
+    (description
+     "AWS-LC is a general-purpose cryptographic library maintained by the AWS
+Cryptography team for AWS and their customers.  This is the FIPS validated
+version of AWS-LC.")
+    (license (list license:isc license:openssl license:asl2.0))))
 
 (define-public rust-der-0.7
   (package
