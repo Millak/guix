@@ -67270,22 +67270,23 @@ unstable language features.")
   (package
     (inherit rust-tester-0.9)
     (name "rust-tester")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tester" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1xkgapz2i4j977f6kh1zp6sa5llbhy5vbnr6kfj8czsrdjr2r0ay"))))
+        (base32 "1az6brh39ai1jcc6yy7xglwq8m65samkb31zr7lr18swrd2103fd"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=tests::parse_ignored_flag"
+         "--skip=tests::parse_include_ignored_flag")
        #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-term" ,rust-term-0.4))))))
+        ("rust-term" ,rust-term-0.6))))))
 
 (define-public rust-testing-logger-0.1
   (package
