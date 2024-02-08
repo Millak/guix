@@ -27,7 +27,8 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages golang-check))
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto))
 
 ;;; Commentary:
 ;;;
@@ -143,6 +144,34 @@ Differentiation between text and binary files}.
     (synopsis "Simple idiomatic retry package for Go")
     (description "This package provides an idiomatic Go retry module.")
     (license license:expat)))
+
+(define-public go-github-com-nats-io-nats-go
+  (package
+    (name "go-github-com-nats-io-nats-go")
+    (version "1.31.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/nats.go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jqzqjwpp3p4fwpv2qcwskysnvgggp22p60zg3w25d3xsainjpbi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/nats-io/nats.go"))
+    (propagated-inputs (list go-golang-org-x-text
+                         go-github-com-nats-io-nuid
+                         go-github-com-nats-io-nkeys
+                         go-github-com-klauspost-compress))
+    (home-page "https://github.com/nats-io/nats.go")
+    (synopsis "Go Client for NATS server")
+    (description
+     "This package provides a Go client for the NATS messaging system.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-nats-io-nuid
   (package
