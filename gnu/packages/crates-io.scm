@@ -62550,15 +62550,28 @@ on verbosity specified.")
         (uri (crate-uri "stderrlog" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "09bzvmx2lzyycr1xfcvfwnvqsjg9kb4w22hb19bjqid5j2dyxr9j"))))
+         (base32 "09bzvmx2lzyycr1xfcvfwnvqsjg9kb4w22hb19bjqid5j2dyxr9j"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("version = \"~([[:digit:]]+(\\.[[:digit:]]+)*)\"" _ version)
+                   (string-append "version = \"^" version "\""))
+                  (("version = \"\\^([[:digit:]]+\\.[[:digit:]]+), <.*\"" _ version)
+                   (string-append "version = \"^" version "\"")))))))
+    (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-atty" ,rust-atty-0.2.11)
-         ("rust-chrono" ,rust-chrono-0.4)
-         ("rust-log" ,rust-log-0.4)
-         ("rust-termcolor" ,rust-termcolor-1)
-         ("rust-thread-local" ,rust-thread-local-0.3.4))))))
+     `(#:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-thread-local" ,rust-thread-local-0.3))
+        #:cargo-development-inputs
+        (("rust-clap" ,rust-clap-2)
+         ("rust-docopt" ,rust-docopt-0.6)
+         ("rust-libc" ,rust-libc-0.2)
+         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+         ("rust-structopt" ,rust-structopt-0.2))))))
 
 (define-public rust-stfu8-0.2
   (package
