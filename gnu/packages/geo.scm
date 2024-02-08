@@ -3106,6 +3106,30 @@ path loss.")
      "This is a python implementation of the geodesic routines in GeographicLib.")
     (license license:expat)))
 
+(define-public python-geoip2fast
+  (package
+    (name "python-geoip2fast")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "geoip2fast" version))
+       (sha256
+        (base32 "1cmdjlwjd4pg3qvsb8d4vghqj1im58npxb6dmrd5q90wjga4rfvm"))))
+    (build-system pyproject-build-system)
+    ;; The tests are speed tests or development tests to compare results with
+    ;; a different library.
+    (arguments (list #:tests? #false))
+    (home-page "https://github.com/rabuchaim/geoip2fast")
+    (synopsis
+     "Fast GeoIP2 country/city/asn lookup library")
+    (description
+     "@code{GeoIP2Fast} is a fast @code{GeoIP2} country/city/asn lookup
+library that supports IPv4 and IPv6.  A search takes less than 0.00003
+seconds.  It has its own data file updated twice a week with
+Maxmind-Geolite2-CSV, supports IPv4/IPv6 and is pure Python.")
+    (license license:expat)))
+
 (define-public python-geopy
   (package
     (name "python-geopy")
