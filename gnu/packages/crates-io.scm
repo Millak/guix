@@ -2020,23 +2020,27 @@ coverage-guided, mutation-based fuzzers.")
         (base32 "1a5qfmpzcf5rwlwsligf9z1gzndpvj0jncc4s3k3z5g214c4l127"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=all_tests")
        #:cargo-inputs
        (("rust-clipboard-win" ,rust-clipboard-win-4)
         ("rust-core-graphics" ,rust-core-graphics-0.21)
-        ("rust-env-logger" ,rust-env-logger-0.8)
         ("rust-image" ,rust-image-0.23)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
         ("rust-objc" ,rust-objc-0.2)
         ("rust-objc-foundation" ,rust-objc-foundation-0.1)
         ("rust-objc-id" ,rust-objc-id-0.1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
         ("rust-scopeguard" ,rust-scopeguard-1)
-        ("rust-simple-logger" ,rust-simple-logger-1)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-wl-clipboard-rs" ,rust-wl-clipboard-rs-0.4)
-        ("rust-x11rb" ,rust-x11rb-0.8))))
+        ("rust-x11rb" ,rust-x11rb-0.8))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-simple-logger" ,rust-simple-logger-1))))
     (home-page "https://github.com/ArturKovacs/arboard")
     (synopsis "Image and text handling for the OS clipboard")
     (description
