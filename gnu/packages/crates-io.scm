@@ -7656,34 +7656,52 @@ constants from build.rs or a script.")
 libraries and binaries.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-built-0.5
+(define-public rust-built-0.7
   (package
     (name "rust-built")
-    (version "0.5.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "built" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0fwpyasbp4pb6ff070xn17w1kwhvzgcx83l15gh8kff6y9m92mff"))))
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "built" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lyx4z4y5f7aaiv2yxxhq7klhs0979sw5vgv08d6vhsddr6pzl9q"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-cargo-lock" ,rust-cargo-lock-8)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-git2" ,rust-git2-0.16)
-        ("rust-semver" ,rust-semver-1))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libgit2 zlib))
+     `(#:cargo-inputs (("rust-cargo-lock" ,rust-cargo-lock-9)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-git2" ,rust-git2-0.18)
+                       ("rust-semver" ,rust-semver-1))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 zlib))
     (home-page "https://github.com/lukaslueg/built")
     (synopsis "Provides a crate with information from the time it was built")
     (description
      "This package provides a crate with information from the time it was built.")
     (license license:expat)))
+
+(define-public rust-built-0.5
+  (package
+    (inherit rust-built-0.7)
+    (name "rust-built")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "built" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fwpyasbp4pb6ff070xn17w1kwhvzgcx83l15gh8kff6y9m92mff"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cargo-lock" ,rust-cargo-lock-8)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-git2" ,rust-git2-0.16)
+                       ("rust-semver" ,rust-semver-1))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2 zlib))))
 
 (define-public rust-bumpalo-3
   (package
