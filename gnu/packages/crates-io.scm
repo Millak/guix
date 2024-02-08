@@ -59962,21 +59962,20 @@ a readable output format.")
   (package
     (inherit rust-simple-logger-2)
     (name "rust-simple-logger")
-    (version "1.13.0")
+    (version "1.16.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "simple_logger" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "01wz5xjpski45xq8v1bg8g05flj5h1sl63aabl2c6kj0hz337pmp"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simple_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pkvkp0v3w9kwqjhx5npb2jbyj9kfbb8y2w92s5cphsxldc05dj5"))))
     (arguments
-      `(#:cargo-inputs
-        (("rust-atty" ,rust-atty-0.2)
-         ("rust-chrono" ,rust-chrono-0.4)
-         ("rust-colored" ,rust-colored-1)
-         ("rust-log" ,rust-log-0.4)
-         ("rust-winapi" ,rust-winapi-0.3))))))
+     `(#:cargo-inputs (("rust-atty" ,rust-atty-0.2)
+                       ("rust-colored" ,rust-colored-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-simple-logging-2
   (package
