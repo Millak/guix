@@ -61486,24 +61486,21 @@ maximal amount of configuration possible intended.")
 (define-public rust-socks-0.3
   (package
     (name "rust-socks")
-    (version "0.3.2")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "socks" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1hnbw4c4j7dn9n3bd1v7ddkdzlxlzkfw3z29da1nxlj6jgx4r9p6"))))
+        (base32 "12ymihhib0zybm6n4mrvh39hj1dm0ya8mqnqdly63079kayxphzh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Tests require network connection.
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.2)
-        ("rust-ws2-32-sys" ,rust-ws2-32-sys-0.2))))
+        ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/sfackler/rust-socks")
     (synopsis "Rust SOCKS proxy clients")
     (description
