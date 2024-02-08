@@ -581,6 +581,31 @@ library's internal ChaCha20 package.")
 the Go standard library's TLS 1.3 implementation.")
     (license license:bsd-3)))
 
+(define-public go-github-com-nats-io-jwt-v2
+  (package
+    (name "go-github-com-nats-io-jwt-v2")
+    (version "2.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/jwt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wcqbfyd3b4qdspmf72cpsbi0y2a4b1qd0cv3qvhh17d1h1a6zib"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/nats-io/jwt/v2"
+           #:unpack-path "github.com/nats-io/jwt"))
+    (propagated-inputs (list go-github-com-nats-io-nkeys))
+    (home-page "https://github.com/nats-io/jwt")
+    (synopsis "Go library signing JWT tokens with NKeys for the NATS ecosystem")
+    (description
+     "This library is a JWT implementation that uses nkeys to digitally sign
+JWT tokens.  Nkeys use Ed25519 to provide authentication of JWT claims.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-nats-io-nkeys
   (package
     (name "go-github-com-nats-io-nkeys")
