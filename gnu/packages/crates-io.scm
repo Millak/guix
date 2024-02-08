@@ -2128,22 +2128,20 @@ the pointer type is parameterizable.")
 (define-public rust-arg-enum-proc-macro-0.3
   (package
     (name "rust-arg-enum-proc-macro")
-    (version "0.3.0")
+    (version "0.3.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "arg_enum_proc_macro" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "021rr6j3n031ynfbm7kwb3j3bxvbsz40n0nqi78k47d3p92rihcv"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arg_enum_proc_macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sjdfd5a8j6r99cf0bpqrd6b160x9vz97y5rysycsjda358jms8a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-quote" ,rust-quote-1))))
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/lu-zero/arg_enum_proc_macro")
     (synopsis "Procedural macro compatible with clap arg_enum")
     (description
