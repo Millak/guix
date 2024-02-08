@@ -75395,15 +75395,14 @@ for terminal and other window-less applications.")
 (define-public rust-web-sys-0.3
   (package
     (name "rust-web-sys")
-    (version "0.3.64")
+    (version "0.3.68")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "web-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16r4fww3l99kxhb66hka3kxkmhhgzhnqkzdf0ay6l2i2ikpwp1cv"))))
+        (base32 "0il4nbsf782l5y1jb7s75vc7214a19vh7z65bfrwwykzd03mjmln"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
