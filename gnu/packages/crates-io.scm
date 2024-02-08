@@ -31140,15 +31140,14 @@ JSON-RPC 2.0 specification.")
 (define-public rust-js-sys-0.3
   (package
     (name "rust-js-sys")
-    (version "0.3.64")
+    (version "0.3.68")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "js-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nlkiwpm8dyqcf1xyc6qmrankcgdd3fpzc0qyfq2sw3z97z9bwf5"))
+        (base32 "1vm98fhnhs4w6yakchi9ip7ar95900k9vkr24a21qlwd6r5xlv20"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
