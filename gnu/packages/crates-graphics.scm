@@ -1676,47 +1676,9 @@ EUI-64, also known as MAC-48 media access control addresses.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winit" ,rust-winit-0.24))))))
 
-(define-public rust-glutin-0.22
-  (package
-    (inherit rust-glutin-0.26)
-    (name "rust-glutin")
-    (version "0.22.0-alpha5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "glutin" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0lilr4f335m1fq1acmshd51zblfaglw1hha6lhalnc1fw3cg0aag"))))
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--lib" "--bins" "--tests")
-       #:cargo-inputs
-       (("rust-android-glue" ,rust-android-glue-0.2)
-        ("rust-cgl" ,rust-cgl-0.3)
-        ("rust-cocoa" ,rust-cocoa-0.19)
-        ("rust-core-foundation" ,rust-core-foundation-0.6)
-        ("rust-core-graphics" ,rust-core-graphics-0.17)
-        ("rust-glutin-egl-sys" ,rust-glutin-egl-sys-0.1)
-        ("rust-glutin-emscripten-sys" ,rust-glutin-emscripten-sys-0.1)
-        ("rust-glutin-gles2-sys" ,rust-glutin-gles2-sys-0.1)
-        ("rust-glutin-glx-sys" ,rust-glutin-glx-sys-0.1)
-        ("rust-glutin-wgl-sys" ,rust-glutin-wgl-sys-0.1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libloading" ,rust-libloading-0.5)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-objc" ,rust-objc-0.2)
-        ("rust-osmesa-sys" ,rust-osmesa-sys-0.1)
-        ("rust-parking-lot" ,rust-parking-lot-0.9)
-        ("rust-wayland-client" ,rust-wayland-client-0.23)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-winit" ,rust-winit-0.20))))))
-
 (define-public rust-glutin-0.21
   (package
-    (inherit rust-glutin-0.22)
+    (inherit rust-glutin-0.26)
     (name "rust-glutin")
     (version "0.21.2")
     (source
