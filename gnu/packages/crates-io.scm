@@ -39580,16 +39580,14 @@ implementation (which is unstable / requires nightly).")
 (define-public rust-nom-7
   (package
     (name "rust-nom")
-    (version "7.1.2")
+    (version "7.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nom" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "132lkkqd8hcbmpb90hncwknr7rn6knfq7774d679k74iqilpfl75"))))
+        (base32 "0jha9901wxam390jcf5pfa0qqfrgh8li787jx2ip0yk5b8y9hwyj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Tests require example directory, not included in tarball.
@@ -39600,10 +39598,8 @@ implementation (which is unstable / requires nightly).")
        (("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-proptest" ,rust-proptest-1))))
     (home-page "https://github.com/Geal/nom")
-    (synopsis
-     "Byte-oriented, zero-copy, parser combinators library")
-    (description
-     "This package provides a byte-oriented, zero-copy, parser
+    (synopsis "Byte-oriented, zero-copy, parser combinators library")
+    (description "This package provides a byte-oriented, zero-copy, parser
 combinators library.")
     (license license:expat)))
 
