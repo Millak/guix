@@ -29722,23 +29722,20 @@ bytestring representations.")
 (define-public rust-interpolate-name-0.2
   (package
     (name "rust-interpolate-name")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "interpolate_name" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "05vzsiqb69d1mbpaphcg4ifjsjs6g03b8pacskfcydqhh555zcxl"))))
+         (base32 "0q7s5mrfkx4p56dl8q9zq71y1ysdj4shh6f28qf9gly35l21jj63"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-quote" ,rust-quote-1))))
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/lu-zero/interpolate_name")
     (synopsis "Simple procedural macro attribute for repetitive tests")
     (description
