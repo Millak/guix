@@ -148,7 +148,7 @@ Differentiation between text and binary files}.
 (define-public go-github-com-nats-io-nats-go
   (package
     (name "go-github-com-nats-io-nats-go")
-    (version "1.31.0")
+    (version "1.32.0")
     (source
      (origin
        (method git-fetch)
@@ -157,7 +157,7 @@ Differentiation between text and binary files}.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jqzqjwpp3p4fwpv2qcwskysnvgggp22p60zg3w25d3xsainjpbi"))))
+        (base32 "08b3n5mdpxvn9hipz0j001bp5r67i43cqji9x9dyzikypqdfg38k"))))
     (build-system go-build-system)
     (arguments
      (list
