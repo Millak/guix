@@ -74917,15 +74917,14 @@ result.")
 (define-public rust-wasm-bindgen-backend-0.2
   (package
     (name "rust-wasm-bindgen-backend")
-    (version "0.2.87")
+    (version "0.2.91")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasm-bindgen-backend" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gcsh3bjxhw3cirmin45107pcsnn0ymhkxg6bxg65s8hqp9vdwjy"))))
+        (base32 "02zpi9sjzhd8kfv1yj9m1bs4a41ik9ii5bc8hjf60arm1j8f3ry9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -74934,7 +74933,7 @@ result.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
+        ("rust-syn" ,rust-syn-2)
         ("rust-wasm-bindgen-shared" ,rust-wasm-bindgen-shared-0.2))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
     (synopsis "Backend code generation of the wasm-bindgen tool")
