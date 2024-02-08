@@ -144,6 +144,29 @@ Differentiation between text and binary files}.
     (description "This package provides an idiomatic Go retry module.")
     (license license:expat)))
 
+(define-public go-github-com-nats-io-nuid
+  (package
+    (name "go-github-com-nats-io-nuid")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/nuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11zbhg4kds5idsya04bwz4plj0mmiigypzppzih731ppbk2ms1zg"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/nats-io/nuid"))
+    (home-page "https://github.com/nats-io/nuid")
+    (synopsis "Go library implementing identifier generator for NATS ecosystem")
+    (description
+     "This package provides a unique identifier generator that is high performance,
+very fast, and tries to be entropy pool friendly.")
+    (license license:asl2.0)))
+
 (define-public go-go-uber-org-automaxprocs
   (package
     (name "go-go-uber-org-automaxprocs")
