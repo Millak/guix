@@ -32391,8 +32391,34 @@ algorithm and related formats (ZLIB, GZIP).")
     (description "This package provides a LZ77 encoder for libflate crate.")
     (license license:expat)))
 
+(define-public rust-libfuzzer-sys-0.4
+  (package
+    (name "rust-libfuzzer-sys")
+    (version "0.4.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libfuzzer-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xz70z8q85f80wdrc0m0flck73cqdhj5ajgd7ywg50pbaxazsv59"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Needs to be built with clang to pass the tests.
+       #:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-once-cell" ,rust-once-cell-1))
+       #:cargo-development-inputs (("rust-flate2" ,rust-flate2-1)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/rust-fuzz/libfuzzer")
+    (synopsis "Wrapper around LLVM's libFuzzer runtime")
+    (description
+     "This package provides a wrapper around LLVM's @code{libFuzzer} runtime.")
+    (license (list license:expat license:asl2.0 license:ncsa))))
+
 (define-public rust-libfuzzer-sys-0.3
   (package
+    (inherit rust-libfuzzer-sys-0.4)
     (name "rust-libfuzzer-sys")
     (version "0.3.5")
     (source
@@ -32402,18 +32428,11 @@ algorithm and related formats (ZLIB, GZIP).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1vv42rpvmfr83hlblyrjf8ifilsmc3d5gcznblmghx5jnsj89wgw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-0.4)
-        ("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/rust-fuzz/libfuzzer")
-    (synopsis "Wrapper around LLVM's libFuzzer runtime")
-    (description
-     "This package provides a wrapper around LLVM's libFuzzer runtime.")
-    (license
-     (list license:expat license:asl2.0 license:ncsa))))
+        ("rust-cc" ,rust-cc-1))))))
 
 (define-public rust-libloading-0.8
   (package
