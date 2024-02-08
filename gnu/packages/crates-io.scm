@@ -67266,6 +67266,23 @@ strategies in proptest.")
 unstable language features.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tester-0.6
+  (package
+    (inherit rust-tester-0.9)
+    (name "rust-tester")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tester" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kqynxab4g4qyhrmw8y7pzfn267q31wa7gbsirfkg17b6bbycivn"))))
+    (arguments
+     `(#:cargo-inputs (("rust-getopts" ,rust-getopts-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-term" ,rust-term-0.6))))))
+
 (define-public rust-tester-0.5
   (package
     (inherit rust-tester-0.9)
