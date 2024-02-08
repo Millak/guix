@@ -71060,34 +71060,28 @@ Chrome-style traces.")
 @code{futures} with @code{tracing}.")
     (license license:expat)))
 
-(define-public rust-tracing-log-0.1
+(define-public rust-tracing-log-0.2
   (package
     (name "rust-tracing-log")
-    (version "0.1.3")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing-log" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "08prnkxq8yas6jvvjnvyx5v3hwblas5527wxxgbiw2yis8rsvpbq"))))
+        (base32 "1hs77z026k730ij1a9dhahzrl0s073gfa2hm5p0fbl0b80gmz1gf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ahash" ,rust-ahash-0.7)
-        ("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-lru" ,rust-lru-0.7)
-        ("rust-tracing-core" ,rust-tracing-core-0.1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-tracing" ,rust-tracing-0.1))))
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.7)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-lru" ,rust-lru-0.7)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-tracing" ,rust-tracing-0.1))))
     (home-page "https://tokio.rs")
-    (synopsis
-     "Provides compatibility between tracing the log crates")
+    (synopsis "Provides compatibility between the tracing and the log crate")
     (description
      "Tracing is a framework for instrumenting Rust programs with
 context-aware, structured, event-based diagnostic information.  This crate
@@ -71105,6 +71099,28 @@ and log types.
 with tracing (optional, enabled by the env-logger feature).
 @end itemize")
     (license license:expat)))
+
+(define-public rust-tracing-log-0.1
+  (package
+    (inherit rust-tracing-log-0.2)
+    (name "rust-tracing-log")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-log" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08prnkxq8yas6jvvjnvyx5v3hwblas5527wxxgbiw2yis8rsvpbq"))))
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.7)
+                       ("rust-env-logger" ,rust-env-logger-0.7)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-lru" ,rust-lru-0.7)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-tracing" ,rust-tracing-0.1))))))
 
 (define-public rust-tracing-serde-0.1
   (package
