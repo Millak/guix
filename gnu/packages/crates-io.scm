@@ -70956,6 +70956,32 @@ programs to collect structured, event-based diagnostic information.")
 automatically instrumenting functions.")
     (license license:expat)))
 
+(define-public rust-tracing-chrome-0.7
+  (package
+    (name "rust-tracing-chrome")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-chrome" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06pl66wzskcb0wkl2z99vw500ajlmmqv06dzpckzazvz8kakqss9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-rayon" ,rust-rayon-1)
+                                   ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/thoren-d/tracing-chrome")
+    (synopsis "Layer for tracing-subscriber that outputs Chrome-style traces")
+    (description
+     "This package provides a Layer for tracing-subscriber that outputs
+Chrome-style traces.")
+    (license license:expat)))
+
 (define-public rust-tracing-core-0.1
   (package
     (name "rust-tracing-core")
