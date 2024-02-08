@@ -21058,22 +21058,19 @@ deserialized from environment variables.")
 (define-public rust-errno-dragonfly-0.1
   (package
     (name "rust-errno-dragonfly")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "errno-dragonfly" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0rshlc00nv45f14v2l1w0ma2nf1jg5j7q9pvw7hh018r6r73bjhl"))))
+        (base32 "1grrmcm6q8512hkq5yzch3yv8wafflc2apbmsaabiyk44yqz2s5a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-gcc" ,rust-gcc-0.3))))
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/mneumann/errno-dragonfly-rs")
     (synopsis "Exposes errno functionality to stable Rust on DragonFlyBSD")
     (description
