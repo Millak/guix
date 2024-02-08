@@ -200,7 +200,7 @@ applications.")
 (define-public nats-server
   (package
     (name "nats-server")
-    (version "2.10.5")
+    (version "2.10.10")
     (source
      (origin
        (method git-fetch)
@@ -209,7 +209,7 @@ applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07dcn6him4r1chsqr9p4i7fnbfw60gq29f4zmlyljf2c47i58rf9"))))
+        (base32 "1sn8a3xfs1s9jc5fphrnc0ahh83h7ma2ckg2x447gdhg1p7pf9gn"))))
     (build-system go-build-system)
     (inputs
      (list go-github-com-klauspost-compress
