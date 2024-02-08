@@ -11950,20 +11950,17 @@ Rust compiler.")
   (package
     (inherit rust-compiletest-rs-0.10)
     (name "rust-compiletest-rs")
-    (version "0.3.22")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "compiletest_rs" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1di7kl2zv7jcwqq343aafqhn31gfa600zh4mi6cp10mn6a9wq3pl"))))
+        (base32 "0ipskgfs86cd3gy6hqb0qm2m0jdngqvh4s3rc1k8pbgb0ib9gn6p"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-diff" ,rust-diff-0.1)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-getopts" ,rust-getopts-0.2)
@@ -11976,7 +11973,7 @@ Rust compiler.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-tester" ,rust-tester-0.5)
+        ("rust-tester" ,rust-tester-0.6)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-compiletest-rs-0.2
