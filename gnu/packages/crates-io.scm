@@ -55546,21 +55546,18 @@ font rendering.")
   (package
     (inherit rust-rusttype-0.9)
     (name "rust-rusttype")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rusttype" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "12hwfg85iii7sbgsyyr23yw862dzp7f8zwn9xv5iqydm5w1i3a8l"))))
+        (base32 "1h5lyr61ffgg0wzp4yhc1fr5y83lzf3is17ixih7n7qhal842qcz"))))
     (arguments
      `(#:tests? #f      ; Artifacts for tests not included.
        #:cargo-inputs
        (("rust-approx" ,rust-approx-0.3)
-        ("rust-arrayvec" ,rust-arrayvec-0.5)
         ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.7)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
         ("rust-libm" ,rust-libm-0.2)
