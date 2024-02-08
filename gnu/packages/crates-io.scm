@@ -75056,14 +75056,14 @@ attribute that is not in the shared backend crate.")
 (define-public rust-wasm-bindgen-shared-0.2
   (package
     (name "rust-wasm-bindgen-shared")
-    (version "0.2.87")
+    (version "0.2.91")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "wasm-bindgen-shared" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "18bmjwvfyhvlq49nzw6mgiyx4ys350vps4cmx5gvzckh91dd0sna"))))
+         (base32 "0f4qmjv57ppwi4xpdxgcd77vz9vmvlrnybg8dj430hzhvk96n62g"))))
     (build-system cargo-build-system)
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
     (synopsis "Shared support between wasm-bindgen and wasm-bindgen cli")
