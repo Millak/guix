@@ -72013,25 +72013,29 @@ render properties.")
   (package
     (inherit rust-tuikit-0.5)
     (name "rust-tuikit")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tuikit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07x5218f9da6cbvmwpfyfymqyl7nksvkxxycxcrll9ajazy8qqlc"))))
+        (base32 "02dx38hisji8a3bznl1siv97594k2w16k24d6nc6vrvm4q08wz36"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.14)
-        ("rust-term" ,rust-term-0.6)
+        ("rust-nix" ,rust-nix-0.24)
+        ("rust-term" ,rust-term-0.7)
         ("rust-unicode-width" ,rust-unicode-width-0.1))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.6))))))
+       (("rust-env-logger" ,rust-env-logger-0.6))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             (setenv "TERM" "xterm"))))))))
 
 (define-public rust-tuikit-0.2
   (package
