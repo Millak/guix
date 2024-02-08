@@ -56476,25 +56476,21 @@ encodable types.")
 (define-public rust-scan-fmt-0.2
   (package
     (name "rust-scan-fmt")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "scan_fmt" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "1gmaa07z8bkkdv5xhq2lrgml6ri7fqyyrjpiks3phmpmq3p8d0i4"))))
+         (base32 "0j0jb1dsa8zjpnc875wy72190zlyngvl62mfv8pqwal8vfjv0lqb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/wlentz/scan_fmt")
     (synopsis "Simple scanf()-like input for Rust")
-    (description
-     "This package provides a simple scanf()-like input for Rust")
+    (description "This package provides a simple scanf()-like input for Rust.")
     (license license:expat)))
 
 (define-public rust-sce-0.1
