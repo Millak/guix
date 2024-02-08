@@ -57668,8 +57668,30 @@ formats:
     (description "This package provides a serde crate's auxiliary library.")
     (license license:expat)))
 
+(define-public rust-serde-big-array-0.5
+  (package
+    (name "rust-serde-big-array")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-big-array" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zsb9s9rcca3408kg20c6xpx917c9vbbnap5gvrf0wvdqz17rz0i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/est31/serde-big-array")
+    (synopsis "Big array helper for serde.")
+    (description "Big array helper for serde.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-big-array-0.4
   (package
+    (inherit rust-serde-big-array-0.5)
     (name "rust-serde-big-array")
     (version "0.4.1")
     (source (origin
@@ -57678,17 +57700,12 @@ formats:
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "1rwhbrffdxy87bxbyx8p68cg30gf0dlflx14vk1qiwlafjdg08rk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/est31/serde-big-array")
-    (synopsis "Big array helper for serde")
-    (description "Big array helper for serde.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-serde-big-array-0.3
   (package
