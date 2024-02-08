@@ -581,6 +581,30 @@ library's internal ChaCha20 package.")
 the Go standard library's TLS 1.3 implementation.")
     (license license:bsd-3)))
 
+(define-public go-github-com-nats-io-nkeys
+  (package
+    (name "go-github-com-nats-io-nkeys")
+    (version "0.4.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/nkeys")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l9ssz8bm9gqr07x5hif9r5b1mb324x61x4kkvgzvcqfm7wzh22a"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/nats-io/nkeys"))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/nats-io/nkeys")
+    (synopsis "Go library implementing public-key system for NATS ecosystem")
+    (description
+     "This package is an Ed25519 based public-key signature system that
+simplifies keys and seeds and performs signing and verification.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-minio-blake2b-simd
   (let ((commit "3f5f724cb5b182a5c278d6d3d55b40e7f8c2efb4")
         (revision "0"))
