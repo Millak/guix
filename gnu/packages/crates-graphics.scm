@@ -5240,63 +5240,9 @@ the platform-specific getters provided by winit, or another library.")
        (("rust-console-log" ,rust-console-log-0.2)
         ("rust-simple-logger" ,rust-simple-logger-1))))))
 
-(define-public rust-winit-0.20
-  (package
-    (inherit rust-winit-0.24)
-    (name "rust-winit")
-    (version "0.20.0-alpha6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "winit" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1g5cchl97zcg525j6jdr77yby8cmhwv1qqwcd3sf4l4zl263195z"))
-       (patches
-         (list
-           (origin
-             (method url-fetch)
-             (uri "https://github.com/rust-windowing/winit/commit/d1c6506865c7bddbb5fb4d80a613e43ddc1370b5.patch")
-             (file-name (string-append name "-fix-bindings.patch"))
-             (sha256
-              (base32
-               "03q4bvdq86kii53d0vsywv08g8vqirf9h1lz2cl6rcc7gjfynpds")))))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-android-glue" ,rust-android-glue-0.2)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-calloop" ,rust-calloop-0.4)
-        ("rust-cocoa" ,rust-cocoa-0.19)
-        ("rust-core-foundation" ,rust-core-foundation-0.6)
-        ("rust-core-graphics" ,rust-core-graphics-0.17)
-        ("rust-core-video-sys" ,rust-core-video-sys-0.1)
-        ("rust-dispatch" ,rust-dispatch-0.1)
-        ("rust-instant" ,rust-instant-0.1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-objc" ,rust-objc-0.2)
-        ("rust-parking-lot" ,rust-parking-lot-0.10)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-raw-window-handle" ,rust-raw-window-handle-0.3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.6)
-        ("rust-stdweb" ,rust-stdweb-0.4)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wayland-client" ,rust-wayland-client-0.23)
-        ("rust-web-sys" ,rust-web-sys-0.3)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-x11-dl" ,rust-x11-dl-2))
-       #:cargo-development-inputs
-       (("rust-console-log" ,rust-console-log-0.1)
-        ("rust-env-logger" ,rust-env-logger-0.5)
-        ("rust-image" ,rust-image-0.21))))))
-
 (define-public rust-winit-0.19
   (package
-    (inherit rust-winit-0.20)
+    (inherit rust-winit-0.24)
     (name "rust-winit")
     (version "0.19.5")
     (source
