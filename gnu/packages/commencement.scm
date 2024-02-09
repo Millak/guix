@@ -2681,7 +2681,7 @@ memoized as a function of '%current-system'."
                   "hurd-v" version ".tar.gz"))
             (sha256
              (base32
-              "1m0lgk0741f3scib87130w1spc598zbz7gcc946wi7mg97h8d53m")))))))
+              "0ybmx7bhy21zv1if2hfdspn13zn68vki1na72sw2jj87gj8przna")))))))
      (native-inputs
       (list autoconf-boot0 automake-boot0 mig-boot0))
      (inputs '()))))
