@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -621,6 +622,29 @@ and prints out the path to the current object (as a JSON array) and then the
 object, without whitespace.")
       (home-page "https://github.com/dominictarr/JSON.sh")
       (license (list license:expat license:asl2.0))))) ;dual-licensed
+
+(define-public ckdl
+  (package
+    (name "ckdl")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tjol/ckdl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zdpil61lm141lcxmfrg7jvfjp2n98v5q2rfqzm4wiqcdprgmasv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DDOWNLOAD_TEST_DATA=OFF")))
+    (home-page "https://ckdl.readthedocs.io/en/latest/")
+    (synopsis "C library for parsing and emitting KDL")
+    (description "@samp{ckdl} is a C library for parsing and emitting KDL.
+This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
+    (license license:expat)))
 
 (define-public capnproto
   (package
