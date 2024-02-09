@@ -4547,13 +4547,13 @@ astronomical images, especially when there is no WCS information available.")
 (define-public python-skyfield
   (package
     (name "python-skyfield")
-    (version "1.47")
+    (version "1.48")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "skyfield" version))
        (sha256
-        (base32 "0272pwk88csmrrl44fc4l52agd68pkg4zbmdhs7gliq5q9wf3hrs"))))
+        (base32 "1qaz0k0lkni3y423r66mkvj99bx08qa9xgqp3cs2df70cmdz30cb"))))
     (build-system python-build-system)
     (arguments
      ;; XXX: Tests depend on custom test framework
