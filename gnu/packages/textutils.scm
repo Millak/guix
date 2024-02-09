@@ -1360,9 +1360,9 @@ This package provides Python bindings.")
 of a Unix terminal to HTML code.")
     (license (list license:lgpl2.0+ license:mpl1.1))))
 
-(define-public go-github-com-errata-ai-vale
+(define-public vale
   (package
-    (name "go-github-com-errata-ai-vale")
+    (name "vale")
     (version "2.4.0")
     (source
      (origin
@@ -1391,6 +1391,9 @@ languages such as HTML, Markdown, Asciidoc, and reStructuredText.  The community
 around it also has a list of style guides implemented with Vale in
 @url{https://github.com/errata-ai/styles, their styles repo}.")
     (license license:expat)))
+
+(define-public go-github-com-errata-ai-vale
+  (deprecated-package "go-github-com-errata-ai-vale" vale))
 
 (define-public utf-8-lineseparator
   (package
