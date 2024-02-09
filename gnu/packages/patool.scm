@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +36,7 @@
 (define-public patool
   (package
     (name "patool")
-    (version "1.12")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)               ;no test data in PyPI archive
@@ -45,7 +46,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0zgvgx9549rvb57rgkpjalydz46k71gibfs6ab3b3sy439s0ay4h"))))
+         "09il0gq1xxlism30hx1aa06alz1xhrnhhwcjzx1znical0bp3q1r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
