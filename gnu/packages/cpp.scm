@@ -1065,11 +1065,9 @@ and make @code{cpplint} usable in wider contexts.")
           (base32 "09xnf8hmld1fk8j33zwlz1qcxnjdx1ncbg62csic9va4m1wc2v1d"))))
    (build-system cmake-build-system)
    (arguments
-      ;; No tests.
-    `(#:tests? #f
-      ;; Build the shared library instead of a static one.
-      #:configure-flags `("-DBUILD_SHARED_LIBS=1"
-                          "-DREPROC++=ON")))
+    (list #:tests? #f     ; No tests.
+          #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                    "-DREPROC++=ON")))
    (native-inputs
     (list pkg-config))
    (synopsis "Process IO library")
