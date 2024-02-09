@@ -1375,10 +1375,10 @@ of a Unix terminal to HTML code.")
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (native-inputs
-     `(("github.com/sp13/afero" ,go-github-com-spf13-afero)
-       ("github.com/urfave/cli" ,go-github-com-urfave-cli)
-       ("github.com/olekukonko/tablewriter" ,go-github-com-olekukonko-tablewriter)
-       ("github.com/mitchellh/mapstructure" ,go-github-com-mitchellh-mapstructure)))
+     (list go-github-com-mitchellh-mapstructure
+           go-github-com-olekukonko-tablewriter
+           go-github-com-spf13-afero
+           go-github-com-urfave-cli))
     (arguments
      `(#:import-path "github.com/errata-ai/vale"
        #:install-source? #f))
