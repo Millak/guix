@@ -7234,7 +7234,7 @@ fight against their plot and save his fellow rabbits from slavery.")
                    license:cc-by-sa3.0
                    license:cc-by-sa4.0))))
 
-(define-public 0ad-data
+(define 0ad-data
   (package
     (name "0ad-data")
     (version "0.0.26-alpha")
