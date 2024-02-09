@@ -1068,7 +1068,8 @@ and make @code{cpplint} usable in wider contexts.")
       ;; No tests.
     `(#:tests? #f
       ;; Build the shared library instead of a static one.
-      #:configure-flags `("-DBUILD_SHARED_LIBS=1")))
+      #:configure-flags `("-DBUILD_SHARED_LIBS=1"
+                          "-DREPROC++=ON")))
    (native-inputs
     (list pkg-config))
    (synopsis "Process IO library")
