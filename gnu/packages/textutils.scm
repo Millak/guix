@@ -29,6 +29,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>;;
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,16 +48,16 @@
 
 (define-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
+  #:use-module (guix build-system ant)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
+  #:use-module (guix build-system perl)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module (guix build-system ant)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system go)
-  #:use-module (guix build-system cmake)
-  #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
+  #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -64,10 +65,10 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
-  #:use-module (gnu packages gettext)
   #:use-module (gnu packages java)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
