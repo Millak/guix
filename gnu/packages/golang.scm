@@ -9680,30 +9680,6 @@ friendly sizes.  It converts boring ugly numbers to human-friendly strings and
 back.")
     (license license:expat)))
 
-(define-public go-golang-org-x-term
-  (package
-    (name "go-golang-org-x-term")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://go.googlesource.com/term")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "16s3d62fgdhiqvcib61s5pwxp08hhrmzx8bdv5zk1w1krjizdarl"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "golang.org/x/term"))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (home-page "https://pkg.go.dev/golang.org/x/term")
-    (synopsis "Go terminal/console support")
-    (description "@code{term} provides support functions for dealing with
-terminals, as commonly found on Unix systems.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-klauspost-compress
   (package
     (name "go-github-com-klauspost-compress")

@@ -4,11 +4,13 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Vagrant Cascadian <vagrant@debian.org>
+;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 hackeryarn <artemchernyak@gmail.com>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -266,6 +268,29 @@ subtasks of a common task.")
       (description "This package provides supplemental libraries offering Go
 support for low-level interaction with the operating system.")
       (license license:bsd-3))))
+
+(define-public go-golang-org-x-term
+  (package
+    (name "go-golang-org-x-term")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/term")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16s3d62fgdhiqvcib61s5pwxp08hhrmzx8bdv5zk1w1krjizdarl"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "golang.org/x/term"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://pkg.go.dev/golang.org/x/term")
+    (synopsis "Go terminal/console support")
+    (description "@code{term} provides support functions for dealing with
+terminals, as commonly found on Unix systems.")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-xerrors
   (let ((commit "5ec99f83aff198f5fbd629d6c8d8eb38a04218ca")
