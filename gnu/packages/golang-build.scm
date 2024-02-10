@@ -1,11 +1,14 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2020 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 hackeryarn <artemchernyak@gmail.com>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -164,6 +167,44 @@ loading algorithms.")
     (synopsis "HTML5-compliant tokenizer and parser")
     (description
      "This package provides an HTML5-compliant tokenizer and parser.")))
+
+(define-public go-golang.org-x-sync-errgroup
+  (let ((commit "cd5d95a43a6e21273425c7ae415d3df9ea832eeb")
+        (revision "0"))
+    (package
+      (name "go-golang.org-x-sync-errgroup")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://go.googlesource.com/sync")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1nqkyz2y1qvqcma52ijh02s8aiqmkfb95j08f6zcjhbga3ds6hds"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "golang.org/x/sync/errgroup"
+         #:unpack-path "golang.org/x/sync"))
+      (home-page "https://godoc.org/golang.org/x/sync/errgroup")
+      (synopsis "Synchronization, error propagation, and Context cancellation
+for groups of goroutines working on subtasks of a common task")
+      (description "This package provides synchronization, error
+propagation, and Context cancellation for groups of goroutines working on
+subtasks of a common task.")
+      (license license:bsd-3))))
+
+(define-public go-golang.org-x-sync-semaphore
+  (package
+    (inherit go-golang.org-x-sync-errgroup)
+    (name "go-golang.org-x-sync-semaphore")
+    (arguments
+     '(#:import-path "golang.org/x/sync/semaphore"
+       #:unpack-path "golang.org/x/sync"))
+    (home-page "https://godoc.org/golang.org/x/sync/semaphore")
+    (synopsis "Weighted semaphore implementation in Go")
+    (description "Weighted semaphore implementation in Go.")))
 
 (define-public go-golang-org-x-sys
   (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")

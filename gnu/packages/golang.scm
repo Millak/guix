@@ -7023,44 +7023,6 @@ into URL query parameters.")
 create or replace a file or symbolic link.")
     (license license:asl2.0)))
 
-(define-public go-golang.org-x-sync-errgroup
-  (let ((commit "cd5d95a43a6e21273425c7ae415d3df9ea832eeb")
-        (revision "0"))
-    (package
-      (name "go-golang.org-x-sync-errgroup")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://go.googlesource.com/sync")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1nqkyz2y1qvqcma52ijh02s8aiqmkfb95j08f6zcjhbga3ds6hds"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "golang.org/x/sync/errgroup"
-         #:unpack-path "golang.org/x/sync"))
-      (synopsis "Synchronization, error propagation, and Context cancellation
-for groups of goroutines working on subtasks of a common task")
-      (description "This package provides synchronization, error propagation,
-and Context cancellation for groups of goroutines working on subtasks of a
-common task.")
-      (home-page "https://godoc.org/golang.org/x/sync/errgroup")
-      (license license:bsd-3))))
-
-(define-public go-golang.org-x-sync-semaphore
-  (package
-    (inherit go-golang.org-x-sync-errgroup)
-    (name "go-golang.org-x-sync-semaphore")
-    (arguments
-     '(#:import-path "golang.org/x/sync/semaphore"
-       #:unpack-path "golang.org/x/sync"))
-    (synopsis "Weighted semaphore implementation in Go")
-    (description "Weighted semaphore implementation in Go.")
-    (home-page "https://godoc.org/golang.org/x/sync/semaphore")))
-
 (define (go-gotest-tools-source version sha256-base32-hash)
   (origin
     (method git-fetch)
