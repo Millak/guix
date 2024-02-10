@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
@@ -290,6 +291,34 @@ support for low-level interaction with the operating system.")
     (synopsis "Go terminal/console support")
     (description "@code{term} provides support functions for dealing with
 terminals, as commonly found on Unix systems.")
+    (license license:bsd-3)))
+
+(define-public go-golang-org-x-text
+  (package
+    (name "go-golang-org-x-text")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/text")
+             (commit (string-append "v" version))))
+       (file-name (string-append "go.googlesource.com-text-"
+                                 version "-checkout"))
+       (sha256
+        (base32 "0flv9idw0jm5nm8lx25xqanbkqgfiym6619w575p7nrdh0riqwqh"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/text"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'build))))
+    (home-page "https://go.googlesource.com/text")
+    (synopsis "Supplemental Go text processing libraries")
+    (description "This package provides supplemental Go libraries for text
+processing.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-time
