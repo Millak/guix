@@ -8104,11 +8104,29 @@ Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom.")
              "mirror://sourceforge/odamex/Odamex/" version "/"
              "odamex-src-" version ".tar.xz"))
        (sha256
-        (base32 "1isrmki18471yry48mmm7lxzp1kiqma9cc7fx38cvpm2mpgfyvzk"))))
+        (base32 "1isrmki18471yry48mmm7lxzp1kiqma9cc7fx38cvpm2mpgfyvzk"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; XXX: Unbundle more, they are not replaced by the ones provided
+           ;; in inputs: fltk, jsoncpp, miniupnp, protobuf.
+           ;;
+           ;; Remove some bundled libraries.
+           (with-directory-excursion "libraries"
+             (for-each delete-file-recursively
+                       '("curl" "libpng" "portmidi" "zlib")))))))
     (build-system cmake-build-system)
-    (arguments `(#:tests? #f))          ; no tests
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:configure-flags
+      #~(list "-DBUILD_CLIENT=1"
+              "-DBUILD_MASTER=1"
+              "-DBUILD_SERVER=1"
+              "-DUSE_INTERNAL_LIBS=0"
+              "-DUSE_INTERNAL_MINIUPNP=0")))
     (native-inputs
-     (list deutex))
+     (list deutex pkg-config))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("curl" ,curl)
