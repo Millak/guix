@@ -5282,13 +5282,13 @@ data at that region, and avoids over-plotting.")
 (define-public r-ggthemes
   (package
     (name "r-ggthemes")
-    (version "5.0.0")
+    (version "5.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggthemes" version))
               (sha256
                (base32
-                "1iddxlcxbj5pq0llbhjh5gvxq8j4kzby0cahy0sgzzca074i7aan"))))
+                "03mxigi34nd05wjigm8lpcbyhp4c8jxz7zm04qs27clbzsn1jj07"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2
