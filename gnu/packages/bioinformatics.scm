@@ -2244,6 +2244,38 @@ parallel.  It uses Python's native multiprocessing framework to apply a user
 defined rule on an input file.")
     (license license:gpl3)))
 
+(define-public python-pdbfixer
+  (package
+    (name "python-pdbfixer")
+    (version "1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openmm/pdbfixer")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zjhb19q5dclkwvzh8n29p31n1vzkhlmmzwqllimi89jsis1cx35"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests fail because they require internet access.
+             (string-append "not test_build_and_simulate.py"
+                            " and not test_cli.py"
+                            " and not test_mutate.py"))))
+    (propagated-inputs (list openmm python-numpy))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/openmm/pdbfixer")
+    (synopsis "Application for fixing problems in Protein Data Bank")
+    (description
+     "PDBFixer is designed to rectify issues in Protein Data Bank files.
+Its intuitive interface simplifies the process of resolving problems
+encountered in PDB files prior to simulation tasks.")
+    (license license:expat)))
+
 (define-public python-peaks2utr
   (package
     (name "python-peaks2utr")
