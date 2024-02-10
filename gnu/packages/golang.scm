@@ -3722,32 +3722,6 @@ information about the resource usage and performance characteristics of running
 containers.")
       (license license:asl2.0))))
 
-(define-public go-github-com-andybalholm-brotli
-  (package
-    (name "go-github-com-andybalholm-brotli")
-    (version "1.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/andybalholm/brotli")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zvmj7gbnkq9xwv1bvcxk9acxl06y902148qwbd2kqwgs52wy2c0"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/andybalholm/brotli"))
-    (home-page "https://github.com/andybalholm/brotli")
-    (synopsis "Pure Go Brotli encoder and decoder")
-    (description
-     "This package is a brotli compressor and decompressor implemented in Go.
-It was translated from the reference implementation
-(@url{https://github.com/google/brotli,https://github.com/google/brotli}) with
-the @code{c2go} tool at
-@url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
-    (license license:expat)))
-
 (define-public go-github-com-jonboulle-clockwork
   (let ((commit "e3653ace2d63753697e0e5b07b9393971c0bba9d")
         (revision "0"))
