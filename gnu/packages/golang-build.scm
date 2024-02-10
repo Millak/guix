@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -51,6 +52,27 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-yuin-goldmark
+  (package
+    (name "go-github-com-yuin-goldmark")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuin/goldmark")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12rsnsf65drcp0jfw2jl9w589vsn3pxdk1zh3v9q908iigngrcmy"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/yuin/goldmark"))
+    (home-page "https://github.com/yuin/goldmark/")
+    (synopsis "Markdown parser")
+    (description "This package provides a markdown parser.")
+    (license license:expat)))
+
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
