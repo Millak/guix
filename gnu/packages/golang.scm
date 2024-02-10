@@ -6884,10 +6884,11 @@ gotest-tools.")))
      `(#:tests? #f ; Test failure concerning message formatting (FIXME)
        #:import-path "gotest.tools/assert"
        #:unpack-path "gotest.tools"))
-    ;(propagated-inputs
-    ; `(("go-gotest-tools-internal-format" ,go-gotest-tools-internal-format)))
-    (native-inputs
-     (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-pkg-errors
+           go-github-com-spf13-pflag
+           go-golang-org-x-tools))
     (synopsis "Compare values and fail a test when a comparison fails")
     (description "This package provides a way to compare values and fail a
 test when a comparison fails.")
