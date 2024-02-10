@@ -292,6 +292,36 @@ support for low-level interaction with the operating system.")
 terminals, as commonly found on Unix systems.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-time
+  (let ((commit "9d24e82272b4f38b78bc8cff74fa936d31ccd8ef")
+        (revision "2"))
+    (package
+      (name "go-golang-org-x-time")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://go.googlesource.com/time")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1f5nkr4vys2vbd8wrwyiq2f5wcaahhpxmia85d1gshcbqjqf8dkb"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "golang.org/x/time"
+         ;; Source-only package
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+         ;; Source-only package
+           (delete 'build))))
+      (home-page "https://godoc.org/golang.org/x/time/rate")
+      (synopsis "Supplemental Go time libraries")
+      (description "This package provides supplemental Go libraries related to
+time.")
+      (license license:bsd-3))))
+
 (define-public go-golang-org-x-xerrors
   (let ((commit "5ec99f83aff198f5fbd629d6c8d8eb38a04218ca")
         (revision "0"))
