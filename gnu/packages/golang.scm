@@ -8307,7 +8307,8 @@ temporal directories.")
     (arguments
      `(#:import-path "github.com/twpayne/go-vfs"))
     (native-inputs
-     (list go-github-com-bmatcuk-doublestar))
+     (list go-github-com-bmatcuk-doublestar
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/twpayne/go-vfs/")
     (synopsis "Abstraction of the @code{os} and @code{ioutil} Go packages")
     (description "Package @code{vfs} provides an abstraction of the @code{os}
