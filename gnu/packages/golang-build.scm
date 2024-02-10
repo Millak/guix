@@ -1,14 +1,15 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
+;;; Copyright © 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
-;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 hackeryarn <artemchernyak@gmail.com>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
@@ -73,6 +74,37 @@
     (synopsis "Markdown parser")
     (description "This package provides a markdown parser.")
     (license license:expat)))
+
+(define-public go-golang-org-x-crypto
+  (package
+    (name "go-golang-org-x-crypto")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/crypto")
+             (commit (string-append "v" version))))
+       (file-name (string-append "go.googlesource.com-crypto-"
+                                 version "-checkout"))
+       (sha256
+        (base32 "13i0yz4hvc4qdr438nmzilvl5ns73v3910bakcddny3jbzq72i2m"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "golang.org/x/crypto"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; Source-only package
+         (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://go.googlesource.com/crypto/")
+    (synopsis "Supplementary cryptographic libraries in Go")
+    (description "This package provides supplementary cryptographic libraries
+for the Go language.")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-exp
   (package

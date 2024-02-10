@@ -3347,37 +3347,6 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
-(define-public go-golang-org-x-crypto
-  (package
-    (name "go-golang-org-x-crypto")
-    (version "0.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://go.googlesource.com/crypto")
-                    (commit (string-append "v" version))))
-              (file-name (string-append "go.googlesource.com-crypto-"
-                                        version "-checkout"))
-              (sha256
-               (base32
-                "13i0yz4hvc4qdr438nmzilvl5ns73v3910bakcddny3jbzq72i2m"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "golang.org/x/crypto"
-       ;; Source-only package
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Source-only package
-         (delete 'build))))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (synopsis "Supplementary cryptographic libraries in Go")
-    (description "This package provides supplementary cryptographic libraries
-for the Go language.")
-    (home-page "https://go.googlesource.com/crypto/")
-    (license license:bsd-3)))
-
 (define-public govulncheck
   (package
     (name "govulncheck")
