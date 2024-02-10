@@ -6276,23 +6276,22 @@ Michailidis G (2016) <doi:10.1093/bioinformatics/btw410>.")
 (define-public r-nmf
   (package
     (name "r-nmf")
-    (version "0.26")
+    (version "0.27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NMF" version))
        (sha256
         (base32
-         "1h1fpjnj6vjvi9ygxpfxs8k5bhly0aflr54zj88khgzkylp5ci4d"))))
+         "1y9y7xpfd9y8j5b8s2x5g61455ilpgqpdhrirpz58xjarbph4hxg"))))
     (properties `((upstream-name . "NMF")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cluster
-           r-codetools
-           r-biobase
+     (list r-biobase
            r-biocmanager
-           r-bigmemory ; suggested
-           r-synchronicity ; suggested
+           r-bigmemory ;suggested
+           r-cluster
+           r-codetools
            r-colorspace
            r-digest
            r-doparallel
@@ -6303,7 +6302,8 @@ Michailidis G (2016) <doi:10.1093/bioinformatics/btw410>.")
            r-registry
            r-reshape2
            r-rngtools
-           r-stringr))
+           r-stringr
+           r-synchronicity)) ;suggested
     (native-inputs
      (list r-knitr))
     (home-page "https://renozao.github.io/NMF")
