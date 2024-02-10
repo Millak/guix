@@ -3488,36 +3488,6 @@ developed by the Go team.  It provides IDE features to any LSP-compatible
 editor.")
     (license license:bsd-3)))
 
-(define-public go-golang-org-x-image
-  (let ((commit "58c23975cae11f062d4b3b0c143fe248faac195d")
-        (revision "1"))
-    (package
-      (name "go-golang-org-x-image")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://go.googlesource.com/image")
-                       (commit commit)))
-                (file-name (string-append "go.googlesource.com-image-"
-                                          version "-checkout"))
-                (sha256
-                 (base32
-                  "0i2p2girc1sfcic6xs6vrq0fp3szfx057xppksb67kliywjjrm5x"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "golang.org/x/image"
-         ; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
-      (home-page "https://go.googlesource.com/image")
-      (synopsis "Supplemental Go image libraries")
-      (description "This package provides supplemental Go libraries for image
-processing.")
-      (license license:bsd-3))))
-
 (define-public go-golang-org-x-oauth2
   (let ((commit "0f29369cfe4552d0e4bcddc57cc75f4d7e672a33")
         (revision "1"))
