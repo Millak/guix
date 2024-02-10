@@ -3486,7 +3486,8 @@ editor.")
       (arguments
        `(#:import-path "golang.org/x/oauth2"))
       (propagated-inputs
-       (list go-golang-org-x-net))
+       (list go-cloud-google-com-go-compute-metadata
+             go-golang-org-x-net))
       (home-page "https://go.googlesource.com/oauth2")
       (synopsis "Client implementation of the OAuth 2.0 spec")
       (description "This package contains a client implementation for OAuth 2.0
