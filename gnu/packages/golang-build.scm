@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Vagrant Cascadian <vagrant@debian.org>
@@ -167,6 +168,35 @@ loading algorithms.")
     (synopsis "HTML5-compliant tokenizer and parser")
     (description
      "This package provides an HTML5-compliant tokenizer and parser.")))
+
+(define-public go-golang-org-x-sync
+  (let ((commit "8fcdb60fdcc0539c5e357b2308249e4e752147f1")
+        (revision "1"))
+    (package
+      (name "go-golang-org-x-sync")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://go.googlesource.com/sync")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "07qrhni6f5hh5p95k1yk6s4wsj341q663irvx6rllrxfsymj6a0z"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "golang.org/x/sync"
+         #:tests? #f
+         ;; Source-only package
+         #:phases (modify-phases %standard-phases
+                    (delete 'build))))
+      (home-page "https://go.googlesource.com/sync/")
+      (synopsis "Additional Go concurrency primitives")
+      (description "This package provides Go concurrency primitives in
+addition to the ones provided by the language and “sync” and “sync/atomic”
+packages.")
+      (license license:bsd-3))))
 
 (define-public go-golang.org-x-sync-errgroup
   (let ((commit "cd5d95a43a6e21273425c7ae415d3df9ea832eeb")
