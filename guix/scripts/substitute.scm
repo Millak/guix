@@ -615,13 +615,7 @@ STATUS-PORT."
           (and (kind-and-args? exception)
                (memq (exception-kind exception)
                      '(gnutls-error getaddrinfo-error)))
-          (and (http-get-error? exception)
-               (begin
-                 (warning (G_ "download from '~a' failed: ~a, ~s~%")
-                          (uri->string (http-get-error-uri exception))
-                          (http-get-error-code exception)
-                          (http-get-error-reason exception))
-                 #t))))))
+          (http-get-error? exception)))))
 
 (define* (process-substitution/fallback port narinfo destination
                                         #:key cache-urls acl
@@ -649,7 +643,13 @@ way to download the nar."
           (if (or (equivalent-narinfo? narinfo alternate)
                   (valid-narinfo? alternate acl)
                   (%allow-unauthenticated-substitutes?))
-              (guard (c ((network-error? c) (loop rest)))
+              (guard (c ((network-error? c)
+                         (when (http-get-error? c)
+                           (warning (G_ "download from '~a' failed: ~a, ~s~%")
+                                    (uri->string (http-get-error-uri c))
+                                    (http-get-error-code c)
+                                    (http-get-error-reason c)))
+                         (loop rest)))
                 (download-nar alternate destination
                               #:status-port port
                               #:deduplicate? deduplicate?
@@ -677,6 +677,11 @@ PORT."
            store-item))
 
   (guard (c ((network-error? c)
+             (when (http-get-error? c)
+               (warning (G_ "download from '~a' failed: ~a, ~s~%")
+                        (uri->string (http-get-error-uri c))
+                        (http-get-error-code c)
+                        (http-get-error-reason c)))
              (format (current-error-port)
                      (G_ "retrying download of '~a' with other substitute URLs...~%")
                      store-item)
