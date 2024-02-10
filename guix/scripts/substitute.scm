@@ -452,7 +452,8 @@ server certificates."
 
 (define* (download-nar narinfo destination
                        #:key status-port
-                       deduplicate? print-build-trace?)
+                       deduplicate? print-build-trace?
+                       (fetch-timeout %fetch-timeout))
   "Download the nar prescribed in NARINFO, which is assumed to be authentic
 and authorized, and write it to DESTINATION.  When DEDUPLICATE? is true, and
 if DESTINATION is in the store, deduplicate its files.  Print a status line to
@@ -473,20 +474,26 @@ STATUS-PORT."
        (let ((port (open-file (uri-path uri) "r0b")))
          (values port (stat:size (stat port)))))
       ((http https)
-       ;; Test this with:
-       ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
-       ;; and then cancel with:
-       ;;   sudo tc qdisc del dev eth0 root
-       (with-timeout %fetch-timeout
-         (begin
-           (warning (G_ "while fetching ~a: server is somewhat slow~%")
-                    (uri->string uri))
-           (warning (G_ "try `--no-substitutes' if the problem persists~%")))
-         (with-cached-connection uri port
-           (http-fetch uri #:text? #f
-                       #:port port
-                       #:keep-alive? #t
-                       #:buffered? #f))))
+       (if fetch-timeout
+           ;; Test this with:
+           ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
+           ;; and then cancel with:
+           ;;   sudo tc qdisc del dev eth0 root
+           (with-timeout %fetch-timeout
+             (begin
+               (warning (G_ "while fetching ~a: server is somewhat slow~%")
+                        (uri->string uri))
+               (warning (G_ "try `--no-substitutes' if the problem persists~%")))
+             (with-cached-connection uri port
+               (http-fetch uri #:text? #f
+                           #:port port
+                           #:keep-alive? #t
+                           #:buffered? #f)))
+           (with-cached-connection uri port
+             (http-fetch uri #:text? #f
+                         #:port port
+                         #:keep-alive? #t
+                         #:buffered? #f))))
       (else
        (leave (G_ "unsupported substitute URI scheme: ~a~%")
               (uri->string uri)))))
