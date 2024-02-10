@@ -95,6 +95,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphics)

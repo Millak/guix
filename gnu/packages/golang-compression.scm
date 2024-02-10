@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -112,6 +113,28 @@ compression format.")
     (home-page "https://github.com/klauspost/compress")
     (synopsis "Go compression library")
     (description "@code{compress} provides various compression algorithms.")
+    (license license:bsd-3)))
+
+(define-public go-github.com-ulikunitz-xz
+  (package
+    (name "go-github.com-ulikunitz-xz")
+    (version "0.5.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ulikunitz/xz.git")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32 "1xnsymi5fmmm734bi4c6z57p5cvnyxlpi29yxs4v21w5k763aypd"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/ulikunitz/xz"))
+    (home-page "https://github.com/ulikunitz/xz")
+    (synopsis "Read and write xz compressed streams in Go")
+    (description "This package provides a library to read and write xz
+compressed streams in Go.")
     (license license:bsd-3)))
 
 ;;;

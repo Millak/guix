@@ -8989,28 +8989,6 @@ modifying them.")
 parsers, and related tools.")
       (license license:expat))))
 
-(define-public go-github.com-ulikunitz-xz
-  (package
-    (name "go-github.com-ulikunitz-xz")
-    (version "0.5.8")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ulikunitz/xz.git")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1xnsymi5fmmm734bi4c6z57p5cvnyxlpi29yxs4v21w5k763aypd"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/ulikunitz/xz"))
-    (synopsis "Read and write xz compressed streams in Go")
-    (description "This package provides a library to read and write xz
-compressed streams in Go.")
-    (home-page "https://github.com/ulikunitz/xz")
-    (license license:bsd-3)))
-
 (define-public go-github-com-songmu-gitconfig
   (package
     (name "go-github-com-songmu-gitconfig")
