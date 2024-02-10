@@ -1,5 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021 hackeryarn <artemchernyak@gmail.com>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
@@ -66,6 +68,40 @@
     (description "This subrepository holds experimental and deprecated (in the
 @code{old} directory) packages.")
     (license license:bsd-3)))
+
+(define-public go-golang-org-x-mod
+  (let ((commit "7c05a442b7c1d1a107879b4a090bb5a38d3774a1")
+        (revision "0"))
+    (package
+      (name "go-golang-org-x-mod")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/golang/mod")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14r24fq3kn84k2y2jvvg8hwpy52a3q429pimrdwl5zwknbr2awmh"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "golang.org/x/mod/"
+         #:tests? #f
+         #:phases (modify-phases %standard-phases
+                    ;; Source-only package
+                    (delete 'build))))
+      (home-page "https://golang.org/x/mod")
+      (synopsis "Tools to work directly with Go module mechanics")
+      (description
+       "This repository holds packages for writing tools that work directly
+with Go module mechanics.  That is, it is for direct manipulation of Go
+modules themselves.
+
+The specific case of loading packages should still be done by invoking the
+@command{go} command, which remains the single point of truth for package
+loading algorithms.")
+      (license license:bsd-3))))
 
 (define-public go-golang-org-x-net
   (let ((commit "8e0e7d8d38f2b6d21d742845570dde2902d06a1d")

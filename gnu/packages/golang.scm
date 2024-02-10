@@ -3699,40 +3699,6 @@ time.")
       (home-page "https://godoc.org/golang.org/x/xerrors")
       (license license:bsd-3))))
 
-(define-public go-golang-org-x-mod
-  (let ((commit "7c05a442b7c1d1a107879b4a090bb5a38d3774a1")
-        (revision "0"))
-    (package
-      (name "go-golang-org-x-mod")
-      (version (git-version "0.7.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/golang/mod")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "14r24fq3kn84k2y2jvvg8hwpy52a3q429pimrdwl5zwknbr2awmh"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "golang.org/x/mod/"
-         #:tests? #f
-         #:phases (modify-phases %standard-phases
-                    ;; Source-only package
-                    (delete 'build))))
-      (home-page "https://golang.org/x/mod")
-      (synopsis "Tools to work directly with Go module mechanics")
-      (description
-       "This repository holds packages for writing tools that work directly
-with Go module mechanics.  That is, it is for direct manipulation of Go modules
-themselves.
-
-The specific case of loading packages should still be done by invoking the
-@command{go} command, which remains the single point of truth for package
-loading algorithms.")
-      (license license:bsd-3))))
-
 (define-public go-github-com-hashicorp-go-uuid
   (package
     (name "go-github-com-hashicorp-go-uuid")
