@@ -8128,17 +8128,17 @@ Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom.")
     (native-inputs
      (list deutex pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("curl" ,curl)
-       ("fltk" ,fltk)
-       ("jsoncpp" ,jsoncpp)
-       ("libpng" ,libpng)
-       ("miniupnpc" ,miniupnpc)
-       ("portmidi" ,portmidi)
-       ("protobuf" ,protobuf)
-       ("sdl" ,sdl2)
-       ("sdl-mixer" ,sdl2-mixer)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           curl
+           fltk
+           jsoncpp
+           libpng
+           miniupnpc
+           portmidi
+           protobuf
+           sdl2
+           sdl2-mixer
+           zlib))
     (home-page "https://odamex.net/")
     (synopsis "Multiplayer Doom port")
     (description "Odamex is a modification of the Doom engine that
