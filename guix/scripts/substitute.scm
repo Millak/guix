@@ -269,22 +269,20 @@ Internal tool to substitute a pre-built binary to a local build.\n"))
 ;;; Daemon/substituter protocol.
 ;;;
 
-(define %prefer-fast-decompression?
-  ;; Whether to prefer fast decompression over good compression ratios.  This
-  ;; serves in particular to choose between lzip (high compression ratio but
-  ;; low decompression throughput) and zstd (lower compression ratio but high
-  ;; decompression throughput).
-  #f)
+;; Whether to initially prefer fast decompression or not
+(define %default-fast-decompression? #f)
 
-(define (call-with-cpu-usage-monitoring proc)
+(define (call-with-cpu-usage-monitoring thunk)
   (let ((before (times)))
-    (proc)
-    (let ((after (times)))
-      (if (= (tms:clock after) (tms:clock before))
-          0
-          (/ (- (tms:utime after) (tms:utime before))
-             (- (tms:clock after) (tms:clock before))
-             1.)))))
+    (call-with-values thunk
+      (lambda vals
+        (let* ((after (times))
+               (usage (if (= (tms:clock after) (tms:clock before))
+                          0
+                          (/ (- (tms:utime after) (tms:utime before))
+                             (- (tms:clock after) (tms:clock before))
+                             1.))))
+          (apply values (append vals (list usage))))))))
 
 (define-syntax-rule (with-cpu-usage-monitoring exp ...)
   "Evaluate EXP...  Return its CPU usage as a fraction between 0 and 1."
@@ -305,7 +303,7 @@ daemon."
   (let ((uri compression file-size
              (narinfo-best-uri narinfo
                                #:fast-decompression?
-                               %prefer-fast-decompression?)))
+                               %default-fast-decompression?)))
     (format port "~a\n~a\n"
             (or file-size 0)
             (or (narinfo-size narinfo) 0))))
@@ -466,7 +464,8 @@ server certificates."
 (define* (download-nar narinfo destination
                        #:key status-port
                        deduplicate? print-build-trace?
-                       (fetch-timeout %fetch-timeout))
+                       (fetch-timeout %fetch-timeout)
+                       fast-decompression?)
   "Download the nar prescribed in NARINFO, which is assumed to be authentic
 and authorized, and write it to DESTINATION.  When DEDUPLICATE? is true, and
 if DESTINATION is in the store, deduplicate its files.  Print a status line to
@@ -538,7 +537,7 @@ STATUS-PORT."
 
   (let ((choices (narinfo-preferred-uris narinfo
                                          #:fast-decompression?
-                                         %prefer-fast-decompression?)))
+                                         fast-decompression?)))
     ;; 'guix publish' without '--cache' doesn't specify a Content-Length, so
     ;; DOWNLOAD-SIZE is #f in this case.
     (let* ((raw uri compression download-size (try-fetch choices))
@@ -571,29 +570,13 @@ STATUS-PORT."
            ;; Compute the actual nar hash as we read it.
            (algorithm expected (narinfo-hash-algorithm+value narinfo))
            (hashed get-hash (open-hash-input-port algorithm input)))
+
       ;; Unpack the Nar at INPUT into DESTINATION.
-      (define cpu-usage
-        (with-cpu-usage-monitoring
-         (restore-file hashed destination
-                       #:dump-file (if (and destination-in-store?
-                                            deduplicate?)
-                                       dump-file/deduplicate*
-                                       dump-file))))
-
-      ;; Create a hysteresis: depending on CPU usage, favor compression
-      ;; methods with faster decompression (like ztsd) or methods with better
-      ;; compression ratios (like lzip).  This stems from the observation that
-      ;; substitution can be CPU-bound when high-speed networks are used:
-      ;; <https://lists.gnu.org/archive/html/guix-devel/2020-12/msg00177.html>.
-      ;; To simulate "slow" networking or changing conditions, run:
-      ;;   sudo tc qdisc add dev eno1 root tbf rate 512kbit latency 50ms burst 1540
-      ;; and then cancel with:
-      ;;   sudo tc qdisc del dev eno1 root
-      (when (> cpu-usage .8)
-        (set! %prefer-fast-decompression? #t))
-      (when (< cpu-usage .2)
-        (set! %prefer-fast-decompression? #f))
-
+      (restore-file hashed destination
+                    #:dump-file (if (and destination-in-store?
+                                         deduplicate?)
+                                    dump-file/deduplicate*
+                                    dump-file))
       (close-port hashed)
       (close-port input)
 
@@ -641,7 +624,8 @@ STATUS-PORT."
 
 (define* (process-substitution/fallback port narinfo destination
                                         #:key cache-urls acl
-                                        deduplicate? print-build-trace?)
+                                        deduplicate? print-build-trace?
+                                        fast-decompression?)
   "Attempt to substitute NARINFO, which is assumed to be authorized or
 equivalent, by trying to download its nar from each entry in CACHE-URLS.
 
@@ -675,14 +659,17 @@ way to download the nar."
                 (download-nar alternate destination
                               #:status-port port
                               #:deduplicate? deduplicate?
-                              #:print-build-trace? print-build-trace?))
+                              #:print-build-trace? print-build-trace?
+                              #:fast-decompression?
+                              fast-decompression?))
               (loop rest)))
          (()
           (loop rest)))))))
 
 (define* (process-substitution port store-item destination
                                #:key cache-urls acl
-                               deduplicate? print-build-trace?)
+                               deduplicate? print-build-trace?
+                               fast-decompression?)
   "Substitute STORE-ITEM (a store file name) from CACHE-URLS, and write it to
 DESTINATION as a nar file.  Verify the substitute against ACL, and verify its
 hash against what appears in the narinfo.  When DEDUPLICATE? is true, and if
@@ -714,11 +701,14 @@ PORT."
                                             #:acl acl
                                             #:deduplicate? deduplicate?
                                             #:print-build-trace?
-                                            print-build-trace?)))
+                                            print-build-trace?
+                                            #:fast-decompression?
+                                            fast-decompression?)))
     (download-nar narinfo destination
                   #:status-port port
                   #:deduplicate? deduplicate?
-                  #:print-build-trace? print-build-trace?)))
+                  #:print-build-trace? print-build-trace?
+                  #:fast-decompression? fast-decompression?)))
 
 
 ;;;
@@ -908,18 +898,44 @@ default value."
         ;; Specify the number of columns of the terminal so the progress
         ;; report displays nicely.
         (parameterize ((current-terminal-columns (client-terminal-columns)))
-          (let loop ()
+          (let loop ((fast-decompression?
+                      %default-fast-decompression?))
             (match (read-line)
               ((? eof-object?)
                #t)
               ((= string-tokenize ("substitute" store-path destination))
-               (process-substitution reply-port store-path destination
-                                     #:cache-urls (substitute-urls)
-                                     #:acl (current-acl)
-                                     #:deduplicate? deduplicate?
-                                     #:print-build-trace?
-                                     print-build-trace?)
-               (loop))))))
+               (let ((cpu-usage
+                      (with-cpu-usage-monitoring
+                       (process-substitution
+                        reply-port store-path destination
+                        #:cache-urls (substitute-urls)
+                        #:acl (current-acl)
+                        #:deduplicate? deduplicate?
+                        #:print-build-trace?
+                        print-build-trace?
+                        #:fast-decompression?
+                        fast-decompression?))))
+
+                 ;; Create a hysteresis: depending on CPU usage, favor
+                 ;; compression methods with faster decompression (like ztsd)
+                 ;; or methods with better compression ratios (like lzip).
+                 ;; This stems from the observation that substitution can be
+                 ;; CPU-bound when high-speed networks are used:
+                 ;; <https://lists.gnu.org/archive/html/guix-devel/2020-12/msg00177.html>.
+                 ;; To simulate "slow" networking or changing conditions, run:
+                 ;;   sudo tc qdisc add dev eno1 root tbf rate 512kbit latency 50ms burst 1540
+                 ;; and then cancel with:
+                 ;;   sudo tc qdisc del dev eno1 root
+                 (loop (cond
+                        ;; Whether to prefer fast decompression over good
+                        ;; compression ratios.  This serves in particular to
+                        ;; choose between lzip (high compression ratio but low
+                        ;; decompression throughput) and zstd (lower
+                        ;; compression ratio but high decompression
+                        ;; throughput).
+                        ((> cpu-usage .8) #t)
+                        ((< cpu-usage .2) #f)
+                        (else fast-decompression?)))))))))
        (opts
         (leave (G_ "~a: unrecognized options~%") opts))))))
 
