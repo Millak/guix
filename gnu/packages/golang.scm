@@ -8559,6 +8559,7 @@ Prometheus metrics.")
        ;; The tests require Go modules, which are not yet supported in Guix's
        ;; Go build system.
        #:tests? #f))
+    (propagated-inputs (list go-golang.org-x-sync-errgroup))
     (synopsis "Go library for reading @file{/proc}")
     (description "The @code{procfs} Go package provides functions to retrieve
 system, kernel, and process metrics from the @file{/proc} pseudo file system.")
