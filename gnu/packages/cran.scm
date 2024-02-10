@@ -18415,14 +18415,14 @@ image formats, including PNG, Postscript, SVG, PGF.")
 (define-public r-multicool
   (package
     (name "r-multicool")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "multicool" version))
        (sha256
         (base32
-         "0gcic5w3z5yibq75j7jzjv3lmy04rfmxswmw60vxba4xsnbqxc2g"))))
+         "07vcyp7yd1rzlldxzpzrdgifnw88z0maq2dgsqc218vyplgxwwmx"))))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
     (home-page "https://cran.r-project.org/web/packages/multicool/")
