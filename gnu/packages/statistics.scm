@@ -5747,14 +5747,14 @@ generally.")
 (define-public r-robust
   (package
     (name "r-robust")
-    (version "0.7-3")
+    (version "0.7-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robust" version))
        (sha256
         (base32
-         "0pj7qinp11rjsibixl7axvxp9alaqr4pjr1l52vq8cl8h6j159w9"))))
+         "0qh816ha18v0n021cccjan1kplmyj0xyb7jmkmrnb6gxf8kma3b3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fit-models r-lattice r-mass r-robustbase r-rrcov))
