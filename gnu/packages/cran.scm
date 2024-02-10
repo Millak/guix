@@ -7703,14 +7703,14 @@ software.")
 (define-public r-extremes
   (package
     (name "r-extremes")
-    (version "2.1-3")
+    (version "2.1-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "extRemes" version))
        (sha256
         (base32
-         "0h1w177vz3z58vbqrfbiqapf9z2qsd7gcbv8fnbyn0i5akfz1k71"))))
+         "12mphdq9zi0r07x3gpj5dg4687hwnjx42d9a392rjbbsgvv2r96f"))))
     (properties `((upstream-name . "extRemes")))
     (build-system r-build-system)
     (propagated-inputs
