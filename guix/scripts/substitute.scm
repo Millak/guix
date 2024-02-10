@@ -495,8 +495,10 @@ STATUS-PORT."
                          #:keep-alive? #t
                          #:buffered? #f))))
       (else
-       (leave (G_ "unsupported substitute URI scheme: ~a~%")
-              (uri->string uri)))))
+       (raise
+        (formatted-message
+         (G_ "unsupported substitute URI scheme: ~a~%")
+         (uri->string uri))))))
 
   (define (try-fetch choices)
     (match choices
@@ -513,9 +515,11 @@ STATUS-PORT."
                      (G_ "Downloading ~a...~%") (uri->string uri)))
            (values port uri compression download-size))))
       (()
-       (leave (G_ "no valid nar URLs for ~a at ~a~%")
-              (narinfo-path narinfo)
-              (narinfo-uri-base narinfo)))))
+       (raise
+        (formatted-message
+         (G_ "no valid nar URLs for ~a at ~a~%")
+         (narinfo-path narinfo)
+         (narinfo-uri-base narinfo))))))
 
   ;; Delete DESTINATION first--necessary when starting over after a failed
   ;; download.
@@ -680,8 +684,10 @@ PORT."
                         (cut valid-narinfo? <> acl))))
 
   (unless narinfo
-    (leave (G_ "no valid substitute for '~a'~%")
-           store-item))
+    (raise
+     (formatted-message
+      (G_ "no valid substitute for '~a'~%")
+      store-item)))
 
   (guard (c ((network-error? c)
              (when (http-get-error? c)
