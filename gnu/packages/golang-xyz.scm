@@ -4105,6 +4105,34 @@ string.  The string can be a string retorned for @code{time.Duration} or a
 similar string with weeks or days too.")
     (license license:bsd-3)))
 
+(define-public go-go-etcd-io-bbolt
+  (package
+    (name "go-go-etcd-io-bbolt")
+    (version "1.3.6")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/etcd-io/bbolt")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0pj5245d417za41j6p09fmkbv05797vykr1bi9a6rnwddh1dbs8d"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "go.etcd.io/bbolt"
+       ;; Extending the test timeout to 30 minutes still times out on aarch64.
+       #:tests? ,(not target-arm?)))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://go.etcd.io/bbolt")
+    (synopsis "Embedded key/value database for Go")
+    (description "Bolt is a pure Go key/value store inspired by Howard Chu's
+LMDB project.  The goal of the project is to provide a simple, fast, and
+reliable database for projects that don't require a full database server such as
+Postgres or MySQL.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-atomic
   (package
     (name "go-go-uber-org-atomic")
