@@ -2907,6 +2907,8 @@ way of specifying command line options.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/go-playground/locales"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
     (synopsis "Set of locales generated from the CLDR Unicode Project")
     (description
      "This package provides a set of locales generated from the
