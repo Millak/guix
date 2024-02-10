@@ -19637,16 +19637,15 @@ Touzet and Varre (2007).")
 (define-public r-rnaturalearthdata
   (package
     (name "r-rnaturalearthdata")
-    (version "0.1.0")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rnaturalearthdata" version))
               (sha256
                (base32
-                "1z32j5lz2lb8xgpkr73majw22k0b49iazj6jjc7j4w9k4zxxa102"))))
+                "0k8yzgpbf8d2jxxy9vzqfa3z3w4h3i9kp4rc811f4pspxbqzmzp1"))))
     (properties `((upstream-name . "rnaturalearthdata")))
     (build-system r-build-system)
-    (propagated-inputs (list r-sp))
     (home-page "https://github.com/ropenscilabs/rnaturalearthdata")
     (synopsis "World vector map data from Natural Earth")
     (description
