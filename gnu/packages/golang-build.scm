@@ -373,6 +373,45 @@ processing.")
 time.")
       (license license:bsd-3))))
 
+(define-public go-golang-org-x-tools
+  (package
+    (name "go-golang-org-x-tools")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08kx2nndq3sr6xai7403mbsqvz5shxmp2icylfr2fmwagr59cb2n"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; gopls versions are tagged separately, and it is a
+           ;; separate Guix package.
+           (delete-file-recursively "gopls")))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/tools"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; Source-only package
+         (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-yuin-goldmark
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://go.googlesource.com/tools/")
+    (synopsis "Tools that support the Go programming language")
+    (description "This package provides miscellaneous tools that support the
+Go programming language.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-xerrors
   (let ((commit "5ec99f83aff198f5fbd629d6c8d8eb38a04218ca")
         (revision "0"))
