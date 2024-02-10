@@ -30593,14 +30593,14 @@ these algorithms also detect anomalies (outliers).")
 (define-public r-idpmisc
   (package
     (name "r-idpmisc")
-    (version "1.1.20")
+    (version "1.1.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "IDPmisc" version))
        (sha256
         (base32
-         "0zy6mxqa8arq0vvhsdcifzm3085c23rnwa1n36fhircph1xwvfdw"))))
+         "1308z4i2glr1260zjjymm19g3d7nk8djhdwdfbh7ipvkgsp9b2s7"))))
     (properties `((upstream-name . "IDPmisc")))
     (build-system r-build-system)
     (propagated-inputs
