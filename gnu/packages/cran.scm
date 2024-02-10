@@ -119,13 +119,13 @@
 (define-public r-aer
   (package
     (name "r-aer")
-    (version "1.2-10")
+    (version "1.2-12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "AER" version))
               (sha256
                (base32
-                "1p6vxr0220lim5i4gwsvphqrfd65zbs8h3qydz4gipca9asmy2k5"))))
+                "11pas7lglcw1h5649bgab13g8xlnx109pc2aqphwc3fdgvqv1ism"))))
     (properties `((upstream-name . "AER")))
     (build-system r-build-system)
     (propagated-inputs
