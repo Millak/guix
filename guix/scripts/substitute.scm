@@ -462,14 +462,12 @@ server certificates."
     (const #f)))
 
 (define* (download-nar narinfo destination
-                       #:key status-port
-                       deduplicate? print-build-trace?
+                       #:key deduplicate? print-build-trace?
                        (fetch-timeout %fetch-timeout)
                        fast-decompression?)
   "Download the nar prescribed in NARINFO, which is assumed to be authentic
 and authorized, and write it to DESTINATION.  When DEDUPLICATE? is true, and
-if DESTINATION is in the store, deduplicate its files.  Print a status line to
-STATUS-PORT."
+if DESTINATION is in the store, deduplicate its files."
   (define destination-in-store?
     (string-prefix? (string-append (%store-prefix) "/")
                     destination))
@@ -583,24 +581,8 @@ STATUS-PORT."
       ;; Wait for the reporter to finish.
       (every (compose zero? cdr waitpid) pids)
 
-      ;; Skip a line after what 'progress-reporter/file' printed, and another
-      ;; one to visually separate substitutions.  When PRINT-BUILD-TRACE? is
-      ;; true, leave it up to (guix status) to prettify things.
-      (newline (current-error-port))
-      (unless print-build-trace?
-        (newline (current-error-port)))
-
-      ;; Check whether we got the data announced in NARINFO.
-      (let ((actual (get-hash)))
-        (if (bytevector=? actual expected)
-            ;; Tell the daemon that we're done.
-            (format status-port "success ~a ~a~%"
-                    (narinfo-hash narinfo) (narinfo-size narinfo))
-            ;; The actual data has a different hash than that in NARINFO.
-            (format status-port "hash-mismatch ~a ~a ~a~%"
-                    (hash-algorithm-name algorithm)
-                    (bytevector->nix-base32-string expected)
-                    (bytevector->nix-base32-string actual)))))))
+      (values expected
+              (get-hash)))))
 
 (define (system-error? exception)
   "Return true if EXCEPTION is a Guile 'system-error exception."
@@ -622,7 +604,7 @@ STATUS-PORT."
                      '(gnutls-error getaddrinfo-error)))
           (http-get-error? exception)))))
 
-(define* (process-substitution/fallback port narinfo destination
+(define* (process-substitution/fallback narinfo destination
                                         #:key cache-urls acl
                                         deduplicate? print-build-trace?
                                         fast-decompression?)
@@ -637,9 +619,8 @@ way to download the nar."
   (let loop ((cache-urls cache-urls))
     (match cache-urls
       (()
-       (report-error (G_ "failed to find alternative substitute for '~a'~%")
-                     (narinfo-path narinfo))
-       (display "not-found\n" port))
+       ;; Failure, so return two values like download-nar
+       (values #f #f))
       ((cache-url rest ...)
        (match (lookup-narinfos cache-url
                                (list (narinfo-path narinfo))
@@ -657,7 +638,6 @@ way to download the nar."
                                     (http-get-error-reason c)))
                          (loop rest)))
                 (download-nar alternate destination
-                              #:status-port port
                               #:deduplicate? deduplicate?
                               #:print-build-trace? print-build-trace?
                               #:fast-decompression?
@@ -666,7 +646,7 @@ way to download the nar."
          (()
           (loop rest)))))))
 
-(define* (process-substitution port store-item destination
+(define* (process-substitution store-item destination
                                #:key cache-urls acl
                                deduplicate? print-build-trace?
                                fast-decompression?)
@@ -687,28 +667,34 @@ PORT."
       (G_ "no valid substitute for '~a'~%")
       store-item)))
 
-  (guard (c ((network-error? c)
-             (when (http-get-error? c)
-               (warning (G_ "download from '~a' failed: ~a, ~s~%")
-                        (uri->string (http-get-error-uri c))
-                        (http-get-error-code c)
-                        (http-get-error-reason c)))
-             (format (current-error-port)
-                     (G_ "retrying download of '~a' with other substitute URLs...~%")
-                     store-item)
-             (process-substitution/fallback port narinfo destination
-                                            #:cache-urls cache-urls
-                                            #:acl acl
-                                            #:deduplicate? deduplicate?
-                                            #:print-build-trace?
-                                            print-build-trace?
-                                            #:fast-decompression?
-                                            fast-decompression?)))
-    (download-nar narinfo destination
-                  #:status-port port
-                  #:deduplicate? deduplicate?
-                  #:print-build-trace? print-build-trace?
-                  #:fast-decompression? fast-decompression?)))
+  (let ((expected-hash
+         actual-hash
+         (guard
+             (c ((network-error? c)
+                 (when (http-get-error? c)
+                   (warning (G_ "download from '~a' failed: ~a, ~s~%")
+                            (uri->string (http-get-error-uri c))
+                            (http-get-error-code c)
+                            (http-get-error-reason c)))
+                 (format
+                  (current-error-port)
+                  (G_ "retrying download of '~a' with other substitute URLs...~%")
+                  store-item)
+                 (process-substitution/fallback narinfo destination
+                                                #:cache-urls cache-urls
+                                                #:acl acl
+                                                #:deduplicate? deduplicate?
+                                                #:print-build-trace?
+                                                print-build-trace?
+                                                #:fast-decompression?
+                                                fast-decompression?)))
+           (download-nar narinfo destination
+                         #:deduplicate? deduplicate?
+                         #:print-build-trace? print-build-trace?
+                         #:fast-decompression? fast-decompression?))))
+    (values narinfo
+            expected-hash
+            actual-hash)))
 
 
 ;;;
@@ -904,10 +890,13 @@ default value."
               ((? eof-object?)
                #t)
               ((= string-tokenize ("substitute" store-path destination))
-               (let ((cpu-usage
+               (let ((narinfo
+                      expected-hash
+                      actual-hash
+                      cpu-usage
                       (with-cpu-usage-monitoring
                        (process-substitution
-                        reply-port store-path destination
+                        store-path destination
                         #:cache-urls (substitute-urls)
                         #:acl (current-acl)
                         #:deduplicate? deduplicate?
@@ -916,26 +905,56 @@ default value."
                         #:fast-decompression?
                         fast-decompression?))))
 
-                 ;; Create a hysteresis: depending on CPU usage, favor
-                 ;; compression methods with faster decompression (like ztsd)
-                 ;; or methods with better compression ratios (like lzip).
-                 ;; This stems from the observation that substitution can be
-                 ;; CPU-bound when high-speed networks are used:
-                 ;; <https://lists.gnu.org/archive/html/guix-devel/2020-12/msg00177.html>.
-                 ;; To simulate "slow" networking or changing conditions, run:
-                 ;;   sudo tc qdisc add dev eno1 root tbf rate 512kbit latency 50ms burst 1540
-                 ;; and then cancel with:
-                 ;;   sudo tc qdisc del dev eno1 root
-                 (loop (cond
-                        ;; Whether to prefer fast decompression over good
-                        ;; compression ratios.  This serves in particular to
-                        ;; choose between lzip (high compression ratio but low
-                        ;; decompression throughput) and zstd (lower
-                        ;; compression ratio but high decompression
-                        ;; throughput).
-                        ((> cpu-usage .8) #t)
-                        ((< cpu-usage .2) #f)
-                        (else fast-decompression?)))))))))
+                 (if expected-hash
+                     (begin
+                       ;; Skip a line after what 'progress-reporter/file'
+                       ;; printed, and another one to visually separate
+                       ;; substitutions.  When PRINT-BUILD-TRACE? is true,
+                       ;; leave it up to (guix status) to prettify things.
+                       (newline (current-error-port))
+                       (unless print-build-trace?
+                         (newline (current-error-port)))
+
+                       ;; Check whether we got the data announced in NARINFO.
+                       (if (bytevector=? actual-hash expected-hash)
+                           ;; Tell the daemon that we're done.
+                           (format reply-port "success ~a ~a~%"
+                                   (narinfo-hash narinfo) (narinfo-size narinfo))
+                           ;; The actual data has a different hash than that in NARINFO.
+                           (format reply-port "hash-mismatch ~a ~a ~a~%"
+                                   (hash-algorithm-name
+                                    (narinfo-hash-algorithm+value narinfo))
+                                   (bytevector->nix-base32-string expected-hash)
+                                   (bytevector->nix-base32-string actual-hash)))
+
+                       ;; Create a hysteresis: depending on CPU usage, favor
+                       ;; compression methods with faster decompression (like
+                       ;; ztsd) or methods with better compression ratios
+                       ;; (like lzip).  This stems from the observation that
+                       ;; substitution can be CPU-bound when high-speed
+                       ;; networks are used:
+                       ;; <https://lists.gnu.org/archive/html/guix-devel/2020-12/msg00177.html>.
+                       ;; To simulate "slow" networking or changing
+                       ;; conditions, run:
+                       ;;   sudo tc qdisc add dev eno1 root tbf rate 512kbit latency 50ms burst 1540
+                       ;; and then cancel with:
+                       ;;   sudo tc qdisc del dev eno1 root
+                       (loop (cond
+                              ;; Whether to prefer fast decompression over
+                              ;; good compression ratios.  This serves in
+                              ;; particular to choose between lzip (high
+                              ;; compression ratio but low decompression
+                              ;; throughput) and zstd (lower compression ratio
+                              ;; but high decompression throughput).
+                              ((> cpu-usage .8) #t)
+                              ((< cpu-usage .2) #f)
+                              (else fast-decompression?))))
+                     (begin
+                       (report-error (G_ "failed to find alternative substitute for '~a'~%")
+                                     (narinfo-path narinfo))
+                       (display "not-found\n" reply-port)
+
+                       (loop fast-decompression?)))))))))
        (opts
         (leave (G_ "~a: unrecognized options~%") opts))))))
 
