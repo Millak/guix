@@ -22031,14 +22031,14 @@ numbers (e.g. concentrations).")
 (define-public r-cobs
   (package
     (name "r-cobs")
-    (version "1.3-5")
+    (version "1.3-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cobs" version))
        (sha256
         (base32
-         "04f6a6gp11p93j2k35mbrfqgjx5qsgi3dj1085a5v5s0z6l7vbkz"))))
+         "0gz6i8scvfkmg0z7rcqc422dm360xv5ygcxnj6yyvpcpdv7sdp9k"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-quantreg r-sparsem))
