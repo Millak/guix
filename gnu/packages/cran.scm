@@ -13512,16 +13512,17 @@ without rendering it again in shiny apps.")
 (define-public r-ggseqlogo
   (package
     (name "r-ggseqlogo")
-    (version "0.1")
+    (version "0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggseqlogo" version))
        (sha256
         (base32
-         "13q6kcpxrqxqbji889fx63p0nsi08lk5yymkchig75r5k1d18ky1"))))
+         "1drncw73950dzjx3lyyfqrxm3rdbrp44n27sl4b17m9d0crdbgqw"))))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/omarwagih/ggseqlogo")
     (synopsis "ggplot2 extension for drawing genetic sequence logos")
     (description
