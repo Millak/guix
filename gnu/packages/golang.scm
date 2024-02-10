@@ -7703,29 +7703,6 @@ losing type information.  The primary intended use is for implementing
 configuration languages, but other uses may be possible too.")
     (license license:expat)))
 
-(define-public go-etcd-io-bbolt
-  (package
-    (name "go-etcd-io-bbolt")
-    (version "1.3.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/etcd-io/bbolt")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0pj5245d417za41j6p09fmkbv05797vykr1bi9a6rnwddh1dbs8d"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "go.etcd.io/bbolt"))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (home-page "https://pkg.go.dev/go.etcd.io/bbolt/")
-    (synopsis "Low-level key/value store in Go")
-    (description "This package implements a low-level key/value store in Go.")
-    (license license:expat)))
-
 (define-public go-github-com-rogpeppe-go-internal
   (package
     (name "go-github-com-rogpeppe-go-internal")
