@@ -8947,7 +8947,13 @@ modifying them.")
         (base32 "1nps58dwkd915mx35h5f0dc05b880b4fdl6dcjxpfmmbzyinvg38"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/goccy/go-yaml"))
+     (list
+      #:import-path "github.com/goccy/go-yaml"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-benchmarks
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/benchmarks")))))))
     (propagated-inputs
      (list go-github-com-fatih-color go-golang-org-x-xerrors))
     (native-inputs
