@@ -9489,7 +9489,9 @@ non-cryptographic hash algorithm, working at speeds close to RAM limits.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xvl3rgjif5yf62p16yk05kxrsmzhz1kkqisvw4k02svzq10qbfy"))))
+        (base32 "1xvl3rgjif5yf62p16yk05kxrsmzhz1kkqisvw4k02svzq10qbfy"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "example"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "gopkg.in/djherbis/times.v1"))
