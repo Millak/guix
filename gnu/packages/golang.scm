@@ -9468,7 +9468,13 @@ back.")
          "0f98qk83l2fhpclvrgyxsa9b8m4pipf11fah85bnjl01wy4lvybw"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/OneOfOne/xxhash"))
+     (list
+      #:import-path "github.com/OneOfOne/xxhash"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-benchmarks
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/benchmarks")))))))
     (home-page "https://github.com/OneOfOne/xxhash")
     (synopsis "Go implementation of xxHash")
     (description "This is a native Go implementation of the
