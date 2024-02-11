@@ -26412,7 +26412,7 @@ Public Suffix List's private domains as well.")
 (define-public python-tldr
   (package
     (name "python-tldr")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
        ;; There's no test in PyPI.
@@ -26422,7 +26422,7 @@ Public Suffix List's private domains as well.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hxmprqg8c4cvs19n7f80f3y7jj74i8sc2dmq2gdjmsdrb54bbzc"))))
+        (base32 "0hkjsnz03p9pdfgk85wampha4pyr82bwmnj8hj6kigc784ddy2ag"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
