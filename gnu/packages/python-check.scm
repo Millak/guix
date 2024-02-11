@@ -320,13 +320,13 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
 (define-public python-pyinstrument
   (package
     (name "python-pyinstrument")
-    (version "4.1.1")
+    (version "4.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyinstrument" version))
        (sha256
-        (base32 "18n3waxsxcd48pmcp8158s5rlancll2000amrdck9zfj5hfpkhhx"))))
+        (base32 "1xnp1pjhcj1xl4dq20yzzj9599cmiyxb2azblsyjnl6qgr8yw0h0"))))
     (build-system python-build-system)
     (native-inputs
      (list python-flaky
