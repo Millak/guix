@@ -327,20 +327,28 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
        (uri (pypi-uri "pyinstrument" version))
        (sha256
         (base32 "1xnp1pjhcj1xl4dq20yzzj9599cmiyxb2azblsyjnl6qgr8yw0h0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable some failing tests.
+                    "not test_script_execution_details"
+                    " and not test_path_execution_details"
+                    " and not test_module_execution_details"
+                    " and not test_program_passed_as_string_execution_details"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-flaky
+           python-greenlet
            python-pytest
            python-pytest-asyncio
            python-pytest-trio))
-    (arguments
-     `(;; TODO: Get tests to work.
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
     (home-page "https://github.com/joerick/pyinstrument")
     (synopsis "Call stack profiler for Python")
     (description
