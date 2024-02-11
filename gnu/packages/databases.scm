@@ -3349,6 +3349,10 @@ etc., and an SQL engine for performing simple SQL queries.")
     (arguments
      '(#:tests? #f      ; Tests try to use a running mongodb server.
        #:import-path "gopkg.in/mgo.v2"))
+    (propagated-inputs
+     (list go-gopkg.in-tomb.v2))
+    (inputs
+     (list cyrus-sasl))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/mgo.v2")
