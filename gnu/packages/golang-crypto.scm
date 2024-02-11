@@ -272,7 +272,9 @@ needing to use secp256k1 elliptic curve cryptography.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))))
+        (base32 "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "xxhashbench"))))
     (build-system go-build-system)
     (arguments
      (list
