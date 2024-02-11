@@ -1673,15 +1673,7 @@ typographic detail of symbols on the page.")
        (sha256
         (base32
          "0wma9vzn42h1rhbzh2dwjsrzjhsi1yqdgn6wx1dfk78vaki6prd8"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" ".")
-               #t))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list lilypond
            python-black
