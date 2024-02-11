@@ -21564,14 +21564,14 @@ block processing.")
 (define-public r-rhdf5lib
   (package
     (name "r-rhdf5lib")
-    (version "1.24.1")
+    (version "1.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhdf5lib" version))
        (sha256
         (base32
-         "0lb5dkzfnfvxwrk8s9vzfjp8ab1sbr7b22jnzg41hgmpysi7dswh"))
+         "0b2g57dxvzmnq6dig4dz7cy8lpy3q7fih5q643i5xjcds2cj6lk5"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -21632,11 +21632,10 @@ block processing.")
                  (("cp \"\\$\\{SZIP_LIB\\}.*") "")
                  (("PKG_LIBS =.*") "PKG_LIBS = -lz -lhdf5\n"))))))))
     (propagated-inputs
-     (list hdf5-1.10 r-biocstyle r-stringr zlib))
+     (list hdf5-1.10 zlib))
     (native-inputs
      `(("hdf5-source" ,(package-source hdf5-1.10))
-       ("r-knitr" ,r-knitr)
-       ("r-rmarkdown" ,r-rmarkdown)))
+       ("r-knitr" ,r-knitr)))
     (home-page "https://bioconductor.org/packages/Rhdf5lib")
     (synopsis "HDF5 library as an R package")
     (description "This package provides C and C++ HDF5 libraries for use in R
