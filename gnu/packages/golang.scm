@@ -1264,7 +1264,14 @@ cluster segmentation algorithm.")
          (sha256
           (base32 "0hb4b1668516a4gv8avmflr565b6c1h93phdb068hcjxxj8767ba"))))
       (build-system go-build-system)
-      (arguments `(#:import-path "github.com/avast/retry-go"))
+      (arguments
+       (list
+        #:import-path "github.com/avast/retry-go"
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'remove-examples
+                       (lambda* (#:key import-path #:allow-other-keys)
+                         (delete-file-recursively
+                          (string-append "src/" import-path "/examples")))))))
       (propagated-inputs (list go-github-com-stretchr-testify))
       (home-page "https://github.com/avast/retry-go")
       (synopsis "Simple golang library for retry mechanism")
