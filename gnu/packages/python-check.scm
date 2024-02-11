@@ -179,15 +179,7 @@ tests in cram.")
        (sha256
         (base32
          "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest-flake8 python-pytest-xdist python-tabulate))
     (propagated-inputs
