@@ -52,7 +52,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
-;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1715,15 +1715,7 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
        (sha256
         (base32
          "05hr2lr6myzi493k8vc19cqzraxxnbdwlckwbnras19l5g5ns38x"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "tests")
-               #t))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list lilypond
            python-black
