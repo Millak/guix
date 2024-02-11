@@ -1192,10 +1192,11 @@ authpriv.*;auth.info                    /var/log/secure
     (bootloader (bootloader-configuration         ;unused
                  (bootloader grub-minimal-bootloader)
                  (targets '("/dev/null"))))
-    (file-systems (list (file-system              ;unused
+    (file-systems (cons (file-system              ;unused
                           (mount-point "/")
                           (device "none")
-                          (type "tmpfs"))))
+                          (type "tmpfs"))
+                        %base-file-systems))
     (users (cons (user-account
                   (name "offload")
                   (group "users")
