@@ -296,6 +296,32 @@ presenting a small interface.")
 very fast, and tries to be entropy pool friendly.")
     (license license:asl2.0)))
 
+(define-public go-github-com-nbrownus-go-metrics-prometheus
+  (package
+    (name "go-github-com-nbrownus-go-metrics-prometheus")
+    (version "0.0.0-20210712211119-974a6260965f")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/nbrownus/go-metrics-prometheus")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1kl9l08aas544627zmhkgp843qx94sxs4inxm20nw1hx7gp79dz0"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/nbrownus/go-metrics-prometheus"))
+    (propagated-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-rcrowley-go-metrics
+           go-github-com-prometheus-client-golang))
+    (home-page "https://github.com/nbrownus/go-metrics-prometheus")
+    (synopsis "Prometheus support for go-metrics")
+    (description "This package provides a reporter for the @code{go-metrics}
+library which posts the metrics to the Prometheus client registry and just
+updates the registry.")
+    (license license:asl2.0)))
+
 (define-public go-go-uber-org-automaxprocs
   (package
     (name "go-go-uber-org-automaxprocs")
