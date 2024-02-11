@@ -13,7 +13,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022, 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -2657,11 +2657,11 @@ memoized as a function of '%current-system'."
                           gnumach-headers-boot0))
      (inputs (list flex-boot0 gnumach-headers-boot0))
      (arguments
-      (list
-       #:configure-flags
-       #~(list (string-append "LDFLAGS=-Wl,-rpath="
-                              #$(this-package-native-input "flex")
-                              "/lib/")))))))
+      (substitute-keyword-arguments (package-arguments mig)
+        ((#:configure-flags flags '())
+         #~(list (string-append "LDFLAGS=-Wl,-rpath="
+                                #$(this-package-native-input "flex")
+                                "/lib/"))))))))
 
 (define hurd-headers-boot0
   (with-boot0
