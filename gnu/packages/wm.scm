@@ -3342,7 +3342,7 @@ Type=Application~%"
 (define-public avizo
   (package
     (name "avizo")
-    (version "1.2.1")
+    (version "1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3351,7 +3351,7 @@ Type=Application~%"
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ddv5ssxfjbzhqskbbhi9qj1yqkraiv3r8svfmp9s5nnfpid8aba"))))
+                "01v1c9376pbjndyhj9r6f214kzhivl1m9pkl05sdkcj0v6n0wgsn"))))
     (build-system meson-build-system)
     (inputs (list gtk+))
     (native-inputs
