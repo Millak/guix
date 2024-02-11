@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5365,3 +5366,23 @@ Brian 2 simulator.")
      "OneAPI Deep Neural Network Library (oneDNN) is a cross-platform
 performance library of basic building blocks for deep learning applications.")
     (license license:asl2.0)))
+
+(define-public python-gguf
+  (package
+    (name "python-gguf")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gguf" version))
+       (sha256
+        (base32 "0rbyc2h3kpqnrvbyjvv8a69l577jv55a31l12jnw21m1lamjxqmj"))))
+    (build-system pyproject-build-system)
+    (arguments
+      (list #:tests? #false))
+    (inputs (list poetry python-pytest))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://ggml.ai")
+    (synopsis "Read and write ML models in GGUF for GGML")
+    (description "A Python library for reading and writing GGUF & GGML format ML models.")
+    (license license:expat)))
