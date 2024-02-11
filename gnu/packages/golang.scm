@@ -6995,7 +6995,9 @@ improved and cleaner API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jibsg0xhsn0h1jq4g9qd4nr58w43y8majlwfri9ffk2cbfrwqdr"))))
+                "0jibsg0xhsn0h1jq4g9qd4nr58w43y8majlwfri9ffk2cbfrwqdr"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "example"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/macronut/go-tproxy"))
