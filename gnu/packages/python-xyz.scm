@@ -6244,9 +6244,14 @@ important tasks for becoming a daemon process:
     (native-inputs
      (list python-hatchling
            python-pytest))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/annotated-types/annotated-types")
     (synopsis "Reusable constraint types to use with typing.Annotated")
-    (description "Reusable constraint types to use with typing.Annotated")
+    (description "This package provides metadata objects which can be used to
+represent common constraints such as upper and lower bounds on scalar values and
+collection sizes, a Predicate marker for runtime checks, and descriptions of how
+we intend these metadata to be interpreted.  In some cases, we also note
+alternative representations which do not require this package.")
     (license license:expat)))
 
 (define-public python-anytree
