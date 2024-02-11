@@ -113,7 +113,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "2.6.0")
+    (version "2.6.2")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -124,7 +124,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19wmzpbc23515ab4v4pw792x68y7bgsqhd2pmlqiq6bp6jxfrykg"))))
+        (base32 "05zcs0avyjn1dlxxsrc47ld3iddls22g1bc4mk0g8ldxvcwra05g"))))
     (build-system gnu-build-system)
     (arguments
      (list
