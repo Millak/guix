@@ -4211,7 +4211,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4220,7 +4220,7 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0y65795s9bs69msqvdbq8h34n00bkfs5v1d44wz21nwdffvq6557"))))
+                "1ad03r84j17rwfxbxqb0qmf70ggqs01kjyman3x1581lm5dk1757"))))
     (build-system gnu-build-system)
     (arguments
      (list
