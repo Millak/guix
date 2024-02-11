@@ -36,6 +36,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system android-ndk)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
@@ -1223,6 +1224,36 @@ checks and notifications, this is a simple command line client that talks to
 connected devices via ADB.")
     (home-page "https://github.com/mvdan/fdroidcl")
     (license license:bsd-3)))
+
+(define-public emacs-fdroid
+  (package
+    (name "emacs-fdroid")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/migalmoreno/fdroid.el")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gv4kfir12bbi17cm5hpx197m8dbw1xwqp0z6qb3vc0fdnyis35j"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-file-name
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (emacs-substitute-variables "fdroid.el"
+                         ("fdroid-program"
+                          (search-input-file inputs "/bin/fdroidcl"))))))))
+    (inputs (list fdroidcl))
+    (home-page "https://github.com/migalmoreno/fdroid.el")
+    (synopsis "Manage F-Droid packages from Emacs")
+    (description "This package is an Emacs interface to F-Droid.  Its purpose
+is to aid in the management of F-Droid packages for an Android device or an
+emulator inside the comfort of Emacs.")
+    (license license:gpl3+)))
 
 (define-public enjarify
   (package
