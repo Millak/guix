@@ -322,6 +322,30 @@ library which posts the metrics to the Prometheus client registry and just
 updates the registry.")
     (license license:asl2.0)))
 
+(define-public go-github-com-songgao-water
+  (package
+    (name "go-github-com-songgao-water")
+    (version "0.0.0-20200317203138-2b4b6d7c09d8")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/songgao/water")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1k5aildfszp6x66jzar4y36lic8ijkb5020hfaivpvq3bnwdiikl"))))
+    (build-system go-build-system)
+    (arguments '(#:tests? #f ; Tests require network interface access
+                 #:import-path "github.com/songgao/water"))
+    (home-page "https://github.com/songgao/water")
+    (synopsis "Simple network TUN/TAP library")
+    (description
+      "This package provides a simple TUN/TAP interface library for Go that
+efficiently works with standard packages like @code{io}, @code{bufio}, etc..
+Use waterutil with it to work with TUN/TAP packets/frames.")
+    (license license:bsd-3)))
+
 (define-public go-go-uber-org-automaxprocs
   (package
     (name "go-go-uber-org-automaxprocs")
