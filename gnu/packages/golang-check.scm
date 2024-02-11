@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -590,7 +591,9 @@ under test) much simpler.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "033vv29g2wf6fd757ajfmha30bqin3b07377037zkl051mk6mghs"))))
+           "033vv29g2wf6fd757ajfmha30bqin3b07377037zkl051mk6mghs"))
+         (modules '((guix build utils)))
+         (snippet '(delete-file-recursively "examples"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/DATA-DOG/go-sqlmock"))
