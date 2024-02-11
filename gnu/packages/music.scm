@@ -1733,7 +1733,8 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
            python-mypy
            python-pytest
            python-pytest-cov
-           python-pytest-helpers-namespace))
+           python-pytest-helpers-namespace
+           python-sphinx-autodoc-typehints))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
