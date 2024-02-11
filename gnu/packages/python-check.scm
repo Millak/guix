@@ -107,20 +107,16 @@ data in a standard way.")
        (uri (pypi-uri "beartype" version))
        (sha256
         (base32 "0amzckgw9c93bl4jf0q6322j9wyyf3i8vl03yixfkrpllzv6kv14"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv" "beartype_test"
-                             ;; These tests rely on git through the
-                             ;; "get_main_readme_file" helper.
-                             "-k"
-                             (string-append "not test_doc_readme "
-                                            "and not test_sphinx "
-                                            "and not test_pep561_mypy"))))))))
+     (list
+      #:test-flags
+      #~(list
+         "beartype_test"
+         ;; These tests rely on git through the "get_main_readme_file" helper.
+         "-k" (string-append "not test_doc_readme "
+                             "and not test_sphinx "
+                             "and not test_pep561_mypy"))))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/beartype/beartype")
