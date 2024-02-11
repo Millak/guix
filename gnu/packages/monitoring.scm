@@ -789,7 +789,7 @@ provides a simple Python client for the StatsD daemon.")
 (define-public batsignal
   (package
     (name "batsignal")
-    (version "1.6.4")
+    (version "1.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -798,7 +798,7 @@ provides a simple Python client for the StatsD daemon.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f8jabql70nxkslgxd8pcfllqy4bnbf1c19rcri0dp054aszk637"))))
+                "0l6j873l1l0al95zl9ihxzrmy9r11pfm269gydlx8pps4gdisy6a"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
