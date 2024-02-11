@@ -62,6 +62,8 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
+;;; Copyright © 2024 Alexey Abramov <levenson@mmer.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -125,6 +127,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
@@ -4671,6 +4675,84 @@ IPv6 Internet connectivity - it also works over IPv4.")
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
 
+(define-public nebula
+  (package
+    (name "nebula")
+    (version "1.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/slackhq/nebula")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14b7wgx83w1fhcbhsn0mfg872hkml4wwbzimb3bjvc3xpzx6w44k"))
+              ;; Remove windows-related binary blobs and files
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "dist/windows")
+                   (delete-file-recursively "wintun")))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/slackhq/nebula"
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'build
+           (lambda _
+             ;; Build nebula and nebula-cert
+             (let* ((dir "github.com/slackhq/nebula")
+                    (nebula-cmd (string-append dir "/cmd/nebula"))
+                    (cert-cmd (string-append dir "/cmd/nebula-cert")))
+               (invoke "go" "build" nebula-cmd)
+               (invoke "go" "build" cert-cmd))))
+
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bindir (string-append out "/bin")))
+               (install-file "nebula" bindir)
+               (install-file "nebula-cert" bindir)))))))
+    (inputs
+     (list go-github-com-anmitsu-go-shlex
+           go-github-com-armon-go-radix
+           go-github-com-cespare-xxhash
+           go-github-com-cyberdelia-go-metrics-graphite
+           go-github-com-flynn-noise
+           go-github-com-gogo-protobuf
+           go-github-com-google-gopacket
+           go-github-com-imdario-mergo
+           go-github-com-miekg-dns
+           go-github-com-nbrownus-go-metrics-prometheus
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-procfs
+           go-github-com-rcrowley-go-metrics
+           go-github-com-sirupsen-logrus
+           go-github-com-skip2-go-qrcode
+           go-github-com-songgao-water
+           go-github-com-stretchr-testify
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2
+           go-netlink
+           go-netns))
+    (home-page "https://github.com/slackhq/nebula")
+    (synopsis "Scalable, peer-to-peer overlay networking tool")
+    (description
+     "Nebula is a peer-to-peer networking tool based on the
+@url{https://noiseprotocol.org/, Noise Protocol Framework}.  It is not a fully
+decentralized network, but instead uses central discovery nodes and a
+certificate authority to facilitate direct, encrypted peer-to-peer connections
+from behind most firewalls and @acronym{NAT, Network Address Translation}
+layers.")
+    (license license:expat)))
+
 (define-public netdiscover
   (package
    (name "netdiscover")
@@ -4779,6 +4861,7 @@ Transfer Protocol} and older @acronym{SCP, Secure Copy Protocol}
 implementations.")
     (home-page "https://www.chiark.greenend.org.uk/~sgtatham/putty/")
     (license license:expat)))
+
 
 (define-public vnstat
   (package
