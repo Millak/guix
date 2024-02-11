@@ -9707,7 +9707,14 @@ string.")
          "1105cggi5fwqx69m0vrhgwx6kaw82w4ahn58sj0a81603c4yvrk0"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/charmbracelet/bubbletea"))
+     (list
+      #:import-path "github.com/charmbracelet/bubbletea"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-examples
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (with-directory-excursion (string-append "src/" import-path)
+                         (for-each delete-file-recursively
+                                   '("examples" "tutorials"))))))))
     (propagated-inputs
      `(("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
        ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)
