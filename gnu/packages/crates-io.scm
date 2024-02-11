@@ -28337,38 +28337,6 @@ characters in HTML, decoding and unescaping HTML entities as well.")
     (description "This library provides Rust bindings to HTSlib.")
     (license license:expat)))
 
-(define-public rust-jiter-0.0.4
-  (package
-    (name "rust-jiter")
-    (version "0.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "jiter" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1f10awvz0yxi4pb0783ya26wrw6bb48qn9smsc5bbxsvaff42zdj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
-                       ("rust-lexical-core" ,rust-lexical-core-0.8)
-                       ("rust-num-bigint" ,rust-num-bigint-0.4)
-                       ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-pyo3" ,rust-pyo3-0.20)
-                       ("rust-smallvec" ,rust-smallvec-1))
-       #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-codspeed-bencher-compat" ,rust-codspeed-bencher-compat-2)
-        ("rust-paste" ,rust-paste-1)
-        ("rust-pyo3" ,rust-pyo3-0.20)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (native-inputs (list python-minimal-wrapper))   ; For the tests.
-    (home-page "https://github.com/pydantic/jiter/")
-    (synopsis "Iterable JSON parser")
-    (description "This package provides an iterable JSON parser.")
-    (license license:expat)))
-
 (define-public rust-jwalk-0.8
   (package
     (name "rust-jwalk")
@@ -31460,6 +31428,67 @@ strings and byte slices for sets of ASCII characters or bytes.")
        (sha256
         (base32 "1sq6d6c9vi44gkr566w2f1d4n6mmrjx8gjdwgnhkgcsg051j391j"))))
     (arguments `(#:skip-build? #t))))
+
+(define-public rust-jiter-0.0.6
+  (package
+    (name "rust-jiter")
+    (version "0.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xr7cajq6r0szl6aga047asrd6cqrvw168yh0sz854znk5m0dnw7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-lexical-core" ,rust-lexical-core-0.8)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-codspeed-bencher-compat" ,rust-codspeed-bencher-compat-2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (native-inputs (list python-minimal-wrapper))   ; For the tests.
+    (home-page "https://github.com/pydantic/jiter/")
+    (synopsis "Iterable JSON parser")
+    (description "This package provides an iterable JSON parser.")
+    (license license:expat)))
+
+(define-public rust-jiter-0.0.4
+  (package
+    (inherit rust-jiter-0.0.6)
+    (name "rust-jiter")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jiter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f10awvz0yxi4pb0783ya26wrw6bb48qn9smsc5bbxsvaff42zdj"))))
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-lexical-core" ,rust-lexical-core-0.8)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-pyo3" ,rust-pyo3-0.20)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-codspeed-bencher-compat" ,rust-codspeed-bencher-compat-2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-jni-0.21
   (package
