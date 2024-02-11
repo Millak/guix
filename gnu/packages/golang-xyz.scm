@@ -322,6 +322,27 @@ library which posts the metrics to the Prometheus client registry and just
 updates the registry.")
     (license license:asl2.0)))
 
+(define-public go-github-com-skip2-go-qrcode
+  (package
+    (name "go-github-com-skip2-go-qrcode")
+    (version "0.0.0-20200617195104-da1b6568686e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/skip2/go-qrcode")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pghd6y2x8a5fqy4rjn4d8j5jcslb236naycdza5an7vyvinsgs9"))
+       (patches (search-patches "go-github-com-skip2-go-qrcode-fix-tests.patch"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/skip2/go-qrcode"))
+    (home-page "https://github.com/skip2/go-qrcode")
+    (synopsis "QR code encoder")
+    (description "This package provides a QR code encoder for the Goloang.")
+    (license license:expat)))
+
 (define-public go-github-com-songgao-water
   (package
     (name "go-github-com-songgao-water")
