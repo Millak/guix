@@ -1277,7 +1277,7 @@ Java bytecode, which simplifies the analysis of Android applications.")
 (define-public android-file-transfer
   (package
     (name "android-file-transfer")
-    (version "4.2")
+    (version "4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1287,7 +1287,7 @@ Java bytecode, which simplifies the analysis of Android applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "125rq8ji83nw6chfw43i0h9c38hjqh1qjibb0gnf9wrigar9zc8b"))))
+                "1ianph8ivj0fxg1l7llid7gv4pbfb5j23b33j9gan6x7scr13q2h"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;there are no tests
