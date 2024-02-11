@@ -215,6 +215,36 @@ Differentiation between text and binary files}.
     (description "This package provides an idiomatic Go retry module.")
     (license license:expat)))
 
+(define-public go-github-com-miekg-dns
+  (package
+    (name "go-github-com-miekg-dns")
+    (version "1.1.48")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/miekg/dns")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "14m4wnbgmc1prj4ds1fsz1nwb1awaq365lhbp8clzsidxmhjf3hl"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/miekg/dns"))
+    (propagated-inputs
+     (list go-golang-org-x-tools
+           go-golang-org-x-sys
+           go-golang-org-x-sync
+           go-golang-org-x-net))
+    (home-page "https://github.com/miekg/dns")
+    (synopsis "Domain Name Service library in Go")
+    (description
+      "This package provides a fully featured interface to the @acronym{DNS,
+Domain Name System}.  Both server and client side programming is supported.
+The package allows complete control over what is sent out to the @acronym{DNS,
+Domain Name Service}.  The API follows the less-is-more principle, by
+presenting a small interface.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-nats-io-nats-go
   (package
     (name "go-github-com-nats-io-nats-go")
