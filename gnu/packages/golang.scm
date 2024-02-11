@@ -8080,6 +8080,27 @@ recursively any exported one.  It also won't merge structs inside
 maps (because they are not addressable using Go reflection).")
     (license license:bsd-3)))
 
+(define-public go-dario-cat-mergo
+  (package
+    (inherit go-github-com-imdario-mergo)
+    (name "go-dario-cat-mergo")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/imdario/mergo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "037k2bd97vnbyhn2sczxk0j6ijmv06n1282f76i3ky73s3qmqnlf"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:unpack-path "dario.cat/mergo"
+       #:import-path "dario.cat/mergo"))
+    (native-inputs
+     (list go-gopkg-in-yaml-v3))))
+
 (define-public go-github-com-masterminds-sprig
   (package
     (name "go-github-com-masterminds-sprig")
