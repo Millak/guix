@@ -2106,7 +2106,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.4.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2115,7 +2115,7 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "016s2896mnf4dnyyrqp2pnqrvrqn404c6b16d5kcjf1p21003lp5"))))
+        (base32 "1mc2zcqsv79y7682nwi1gn8p751zwflm9zirl98v2q2kvx334k8a"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config scdoc))
