@@ -426,31 +426,20 @@ interactions, which will update them to correspond to the new API.")
               (sha256
                (base32
                 "1dkr86nxkxc0ka3rdnpmk335m8gl1zh1sy8i7w4w1jsidbf82jvw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Tests fail a lot, probably requiring Internet access.
-     (list #:tests? #f
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'build
-                          (lambda _
-                            (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                                    #$version)
-                            (setenv "SOURCE_DATE_EPOCH" "315532800")
-                            (invoke "python"
-                                    "-m"
-                                    "build"
-                                    "--wheel"
-                                    "--no-isolation"
-                                    ".")))
-                        (add-before 'check 'disable-unsupported-test
-                          (lambda _
-                            (substitute* "tests/test_async.py"
-                              (("def test_asynctest")
-                               "def __off_test_asynctest"))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "pytest" "-vvv")))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable test requiring network access.
+                    "not test_disable_socket_urllib"
+                    " and not test_parametrize_with_socket_enabled_and_allow_hosts"
+                    " and not test_global_disable_and_allow_host"
+                    " and not test_asynctest"
+                    " and not test_httpx_fails"
+                    " and not test_disabled_urllib_fails"
+                    " and not test_urllib_succeeds_by_default"
+                    " and not test_enabled_urllib_succeeds"))))
     (native-inputs (list python-httpx
                          python-poetry-core
                          python-pypa-build
