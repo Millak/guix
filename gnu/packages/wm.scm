@@ -1864,7 +1864,7 @@ corners, shadows, inactive window dimming, etc.")
   (package
     (inherit swaylock)
     (name "swaylock-effects")
-    (version "1.6.11")
+    (version "1.7.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1874,7 +1874,7 @@ corners, shadows, inactive window dimming, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j7dxn66xqlf6iv2arqzz7mxlh7nf85anvpyf30d2frcidarda9h"))))
+         "0cgpbzdpxj6bbpa8jwql1snghj21mhryyvj6sk46g66lqvwlrqbj"))))
     (arguments
      (list #:configure-flags #~'("-Dsse=false")))
     (synopsis "Screen locking utility for Wayland compositors with effects")
