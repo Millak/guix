@@ -20112,14 +20112,14 @@ easy.")
 (define-public rust-either-1
   (package
     (name "rust-either")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "either" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01qy3anr7jal5lpc20791vxrw0nl6vksb5j7x56q2fycgcyy8sm2"))))
+        (base32 "0jiyq2mc1aa5b8whwl1bhm11i06xxcbk9ck7macxxggzjk07l58i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
