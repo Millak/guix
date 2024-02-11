@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -156,7 +157,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
 (define-public tilda
   (package
     (name "tilda")
-    (version "1.5.4")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -165,7 +166,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
              (commit (string-append "tilda-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q2i9ny8sh7zjzgvkx8vcvk593wcvchjc4xq4nrlqdd377r7cg5q"))))
+        (base32 "1ad5jlyg9izm2rid115dv70af6j5i96p91i685c0h9vlrn5sviqs"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -173,7 +174,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
                     (lambda _
                       (for-each make-file-writable
                                 (find-files "po" ".")) #t)))))
-    (native-inputs (list autoconf automake gettext-minimal pkg-config))
+    (native-inputs (list autoconf-2.71 automake gettext-minimal pkg-config))
     (inputs (list libconfuse vte))
     (synopsis "GTK+-based drop-down terminal")
     (description
