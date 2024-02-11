@@ -8,7 +8,7 @@
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -513,7 +513,17 @@ operating on batches.")
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on"
-                               "-DBUILD_SHARED_LIBS=ON")))
+                               "-DBUILD_SHARED_LIBS=ON")
+       ,@(if (string-prefix? "i686-linux" (or (%current-system)
+                                              (%current-target-system)))
+             '(#:phases
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'really-skip-precision-tests
+                   (lambda _
+                     (substitute* "hwy/contrib/math/math_test.cc"
+                       (("Skipping math_test due to GCC issue with excess precision.*" m)
+                        (string-append m "return;\n")))))))
+             '())))
     (native-inputs
      (list googletest))
     (home-page "https://github.com/google/highway")
