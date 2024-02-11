@@ -82,6 +82,32 @@ optimized for sparse nodes of
 @url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.")
     (license license:expat)))
 
+(define-public go-github-com-cyberdelia-go-metrics-graphite
+  (package
+    (name "go-github-com-cyberdelia-go-metrics-graphite")
+    (version "0.0.0-20161219230853-39f87cc3b432")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/cyberdelia/go-metrics-graphite")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1nnpwryw8i110laffyavvhx38gcd1jnpdir69y6fxxzpx06d094w"))))
+    (build-system go-build-system)
+    (propagated-inputs
+     (list go-github-com-rcrowley-go-metrics))
+    (arguments
+     '(#:tests? #f ; Tests require network interface access
+       #:import-path "github.com/cyberdelia/go-metrics-graphite"))
+    (home-page "https://github.com/cyberdelia/go-metrics-graphite")
+    (synopsis "Graphite client for go-metrics")
+    (description "This package provides a reporter for the
+@url{https://github.com/rcrowley/go-metrics,go-metrics} library which posts
+metrics to Graphite.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-djherbis-atime
   (package
     (name "go-github-com-djherbis-atime")
