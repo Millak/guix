@@ -1500,7 +1500,8 @@ CONFIG, a <virtual-build-machine>, is up and running."
                                 (srfi srfi-34))
 
                    (guard (c ((service-not-found-error? c) #f))
-                     (->bool (current-service '#$service-name))))))
+                     (->bool (live-service-running
+                              (current-service '#$service-name)))))))
 
 (define (build-vm-guix-extension config)
   (define vm-ssh-key
