@@ -880,8 +880,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
                            (lambda (input)
                              (string-append
                                (assoc-ref inputs input) "/bin"))
-                           '("coreutils" "curl" "ibus" "iproute2" "kdeconnect"
-                             "xdg-utils" "zlib"))))
+                           '("iproute2" "kdeconnect"))))
                (wrap-program (string-append out "/bin/i3status-rs")
                  `("PATH" prefix ,paths))))))))
     (native-inputs
@@ -889,10 +888,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
     (inputs
      (list alsa-utils
            bash-minimal
-           coreutils
-           curl
            dbus
-           ibus
            iproute
            kdeconnect
            (list lm-sensors "lib")
@@ -900,9 +896,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
            openssl
            setxkbmap
            speedtest-cli
-           xdg-utils
-           xrandr
-           zlib))
+           xrandr))
     (home-page "https://github.com/greshake/i3status-rust/")
     (synopsis "Replacement for i3status, written in Rust")
     (description "@code{i3status-rs} is a feature-rich and resource-friendly
