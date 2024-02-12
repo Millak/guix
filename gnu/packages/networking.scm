@@ -4678,7 +4678,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.5.2")
+    (version "1.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4687,7 +4687,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14b7wgx83w1fhcbhsn0mfg872hkml4wwbzimb3bjvc3xpzx6w44k"))
+                "0ly1axgmskrkmxhzymqis6gxf2wd7rvhycm94wfb8k0hirndvg5m"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
@@ -4696,7 +4696,8 @@ IPv6 Internet connectivity - it also works over IPv4.")
                    (delete-file-recursively "wintun")))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/slackhq/nebula"
+     `(#:go ,go-1.20
+       #:import-path "github.com/slackhq/nebula"
        #:install-source? #f
        #:phases
        (modify-phases %standard-phases
@@ -4716,14 +4717,14 @@ IPv6 Internet connectivity - it also works over IPv4.")
                (install-file "nebula" bindir)
                (install-file "nebula-cert" bindir)))))))
     (inputs
-     (list go-github-com-anmitsu-go-shlex
+     (list go-dario-cat-mergo
+           go-github-com-anmitsu-go-shlex
            go-github-com-armon-go-radix
            go-github-com-cespare-xxhash
            go-github-com-cyberdelia-go-metrics-graphite
            go-github-com-flynn-noise
            go-github-com-gogo-protobuf
            go-github-com-google-gopacket
-           go-github-com-imdario-mergo
            go-github-com-miekg-dns
            go-github-com-nbrownus-go-metrics-prometheus
            go-github-com-prometheus-client-golang
