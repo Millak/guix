@@ -806,36 +806,6 @@ bounds.")
       (home-page "https://github.com/beorn7/perks")
       (license expat))))
 
-(define-public go-github-com-prometheus-client-model
-  (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
-        (revision "2"))
-    (package
-      (name "go-github-com-prometheus-client-model")
-      (version (git-version "0.0.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/prometheus/client_model")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0zdmk6rbbx39cvfz0r59v2jg5sg9yd02b4pds5n5llgvivi99550"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/prometheus/client_model"
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
-      (propagated-inputs
-       (list go-github-com-golang-protobuf-proto))
-      (synopsis "Data model artifacts for Prometheus")
-      (description "This package provides data model artifacts for Prometheus.")
-      (home-page "https://github.com/prometheus/client_model")
-      (license asl2.0))))
-
 (define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil
   (let ((commit "c12348ce28de40eed0136aa2b644d0ee0650e56c")
         (revision "0"))

@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2018, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
@@ -321,6 +322,36 @@ very fast, and tries to be entropy pool friendly.")
 library which posts the metrics to the Prometheus client registry and just
 updates the registry.")
     (license license:asl2.0)))
+
+(define-public go-github-com-prometheus-client-model
+  (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
+        (revision "2"))
+    (package
+      (name "go-github-com-prometheus-client-model")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/prometheus/client_model")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0zdmk6rbbx39cvfz0r59v2jg5sg9yd02b4pds5n5llgvivi99550"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/prometheus/client_model"
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           ;; Source-only package
+           (delete 'build))))
+      (propagated-inputs
+       (list go-github-com-golang-protobuf-proto))
+      (synopsis "Data model artifacts for Prometheus")
+      (description "This package provides data model artifacts for Prometheus.")
+      (home-page "https://github.com/prometheus/client_model")
+      (license license:asl2.0))))
 
 (define-public go-github-com-skip2-go-qrcode
   (package
