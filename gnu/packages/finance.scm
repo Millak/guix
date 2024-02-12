@@ -36,6 +36,7 @@
 ;;; Copyright © 2023 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2024 Saku Laesvuori <saku@laesvuori.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1308,7 +1309,7 @@ agent.")
 (define-public kitsas
   (package
     (name "kitsas")
-    (version "4.0.3")
+    (version "5.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1317,17 +1318,24 @@ agent.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hrbsqqm6v2pmjq17s7i4akjgclz3d051mg02vcykq80xgxvbkgf"))))
+                "16zkfpl5d9ia202fqg5vrhjqdw0g6wp044ih6n7nz2hbxj9y3m1z"))))
     (build-system qt-build-system)
-    (inputs (list qtbase-5 libzip poppler-qt5 qtsvg-5))
+    (inputs (list libzip qtsvg qtwebengine qt5compat))
     (arguments
-     (list #:tests? #f               ;XXX: some tests fail and others segfault
+     (list #:tests? #f           ; tests do not even build with Qt6 anymore
            #:test-target "check"
+           #:qtbase qtbase       ; use Qt6
            #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
                  (lambda* _
                    (invoke "qmake" "kitsasproject.pro" "CONFIG+=release")))
+               ;; The tests are not maintained and some don't even build
+               (add-before 'configure 'disable-broken-tests
+                 (lambda _
+                   (substitute* "kitsasproject.pro"
+                     ((" *(unittest|testit).*") "")
+                     (("\\\\") ""))))
                (replace 'install
                  (lambda* _
                    (install-file "kitsas/kitsas"
