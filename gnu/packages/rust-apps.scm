@@ -849,6 +849,26 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
                     (share (string-append out "/share")))
                (substitute* "src/util.rs"
                  (("/usr/share/i3status-rust") share)))))
+         (add-after 'unpack 'substitute-package-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (define* (substitute-command-block* file command full-command)
+               (substitute* file
+                 (((string-append "Command::new\\(\"" command "\"\\)"))
+                  (string-append "Command::new(\"" full-command "\")"))))
+             (substitute-command-block* "src/blocks/keyboard_layout/set_xkb_map.rs"
+               "setxkbmap" (search-input-file inputs "/bin/setxkbmap"))
+             (substitute-command-block* "src/blocks/sound/alsa.rs"
+               "alsactl" (search-input-file inputs "/sbin/alsactl"))
+             (substitute-command-block* "src/blocks/sound/alsa.rs"
+               "amixer" (search-input-file inputs "/bin/amixer"))
+             (substitute-command-block* "src/blocks/speedtest.rs"
+               "speedtest-cli" (search-input-file inputs "/bin/speedtest-cli"))
+             (substitute-command-block* "src/blocks/xrandr.rs"
+               "xrandr" (search-input-file inputs "/bin/xrandr"))
+             (substitute-command-block* "src/util.rs"
+               "sh" (search-input-file inputs "/bin/sh"))
+             (substitute-command-block* "src/subprocess.rs"
+               "sh" (search-input-file inputs "/bin/sh"))))
          (add-after 'install 'install-resources
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -860,32 +880,29 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
                            (lambda (input)
                              (string-append
                                (assoc-ref inputs input) "/bin"))
-                           '("alsa-utils" "coreutils" "curl" "dbus"
-                             "ibus" "iproute" "kdeconnect" "lm-sensors"
-                             "pulseaudio" "openssl" "setxkbmap"
-                             "speedtest-cli" "xdg-utils" "xrandr"
-                             "zlib"))))
+                           '("coreutils" "curl" "ibus" "iproute2" "kdeconnect"
+                             "xdg-utils" "zlib"))))
                (wrap-program (string-append out "/bin/i3status-rs")
                  `("PATH" prefix ,paths))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("alsa-utils" ,alsa-utils)
-       ("bash-minimal" ,bash-minimal)
-       ("coreutils" ,coreutils)
-       ("curl" ,curl)
-       ("dbus" ,dbus)
-       ("ibus" ,ibus)
-       ("iproute" ,iproute)
-       ("kdeconnect" ,kdeconnect)
-       ("lm-sensors" ,lm-sensors "lib")
-       ("pulseaudio" ,pulseaudio)
-       ("openssl" ,openssl)
-       ("setxkbmap" ,setxkbmap)
-       ("speedtest-cli" ,speedtest-cli)
-       ("xdg-utils" ,xdg-utils)
-       ("xrandr" ,xrandr)
-       ("zlib" ,zlib)))
+     (list alsa-utils
+           bash-minimal
+           coreutils
+           curl
+           dbus
+           ibus
+           iproute
+           kdeconnect
+           (list lm-sensors "lib")
+           pulseaudio
+           openssl
+           setxkbmap
+           speedtest-cli
+           xdg-utils
+           xrandr
+           zlib))
     (home-page "https://github.com/greshake/i3status-rust/")
     (synopsis "Replacement for i3status, written in Rust")
     (description "@code{i3status-rs} is a feature-rich and resource-friendly
