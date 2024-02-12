@@ -542,36 +542,6 @@ higher-level API for doing so.")
       (home-page "https://github.com/stathat/go")
       (license expat))))
 
-(define-public go-github-com-rcrowley-go-metrics
-  (let ((commit "cac0b30c2563378d434b5af411844adff8e32960")
-        (revision "2"))
-    (package
-      (name "go-github-com-rcrowley-go-metrics")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/rcrowley/go-metrics")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1hfxffnpaw49pr3wrkbzq3pnv3nyzsvk5dxndv0yz70xlrbg8a04"))))
-      (build-system go-build-system)
-      (arguments
-       ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
-       ;; and s390x. See: https://github.com/rcrowley/go-metrics/issues/249
-       `(#:tests? ,(not (string-prefix? "aarch64" (or (%current-target-system)
-                                                      (%current-system))))
-         #:import-path "github.com/rcrowley/go-metrics"))
-      (propagated-inputs
-       (list go-github-com-stathat-go))
-      (synopsis "Go port of Coda Hale's Metrics library")
-      (description "This package provides a Go implementation of Coda Hale's
-Metrics library.")
-      (home-page "https://github.com/rcrowley/go-metrics")
-      (license bsd-2))))
-
 (define-public go-github-com-sasha-s-go-deadlock
   (package
     (name "go-github-com-sasha-s-go-deadlock")

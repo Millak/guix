@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
@@ -352,6 +353,36 @@ updates the registry.")
       (description "This package provides data model artifacts for Prometheus.")
       (home-page "https://github.com/prometheus/client_model")
       (license license:asl2.0))))
+
+(define-public go-github-com-rcrowley-go-metrics
+  (let ((commit "cac0b30c2563378d434b5af411844adff8e32960")
+        (revision "2"))
+    (package
+      (name "go-github-com-rcrowley-go-metrics")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rcrowley/go-metrics")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hfxffnpaw49pr3wrkbzq3pnv3nyzsvk5dxndv0yz70xlrbg8a04"))))
+      (build-system go-build-system)
+      (arguments
+       ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
+       ;; and s390x. See: https://github.com/rcrowley/go-metrics/issues/249
+       `(#:tests? ,(not (string-prefix? "aarch64" (or (%current-target-system)
+                                                      (%current-system))))
+         #:import-path "github.com/rcrowley/go-metrics"))
+      (propagated-inputs
+       (list go-github-com-stathat-go))
+      (synopsis "Go port of Coda Hale's Metrics library")
+      (description "This package provides a Go implementation of Coda Hale's
+Metrics library.")
+      (home-page "https://github.com/rcrowley/go-metrics")
+      (license license:bsd-2))))
 
 (define-public go-github-com-skip2-go-qrcode
   (package
