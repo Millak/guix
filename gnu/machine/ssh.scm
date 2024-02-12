@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Ricardo <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -537,22 +538,24 @@ failed to switch systems while deploying '~a':~%~{~s ~}")
                                         host
                                         (inferior-exception-arguments c))))
                               os))
-          (with-roll-back #t
-            (mbegin %store-monad
-              (upgrade-shepherd-services (eval/error-handling c
-                                           (warning (G_ "\
+          (parameterize ((%current-system system)
+                         (%current-target-system #f))
+            (with-roll-back #t
+              (mbegin %store-monad
+                (upgrade-shepherd-services (eval/error-handling c
+                                             (warning (G_ "\
 an error occurred while upgrading services on '~a':~%~{~s ~}~%")
-                                                    host
-                                                    (inferior-exception-arguments
-                                                     c)))
-                                         os)
-              (install-bootloader (eval/error-handling c
-                                    (raise (formatted-message
-                                            (G_ "\
+                                                      host
+                                                      (inferior-exception-arguments
+                                                       c)))
+                                           os)
+                (install-bootloader (eval/error-handling c
+                                      (raise (formatted-message
+                                              (G_ "\
 failed to install bootloader on '~a':~%~{~s ~}~%")
-                                            host
-                                            (inferior-exception-arguments c))))
-                                  bootloader-configuration bootcfg))))))))
+                                              host
+                                              (inferior-exception-arguments c))))
+                                    bootloader-configuration bootcfg)))))))))
 
 
 ;;;
