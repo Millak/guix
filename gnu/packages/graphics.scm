@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
@@ -978,23 +978,38 @@ Angus Johnson}.")
 (define-public pstoedit
   (package
     (name "pstoedit")
-    (version "3.77")
+    ;; Do not yet upgrade to 4.0.0, as its include file fails to compile for C
+    ;; project (see: https://github.com/reviczky/pstoedit/issues/2).
+    (version "4.00")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/pstoedit/pstoedit/"
                                   version "/pstoedit-" version ".tar.gz"))
               (sha256
                (base32
-                "02av76j75g5sq3bg353yl6dlllda9ihmmk4c8hvgiscix816nv4s"))))
+                "1sk2mhrjgnlz4a1650p3qxrv6av6qc66ibmy48ckspx7mfp7snh7"))
+              (patches
+               (search-patches "pstoedit-fix-gcc12.patch"
+                               "pstoedit-fix-plainC.patch"
+                               "pstoedit-pkglibdir.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; Avoid keeping extraneous references to libtool exhaustively listed
+     ;; dependencies.
+     (list #:configure-flags #~(list "LDFLAGS=-Wl,--as-needed")))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("ghostscript" ,ghostscript)
-       ("imagemagick" ,imagemagick)
-       ("libplot" ,plotutils)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zlib" ,zlib)))               ;else libp2edrvmagick++.so fails to link
+     (list ghostscript
+           imagemagick
+           plotutils
+           libjpeg-turbo
+           libzip
+           ;; The following inputs are pulled in by libtool, from the
+           ;; imagemagick library files (.la), which records all its
+           ;; transitive dependencies.
+           glib
+           pango))
     (home-page "http://www.pstoedit.net/")
     (synopsis "Converter for PostScript and PDF graphics")
     (description "The @code{pstoedit} utility allows translating graphics
