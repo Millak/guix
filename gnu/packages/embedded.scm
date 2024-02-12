@@ -1637,7 +1637,7 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
 (define-public sdcc
   (package
     (name "sdcc")
-    (version "4.3.0")
+    (version "4.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1645,7 +1645,7 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
                     "/" version "/sdcc-src-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kckr20jqa4rp4qcw38lwagmw3yfm3z0xb4kygd0608847qc0vra"))
+                "0xbaj3vx5cp3na1kmyhy4jvhcqwrg648scjbykgq0xmibqb1535f"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
