@@ -47753,13 +47753,13 @@ overloading without macros in Rust.")
 (define-public rust-portable-atomic-1
   (package
     (name "rust-portable-atomic")
-    (version "1.4.3")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "portable-atomic" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "12rkq21505js078704bz9mmcy4g0l1aszzq92sxm2z0his4ll49i"))))
+               (base32 "1h77x9qx7pns0d66vdrmdbmwpi7586h7ysnkdnhrn5mwi2cyyw3i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all test dependencies declared.
@@ -47771,7 +47771,6 @@ overloading without macros in Rust.")
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
         ("rust-fastrand" ,rust-fastrand-2)
         ("rust-paste" ,rust-paste-1)
-        ("rust-serde-test" ,rust-serde-test-1)
         ("rust-sptr" ,rust-sptr-0.3)
         ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/taiki-e/portable-atomic")
