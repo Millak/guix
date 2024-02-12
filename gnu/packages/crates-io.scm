@@ -69364,17 +69364,17 @@ closures after a delay or at a given timestamp.")
 (define-public rust-timerfd-1
   (package
     (name "rust-timerfd")
-    (version "1.2.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "timerfd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14gwkm2c38bm76ccpp4g20qqs77h86d1l81594i76pb751k3xd8b"))))
+        (base32 "18jf23sh843nfvvcdg5gwmnfy099f6fhpnz8w9xmq2xdhdyx8grx"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+     `(#:cargo-inputs (("rust-rustix" ,rust-rustix-0.37))))
     (home-page "https://github.com/main--/rust-timerfd")
     (synopsis "Rust interface to the Linux kernel's @code{timerfd} API")
     (description
