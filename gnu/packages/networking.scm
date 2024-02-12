@@ -4696,26 +4696,32 @@ IPv6 Internet connectivity - it also works over IPv4.")
                    (delete-file-recursively "wintun")))))
     (build-system go-build-system)
     (arguments
-     `(#:go ,go-1.20
-       #:import-path "github.com/slackhq/nebula"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             ;; Build nebula and nebula-cert
-             (let* ((dir "github.com/slackhq/nebula")
-                    (nebula-cmd (string-append dir "/cmd/nebula"))
-                    (cert-cmd (string-append dir "/cmd/nebula-cert")))
-               (invoke "go" "build" nebula-cmd)
-               (invoke "go" "build" cert-cmd))))
-
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bindir (string-append out "/bin")))
-               (install-file "nebula" bindir)
-               (install-file "nebula-cert" bindir)))))))
+     (list
+      #:go go-1.20
+      #:import-path "github.com/slackhq/nebula"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              ;; Suggested option to provide build time flags is not supported
+              ;; in Guix for go-build-system.
+              ;; -ldflags "-X main.Build=SOMEVERSION"
+              (substitute* (string-append "src/" import-path "/cmd/nebula/main.go")
+                (("Version: ")
+                 (string-append "Version: " #$version)))
+              ;; Build nebula and nebula-cert
+              (let* ((dir "github.com/slackhq/nebula")
+                     (nebula-cmd (string-append dir "/cmd/nebula"))
+                     (cert-cmd (string-append dir "/cmd/nebula-cert")))
+                (invoke "go" "build" nebula-cmd)
+                (invoke "go" "build" cert-cmd))))
+          (replace 'install
+            (lambda _
+              (let* ((out #$output)
+                     (bindir (string-append out "/bin")))
+                (install-file "nebula" bindir)
+                (install-file "nebula-cert" bindir)))))))
     (inputs
      (list go-dario-cat-mergo
            go-github-com-anmitsu-go-shlex
