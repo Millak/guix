@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2016, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016-2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2016, 2020, 2024, 2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
@@ -110,6 +110,7 @@
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
@@ -1587,6 +1588,30 @@ and various other formats.
 The module also includes implementations of the Verhoeff,
 Luhn and family of ISO/IEC 7064 check digit algorithms.")
     (license license:lgpl2.1+)))
+
+(define-public python-schwifty
+  (package
+    (name "python-schwifty")
+    (version "2025.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "schwifty" version))
+       (sha256
+        (base32 "16d0q1yzrh9fn6ybbsvhr9wbgld27rvn152w4wdcibidq2jbi0s2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-hatch-vcs python-pytest
+                         python-pydantic-2))
+    (propagated-inputs (list python-importlib-resources python-pycountry
+                             python-rstr python-typing-extensions))
+    (home-page "http://github.com/mdomke/schwifty/")
+    (synopsis "Python module to work with IBANs and BICs")
+    (description
+     "schwifty is a Python library that let's you easily work with
+IBANs and BICs as specified by the ISO.  IBAN is the Internation Bank Account
+Number and BIC the Business Identifier Code.  Both are used for international
+money transfer.")
+    (license license:expat)))
 
 (define-public python-duniterpy
   (package
