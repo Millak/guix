@@ -57,7 +57,7 @@
   #:autoload   (guix self) (make-config.scm)
   #:autoload   (guix platform) (platform-system)
 
-  #:use-module (srfi srfi-1)
+  #:use-module ((srfi srfi-1) #:hide (partition))
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
@@ -1225,6 +1225,11 @@ authpriv.*;auth.info                    /var/log/secure
                        (delete mingetty-service-type)
                        (delete console-font-service-type))))))
 
+(define %default-virtual-build-machine-image-size
+  ;; Size of the default disk image of virtual build machines.  It should be
+  ;; large enough to let users build a few things.
+  (* 20 (expt 2 30)))
+
 (define (virtual-build-machine-default-image config)
   (let* ((type (lookup-image-type-by-name 'mbr-raw))
          (base (os->image %virtual-build-machine-operating-system
@@ -1235,7 +1240,15 @@ authpriv.*;auth.info                    /var/log/secure
            (format 'compressed-qcow2)
            (partition-table-type 'mbr)
            (shared-store? #f)
-           (size (* 10 (expt 2 30))))))
+           (size %default-virtual-build-machine-image-size)
+           (partitions (match (image-partitions base)
+                         ((root)
+                          ;; Increase the size of the root partition to match
+                          ;; that of the disk image.
+                          (let ((root-size (- size (* 50 (expt 2 20)))))
+                            (list (partition
+                                   (inherit root)
+                                   (size root-size))))))))))
 
 (define (virtual-build-machine-account-name config)
   (string-append "build-vm-"
