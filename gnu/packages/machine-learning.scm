@@ -524,8 +524,8 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((commit "f31b5397143009d682db90fd2a6cde83f1ef00eb")
-        (revision "0"))
+  (let ((commit "03bf161eb6dea6400ee49c6dc6b69bdcfa9fd3fc")
+        (revision "1"))
     (package
       (name "llama-cpp")
       (version (git-version "0.0.0" revision commit))
@@ -534,10 +534,10 @@ Performance is achieved by using the LLVM JIT compiler.")
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/ggerganov/llama.cpp")
-               (commit (string-append "master-" (string-take commit 7)))))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ys6n53n032zq1ll9f3vgxk8sw0qq7x3fi7awsyy13adzp3hn08p"))))
+          (base32 "1ag1jash84hasz10h0piw72a8ginm8kzvhihbzzljz96gq2kjm88"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -564,8 +564,10 @@ Performance is achieved by using the LLVM JIT compiler.")
                                       (get-string-all input))))))
                       (chmod (string-append bin script) #o555)))
                   (mkdir-p bin)
-                  (make-script "convert-pth-to-ggml")
+                  (make-script "convert-hf-to-gguf")
+                  (make-script "convert-llama-ggml-to-gguf")
                   (make-script "convert-lora-to-ggml")
+                  (make-script "convert-persimmon-to-gguf")
                   (make-script "convert"))))
             (add-after 'install-python-scripts 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
