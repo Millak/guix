@@ -715,7 +715,7 @@ or you can also play with a friend!")
        (list evince
              gtk+
              sugar-toolkit-gtk3
-             webkitgtk-with-libsoup2))
+             webkitgtk-for-gtk3))
       (inputs
        (list gettext-minimal))
       (home-page "https://help.sugarlabs.org/read.html")
