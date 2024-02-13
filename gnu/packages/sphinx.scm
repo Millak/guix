@@ -924,6 +924,7 @@ and several other projects.")
 (define-public python-myst-parser
   (package
     (name "python-myst-parser")
+    ;; The latest version (v2.0.0) require Sphinx >= v6.
     (version "0.18.1")
     (source (origin
               (method git-fetch)        ;for tests
@@ -942,7 +943,17 @@ and several other projects.")
      (list #:test-flags #~(list "-k" (string-append
                                       "not test_basic "
                                       "and not test_gettext_html "
-                                      "and not test_fieldlist_extension"))))
+                                      "and not test_fieldlist_extension "
+                                      "and not test_syntax_extensions"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "pyproject.toml"
+                     ;; "mdit-py-plugins~=0.3.1"
+                     (("0.3.1") "0.4.0")
+                     ;; "markdown-it-py>=1.0.0,<3.0.0"
+                     (("3.0.0") "4.0.0")))))))
     (native-inputs
      (list python-beautifulsoup4
            python-docutils
