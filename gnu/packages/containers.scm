@@ -5,6 +5,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Zongyuan Li <zongyuan.li@c0x0o.me>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,20 +54,20 @@
   #:use-module (gnu packages wget))
 
 (define-public crun
-  (let ((commit "c381048530aa750495cf502ddb7181f2ded5b400"))
+  (let ((commit "de537a7965bfbe9992e2cfae0baeb56a08128171"))
     (package
       (name "crun")
-      (version "1.4.5")
+      (version "1.14.1")
       (source
        (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/containers/crun")
-               (commit commit)
-               (recursive? #t)))
+         (method url-fetch)
+         (uri (string-append
+               "https://github.com/containers/crun/releases/download/"
+               version
+               "/crun-" version ".tar.gz"))
          (sha256
-          (base32 "0x2xmr5sv9ivvcv5fl5jjk4kq9b3n97s5hsqiqfwl4rz8qcz4xk1"))
-         (file-name (git-file-name name version))))
+          (base32
+           "02lplc2asyllb58mvy7l8b9gsk7fxs95g928xk28yzmf592ay33x"))))
       (build-system gnu-build-system)
       (arguments
        `(#:configure-flags '("--disable-systemd")
