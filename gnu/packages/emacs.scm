@@ -108,7 +108,8 @@
               (sha256
                (base32
                 "1p3h4sz8da8vhix5140g2qkdy8mz11d7mmvsym5vy847k1428gbx"))
-              (patches (search-patches "emacs-exec-path.patch"
+              (patches (search-patches "emacs-disable-jit-compilation.patch"
+                                       "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
