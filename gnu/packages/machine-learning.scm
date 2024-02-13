@@ -5044,6 +5044,7 @@ Neural Networks for a wide range of applications related to structured data.")
               (sha256
                (base32
                 "0mqrhq3s23mn8n4i0q791pshn3dgplp0h9ny0pmmp798q0798dzs"))))
+    (arguments (list #:tests? #f))      ; no tests in PyPI archive.
     (build-system pyproject-build-system)
     (propagated-inputs (list python-click
                              python-fastapi-for-pytorch-lightning
