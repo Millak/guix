@@ -2004,6 +2004,17 @@ GnuPG-based password manager like @code{pass}.")
   (package
     (inherit linux-libre)
     (name "linux-libre-documentation")
+    (source
+     (origin
+       (inherit linux-libre-source)
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/Documentation/sphinx/kernel_feat.py?id=c23de7ceae59e4ca5894c3ecf4f785c50c0fa428")
+           (sha256
+            (base32
+             "0inw2pl7nh82sw8bhvvzqa61552bisl78yc1nyl2x6dmpyppzrld")))))))
     (arguments
      (list
       #:tests? #f
