@@ -19,6 +19,7 @@
 (define-module (gnu packages sugar)
   #:use-module (gnu packages)
   #:use-module (gnu packages abiword)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -35,6 +36,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages time)
@@ -767,6 +769,92 @@ controls.")
       (description "Terminal is a full-screen text mode program that provides
 a Command-Line Interface (CLI) to the system.")
       (license (list license:gpl2+ license:gpl3+)))))
+
+(define-public sugar-turtleart-activity
+  (let ((commit "a4340adea18efbdb987eca6477fa71d5c924811f")
+        (revision "1"))
+    (package
+      (name "sugar-turtleart-activity")
+      (version (git-version "202" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/turtleart-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11agqyahjhxb7bakzix63lazcbin0jfiypqx0sm2i85bsl30fp7y"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'patch-locations
+              (lambda _
+                (substitute* "setup.py"
+                  (("'/usr/share/applications")
+                   "'share/applications"))))
+            (add-after 'unpack 'patch-tool-references
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* '("TurtleArtActivity.py"
+                               "TurtleArt/turtleblocks.py")
+                  (("glib-compile-schemas")
+                   (search-input-file inputs "/bin/glib-compile-schemas")))
+                (substitute* '("plugins/turtle_blocks_extras/turtle_blocks_extras.py"
+                               "pysamples/speak.py"
+                               "TurtleArt/tacollaboration.py")
+                  (("'espeak")
+                   (string-append "'" (search-input-file inputs "/bin/espeak"))))
+                (substitute* '("pysamples/csound.py"
+                               "plugins/turtle_blocks_extras/turtle_blocks_extras.py")
+                  (("'csound '")
+                   (string-append "'" (search-input-file inputs "/bin/csound")
+                                  " '")))
+                (substitute* '("plugins/turtle_blocks_extras/turtle_blocks_extras.py"
+                               "pysamples/speak.py"
+                               "TurtleArt/tacollaboration.py")
+                  (("\\| aplay")
+                   (string-append "| "
+                                  (search-input-file inputs "/bin/aplay"))))
+                (substitute* "pysamples/sinewave.py"
+                  (("'speaker-test")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/speaker-test"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gstreamer
+             gtk+
+             telepathy-glib
+             webkitgtk-for-gtk3))
+      (inputs
+       (list alsa-utils
+             csound
+             espeak
+             (list glib "bin")
+             gettext-minimal
+             sugar-toolkit-gtk3))
+      (home-page "https://help.sugarlabs.org/en/turtleart.html")
+      (synopsis "Block-based Logo programming environment")
+      (description "Turtle Art, also known as Turtle Blocks, is an activity
+with a Logo-inspired graphical “turtle” that draws colorful art based on
+snap-together visual programming elements.  Its “low floor” provides an easy
+entry point for beginners.  It also has “high ceiling” programming, graphics,
+mathematics, and Computer Science features which will challenge the more
+adventurous student.")
+      (license license:expat))))
 
 (define-public sugar-typing-turtle-activity
   (package
