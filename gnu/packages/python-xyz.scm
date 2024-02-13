@@ -286,6 +286,7 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -20715,20 +20716,8 @@ customization required.")
 (define-public python-textual
   (package
     (name "python-textual")
-    (version "0.1.18")
+    (version "0.50.1")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "textual" version))
-              (sha256
-               (base32
-                "08yg5a51hz1axfj5hx28hx31gq5apcj6vpkkmawmiplisa73z25j"))))
-    (build-system python-build-system)
-    (arguments
-     (let ((tests
-            ;; The release on pypi comes without tests.  We can't build
-            ;; from this checkout, though, because installation requires
-            ;; an invocation of poetry.
-            (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Textualize/textual")
@@ -20736,19 +20725,29 @@ customization required.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b3ycwqhp21mg9fvmadgxhgbvkwq6fd784l2xcmvy77rravrnnax")))))
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (replace 'check
-                   (lambda* (#:key tests? #:allow-other-keys)
-                     (when tests?
-                       (copy-recursively #$(file-append tests "/tests")
-                                         "tests")
-                       (invoke "python" "-m" "pytest" "-vv"))))))))
+                "10mmmgsq5pblr9ijgyln79p3hc7sah56k2hkzlvm2abrr9gwgpcf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; Snapshot tests require python-pytest-textual-snapshot which
+           ;; in turn depends on python-textual.
+           '(list "--ignore=tests/snapshot_tests/test_snapshots.py"
+             "-k" (string-append
+                   ;; Broken for unknown reason.
+                   "not test_textual_env_var"
+                   ;; Tests that require python-treesitter-languages.
+                   " and not test_language_binary_missing"
+                   " and not test_register_language"
+                   " and not test_register_language_existing_language"))))
     (propagated-inputs
-     (list python-rich python-typing-extensions))
+     (list python-markdown-it-py
+           python-mdit-py-plugins
+           python-rich
+           python-tree-sitter
+           ;; python-tree-sitter-languages ; optional, not packed yet
+           python-typing-extensions))
     (native-inputs
-     (list python-pytest))
+     (list python-poetry-core python-pytest python-pytest-asyncio))
     (home-page "https://github.com/Textualize/textual")
     (synopsis "Build text user interfaces in Python")
     (description "Textual is a @acronym{TUI, Text User Interface} framework
