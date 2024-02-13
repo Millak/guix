@@ -1403,7 +1403,8 @@ sockets.")
            go-github-com-valyala-tcplisten
            go-golang-org-x-crypto
            go-golang-org-x-net
-           go-golang-org-x-sys))
+           go-golang-org-x-sys
+           go-golang-org-x-text))
     (home-page "https://github.com/valyala/fasthttp")
     (synopsis "Provides fast HTTP server and client API")
     (description
