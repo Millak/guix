@@ -385,11 +385,11 @@ the Sugar Toolkit.")
 
 
 (define-public sugar-block-party-activity
-  (let ((commit "a49e68ec00e647af712d8e284622722f2f78b6bf")
+  (let ((commit "26a58f14254d6ae38b7bfa3cb2fc63291eefcc97")
         (revision "1"))
     (package
       (name "sugar-block-party-activity")
-      (version (git-version "11" revision commit))
+      (version (git-version "12" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -398,7 +398,7 @@ the Sugar Toolkit.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0hy82c0gn1hr34arhnh9k6mx2789ki85fkgvga4sw6gwh31278pl"))))
+                  "0zinqhwmvyvk1zvs28dr71p68vb6widn4v3zp35zlzj4ayyn5rvx"))))
       (build-system python-build-system)
       (arguments
        (list
