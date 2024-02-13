@@ -639,7 +639,7 @@ looking for why an activity or Sugar is not working properly.")
 (define-public sugar-maze-activity
   (package
     (name "sugar-maze-activity")
-    (version "31")
+    (version "32")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -648,7 +648,7 @@ looking for why an activity or Sugar is not working properly.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ai2ws3mqkxi13chy0hidd1gxiv97862r9lg8qgxb7qkxqyh6afr"))))
+                "0506mwxy3agyxlilb5v3pn29pg45lzaxm8rhj9azm58irs3wdmnq"))))
     (build-system python-build-system)
     (arguments
      (list
