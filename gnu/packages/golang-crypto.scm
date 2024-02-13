@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -425,6 +426,33 @@ zero round-trip encryption, and other advanced features.")
 providing bidirectional mapping values to their names, plus enum convenience
 for values.")
     (license license:bsd-3)))
+
+(define-public go-github-com-golang-jwt-jwt-v4
+  (package
+    (name "go-github-com-golang-jwt-jwt-v4")
+    (version "4.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang-jwt/jwt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m7c9lwlmd0lnn0hyby1rb3f4nwn4xcjgca218frj0hi0krqn8kp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golang-jwt/jwt/v4"))
+    (home-page "https://github.com/golang-jwt/jwt")
+    (synopsis "Go implementation of JSON Web Tokens")
+    (description
+     "This package provides a Go implementation of
+@url{https://datatracker.ietf.org/doc/html/rfc7519, JSON Web Tokens} and
+supports the parsing and verification as well as the generation and signing of
+JSON Web Tokens.  The currently supported signing algorithms are HMAC SHA,
+RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
+    (license license:expat)))
 
 (define-public go-github-com-gxed-hashland-keccakpg
   (let ((commit "d9f6b97f8db22dd1e090fd0bbbe98f09cc7dd0a8")
