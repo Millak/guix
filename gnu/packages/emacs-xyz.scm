@@ -16752,6 +16752,10 @@ passive voice.")
               (substitute* "testing/lisp/test-org.el"
                 (("test-org/org-(encode-time|time-string-to-time) .*" all)
                  (string-append all "  (skip-unless nil)\n")))))
+          (replace 'build
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'build) args))))
           (replace 'install
             (lambda _
               (let ((elpa (elpa-directory #$output))
