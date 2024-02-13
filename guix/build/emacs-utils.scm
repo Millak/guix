@@ -146,7 +146,9 @@ If native code is not supported, compile to bytecode instead."
                               (cadr native-comp-eln-load-path))))
             (if byte+native-compile
                 (native-compile file
-                                (comp-el-to-eln-filename file eln-dir))
+                                (comp-el-to-eln-filename
+                                 (file-relative-name file ,dir)
+                                 eln-dir))
                 (byte-compile-file file))
             ;; After native compilation, write the bytecode file.
             (unless (null byte-to-native-output-buffer-file)
