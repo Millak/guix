@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,7 +53,7 @@
 (define-public sugar
   (package
     (name "sugar")
-    (version "0.120")
+    (version "0.121")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -62,7 +62,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0imhaj49n7ain33kmrqk19rzlfr50m84fbc011vgg1010ddp3vdw"))))
+                "1s31sz1j7x82vynd233k7jqqp881bpz7486r78wfz2i84f2n4n06"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -79,7 +79,10 @@
             (lambda _
               (substitute* "autogen.sh"
                 (("^\"\\$srcdir/configure" m)
-                 (string-append "#" m)))))
+                 (string-append "#" m)))
+              ;; This .po file does not exist
+              (substitute* "po/LINGUAS"
+                (("^ig") ""))))
           (add-after 'unpack 'fix-references
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "bin/sugar.in"
@@ -106,12 +109,6 @@
                  (dirname
                   (search-input-file inputs
                                      "/share/mobile-broadband-provider-info/serviceproviders.xml"))))
-              ;; XXX: spawn_command_line_sync is not used correctly here, so
-              ;; we need to patch invocations.
-              (substitute* '("extensions/cpsection/aboutcomputer/model.py"
-                             "src/jarabe/model/brightness.py")
-                (("spawn_command_line_sync\\(cmd\\)")
-                 "spawn_command_line_sync(cmd, 0)"))
               (substitute* "extensions/cpsection/aboutcomputer/model.py"
                 (("ethtool")
                  (search-input-file inputs "/sbin/ethtool")))
@@ -161,7 +158,7 @@
            gstreamer
            gtk+
            gtksourceview-3
-           libsoup-minimal-2
+           libsoup-minimal
            libwnck
            libxklavier
            network-manager
@@ -175,7 +172,7 @@
            telepathy-salut              ;for XMPP neighborhood
            ;; This is for the UPowerGlib namespace
            upower
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (native-inputs
      (list autoconf automake
            gettext-minimal
