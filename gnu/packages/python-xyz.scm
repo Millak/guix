@@ -20665,42 +20665,23 @@ representation.")
 (define-public python-rich
   (package
     (name "python-rich")
-    (version "12.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "rich" version))
-              (sha256
-               (base32
-                "149vjb4cpf9mz14iig0b6d8065dm8aslp6pc45g9ipmp1wf00ffj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
-             (when tests?
-               (copy-recursively (string-append
-                                  (assoc-ref inputs "tests") "/tests")
-                                 "tests")
-               (invoke "python" "-m" "pytest" "-vv")))))))
+    (version "13.7.0")
+    (source
+      (origin
+        ;; There are no tests in the PyPI tarball.
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/willmcgugan/rich")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "0qyhw2vvk17qdmfrmi45z4dd0fkwx3l2qrf3iy0yc2y7pfgrmg9g"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-attrs python-colorama python-commonmark python-pygments
-           python-typing-extensions))
+     (list python-ipywidgets python-markdown-it-py python-pygments))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("tests"
-        ;; The release on pypi comes without tests.  We can't build from this
-        ;; checkout, though, because installation requires an invocation of
-        ;; poetry.
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/willmcgugan/rich")
-                 (commit (string-append "v" version))))
-           (file-name (git-file-name name version))
-           (sha256
-            (base32
-             "17c3gljn8zv32xnpsgd3fqgqn4r7cdfqri41hridcpbhssdgkyp9"))))))
+     (list python-poetry-core python-pytest))
     (home-page "https://github.com/willmcgugan/rich")
     (synopsis "Render rich text and more to the terminal")
     (description
