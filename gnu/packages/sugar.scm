@@ -527,8 +527,8 @@ to provide users with easy access to documentation and manuals.")
       (license license:gpl3+))))
 
 (define-public sugar-jukebox-activity
-  (let ((commit "e11f40c94c1c6302d3e36ddf4dc8101732ffb9d9")
-        (revision "1"))
+  (let ((commit "44ad1da717904a7c7d93a08985b94468a9b7ab7a")
+        (revision "2"))
     (package
       (name "sugar-jukebox-activity")
       (version (git-version "36" revision commit))
@@ -540,7 +540,7 @@ to provide users with easy access to documentation and manuals.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0gm1cj4vrwwdriyshd27w6vc0palwpg9pnnab5axinrnkzczyk1v"))))
+                  "1c8g4h52jnwzk5vlkrkm8j0p5dbrjqd8hv3bdz5rp39w9in3skzk"))))
       (build-system python-build-system)
       (arguments
        (list
