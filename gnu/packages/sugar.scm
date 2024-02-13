@@ -117,9 +117,6 @@
                  (string-append "'"
                                 (search-input-file inputs "/bin/locale")
                                 "'")))
-              ;; XXX: The brightness component crashes, so we disable it here.
-              (substitute* "src/jarabe/main.py"
-                (("brightness.get_instance\\(\\)") ""))
               ;; This is a global location on Guix System.  Ideally we would
               ;; have a search path here.
               (substitute* "extensions/cpsection/background/model.py"
