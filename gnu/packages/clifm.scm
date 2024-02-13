@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Rodion Goritskov <rodion.goritskov@gmail.com>
+;;; Copyright © 2023, 2024 Rodion Goritskov <rodion.goritskov@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,7 +30,7 @@
 (define-public clifm
   (package
     (name "clifm")
-    (version "1.15")
+    (version "1.16")
     (source
      (origin
        (method git-fetch)
@@ -39,7 +39,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r9pxlyn8jg0wmzbmbc71l42098lz5k32k6yid09yz6d0gaax7g1"))))
+        (base32 "1ddg6d4y4kfjk34j0fb7nij5vi5m69vv48knv7j1plbhzqk6qg5n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list (string-append "CC="

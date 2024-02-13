@@ -134,6 +134,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
@@ -495,17 +496,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 ;; The current "mainline" kernel.
 
-(define-public linux-libre-6.7-version "6.7.2")
+(define-public linux-libre-6.7-version "6.7.4")
 (define-public linux-libre-6.7-gnu-revision "gnu")
 (define deblob-scripts-6.7
   (linux-libre-deblob-scripts
    linux-libre-6.7-version
    linux-libre-6.7-gnu-revision
-   (base32 "0hwashmml56r74kgjb637b3ln2d7f9vgfl18sxvczyl84xlbcncj")
+   (base32 "1ddngihfmwffgvxxv8xsppi76r6grvdxr6zzfzvgl9qw07a6c9fd")
    (base32 "1vb2pd0wdfl9p5qi8hj1i5xg1p4pyrp01iqhap9xbb2yai4l80j5")))
 (define-public linux-libre-6.7-pristine-source
   (let ((version linux-libre-6.7-version)
-        (hash (base32 "0wd6pxh7wy9bzjzwd0rdsdnghpr53qbs722fhg07bi19m8dy8kf3")))
+        (hash (base32 "036nk3h7vqzd7gnxan2173kpss5qm2pci1lvd58gh90azigrz3gn")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.7)))
@@ -513,17 +514,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.6-version "6.6.14")
+(define-public linux-libre-6.6-version "6.6.16")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
    linux-libre-6.6-version
    linux-libre-6.6-gnu-revision
-   (base32 "0g8m0rb15b0231dv8ji456s75a67szsaim71may3yprplycz6pav")
+   (base32 "1qm8f3fq4yx59f7b6yky5ryyf229ypxnry922sr8cy0s7mp62cmv")
    (base32 "0kavbby960k7wg355p3hjb9v1c4gnk8dv3lkfhpz44ayhv7kihg5")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "110mz8fjlg1j9wnhhq2ik5alayhf61adajd8jqmcsqprncnnpsgv")))
+        (hash (base32 "0c5a9agdr27bwd1z6790whczb858z8i34hhn548lzbdylfamf7dj")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
@@ -531,7 +532,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.75")
+(define-public linux-libre-6.1-version "6.1.77")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -541,7 +542,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1jg2v1nxd6i5x536vmd1l14xhpzrcimpmjfipb1zkrwil102y25f")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0mis14ll6xmhw71vfpw1aahi5z207qysha7x316fq4qc6c899lbc")))
+        (hash (base32 "07grng6rrgpy6c3465hwqhn3gcdam1c8rwya30vgpk8nfxbfqm1v")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -2335,7 +2336,7 @@ by Robert Shea and Robert Anton Wilson.")
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f)) ;no test suite
-    (inputs (list fuse-2 mbedtls-apache))
+    (inputs (list fuse-2 mbedtls-lts))
     (synopsis "FUSE driver to read/write Windows BitLocker drives")
     (description
      "This package provides means to to read BitLocker encrypted
@@ -10331,25 +10332,25 @@ text-based database (@file{$XDG_CONFIG_HOME/modprobed-db}), which can be read
 directly by @code{make localmodconfig} as described above.")
     (license license:expat)))
 
-(define-public kconfig-hardened-check
+(define-public kernel-hardening-checker
   (package
-    (name "kconfig-hardened-check")
-    (version "0.6.1")
+    (name "kernel-hardening-checker")
+    (version "0.6.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/a13xp0p0v/kconfig-hardened-check")
+                    (url "https://github.com/a13xp0p0v/kernel-hardening-checker")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bpdy2a7l75y5cqzzc92nh4gapzgza8ml5i8ximr6brf6pr3681z"))))
+                "1w9xx3xvx4wrfdkdwkfzjlfichgkvacil9b8s1fcgla63z65m5f6"))))
     (build-system python-build-system)
-    (home-page "https://github.com/a13xp0p0v/kconfig-hardened-check")
+    (home-page "https://github.com/a13xp0p0v/kernel-hardening-checker")
     (synopsis
      "Tool for checking the security hardening options of the Linux kernel")
     (description
-     "@code{kconfig-hardened-check} is a tool for checking the security
+     "@code{kernel-hardening-checker} is a tool for checking the security
 hardening options of the Linux kernel.  Provided preferences are based on
 suggestions from various sources, including:
 
@@ -10362,6 +10363,9 @@ suggestions from various sources, including:
 @end itemize\n
 This tool supports checking Kconfig options and kernel cmdline parameters.")
     (license license:gpl3)))
+
+(define-public kconfig-hardened-check
+  (deprecated-package "kconfig-hardened-check" kernel-hardening-checker))
 
 (define-public firejail
   (package

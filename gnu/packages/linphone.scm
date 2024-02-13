@@ -184,7 +184,7 @@ writing, administering, and running unit tests in C.")
                (with-directory-excursion "tester"
                  (invoke "./bctoolbox_tester"))))))))
     (inputs
-     (list bcunit libdecaf mbedtls-apache))
+     (list bcunit libdecaf mbedtls-lts))
     (synopsis "Belledonne Communications Tool Box")
     (description "BcToolBox is an utilities library used by Belledonne
 Communications software like belle-sip, mediastreamer2 and linphone.")

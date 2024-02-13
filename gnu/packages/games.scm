@@ -60,7 +60,7 @@
 ;;; Copyright © 2021 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021 David Pflug <david@pflug.io>
+;;; Copyright © 2021, 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Noisytoot <ron@noisytoot.org>
@@ -80,6 +80,7 @@
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Vagrant Cascadian <vagrant@debian.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,6 +150,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
@@ -8095,26 +8097,49 @@ Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom.")
 (define-public odamex
   (package
     (name "odamex")
-    (version "0.9.5")
+    (version "10.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "mirror://sourceforge/odamex/Odamex/" version "/"
-             "odamex-src-" version ".tar.bz2"))
+             "odamex-src-" version ".tar.xz"))
        (sha256
-        (base32 "1x0c9vnwn336inkfamh4na8xjyfjmzfxfn49j4snqymkypjqw6jq"))))
+        (base32 "1isrmki18471yry48mmm7lxzp1kiqma9cc7fx38cvpm2mpgfyvzk"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; XXX: Unbundle more, they are not replaced by the ones provided
+           ;; in inputs: fltk, jsoncpp, miniupnp, protobuf.
+           ;;
+           ;; Remove some bundled libraries.
+           (with-directory-excursion "libraries"
+             (for-each delete-file-recursively
+                       '("curl" "libpng" "portmidi" "zlib")))))))
     (build-system cmake-build-system)
-    (arguments `(#:tests? #f))          ; no tests
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:configure-flags
+      #~(list "-DBUILD_CLIENT=1"
+              "-DBUILD_MASTER=1"
+              "-DBUILD_SERVER=1"
+              "-DUSE_INTERNAL_LIBS=0"
+              "-DUSE_INTERNAL_MINIUPNP=0")))
     (native-inputs
-     (list deutex))
+     (list deutex pkg-config))
     (inputs
-     `(("sdl" ,sdl2)
-       ("sdl-mixer" ,sdl2-mixer)
-       ("zlib" ,zlib)
-       ("libpng" ,libpng)
-       ("curl" ,curl)
-       ("alsa-lib" ,alsa-lib)))
+     (list alsa-lib
+           curl
+           fltk
+           jsoncpp
+           libpng
+           miniupnpc
+           portmidi
+           protobuf
+           sdl2
+           sdl2-mixer
+           zlib))
     (home-page "https://odamex.net/")
     (synopsis "Multiplayer Doom port")
     (description "Odamex is a modification of the Doom engine that
@@ -11322,7 +11347,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "1.0.5")
+    (version "1.0.11")
     (source
      (origin
        (method git-fetch)
@@ -11331,7 +11356,7 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v7dxzb5cfjb55jydd8f61zzlvxq9mrgdy51hq19b06dmrx1dnc7"))))
+        (base32 "1i1a4dynlb5kl55rmfmib2jha1b2igw5jyiiyla1fxgkbkjnbf27"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

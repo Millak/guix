@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
+;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -139,7 +140,7 @@ between two other data points.")
 (define-public gama
   (package
     (name "gama")
-    (version "2.27")
+    (version "2.28")
     (source
       (origin
         (method url-fetch)
@@ -147,7 +148,7 @@ between two other data points.")
                             version ".tar.gz"))
         (sha256
          (base32
-          "0h9kwgzz9ijzx6jcpc37qhadc41k1jdcv0s2wcpsz6zjmx63p2wk"))
+          "06kblr43yxkn5y77nigwy42r81cmi5pxz3kp50z271vvj3h3zisx"))
         (modules '((guix build utils)))
         (snippet
          '(begin

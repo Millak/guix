@@ -27,10 +27,12 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -310,7 +312,8 @@ Rust.")
        (file-name (git-file-name name version))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-emacs" ,rust-emacs-0.11)
@@ -318,7 +321,26 @@ Rust.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-plugins-and-libs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib"))
+                    (vimfiles (string-append out "/share/vim/vimfiles/"
+                                             "pack/guix/start/parinfer")))
+               (with-directory-excursion "target/release"
+                 (install-file "libparinfer_rust.so" lib))
+               (substitute* "plugin/parinfer.vim"
+                            (("(let s:libdir = ).*" all libdir)
+                             (format #f "~a'~a'\n" libdir lib)))
+               (install-file "doc/parinfer.txt"
+                             (string-append vimfiles "/doc"))
+               (install-file "plugin/parinfer.vim"
+                             (string-append vimfiles "/plugin"))
+               (install-file "rc/parinfer.kak"
+                             (string-append out "/share/kak/autoload"))))))))
     (inputs
      (list clang))
     (home-page "https://github.com/justinbarclay/parinfer-rust")

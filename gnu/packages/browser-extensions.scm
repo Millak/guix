@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2023, 2024 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,7 +58,7 @@ supported content to the Kodi media center.")
   ;; Arbitrary commit of branch master,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-main-assets")
-         (commit "76bd7cb53036a36f7e7df5ee9173f588ba8aa966")
+         (commit "0cb71ec86524082c463d2fd2e18ecdea04fe335c")
          (revision "1")
          (version (git-version "0" revision commit)))
     (origin
@@ -68,13 +68,13 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1kdzvflr1yxykyva5vsjqr0p2ik1200xbhxwpl3cx2jsiv8l95sk")))))
+       (base32 "1rsf7sznlnv12i7jx1b492whwqpkhkqy2ny3m04fbbv5x31gqp93")))))
 
 (define ublock-prod-assets
   ;; Arbitrary commit of branch gh-pages,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-prod-assets")
-         (commit "a379a168fc149ffbd6d10cd0700d4ab4801e57f2")
+         (commit "21c07155353d7ecca2ffdc9e786f252a8cf00935")
          (revision "1")
          (version (git-version "0" revision commit)))
     (origin
@@ -84,12 +84,12 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0syf3kbhvsbn5xka5knpclxby2kp92my1w7ixvf5fs9n08ylcip1")))))
+       (base32 "0lwhvpvsf5p20c678qkmj5zy7hy33hl16sqpnp5gz00hbrdx1ddk")))))
 
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.54.0")
+    (version "1.55.0")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
@@ -99,7 +99,7 @@ supported content to the Kodi media center.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yacqpf9z8lprwsj194bhlp2ba9ywzbagd6lwxj3h6g405s7zp2k"))))
+                "1cd03l78w0xzkyv5588kac1r5k741vdr3d7ircv50l349qp4sjnm"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (properties '((addon-id . "uBlock0@raymondhill.net")))

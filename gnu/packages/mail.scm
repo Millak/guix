@@ -108,6 +108,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
@@ -247,15 +248,15 @@ mail client.")
     (name "anubis")
     ;; This 4.2.90 alpha release adds support for Guile 3 and has fixes for
     ;; other issues.
-    (version "4.2.90")
+    (version "4.3")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://alpha.gnu.org/gnu/anubis/anubis-"
+       (uri (string-append "mirror://gnu/anubis/anubis-"
              version ".tar.gz"))
        (sha256
         (base32
-         "0dvm6acl32dv8bixx9z50gzwfp6kj4kxnn1j3dcwjlp7sasjp41s"))))
+         "0b5ghaccy09l6fv0bg4my3yrxbw807wpwk14xvjih8j6ghrz62pz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list automake autoconf gettext-minimal m4))                     ;for the test suite

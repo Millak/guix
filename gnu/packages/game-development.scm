@@ -1344,7 +1344,7 @@ and multimedia programs in the Python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.2.0"))
+        (renpy-version "8.1.3"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
@@ -1354,7 +1354,7 @@ and multimedia programs in the Python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "17mc39c7ha83kzv2wmq61a15mn6p8wh2y33ixhf5sb4bvyr48mhy"))
+         (sha256 (base32 "0qlprs9n3w254ilizqzvr6s01zx72gh7an0bgwxsq4hm22qypdws"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1395,7 +1395,7 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.2.0")
+    (version "8.1.3")
     (source
      (origin
        (method url-fetch)
@@ -1403,7 +1403,7 @@ developed mainly for Ren'py.")
                            "/renpy-" version "-source.tar.bz2"))
        (sha256
         (base32
-         "02v54qqjjigfqhdr50kzhkdvplk56bvprq65jl57kcs1qhvlf5s9"))
+         "1g6fz5dxp7yxhgv6q4brzf5hpfqq3l1g3dfv3fsiwwn6mj0b01z2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -2038,7 +2038,7 @@ games.")
            libxi
            libxinerama
            libxrandr
-           mbedtls-apache
+           mbedtls-lts
            mesa
            opusfile
            pcre2
@@ -2280,7 +2280,7 @@ scripted in a Python-like language.")
            libxinerama
            libxkbcommon
            libxrandr
-           mbedtls-apache
+           mbedtls-lts
            mesa
            openxr
            opusfile

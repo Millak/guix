@@ -12,7 +12,8 @@
 ;;; Copyright © 2021, 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
-;;;
+;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
+;;
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -71,6 +72,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages guile)
@@ -582,98 +584,98 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "1e358401ecdf1963e5799de19ab69111e82e5ebc")
-        (revision "0"))
-    (package
-      (name "bcachefs-tools")
-      (version (git-version "1.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://evilpiepirate.org/git/bcachefs-tools.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0bflgqb3q9jikyyrv6hywv6m1fapzzn874hlhf86pn6abxrlf5fa"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:make-flags
-             #~(list (string-append "VERSION=" #$version) ; ‘v…-nogit’ otherwise
-                     (string-append "PREFIX=" #$output)
-                     "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
-                     (string-append "CC=" #$(cc-for-target))
-                     (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                     ;; ‘This will be less of an option in the future, as more
-                     ;; code gets rewritten in Rust.’
-                     "NO_RUST=better")
-             #:phases
-             #~(modify-phases %standard-phases
-                 (delete 'configure)    ; no configure script
-                 (replace 'check
-                   ;; The test suite is moribund upstream (‘never been useful’),
-                   ;; but let's keep running it as a sanity check until then.
-                   (lambda* (#:key tests? make-flags #:allow-other-keys)
-                     (when tests?
-                       ;; We must manually build the test_helper first.
-                       (apply invoke "make" "tests" make-flags)
-                       (invoke (string-append
-                                #$(this-package-native-input "python-pytest")
-                                "/bin/pytest") "-k"
-                                ;; These fail (‘invalid argument’) on kernels
-                                ;; with a previous bcachefs version.
-                                (string-append "not test_format and "
-                                               "not test_fsck and "
-                                               "not test_list and "
-                                               "not test_list_inodes and "
-                                               "not test_list_dirent")))))
-                 (add-after 'install 'promote-mount.bcachefs.sh
-                   ;; The (optional) ‘mount.bcachefs’ requires rust:cargo.
-                   ;; This shell alternative does the job well enough for now.
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (define (whence file)
-                       (dirname (search-input-file inputs file)))
-                     (let ((mount (string-append #$output
-                                                 "/sbin/mount.bcachefs")))
-                       (delete-file mount) ; symlink to ‘bcachefs’
-                       (copy-file "mount.bcachefs.sh" mount)
-                       ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
-                       (wrap-program mount
-                         `("PATH" ":" prefix
-                           ,(list (getcwd)
-                                  (whence "bin/tail")
-                                  (whence "bin/awk")
-                                  (whence "bin/mount"))))))))))
-      (native-inputs
-       (cons* pkg-config
-              ;; For generating documentation with rst2man.
-              python
-              python-docutils
-              ;; For tests.
-              python-pytest
-              (if (member (%current-system) (package-supported-systems valgrind))
-                  (list valgrind)
-                  '())))
-      (inputs
-       (list eudev
-             keyutils
-             libaio
-             libscrypt
-             libsodium
-             liburcu
-             `(,util-linux "lib")
-             lz4
-             zlib
-             `(,zstd "lib")
+  (package
+    (name "bcachefs-tools")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://evilpiepirate.org/git/bcachefs-tools.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0axwbckqrw1v3v50nzhpkvpyjbjwy3rq5bv23db84x3xia497apq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "VERSION=" #$version) ; ‘v…-nogit’ otherwise
+                   (string-append "PREFIX=" #$output)
+                   "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
+                   "PKGCONFIG_UDEVRULESDIR=$(PREFIX)/lib/udev/rules.d"
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+                   ;; ‘This will be less of an option in the future, as more
+                   ;; code gets rewritten in Rust.’
+                   "NO_RUST=better")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)    ; no configure script
+               (replace 'check
+                 ;; The test suite is moribund upstream (‘never been useful’),
+                 ;; but let's keep running it as a sanity check until then.
+                 (lambda* (#:key tests? make-flags #:allow-other-keys)
+                   (when tests?
+                     ;; We must manually build the test_helper first.
+                     (apply invoke "make" "tests" make-flags)
+                     (invoke (string-append
+                              #$(this-package-native-input "python-pytest")
+                              "/bin/pytest") "-k"
+                              ;; These fail (‘invalid argument’) on kernels
+                              ;; with a previous bcachefs version.
+                              (string-append "not test_format and "
+                                             "not test_fsck and "
+                                             "not test_list and "
+                                             "not test_list_inodes and "
+                                             "not test_list_dirent")))))
+               (add-after 'install 'promote-mount.bcachefs.sh
+                 ;; The (optional) ‘mount.bcachefs’ requires rust:cargo.
+                 ;; This shell alternative does the job well enough for now.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (define (whence file)
+                     (dirname (search-input-file inputs file)))
+                   (let ((mount (string-append #$output
+                                               "/sbin/mount.bcachefs")))
+                     (delete-file mount) ; symlink to ‘bcachefs’
+                     (copy-file "mount.bcachefs.sh" mount)
+                     ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
+                     (wrap-program mount
+                       `("PATH" ":" prefix
+                         ,(list (getcwd)
+                                (whence "bin/tail")
+                                (whence "bin/awk")
+                                (whence "bin/mount"))))))))))
+    (native-inputs
+     (cons* pkg-config
+            ;; For generating documentation with rst2man.
+            python
+            python-docutils
+            ;; For tests.
+            python-pytest
+            (if (member (%current-system) (package-supported-systems valgrind))
+                (list valgrind)
+                '())))
+    (inputs
+     (list eudev
+           keyutils
+           libaio
+           libscrypt
+           libsodium
+           liburcu
+           `(,util-linux "lib")
+           lz4
+           zlib
+           `(,zstd "lib")
 
-             ;; Only for mount.bcachefs.sh.
-             coreutils-minimal
-             gawk
-             util-linux))
-      (home-page "https://bcachefs.org/")
-      (synopsis "Tools to create and manage bcachefs file systems")
-      (description
-       "The bcachefs-tools are command-line utilities for creating, checking,
+           ;; Only for mount.bcachefs.sh.
+           bash-minimal
+           coreutils-minimal
+           gawk
+           util-linux))
+    (home-page "https://bcachefs.org/")
+    (synopsis "Tools to create and manage bcachefs file systems")
+    (description
+     "The bcachefs-tools are command-line utilities for creating, checking,
 and otherwise managing bcachefs file systems.
 
 Bcachefs is a @acronym{CoW, copy-on-write} file system supporting native
@@ -683,7 +685,7 @@ multiple block devices for replication and/or performance, similar to RAID.
 In addition, bcachefs provides all the functionality of bcache, a block-layer
 caching system, and lets you assign different roles to each device based on its
 performance and other characteristics.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public bcachefs-tools/static
   (package

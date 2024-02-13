@@ -71,6 +71,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gperf)
@@ -1278,27 +1279,28 @@ backup.")
 (define-public disarchive
   (package
     (name "disarchive")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.ngyro.com/disarchive/"
                                   "disarchive-" version ".tar.gz"))
               (sha256
                (base32
-                "16sjplkn9nr7zhfrqll7l1m2b2j4hg8k29p6bqjap9fkj6zpn2q2"))))
+                "1s4lyhhh1zsaxgn11hy2b1kdvnvpipii68wba0hwr471rd43m08k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
            automake
            pkg-config
            guile-3.0 ;for cross-compilation
+           guile-bzip2
            guile-gcrypt
            guile-lzma
            guile-quickcheck))
     (inputs
      (list guile-3.0 zlib))
     (propagated-inputs
-     (list guile-gcrypt guile-lzma))
+     (list guile-bzip2 guile-gcrypt guile-lzma))
     (home-page "https://ngyro.com/software/disarchive.html")
     (synopsis "Software archive disassembler")
     (description "Disarchive can disassemble software archives into data

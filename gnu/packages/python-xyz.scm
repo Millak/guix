@@ -2267,13 +2267,13 @@ with Numpy and SciPy.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shapely" version))
        (sha256
-        (base32 "14v88k0y7qhp8n5clip6w96pkdzrfqa2hsjkhpy9gkifwyiv39k6"))))
+        (base32 "1rs90q4ys5cav0hz1dq72wq2mk4aqlqqbfjrnb2zzfkiq42cq4qp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2284,8 +2284,7 @@ with Numpy and SciPy.")
              ;; Cython extensions have to be built before running the tests.
              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-cython python-matplotlib python-pytest
-           python-pytest-cov))
+     (list python-cython python-matplotlib python-pytest))
     (inputs
      (list geos))
     (propagated-inputs

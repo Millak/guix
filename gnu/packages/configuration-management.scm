@@ -21,6 +21,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix git-download)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages textutils)

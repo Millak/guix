@@ -172,14 +172,14 @@ different programming languages.")
 (define-public fmt-10
   (package
     (name "fmt")
-    (version "10.1.1")
+    (version "10.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
                            version "/fmt-" version ".zip"))
        (sha256
-        (base32 "06wxxn9yxw44nskdnpwyl6y4j27ssmw5d3d4rnb03df922imhkmq"))))
+        (base32 "1j8nln7rql2nxkhdlgpmx1c1dp6dyxnar1n5r7sjg0rws6i5289i"))))
     (build-system cmake-build-system)
     (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (native-inputs (list unzip))

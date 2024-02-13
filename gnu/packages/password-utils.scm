@@ -91,6 +91,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -852,7 +853,7 @@ key URIs using the standard otpauth:// scheme.")
 (define-public qtpass
   (package
     (name "qtpass")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -861,65 +862,37 @@ key URIs using the standard otpauth:// scheme.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0748hjvhjrybi33ci3c8hcr74k9pdrf5jv8npf9hrsrmdyy1kr9x"))))
-    (build-system gnu-build-system)
+        (base32 "10ixahm4ap0l1rrz4cyswblm22ns9z1baf5lv3dn23wprfdcp8m0"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                            (guix build qt-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; lupdate/lrelease need to find qmake.
-               (setenv "QMAKE" "qmake")
-               ;; qmake needs to find lrelease/lupdate.
-               (invoke "qmake"
-                       "QMAKE_LRELEASE=lrelease"
-                       "QMAKE_LUPDATE=lupdate"
-                       (string-append "PREFIX=" out)))))
-         (add-after 'configure 'reset-resource-timestamps
-           ;; Reset timestamps on localization files for a reproducible build.
-           (lambda _
-             (with-directory-excursion "localization"
-               (for-each (lambda (file)
-                           (let* ((base (basename file ".qm"))
-                                  (src (string-append base ".ts"))
-                                  (st (stat src)))
-                             (set-file-time file st)))
-                         (find-files "." ".*\\.qm")))
-             #t))
-         (add-after 'install 'install-auxilliary
-           ;; Install man-page, icon and .desktop file.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (applications (string-append out "/share/applications"))
-                    (icons (string-append out "/share/icons/hicolor/scalable/apps"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "qtpass.desktop" applications)
-               (install-file "artwork/icon.svg" icons)
-               (rename-file (string-append icons "/icon.svg")
-                            (string-append icons "/qtpass-icon.svg"))
-               (install-file "qtpass.1" man)
-               #t)))
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "qtpass" #:output out #:inputs inputs))
-             #t))
-         (add-before 'check 'check-setup
-           ;; Make Qt render "offscreen", required for tests.
-           (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "qmake"
+                      "QMAKE_LRELEASE=lrelease"
+                      "QMAKE_LUPDATE=lupdate"
+                      (string-append "PREFIX=" #$output))))
+          (add-before 'check 'pre-check
+            ;; Fontconfig needs a writable cache.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-after 'install 'install-auxilliary
+            ;; Install man-page, icon and .desktop file.
+            (lambda _
+              (let ((applications (string-append #$output "/share/applications"))
+                    (icons (string-append #$output "/share/icons/hicolor/scalable/apps"))
+                    (man (string-append #$output "/share/man/man1")))
+                (install-file "qtpass.desktop" applications)
+                (install-file "artwork/icon.svg" icons)
+                (rename-file (string-append icons "/icon.svg")
+                             (string-append icons "/qtpass-icon.svg"))
+                (install-file "qtpass.1" man)))))))
     (native-inputs
      (list qttools-5))
     (inputs
-     (list qtbase-5 qtsvg-5))
+     (list qtsvg-5))
     (home-page "https://qtpass.org")
     (synopsis "GUI for password manager password-store")
     (description

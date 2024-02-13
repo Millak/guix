@@ -2,10 +2,22 @@ Make test work with upstream cbehave
 (tinydir bundles a modified version)
 
 diff --git a/tests/file_open_test.c b/tests/file_open_test.c
-index 3e659bc..9f6f88d 100644
+index 09b856e..92b13ca 100644
 --- a/tests/file_open_test.c
 +++ b/tests/file_open_test.c
-@@ -19,4 +19,7 @@ FEATURE(file_open, "File open")
+@@ -4,6 +4,11 @@
+ #include "cbehave.h"
+ #include "util.h"
+ 
++#define ASSERT(cond, ret) \
++if (!(cond)) {\
++    cbehave_feature_return(__FILE__, __LINE__, ret, _state); \
++    goto _feature_over; \
++}\
+ 
+ FEATURE(file_open, "File open")
+ 	SCENARIO("Open file in current directory")
+@@ -34,4 +39,7 @@ FEATURE(file_open, "File open")
  	SCENARIO_END
  FEATURE_END
  

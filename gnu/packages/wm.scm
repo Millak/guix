@@ -66,6 +66,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2047,7 +2048,7 @@ core/thread.")
 (define-public wlr-randr
   (package
     (name "wlr-randr")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -2056,7 +2057,7 @@ core/thread.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13mya6j5z7cwg2a973y28ya8w36kxhj0fgj8bk9z6yf2w0ryr5xv"))))
+        (base32 "1f3dc2i6c1rn2adfcnqmh10570ps335188zllg66sv1d0l8mggry"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config))

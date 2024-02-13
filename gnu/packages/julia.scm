@@ -186,7 +186,7 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                                          "gmp" "lapack"
                                          "libssh2" "libnghttp2" "libgit2"
                                          "libblastrampoline"
-                                         "mbedtls-apache" "mpfr"
+                                         "mbedtls" "mpfr"
                                          "openblas" "openlibm" "pcre2"
                                          "suitesparse" "gfortran:lib"))
                                   ":"))))
@@ -263,9 +263,9 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                (substitute* (jlpath "MPFR")
                  (((from "libmpfr")) (to "mpfr" "libmpfr")))
                (substitute* (jlpath "MbedTLS")
-                 (((from "libmbedcrypto")) (to "mbedtls-apache" "libmbedcrypto"))
-                 (((from "libmbedtls")) (to "mbedtls-apache" "libmbedtls"))
-                 (((from "libmbedx509")) (to "mbedtls-apache" "libmbedx509")))
+                 (((from "libmbedcrypto")) (to "mbedtls" "libmbedcrypto"))
+                 (((from "libmbedtls")) (to "mbedtls" "libmbedtls"))
+                 (((from "libmbedx509")) (to "mbedtls" "libmbedx509")))
                (substitute* (jlpath "nghttp2")
                  (((from "libnghttp2")) (to "libnghttp2" "libnghttp2")))
                (substitute* (jlpath "OpenBLAS")
@@ -318,7 +318,7 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
              (substitute* "stdlib/PCRE2_jll/test/runtests.jl"
                (("10.40.0") ,(package-version (this-package-input "pcre2"))))
              (substitute* "stdlib/MbedTLS_jll/test/runtests.jl"
-               (("2.28.0") ,(package-version (this-package-input "mbedtls-apache"))))
+               (("2.28.0") ,(package-version (this-package-input "mbedtls"))))
              (substitute* "stdlib/MPFR_jll/test/runtests.jl"
                (("4.1.0") ,(package-version (this-package-input "mpfr"))))
              (substitute* "stdlib/GMP_jll/test/runtests.jl"
@@ -515,7 +515,7 @@ using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
        ("libunwind" ,libunwind-julia)
        ("libuv" ,libuv-julia)
        ("llvm" ,llvm-julia)
-       ("mbedtls-apache" ,mbedtls-apache)
+       ("mbedtls" ,mbedtls-lts)
        ("mpfr" ,mpfr)
        ,@(if (target-x86-64?)
              `(("openblas" ,openblas-ilp64))

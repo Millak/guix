@@ -339,6 +339,27 @@ logic, also known as grey logic.")
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
 
+(define-public python-scikit-opt
+  (package
+    (name "python-scikit-opt")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit-opt" version))
+       (sha256
+        (base32 "0ycqizgsj7q57asc1bphzhf1fx9zqn0vx5rli7q541bas64hfqiy"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/guofei9987/scikit-opt")
+    (synopsis "Swarm intelligence algorithms in Python")
+    (description
+     "Scikit-opt (or sko) is a Python module implementing @dfn{swarm
+intelligence} algorithms: genetic algorithm, particle swarm optimization,
+simulated annealing, ant colony algorithm, immune algorithm, artificial fish
+swarm algorithm.")
+    (license license:expat)))
+
 (define-public python-scikit-optimize
   (package
     (name "python-scikit-optimize")
@@ -2153,16 +2174,11 @@ to do spectral analysis in Python.")
        (uri (pypi-uri "traittypes" version))
        (sha256
         (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This one test fails because it doesn't raise an expected
-               ;; exception.
-               (invoke "pytest" "-vv" "-k" "not test_bad_values")))))))
+     (list
+      ;; This one test fails because it doesn't raise an expected exception.
+      #:test-flags #~(list "-k" "not test_bad_values")))
     (propagated-inputs (list python-traitlets))
     (native-inputs
      (list python-numpy
@@ -2598,6 +2614,31 @@ NeuroML2 models.")
 networking protocol.  It allows the easy creation of DICOM
 @acronym{SCUs,Service Class Users} and @acronym{SCPs,Service Class
 Providers}.")
+    (license license:expat)))
+
+(define-public python-pynrrd
+  (package
+    (name "python-pynrrd")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mhe/pynrrd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09gdyi4kbi3512ydgqxkgr4j7b9a95qh83fk2n9s41bns4id9xj7"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-nptyping python-numpy python-typing-extensions))
+    (home-page "https://github.com/mhe/pynrrd")
+    (synopsis "Python module for reading and writing NRRD files")
+    (description
+     "@code{pynrrd} is a Python module for reading and writing @acronym{NRRD,
+Nearly Raw Raster Data} files (format designed to support scientific
+visualization and image processing involving N-dimensional raster data) into
+and from numpy arrays.")
     (license license:expat)))
 
 (define-public python-libneuroml

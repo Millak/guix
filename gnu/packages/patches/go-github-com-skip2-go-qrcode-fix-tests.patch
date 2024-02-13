@@ -1,0 +1,37 @@
+From dd203f29a36bf518deacbc03e8562b0195c8345f Mon Sep 17 00:00:00 2001
+From: Dominic Martinez <dom@dominicm.dev>
+Date: Mon, 4 Apr 2022 12:06:03 -0400
+Subject: [PATCH] Fix failing qr decode test
+
+First convert integers into runes before performing a string conversion.
+---
+ qrcode_decode_test.go | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/qrcode_decode_test.go b/qrcode_decode_test.go
+index 1f4b1d3..2b0756b 100644
+--- a/qrcode_decode_test.go
++++ b/qrcode_decode_test.go
+@@ -122,7 +122,7 @@ func TestDecodeAllCharacters(t *testing.T) {
+ 
+ 	// zbarimg has trouble with null bytes, hence start from ASCII 1.
+ 	for i := 1; i < 256; i++ {
+-		content += string(i)
++		content += string(rune(i))
+ 	}
+ 
+ 	q, err := New(content, Low)
+@@ -154,7 +154,7 @@ func TestDecodeFuzz(t *testing.T) {
+ 		for j := 0; j < len; j++ {
+ 			// zbarimg seems to have trouble with special characters, test printable
+ 			// characters only for now.
+-			content += string(32 + r.Intn(94))
++			content += string(rune(32 + r.Intn(94)))
+ 		}
+ 
+ 		for _, level := range []RecoveryLevel{Low, Medium, High, Highest} {
+
+base-commit: da1b6568686e89143e94f980a98bc2dbd5537f13
+-- 
+2.34.0
+

@@ -54,7 +54,6 @@
      (list cairo
            freetype
            glib
-           gtk+-2
            libxml2
            pango
            python))

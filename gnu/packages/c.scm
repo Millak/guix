@@ -20,7 +20,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1349,7 +1349,7 @@ performance concurrent systems developed in C99+.")
 (define-public tinydir
   (package
     (name "tinydir")
-    (version "1.2.5")
+    (version "1.2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1358,7 +1358,7 @@ performance concurrent systems developed in C99+.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nprgdfx4i8wzc1idw6chan4fjfa75b5ll8kghdc0q2278pny259"))
+                "143n6yabznxk032gv5g2k8glf0kzicarg9cx0714zsbfmzj8lr07"))
               (patches (search-patches "tinydir-fix-cbehave-test.patch"))
               (modules '((guix build utils)))
               (snippet '(delete-file-recursively "tests/cbehave"))))

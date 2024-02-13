@@ -13,7 +13,7 @@
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020–2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
@@ -434,7 +434,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.11.2")
+    (version "3.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -442,7 +442,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1k744nwfa5sj4amzsdjxgac83wh6xfb9xi7z5bka7ic1jik7gw5i"))))
+                "00qdk9a4048pzfj2rhzkfw3lvm642znf6kr4x29i3d94494pxsnn"))))
     (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -450,7 +450,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                     'unpack 'patch-test-shebangs
                     (lambda _
                       (substitute* '("tests/xmltester/testrunner.sh"
-                                     "tests/geostest/testrunner.sh")
+                                     "tests/xmltester/safe_to_xml.sh")
                         (("/bin/sh") (which "sh"))))))))
     (inputs
      (list glib))
@@ -547,7 +547,11 @@ and driving.")
        (method url-fetch)
        (uri (string-append "http://download.osgeo.org/geotiff/libgeotiff/libgeotiff-"
                            version ".tar.gz"))
-       (patches (search-patches "libgeotiff-fix-tests-with-proj-9.1.1.patch"))
+       (patches
+         (search-patches "libgeotiff-fix-tests-with-proj-9.1.1.patch"
+                         "libgeotiff-fix-tests-with-proj-9.3.0.patch"
+                         "libgeotiff-fix-tests-with-proj-9.3.1.patch"
+                         "libgeotiff-fix-tests-on-i386.patch"))
        (sha256
         (base32 "1mjmgv48x51ppax5dnb6lq7z600czxll53bx6jbzqwd4m93i7aq5"))
        (modules '((guix build utils)))
@@ -739,7 +743,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "9.2.0")
+    (version "9.3.1")
     (source
      (origin
        (method url-fetch)
@@ -747,7 +751,7 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "03nm1sgvh237my7ss6kayn6887cbnayvjxrrxsrfcakkmbsida6y"))))
+         "1g0hkpiablvhsmw0kn5frwgdir3q7avc45p6lc1zhhhzkv5ikydh"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config))
     (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
@@ -843,31 +847,36 @@ projections.")
 (define-public python-pyproj
   (package
     (name "python-pyproj")
-    (version "3.5.0")
+    (version "3.6.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyproj" version))
         (sha256
           (base32
-            "1xhvr0n5gb7v6x0wd7cqmc0zrky2fag7bq2shx6l2qqq3icx2ncq"))))
+            "1gq1spm5zdq9k8kl9cb31b9m08ybyrdggfw3sjrqyz9b9iq7raj4"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-proj-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((proj (assoc-ref inputs "proj")))
-               (setenv "PROJ_DIR" proj)
-               (substitute* "pyproj/datadir.py"
-                 (("(internal_datadir = ).*$" all var)
-                  (string-append var "Path(\"" proj "/share/proj\")\n")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-proj-path
+            (lambda* (#:key #:allow-other-keys)
+              (let ((proj #$(this-package-input "proj")))
+                (setenv "PROJ_DIR" proj)
+                (substitute* "pyproj/datadir.py"
+                  (("(internal_datadir = ).*$" all var)
+                   (string-append var "Path(\"" proj
+                                  "/share/proj\")\n")))))))))
     (inputs
       (list proj))
     (propagated-inputs
       (list python-certifi))
     (native-inputs
-      (list python-cython python-numpy python-pandas python-pytest
+      (list python-cython
+            python-numpy
+            python-pandas
+            python-pytest
             python-xarray))
     (home-page "https://github.com/pyproj4/pyproj")
     (synopsis
@@ -1313,7 +1322,7 @@ utilities for data translation and processing.")
 (define-public python-pyshp
   (package
     (name "python-pyshp")
-    (version "2.1.3")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1322,8 +1331,13 @@ utilities for data translation and processing.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jsraqzq82pw19wvx84x7w5cs8agr44a9b5y0jjw540wim4xa73r"))))
+        (base32 "02pbr091p8v4kfv1p6p2aa4asgm9r74dc12r35lvgmhs9y163z69"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This test requires internet access.
+      '(list "--deselect" "test_shapefile.py::test_reader_url")))
     (native-inputs
      (list python-pytest python-pytest-runner))
     (home-page "https://github.com/GeospatialPython/pyshp")
@@ -2572,7 +2586,7 @@ orienteering sport.")
     (license license:gpl3+)))
 
 (define-public grass
-  (let* ((version "7.8.7")
+  (let* ((version "7.8.8")
          (majorminor (string-join (list-head (string-split version #\.) 2) ""))
          (grassxx (string-append "grass" majorminor)))
     (package
@@ -2584,7 +2598,7 @@ orienteering sport.")
          (uri (string-append "https://grass.osgeo.org/" grassxx
                              "/source/grass-" version ".tar.gz"))
          (sha256
-          (base32 "0sbz0ba9p963phvd0gmvfqq1fg4ixpipzcjbf20ys86qavjppzsg"))))
+          (base32 "1gpfbppfajc8d6b9alw9fdzgaa83w26kl6fff1395bc9gal215ms"))))
       (build-system gnu-build-system)
       (inputs
        `(("bzip2" ,bzip2)
@@ -2858,6 +2872,7 @@ growing set of geoscientific methods.")
                              "test_core_pointcloudlayerexporter"
                              "test_core_projectstorage"
                              "test_core_coordinatereferencesystem"
+                             "test_core_overlayexpression"
                              "test_gui_queryresultwidget"
                              "test_provider_copcprovider"
                              "test_provider_eptprovider"
@@ -2881,6 +2896,7 @@ growing set of geoscientific methods.")
                              "PyQgsOGRProviderGpkg"
                              "PyQgsProcessExecutablePt1"
                              "PyQgsProcessExecutablePt2"
+                             "PyQgsProjectionSelectionWidgets"
                              "PyQgsProviderConnectionGpkg"
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsOGRProvider"
@@ -3087,6 +3103,30 @@ path loss.")
     (synopsis "Python geodesic routines from GeographicLib")
     (description
      "This is a python implementation of the geodesic routines in GeographicLib.")
+    (license license:expat)))
+
+(define-public python-geoip2fast
+  (package
+    (name "python-geoip2fast")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "geoip2fast" version))
+       (sha256
+        (base32 "1cmdjlwjd4pg3qvsb8d4vghqj1im58npxb6dmrd5q90wjga4rfvm"))))
+    (build-system pyproject-build-system)
+    ;; The tests are speed tests or development tests to compare results with
+    ;; a different library.
+    (arguments (list #:tests? #false))
+    (home-page "https://github.com/rabuchaim/geoip2fast")
+    (synopsis
+     "Fast GeoIP2 country/city/asn lookup library")
+    (description
+     "@code{GeoIP2Fast} is a fast @code{GeoIP2} country/city/asn lookup
+library that supports IPv4 and IPv6.  A search takes less than 0.00003
+seconds.  It has its own data file updated twice a week with
+Maxmind-Geolite2-CSV, supports IPv4/IPv6 and is pure Python.")
     (license license:expat)))
 
 (define-public python-geopy

@@ -213,7 +213,7 @@ output in multiple windows in a terminal.")
 (define-public spdlog
   (package
     (name "spdlog")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -221,9 +221,8 @@ output in multiple windows in a terminal.")
              (url "https://github.com/gabime/spdlog")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (patches (search-patches "spdlog-fix-tests.patch"))
        (sha256
-        (base32 "0yyncv6wjs5rqm76rkqyxpfbsingk1dq5zfcqhy1a7fpw8xdl53k"))))
+        (base32 "0zgdmdgnp2y36jrlk85d4fiyjkjd6anly8pambyc3f3v6sg02zyy"))))
     (build-system cmake-build-system)
     ;; TODO run benchmark. Currently not possible, as adding
     ;; (gnu packages benchmark) forms a dependency cycle

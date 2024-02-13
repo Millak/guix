@@ -15,7 +15,7 @@
 ;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2023, 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,7 +86,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.2001")
+    (version "9.1.0059")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -95,7 +95,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1y0xfvndnyfv677gn4mkq0jf5k15mm1dngl96l9j90sp4lbqrszx"))))
+               "146zhwhagdsbsh3h7f8h7izbzrwh3hgry4cx2lalq9s275qy3hzb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"

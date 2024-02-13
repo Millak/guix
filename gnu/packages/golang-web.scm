@@ -48,7 +48,9 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages tls)
@@ -1081,6 +1083,7 @@ Microsoft AD PAC authorization data.")
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-objx
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/jmespath/go-jmespath")
     (synopsis "Golang implementation of JMESPath")

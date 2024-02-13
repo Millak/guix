@@ -28,7 +28,7 @@
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
-;;; Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2018, 2021, 2024 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2019, 2021-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
@@ -93,6 +93,7 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system dune)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -184,6 +185,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages wxwidgets)
@@ -9355,7 +9357,7 @@ numeric differences and differences in numeric formats.")
 (define-public why3
   (package
     (name "why3")
-    (version "1.4.1")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9364,7 +9366,7 @@ numeric differences and differences in numeric formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yca6mx8bjm8x0i594ivh31aw45s6fbimmwfj8g2v9zwrgmr1i4s"))))
+                "0k3y98xzhrl44vwzq2m6k4nrllrwp3ll69lc2gfl8d77w0wg7gkp"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list autoconf automake coq ocaml which))
@@ -9412,36 +9414,38 @@ of C, Java, or Ada programs.")
 (define-public frama-c
   (package
     (name "frama-c")
-    (version "24.0")
+    (version "27.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://frama-c.com/download/frama-c-"
-                                  version "-Chromium.tar.gz"))
+                                  version "-Cobalt.tar.gz"))
               (sha256
                (base32
-                "0x1xgip50jdz1phsb9rzwf2ra8lshn1hmd9g967xia402wrg3sjf"))))
-    (build-system ocaml-build-system)
+                "1lirkvhf5m53d33l0aw5jzc1fyzkwx5fkgh9g71732d52r55f4sv"))))
+    (build-system dune-build-system)
     (arguments
-     `(#:tests? #f; no test target in Makefile
-       #:configure-flags
-       (list "--enable-verbosemake")    ; to aid debugging
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'export-shell
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CONFIG_SHELL"
-                     (search-input-file inputs "/bin/sh")))))))
+      `(#:phases
+        (modify-phases %standard-phases
+          (add-before 'build 'set-env
+            (lambda _
+              (setenv "CC" "gcc"))))))
     (inputs
      (list gmp zlib))
-    (propagated-inputs
-     (list ocaml-biniou
-           ocaml-easy-format
-           ocaml-graph
-           ocaml-yojson
-           ocaml-zarith
-           ocaml-lablgtk3-sourceview3
-           lablgtk3
-           why3))
+    (propagated-inputs (list
+                         graphviz
+                         lablgtk3
+                         ocaml-graph
+                         ocaml-odoc
+                         ocaml-lablgtk3-sourceview3
+                         ocaml-yaml
+                         ocaml-yojson
+                         ocaml-zarith
+                         ocaml-ppx-deriving
+                         ocaml-ppx-deriving-yojson
+                         ocaml-ppx-deriving-yaml
+                         ocaml-ppx-import
+                         why3))
+    (native-inputs (list dune-site time ocaml-menhir ocaml-graph))
     (native-search-paths
      (list (search-path-specification
             (variable "FRAMAC_SHARE")

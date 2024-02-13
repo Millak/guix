@@ -84,6 +84,12 @@ and file system operations.  It is used by all skarnet.org software.")
                                          (assoc-ref %build-inputs "skalibs")
                                          "/lib/skalibs/sysdeps"))
        #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch
+                    (lambda _
+                      ;; This umask makes the symlinks in lib readable on
+                      ;; i586-gnu
+                      (substitute* "tools/install.sh"
+                        (("umask 077") "umask 033"))))
                   (add-after
                    'install 'post-install
                    (lambda* (#:key inputs outputs #:allow-other-keys)

@@ -29,7 +29,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2022, 2023 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022-2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
@@ -274,7 +274,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.2
   (package
     (inherit ruby-3.1)
-    (version "3.2.2")
+    (version "3.2.3")
     (source
      (origin
        (method url-fetch)
@@ -283,7 +283,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "08wy2ishjwbccfsrd0iwmyadbwjzrpyxnk74wcrf7163gq7jsdab"))))
+         "0ss7pb7f62sakq5ywpw3dl0v586cl61cd91qlm1i094c9fak3cng"))))
     (inputs
      (modify-inputs (package-inputs ruby-3.1)
        (prepend libyaml)))))

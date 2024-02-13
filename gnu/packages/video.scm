@@ -3954,7 +3954,7 @@ be used for realtime video capture via Linux-specific APIs.")
       libxcomposite
       libxkbcommon
       luajit
-      mbedtls-apache
+      mbedtls-lts
       mesa
       pciutils
       pipewire

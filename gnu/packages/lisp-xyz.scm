@@ -1073,7 +1073,7 @@ options, e.g., by looking up an external key/value store
 (define-public sbcl-command-line-args
   (package
     (name "sbcl-command-line-args")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1082,7 +1082,7 @@ options, e.g., by looking up an external key/value store
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-command-line-args" version))
        (sha256
-        (base32 "0ncw32qaak878xg68p42m2sh0qv19hg1va9wrh74d92v7cqz08kw"))))
+        (base32 "140xnz2v0v3hfg3dp2fhidw8ns6lxd3a5knm07wqdp48ksg119wy"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("whereiseveryone.command-line-args")))
@@ -11551,6 +11551,42 @@ may contain sets, maps may be keyed by sets, etc.")
      ;; Tests fails on ECL with "The function FSET::MAKE-CHAR is undefined".
      '(#:tests? #f))))
 
+(define-public sbcl-modf
+  (let ((commit "dea93fe62c6bf7f66f32f52ac0c555aedbf7abad")
+        (revision "0"))
+    (package
+      (name "sbcl-modf")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/smithzvk/modf")
+               (commit commit)))
+         (file-name (git-file-name "cl-modf" version))
+         (sha256
+          (base32
+           "1aap7ldy7lv942khp026pgndgdzfkkqa9xcq1ykinrmflrgdazay"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-iterate))
+      (native-inputs
+       (list sbcl-stefil))
+      (home-page "https://github.com/smithzvk/modf")
+      (synopsis "SETF like macro for functional programming in Common Lisp")
+      (description "This library simplifies functional programming in Common
+Lisp by making it easier to make new data structures with specified changes in
+place.")
+      (license license:bsd-3))))
+
+(define-public cl-modf
+  (sbcl-package->cl-source-package sbcl-modf))
+
+(define-public ecl-modf
+  (sbcl-package->ecl-package sbcl-modf))
+
 (define-public sbcl-cl-cont
   (let ((commit "fc1fa7e6eb64894fdca13e688e6015fad5290d2a")
         (revision "1"))
@@ -21876,8 +21912,8 @@ Common Lisp.")
   (sbcl-package->cl-source-package sbcl-metacopy))
 
 (define-public sbcl-legit
-  (let ((commit "5f8a2d4c4f5fb8e53340eeef600433ee20e03fbe")
-        (revision "2"))
+  (let ((commit "9c677b9b798803d37ab6f5e0e0705441872f7230")
+        (revision "3"))
     (package
       (name "sbcl-legit")
       (version (git-version "1.0.0" revision commit))
@@ -21887,9 +21923,9 @@ Common Lisp.")
          (uri (git-reference
                (url "https://github.com/Shinmera/legit")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-legit" version))
          (sha256
-          (base32 "0crr7ya7dg15di7glk3w9sgf6j8dmny347gynmxxrdvjj9pa906m"))))
+          (base32 "0jy021ywrbnkgbgb63ip6j7kr40m4wz2pz1v5ybn6xkkn6dyprsz"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases

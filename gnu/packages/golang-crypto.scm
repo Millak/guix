@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Jack Hill <jackhill@jackhill.us>
@@ -43,7 +44,9 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages golang-check))
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression))
 
 ;;; Commentary:
 ;;;
@@ -580,6 +583,55 @@ library's internal ChaCha20 package.")
 the Go standard library's TLS 1.3 implementation.")
     (license license:bsd-3)))
 
+(define-public go-github-com-nats-io-jwt-v2
+  (package
+    (name "go-github-com-nats-io-jwt-v2")
+    (version "2.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/jwt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wcqbfyd3b4qdspmf72cpsbi0y2a4b1qd0cv3qvhh17d1h1a6zib"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/nats-io/jwt/v2"
+           #:unpack-path "github.com/nats-io/jwt"))
+    (propagated-inputs (list go-github-com-nats-io-nkeys))
+    (home-page "https://github.com/nats-io/jwt")
+    (synopsis "Go library signing JWT tokens with NKeys for the NATS ecosystem")
+    (description
+     "This library is a JWT implementation that uses nkeys to digitally sign
+JWT tokens.  Nkeys use Ed25519 to provide authentication of JWT claims.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-nats-io-nkeys
+  (package
+    (name "go-github-com-nats-io-nkeys")
+    (version "0.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/nkeys")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0779m4nn6n0ql23wnk50ybddslvb84mwx036gf7yw6ckmm4yybxs"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/nats-io/nkeys"))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/nats-io/nkeys")
+    (synopsis "Go library implementing public-key system for NATS ecosystem")
+    (description
+     "This package is an Ed25519 based public-key signature system that
+simplifies keys and seeds and performs signing and verification.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-minio-blake2b-simd
   (let ((commit "3f5f724cb5b182a5c278d6d3d55b40e7f8c2efb4")
         (revision "0"))
@@ -610,6 +662,31 @@ In addition to AVX there is also support for AVX2 as well as SSE.  Best
 performance is obtained with AVX2 which gives roughly a 4X performance
 increase approaching hashing speeds of 1GB/sec on a single core.")
       (license license:asl2.0))))
+
+(define-public go-github-com-minio-highwayhash
+  (package
+    (name "go-github-com-minio-highwayhash")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minio/highwayhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1inrix7720273ccynxcyi7xsgc55cskxrw7gwn08qkmdj9xdxqai"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/minio/highwayhash"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/minio/highwayhash")
+    (synopsis "HighwayHash library for Go")
+    (description
+     "This package implements the pseudo-random-function (PRF) HighwayHash.
+HighwayHash is a fast hash function designed to defend hash-flooding attacks
+or to authenticate short-lived messages.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-minio-sha256-simd
   (package
@@ -699,6 +776,8 @@ Architecture Processors\" by J. Guilford et al.")
                (delete-file-recursively
                 (string-append "src/" import-path "/testdata"))
                #t)))))
+      (native-inputs
+       (list go-golang-org-x-crypto))
       (home-page "https://github.com/OperatorFoundation/ed25519")
       (synopsis "Ed25519 for go")
       (description "Package ed25519 implements the Ed25519 signature

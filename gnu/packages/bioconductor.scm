@@ -2388,13 +2388,13 @@ yeast are also included.")
 (define-public r-curatedtcgadata
   (package
     (name "r-curatedtcgadata")
-    (version "1.24.0")
+    (version "1.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "curatedTCGAData" version 'experiment))
        (sha256
-        (base32 "0kfdzc5arzsrdaps7b3r718yawpv1x7wms5jp90j8cxpn0hz07az"))))
+        (base32 "0hr66p8l54nzfsizcxxd2njy44xnia607wvfhrgv46f3f8s95z02"))))
     (properties
      `((upstream-name . "curatedTCGAData")))
     (build-system r-build-system)
@@ -3356,13 +3356,13 @@ these biases and construct statistically consistent estimators.")
 (define-public r-animalcules
   (package
     (name "r-animalcules")
-    (version "1.18.2")
+    (version "1.18.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "animalcules" version))
               (sha256
                (base32
-                "1q0ca3pagqzj12kah79jg4py3ibz7qsdl975r2mxhphqwj76gnh8"))))
+                "0j8fa5cr6s20bgw7v62by61q7nk8iw64v4wshwbd2cc36gr7s3c8"))))
     (properties `((upstream-name . "animalcules")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6276,23 +6276,22 @@ Michailidis G (2016) <doi:10.1093/bioinformatics/btw410>.")
 (define-public r-nmf
   (package
     (name "r-nmf")
-    (version "0.26")
+    (version "0.27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NMF" version))
        (sha256
         (base32
-         "1h1fpjnj6vjvi9ygxpfxs8k5bhly0aflr54zj88khgzkylp5ci4d"))))
+         "1y9y7xpfd9y8j5b8s2x5g61455ilpgqpdhrirpz58xjarbph4hxg"))))
     (properties `((upstream-name . "NMF")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cluster
-           r-codetools
-           r-biobase
+     (list r-biobase
            r-biocmanager
-           r-bigmemory ; suggested
-           r-synchronicity ; suggested
+           r-bigmemory ;suggested
+           r-cluster
+           r-codetools
            r-colorspace
            r-digest
            r-doparallel
@@ -6303,7 +6302,8 @@ Michailidis G (2016) <doi:10.1093/bioinformatics/btw410>.")
            r-registry
            r-reshape2
            r-rngtools
-           r-stringr))
+           r-stringr
+           r-synchronicity)) ;suggested
     (native-inputs
      (list r-knitr))
     (home-page "https://renozao.github.io/NMF")
@@ -6970,13 +6970,13 @@ effort and encourages consistency.")
 (define-public r-bsgenome
   (package
     (name "r-bsgenome")
-    (version "1.70.1")
+    (version "1.70.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome" version))
               (sha256
                (base32
-                "1bdrh1kp7ihnlyvgdvwdzly69l9zy5rr09gizm0l59zy4kh59nih"))))
+                "02qrqg7lfisj44gvlfn1gkhxxjqdh11q28inxggfpcda9b67j61d"))))
     (properties
      `((upstream-name . "BSgenome")))
     (build-system r-build-system)
@@ -7479,13 +7479,13 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
 (define-public r-dittoseq
   (package
     (name "r-dittoseq")
-    (version "1.14.0")
+    (version "1.14.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "dittoSeq" version))
               (sha256
                (base32
-                "17ks6bbhv8iw8grzlkibgqmwggrqp5hikg1p49m4a6b6bayillv2"))))
+                "0qyiq6azknjqim0hjy5xw5gvs5jyczx29vcs95dwsfk92sygdps0"))))
     (properties `((upstream-name . "dittoSeq")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7881,13 +7881,13 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.38.5")
+    (version "1.38.6")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "17w5zrvpk2x0sc55xfkbn9krphg4aszmvwmj1qfsf1bdrazfpwic"))))
+                "0z8wkv5jhx8wr6idnakm26lhhk4ssj6ivbb7hfbzhkajcbnnf7mq"))))
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
@@ -10126,13 +10126,13 @@ the graph algorithms contained in the Boost library.")
 (define-public r-rcas
   (package
     (name "r-rcas")
-    (version "1.28.2")
+    (version "1.28.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RCAS" version))
               (sha256
                (base32
-                "19ildsck3g8v4w0g2f473sb8hyhn4avprdi78fim0prva5f9nqnv"))))
+                "1d9icr17xwdmgm6b8ihrwxsg1fp342c2p9f8yqdjm2y52z88gmpd"))))
     (properties `((upstream-name . "RCAS")))
     (build-system r-build-system)
     (propagated-inputs
@@ -10148,7 +10148,6 @@ the graph algorithms contained in the Boost library.")
            r-genomicfeatures
            r-genomicranges
            r-ggplot2
-           r-ggseqlogo
            r-gprofiler2
            r-iranges
            r-knitr
@@ -10162,7 +10161,7 @@ the graph algorithms contained in the Boost library.")
            r-rsqlite
            r-rtracklayer
            r-s4vectors
-           pandoc))
+           r-seqlogo))
     (native-inputs
      (list r-knitr))
     (synopsis "RNA-centric annotation system")
@@ -11475,14 +11474,14 @@ able to deal also with novel and case specific events.")
 (define-public r-trajectoryutils
   (package
     (name "r-trajectoryutils")
-    (version "1.10.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TrajectoryUtils" version))
        (sha256
         (base32
-         "0pqdl0v16q90ffxla34rp07mq0if1q9izpbimfnq0rx7633mk95v"))))
+         "178v5r0nck9ils5k7hj92x7z1xk5zq6zyc78wqnz7s3shbnq9ld7"))))
     (properties
      `((upstream-name . "TrajectoryUtils")))
     (build-system r-build-system)
@@ -13533,13 +13532,13 @@ information.")
 (define-public r-glmgampoi
   (package
     (name "r-glmgampoi")
-    (version "1.14.0")
+    (version "1.14.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "glmGamPoi" version))
               (sha256
                (base32
-                "1qc3f1spzkcjk95b07jpxgrjiwmlamwwx6mlhml4lgzy5qby7dpw"))))
+                "1swbp560ss5sksf1m10c6md4b81yc9qwa6in64j4zzksmrn9jn2d"))))
     (properties `((upstream-name . "glmGamPoi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -16600,14 +16599,14 @@ footprints.")
 (define-public r-gofuncr
   (package
     (name "r-gofuncr")
-    (version "1.22.0")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GOfuncR" version))
        (sha256
         (base32
-         "1baa3aabkhmwq66xkzf4jk5nz85kkx1ks0mqc91s2ra9916wj6cd"))))
+         "004483q584530mh5nb28ppa8wllkd639n9yyw309acs2s4rc7saa"))))
     (properties `((upstream-name . "GOfuncR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -19897,14 +19896,14 @@ gene expression.")
 (define-public r-bgx
   (package
     (name "r-bgx")
-    (version "1.68.0")
+    (version "1.68.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bgx" version))
        (sha256
         (base32
-         "0v85i0lwmxq5yq9ygfzljgy8fsflqq1p53rq8aasnndd6gsm8ld2"))))
+         "1a3hq2i1mxf6dpkk82b6y88q5fcjbqpdcxqplkfp5d2slzsqc3jp"))))
     (properties `((upstream-name . "bgx")))
     (build-system r-build-system)
     (arguments
@@ -20938,14 +20937,14 @@ analytics on packages.")
 (define-public r-biocset
   (package
     (name "r-biocset")
-    (version "1.16.0")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocSet" version))
        (sha256
         (base32
-         "0sk4kmvl86xm85dqaf8gvii0qavyycyn2qp0v6dmfcjqai528v2x"))))
+         "1qmi6b0hrfzj7ixcbxlsxyy3qg7d2qrq8jcjrjrgfyrgcfws46qd"))))
     (properties `((upstream-name . "BiocSet")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21564,14 +21563,14 @@ block processing.")
 (define-public r-rhdf5lib
   (package
     (name "r-rhdf5lib")
-    (version "1.24.1")
+    (version "1.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhdf5lib" version))
        (sha256
         (base32
-         "0lb5dkzfnfvxwrk8s9vzfjp8ab1sbr7b22jnzg41hgmpysi7dswh"))
+         "0b2g57dxvzmnq6dig4dz7cy8lpy3q7fih5q643i5xjcds2cj6lk5"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -21632,11 +21631,10 @@ block processing.")
                  (("cp \"\\$\\{SZIP_LIB\\}.*") "")
                  (("PKG_LIBS =.*") "PKG_LIBS = -lz -lhdf5\n"))))))))
     (propagated-inputs
-     (list hdf5-1.10 r-biocstyle r-stringr zlib))
+     (list hdf5-1.10 zlib))
     (native-inputs
      `(("hdf5-source" ,(package-source hdf5-1.10))
-       ("r-knitr" ,r-knitr)
-       ("r-rmarkdown" ,r-rmarkdown)))
+       ("r-knitr" ,r-knitr)))
     (home-page "https://bioconductor.org/packages/Rhdf5lib")
     (synopsis "HDF5 library as an R package")
     (description "This package provides C and C++ HDF5 libraries for use in R
@@ -23974,14 +23972,14 @@ using aCGH or sequencing.")
 (define-public r-bionero
   (package
     (name "r-bionero")
-    (version "1.10.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNERO" version))
        (sha256
         (base32
-         "0pq5fiacb2x8l5jk3p6bnha9bcwg91grpklgx2nirrlwwr80gf2h"))))
+         "0dxn4pijr6gsqybl8x3ix1xydizg7gzfp72risk37zc5i4xk2lca"))))
     (properties `((upstream-name . "BioNERO")))
     (build-system r-build-system)
     (propagated-inputs

@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,20 +107,16 @@ data in a standard way.")
        (uri (pypi-uri "beartype" version))
        (sha256
         (base32 "0amzckgw9c93bl4jf0q6322j9wyyf3i8vl03yixfkrpllzv6kv14"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv" "beartype_test"
-                             ;; These tests rely on git through the
-                             ;; "get_main_readme_file" helper.
-                             "-k"
-                             (string-append "not test_doc_readme "
-                                            "and not test_sphinx "
-                                            "and not test_pep561_mypy"))))))))
+     (list
+      #:test-flags
+      #~(list
+         "beartype_test"
+         ;; These tests rely on git through the "get_main_readme_file" helper.
+         "-k" (string-append "not test_doc_readme "
+                             "and not test_sphinx "
+                             "and not test_pep561_mypy"))))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/beartype/beartype")
@@ -182,15 +179,7 @@ tests in cram.")
        (sha256
         (base32
          "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest-flake8 python-pytest-xdist python-tabulate))
     (propagated-inputs
@@ -331,27 +320,35 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
 (define-public python-pyinstrument
   (package
     (name "python-pyinstrument")
-    (version "4.1.1")
+    (version "4.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyinstrument" version))
        (sha256
-        (base32 "18n3waxsxcd48pmcp8158s5rlancll2000amrdck9zfj5hfpkhhx"))))
-    (build-system python-build-system)
+        (base32 "1xnp1pjhcj1xl4dq20yzzj9599cmiyxb2azblsyjnl6qgr8yw0h0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable some failing tests.
+                    "not test_script_execution_details"
+                    " and not test_path_execution_details"
+                    " and not test_module_execution_details"
+                    " and not test_program_passed_as_string_execution_details"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-flaky
+           python-greenlet
            python-pytest
            python-pytest-asyncio
            python-pytest-trio))
-    (arguments
-     `(;; TODO: Get tests to work.
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
     (home-page "https://github.com/joerick/pyinstrument")
     (synopsis "Call stack profiler for Python")
     (description
@@ -429,31 +426,20 @@ interactions, which will update them to correspond to the new API.")
               (sha256
                (base32
                 "1dkr86nxkxc0ka3rdnpmk335m8gl1zh1sy8i7w4w1jsidbf82jvw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Tests fail a lot, probably requiring Internet access.
-     (list #:tests? #f
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'build
-                          (lambda _
-                            (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                                    #$version)
-                            (setenv "SOURCE_DATE_EPOCH" "315532800")
-                            (invoke "python"
-                                    "-m"
-                                    "build"
-                                    "--wheel"
-                                    "--no-isolation"
-                                    ".")))
-                        (add-before 'check 'disable-unsupported-test
-                          (lambda _
-                            (substitute* "tests/test_async.py"
-                              (("def test_asynctest")
-                               "def __off_test_asynctest"))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "pytest" "-vvv")))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable test requiring network access.
+                    "not test_disable_socket_urllib"
+                    " and not test_parametrize_with_socket_enabled_and_allow_hosts"
+                    " and not test_global_disable_and_allow_host"
+                    " and not test_asynctest"
+                    " and not test_httpx_fails"
+                    " and not test_disabled_urllib_fails"
+                    " and not test_urllib_succeeds_by_default"
+                    " and not test_enabled_urllib_succeeds"))))
     (native-inputs (list python-httpx
                          python-poetry-core
                          python-pypa-build
@@ -2337,6 +2323,31 @@ Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
 Avocado machine readable outputs this one is streamlined (per test results).
 @end table")
     (license license:gpl2)))            ;some files are under GPLv2 only
+
+(define-public python-pandas-vet
+  (package
+    (name "python-pandas-vet")
+    ;; Newer versions require flake8>=6.0.0.
+    (version "0.2.3")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/deppen8/pandas-vet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b3pqcargv68p2lpv72q49siq6mxfh3znxhz9vd91rp6fd6lf2cz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-attrs python-flake8))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/deppen8/pandas-vet")
+    (synopsis "Opionated @code{flake8} plugin for @code{pandas} code")
+    (description
+     "This package provides a @code{flake8} plugin to lint @code{pandas} code
+in an opinionated way.")
+    (license license:expat)))
 
 (define-public python-parameterizedtestcase
   (package

@@ -11018,8 +11018,8 @@ when the cursor enters a fragment and disappear when it leaves.")
 
 (define-public emacs-org-dailies
   ;; No tags or versions.
-  (let ((commit "64477d5c5cd92df72ba1375eeb149889d42371d7")
-        (revision "0"))
+  (let ((commit "58e58d4968ddb70312160def1c7c3c00382ef655")
+        (revision "1"))
     (package
       (name "emacs-org-dailies")
       (version (git-version "0" revision commit))
@@ -11031,9 +11031,8 @@ when the cursor enters a fragment and disappear when it leaves.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1lxm2xr743c2a5wj82qpprcdfsspcw33ijyq5wfbhcv2kngm4yql"))))
+          (base32 "15xhpxkg2cn2fwaql99gnqcdl012g29lxn9fqb6s282mhr9yan7c"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-dash))
       (home-page "https://git.sr.ht/~ngraves/org-dailies")
       (synopsis "Bare-bones daily journaling with Emacs")
       (description
@@ -26579,29 +26578,31 @@ autosuggestions with:
     (license license:gpl3+)))
 
 (define-public emacs-desktop-environment
-  (package
-    (name "emacs-desktop-environment")
-    (version "0.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DamienCassou/desktop-environment")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "03rl1z860jmirjrrg0xsjx0bqk73k043c8bz6049zhndh7pidri7"))))
-    (build-system emacs-build-system)
-    (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
-    (synopsis "Control your GNU/Linux desktop environment from Emacs")
-    (description
-     "This package helps you control your GNU/Linux desktop from Emacs.
+  (let ((commit "bc1153aa619b12456304cca642424a0d8d2eb416")
+        (revision "0"))
+    (package
+      (name "emacs-desktop-environment")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DamienCassou/desktop-environment")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0bslgm9rz7whk0ll21028dsl22wbd289cdc95qj8hhlk8m4hlp2h"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
+      (synopsis "Control your GNU/Linux desktop environment from Emacs")
+      (description
+       "This package helps you control your GNU/Linux desktop from Emacs.
 With @code{desktop-environment}, you can control the brightness and volume as
 well as take screenshots and lock your screen.  The package depends on the
 availability of shell commands to do the hard work for us.  These commands can
 be changed by customizing the appropriate variables.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-caldav
   (let ((commit "754989ae500b3f576bdb94fe2ef3059f12eaf7d7")) ;version bump
@@ -34530,11 +34531,11 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
     (license license:gpl3+)))
 
 (define-public emacs-telega-server
-  (let ((commit "304705fa007c3dae3c5d0c6dc66641ae783f0081")
+  (let ((commit "e8d9459ef725ed8fb60479b5fccadae1e4eac87a")
         (revision "0"))
     (package
       (name "emacs-telega-server")
-      (version (git-version "0.8.230" revision commit))
+      (version (git-version "0.8.240" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -34542,7 +34543,7 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "02yxjaxpf2f6pjg3ixw7jvx56x6lfh30mnsmiz1p2yi64kyllaan"))
+          (base32 "18f6i2w0iial2wi60vkqck30c0m4p2nj0bzd2x9p4il27dwv5hwq"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-path-placeholder.patch"
@@ -39038,8 +39039,8 @@ latest Emacs.")
 
 (define-public emacs-flim-lb
   ;; No release since Nov 28, 2007.
-  (let ((commit "80b8121f05a5a0d7fcfe3e54085467a646dd2028")
-        (revision "137"))
+  (let ((commit "abdd2315006eb31476249223569808adb1c0f7b2")
+        (revision "142"))
     (package
       (name "emacs-flim-lb")
       (version (git-version "1.14.9" revision commit))
@@ -39051,7 +39052,7 @@ latest Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "02shd2mp9ywncn0wxgrijn0i8fa69kfx1y6nh5jjd64dyiczmskk"))))
+                  "1s21y0djlyiwmc1kz3dx19mdiq472ib07gdrw353imw5vmx3mp7d"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-apel-lb emacs-oauth2))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
@@ -39065,8 +39066,8 @@ Emacs.")
 
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
-  (let ((commit "d15603b8eb791f2057b48071c262996ad7767505")
-        (revision "247"))
+  (let ((commit "9063a4485b148a767ea924f0e7cc78d3524ba256")
+        (revision "248"))
     (package
       (name "emacs-semi-epg")
       (version (git-version "1.14.6" revision commit))
@@ -39078,7 +39079,7 @@ Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0cxrzgxflwgz9wsim84vrliwvkf53v242di4dvn2dfh65gccwqjx"))))
+                  "18km8jdxjcqnh378xxd7ivvvcxzrif8zpq9zgki9i7f0q8lsx677"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-flim-lb))
       (inputs (list emacs-bbdb-vcard))
@@ -39092,8 +39093,8 @@ EasyPG and latest Emacs.")
 
 (define-public emacs-wanderlust
   ;; No release since Jan 15, 2010.
-  (let ((commit "3e8cf26abd9c5c8e4fc611032e259ca930665641")
-        (revision "803"))
+  (let ((commit "9fd2c65e8d690625f35035a71e73f51f740dbe04")
+        (revision "818"))
     (package
       (name "emacs-wanderlust")
       (version (git-version "2.15.9" revision commit))
@@ -39114,7 +39115,7 @@ EasyPG and latest Emacs.")
                            (("package-user-dir") "NONE"))))
                 (sha256
                  (base32
-                  "0k9r3j7pcnvnnj0km8ggjdrf2nfgn1mfq7r7267bk3r3x92cvqh9"))))
+                  "034zrl54ql3ddaj5vl62bjzf2a5hvrq5gd9kynmyp0skgk8i6dr2"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases

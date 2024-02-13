@@ -998,14 +998,14 @@ byte-for-byte identical output.")
 (define-public pigz
   (package
     (name "pigz")
-    (version "2.7")
+    (version "2.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://zlib.net/pigz/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "01y7n7lafp6maqnp4jrmasawnv67najh1bd7gjrmv3d08h1ydjdl"))))
+                "1l0g2zaz05pl3pijsjd8lqxqj122di88rggpr5cvw3hz1r7jp1zb"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

@@ -1297,6 +1297,11 @@ environment variable is set to the non-existent
 @file{/homeless-shelter}.  This helps to highlight inappropriate uses of
 @env{HOME} in the build scripts of packages.
 
+All this usually enough to ensure details of the environment do not
+influence build processes.  In some exceptional cases where more control
+is needed---typically over the date, kernel, or CPU---you can resort to
+a virtual build machine (@pxref{build-vm, virtual build machines}).
+
 You can influence the directory where the daemon stores build trees
 @i{via} the @env{TMPDIR} environment variable.  However, the build tree
 within the chroot is always called @file{/tmp/guix-build-@var{name}.drv-0},
@@ -9850,7 +9855,7 @@ MbedTLS package:
                   (("generate_wrapper_header.*")
                    (string-append
                     "generate_wrapper_header(\"MbedTLS\", \""
-                    (assoc-ref inputs "mbedtls-apache") "\")\n"))))
+                    (assoc-ref inputs "mbedtls") "\")\n"))))
               ;; There's a Julia file for each platform, override them all.
               (find-files "src/wrappers/" "\\.jl$"))))
 @end lisp
@@ -36368,6 +36373,138 @@ host.  If empty, QEMU uses a default file name.
 @end table
 @end deftp
 
+
+@anchor{build-vm}
+@subsubheading Virtual Build Machines
+
+@cindex virtual build machines
+@cindex build VMs
+@cindex VMs, for offloading
+@dfn{Virtual build machines} or ``build VMs'' let you offload builds to
+a fully controlled environment.  ``How can it be more controlled than
+regular builds?  And why would it be useful?'', you ask.  Good
+questions.
+
+Builds spawned by @code{guix-daemon} indeed run in a controlled
+environment; specifically the daemon spawns build processes in separate
+namespaces and in a chroot, such as that build processes only see their
+declared dependencies and a well-defined subset of the file system tree
+(@pxref{Build Environment Setup}, for details).  A few aspects of the
+environments are not controlled though: the operating system kernel, the
+CPU model, and the date.  Most of the time, these aspects have no impact
+on the build process: the level of isolation @code{guix-daemon} provides
+is ``good enough''.
+
+@cindex time traps
+However, there are occasionally cases where those aspects @emph{do}
+influence the build process.  A typical example is @dfn{time traps}:
+build processes that stop working after a certain date@footnote{The most
+widespread example of time traps is test suites that involve checking
+the expiration date of a certificate.  Such tests exists in TLS
+implementations such as OpenSSL and GnuTLS, but also in high-level
+software such as Python.}.  Another one is software that optimizes for
+the CPU microarchitecture it is built on or, worse, bugs that manifest
+only on specific CPUs.
+
+To address that, @code{virtual-build-machine-service-type} lets you add
+a virtual build machine on your system, as in this example:
+
+@lisp
+(use-modules (gnu services virtualization))
+
+(operating-system
+  ;; @dots{}
+  (services (append (list (service virtual-build-machine-service-type))
+                    %base-services)))
+@end lisp
+
+By default, you have to explicitly start the build machine when you need
+it, at which point builds may be offloaded to it (@pxref{Daemon Offload
+Setup}):
+
+@example
+herd start build-vm
+@end example
+
+With the default setting shown above, the build VM runs with its clock
+set to a date several years in the past, and on a CPU model that
+corresponds to that date---a model possibly older than that of your
+machine.  This lets you rebuild today software from the past that would
+otherwise fail to build due to a time trap or other issues in its build
+process.
+
+You can configure the build VM, as in this example:
+
+@lisp
+(service virtual-build-machine-service-type
+         (virtual-build-machine
+          (cpu "Westmere")
+          (cpu-count 8)
+          (memory-size (* 1 1024))
+          (auto-start? #t)))
+@end lisp
+
+The available options are shown below.
+
+@defvar virtual-build-machine-service-type
+This is the service type to run @dfn{virtual build machines}.  Virtual
+build machines are configured so that builds are offloaded to them when
+they are running.
+@end defvar
+
+@deftp {Data Type} virtual-build-machine
+This is the data type specifying the configuration of a build machine.
+It contains the fields below:
+
+@table @asis
+@item @code{name} (default: @code{'build-vm})
+The name of this build VM.  It is used to construct the name of its
+Shepherd service.
+
+@item @code{image}
+The image of the virtual machine (@pxref{System Images}).  This notably
+specifies the virtual disk size and the operating system running into it
+(@pxref{operating-system Reference}).  The default value is a minimal
+operating system image.
+
+@item @code{qemu} (default: @code{qemu-minimal})
+The QEMU package to run the image.
+
+@item @code{cpu}
+The CPU model being emulated as a string denoting a model known to QEMU.
+
+The default value is a model that matches @code{date} (see below).  To
+see what CPU models are available, run, for example:
+
+@example
+qemu-system-x86_64 -cpu help
+@end example
+
+@item @code{cpu-count} (default: @code{4})
+The number of CPUs emulated by the virtual machine.
+
+@item @code{memory-size} (default: @code{2048})
+Size in mebibytes (MiB) of the virtual machine's main memory (RAM).
+
+@item @code{date} (default: a few years ago)
+Date inside the virtual machine when it starts; this must be a SRFI-19
+date object (@pxref{SRFI-19 Date,,, guile, GNU Guile Reference Manual}).
+
+@item @code{port-forwardings} (default: 11022 and 11004)
+TCP ports of the virtual machine forwarded to the host.  By default, the
+SSH and secrets ports are forwarded into the host.
+
+@item @code{systems} (default: @code{(list (%current-system))})
+List of system types supported by the build VM---e.g.,
+@code{"x86_64-linux"}.
+
+@item @code{auto-start?} (default: @code{#f})
+Whether to start the virtual machine when the system boots.
+@end table
+@end deftp
+
+In the next section, you'll find a variant on this theme: GNU/Hurd
+virtual machines!
 
 @anchor{hurd-vm}
 @subsubheading The Hurd in a Virtual Machine

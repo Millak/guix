@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2018, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2018, 2020, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -115,6 +115,8 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
       (setenv "PATH" "/run/current-system/profile/bin:/bin:/usr/bin")
 
       (git-fetch-with-fallback url commit output
+                               #:hash hash
+                               #:hash-algorithm algo
                                #:recursive? recursive?
                                #:git-command %git))))
 

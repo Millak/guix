@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Google LLC
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,7 +57,7 @@ from OS that are needed on the bare metal and not in a container."
                            (if shared-network?
                                (list hosts-service-type)
                                '()))))
-            (operating-system-default-essential-services os)))
+            (operating-system-essential-services os)))
 
   (cons (service system-service-type
                  `(("locale" ,(operating-system-locale-directory os))))
@@ -144,48 +145,53 @@ containerized OS.  EXTRA-FILE-SYSTEMS is a list of file systems to add to OS."
         (list (service dummy-networking-service-type))
         '()))
 
-  (operating-system
-    (inherit os)
-    (swap-devices '()) ; disable swap
-    (essential-services (container-essential-services
-                         this-operating-system
-                         #:shared-network? shared-network?))
-    (services
-     (append services-to-add
-             (filter-map (lambda (s)
-                           (cond ((memq (service-kind s) services-to-drop)
-                                  #f)
-                                 ((eq? nscd-service-type (service-kind s))
-                                  (service nscd-service-type
-                                           (nscd-configuration
-                                            (inherit (service-value s))
-                                            (caches %nscd-container-caches))))
-                                 ((eq? guix-service-type (service-kind s))
-                                  ;; Pass '--disable-chroot' so that
-                                  ;; guix-daemon can build thing even in
-                                  ;; Docker without '--privileged'.
-                                  (service guix-service-type
-                                           (guix-configuration
-                                            (inherit (service-value s))
-                                            (extra-options
-                                             (cons "--disable-chroot"
-                                                   (guix-configuration-extra-options
-                                                    (service-value s)))))))
-                                 (else s)))
-                         (operating-system-user-services os))))
-    (file-systems (append (map mapping->fs
-                               (if shared-network?
-                                   (append %network-file-mappings mappings)
-                                   mappings))
-                          extra-file-systems
-                          user-file-systems
+  (define os-with-base-essential-services
+    (operating-system
+      (inherit os)
+      (swap-devices '()) ; disable swap
+      (services
+       (append services-to-add
+               (filter-map (lambda (s)
+                             (cond ((memq (service-kind s) services-to-drop)
+                                    #f)
+                                   ((eq? nscd-service-type (service-kind s))
+                                    (service nscd-service-type
+                                             (nscd-configuration
+                                              (inherit (service-value s))
+                                              (caches %nscd-container-caches))))
+                                   ((eq? guix-service-type (service-kind s))
+                                    ;; Pass '--disable-chroot' so that
+                                    ;; guix-daemon can build thing even in
+                                    ;; Docker without '--privileged'.
+                                    (service guix-service-type
+                                             (guix-configuration
+                                              (inherit (service-value s))
+                                              (extra-options
+                                               (cons "--disable-chroot"
+                                                     (guix-configuration-extra-options
+                                                      (service-value s)))))))
+                                   (else s)))
+                           (operating-system-user-services os))))
+      (file-systems (append (map mapping->fs
+                                 (if shared-network?
+                                     (append %network-file-mappings mappings)
+                                     mappings))
+                            extra-file-systems
+                            user-file-systems
 
-                          ;; Provide a dummy root file system so we can create
-                          ;; a 'boot-parameters' file.
-                          (list (file-system
-                                  (mount-point "/")
-                                  (device "nothing")
-                                  (type "dummy")))))))
+                            ;; Provide a dummy root file system so we can create
+                            ;; a 'boot-parameters' file.
+                            (list (file-system
+                                    (mount-point "/")
+                                    (device "nothing")
+                                    (type "dummy")))))))
+
+  ;; `essential-services' is thunked, we need to evaluate it separately.
+  (operating-system
+    (inherit os-with-base-essential-services)
+    (essential-services (container-essential-services
+                         os-with-base-essential-services
+                         #:shared-network? shared-network?))))
 
 (define* (container-script os #:key (mappings '()) shared-network?)
   "Return a derivation of a script that runs OS as a Linux container.

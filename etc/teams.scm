@@ -300,11 +300,7 @@ asdf-build-system."
   (team 'go
         #:name "Go team"
         #:scope (list "gnu/packages/configuration-management.scm"
-                      "gnu/packages/golang-check.scm"
-                      "gnu/packages/golang-crypto.scm"
-                      "gnu/packages/golang-web.scm"
-                      "gnu/packages/golang-xyz.scm"
-                      "gnu/packages/golang.scm"
+                      "gnu/packages/golang(-.+|)\\.scm$"
                       "gnu/packages/syncthing.scm"
                       "gnu/packages/terraform.scm"
                       "guix/build-system/go.scm"
@@ -501,7 +497,8 @@ asdf-build-system."
 and Thunderbird."
         #:scope (list "gnu/build/icecat-extension.scm"
                       "gnu/packages/browser-extensions.scm"
-                      "gnu/packages/gnuzilla.scm")))
+                      "gnu/packages/gnuzilla.scm"
+                      "gnu/packages/tor-browsers.scm")))
 
 (define-team racket
   (team 'racket
@@ -715,6 +712,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
 (define-member (person "Wilko Meyer"
                        "w@wmeyer.eu")
   kernel)
+
+(define-member (person "Mark H Weaver"
+                       "mhw@netris.org")
+  mozilla)
 
 
 (define (find-team name)

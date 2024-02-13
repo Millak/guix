@@ -38,7 +38,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Zelphir Kaltstahl <zelphirkaltstahl@posteo.de>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021, 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2021, 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -1853,7 +1853,7 @@ library}.")
 (define-public guile-yamlpp
   (package
     (name "guile-yamlpp")
-    (version "0.2")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -1862,7 +1862,7 @@ library}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14mlqi7hw7pi9scwk1g432issnqcn185pd8na2plijxq55cy0iq7"))))
+        (base32 "0ik69y0vddg0myp0zdbkmklma0qkkrqzwlqwkij1zirklz6hl1ss"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list guile-3.0 yaml-cpp))
@@ -2175,7 +2175,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2185,7 +2185,7 @@ provides tight coupling to Guix.")
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "1ipryn69ad4viqai9pnwhkqqpf9wgw0m2qxrwkfrpm1bfdyilw9w"))))
+         "1gkz19iz3ncf9ddr731lsaw12ca7ygj3dxziz54s9xpp5cw19r0v"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -2196,8 +2196,12 @@ provides tight coupling to Guix.")
            texinfo
            gettext-minimal ;Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
            help2man
-           pkg-config))
-    (inputs (list guile-3.0 which))
+           pkg-config
+           ;; needed when cross-compiling.
+           guile-3.0
+           guile-lib
+           guile-smc))
+    (inputs (list guile-3.0))
     (propagated-inputs (list guile-lib guile-smc guile-dsv))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
     (synopsis "Guile parser library for the iCalendar format")
@@ -2213,7 +2217,12 @@ The library is shipped with documentation in Info format and usage examples.")
   (package
     (inherit guile-ics)
     (name "guile2.2-ics")
-    (inputs (list guile-2.2 which))
+    (native-inputs
+     (modify-inputs (package-native-inputs guile-ics)
+       (replace "guile" guile-2.2)
+       (replace "guile-lib" guile2.2-lib)
+       (replace "guile-smc" guile2.2-smc)))
+    (inputs (list guile-2.2))
     (propagated-inputs (list guile2.2-lib guile2.2-dsv guile2.2-smc))))
 
 (define-public guile-imanifest
@@ -4202,7 +4211,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4211,7 +4220,7 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0y65795s9bs69msqvdbq8h34n00bkfs5v1d44wz21nwdffvq6557"))))
+                "1ad03r84j17rwfxbxqb0qmf70ggqs01kjyman3x1581lm5dk1757"))))
     (build-system gnu-build-system)
     (arguments
      (list

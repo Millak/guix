@@ -64,6 +64,7 @@
 # Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+# Copyright © 2024 David Elsing <david.elsing@posteo.net>
 #
 # This file is part of GNU Guix.
 #
@@ -308,7 +309,9 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/gnu-pw-mgr.scm			\
   %D%/packages/gobby.scm			\
   %D%/packages/golang.scm			\
+  %D%/packages/golang-build.scm		\
   %D%/packages/golang-check.scm		\
+  %D%/packages/golang-compression.scm		\
   %D%/packages/golang-crypto.scm	      	\
   %D%/packages/golang-web.scm	        	\
   %D%/packages/golang-xyz.scm	        	\
@@ -959,6 +962,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/audiofile-function-signature.patch	\
   %D%/packages/patches/automake-skip-amhello-tests.patch	\
   %D%/packages/patches/avahi-localstatedir.patch		\
+  %D%/packages/patches/avalon-toolkit-rdkit-fixes.patch		\
   %D%/packages/patches/avidemux-install-to-lib.patch		\
   %D%/packages/patches/awesome-reproducible-png.patch		\
   %D%/packages/patches/awesome-4.3-fno-common.patch		\
@@ -1061,7 +1065,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
-  %D%/packages/patches/coq-fix-envvars.patch			\
   %D%/packages/patches/cppcheck-disable-char-signedness-test.patch	\
   %D%/packages/patches/cpuinfo-system-libraries.patch		\
   %D%/packages/patches/cpulimit-with-glib-2.32.patch		\
@@ -1516,6 +1519,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/libcall-ui-make-it-installable.patch	\
   %D%/packages/patches/libftdi-fix-paths-when-FTDIPP-set.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.1.1.patch	\
+  %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.3.0.patch	\
+  %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.3.1.patch	\
+  %D%/packages/patches/libgeotiff-fix-tests-on-i386.patch	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
   %D%/packages/patches/librime-fix-build-with-gcc10.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
@@ -1734,10 +1740,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/nvi-db4.patch				\
   %D%/packages/patches/nyacc-binary-literals.patch		\
   %D%/packages/patches/obs-modules-location.patch		\
-  %D%/packages/patches/ocaml-dose3-add-unix-dependency.patch	\
-  %D%/packages/patches/ocaml-dose3-Fix-for-ocaml-4.06.patch	\
-  %D%/packages/patches/ocaml-dose3-dont-make-printconf.patch	\
-  %D%/packages/patches/ocaml-dose3-Install-mli-cmx-etc.patch	\
   %D%/packages/patches/ocaml-multiple-definitions.patch		\
   %D%/packages/patches/ocaml-4.07-dynamically-allocate-signal-stack.patch	\
   %D%/packages/patches/ocaml-4.09-dynamically-allocate-signal-stack.patch	\
@@ -2017,6 +2019,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rw-igraph-0.10.patch			\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
   %D%/packages/patches/s7-flint-3.patch                      	\
+  %D%/packages/patches/sajson-for-gemmi-numbers-as-strings.patch	\
   %D%/packages/patches/sbc-fix-build-non-x86.patch		\
   %D%/packages/patches/sbcl-aserve-add-HTML-5-elements.patch	\
   %D%/packages/patches/sbcl-aserve-fix-rfe12668.patch	\
@@ -2053,7 +2056,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/source-highlight-gcc-compat.patch	\
   %D%/packages/patches/softhsm-fix-openssl3-tests.patch		\
   %D%/packages/patches/spectre-meltdown-checker-externalize-fwdb.patch \
-  %D%/packages/patches/spdlog-fix-tests.patch			\
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/sssd-system-directories.patch		\
   %D%/packages/patches/steghide-fixes.patch			\

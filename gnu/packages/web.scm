@@ -143,6 +143,7 @@
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
@@ -1638,7 +1639,7 @@ for efficient socket-like bidirectional reliable communication channels.")
 (define-public wabt
   (package
     (name "wabt")
-    (version "1.0.32")
+    (version "1.0.34")
     (source
      (origin
        (method git-fetch)
@@ -1648,13 +1649,15 @@ for efficient socket-like bidirectional reliable communication channels.")
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m124r8v9c0hxiaa4iy7ch4ng8msnirbc2vb702gbdjhvgzyrcwh"))
+        (base32 "1vxvc34b7a7lkrmzdb5cjv0b54vhiyr33sy0i2ps5jrmg5rqqmia"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "third_party/gtest/"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; Tests on non-x86_64 architectures are not well supported upstream.
+      #:tests? (target-x86-64?)
       #:test-target "run-tests"
       #:configure-flags '(list "-DUSE_SYSTEM_GTEST=ON")
       #:phases
@@ -6490,7 +6493,7 @@ functions of Tidy.")
              ;; Make sure 'hiawatha' finds 'mbedtls'.
              (let* ((out (assoc-ref outputs "out"))
                     (sbin (string-append out "/sbin"))
-                    (mbed (assoc-ref inputs "mbedtls-apache")))
+                    (mbed (assoc-ref inputs "mbedtls")))
                (wrap-program (string-append sbin "/hiawatha")
                  `("PATH" ":" prefix (,mbed)))))))))
     (inputs

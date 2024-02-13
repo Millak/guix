@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +35,8 @@
      (and (origin-hash origin)
           (or (string-suffix? ".tar.gz" file)
               (string-suffix? ".tgz" file)
+              (string-suffix? ".tar.bz2" file)
+              (string-suffix? ".tbz2" file)
               (string-suffix? ".tar.xz" file)
               (string-suffix? ".tar" file))))))
 

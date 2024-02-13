@@ -973,14 +973,10 @@ correct OpenSSL include path.  It is intended for use in your
 number generator")
   (license license:perl-license)))
 
-;; The "-apache" variant is the upstreamed prefered variant. A "-gpl"
-;; variant exists in addition to the "-apache" one.
-(define-public mbedtls-apache
+(define-public mbedtls-lts
   (package
-    (name "mbedtls-apache")
-    ;; XXX Check whether ‘-Wformat-signedness’ still breaks mbedtls-for-hiawatha
-    ;; when updating.
-    (version "2.28.5")
+    (name "mbedtls")
+    (version "2.28.7")
     (source
      (origin
        (method git-fetch)
@@ -989,17 +985,17 @@ number generator")
              (commit (string-append "mbedtls-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jlkvvyigpjvv404b8vmx68f1v6g1h2zr6rd78dhc0xgqi018phs"))))
+        (base32 "070i5pxciw04swfqk1rmdprhsafn4cias3dlmkm467pqpjnhb394"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
-             "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-source-writable
-           (lambda _
-             (for-each make-file-writable (find-files ".")))))))
+     (list #:configure-flags
+           #~(list "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
+                   "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'make-source-writable
+                 (lambda _
+                   (for-each make-file-writable (find-files ".")))))))
     (native-inputs
      (list perl python))
     (synopsis "Small TLS library")
@@ -1009,47 +1005,41 @@ for developers to include cryptographic and SSL/TLS capabilities in their
 (embedded) products, facilitating this functionality with a minimal
 coding footprint.")
     (home-page "https://www.trustedfirmware.org/projects/mbed-tls/")
-    (license license:asl2.0)))
+    (license (list license:asl2.0 license:gpl2+)))) ;dual licensed
+
+(define-public mbedtls
+  (package
+    (inherit mbedtls-lts)
+    (name "mbedtls")
+    (version "3.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ARMmbed/mbedtls")
+                    (commit (string-append "mbedtls-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wsjrx98h74q0q4zqwsghiqvjz4aqgvigpxb9f8xjw0w4sfsclcm"))))))
+
+(define-public mbedtls-apache
+  (deprecated-package "mbedtls-apache" mbedtls-lts))
 
 ;; The Hiawatha Web server requires some specific features to be enabled.
 (define-public mbedtls-for-hiawatha
   (hidden-package
    (package
-     (inherit mbedtls-apache)
-     (name "mbedtls-apache")
-     (version "2.26.0")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/ARMmbed/mbedtls")
-              (commit (string-append "mbedtls-" version))))
-        (sha256
-         (base32 "0scwpmrgvg6q7rvqkc352d2fqlsx0aylcbyibcp1f1rsn8iiif2m"))
-        (file-name (git-file-name name version))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Can be removed with the next version.
-            ;; Reduce level of format truncation warnings due to false positives.
-            ;; https://github.com/ARMmbed/mbedtls/commit/2065a8d8af27c6cb1e40c9462b5933336dca7434
-            (substitute* "CMakeLists.txt"
-              (("Wformat-truncation=2") "Wformat-truncation"))
-            #t))))
+     (inherit mbedtls-lts)
      (arguments
-      (substitute-keyword-arguments (package-arguments mbedtls-apache)
+      (substitute-keyword-arguments (package-arguments mbedtls-lts)
         ((#:phases phases)
-         `(modify-phases ,phases
-            (add-before 'configure 'configure-extra-features
-              (lambda _
-                (for-each (lambda (feature)
-                            (invoke "scripts/config.pl" "set" feature))
-                          (list "MBEDTLS_THREADING_C"
-                                "MBEDTLS_THREADING_PTHREAD"))
-                ;; XXX The above enables code that breaks with -Werror…
-                (substitute* "CMakeLists.txt"
-                  ((" -Wformat-signedness") ""))
-                #t)))))))))
+         #~(modify-phases #$phases
+             (add-before 'configure 'configure-extra-features
+               (lambda _
+                 (for-each (lambda (feature)
+                             (invoke "scripts/config.pl" "set" feature))
+                           (list "MBEDTLS_THREADING_C"
+                                 "MBEDTLS_THREADING_PTHREAD")))))))))))
 
 (define-public dehydrated
   (package

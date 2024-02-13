@@ -23,6 +23,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2024 Allan Adair <allan@adair.no>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +71,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
@@ -1245,17 +1247,29 @@ L2TP allows you to tunnel PPP over UDP.")
   (package
     (name "vpn-slice")
     (version "0.16.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "vpn-slice" version))
-              (sha256
-               (base32
-                "1anfx4hn2ggm6sbwqmqx68s3l2rjcy4z4l038xqb440jnk8jvl18"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vpn-slice" version))
+       (sha256
+        (base32 "1anfx4hn2ggm6sbwqmqx68s3l2rjcy4z4l038xqb440jnk8jvl18"))))
     (build-system python-build-system)
-    (inputs (list python-dnspython python-setproctitle))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-FHS-file-names
+           (lambda _
+             (substitute* "vpn_slice/linux.py"
+               (("/sbin/iptables")
+                (which "iptables"))
+               (("/sbin/ip")
+                (which "ip"))))))))
+    (inputs (list python-dnspython python-setproctitle iproute iptables))
     (home-page "https://github.com/dlenski/vpn-slice")
     (synopsis "Split tunneling replacement for vpnc-script")
-    (description "vpn-slice is a replacement for @command{vpnc-script} used by
+    (description
+     "vpn-slice is a replacement for @command{vpnc-script} used by
 @code{openconnect} and @code{vpnc}.  Instead of trying to copy the behavior of
 standard corporate VPN clients, which normally reroute all your network
 traffic through the VPN, vpn-slice tries to minimize your contact with an

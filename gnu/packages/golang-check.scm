@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
@@ -40,7 +41,9 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
-  #:use-module (gnu packages golang))
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz))
 
 ;;; Commentary:
 ;;;
@@ -121,6 +124,44 @@
 - because testing panics is ugly.
 @end itemize\n")
       (license license:expat))))
+
+(define-public go-github-com-davecgh-go-spew
+  (package
+    (name "go-github-com-davecgh-go-spew")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/davecgh/go-spew")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hka6hmyvp701adzag2g26cxdj47g21x6jz4sc6jjz1mn59d474y"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "github.com/davecgh/go-spew"
+       #:import-path "github.com/davecgh/go-spew/spew"))
+    (home-page "https://github.com/davecgh/go-spew")
+    (synopsis "Deep pretty printer for Go data structures to aid in debugging")
+    (description "Package @command{spew} implements a deep pretty printer
+for Go data structures to aid in debugging.
+
+A quick overview of the additional features spew provides over the built-in
+printing facilities for Go data types are as follows:
+
+@itemize
+@item Pointers are dereferenced and followed.
+@item Circular data structures are detected and handled properly.
+@item Custom Stringer/error interfaces are optionally invoked, including on
+unexported types.
+@item Custom types which only implement the Stringer/error interfaces via a
+pointer receiver are optionally invoked when passing non-pointer variables.
+@item Byte arrays and slices are dumped like the hexdump -C command which
+includes offsets, byte values in hex, and ASCII output (only when using Dump
+style).
+@end itemize")
+    (license license:isc)))
 
 (define-public go-github-com-frankban-quicktest
   (package
@@ -349,6 +390,30 @@ messages automatically.")
      "Ginkgo is a Behaviour-Driven Development testing framework for Go.  It
 builds on top of Go's builtin @code{testing} library and is complemented by the
 Gomega matcher library.")
+    (license license:expat)))
+
+(define-public go-github-com-prashantv-gostub
+  (package
+    (name "go-github-com-prashantv-gostub")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prashantv/gostub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "035xf5w4fqlicdbbjcflsqflc0z5gmrn6wr7q41xwqfwfpraf9ah"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/prashantv/gostub"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/prashantv/gostub")
+    (synopsis "Stubbing library for Go")
+    (description
+     "Package gostub is used for stubbing variables in tests, and resetting the
+original value once the test has been run.")
     (license license:expat)))
 
 (define-public go-github-com-stretchr-testify

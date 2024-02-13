@@ -78,7 +78,7 @@
                   apr-util
                   gtk+-2
                   libgc
-                  mbedtls-apache
+                  mbedtls-lts
                   (list mariadb "dev")
                   (list mariadb "lib")
                   openssl
@@ -171,7 +171,7 @@ interactive languages.")
                  (lambda _
                    (invoke "make" "install"))))))
     (inputs (list libuv
-                  mbedtls-apache
+                  mbedtls-lts
                   neko
                   ocaml-extlib
                   ocaml-luv
@@ -255,7 +255,7 @@ includes the compiler and library manager.")
                   libpng
                   libuv
                   libvorbis
-                  mbedtls-apache
+                  mbedtls-lts
                   mikktspace
                   minimp3
                   openal
