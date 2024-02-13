@@ -22877,7 +22877,10 @@ implementation of your Python package and its public API surface.")
              (when tests?
                (invoke "pytest" "-v")))))))
     (native-inputs
-     (list python-hypothesis python-pytest-cov python-pytest-mock
+     (list glibc-utf8-locales ;; Tests want en_US.UTF-8
+           python-hypothesis
+           python-pytest-cov
+           python-pytest-mock
            python-pytest))
     (propagated-inputs ; TODO: Add python-fastnumbers.
      (list python-pyicu))
