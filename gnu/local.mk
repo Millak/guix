@@ -1121,6 +1121,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-kv-fix-tests.patch	\
   %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \
   %D%/packages/patches/emacs-native-comp-driver-options.patch   \
+  %D%/packages/patches/emacs-native-comp-fix-filenames.patch   \
   %D%/packages/patches/emacs-next-exec-path.patch   \
   %D%/packages/patches/emacs-next-native-comp-driver-options.patch   \
   %D%/packages/patches/emacs-pasp-mode-quote-file-names.patch  \

@@ -111,6 +111,7 @@
               (patches (search-patches "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
+                                       "emacs-native-comp-fix-filenames.patch"
                                        "emacs-pgtk-super-key-fix.patch"))
               (modules '((guix build utils)))
               (snippet
