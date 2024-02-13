@@ -429,7 +429,7 @@ a Tetris-like game.")
 (define-public sugar-browse-activity
   (package
     (name "sugar-browse-activity")
-    (version "207")
+    (version "208")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -438,7 +438,7 @@ a Tetris-like game.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01p1gfdw9fhn92didc9sq23n6a3krs6findbbmicijz91kx8kfb2"))))
+                "1lxwkwz7bz8vd0jgsgvlwdm6gkrmzcmwlyqvp12j2jk5mpr4fp44"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -467,11 +467,11 @@ a Tetris-like game.")
            gobject-introspection
            gtk+
            (librsvg-for-system)
-           libsoup-minimal-2
+           libsoup-minimal
            python-pygobject
            sugar-toolkit-gtk3
            telepathy-glib
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (inputs
      (list (list glib "bin")))
     (native-inputs
