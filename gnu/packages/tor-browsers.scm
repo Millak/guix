@@ -52,6 +52,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages hunspell)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libcanberra)
@@ -270,7 +271,7 @@ Browser.")
            ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
            ffmpeg-5
            libvpx
-           (force (@@ (gnu packages gnuzilla) icu4c-73-promise))
+           icu4c-73
            pixman
            pulseaudio
            mesa

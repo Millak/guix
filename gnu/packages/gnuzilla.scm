@@ -375,31 +375,6 @@ from collections.abc import MutableSequence"))))
      (list icu4c-69 readline zlib))))
 
 
-;;
-;; Needed for IceCat 115.
-;;
-(define icu4c-73-promise
-  (delay
-    (package
-      (inherit icu4c)
-      (version "73.1")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append
-                      "https://github.com/unicode-org/icu/releases/download/release-"
-                      (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                      "/icu4c-"
-                      (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                      "-src.tgz"))
-                (sha256
-                 (base32
-                  "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
-                (patches
-                 (cons
-                  (search-patch
-                   "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
-                  (origin-patches (package-source icu4c)))))))))
-
 ;;;
 ;;; Localization helper procedures.
 ;;;
@@ -757,7 +732,7 @@ variable defined below.  It requires guile-json to be installed."
            ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
            ffmpeg-5
            libvpx
-           (force icu4c-73-promise)
+           icu4c-73
            pixman
            pulseaudio
            mesa
