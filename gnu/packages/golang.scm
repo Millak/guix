@@ -10243,6 +10243,10 @@ kubernetes-sigs/yaml is a permanent fork of
      (list #:import-path "github.com/schollz/progressbar/v3"
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-examples
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (delete-file-recursively
+                    (string-append "src/" import-path "/examples"))))
                (replace 'check
                  (lambda* (#:key tests? import-path #:allow-other-keys)
                    (when tests?
