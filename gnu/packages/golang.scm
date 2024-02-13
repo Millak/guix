@@ -7924,6 +7924,7 @@ use one of our glamorous default themes.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/coreos/go-semver"))
+    (propagated-inputs (list go-gopkg-in-yaml-v2))
     (home-page "https://github.com/coreos/go-semver/")
     (synopsis "Semantic versioning library")
     (description "@code{go-semver} is a semantic versioning library for Go.
