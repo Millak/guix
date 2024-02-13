@@ -236,7 +236,7 @@ activities and other Sugar components.")
 (define-public sugar-datastore
   (package
     (name "sugar-datastore")
-    (version "0.120")
+    (version "0.121")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -245,7 +245,7 @@ activities and other Sugar components.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wf33w6dm26i8a1zpb40339fj3l9vxjznagls9bc845nld318sqc"))))
+                "01mp0vyg9d6ig29p484prqlgqpa7a3pai8ki37dyk682gr0fhljb"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -293,7 +293,8 @@ activities and other Sugar components.")
            python-pygobject
            python-xapian-bindings))
     (native-inputs
-     (list autoconf automake
+     (list autoconf-2.71
+           automake
            libtool
            pkg-config))
     (home-page "https://www.sugarlabs.org/")
