@@ -120,12 +120,11 @@
               ;; XXX: The brightness component crashes, so we disable it here.
               (substitute* "src/jarabe/main.py"
                 (("brightness.get_instance\\(\\)") ""))
-              ;; TODO: these locations should be set to places that exist on
-              ;; Guix System.
-              #;
+              ;; This is a global location on Guix System.  Ideally we would
+              ;; have a search path here.
               (substitute* "extensions/cpsection/background/model.py"
                 (("\\('/usr', 'share', 'backgrounds'\\)")
-                 "('TODO')"))
+                 "('/run', 'current-system', 'profile', 'share', 'backgrounds')"))
               (substitute* "src/jarabe/view/viewhelp.py"
                 (("/usr/share/sugar/activities/")
                  "/run/current-system/profile/share/sugar/activities/"))))
