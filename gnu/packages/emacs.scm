@@ -376,7 +376,10 @@ editor (console only)")
                     (string-append
                      "-B" #$(this-package-input "libgccjit") "/lib/")
                     (string-append
-                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))))))
+                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))
+            (add-after 'build 'build-trampolines
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "trampolines" make-flags)))))))
     (inputs
      (modify-inputs (package-inputs emacs-minimal)
        (prepend gnutls
