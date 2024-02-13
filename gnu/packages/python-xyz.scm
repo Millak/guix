@@ -6461,19 +6461,26 @@ given signature.  It was largely inspired by @code{python-decorator} and
 (define-public python-markdown-it-py
   (package
     (name "python-markdown-it-py")
-    (version "2.1.0")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "markdown-it-py" version))
               (sha256
                (base32
-                "1nh75i72584r70alhqc479gys04s5m5g3vq601yf2njbs7z5jzng"))))
+                "1swgvyiavak0nmfb31lq5zck5chwhmyf6qb6qwpcav86zaa0mxp3"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;pypi source does not contains tests
-    (native-inputs (list python-flit))
+    (native-inputs (list python-flit-core))
     (propagated-inputs
-     (list python-mdurl
-           python-typing-extensions))
+     (list python-commonmark
+           python-linkify-it-py
+           python-markdown
+           python-mdurl
+           python-mistletoe
+           python-mistune
+           python-panflute
+           python-psutil
+           python-pyyaml))
     (home-page "https://github.com/executablebooks/markdown-it-py")
     (synopsis "Python port of markdown-it")
     (description
