@@ -2482,6 +2482,24 @@ format used by SWIFT.  It returns smart Python collections for statistics
 and manipulation.")
     (license license:bsd-3)))
 
+(define-public python-mt940
+  (package
+    (name "python-mt940")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mt940" version))
+       (sha256
+        (base32 "00w9m06wxxqg9w1bkddqr6yl6ajlzhbiryqzijax64l6sks6ml6g"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools-67 python-wheel-0.40))
+    (home-page "http://mt940.b2ck.com/")
+    (synopsis "A simple module to parse MT940 files")
+    (description "This package provides a simple module to parse MT940
+files.")
+    (license license:bsd-3)))
+
 (define-public xmrig
   (package
     (name "xmrig")
