@@ -3622,23 +3622,23 @@ defects faster.")
                #t)
              #t)))))
     (native-inputs
-     `(("go-github-com-emirpasic-gods" ,go-github-com-emirpasic-gods)
-       ("go-github-com-go-git-gcfg" ,go-github-com-go-git-gcfg)
-       ("go-github-com-go-git-go-billy" ,go-github-com-go-git-go-billy)
-       ("go-github-com-imdario-mergo" ,go-github-com-imdario-mergo)
-       ("go-github-com-jbenet-go-context" ,go-github-com-jbenet-go-context)
-       ("go-github-com-kevinburke-ssh-config" ,go-github-com-kevinburke-ssh-config)
-       ("go-github-com-mitchellh-go-homedir" ,go-github-com-mitchellh-go-homedir)
-       ("go-github-com-sergi-go-diff" ,go-github-com-sergi-go-diff)
-       ("go-github-com-xanzy-ssh-agentf" ,go-github-com-xanzy-ssh-agent)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-gopkg-in-warnings" ,go-gopkg-in-warnings)
-       ("go-github-com-go-git-go-git-fixtures" ,go-github-com-go-git-go-git-fixtures)
-       ("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)
-       ("go-github-com-alcortesm-tgz" ,go-github-com-alcortesm-tgz)
-       ("go-golang-org-x-text" ,go-golang-org-x-text)
-       ("git" ,git)))
+     (list go-github-com-emirpasic-gods
+           go-github-com-go-git-gcfg
+           go-github-com-go-git-go-billy
+           go-github-com-imdario-mergo
+           go-github-com-jbenet-go-context
+           go-github-com-kevinburke-ssh-config
+           go-github-com-mitchellh-go-homedir
+           go-github-com-sergi-go-diff
+           go-github-com-xanzy-ssh-agent
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-gopkg-in-warnings
+           go-github-com-go-git-go-git-fixtures
+           go-gopkg-in-check-v1
+           go-github-com-alcortesm-tgz
+           go-golang-org-x-text
+           git))
     (home-page "https://github.com/go-git/")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
