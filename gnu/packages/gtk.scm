@@ -1725,7 +1725,7 @@ text rendering library.")
   (package
     (inherit pangomm)
     (name "pangomm")
-    (version "2.46.3")
+    (version "2.46.4")
     (source
      (origin
        (method url-fetch)
@@ -1734,7 +1734,7 @@ text rendering library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "0ya3yb36d745m5ccgwhgxl8xjh82hiys3lvk08zqyq0s8x6y03s1"))))
+        (base32 "08nvd36s2fqksrkh573cn4gz90cpyl91azrpp7j4shi62mk1c85r"))))
     (propagated-inputs
      (list cairomm-1.14 glibmm-2.66 pango))))
 
