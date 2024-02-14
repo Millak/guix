@@ -10814,7 +10814,7 @@ functionality and behavior.")
 (define-public folks
   (package
     (name "folks")
-    (version "0.15.6")
+    (version "0.15.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10823,7 +10823,7 @@ functionality and behavior.")
                     "folks-" version ".tar.xz"))
               (sha256
                (base32
-                "0j02hi6j7rn7qhfmb3abryyad020rdkh59n7w6dwwa9zal666rn8"))))
+                "0wbq6h7hv8048c2m554b385qp4i99svaxxp7balwl4ijysg223qj"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
