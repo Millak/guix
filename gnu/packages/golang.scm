@@ -7539,6 +7539,27 @@ the library more lightweight.")
 matching and globbing with support for \"doublestar\" patterns.")
     (license license:expat)))
 
+;; For chezmoi-1.8.10
+(define-public go-github-com-bmatcuk-doublestar-v2
+  (package
+    (inherit go-github-com-bmatcuk-doublestar)
+    (name "go-github-com-bmatcuk-doublestar-v2")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmatcuk/doublestar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09ma8a9rhs8dg527vjhdf3lsb6lajaq193m6ksssm2k3qajhpi94"))))
+    (arguments
+     (list
+      #:tests? #f ; tests have more broken parts
+      #:unpack-path "github.com/bmatcuk/doublestar/v2"
+      #:import-path "github.com/bmatcuk/doublestar/v2"))))
+
 (define-public go-github-com-dlclark-regexp2
   (package
     (name "go-github-com-dlclark-regexp2")
