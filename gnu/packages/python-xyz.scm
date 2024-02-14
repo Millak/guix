@@ -5814,7 +5814,7 @@ e.g. filters, callbacks and errbacks can all be promises.")
     (build-system python-build-system)
     (arguments
      (list #:tests? #f)) ; tests not distributed on pypi
-    (home-page "https://github.com/benfogle/virtualenv")
+    (home-page "https://github.com/benfogle/crossenv")
     (synopsis "Cross-compiling virtualenv for Python")
     (description "This package is a tool for cross-compiling extension
 modules.  It creates a special virtual environment such that @command{pip} or
