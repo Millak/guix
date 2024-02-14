@@ -609,6 +609,33 @@ A wizard allows generating the following AEAT files:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public trytond-account-es-sii
+  (package
+    (name "trytond-account-es-sii")
+    (version "7.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_es_sii" version))
+       (sha256
+        (base32 "1dl8wfzcqyp8zdbxzj264hmgmdy85i74fnmx88vqrrchzmk2g9a4"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_es_sii"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list python-requests
+           python-zeep
+           trytond
+           trytond-account
+           trytond-account-es
+           trytond-account-invoice))
+    (home-page "https://docs.tryton.org/projects/modules-account-es-sii")
+    (synopsis "Tryton module that sends invoices to the Spanish SII webservice")
+    (description "The @emph{Account Spanish SII} Tryton module allows sending
+invoices to the SII portal.  This is legal requirement for some Spanish
+companies.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-eu
   (package
     (name "trytond-account-eu")
