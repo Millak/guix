@@ -3728,6 +3728,33 @@ the product with its factor against the purchase unit.")
 shipment costs to Supplier Shipment.")
     (license license:gpl3+)))
 
+(define-public trytond-quality
+  (package
+    (name "trytond-quality")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_quality" version))
+       (sha256
+        (base32 "04w50icp1bqn6ybmvdl0hxnmizsjjj1jnhkid51w8s0phlwdlvrc"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "quality"))
+    (native-inputs
+     (cons* trytond-production
+            trytond-stock
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-company
+           trytond-product))
+    (home-page "https://docs.tryton.org/projects/modules-quality")
+    (synopsis "Tryton module for quality management")
+    (description "The @emph{Quality} Tryton module enables quality to be
+controlled by configuring control points and inspecting against these when
+certain operations are performed.")
+    (license license:gpl3+)))
+
 (define-public trytond-sale
   (package
     (name "trytond-sale")
