@@ -2308,6 +2308,29 @@ process incoming documents.")
 supplier invoices from incoming documents.")
     (license license:gpl3+)))
 
+(define-public trytond-document-incoming-ocr
+  (package
+    (name "trytond-document-incoming-ocr")
+    (version "7.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_document_incoming_ocr" version))
+       (sha256
+        (base32 "0gngpviap9yr8lv5x02k9a0s86jj8lm7395sp6kshzq0hbr7q0nk"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "document_incoming_ocr"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-company
+           trytond-document-incoming))
+    (home-page "https://docs.tryton.org/projects/modules-document-incoming-ocr")
+    (synopsis "Tryton module to process incoming document with OCR")
+    (description "The @emph{Document Incoming OCR} Tryton module provides the
+basis to interact with OCR services.")
+    (license license:gpl3+)))
+
 (define-public trytond-edocument-uncefact
   (package
     (name "trytond-edocument-uncefact")
