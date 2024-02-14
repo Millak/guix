@@ -4466,13 +4466,13 @@ channels
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.18.0")
+    (version "0.19.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "roman_datamodels" version))
               (sha256
                (base32
-                "0crlmd99p2nyqmrbykdqqng7v8zb4sibm8j9aqrq3ppak3r3r7q1"))))
+                "1ym06rj637fq9gxncdrn3phplk5djrzdwqghszis0di1dvsrif4j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
