@@ -2465,6 +2465,27 @@ field on the party addresses.  This link open the Google Maps page on the
 default browser with the map centered on the selected address.")
     (license license:gpl3+)))
 
+(define-public trytond-inbound-email
+  (package
+    (name "trytond-inbound-email")
+    (version "7.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_inbound_email" version))
+       (sha256
+        (base32 "0y4zjqr3wrd5pvp8gi270m6r4kfs9djz8hc2iw8mj5p8w5hw8p33"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "inbound_email"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond))
+    (home-page "https://docs.tryton.org/projects/modules-inbound-email")
+    (synopsis "Tryton module to manage inbound e-mail")
+    (description "The @emph{Inbound Email} Tryton module allows defining rules
+to apply to inbound e-mails.")
+    (license license:gpl3+)))
+
 (define-public trytond-incoterm
   (package
     (name "trytond-incoterm")
