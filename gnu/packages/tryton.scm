@@ -1277,6 +1277,30 @@ the import of @emph{CODA} files as statement.  @emph{CODA} is a standard
 defined by Belgian \"febelfin\".")
     (license license:gpl3+)))
 
+(define-public trytond-account-statement-mt940
+  (package
+    (name "trytond-account-statement-mt940")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_statement_mt940" version))
+       (sha256
+        (base32 "1lkcv0h2qm2vgnjf8lyvwqcj48xgrkmsna57k5rc9hzj5pr5fnqp"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_statement_mt940"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list python-mt940
+           trytond
+           trytond-account-statement
+           trytond-bank))
+    (home-page "https://docs.tryton.org/projects/modules-account-statement-mt940")
+    (synopsis "Tryton module to import MT940 statements")
+    (description "The @emph{Account Statement MT940} Tryton module implements
+the import of MT940 files as statements.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-statement-ofx
   (package
     (name "trytond-account-statement-ofx")
