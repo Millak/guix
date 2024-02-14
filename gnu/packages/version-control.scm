@@ -3621,10 +3621,12 @@ defects faster.")
                (invoke git-exe "config" "--global" "user.name" "GitHub Actions")
                #t)
              #t)))))
-    (native-inputs
-     (list go-github-com-emirpasic-gods
+    (propagated-inputs
+     (list go-github-com-alcortesm-tgz
+           go-github-com-emirpasic-gods
            go-github-com-go-git-gcfg
            go-github-com-go-git-go-billy
+           go-github-com-go-git-go-git-fixtures
            go-github-com-imdario-mergo
            go-github-com-jbenet-go-context
            go-github-com-kevinburke-ssh-config
@@ -3633,12 +3635,10 @@ defects faster.")
            go-github-com-xanzy-ssh-agent
            go-golang-org-x-crypto
            go-golang-org-x-net
-           go-gopkg-in-warnings
-           go-github-com-go-git-go-git-fixtures
-           go-gopkg-in-check-v1
-           go-github-com-alcortesm-tgz
            go-golang-org-x-text
-           git))
+           go-gopkg-in-check-v1
+           go-gopkg-in-warnings))
+    (native-inputs (list git))
     (home-page "https://github.com/go-git/")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
