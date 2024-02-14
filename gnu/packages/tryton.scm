@@ -374,6 +374,33 @@ budgeted amount.")
 amounts to be rounded using the cash rounding factor of the currency.")
     (license license:gpl3+)))
 
+(define-public trytond-account-consolidation
+  (package
+    (name "trytond-account-consolidation")
+    (version "7.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_consolidation" version))
+       (sha256
+        (base32 "07qjw6h2cap1lg712w2yznnbp3swk1m9rspb48c13yyhm5xaf4ii"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_consolidation"))
+    (native-inputs
+     (cons* trytond-account-invoice
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list
+      trytond
+      trytond-account
+      trytond-company
+      trytond-currency))
+    (home-page "https://docs.tryton.org/projects/modules-account-consolidation")
+    (synopsis "Tryton module to consolidate accounting of many companies")
+    (description "The @emph{Account Consolidation} Tryton module allows
+consolidate accounting report of multiple companies.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-credit-limit
   (package
     (name "trytond-account-credit-limit")
