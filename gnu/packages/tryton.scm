@@ -1040,20 +1040,19 @@ journal.")
 (define-public trytond-account-payment-sepa
   (package
     (name "trytond-account-payment-sepa")
-    (version "7.0.4")
+    (version "7.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment_sepa" version))
        (sha256
-        (base32 "0q0laf89rj8kh834c7201vq3v6did3xzrpaai7mkyabwdpbvm4ah"))))
+        (base32 "0lqpwcaky6dsgghskmsz5d2qqdwx1j8z2vz6wi27rmsgz840ssvg"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_payment_sepa"))
     (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-stdnum
            trytond
-           trytond-account
            trytond-account-payment
            trytond-bank
            trytond-company
@@ -1356,6 +1355,29 @@ When the @emph{Apply Rule} button is clicked on a statement, each rule is
 tested in order against each origin that does not have any lines until one is
 found that matches.  Then the rule found is used to create the statement lines
 linked to the origin.")
+    (license license:gpl3+)))
+
+(define-public trytond-account-statement-sepa
+  (package
+    (name "trytond-account-statement-sepa")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_statement_sepa" version))
+       (sha256
+        (base32 "1gzkljcd5gbwk2vqmzz2zzh5sy7qjbmqviilaribv9n9n6n310dv"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_statement_sepa"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-account-statement
+           trytond-bank))
+    (home-page "https://docs.tryton.org/projects/modules-account-statement-sepa")
+    (synopsis "Tryton module to import SEPA statements")
+    (description "The @emph{Account Statement SEPA} Tryton module implements
+the import of the CAMT.052, CAMT.053 and CAMT.054 SEPA files as statement.")
     (license license:gpl3+)))
 
 (define-public trytond-account-stock-anglo-saxon
