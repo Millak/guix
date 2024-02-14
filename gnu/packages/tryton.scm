@@ -2284,6 +2284,30 @@ configure their dashboard.")
 process incoming documents.")
     (license license:gpl3+)))
 
+(define-public trytond-document-incoming-invoice
+  (package
+    (name "trytond-document-incoming-invoice")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_document_incoming_invoice" version))
+       (sha256
+        (base32 "1jpwwqpa4zaap1bi6praldybx2psgyi7lkafxcg2qrs36xzwgzpl"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "document_incoming_invoice"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-account-invoice
+           trytond-document-incoming
+           trytond-party))
+    (home-page "https://docs.tryton.org/projects/modules-document-incoming-invoice")
+    (synopsis "Tryton module to manage incoming invoice document")
+    (description "The @emph{Document Incoming Invoice} Tryton module creates
+supplier invoices from incoming documents.")
+    (license license:gpl3+)))
+
 (define-public trytond-edocument-uncefact
   (package
     (name "trytond-edocument-uncefact")
