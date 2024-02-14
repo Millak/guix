@@ -4215,6 +4215,31 @@ customer's names and codes for products or variants.")
 enforcing the minimal and the rounding of quantity sold per product.")
     (license license:gpl3+)))
 
+(define-public trytond-sale-product-recommendation
+  (package
+    (name "trytond-sale-product-recommendation")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_sale_product_recommendation" version))
+       (sha256
+        (base32 "11s8i76p6743xx1m0h0hslvzw4cj190m3hdpsv6id5prgragx9sk"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "sale_product_recommendation"))
+    (native-inputs
+     (cons* trytond-sale-point
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-product
+           trytond-sale))
+    (home-page "https://docs.tryton.org/projects/modules-sale-product-recommendation")
+    (synopsis "Tryton module for product recommendations")
+    (description "The @emph{Sale Product Recommendation} Tryton module
+provides facilities to implement recommendation of products on sale.")
+    (license license:gpl3+)))
+
 (define-public trytond-sale-promotion
   (package
     (name "trytond-sale-promotion")
