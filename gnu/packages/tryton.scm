@@ -2259,6 +2259,31 @@ duty based on the tariff code.")
 configure their dashboard.")
     (license license:gpl3+)))
 
+(define-public trytond-document-incoming
+  (package
+    (name "trytond-document-incoming")
+    (version "7.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_document_incoming" version))
+       (sha256
+        (base32 "18apzwxh8qh0c9gkhjf95avm4f2v5w96rx564j5v2j53a9kp86zj"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "document_incoming"))
+    (native-inputs
+     (cons* trytond-inbound-email
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list python-pypdf
+           trytond
+           trytond-company))
+    (home-page "https://docs.tryton.org/projects/modules-document-incoming")
+    (synopsis "Tryton module to manage incoming documents")
+    (description "The @emph{Document Incoming} Tryton module collects and
+process incoming documents.")
+    (license license:gpl3+)))
+
 (define-public trytond-edocument-uncefact
   (package
     (name "trytond-edocument-uncefact")
