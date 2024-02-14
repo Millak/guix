@@ -519,6 +519,42 @@ Mark} detection.")
 atimes for files.")
     (license license:expat)))
 
+(define-public go-github-com-dustin-gojson
+  (package
+    (name "go-github-com-dustin-gojson")
+    (version "v0.0.0-20160307161227-2e71ec9dd5ad")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dustin/gojson")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vrmmyn7l568l1k71mxd54iqf3d54pn86cf278i374j86jn0bdxf"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Fix the library to work with go-1.21.
+                   (substitute* "decode.go"
+                     (("trying to unmarshal unquoted value into")
+                      "trying to unmarshal unquoted value %v into"))
+                   (substitute* "decode_test.go"
+                     (("t.Fatalf\\(\"Unmarshal: %v\"\\)")
+                      "t.Fatalf(\"Unmarshal: %v\", data)")) ;))))
+                   (substitute* "scanner.go"
+                     (("s := strconv.Quote\\(string\\(c\\)\\)")
+                      "s := strconv.QuoteRune(rune(c))"))))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/dustin/gojson"
+       #:go ,go-1.21))
+    (home-page "https://github.com/dustin/gojson")
+    (synopsis "Extended Golang's @code{encoding/json} module with the public scanner API")
+    (description
+     "This package provides a fork of Golang's @code{encoding/json} with the
+scanner API made public.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-elliotchance-orderedmap
   (package
     (name "go-github-com-elliotchance-orderedmap")
