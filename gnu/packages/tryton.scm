@@ -3841,6 +3841,33 @@ sales that are being processed and keep track of the changes.  An amendment is
 composed of action lines which can:")
     (license license:gpl3+)))
 
+(define-public trytond-sale-blanket-agreement
+  (package
+    (name "trytond-sale-blanket-agreement")
+    (version "7.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_sale_blanket_agreement" version))
+       (sha256
+        (base32 "0ai58qmyqrn89ppbrnsqclss5kf4hr5y2gpa9s0xs1cicn367w8f"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "sale_blanket_agreement"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-company
+           trytond-currency
+           trytond-party
+           trytond-product
+           trytond-sale))
+    (home-page "https://docs.tryton.org/projects/modules-sale-blanket-agreement")
+    (synopsis "Tryton module for sale blanket agreements")
+    (description "The @emph{Sale Blanket Agreement} Tryton module manages
+long-term contracts with customers to sell a specific quantity of products
+with multiple orders over a period.")
+    (license license:gpl3+)))
+
 (define-public trytond-sale-complaint
   (package
     (name "trytond-sale-complaint")
