@@ -4190,6 +4190,31 @@ price list on sale.  A price list can be set per party or as default.")
 customer's names and codes for products or variants.")
     (license license:gpl3+)))
 
+(define-public trytond-sale-product-quantity
+  (package
+    (name "trytond-sale-product-quantity")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_sale_product_quantity" version))
+       (sha256
+        (base32 "1k1mi0iiw1xqm3sjywzfq61whc9kwsv09248m31y9k1r0qx0zxh7"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "sale_product_quantity"))
+    (native-inputs
+     (cons* trytond-sale-point
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-product
+           trytond-sale))
+    (home-page "https://docs.tryton.org/projects/modules-sale-product-quantity")
+    (synopsis "Tryton module to add quantity constraints on sale lines")
+    (description "The @emph{Sale Product Quantity} Tryton module permits
+enforcing the minimal and the rounding of quantity sold per product.")
+    (license license:gpl3+)))
+
 (define-public trytond-sale-promotion
   (package
     (name "trytond-sale-promotion")
