@@ -4322,6 +4322,29 @@ on a sale based on criteria.")
 to the promotions.")
     (license license:gpl3+)))
 
+(define-public trytond-sale-promotion-coupon-payment
+  (package
+    (name "trytond-sale-promotion-coupon-payment")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_sale_promotion_coupon_payment" version))
+       (sha256
+        (base32 "051jgg0pid8rsk8987q0vfx1xiixvh65rzl9bcgdzj7kl8fxlssp"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "sale_promotion_coupon_payment"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-account-payment
+           trytond-sale-promotion-coupon))
+    (home-page "https://docs.tryton.org/projects/modules-sale-promotion-coupon-payment")
+    (synopsis "Tryton module to link payments with coupons")
+    (description "The @emph{Sale Promotion Coupon Payment} Tryton module
+includes the identical parties from the payments to count usage per party.")
+    (license license:gpl3+)))
+
 (define-public trytond-sale-secondary-unit
   (package
     (name "trytond-sale-secondary-unit")
