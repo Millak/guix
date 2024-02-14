@@ -706,6 +706,63 @@ CFITSIO library.  Among other things, it can
 series in Python.")
     (license license:bsd-2)))
 
+(define-public python-ginga
+  (package
+    (name "python-ginga")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ginga" version))
+       (sha256
+        (base32 "0w60w9d2yqhbmggp0dljj5a0sk07gywifjq8nzw3y2v47vzgwqb6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list ;;python-exifread  ; optional, not packed yet in Guix
+           python-astropy
+           python-astroquery
+           python-dateutil
+           python-magic
+           python-matplotlib
+           python-fitsio
+           python-numpy
+           python-photutils
+           python-pillow
+           python-qtpy
+           python-scipy))
+    (native-inputs
+     (list python-attrs
+           python-docutils
+           python-pytest-astropy
+           python-semantic-version
+           python-tornado))
+    (home-page "https://ejeschke.github.io/ginga/")
+    (synopsis "Scientific image viewer and toolkit for FITS files")
+    (description "Ginga is a toolkit designed for building viewers for
+scientific image data in Python, visualizing 2D pixel data in numpy arrays.  It
+can view astronomical data such as contained in files based on the
+FITS (Flexible Image Transport System) file format.  It is written and is
+maintained by software engineers at the National Astronomical Observatory of
+Japan (NAOJ), the Space Telescope Science Institute (STScI), and other
+contributing entities.
+
+The Ginga toolkit centers around an image display object which supports zooming
+and panning, color and intensity mapping, a choice of several automatic cut
+levels algorithms and canvases for plotting scalable geometric forms.  In
+addition to this widget, a general purpose \"reference\" FITS viewer is
+provided, based on a plugin framework.  A fairly complete set of standard plugins
+are provided for features that we expect from a modern FITS viewer: panning and
+zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
+(license license:bsd-3)))
+
+(define-public ginga-qt5
+  (package/inherit python-ginga
+    (name "ginga-qt5")
+    (inputs
+     (modify-inputs (package-inputs python-ginga)
+       (prepend python-pyqt)))
+    (synopsis "Qt5 image viewer build based on python-ginga library")))
+
 (define-public qfits
   (package
     (name "qfits")
