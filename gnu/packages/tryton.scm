@@ -2593,6 +2593,35 @@ marketing actions to be automated.  It is based on scenarios and activities
 that are executed on selected records.")
     (license license:gpl3+)))
 
+(define-public trytond-marketing-campaign
+  (package
+    (name "trytond-marketing-campaign")
+    (version "7.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_marketing_campaign" version))
+       (sha256
+        (base32 "1sabklrxyfx9172813b5q4i74xn4j24hs5pd5gy9lcc0xlyv8bm6"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "marketing_campaign"))
+    (native-inputs
+     (cons* trytond-marketing-automation
+            trytond-marketing-email
+            trytond-sale
+            trytond-sale-opportunity
+            trytond-sale-point
+            trytond-web-shortener
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-marketing))
+    (home-page "https://docs.tryton.org/projects/modules-marketing-campaign")
+    (synopsis "Tryton module to manage marketing campaign")
+    (description "The @emph{Marketing Campaign} Tryton module helps collecting
+data about marketing campaigns.")
+    (license license:gpl3+)))
+
 (define-public trytond-marketing-email
   (package
     (name "trytond-marketing-email")
