@@ -1439,6 +1439,45 @@ anglo-saxon accounting model for stock valuation.")
 continental accounting model for stock valuation.")
     (license license:gpl3+)))
 
+(define-public trytond-account-stock-eu
+  (package
+    (name "trytond-account-stock-eu")
+    (version "7.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_stock_eu" version))
+       (sha256
+        (base32 "1iw60aqwjz8wkpkqkc2jvv4i303cgyrym6z716xycqjmg46rn61f"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_stock_eu"))
+    (native-inputs
+     (cons* trytond-carrier
+            trytond-incoterm
+            trytond-production
+            trytond-purchase-shipment-cost
+            trytond-stock-consignment
+            trytond-stock-package-shipping
+            trytond-stock-shipment-cost
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-account
+           trytond-company
+           trytond-country
+           trytond-currency
+           trytond-customs
+           trytond-party
+           trytond-product
+           trytond-product-measurements
+           trytond-stock
+           trytond-stock-shipment-measurements))
+    (home-page "https://docs.tryton.org/projects/modules-account-stock-eu")
+    (synopsis "Tryton module for European stock accounting")
+    (description "The @emph{Account Stock EU} Tryton module is used to
+generate the Intrastat declarations every month.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-stock-landed-cost
   (package
     (name "trytond-account-stock-landed-cost")
