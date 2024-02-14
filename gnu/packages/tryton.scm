@@ -1550,6 +1550,30 @@ from the Product Measurements")
 allocates shipment cost based on invoice.")
     (license license:gpl3+)))
 
+(define-public trytond-account-stock-shipment-cost-weight
+  (package
+    (name "trytond-account-stock-shipment-cost-weight")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_stock_shipment_cost_weight" version))
+       (sha256
+        (base32 "0nlfz0azn6y16i0qy8mwpsdz2ckh554h640warfnydmmbj1hqkni"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_stock_shipment_cost_weight"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-account-stock-shipment-cost
+           trytond-stock-shipment-measurements))
+    (home-page
+     "https://docs.tryton.org/projects/modules-account-stock-shipment-cost-weight")
+    (synopsis "Tryton module to allocate shipment cost \"by weight\"")
+    (description "The @emph{Account Stock Shipment Cost Weight} Tryton module
+adds “by weight” as allocation method on shipment cost.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-tax-cash
   (package
     (name "trytond-account-tax-cash")
