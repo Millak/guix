@@ -1797,6 +1797,28 @@ shows for each employee the total duration per day in the company and the
 detail of the time of entrance and exit")
     (license license:gpl3+)))
 
+(define-public trytond-authentication-saml
+  (package
+    (name "trytond-authentication-saml")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_authentication_saml" version))
+       (sha256
+        (base32 "0ln7mj4wg3dapa1sdmcm78bm2j7rsivby23xbmf1s83i3jdb4wdm"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "authentication_saml"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list python-pysaml2
+           trytond))
+    (home-page "https://docs.tryton.org/projects/modules-authentication-saml")
+    (synopsis "Tryton module to authenticate users via SAML")
+    (description "The @emph{Authentication SAML} Tryton module allows
+delegating the user authentication to an identity provider via SAML.")
+    (license license:gpl3+)))
+
 (define-public trytond-authentication-sms
   (package
     (name "trytond-authentication-sms")
