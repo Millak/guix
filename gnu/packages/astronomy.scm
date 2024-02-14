@@ -4414,10 +4414,13 @@ default) to world coordinates.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Tests introduce dependencies cycle, breaking it by disable them.
+      ;; Ignore tests requiring python-crds to break cycle:
       ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
-      #:tests? #f))
-    (native-inputs (list python-semantic-version python-setuptools-scm))
+      #:test-flags #~(list "--ignore=tests/test_schemas.py")))
+    (native-inputs
+     (list python-pytest
+           python-semantic-version
+           python-setuptools-scm))
     (propagated-inputs (list python-asdf python-asdf-astropy))
     (home-page "https://github.com/spacetelescope/rad")
     (synopsis "Roman Attribute Dictionary")
