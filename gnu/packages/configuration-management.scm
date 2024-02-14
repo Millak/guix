@@ -33,9 +33,7 @@
 (define-public chezmoi
   (package
     (name "chezmoi")
-    ;; XXX: Make sure 7f238faa61e46d79b54d4d0ea8f0b5fc27db84b2 applied before
-    ;; version update, which should fix @code{password-store} integration.
-    (version "1.8.1")
+    (version "1.8.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -44,24 +42,53 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b8y0wq3myhvjdnwl0i4x85iil7i7kmsjajvbw1a47afm83jkbaw"))))
+                "0ildvlq7v8vnw74y4fgnv3hpq49bpl6zh1wmakfh46crwg7ffmjb"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/twpayne/chezmoi"
-       ;; We don't need to install the source code for end-user applications.
-       #:install-source? #f))
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+       ;; Remove test script which expect additional user's programs available
+       ;; in the PATH. The testdata directory is removed in the latest version
+       ;; (2.46.1) of the program.
+         (add-after 'unpack 'remove-failing-test-scripts
+           (lambda* (#:key import-path #:allow-other-keys)
+             (for-each (lambda (f)
+                         (delete-file (string-append "src/" import-path "/testdata/scripts/" f)))
+                       '("bitwarden.txt"
+                         "cd.txt"
+                         "cd_unix.txt"
+                         "completion.txt"
+                         "diff.txt"
+                         "edit.txt"
+                         "editconfig.txt"
+                         "git.txt"
+                         "gopass.txt"
+                         "keepassxc.txt"
+                         "lastpass.txt"
+                         "onepassword.txt"
+                         "pass.txt"
+                         "runscriptdir_unix.txt"
+                         "script_unix.txt"
+                         "secretgeneric.txt"
+                         "secretgopass.txt"
+                         "secretkeepassxc.txt"
+                         "secretlastpass.txt"
+                         "secretonepassword.txt"
+                         "secretpass.txt")))))))
     (native-inputs
      (list go-etcd-io-bbolt
            go-github-com-alecthomas-chroma
            go-github-com-aymerick-douceur
-           go-github-com-bmatcuk-doublestar
+           go-github-com-bmatcuk-doublestar-v2
            go-github-com-charmbracelet-glamour
            go-github-com-chris-ramon-douceur
            go-github-com-coreos-go-semver
            go-github-com-danwakefield-fnmatch
            go-github-com-dlclark-regexp2
            go-github-com-godbus-dbus
-           go-github-com-google-go-github
+           go-github-com-google-go-github-v33
            go-github-com-google-go-querystring
            go-github-com-google-goterm
            go-github-com-google-renameio
@@ -100,6 +127,7 @@
            go-golang-org-x-crypto
            go-golang-org-x-net
            go-golang-org-x-oauth2
+           go-golang-org-x-term
            go-gopkg-in-errgo-fmt-errors))
     (home-page "https://www.chezmoi.io/")
     (synopsis "Personal configuration files manager")
