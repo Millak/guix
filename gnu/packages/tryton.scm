@@ -1595,6 +1595,29 @@ adds “by weight” as allocation method on shipment cost.")
 report on cash basis.")
     (license license:gpl3+)))
 
+(define-public trytond-account-tax-non-deductible
+  (package
+    (name "trytond-account-tax-non-deductible")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_tax_non_deductible" version))
+       (sha256
+        (base32 "0xx15wj7phigrdad0yrydjfg98plb712dqq0ayhj3p17ijcvkyfl"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_tax_non_deductible"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-account
+           trytond-account-invoice))
+    (home-page "https://docs.tryton.org/projects/modules-account-tax-non-deductible")
+    (synopsis "Tryton module to report non-deductible taxes")
+    (description "The @emph{Account Tax Non Deductible} Tryton module allows
+to define non-deductible taxes and reports them.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-tax-rule-country
   (package
     (name "trytond-account-tax-rule-country")
