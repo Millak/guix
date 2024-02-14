@@ -5197,6 +5197,30 @@ cost on the outgoing moves which is calculated from the carrier purchase
 price.  This cost is added to the product margin reports.")
     (license license:gpl3+)))
 
+(define-public trytond-stock-shipment-cost-weight
+  (package
+    (name "trytond-stock-shipment-cost-weight")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_stock_shipment_cost_weight" version))
+       (sha256
+        (base32 "0ayrwalpn2ryis94wgjvaplp9azfjdyzqw331ipvm5s3ayfcbjia"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "stock_shipment_cost_weight"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-carrier
+           trytond-stock-shipment-cost
+           trytond-stock-shipment-measurements))
+    (home-page "https://docs.tryton.org/projects/modules-stock-shipment-cost-weight")
+    (synopsis "Tryton module to allocate shipment cost \"by weight\"")
+    (description "The @emph{Stock Shipment Cost Weight} Tryton module adds “by
+weight” as allocation method of shipment cost on the carrier.")
+    (license license:gpl3+)))
+
 (define-public trytond-stock-shipment-measurements
   (package
     (name "trytond-stock-shipment-measurements")
