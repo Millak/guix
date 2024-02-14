@@ -693,6 +693,29 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 GitHub API v3.")
     (license license:bsd-3)))
 
+;; For chezmoi-1.8.10
+(define-public go-github-com-google-go-github-v33
+  (package
+    (inherit go-github-com-google-go-github)
+    (name "go-github-com-google-go-github-v33")
+    (version "33.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-github")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-google-go-github)
+       ((#:unpack-path _ "github.com/google/go-github/v26")
+        "github.com/google/go-github/v33")
+       ((#:import-path _ "github.com/google/go-github/v26/github")
+        "github.com/google/go-github/v33/github")))))
+
 (define-public go-github-com-google-safehtml
   (package
     (name "go-github-com-google-safehtml")
