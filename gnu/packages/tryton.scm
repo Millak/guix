@@ -903,6 +903,31 @@ average price of the posted invoice lines that are linked to it.")
   (deprecated-package
    "python-trytond-account-invoice-stock" trytond-account-invoice-stock))
 
+(define-public trytond-account-invoice-watermark
+  (package
+    (name "trytond-account-invoice-watermark")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_invoice_watermark" version))
+       (sha256
+        (base32 "00b0s9mzdxafw6hfl4xg3wvb6w3k8zw98knirig4ksy04xr4w4zp"))))
+    (build-system pyproject-build-system)
+    ;; doctest would required libreoffice
+    (arguments (tryton-arguments "account_invoice_watermark"
+                "-k not scenario_account_invoice_watermark.rst"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list python-pypdf
+           trytond
+           trytond-account-invoice))
+    (home-page "https://docs.tryton.org/projects/modules-account-invoice-watermark")
+    (synopsis "Tryton module to add a watermark to invoices")
+    (description "The @emph{Account Invoice Watermark} Tryton module adds a
+\"draft\" or \"paid\" watermark to the printed invoice.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-move-line-grouping
   (package
     (name "trytond-account-move-line-grouping")
