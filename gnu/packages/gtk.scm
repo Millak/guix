@@ -1792,7 +1792,7 @@ text rendering library.")
   (package
     (inherit atkmm)
     (name "atkmm")
-    (version "2.28.1")
+    (version "2.28.4")
     (source
      (origin
        (method url-fetch)
@@ -1801,7 +1801,7 @@ text rendering library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1b8vycqzr3lfvk2l73f4kk74hj48081zbh9r1r2ilr3h8xh7cs0i"))))
+        (base32 "1cysiz908phkagwnls44xxa60xls7r3fw540zcg00g7q520jl50a"))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs atkmm)
        (replace "glibmm" glibmm-2.66)))))
