@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2020-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2016,2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016, 2021-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1335,6 +1335,28 @@ computing in Python.  It extends both the @code{concurrent.futures} and
      "This is the Python package for ECOS: Embedded Cone Solver.  ECOS is
 numerical software for solving convex second-order cone programs (SOCPs).")
     (license license:gpl3)))
+
+(define-public python-efficient-apriori
+  (package
+    (name "python-efficient-apriori")
+    (version "2.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "efficient_apriori" version))
+       (sha256
+        (base32 "0vmdp8qkir7jrmwgpzajssyxh6q78m0q16pr1v657vla9x5wxn2s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--doctest-modules" "-vv" "efficient_apriori")))
+    (native-inputs (list python-setuptools python-pytest))
+    (home-page "https://github.com/tommyod/Efficient-Apriori")
+    (synopsis "An efficient Python implementation of the Apriori algorithm.")
+    (description "An efficient Python implementation of the Apriori algorithm,
+which uncovers hidden structures in categorical data")
+    (license license:expat)))
 
 (define-public python-fast-histogram
   (package
