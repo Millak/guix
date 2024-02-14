@@ -1886,6 +1886,35 @@ and account.")
 of carrier.")
     (license license:gpl3+)))
 
+(define-public trytond-carrier-carriage
+  (package
+    (name "trytond-carrier-carriage")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_carrier_carriage" version))
+       (sha256
+        (base32 "106a7cixchss6g8j0zclhb35ir87sa5whn6l33jxgvraq7jswy9n"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "carrier_carriage"))
+    (native-inputs
+     (cons* trytond-account-invoice
+            trytond-incoterm
+            trytond-purchase-shipment-cost
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-carrier
+           trytond-stock
+           trytond-stock-shipment-cost))
+    (home-page "https://docs.tryton.org/projects/modules-carrier-carriage")
+    (synopsis "Tryton module to support multiple carriers")
+    (description "The @emph{Carrier Carriage} Tryton module extends the
+support of carrier by adding carriers before and after the main carrier.")
+    (license license:gpl3+)))
+
 (define-public trytond-carrier-percentage
   (package
     (name "trytond-carrier-percentage")
