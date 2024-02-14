@@ -3449,6 +3449,33 @@ amendment is composed of action lines which can:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public trytond-purchase-blanket-agreement
+  (package
+    (name "trytond-purchase-blanket-agreement")
+    (version "7.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_purchase_blanket_agreement" version))
+       (sha256
+        (base32 "1h96y36ik14snxw6hm6w6nsxkkn5lv4vmhmy1xfadiffafhr7503"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "purchase_blanket_agreement"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-company
+           trytond-currency
+           trytond-party
+           trytond-product
+           trytond-purchase))
+    (home-page "https://docs.tryton.org/projects/modules-purchase-blanket-agreement")
+    (synopsis "Tryton module for purchase blanket agreements")
+    (description "The @emph{Purchase Blanket Agreement} Tryton module manages
+long-term contracts with suppliers to purchase a specific quantity of products
+with multiple orders over a period.")
+    (license license:gpl3+)))
+
 (define-public trytond-purchase-history
   (package
     (name "trytond-purchase-history")
