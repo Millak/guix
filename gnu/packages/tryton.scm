@@ -3548,6 +3548,33 @@ makes purchase to generate invoice lines instead of invoices.")
 lists to be defined for suppliers.")
     (license license:gpl3+)))
 
+(define-public trytond-purchase-product-quantity
+  (package
+    (name "trytond-purchase-product-quantity")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_purchase_product_quantity" version))
+       (sha256
+        (base32 "0q1paxi1ppdc1qim389nixl483hd8whrgv6ck554f4008v4dpj8r"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "purchase_product_quantity"))
+    (native-inputs
+     (cons* trytond-stock-supply
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-product
+           trytond-purchase
+           trytond-purchase-request))
+    (home-page "https://docs.tryton.org/projects/modules-purchase-product-quantity")
+    (synopsis "Tryton module to add quantity constraints on purchase lines")
+    (description "The @emph{Purchase Product Quantity} Tryton module permits
+to enforce the minimal and the rounding of quantity purchased per supplier
+from purchase request.")
+    (license license:gpl3+)))
+
 (define-public trytond-purchase-request
   (package
     (name "trytond-purchase-request")
