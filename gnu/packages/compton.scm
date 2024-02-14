@@ -4,7 +4,7 @@
 ;;; Copyright © 2019 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,7 +113,7 @@ performance).
 (define-public picom
   (package
     (name "picom")
-    (version "10.2")
+    (version "11.2")
     (source
      (origin
        (method git-fetch)
@@ -122,23 +122,25 @@ performance).
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1vd4nhvfykwdhpyhb0jmcj333zxhm6dyikafd76fa4z4fhjrrs0b"))
+         "0swmpw6lj0aiwypdfkzsy38jwsm9wfcn7i5klrqfn2klrwinv27f"))
        (file-name (string-append "picom-" version))))
     (build-system meson-build-system)
     (inputs
      (list dbus
            libconfig
+           libepoxy
+           libev
            libx11
            libxext
-           libev
+           libxdg-basedir
            mesa
-           xprop
-           xcb-util-renderutil
-           xcb-util-image
+           pcre2
            pixman
            uthash
-           libxdg-basedir
-           pcre))
+           xcb-util
+           xcb-util-renderutil
+           xcb-util-image
+           xprop))
     (native-inputs
      (list asciidoc pkg-config xorgproto))
     (arguments
