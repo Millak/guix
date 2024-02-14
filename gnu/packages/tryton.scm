@@ -3045,6 +3045,29 @@ following measurements to Product:")
 to compute prices per product or category.")
     (license license:gpl3+)))
 
+(define-public trytond-product-price-list-cache
+  (package
+    (name "trytond-product-price-list-cache")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_product_price_list_cache" version))
+       (sha256
+        (base32 "1hrj7iz9yb2kmybjcgzzp9s29jc6884vih6fqw5xgnz78x9rbfdq"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "product_price_list_cache"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-product
+           trytond-product-price-list))
+    (home-page "https://docs.tryton.org/projects/modules-product-price-list-cache")
+    (synopsis "Tryton module to cache price lists")
+    (description "The @emph{Product Price List Cache} Tryton module
+pre-computes and stores prices for each product and price list.")
+    (license license:gpl3+)))
+
 (define-public trytond-product-price-list-dates
   (package
     (name "trytond-product-price-list-dates")
