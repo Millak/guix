@@ -38,6 +38,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time)
@@ -4238,6 +4239,34 @@ enforcing the minimal and the rounding of quantity sold per product.")
     (synopsis "Tryton module for product recommendations")
     (description "The @emph{Sale Product Recommendation} Tryton module
 provides facilities to implement recommendation of products on sale.")
+    (license license:gpl3+)))
+
+(define-public trytond-sale-product-recommendation-association-rule
+  (package
+    (name "trytond-sale-product-recommendation-association-rule")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_sale_product_recommendation_association_rule" version))
+       (sha256
+        (base32 "0d59811an015s8lfv4i5dflkg8fbvn937y81shn6wxndrrm32z4a"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "sale_product_recommendation_association_rule"))
+    (native-inputs
+     (cons* trytond-sale-point
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list python-efficient-apriori
+           trytond trytond-product
+           trytond-sale
+           trytond-sale-product-recommendation))
+    (home-page
+     "https://docs.tryton.org/projects/modules-sale-product-recommendation-association-rule")
+    (synopsis "Tryton module to learn association rule for recommendations")
+    (description "The @emph{Sale Product Recommendation Association Rule}
+Tryton module implements recommendation based on association rule learning
+from previous sales.")
     (license license:gpl3+)))
 
 (define-public trytond-sale-promotion
