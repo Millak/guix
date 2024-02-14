@@ -192,6 +192,27 @@ estimating equations} (GEE) or @dfn{generalized linear mixed effect
 models} (GLMM).")
     (license license:gpl2+)))
 
+(define-public r-box
+  (package
+    (name "r-box")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "box" version))
+       (sha256
+        (base32 "00g5ik3f6260m38jl8k4s8nycmy7mzdwr7qslrl66phpg84xzmln"))))
+    (properties `((upstream-name . "box")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://klmr.me/box/")
+    (synopsis "Write reusable, composable and modular R code")
+    (description
+     "This package provides a modern module system for R.  Organize code into
+hierarchical, composable, reusable modules, and use it effortlessly across
+projects via a flexible, declarative dependency loading syntax.")
+    (license license:expat)))
+
 (define-public r-brio
   (package
     (name "r-brio")
