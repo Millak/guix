@@ -4018,6 +4018,29 @@ historization of the sale and adds a revision counter which increases each
 time the sale is reset to draft.")
     (license license:gpl3+)))
 
+(define-public trytond-sale-invoice-date
+  (package
+    (name "trytond-sale-invoice-date")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_sale_invoice_date" version))
+       (sha256
+        (base32 "0ssc87by1hinxckcma99hlngy1r9is84svccy1zrvqdif06pjfqp"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "sale_invoice_date"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-party
+           trytond-sale))
+    (home-page "https://docs.tryton.org/projects/modules-sale-invoice-date")
+    (synopsis "Tryton module to compute the invoice date of sale")
+    (description "The @emph{Sale Invoice Date} Tryton module fills the invoice
+date of invoices created by sales.")
+    (license license:gpl3+)))
+
 (define-public trytond-sale-invoice-grouping
   (package
     (name "trytond-sale-invoice-grouping")
