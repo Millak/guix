@@ -1143,6 +1143,32 @@ and category.")
 (define-public python-trytond-account-product
   (deprecated-package "python-trytond-account-product" trytond-account-product))
 
+(define-public trytond-account-receivable-rule
+  (package
+    (name "trytond-account-receivable-rule")
+    (version "7.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_account_receivable_rule" version))
+       (sha256
+        (base32 "1a7awr71gwndp367vjam45482555hb2fv8j3z9v2x0q5lvjv3v40"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_receivable_rule"))
+    (native-inputs
+     (cons* trytond-account-statement
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-account
+           trytond-company
+           trytond-party))
+    (home-page "https://docs.tryton.org/projects/modules-account-receivable-rule")
+    (synopsis "Tryton module to enforce receivable rules")
+    (description "The @emph{Account Receivable Rule} Tryton module allows
+defining rules to reconcile receivables between accounts.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-rule
   (package
     (name "trytond-account-rule")
