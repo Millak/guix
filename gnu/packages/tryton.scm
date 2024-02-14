@@ -2331,6 +2331,36 @@ supplier invoices from incoming documents.")
 basis to interact with OCR services.")
     (license license:gpl3+)))
 
+(define-public trytond-document-incoming-ocr-typless
+  (package
+    (name "trytond-document-incoming-ocr-typless")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_document_incoming_ocr_typless" version))
+       (sha256
+        (base32 "1d1arbkz1clih78sy06kk1qw6a84z2r1zy59mnrrg35irn55kfrl"))))
+    (build-system pyproject-build-system)
+    ;; doctest requires network and an api key
+    (arguments (tryton-arguments "document_incoming_ocr_typless"
+                "-k not scenario_document_incoming_ocr_typless.rs" ))
+    (native-inputs
+     (cons* trytond-document-incoming-invoice
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list python-requests
+           trytond
+           trytond-currency
+           trytond-document-incoming
+           trytond-document-incoming-ocr
+           trytond-party))
+    (home-page "https://docs.tryton.org/projects/modules-document-incoming-ocr-typless")
+    (synopsis "Tryton module that integrates Typless online OCR for incoming document")
+    (description "The @emph{Document Incoming OCR Typless} Tryton module
+provides integration with Typless online services.")
+    (license license:gpl3+)))
+
 (define-public trytond-edocument-uncefact
   (package
     (name "trytond-edocument-uncefact")
