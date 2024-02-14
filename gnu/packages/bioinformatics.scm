@@ -2525,6 +2525,45 @@ Python.")
     ;; licensed lgpl2.1+
     (license (list license:expat license:lgpl2.1+))))
 
+(define-public python-ega-download-client
+  (package
+    (name "python-ega-download-client")
+    (version "5.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/EGA-archive/ega-download-client")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k9rfq2yyvfxs5sq9lsm8krp9ddx4s18hv85ikf3b37zv24kpwjk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests fail because they require internet access.
+             (string-append "not test_download.py"
+                            " and not test_htsget.py"
+                            " and not test_commands.py"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("==") ">=")))))))
+    (propagated-inputs (list python-htsget python-psutil python-requests
+                             python-tqdm python-urllib3))
+    (native-inputs (list python-coverage python-pytest python-pyfakefs
+                         python-responses))
+    (home-page "https://github.com/EGA-archive/ega-download-client")
+    (synopsis "EGA download client")
+    (description
+     "PyEGA3 is a tool for viewing and downloading files from authorized EGA
+datasets.")
+    (license license:asl2.0)))
+
 (define-public python-scdamandtools
   (package
     (name "python-scdamandtools")
