@@ -2481,7 +2481,7 @@ GNOME Desktop.")
   (package
     (inherit gcr)
     (name "gcr")
-    (version "3.41.1")
+    (version "3.41.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2489,7 +2489,7 @@ GNOME Desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kx2pv272p0qc0nq1287gciyn34d95yxg41vq3lzxfzyqaijhwdv"))))
+                "1dqsgrb62fgmy4w63bjl3b525nil4idrrdcscia1h3isaly0zlds"))))
     (arguments
      (substitute-keyword-arguments (package-arguments gcr)
        ((#:phases phases)
