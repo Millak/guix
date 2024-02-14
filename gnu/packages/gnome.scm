@@ -7717,7 +7717,7 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    (version "1.76.2")
+    (version "1.76.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7725,7 +7725,7 @@ configuration program to choose applications starting on login.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1m15qscx2z862gfkb9pxg30bz8ka0h774l2azs5dfvzaagbckn7p"))
+                "0knkbczic9874r2mnhc8yh9w63bmj574b7528ql0x3lf40nzcjx5"))
               (modules '((guix build utils)))
               (snippet
                '(begin
