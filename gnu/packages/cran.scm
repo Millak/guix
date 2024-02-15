@@ -28770,13 +28770,13 @@ columns, ad allows for quick addition of extra columns to a filematrix.")
 (define-public r-filesstrings
   (package
     (name "r-filesstrings")
-    (version "3.3.0")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "filesstrings" version))
               (sha256
                (base32
-                "0srmshjhj5yx5d81pmvr8rr1cqh8v0wsxn04bfm146yfq2pvy52h"))))
+                "0p5vgrzbvipja9lgarygqphnr1z8vy9kl9n83jnfyvf0gp4ansl2"))))
     (properties `((upstream-name . "filesstrings")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
