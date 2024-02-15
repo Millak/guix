@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
@@ -831,6 +832,33 @@ queue.")
 @code{Producer} types as well as low-level functions to communicate over the
 NSQ protocol @url{https://nsq.io/}.")
     (license license:expat)))
+
+(define-public go-github-com-op-go-logging
+  (package
+    (name "go-github-com-op-go-logging")
+    (version "1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/op/go-logging")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01a6lkpj5p82gplddh55az194s9y3014p4j8x4zc8yv886z9c8gn"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:tests? #f ; ERROR: incorrect callpath: String.rec...a.b.c.Info.
+       #:import-path "github.com/op/go-logging"))
+    (home-page "https://github.com/op/go-logging")
+    (synopsis "Go logging library")
+    (description
+     "Go-Logging implements a logging infrastructure for Go.  Its
+output format is customizable and supports different logging backends like
+syslog, file and memory.  Multiple backends can be utilized with different log
+levels per backend and logger.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-prometheus-client-model
   (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
