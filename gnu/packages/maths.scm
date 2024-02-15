@@ -1285,7 +1285,7 @@ in the terminal or with an external viewer.")
 (define-public giza
   (package
     (name "giza")
-    (version "1.3.2")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1293,7 +1293,7 @@ in the terminal or with an external viewer.")
              (url "https://github.com/danieljprice/giza")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1clklh3nzgwrwg80h3k5x65gdymbvcc84c44nql7m4bv9b8rqfsq"))
+        (base32 "17h8hkhcqlvgryyp5n206fbqpals2vbnjy4f6f1zwj9jiblgi5mj"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
