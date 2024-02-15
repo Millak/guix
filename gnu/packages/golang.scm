@@ -6073,24 +6073,14 @@ exploration and data entry.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/mattn/go-shellwords"
-       ;; TODO: can't make homeless-shelter:
-       ;; go: disabling cache (/homeless-shelter/.cache/go-build) due to
-       ;; initialization failure: mkdir /homeless-shelter: permission denied
-
-       ;; This doesn't seem to work:
-
-       ;; #:phases
-       ;; (modify-phases %standard-phases
-       ;;   (replace 'check
-       ;;     (lambda* (#:key import-path #:allow-other-keys)
-       ;;       (setenv "HOME" "/tmp")
-       ;;       (invoke "go" "test" import-path))))
-
-       ;; TODO: There are also a couple of tests that have stymied Debian in
-       ;; the past.  They seem to work when run locally.
-
        #:tests? #f
-       ))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-sh-path
+           (lambda* (#:key import-path #:allow-other-keys)
+             (substitute* (string-append
+                           "src/" import-path "/util_posix.go")
+               (("/bin/sh") (which "sh"))))))))
     (home-page "https://github.com/mattn/go-shellwords")
     (synopsis "Parse lines into shell words")
     (description "This package parses text into shell arguments.  Based on
