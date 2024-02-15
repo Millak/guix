@@ -1,11 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -468,6 +470,36 @@ Differentiation between text and binary files}.
     (home-page "https://github.com/matryer/try")
     (synopsis "Simple idiomatic retry package for Go")
     (description "This package provides an idiomatic Go retry module.")
+    (license license:expat)))
+
+(define-public go-github-com-mattn-go-shellwords
+  (package
+    (name "go-github-com-mattn-go-shellwords")
+    (version "1.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-shellwords")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0l0l5s4hlsrm4z6hygig2pp1qirk5ycrzn9z27ay3yvg9k7zafzx"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/mattn/go-shellwords"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-sh-path
+           (lambda* (#:key import-path #:allow-other-keys)
+             (substitute* (string-append
+                           "src/" import-path "/util_posix.go")
+               (("/bin/sh") (which "sh"))))))))
+    (home-page "https://github.com/mattn/go-shellwords")
+    (synopsis "Parse lines into shell words")
+    (description "This package parses text into shell arguments.  Based on
+the @code{cpan} module @code{Parse::CommandLine}.")
     (license license:expat)))
 
 (define-public go-github-com-miekg-dns

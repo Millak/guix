@@ -6056,36 +6056,6 @@ exploration and data entry.")
      "The terminfo package implements terminfo database reading for Go.")
     (license license:expat)))
 
-(define-public go-github-com-mattn-go-shellwords
-  (package
-    (name "go-github-com-mattn-go-shellwords")
-    (version "1.0.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mattn/go-shellwords")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0l0l5s4hlsrm4z6hygig2pp1qirk5ycrzn9z27ay3yvg9k7zafzx"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/mattn/go-shellwords"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sh-path
-           (lambda* (#:key import-path #:allow-other-keys)
-             (substitute* (string-append
-                           "src/" import-path "/util_posix.go")
-               (("/bin/sh") (which "sh"))))))))
-    (home-page "https://github.com/mattn/go-shellwords")
-    (synopsis "Parse lines into shell words")
-    (description "This package parses text into shell arguments.  Based on
-the @code{cpan} module @code{Parse::CommandLine}.")
-    (license license:expat)))
-
 (define-public go-github-com-burntsushi-locker
   (let ((commit "a6e239ea1c69bff1cfdb20c4b73dadf52f784b6a")
         (revision "0"))
