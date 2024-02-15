@@ -49656,6 +49656,28 @@ the most part, users of @code{prost} shouldn't need to interact with
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-prost-types-0.12
+  (package
+    (name "rust-prost-types")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03j73llzljdxv9cdxp4m3vb9j3gh4y24rkbx48k3rx6wkvsrhf0r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-prost" ,rust-prost-0.12))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/tokio-rs/prost")
+    (synopsis "Prost definitions of Protocol Buffers well known types")
+    (description
+     "Prost definitions of Protocol Buffers well known types.  See the
+Protobuf reference for more information about well known types.")
+    (license license:asl2.0)))
+
 ;; It's recommended that rust-protobuf, rust-protobuf-codegen
 ;; and rust-probuf-codegen-pure be the same version
 (define-public rust-protobuf-2
