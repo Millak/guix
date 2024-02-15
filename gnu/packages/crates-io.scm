@@ -40630,6 +40630,40 @@ nitrokey crate and others using it.")
 nitrokey-test crate.")
     (license license:gpl3+)))
 
+(define-public rust-nispor-1
+  (package
+    (name "rust-nispor")
+    (version "1.2.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nispor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jp0fs6sy8cpg0gi7jkh215czbx3b8p0kygimpx0abgg6mx2955b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests can't run in the build environment.
+       #:cargo-inputs (("rust-ethtool" ,rust-ethtool-0.2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mptcp-pm" ,rust-mptcp-pm-0.1)
+                       ("rust-netlink-packet-route" ,rust-netlink-packet-route-0.19)
+                       ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5)
+                       ("rust-netlink-sys" ,rust-netlink-sys-0.8)
+                       ("rust-rtnetlink" ,rust-rtnetlink-0.14)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-pretty-assertions"
+                                    ,rust-pretty-assertions-1)
+                                   ("rust-serde-yaml" ,rust-serde-yaml-0.9))))
+    (home-page "https://github.com/nispor/nispor")
+    (synopsis "Unified interface for Linux network state querying")
+    (description "Unified interface for Linux network state querying.")
+    (license license:asl2.0)))
+
 (define-public rust-nix-0.27
   (package
     (name "rust-nix")
