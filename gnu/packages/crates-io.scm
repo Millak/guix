@@ -21635,8 +21635,34 @@ compact sets of enums.")
 @code{rust-enumset}.  It is not public API.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-env-logger-0.11
+  (package
+    (name "rust-env-logger")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "env_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07932957jds3h7vh2bddhvfffax78dw6jlyx4k2fy1gnlwk2l0bc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-env-filter" ,rust-env-filter-0.1)
+                       ("rust-humantime" ,rust-humantime-2)
+                       ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/rust-cli/env_logger")
+    (synopsis "Logging implementation for @code{log}")
+    (description
+     "This package provides a logging implementation for @code{log} which
+is configured via an environment variable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-env-logger-0.10
   (package
+    (inherit rust-env-logger-0.11)
     (name "rust-env-logger")
     (version "0.10.1")
     (source
@@ -21646,20 +21672,13 @@ compact sets of enums.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kmy9xmfjaqfvd4wkxr1f7d16ld3h9b487vqs2q9r0s8f3kg7cwm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-humantime" ,rust-humantime-2)
         ("rust-is-terminal" ,rust-is-terminal-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-regex" ,rust-regex-1)
-        ("rust-termcolor" ,rust-termcolor-1))))
-    (home-page "https://github.com/sebasmagri/env_logger/")
-    (synopsis "Logging implementation for @code{log}")
-    (description
-     "This package provides a logging implementation for @code{log} which
-is configured via an environment variable.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-termcolor" ,rust-termcolor-1))))))
 
 (define-public rust-env-logger-0.9
   (package
