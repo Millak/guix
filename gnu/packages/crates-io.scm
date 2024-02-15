@@ -38393,6 +38393,43 @@ debug_assert_* macros.")
     (description "mp4 is a Rust library to read and write ISO-MP4 files.")
     (license license:expat)))
 
+(define-public rust-mptcp-pm-0.1
+  (package
+    (name "rust-mptcp-pm")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mptcp-pm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ma2r9ffp2164s1msfjw78553xccy4i9lvrkbsvhgr6wcgyaibry"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test_mptcp_empty_addresses_and_limits")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-genetlink" ,rust-genetlink-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+        ("rust-netlink-packet-generic" ,rust-netlink-packet-generic-0.3)
+        ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5)
+        ("rust-netlink-proto" ,rust-netlink-proto-0.11)
+        ("rust-netlink-sys" ,rust-netlink-sys-0.8)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-netlink/mptcp-pm")
+    (synopsis "Linux kernel MPTCP path manager netlink Library")
+    (description "Linux kernel MPTCP path manager netlink Library.")
+    (license license:expat)))
+
 (define-public rust-multer-2
   (package
     (name "rust-multer")
