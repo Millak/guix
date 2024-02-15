@@ -49568,8 +49568,36 @@ language.")
        (("rust-bytes" ,rust-bytes-1)
         ("rust-prost-derive" ,rust-prost-derive-0.9))))))
 
+(define-public rust-prost-derive-0.12
+  (package
+    (name "rust-prost-derive")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03l4yf6pdjvc4sgbvln2srq1avzm1ai86zni4hhqxvqxvnhwkdpg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/tokio-rs/prost")
+    (synopsis "Protocol Buffers implementation for the Rust language")
+    (description
+     "@code{prost-derive} handles generating encoding and decoding
+implementations for Rust types annotated with @code{prost} annotation.  For
+the most part, users of @code{prost} shouldn't need to interact with
+@code{prost-derive} directly.")
+    (license license:asl2.0)))
+
 (define-public rust-prost-derive-0.11
   (package
+    (inherit rust-prost-derive-0.12)
     (name "rust-prost-derive")
     (version "0.11.9")
     (source
@@ -49579,19 +49607,12 @@ language.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1d3mw2s2jba1f7wcjmjd6ha2a255p2rmynxhm1nysv9w1z8xilp5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-itertools" ,rust-itertools-0.10)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/tokio-rs/prost")
-    (synopsis "Protocol Buffers implementation for the Rust language")
-    (description
-     "This package provides a Protocol Buffers implementation for the Rust
-language.")
-    (license license:asl2.0)))
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-prost-derive-0.9
   (package
