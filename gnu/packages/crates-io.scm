@@ -38309,6 +38309,45 @@ debug_assert_* macros.")
     (description "mp4 is a Rust library to read and write ISO-MP4 files.")
     (license license:expat)))
 
+(define-public rust-multer-2
+  (package
+    (name "rust-multer")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "multer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hjiphaypj3phqaj5igrzcia9xfmf4rr4ddigbh8zzb96k1bvb01"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-httparse" ,rust-httparse-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-spin" ,rust-spin-0.9)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs (("rust-hyper" ,rust-hyper-0.14)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rousan/multer-rs")
+    (synopsis "Async parser for @code{multipart/form-data} content-type in Rust")
+    (description
+     "An async parser for @code{multipart/form-data} content-type in Rust.
+
+It accepts a Stream of Bytes as a source, so that it can be plugged into any
+async Rust environment e.g. any async server.")
+    (license license:expat)))
+
 (define-public rust-muldiv-1
   (package
     (name "rust-muldiv")
