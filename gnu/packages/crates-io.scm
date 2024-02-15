@@ -66587,8 +66587,38 @@ no_std compatible by default, only relying on alloc.")
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-sysctl-0.5
+  (package
+    (name "rust-sysctl")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sysctl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sly34bm4w2vcfqgn7f6255pxwa2wa4vkzdrz2x0drgyy32xszgc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=ctl_value::tests_linux::ctl_value_string"
+         "--skip=sys::ctl_iter::tests::ctl_iter_below_compare_outputs")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-enum-as-inner" ,rust-enum-as-inner-0.6)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/johalun/sysctl-rs")
+    (synopsis "Simplified interface to libc::sysctl")
+    (description "This crate provides a safe interface for reading and writing
+information to the kernel using the sysctl interface.")
+    (license license:expat)))
+
 (define-public rust-sysctl-0.4
   (package
+    (inherit rust-sysctl-0.5)
     (name "rust-sysctl")
     (version "0.4.6")
     (source
@@ -66598,7 +66628,6 @@ no_std compatible by default, only relying on alloc.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1a6g8cb8c7wk0rsz6ixydbmaxhs0i8d3hmywd1qi1bfh08zlhpi2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags `("--"
                             "--skip=ctl_value::tests_linux::ctl_value_string"
@@ -66607,12 +66636,7 @@ no_std compatible by default, only relying on alloc.")
                        ("rust-byteorder" ,rust-byteorder-1)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/johalun/sysctl-rs")
-    (synopsis "Simplified interface to libc::sysctl")
-    (description
-     "This package provides a simplified interface to libc::sysctl.")
-    (license license:expat)))
+                       ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-sysctl-0.1
   (package
