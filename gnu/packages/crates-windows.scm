@@ -1527,8 +1527,31 @@ crate.")
                (base32
                 "1hpk0n2z0jzzvwlvs98b75sa4q920953nqfc119rv19nwm0mlsaj"))))))
 
+(define-public rust-windows-bindgen-0.52
+  (package
+    (name "rust-windows-bindgen")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "071lrbhbvh0l8m1wf5000xxmcry1gjpqdxcqm23qmss9d05zn3lp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-windows-metadata" ,rust-windows-metadata-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows metadata compiler")
+    (description "Windows metadata compiler.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-bindgen-0.51
   (package
+    (inherit rust-windows-bindgen-0.52)
     (name "rust-windows-bindgen")
     (version "0.51.1")
     (source
@@ -1538,16 +1561,11 @@ crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0xfdq4q958qal5iks8xkaanf7w3akzfxc58dxvz7amhjg2vic7xw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-syn" ,rust-syn-2)
-                       ("rust-windows-metadata" ,rust-windows-metadata-0.51))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Windows metadata compiler")
-    (description "Windows metadata compiler.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-windows-metadata" ,rust-windows-metadata-0.51))))))
 
 (define-public rust-windows-i686-gnu-0.52
   (package
