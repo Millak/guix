@@ -80,6 +80,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5275,6 +5276,51 @@ container image formats.  It can build SquashFS container images or import
 existing Docker images.  Singularity requires kernel support for container
 isolation or root privileges.")
     (license license:bsd-3)))
+
+(define-public python-spython
+  (package
+    (name "python-spython")
+    (version "0.3.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "spython" version))
+       (sha256
+        (base32 "0kly851k6mj7xzcybciav5d0pq5q04pzg7c5a1g712bqbxkha4ck"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Configure absolute path to singularity.
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((singularity (search-input-file inputs "bin/singularity")))
+                (substitute* "spython/utils/terminal.py"
+                  (("software=\"singularity\"")
+                   (string-append "software=\"" singularity "\"")))
+                (substitute* (list "spython/utils/terminal.py"
+                                   "spython/main/help.py"
+                                   "spython/main/base/command.py")
+                  (("\\[\"singularity\"")
+                   (string-append "[\"" singularity "\"")))
+                (substitute* "spython/main/execute.py"
+                  (("shutil.which\\(\"singularity\"\\)")
+                   (string-append "shutil.which(\"" singularity "\")"))))))
+          ;; Skip tests that require network access.
+          (add-before 'check 'skip-tests
+            (lambda _
+              (delete-file "spython/tests/test_client.py"))))))
+    (inputs
+     (list singularity))
+    (native-inputs
+     (list python-pytest
+           python-pytest-runner))
+    (home-page "https://github.com/singularityhub/singularity-cli")
+    (synopsis "Singularity Python client")
+    (description "@code{python-spython} is a Python library to interact with
+Singularity containers.")
+    (license license:mpl2.0)))
 
 (define-public libnvme
   (package
