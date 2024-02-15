@@ -18983,6 +18983,25 @@ procedural macros.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-dhcproto-macros-0.1
+  (package
+    (name "rust-dhcproto-macros")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dhcproto-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w61gvnm17frkm6mk8q4xkwd1iji946lj5f175w585h4hvxkx6d7"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bluecatengineering/dhcproto")
+    (synopsis "Macro library for generating option types for dhcproto")
+    (description
+     "This package provides a macro library for generating option types for
+dhcproto.")
+    (license license:expat)))
+
 (define-public rust-dhcp4r-0.2
   (package
     (name "rust-dhcp4r")
