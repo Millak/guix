@@ -860,6 +860,31 @@ syslog, file and memory.  Multiple backends can be utilized with different log
 levels per backend and logger.")
     (license license:bsd-3)))
 
+(define-public go-github-com-orisano-pixelmatch
+  (package
+    (name "go-github-com-orisano-pixelmatch")
+    (version "0.0.0-20230914042517-fa304d1dc785")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/orisano/pixelmatch")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lplxfif5mfqnd0jjph2vd25c3bpr3idfs2axh8z0ib0zdkwca32"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/orisano/pixelmatch"))
+    (home-page "https://github.com/orisano/pixelmatch")
+    (synopsis "Pixelmatch port to Go")
+    (description
+     "This package provides a port of Pixelmatch, a pixel-level image
+comparison library, to Go.  Both a library and a command-line tool are
+included in this package.")
+    (license license:expat)))
+
 (define-public go-github-com-prometheus-client-model
   (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
         (revision "2"))
