@@ -104,6 +104,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages rust)
@@ -49655,6 +49656,46 @@ the most part, users of @code{prost} shouldn't need to interact with
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-prost-build-0.12
+  (package
+    (name "rust-prost-build")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-build" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lp2l1l65l163yggk9nw5mjb2fqwzz12693af5phn1v0abih4pn5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=tests::test_generate_message_attributes")
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-heck" ,rust-heck-0.4)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-multimap" ,rust-multimap-0.8)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-prost" ,rust-prost-0.12)
+                       ("rust-prost-types" ,rust-prost-types-0.12)
+                       ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9)
+                       ("rust-pulldown-cmark-to-cmark" ,rust-pulldown-cmark-to-cmark-10)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-which" ,rust-which-4))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10))))
+    (native-inputs (list protobuf))
+    (home-page "https://github.com/tokio-rs/prost")
+    (synopsis "Protocol Buffers implementation for the Rust Language")
+    (description
+     "@code{prost-build} makes it easy to generate Rust code from @code{.proto}
+files as part of a Cargo build.")
+    (license license:asl2.0)))
 
 (define-public rust-prost-types-0.12
   (package
