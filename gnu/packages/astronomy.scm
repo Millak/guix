@@ -2354,6 +2354,10 @@ Low-Earth Orbit (LEO).")
                (base32
                 "0s8rb61q8dz66s8d3qg44kb6bb5gi40zl41ik9wyccgb4kyf3brp"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto")))
     (propagated-inputs
      ;; XXX: With python-synphot (marked as optional) package added to the list
      ;; it tries to download from remote host during tests and fails. Overall
@@ -2368,8 +2372,10 @@ Low-Earth Orbit (LEO).")
            python-pandas
            python-pytest
            python-pytest-astropy
-           python-sphinx
-           python-setuptools-scm))
+           python-pytest-xdist
+           python-scikit-image
+           python-setuptools-scm
+           python-sphinx))
     (home-page "https://poppy-optics.readthedocs.io/")
     (synopsis "Physical Optics Propagation in Python")
     (description
