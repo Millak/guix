@@ -58046,20 +58046,21 @@ sub-processes using a fork-like interface.")
 (define-public rust-rkyv-0.7
   (package
     (name "rust-rkyv")
-    (version "0.7.42")
+    (version "0.7.44")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rkyv" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0n2wzwnghkr2ny16c08f5szbkljfqrp3s8fnnb096f011ciwh002"))))
+                "1h4rpjn15bfldwb2j3zlmv3zaksvizzl1yf6vg24yfdk5534dfjw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-bitvec" ,rust-bitvec-1)
         ("rust-bytecheck" ,rust-bytecheck-0.6)
+        ("rust-bytes" ,rust-bytes-1)
         ("rust-hashbrown" ,rust-hashbrown-0.12)
         ("rust-indexmap" ,rust-indexmap-1)
         ("rust-ptr-meta" ,rust-ptr-meta-0.1)
@@ -58067,6 +58068,7 @@ sub-processes using a fork-like interface.")
         ("rust-rkyv-derive" ,rust-rkyv-derive-0.7)
         ("rust-seahash" ,rust-seahash-4)
         ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-smol-str" ,rust-smol-str-0.2)
         ("rust-tinyvec" ,rust-tinyvec-1)
         ("rust-uuid" ,rust-uuid-1))))
     (home-page "https://github.com/rkyv/rkyv")
