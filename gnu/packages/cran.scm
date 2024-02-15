@@ -3841,13 +3841,13 @@ cross-platform graphical user interface toolkit} widget.")
 (define-public r-rvest
   (package
     (name "r-rvest")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rvest" version))
        (sha256
-        (base32 "07hws9infwchy19smrcd9m6c0jii0bdn335yxqk3ramgj5ryyrd4"))))
+        (base32 "19lw0jk8d8x88z247hz761gwbx9f5n3yqnv63mn7pkwl55mpqw3x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -3858,7 +3858,6 @@ cross-platform graphical user interface toolkit} widget.")
            r-rlang
            r-selectr
            r-tibble
-           r-withr
            r-xml2))
     (native-inputs
      (list r-knitr))
