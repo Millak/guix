@@ -4774,23 +4774,35 @@ interfaces you are used to, but in an async version and ready for Rust's
 (define-public rust-async-stream-0.3
   (package
     (name "rust-async-stream")
-    (version "0.3.2")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-stream" version))
        (file-name (string-append name "-" version ".tar.gz"))
+       ;; I have no idea why tokio-test is missing, I filed:
+       ;;   https://github.com/tokio-rs/async-stream/issues/102
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "Cargo.toml"
+           (("^\\[dev-dependencies.trybuild]")
+            "[dev-dependencies.tokio-test]
+version = \"0.4\"
+
+[dev-dependencies.trybuild]")))
        (sha256
-        (base32 "0986b72jksg4lndw76py9glry3snc29bbqrna874wl5jwgkp84qp"))))
+        (base32 "0l8sjq1rylkb1ak0pdyjn83b3k6x36j22myngl4sqqgg7whdsmnd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--"
                             "--skip=test")
        #:cargo-inputs
        (("rust-async-stream-impl" ,rust-async-stream-impl-0.3)
-        ("rust-futures-core" ,rust-futures-core-0.3))
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
        #:cargo-development-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-rustversion" ,rust-rustversion-1)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-test" ,rust-tokio-test-0.4)
         ("rust-trybuild" ,rust-trybuild-1))))
