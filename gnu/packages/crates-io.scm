@@ -39924,6 +39924,30 @@ types as proposed in RFC 1158.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-netlink-packet-core-0.7
+  (package
+    (name "rust-netlink-packet-core")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netlink-packet-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "197dh9c5570135kv5q770n2ih5prhsql58cd71xxcya4f2plywkj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Needs old netlink-packet-route for tests.
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5))))
+    (home-page "https://github.com/rust-netlink/netlink-packet-core")
+    (synopsis "Netlink packet types")
+    (description "The @code{netlink-packet-core} is the glue for all the other
+@code{netlink-packet-*} crates.  It provides a @code{NetlinkMessage<T>} type
+that represent any netlink message for any sub-protocol.")
+    (license license:expat)))
+
 (define-public rust-netlink-packet-utils-0.5
   (package
     (name "rust-netlink-packet-utils")
