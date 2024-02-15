@@ -21808,6 +21808,26 @@ is configured via an environment variable.")
        (("rust-regex" ,rust-regex-0.1)
         ("rust-log" ,rust-log-0.3))))))
 
+(define-public rust-env-filter-0.1
+  (package
+    (name "rust-env-filter")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "env_filter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1spp4jx0fissi0bg00d8nn4vnjwf6y3hr7d0vmcq65gb214al2d0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/rust-cli/env_logger")
+    (synopsis "Filter log events using environment variables")
+    (description "Filter log events using environment variables.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-env-proxy-0.4
   (package
     (name "rust-env-proxy")
