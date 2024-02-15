@@ -4804,23 +4804,20 @@ notation.")
 (define-public rust-async-stream-impl-0.3
   (package
     (name "rust-async-stream-impl")
-    (version "0.3.2")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-stream-impl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "024k57iwmmhzvbzacxlkssh45cqlnb8xjlvlsp60jm6fsb4di3k4"))))
+        (base32 "14q179j4y8p2z1d0ic6aqgy9fhwz8p9cai1ia8kpw4bw7q12mrhn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
-                            "--skip=try_stream"
-                            "--skip=stream")
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
+        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        (("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
