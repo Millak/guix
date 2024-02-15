@@ -13,6 +13,7 @@
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Daniel Ziltener <dziltener@lyrion.ch>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1936,8 +1937,26 @@ crate.")
        (sha256
         (base32 "00h56znmak3p8bh28y3s48m5zv6q7dn40vnvf3dzf0sz5rszrym2"))))))
 
+(define-public rust-windows-metadata-0.52
+  (package
+    (name "rust-windows-metadata")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vz49s2mm74fmjabh3kxxhzbz16ys41b78jgi6xwssp2069db3r1"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows metadata reader")
+    (description "Windows metadata reader.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-metadata-0.51
   (package
+    (inherit rust-windows-metadata-0.52)
     (name "rust-windows-metadata")
     (version "0.51.1")
     (source
@@ -1946,12 +1965,7 @@ crate.")
        (uri (crate-uri "windows-metadata" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03h0c6qs1yyl0z69p4k1hdq636j868qdxnri1dy47nprjvckacbm"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Windows metadata reader")
-    (description "Windows metadata reader.")
-    (license (list license:expat license:asl2.0))))
+        (base32 "03h0c6qs1yyl0z69p4k1hdq636j868qdxnri1dy47nprjvckacbm"))))))
 
 (define-public rust-windows-sys-0.52
   (package
