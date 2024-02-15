@@ -29,6 +29,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,6 +88,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -1279,6 +1281,65 @@ on the terminal in a visually appealing way.")
      "Build and publish crates with @code{pyo3}, @code{rust-cpython} and
 @code{cffi} bindings as well as rust binaries as python packages.")
     (license (list license:expat license:asl2.0))))
+
+(define-public netavark
+  (package
+    (name "netavark")
+    (version "1.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netavark" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1viyj9xqq9hkcsghrfx7wjmky3hkxfr96952f9favd4zg9ih64yw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-env-logger" ,rust-env-logger-0.11)
+                       ("rust-fs2" ,rust-fs2-0.4)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-ipnet" ,rust-ipnet-2)
+                       ("rust-iptables" ,rust-iptables-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mozim" ,rust-mozim-0.2)
+                       ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+                       ("rust-netlink-packet-route" ,rust-netlink-packet-route-0.18)
+                       ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5)
+                       ("rust-netlink-sys" ,rust-netlink-sys-0.8)
+                       ("rust-nftables" ,rust-nftables-0.3)
+                       ("rust-nispor" ,rust-nispor-1)
+                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-prost" ,rust-prost-0.12)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-value" ,rust-serde-value-0.7)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-sysctl" ,rust-sysctl-0.5)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tonic" ,rust-tonic-0.10)
+                       ("rust-tonic-build" ,rust-tonic-build-0.10)
+                       ("rust-tower" ,rust-tower-0.4)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-zbus" ,rust-zbus-3))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list protobuf))
+    (home-page "https://github.com/containers/netavark")
+    (synopsis "Container network stack")
+    (description "Netavark is a rust based network stack for containers.  It
+is being designed to work with Podman but is also applicable for other OCI
+container management applications.")
+    (license license:asl2.0)))
 
 (define-public ripgrep
   (package
