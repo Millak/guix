@@ -3721,13 +3721,13 @@ noisy black-box functions.")
 (define-public r-tgstat
   (package
     (name "r-tgstat")
-    (version "2.3.25")
+    (version "2.3.27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tgstat" version))
        (sha256
-        (base32 "07hdw3n4l88nr0x2a2qnjich4cfihgd0fk65ar3crgdahjcv9vn4"))))
+        (base32 "0scljimskda5hinkb4y5va9c9qlqwf6k6zrm20bjk133710qsscb"))))
     (properties `((upstream-name . "tgstat")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
