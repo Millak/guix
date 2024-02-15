@@ -30893,6 +30893,28 @@ library.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-iri-string-0.7
+  (package
+    (name "rust-iri-string")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iri-string" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h07hkfkkjjvgzlaqpr5fia7hrgv7qxqdw4xrpdc3936gmk9p191"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/lo48576/iri-string")
+    (synopsis "IRI as string types")
+    (description "String types for @acronym{IRIs, Internationalized Resource
+Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-is-ci-1
   (package
     (name "rust-is-ci")
