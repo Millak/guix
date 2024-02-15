@@ -18983,6 +18983,36 @@ procedural macros.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-dhcproto-0.9
+  (package
+    (name "rust-dhcproto")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dhcproto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hsbl77lxvxa94ihn2vna1sx2icrkch427w24a883xymhm9h9vnw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dhcproto-macros" ,rust-dhcproto-macros-0.1)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-ipnet" ,rust-ipnet-2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.22)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/bluecatengineering/dhcproto")
+    (synopsis "DHCP parser and encoder for DHCPv4/DHCPv6")
+    (description
+     "This package provides a DHCP parser and encoder for DHCPv4/DHCPv6.
+@code{dhcproto} aims to be a functionally complete DHCP implementation.")
+    (license license:expat)))
+
 (define-public rust-dhcproto-macros-0.1
   (package
     (name "rust-dhcproto-macros")
