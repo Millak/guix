@@ -26031,6 +26031,36 @@ Rust.")
        #:cargo-development-inputs
        (("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-genetlink-0.2
+  (package
+    (name "rust-genetlink")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "genetlink" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17q7zlmp95fx28zjkzh69g6d5q6rm2a3dkj7yy5jk8gsq5v0128z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+        ("rust-netlink-packet-generic" ,rust-netlink-packet-generic-0.3)
+        ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5)
+        ("rust-netlink-proto" ,rust-netlink-proto-0.11)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-netlink/genetlink")
+    (synopsis "Communicate with generic netlink")
+    (description "Communicate with generic netlink.")
+    (license license:expat)))
+
 (define-public rust-genmesh-0.6
   (package
     (name "rust-genmesh")
