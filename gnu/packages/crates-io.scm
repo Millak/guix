@@ -16120,6 +16120,47 @@ all the formatting features of the format! macro, except for the fill
 character.")
     (license license:asl2.0)))
 
+(define-public rust-rtnetlink-0.14
+  (package
+    (name "rust-rtnetlink")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rtnetlink" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19dbbky7bcrwk4jhgam148s8ykxc7pfrblxjvmciipyq8i9lg15n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=link::test::create_get_delete_macvlan"
+                            "--skip=link::test::create_get_delete_wg"
+                            "--skip=traffic_control::add_filter::test::test_new_filter"
+                            "--skip=traffic_control::add_qdisc::test::test_new_qdisc")
+       #:cargo-inputs (("rust-async-global-executor" ,rust-async-global-executor-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+                       ("rust-netlink-packet-route" ,rust-netlink-packet-route-0.19)
+                       ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5)
+                       ("rust-netlink-proto" ,rust-netlink-proto-0.11)
+                       ("rust-netlink-sys" ,rust-netlink-sys-0.8)
+                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-ipnetwork" ,rust-ipnetwork-0.18)
+                                   ("rust-macaddr" ,rust-macaddr-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-netlink/rtnetlink")
+    (synopsis "Manipulate linux networking resources via netlink")
+    (description "This crate provides methods to manipulate networking
+resources (links, addresses, arp tables, route tables) via the netlink route
+protocol.")
+    (license license:expat)))
+
 (define-public rust-rusticata-macros-4
   (package
     (name "rust-rusticata-macros")
