@@ -74,6 +74,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
