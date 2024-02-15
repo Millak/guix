@@ -1326,18 +1326,15 @@ HTTP servers, RESTful APIs, and web services.")
               (sha256
                (base32
                 "0pf8rzfwxpkn84xzb4v8m1fy3k7kjlh8f9ln4y5xqlnbqpwi30lh"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'disable-test-requiring-network
-                          (lambda _
-                            (substitute* "parfive/tests/test_downloader.py"
-                              (("def test_ftp")
-                               "def __off_test_ftp"))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "pytest" "-vvv" "parfive")))))))
+     (list
+      ;; Disable tests requiring network access.
+      #:test-flags
+      #~(list "-k" (string-append
+                    "not test_ftp"
+                    " and not test_ftp_pasv_command"
+                    " and not test_ftp_http"))))
     (propagated-inputs (list python-aiofiles python-aioftp python-aiohttp
                              python-tqdm))
     (native-inputs (list python-pytest
