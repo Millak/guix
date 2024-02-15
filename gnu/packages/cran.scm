@@ -26954,44 +26954,32 @@ dataset-specific factors.")
 (define-public r-harmony
   (package
     (name "r-harmony")
-    (version "0.1")
+    (version "1.2.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/immunogenomics/harmony")
-             (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (cran-uri "harmony" version))
        (sha256
-        (base32
-         "05r401q09rbr6fqhb9mbd95082cjdi3nag1cv6zn96xkr0f6imq9"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (for-each delete-file '("config.status" "configure"))
-           #t))))
+        (base32 "1df7bb9ba3m0c44fhmh8cs4hlkh4fffjwm8rz7l87lf5pdy7sg56"))))
+    (properties `((upstream-name . "harmony")))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-cowplot
-           r-dplyr
-           r-ggplot2
-           r-irlba
-           r-matrix
-           r-rcpp
-           r-rcpparmadillo
-           r-rcppprogress
-           r-rlang
-           r-tibble
-           r-tidyr))
-    (native-inputs
-     (list autoconf))
-    (home-page "https://github.com/immunogenomics/harmony")
+    (propagated-inputs (list r-cowplot
+                             r-dplyr
+                             r-ggplot2
+                             r-matrix
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rcppprogress
+                             r-rhpcblasctl
+                             r-rlang
+                             r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/web/packages/harmony/index.html")
     (synopsis "Integration of single cell sequencing data")
     (description
      "This package provides an implementation of the Harmony algorithm for
-single cell integration, described in Korsunsky et al
-@url{doi.org/10.1101/461954}.  The package includes a standalone Harmony
-function and interfaces to external frameworks.")
+single cell integration.  This package includes a standalone Harmony function
+and interfaces to external frameworks.")
     (license license:gpl3)))
 
 (define-public r-covr
