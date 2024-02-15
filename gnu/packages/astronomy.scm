@@ -2264,6 +2264,9 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
 of astronomical sources.")
     (license license:bsd-3)))
 
+;; XXX: The project is archived, maintained fork is available see
+;; <https://github.com/poliastro/poliastro/issues/1640>.
+;; Maintained fork <https://github.com/pleiszenburg/hapsira>.
 (define-public python-poliastro
   (package
     (name "python-poliastro")
@@ -2296,6 +2299,10 @@ of astronomical sources.")
                                   " and not test_porkchop_plotting"))
       #:phases
       #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("5.0,<6") "5.0,<7"))))
           (add-after 'unpack 'matplotlib-compatibility
             (lambda _
               (substitute* "src/poliastro/plotting/static.py"
