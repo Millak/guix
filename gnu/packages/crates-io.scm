@@ -39948,6 +39948,30 @@ types as proposed in RFC 1158.")
 that represent any netlink message for any sub-protocol.")
     (license license:expat)))
 
+(define-public rust-netlink-packet-generic-0.3
+  (package
+    (name "rust-netlink-packet-generic")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netlink-packet-generic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12rhb95ayx63zb55mz8z5vc5lghk92s8bxmpiimlrj1isf5fpmqw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+        ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5))
+       #:cargo-development-inputs (("rust-netlink-sys" ,rust-netlink-sys-0.8))))
+    (home-page "https://github.com/rust-netlink/netlink-packet-generic")
+    (synopsis "Generic netlink packet types")
+    (description "Generic netlink packet types.")
+    (license license:expat)))
+
 (define-public rust-netlink-packet-utils-0.5
   (package
     (name "rust-netlink-packet-utils")
