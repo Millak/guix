@@ -6057,22 +6057,19 @@ exploration and data entry.")
     (license license:expat)))
 
 (define-public go-github-com-mattn-go-shellwords
-  (let ((commit "2444a32a19f450fabaa0bb3e96a703f15d9a97d2")
-        (version "1.0.5")
-        (revision "1"))
     (package
       (name "go-github-com-mattn-go-shellwords")
-      (version (git-version version revision commit))
+      (version "1.0.12")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/mattn/go-shellwords")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "08zcgr1az1n8zaxzwdd205j86hczgyc52nxfnw5avpw7rrkf7v0d"))))
+           "0l0l5s4hlsrm4z6hygig2pp1qirk5ycrzn9z27ay3yvg9k7zafzx"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "github.com/mattn/go-shellwords"
@@ -6098,7 +6095,7 @@ exploration and data entry.")
       (synopsis "Parse lines into shell words")
       (description "This package parses text into shell arguments.  Based on
 the @code{cpan} module @code{Parse::CommandLine}.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-burntsushi-locker
   (let ((commit "a6e239ea1c69bff1cfdb20c4b73dadf52f784b6a")
