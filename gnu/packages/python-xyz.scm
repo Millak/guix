@@ -2568,13 +2568,13 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
 (define-public python-h5netcdf
   (package
     (name "python-h5netcdf")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "h5netcdf" version))
        (sha256
-        (base32 "0mmzfr6k55zqxxpb64gvdqisak8s1zb2r04yzkmp0wzd7dbknb4k"))))
+        (base32 "1kw3cf01kziwxmb84x0cy6vbpsmqjm0k1dm34i6b4d7bv8kw0wd1"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-netcdf4
