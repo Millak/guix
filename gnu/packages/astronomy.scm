@@ -569,7 +569,13 @@ Main features:
     (arguments
      (list
       #:test-flags
-      '(list "--ignore-glob=examples/*")
+      '(list "--ignore-glob=examples/*"
+        ;; Disable tests which are not compatible with Astropy 6.0.0, see
+        ;; <https://github.com/astroML/astroML/issues/273>.
+        "--ignore=astroML/density_estimation/tests/test_bayesian_blocks.py"
+        "--ignore=astroML/density_estimation/tests/test_bayesian_blocks.py"
+        "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
+        "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'patch-build-system
