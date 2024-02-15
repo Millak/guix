@@ -6057,45 +6057,45 @@ exploration and data entry.")
     (license license:expat)))
 
 (define-public go-github-com-mattn-go-shellwords
-    (package
-      (name "go-github-com-mattn-go-shellwords")
-      (version "1.0.12")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mattn/go-shellwords")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0l0l5s4hlsrm4z6hygig2pp1qirk5ycrzn9z27ay3yvg9k7zafzx"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/mattn/go-shellwords"
-         ;; TODO: can't make homeless-shelter:
-         ;; go: disabling cache (/homeless-shelter/.cache/go-build) due to
-         ;; initialization failure: mkdir /homeless-shelter: permission denied
+  (package
+    (name "go-github-com-mattn-go-shellwords")
+    (version "1.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-shellwords")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0l0l5s4hlsrm4z6hygig2pp1qirk5ycrzn9z27ay3yvg9k7zafzx"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/mattn/go-shellwords"
+       ;; TODO: can't make homeless-shelter:
+       ;; go: disabling cache (/homeless-shelter/.cache/go-build) due to
+       ;; initialization failure: mkdir /homeless-shelter: permission denied
 
-         ;; This doesn't seem to work:
+       ;; This doesn't seem to work:
 
-         ;; #:phases
-         ;; (modify-phases %standard-phases
-         ;;   (replace 'check
-         ;;     (lambda* (#:key import-path #:allow-other-keys)
-         ;;       (setenv "HOME" "/tmp")
-         ;;       (invoke "go" "test" import-path))))
+       ;; #:phases
+       ;; (modify-phases %standard-phases
+       ;;   (replace 'check
+       ;;     (lambda* (#:key import-path #:allow-other-keys)
+       ;;       (setenv "HOME" "/tmp")
+       ;;       (invoke "go" "test" import-path))))
 
-         ;; TODO: There are also a couple of tests that have stymied Debian in
-         ;; the past.  They seem to work when run locally.
+       ;; TODO: There are also a couple of tests that have stymied Debian in
+       ;; the past.  They seem to work when run locally.
 
-         #:tests? #f
-         ))
-      (home-page "https://github.com/mattn/go-shellwords")
-      (synopsis "Parse lines into shell words")
-      (description "This package parses text into shell arguments.  Based on
+       #:tests? #f
+       ))
+    (home-page "https://github.com/mattn/go-shellwords")
+    (synopsis "Parse lines into shell words")
+    (description "This package parses text into shell arguments.  Based on
 the @code{cpan} module @code{Parse::CommandLine}.")
-      (license license:expat)))
+    (license license:expat)))
 
 (define-public go-github-com-burntsushi-locker
   (let ((commit "a6e239ea1c69bff1cfdb20c4b73dadf52f784b6a")
