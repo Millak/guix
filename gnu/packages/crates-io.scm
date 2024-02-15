@@ -40100,6 +40100,32 @@ structures.")
     (license (list license:expat
                    license:asl2.0))))
 
+(define-public rust-nftables-0.3
+  (package
+    (name "rust-nftables")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nftables" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lmn2qkd5d24ip963ijj864djmqnm0q2mvgansbkv82fqysiplbi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-path-to-error" ,rust-serde-path-to-error-0.1)
+                       ("rust-strum" ,rust-strum-0.25)
+                       ("rust-strum-macros" ,rust-strum-macros-0.25)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://namib.me/")
+    (synopsis "Safe abstraction for nftables JSON API")
+    (description
+     "Safe abstraction for nftables JSON API.  It can be used to create nftables
+rulesets in Rust and parse existing nftables rulesets from JSON.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-nibble-vec-0.1
   (package
     (name "rust-nibble-vec")
