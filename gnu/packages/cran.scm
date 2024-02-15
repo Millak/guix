@@ -17053,14 +17053,14 @@ correlation, censored, ordered and multivariate problems.")
 (define-public r-bayesplot
   (package
     (name "r-bayesplot")
-    (version "1.11.0")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bayesplot" version))
        (sha256
         (base32
-         "0wpy1angkq513nc22fqmxsxm0y7dkvjzycy0z5s96j0z9jmb6q6n"))))
+         "0c1q1znp9vd0w6l35xa208bgiwr5f2w8j2c97v6ml4z0j5rycwag"))))
     (build-system r-build-system)
     (inputs
      (list pandoc))
