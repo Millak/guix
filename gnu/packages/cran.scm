@@ -3870,6 +3870,25 @@ designed to work with @code{magrittr} to make it easy to express common web
 scraping tasks, inspired by libraries like @code{BeautifulSoup}.")
     (license license:gpl3)))
 
+(define-public r-secretbase
+  (package
+    (name "r-secretbase")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "secretbase" version))
+       (sha256
+        (base32 "1z0ddzdimma8rgd47fn5mma09d5c7vrl5b7gdlvfk8l047yihyb6"))))
+    (properties `((upstream-name . "secretbase")))
+    (build-system r-build-system)
+    (home-page "https://shikokuchuo.net/secretbase/")
+    (synopsis "Cryptographic Hash and Extendable-Output Functions")
+    (description
+     "This package provides implementations of the SHA-3 cryptographic hash
+and SHAKE256 extendable-output functions (XOF).")
+    (license license:gpl3+)))
+
 (define-public r-selectr
   (package
     (name "r-selectr")
