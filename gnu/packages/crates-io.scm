@@ -31203,6 +31203,28 @@ Rust.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-iptables-0.5
+  (package
+    (name "rust-iptables")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iptables" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a96p8fq70v3z2rjf4c461pqhad6nkibs7sfgydkrf7ys1r0v7yk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests can't be run in the build environment.
+       #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/yaa110/rust-iptables")
+    (synopsis "Rust bindings for iptables")
+    (description "Rust bindings for iptables.")
+    (license license:expat)))
+
 (define-public rust-is-debug-1
   (package
     (name "rust-is-debug")
