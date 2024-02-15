@@ -39924,6 +39924,37 @@ types as proposed in RFC 1158.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-netlink-sys-0.8
+  (package
+    (name "rust-netlink-sys")
+    (version "0.8.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netlink-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04842pp457q7g14d6a61j70k60zg2wrbz0cmda3ka0dcww4bywb4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-async-io" ,rust-async-io-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mio" ,rust-mio-0.8)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ;("rust-netlink-packet-audit" ,rust-netlink-packet-audit-0.4)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-netlink/netlink-sys")
+    (synopsis "Netlink sockets, with optional integration with tokio")
+    (description "The @code{netlink_sys} crate provides netlink sockets.
+Integration with mio and tokio is optional.")
+    (license license:expat)))
+
 (define-public rust-netmap-sys-0.1
   (package
     (name "rust-netmap-sys")
