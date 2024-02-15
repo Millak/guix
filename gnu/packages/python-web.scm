@@ -3546,20 +3546,14 @@ adapter for use with the Requests library.")
 (define-public python-aioftp
   (package
     (name "python-aioftp")
-    (version "0.21.4")
+    (version "0.22.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aioftp" version))
               (sha256
                (base32
-                "1f8vql2j2b3ykqyh5bxzsp8x5f2if2c1ya232ld3hz3cc7a2dfr8"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vvv")))))))
+                "0w621mg956m9rn7v39jpwi4gpnpl90pprwl29cp640dahqqv38ms"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-async-timeout python-pytest
                          python-pytest-asyncio python-pytest-cov
                          python-trustme))
