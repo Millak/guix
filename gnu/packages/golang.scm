@@ -6073,7 +6073,6 @@ exploration and data entry.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/mattn/go-shellwords"
-       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-sh-path
