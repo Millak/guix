@@ -780,6 +780,9 @@ collection of tools for doing simple manipulations of TIFF images.")
            zlib))
     (arguments
      (list
+      ;; Parallel tests cause some tests to fail randomly.
+      ;; Same thing observed on Debian.
+      #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-reg-wrapper
