@@ -50,6 +50,8 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3846,25 +3848,64 @@ TkDiff is included for browsing and merging your changes.")
 (define-public git-filter-repo
   (package
     (name "git-filter-repo")
-    (version "2.29.0")
+    (version "2.38.0")
     (source
      (origin
-       ;; Use a release tarball instead of 'git-fetch' because it contains
-       ;; pre-compiled man-pages which are too hard to build in this context
-       ;; as it depends on Git's Makefile.
-       (method url-fetch)
-       (uri (string-append "https://github.com/newren/git-filter-repo/releases/"
-                           "download/v" version
-                           "/git-filter-repo-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/newren/git-filter-repo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "00nn7k9jqrybb762486fmigsnbcn9lbvimgpfvvarz4ikdp9y9pb"))))
-    (build-system copy-build-system)
+         "1al43zpw1mdfy9i05w4xw178abypjwnkk52lqvmbl19lr1l47r4i"))
+       ;; Modified from <https://github.com/newren/git-filter-repo/pull/477>.
+       ;; Used with 'unpack-git-source phase.
+       (patches (search-patches "git-filter-repo-generate-doc.patch"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:install-plan
-       '(("git-filter-repo" "libexec/git-core/")
-         ("Documentation/man1/" "share/man/man1")
-         ("/" "" #:include ()))))
+     (list
+      #:tests? #f                       ;No tests.
+      #:imported-modules
+      `(,@%gnu-build-system-modules
+        (guix build python-build-system))
+      #:modules
+      '((guix build gnu-build-system)
+        ((guix build python-build-system) #:select (site-packages))
+        (guix build utils)
+        (srfi srfi-26))
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              (string-append "VERSION=" #$(package-version this-package)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'unpack-git-source
+            (lambda _
+              (let* ((old-path (getcwd))
+                     (doc-source (string-append old-path "/Documentation")))
+                (mkdir-p "git-source")
+                (chdir "git-source")
+                ((assoc-ref %standard-phases 'unpack)
+                 #:source #+(package-source git))
+                (for-each
+                 (cut install-file <> doc-source)
+                 (find-files "." "asciidoc\\.conf$|manpage.*\\.xsl$"))
+                (chdir old-path)
+                (delete-file-recursively "git-source"))))
+          (add-before 'build 'set-pythondir
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("(pythondir = ).*" _ pre)
+                 (string-append pre (site-packages inputs outputs))))))
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "doc" make-flags))))))
+    (native-inputs
+     (list asciidoc
+           docbook-xsl
+           libxml2                        ;for XML_CATALOG_FILES
+           xmlto))
     (inputs (list python))                ;for the shebang
     (home-page "https://github.com/newren/git-filter-repo")
     (synopsis "Quickly rewrite Git repository history")
