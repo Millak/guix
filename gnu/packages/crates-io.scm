@@ -39924,6 +39924,28 @@ types as proposed in RFC 1158.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-netlink-packet-utils-0.5
+  (package
+    (name "rust-netlink-packet-utils")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netlink-packet-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d3xfh9zg0x2hbmh8iws0dvhj69prpx54khfvmfakm8sqw48mphf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/rust-netlink/netlink-packet-utils")
+    (synopsis "Macros and helpers for parsing netlink messages")
+    (description "Macros and helpers for parsing netlink messages.")
+    (license license:expat)))
+
 (define-public rust-netlink-sys-0.8
   (package
     (name "rust-netlink-sys")
