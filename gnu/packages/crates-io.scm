@@ -50840,8 +50840,29 @@ they were parsed from")
     (description "This package provides a library for async wake signals.")
     (license license:asl2.0)))
 
+(define-public rust-pure-rust-locales-0.8
+  (package
+    (name "rust-pure-rust-locales")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pure-rust-locales" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fkkwggiq2053rmiah2h06dz6w3yhy9pa82g30vy3sbcmqcgv40i"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t))     ; Not all files included.
+    (home-page "https://github.com/cecton/pure-rust-locales")
+    (synopsis "Pure Rust locales imported directly from the GNU C Library")
+    (description
+     "Pure Rust locales imported directly from the GNU C Library.
+@code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pure-rust-locales-0.7
   (package
+    (inherit rust-pure-rust-locales-0.8)
     (name "rust-pure-rust-locales")
     (version "0.7.0")
     (source
@@ -50851,15 +50872,8 @@ they were parsed from")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0cl46srhxzj0jlvfp73l8l9qw54qwa04zywaxdf73hidwqlsh0pd"))))
-    (build-system cargo-build-system)
     (arguments
-     (list #:tests? #f))    ; Not all files included.
-    (home-page "https://github.com/cecton/pure-rust-locales")
-    (synopsis "Pure Rust locales imported directly from the GNU C Library")
-    (description
-     "Pure Rust locales imported directly from the GNU C Library.
-@code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
-    (license (list license:expat license:asl2.0))))
+     (list #:tests? #f))))  ; Not all files included.
 
 (define-public rust-pyo3-build-config-0.20
   (package
