@@ -10727,14 +10727,14 @@ Encoding Standard.")
 (define-public rust-chrono-0.4
   (package
     (name "rust-chrono")
-    (version "0.4.31")
+    (version "0.4.34")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0f6vg67pipm8cziad2yms6a639pssnvysk1m05dd9crymmdnhb3z"))))
+        (base32 "12zk0ja924f55va2fs0qj34xaygq46fy92blmc7qkmcj9dj1bh2v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -10743,18 +10743,18 @@ Encoding Standard.")
         ("rust-iana-time-zone" ,rust-iana-time-zone-0.1)
         ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-pure-rust-locales" ,rust-pure-rust-locales-0.7)
+        ("rust-pure-rust-locales" ,rust-pure-rust-locales-0.8)
         ("rust-rkyv" ,rust-rkyv-0.7)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-windows-targets" ,rust-windows-targets-0.48))
+        ("rust-windows-targets" ,rust-windows-targets-0.52))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-windows-bindgen" ,rust-windows-bindgen-0.51))
+        ("rust-windows-bindgen" ,rust-windows-bindgen-0.52))
        #:features '("unstable-locales")
        #:tests? #f))
     (home-page "https://github.com/chronotope/chrono")
