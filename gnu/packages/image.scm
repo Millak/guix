@@ -753,7 +753,7 @@ collection of tools for doing simple manipulations of TIFF images.")
 (define-public leptonica
   (package
     (name "leptonica")
-    (version "1.83.1")
+    (version "1.84.1")
     (source
      (origin
        (method git-fetch)
@@ -762,7 +762,7 @@ collection of tools for doing simple manipulations of TIFF images.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j7qf9flb48q0aymf0yx9rypy3bs6hfjcln08zmy8qn2qcjzrmvi"))))
+        (base32 "0b4ikf1p2ll4310n4dg5lg0b79wys71fb6nj22i7pz17wjdma0j8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gnuplot ;needed for test suite
