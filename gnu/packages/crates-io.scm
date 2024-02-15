@@ -39972,17 +39972,17 @@ that represent any netlink message for any sub-protocol.")
     (description "Generic netlink packet types.")
     (license license:expat)))
 
-(define-public rust-netlink-packet-route-0.18
+(define-public rust-netlink-packet-route-0.19
   (package
     (name "rust-netlink-packet-route")
-    (version "0.18.1")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "netlink-packet-route" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1i9z89dy3p2jbs5rclvc6yxly81a4qwynrhyqv3hazj5pgxcv76x"))))
+        (base32 "1x4bjc97nq6ckvn25l8qysybf324jbinqx6s11vqrvmlfz6p3hbl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency tree
@@ -39998,10 +39998,35 @@ that represent any netlink message for any sub-protocol.")
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
     (home-page "https://github.com/rust-netlink/netlink-packet-route")
     (synopsis "Netlink packet types")
-    (description "The netlink-packet-route crate is designed to abstract Netlink
-route protocol (rtnetlink) packet into Rust data types.  The goal of this crate
-is saving netlink user from reading Kernel Netlink codes.")
+    (description "The netlink-packet-route crate is designed to abstract
+Netlink route protocol(rtnetlink) packet into Rust data types.  The goal of
+this crate is saving netlink user from reading Kernel Netlink codes.")
     (license license:expat)))
+
+(define-public rust-netlink-packet-route-0.18
+  (package
+    (inherit rust-netlink-packet-route-0.19)
+    (name "rust-netlink-packet-route")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netlink-packet-route" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i9z89dy3p2jbs5rclvc6yxly81a4qwynrhyqv3hazj5pgxcv76x"))))
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency tree
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+                       ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5))
+       #:cargo-development-inputs
+       (("rust-netlink-sys" ,rust-netlink-sys-0.8)
+        ;("rust-pcap-file" ,rust-pcap-file-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
 
 (define-public rust-netlink-packet-utils-0.5
   (package
