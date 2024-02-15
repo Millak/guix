@@ -40050,6 +40050,38 @@ this crate is saving netlink user from reading Kernel Netlink codes.")
     (description "Macros and helpers for parsing netlink messages.")
     (license license:expat)))
 
+(define-public rust-netlink-proto-0.11
+  (package
+    (name "rust-netlink-proto")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netlink-proto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "089zwrf5l30cwqgjlcy3k9x97nz6zixl914n6jnvys09vhj3bcw6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+                       ("rust-netlink-sys" ,rust-netlink-sys-0.8)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-netlink-packet-audit" ,rust-netlink-packet-audit-0.5)
+        ("rust-netlink-packet-route" ,rust-netlink-packet-route-0.18)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-netlink/netlink-proto")
+    (synopsis "Async netlink protocol")
+    (description "The @code{netlink-proto} crate is an asynchronous
+implementation of the netlink protocol.")
+    (license license:expat)))
+
 (define-public rust-netlink-sys-0.8
   (package
     (name "rust-netlink-sys")
