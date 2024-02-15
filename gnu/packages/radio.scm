@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2019, 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -105,6 +105,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -1889,6 +1890,29 @@ It can be used to decode the ADS-B signals that planes emit to indicate
 their position, altitude, speed, etc.")
     (home-page "https://github.com/flightaware/dump1090")
     (license license:gpl2+)))
+
+(define-public libacars
+  (package
+    (name "libacars")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/szpajder/libacars")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08cadcqzhl3i7hpd8jwph33kx52vdwbrj1rlagwrkwb2mfw6szfs"))))
+    (build-system cmake-build-system)
+    (inputs (list jansson libxml2 zlib))
+    (arguments (list #:tests? #f)) ; No test suite
+    (synopsis "Decoder for ACARS messages")
+    (description "This package provides a library for decoding the contents of
+ACARS messages used by planes.")
+    (home-page "https://github.com/szpajder/libacars")
+    (license (list license:bsd-2
+                   license:expat))))
 
 (define-public rtl-433
   (package
