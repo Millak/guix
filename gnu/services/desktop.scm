@@ -75,7 +75,6 @@
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages enlightenment)
   #:use-module (guix deprecation)
-  #:use-module (guix diagnostics)
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix store)
@@ -85,7 +84,6 @@
   #:use-module (guix modules)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-35)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (<upower-configuration>
