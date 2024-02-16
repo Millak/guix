@@ -23134,6 +23134,29 @@ visualization of biological sequence (DNA and protein) data.  It also includes
 utilities for sequence data management under the ACNUC system.")
     (license license:gpl2+)))
 
+(define-public r-unigd
+  (package
+    (name "r-unigd")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "unigd" version))
+       (sha256
+        (base32 "0519v2p4jzfpilai022blvyxi56kfdidafwjpa1g6lnmwmpk4isq"))))
+    (properties `((upstream-name . "unigd")))
+    (build-system r-build-system)
+    (inputs (list cairo fontconfig freetype libpng zlib))
+    (propagated-inputs (list r-cpp11 r-systemfonts))
+    (native-inputs (list r-knitr pkg-config))
+    (home-page "https://github.com/nx10/unigd")
+    (synopsis "Universal graphics device")
+    (description
+     "This package provides a unified R graphics backend.  Render R graphics
+fast and easy to many common file formats.  It provides a thread safe C
+interface for asynchronous rendering of R graphics.")
+    (license license:gpl2+)))
+
 (define-public r-units
   (package
     (name "r-units")
