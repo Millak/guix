@@ -9923,6 +9923,18 @@ The API is slightly different from @var{python-build-system}:
 @item
 @code{#:use-setuptools?} and @code{#:test-target} is removed.
 @item
+@code{#:configure-flags} is changed. Instead of a list
+this option must be a JSON object, whose interpretation
+depends on the build backend. For instance the example from
+@url{https://peps.python.org/pep-0517/#config-settings,PEP 517}
+should be written as @code{'(@@ ("CC" "gcc") ("--global-option"
+("--some-global-option")) ("--build-option" ("--build-option1"
+"--build-option2")))}
+@item
+@code{#:backend-path} is added.  It defaults to @code{#false}, but when
+set to a list it will be appended to Python’s search path and overrides
+the definition in @file{pyproject.toml}.
+@item
 @code{#:build-backend} is added.  It defaults to @code{#false} and will try
 to guess the appropriate backend based on @file{pyproject.toml}.
 @item
