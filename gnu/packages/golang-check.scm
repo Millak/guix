@@ -63,7 +63,7 @@
 (define-public go-github-com-alecthomas-assert-v2
   (package
     (name "go-github-com-alecthomas-assert-v2")
-    (version "2.2.2")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -72,7 +72,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "055w46gr47rrn5g2hh7z6hj3x2b8advbcph8gs8szrpzlympyyz0"))))
+        (base32 "1ai26ncfcwzg47rqaigs5v1fzfz6i8p11ki75ni5429xkjs77riz"))))
     (build-system go-build-system)
     (arguments
      (list #:go go-1.18
