@@ -3,15 +3,16 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -77,6 +78,36 @@
     (description
      "This package provides a library for environment variables
 substitution.")
+    (license license:expat)))
+
+(define-public go-github-com-alecthomas-chroma
+  (package
+    (name "go-github-com-alecthomas-chroma")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/chroma")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "066a6rdmf670d3v5sc7chbn7db09ldgxjympb03pcqwk644dixb1"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/alecthomas/chroma"))
+    (native-inputs
+     (list go-github-com-dlclark-regexp2
+           go-github-com-alecthomas-assert
+           go-github-com-alecthomas-colour
+           go-github-com-alecthomas-repr
+           go-github-com-mattn-go-isatty
+           go-github-com-sergi-go-diff))
+    (home-page "https://github.com/alecthomas/chroma/")
+    (synopsis "General purpose syntax highlighter in pure Go")
+    (description
+     "Chroma takes source code and other structured text and converts it into
+syntax highlighted HTML, ANSI-coloured text, etc.")
     (license license:expat)))
 
 (define-public go-github-com-alecthomas-participle-v2

@@ -23,6 +23,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
