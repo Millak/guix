@@ -248,6 +248,46 @@ containers or various tools.")
 network namespaces.")
     (license license:gpl2+)))
 
+(define-public passt
+  (package
+    (name "passt")
+    (version "2023_12_30.f091893")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://passt.top/passt/snapshot/passt-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "1nyd4h93qlxn1r01ffijpsd7r7ny62phki5j58in8gz021jj4f3d"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "RLIMIT_STACK_VAL=1024"   ; ¯\_ (ツ)_/¯
+              (string-append "VERSION=" #$version)
+              (string-append "prefix=" #$output))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://passt.top")
+    (synopsis "Plug A Simple Socket Transport")
+    (description
+     "passt implements a thin layer between guest and host, that only
+implements what's strictly needed to pretend processes are running locally.
+The TCP adaptation doesn't keep per-connection packet buffers, and reflects
+observed sending windows and acknowledgements between the two sides.  This TCP
+adaptation is needed as passt runs without the CAP_NET_RAW capability: it
+can't create raw IP sockets on the pod, and therefore needs to map packets at
+Layer-2 to Layer-4 sockets offered by the host kernel.
+
+Also provides pasta, which similarly to slirp4netns, provides networking to
+containers by creating a tap interface available to processes in the
+namespace, and mapping network traffic outside the namespace using native
+Layer-4 sockets.")
+    (license (list license:gpl2+ license:bsd-3))))
+
 (define-public cni-plugins
   (package
     (name "cni-plugins")
