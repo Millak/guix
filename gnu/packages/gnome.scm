@@ -10154,108 +10154,144 @@ world.")
     (home-page "https://wiki.gnome.org/Apps/Weather")
     (license license:gpl2+)))
 
-(define-public gnome
-  (package
-    (name "gnome")
-    (version (package-version gnome-shell))
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments '(#:builder (begin (mkdir %output) #t)))
-    (propagated-inputs
-     `(,@(if (string-prefix? "x86_64" (%current-system))
-             ;; XXX: EoG requires librsvg-next, which depends on Rust, which currently
-             ;; only works on x86_64, so exclude it on other architectures.
-             (list eog)
-             '())
-       ,@(list
-          ;; GNOME-Core-OS-Services.
-          accountsservice
-          network-manager
-          packagekit
-          upower
-          ;; GNOME-Core-Shell.
-          adwaita-icon-theme
-          gdm
-          glib-networking
-          gnome-backgrounds
-          gnome-bluetooth
-          gnome-color-manager
-          gnome-control-center
-          gnome-desktop
-          gnome-initial-setup
-          gnome-keyring
-          gnome-menus
-          gnome-session
-          gnome-settings-daemon
-          gnome-shell
-          gnome-shell-extensions
-          gnome-themes-extra
-          gnome-user-docs
-          gnome-user-share
-          gsettings-desktop-schemas
-          gvfs
-          mutter
-          orca
-          rygel
-          sushi
-          ;; GNOME-Core-Utilities.
-          baobab
-          cheese
-          epiphany
-          evince
-          file-roller
-          gnome-calculator
-          gnome-calendar
-          gnome-characters
-          gnome-clocks
-          gnome-console
-          gnome-contacts
-          gnome-disk-utility
-          gnome-font-viewer
-          gnome-maps
-          gnome-music
-          gnome-photos
-          gnome-screenshot
-          gnome-system-monitor
-          gnome-text-editor
-          gnome-weather
-          nautilus
-          simple-scan
-          totem
-          tracker-miners
-          xdg-desktop-portal-gnome
-          yelp
-          ;; Others.
-          gnome-online-accounts
-          hicolor-icon-theme
-
-          ;; Packages not part of GNOME proper but that are needed for a good
-          ;; experience.  See <https://bugs.gnu.org/39646>.
-          ;; XXX: Find out exactly which ones are needed and why.
-          at-spi2-core
-          dbus
-          dconf
-          desktop-file-utils
-          font-abattis-cantarell
-          font-dejavu
-          gnome-default-applications
-          gst-plugins-base
-          gst-plugins-good
-          gucharmap
-          pinentry-gnome3
-          pulseaudio
-          shared-mime-info
-          system-config-printer
-          xdg-user-dirs
-          yelp
-          zenity)))
-    (synopsis "The GNU desktop environment")
-    (home-page "https://www.gnome.org/")
-    (description
-     "GNOME is the graphical desktop for GNU.  It includes a wide variety of
+(define-syntax gnome-meta-package
+  (lambda (x)
+    (syntax-case x ()
+      ((_ field ...)
+       (with-syntax ((base (datum->syntax x 'base)))
+         #'(let ((base
+                  (package
+                    (name #f)      ; we're hidden by default, so don't worry
+                    (version (package-version gnome-shell))
+                    (source #f)
+                    (build-system trivial-build-system)
+                    (arguments
+                     (list #:builder
+                           #~(begin (format (current-warning-port)
+                                            "Building ~a is useless.  \
+Refer to its propagated inputs instead.\n"
+                                            #$(package-name this-package))
+                                    (mkdir #$output))))
+                    (home-page "https://www.gnome.org")
+                    (synopsis "The GNU desktop environment")
+                    (description "\
+GNOME is the graphical desktop for GNU.  It includes a wide variety of
 applications for browsing the web, editing text and images, creating
 documents and diagrams, playing media, scanning, and much more.")
-    (license license:gpl2+)))
+                    (license license:gpl2+)
+                    (properties `((hidden? . #t))))))
+             (package (inherit base)
+                      field ...)))))))
+
+(define-public gnome-meta-core-services
+  (gnome-meta-package
+   (name "gnome-meta-core-services")
+   (propagated-inputs (list accountsservice
+                            network-manager
+                            packagekit
+                            upower))))
+
+(define-public gnome-meta-core-shell
+  (gnome-meta-package
+   (name "gnome-meta-core-shell")
+   (propagated-inputs (list adwaita-icon-theme
+                            gdm
+                            glib-networking
+                            gnome-backgrounds
+                            gnome-bluetooth
+                            gnome-color-manager
+                            gnome-control-center
+                            gnome-desktop
+                            gnome-initial-setup
+                            gnome-keyring
+                            gnome-menus
+                            gnome-session
+                            gnome-settings-daemon
+                            gnome-shell
+                            gnome-shell-extensions
+                            gnome-themes-extra
+                            gnome-user-docs
+                            gnome-user-share
+                            gsettings-desktop-schemas
+                            gvfs
+                            mutter
+                            orca
+                            rygel
+                            sushi))))
+
+(define-public gnome-meta-core-utilities
+  (gnome-meta-package
+   (name "gnome-meta-core-utilities")
+   (propagated-inputs
+    (append
+     ;; XXX: EoG requires librsvg-next, which depends on Rust, which currently
+     ;; only works on x86_64, so exclude it on other architectures.
+     (if (string-prefix? "x86_64" (%current-system))
+         (list eog)
+         '())
+     (list baobab
+           cheese
+           epiphany
+           evince
+           file-roller
+           gnome-calculator
+           gnome-calendar
+           gnome-characters
+           gnome-clocks
+           gnome-console
+           gnome-contacts
+           gnome-disk-utility
+           gnome-font-viewer
+           gnome-maps
+           gnome-music
+           gnome-photos
+           gnome-screenshot
+           gnome-system-monitor
+           gnome-text-editor
+           gnome-weather
+           nautilus
+           simple-scan
+           totem
+           tracker-miners
+           xdg-desktop-portal-gnome
+           yelp)))))
+
+(define-public gnome-essential-extras
+  (gnome-meta-package
+   (name "gnome-essential-extras")
+   (propagated-inputs (list at-spi2-core
+                            dbus
+                            dconf
+                            desktop-file-utils
+                            font-abattis-cantarell
+                            font-dejavu
+                            gnome-default-applications
+                            gnome-online-accounts
+                            gst-plugins-base
+                            gst-plugins-good
+                            gucharmap
+                            hicolor-icon-theme
+                            pinentry-gnome3
+                            pulseaudio
+                            shared-mime-info
+                            system-config-printer
+                            xdg-user-dirs
+                            yelp
+                            zenity))
+   (description "This package provides a list of packages required for
+a good GNOME experience, mixed from core dependencies and other implicitly
+relied-on packages.")))
+
+(define-public gnome
+  (gnome-meta-package
+   (name "gnome")
+   (propagated-inputs
+    (append-map package-propagated-inputs
+                (list gnome-meta-core-services
+                      gnome-meta-core-shell
+                      gnome-meta-core-utilities
+                      gnome-essential-extras)))
+   (properties (list))))
 
 (define-public byzanz
   ;; The last stable release of Byzanz was in 2011, but there have been many
