@@ -92,8 +92,12 @@ substitution.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hjzb61m5lzx95xss82wil9s8f9hbw1zb3jj73ljfwkq5lqk76zq"))))
+        (base32 "0hjzb61m5lzx95xss82wil9s8f9hbw1zb3jj73ljfwkq5lqk76zq"))
+       (modules '((guix build utils)))
+       ;; Delete git submodules and generated files by Hermit.
+       (snippet '(delete-file-recursively "bin"))))
     (build-system go-build-system)
+    ;; TODO: Build cmd/chroma and cmd/chromad commands.
     (arguments
      `(#:import-path "github.com/alecthomas/chroma"))
     (native-inputs
