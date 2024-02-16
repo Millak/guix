@@ -1425,7 +1425,12 @@ GNOME users.")
    "A list of regular expressions denoting udev rules or hardware file names
 provided by any package that should not be installed.  By default, every udev
 rule and hardware file specified by any package referenced in the other fields
-are installed."))
+are installed.")
+  (polkit-ignorelist
+   (list-of-strings '())
+   "A list of regular expressions denoting polkit rules provided by any package
+that should not be installed.  By default, every polkit rule added by any package
+referenced in the other fields are installed."))
 
 (define (gnome-package gnome name)
   "Return the package NAME among the GNOME package inputs.  NAME can be a
@@ -1467,22 +1472,27 @@ dependencies by filtering out the ignorelist."
 (define (gnome-polkit-settings config)
   "Return the list of GNOME dependencies that provide polkit actions and
 rules."
-  (let ((gnome (gnome-desktop-configuration-gnome config))
-        (shell (gnome-desktop-configuration-shell config)))
-    (or (any (match-lambda ((and pkg (= package-name "gvfs")) (list pkg))
-                           (_ #f))
-              shell)
-        (and (maybe-value-set? gnome)
-             (gnome-packages gnome
-                             '("gnome-settings-daemon"
-                               "gnome-control-center"
-                               "gnome-system-monitor"
-                               "gvfs")))
-        (raise
-         (condition
-          (&error-location
-           (location (gnome-desktop-configuration-source-location config)))
-          (&message (message (G_ "Missing gvfs"))))))))
+  (list
+   (computed-file
+    "gnome-polkit-settings"
+    (with-imported-modules
+        (source-module-closure '((guix build utils)
+                                 (guix build union)))
+      #~(let ((output (string-append #$output "/share/polkit-1")))
+          (use-modules (guix build utils)
+                       (guix build union))
+          (mkdir-p (dirname output))
+          (union-build output
+                       (search-path-as-list
+                        (list "share/polkit-1")
+                        (list #$@(gnome-profile config)))
+                       #:create-all-directories? #t)
+          (for-each
+           (lambda (pattern)
+             (for-each
+              delete-file-recursively
+              (find-files output pattern)))
+           (list #$@(gnome-desktop-configuration-polkit-ignorelist config))))))))
 
 (define (gnome-profile config)
   "Return a list of packages propagated through CONFIG."
