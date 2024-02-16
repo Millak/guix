@@ -2556,7 +2556,7 @@ Python.")
     (propagated-inputs (list python-htsget python-psutil python-requests
                              python-tqdm python-urllib3))
     (native-inputs (list python-coverage python-pytest python-pyfakefs
-                         python-responses))
+                         python-responses python-mock))
     (home-page "https://github.com/EGA-archive/ega-download-client")
     (synopsis "EGA download client")
     (description
