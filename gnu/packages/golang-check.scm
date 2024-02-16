@@ -60,43 +60,8 @@
 ;;; Libraries:
 ;;;
 
-(define-public go-github-com-alecthomas-assert
-  (let ((commit "405dbfeb8e38effee6e723317226e93fff912d06")
-        (revision "1"))
-    (package
-      (name "go-github-com-alecthomas-assert")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/alecthomas/assert")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1l567pi17k593nrd1qlbmiq8z9jy3qs60px2a16fdpzjsizwqx8l"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/alecthomas/assert"))
-      (native-inputs
-       (list go-github-com-alecthomas-colour
-             go-github-com-mattn-go-isatty
-             go-github-com-alecthomas-repr
-             go-github-com-sergi-go-diff))
-      (home-page "https://github.com/alecthomas/assert/")
-      (synopsis "Go assertion library")
-      (description "Assertion library that:
-@itemize
-@item makes spotting differences in equality much easier
-@item uses repr and diffmatchpatch to display structural differences in colour
-@item aborts tests on first assertion failure
-@end itemize\n")
-      (license license:expat))))
-
 (define-public go-github-com-alecthomas-assert-v2
   (package
-    (inherit go-github-com-alecthomas-assert)
     (name "go-github-com-alecthomas-assert-v2")
     (version "2.2.2")
     (source
@@ -108,13 +73,22 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "055w46gr47rrn5g2hh7z6hj3x2b8advbcph8gs8szrpzlympyyz0"))))
+    (build-system go-build-system)
     (arguments
      (list #:go go-1.18
            #:import-path "github.com/alecthomas/assert/v2"))
     (propagated-inputs
      (list go-github-com-alecthomas-repr
            go-github-com-hexops-gotextdiff))
-    (native-inputs '())))
+    (home-page "https://github.com/alecthomas/assert/")
+    (synopsis "Go assertion library")
+    (description "Assertion library that:
+@itemize
+@item makes spotting differences in equality much easier
+@item uses repr and diffmatchpatch to display structural differences in colour
+@item aborts tests on first assertion failure
+@end itemize")
+    (license license:expat)))
 
 (define-public go-github-com-cheekybits-is
   (let ((commit "68e9c0620927fb5427fda3708222d0edee89eae9")
