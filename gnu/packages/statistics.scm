@@ -1519,6 +1519,36 @@ it supports LaTeX and HTML output.  Source code of other languages is
 supported via Andre Simon's highlight package.")
     (license license:gpl3+)))
 
+(define-public r-httpgd
+  (let ((commit "3f5f55822c4dce930155b91cedcfd4d483e3294e")
+        (revision "1"))
+    (package
+      (name "r-httpgd")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nx10/httpgd")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14i7mhbv1vcz2886w9lii9zhgr4zhhc844349syb989nhhzg552n"))))
+      (properties `((upstream-name . "httpgd")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-asioheaders r-cpp11 r-unigd))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/nx10/httpgd")
+      (synopsis "'HTTP' Server Graphics Device")
+      (description
+       "This package provides a graphics device for R that is accessible via
+network protocols.  This package was created to make it easier to embed live R
+graphics in integrated development environments and other applications.  The
+included HTML/@code{JavaScript} client (plot viewer) aims to provide a better
+overall user experience when dealing with R graphics.  The device
+asynchronously serves graphics via HTTP and @code{WebSockets}'.")
+      (license license:gpl2+))))
+
 (define-public r-mime
   (package
     (name "r-mime")
