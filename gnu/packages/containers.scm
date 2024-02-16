@@ -342,7 +342,7 @@ configure network interfaces in Linux containers.")
 (define-public podman
   (package
     (name "podman")
-    (version "4.4.1")
+    (version "4.9.3")
     (source
      (origin
        (method git-fetch)
@@ -353,8 +353,11 @@ configure network interfaces in Linux containers.")
        ;; FIXME: Btrfs libraries not detected by these scripts.
        (snippet '(substitute* "Makefile"
                    ((".*hack/btrfs.*") "")))
+       (patches
+        (search-patches
+         "podman-program-lookup.patch"))
        (sha256
-        (base32 "0qbr6rbyig3c2hvdvmd94jjkg820hpdz6j7dgyv62dl6wfwvj5jj"))
+        (base32 "17g7n09ndxhpjr39s9qwxdcv08wavjj0g5nmnrvrkz2wgdqigl1x"))
        (file-name (git-file-name name version))))
 
     (build-system gnu-build-system)
@@ -381,10 +384,11 @@ configure network interfaces in Linux containers.")
                 (invoke "make" "remotesystem"))))
           (add-after 'unpack 'fix-hardcoded-paths
             (lambda _
-              (substitute* (find-files "libpod" "\\.go")
-                (("exec.LookPath[(][\"]slirp4netns[\"][)]")
-                 (string-append "exec.LookPath(\""
-                                (which "slirp4netns") "\")")))
+              (substitute* "vendor/github.com/containers/common/pkg/config/config.go"
+                (("@SLIRP4NETNS_DIR@")
+                 (string-append #$slirp4netns "/bin"))
+                (("@PASST_DIR@")
+                 (string-append #$passt "/bin")))
               (substitute* "hack/install_catatonit.sh"
                 (("CATATONIT_PATH=\"[^\"]+\"")
                  (string-append "CATATONIT_PATH=" (which "true"))))
@@ -414,11 +418,12 @@ configure network interfaces in Linux containers.")
            libassuan
            libseccomp
            libselinux
+           passt
            slirp4netns))
     (native-inputs
      (list bats
            git
-           go-1.19
+           go-1.21
            ; strace ; XXX debug
            pkg-config
            python))
@@ -427,7 +432,10 @@ configure network interfaces in Linux containers.")
     (description
      "Podman (the POD MANager) is a tool for managing containers and images,
 volumes mounted into those containers, and pods made from groups of
-containers.")
+containers.
+
+The @code{machine} subcommand is not supported due to gvproxy not being
+packaged.")
     (license license:asl2.0)))
 
 (define-public buildah
