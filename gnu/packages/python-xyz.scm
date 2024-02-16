@@ -146,6 +146,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29648,6 +29649,37 @@ HTML-containing files.")
 usable as a configuration language.  This Python package implements parsing and
 dumping of JSON5 data structures.")
     (license license:asl2.0)))
+
+(define-public python-farama-notifications
+  (package
+    (name "python-farama-notifications")
+    (version "0.0.4")
+    (source
+     ;; The version on pypi does not include tests.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Farama-Foundation/Farama-Notifications")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k1x48xpvhankw7vbjp20ljwran247aphc2qncqrxivrkgzwjjji"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python3" "tests/ci-test.py")))))))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/Farama-Foundation/Farama-Notifications")
+    (synopsis "Notifications for all Farama Foundation maintained libraries")
+    (description
+     "This package allows for providing notifications for all Farama
+Foundation maintained libraries.")
+    (license license:expat)))
 
 (define-public python-freetype-py
   (package
