@@ -10205,6 +10205,7 @@ documents and diagrams, playing media, scanning, and much more.")
                             gnome-initial-setup
                             gnome-keyring
                             gnome-menus
+                            gnome-remote-desktop
                             gnome-session
                             gnome-settings-daemon
                             gnome-shell
@@ -10238,6 +10239,7 @@ documents and diagrams, playing media, scanning, and much more.")
            gnome-calendar
            gnome-characters
            gnome-clocks
+           gnome-connections
            gnome-console
            gnome-contacts
            gnome-disk-utility
