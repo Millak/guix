@@ -111,6 +111,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -5375,6 +5376,8 @@ compatible with SQLite using a graphical user interface.")
                   go-github-com-mattn-go-runewidth
                   go-golang-org-x-xerrors
                   go-gopkg-in-yaml-v2))
+    (native-inputs (list go-github-com-google-go-cmp-cmp
+                         go-github-com-k0kubun-pp))
     (synopsis "SQL language server written in Go")
     (description
      "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
