@@ -30788,7 +30788,7 @@ and have a maximum lifetime built-in.")
 (define-public python-devtools
   (package
     (name "python-devtools")
-    (version "0.6")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
@@ -30797,18 +30797,28 @@ and have a maximum lifetime built-in.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15zczdcm90wl54c68f1qjb05nkd5bjsc9xjl3lk4frs7k7wkmrvp"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-pytest-mock))
-    (propagated-inputs
-     (list python-pygments))
+        (base32 "0snmx7f0s44rzzx8advzmgj5av9dlpz1kx05f7ysya8xrhv5nwfl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest")
-                      #t)))))
+     (list
+      #:test-flags
+      ;; Disable some failing tests.
+      #~(list "-k" (string-append "not test_print_subprocess"
+                                  " and not test_simple")
+              "--ignore=tests/test_insert_assert.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Pygments 2.12.0 is available.
+                (("2.15.0") "2.12.0")
+                ;; executing 0.8.2 is available.
+                (("1.1.1") "0.8.2")))))))
+    (native-inputs
+     (list python-hatchling python-pytest python-pytest-mock))
+    (propagated-inputs
+     (list python-asttokens python-executing python-pygments))
     (home-page "https://github.com/samuelcolvin/python-devtools")
     (synopsis "Debug command and development tools")
     (description
