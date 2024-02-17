@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -252,6 +253,7 @@ loading algorithms.")
     (arguments
      '(#:import-path "golang.org/x/net/html"
        #:unpack-path "golang.org/x/net"))
+    (propagated-inputs (list go-golang-org-x-text))
     (home-page "https://godoc.org/golang.org/x/net/html")
     (synopsis "HTML5-compliant tokenizer and parser")
     (description
