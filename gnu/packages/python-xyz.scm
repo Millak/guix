@@ -28276,14 +28276,10 @@ translating between quadkey and tile coordinates.")
         (uri (pypi-uri "xyzservices" version))
         (sha256
           (base32 "1paxv4i0dws85md7csv7pf80jl3xh792mx8rxnsrk61ks3ivbsyg"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:test-flags #~(list "-m" "not request")))
     (native-inputs
      (list python-pytest python-mercantile python-requests))
     (home-page "https://github.com/geopandas/xyzservices")
