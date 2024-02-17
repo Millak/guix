@@ -795,6 +795,33 @@ Differentiation between text and binary files}.
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-k0kubun-pp
+  (package
+    (name "go-github-com-k0kubun-pp")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/k0kubun/pp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vpp5n3kdazk4s1ljhwbrhz3kilzvdvx5hya922bg0q9vnjqqvvc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/k0kubun/pp"))
+    (propagated-inputs (list go-github-com-mattn-go-colorable
+                             go-golang-org-x-text))
+    (home-page "https://github.com/k0kubun/pp")
+    (synopsis "Colored pretty-printer for Go")
+    (description
+     "This package provides a pretty-printer for Go.  The functions defined by
+@code{pp} follow an API similar to @code{fmt} and its configuration can be
+customized globally.")
+    (license license:expat)))
+
 (define-public go-github-com-matryer-try
   (package
     (name "go-github-com-matryer-try")
