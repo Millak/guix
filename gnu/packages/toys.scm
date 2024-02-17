@@ -434,6 +434,43 @@ and various scenery elements.")
 flying and falling on the desktop, using windows as run paths.")
     (license license:gpl2+)))
 
+(define-public xfishtank
+  (package
+    (name "xfishtank")
+    (version "3.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.ratrabbit.nl/downloads/xfishtank/xfishtank-"
+             version "~pre1.tar.gz"))
+       ;; Version has ~pre1 in it.  Guix store does not allow tilde in file
+       ;; names.  Save it in the Store using a hyphen.
+       (file-name (string-append name "-" version "-pre1.tar.gz"))
+       (sha256
+        (base32 "16i9diawkmar6dhx5xn0mflr2h585gamab6137hvxzgaczx55lwp"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-install-path
+            (lambda _
+              ;; Install program to bin/ instead of games/.
+              (substitute* "src/Makefile.in"
+                (("(gamesdir = \\$\\(exec_prefix\\)/)games" _ prefix)
+                 (string-append prefix "bin"))))))))
+    (inputs
+     (list gtk+ libx11 libxml2 libxpm libxt))
+    (native-inputs
+     (list pkg-config))
+    (home-page
+     "https://www.ratrabbit.nl/ratrabbit/software/xfishtank/index.html")
+    (synopsis "Let fish swim over your desktop!")
+    (description "Xfishtank is a vintage application that uses the X11
+protocol.  It shows fishes swimming over the desktop.")
+    (license (list license:expat license:gpl3+))))
+
 (define-public nyancat
   (package
     (name "nyancat")
