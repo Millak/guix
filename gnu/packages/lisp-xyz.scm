@@ -42,6 +42,7 @@
 ;;; Copyright © 2023 Gabriel Hondet <gabriel.hondet@cominety.net>
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
+;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15481,20 +15482,19 @@ functions.")
   (sbcl-package->ecl-package sbcl-cl-dejavu))
 
 (define-public sbcl-mcclim
-  (let ((commit "ece91cf035e2ccb1c6eb0bb867ae2bc45f627982")
-        (revision "3"))
+  (let ((commit #f)) ; avoiding changing indentation
     (package
       (name "sbcl-mcclim")
-      (version (git-version "0.9.7" revision commit))
+      (version "0.9.8")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://codeberg.org/McCLIM/McCLIM")
-               (commit commit)))
+               (commit "0.9.8-yule")))
          (file-name (git-file-name "cl-mcclim" version))
          (sha256
-          (base32 "0prn4f0nz604ykcg8004f1vndgjm7181wrlblq6mhasphca28c2k"))))
+          (base32 "0gbi61jnnsz6fvhv18mf57jkq46bvcd0355vqdcnrni7xyi10sk8"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam pkg-config))
@@ -15514,10 +15514,12 @@ functions.")
              sbcl-cl-vectors
              sbcl-cl-who
              sbcl-closer-mop
+             sbcl-cluffer
              sbcl-clx
              sbcl-flexi-streams
              sbcl-flexichain
              sbcl-log4cl
+             sbcl-lorem-ipsum
              sbcl-opticl
              sbcl-slime-swank
              sbcl-spatial-trees
