@@ -7895,7 +7895,13 @@ use one of our glamorous default themes.")
         (base32 "1aasg0c0xxhwav4ivm1mqmsqab6lk407xky8c19pb85r1hdbq0n7"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/charmbracelet/harmonica"))
+     (list
+      #:import-path "github.com/charmbracelet/harmonica"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-examples
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/examples")))))))
     (home-page "https://github.com/charmbracelet/harmonica")
     (synopsis "Simple, physics-based animation library")
     (description
