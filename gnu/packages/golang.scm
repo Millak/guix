@@ -9071,7 +9071,13 @@ sinks and sources.")
       (propagated-inputs
        (list pkg-config pulseaudio))
       (arguments
-       '(#:import-path "github.com/mesilliac/pulse-simple"))
+       (list
+        #:import-path "github.com/mesilliac/pulse-simple"
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'remove-examples
+                       (lambda* (#:key import-path #:allow-other-keys)
+                         (delete-file-recursively
+                          (string-append "src/" import-path "/examples")))))))
       (home-page "https://github.com/mesilliac/pulse-simple")
       (synopsis "Cgo bindings to PulseAudio's Simple API")
       (description
