@@ -10174,11 +10174,11 @@ Refer to its propagated inputs instead.\n"
                                             #$(package-name this-package))
                                     (mkdir #$output))))
                     (home-page "https://www.gnome.org")
-                    (synopsis "The GNU desktop environment")
-                    (description "\
-GNOME is the graphical desktop for GNU.  It includes a wide variety of
-applications for browsing the web, editing text and images, creating
-documents and diagrams, playing media, scanning, and much more.")
+                    (synopsis "Graphical desktop environment")
+                    (description "GNOME is a graphical desktop environment.
+It includes a wide variety of applications with a common interface for
+browsing the web, editing text and images, creating documents and diagrams,
+playing media, scanning, and much more.")
                     (license license:gpl2+)
                     (properties `((hidden? . #t))))))
              (package (inherit base)
