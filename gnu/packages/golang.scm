@@ -4526,7 +4526,7 @@ terminal.")
         (base32
          "05hl2ddp67p5kj3ix4zzqqjh4fan4ban3vgw8f98simwigs3q41j"))))
     (build-system go-build-system)
-    (native-inputs
+    (propagated-inputs
      (list go-github-com-mattn-go-isatty))
     (arguments
      '(#:import-path "github.com/mattn/go-colorable"))
