@@ -31161,20 +31161,15 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
          (base32 "0drvqxbr6fpydb4d7z5dhn97d578gf39sd8cawyl6ksf1f4y8yzg"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f  ; Test suite can't find aiohttp.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--maxfail" "3" "--verbose"))
-             #t)))))
+     (list
+      #:test-flags '(list "-n" (number->string (parallel-job-count)))))
     (native-inputs
      (list python-aiohttp
            python-hatchling
+           python-psutil
            python-pytest
-           python-pytest-asyncio))
+           python-pytest-asyncio
+           python-pytest-xdist))
     (home-page "https://github.com/yuvipanda/simpervisor")
     (synopsis "Simple async process supervisor")
     (description
