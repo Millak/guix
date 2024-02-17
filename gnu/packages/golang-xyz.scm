@@ -150,6 +150,31 @@ optimized for sparse nodes of
 @url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.")
     (license license:expat)))
 
+(define-public go-github-com-benbjohnson-clock
+  (package
+    (name "go-github-com-benbjohnson-clock")
+    (version "1.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benbjohnson/clock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p7n09pywqra21l981fbkma9vzsyf31pbvw6xg5r4hp8h8scf955"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/benbjohnson/clock"
+       #:go ,go-1.21))
+    (home-page "https://github.com/benbjohnson/clock")
+    (synopsis "Small library for mocking time in Go")
+    (description
+     "@code{clock} is a small library for mocking time in Go.  It provides an
+interface around the standard library's @code{time} package so that the application
+can use the realtime clock while tests can use the mock clock.")
+    (license license:expat)))
+
 (define-public go-github-com-bitly-go-hostpool
   (package
     (name "go-github-com-bitly-go-hostpool")
