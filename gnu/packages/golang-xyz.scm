@@ -1153,10 +1153,12 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
         (base32 "1y01h496a7pfj1g2bclls5b0nl3vnj7nz610jj1dzq9kxrwxk7fk"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/Songmu/gitconfig"
-       ;; Package's tests appear to be hardcoded to the author's gitconfig
-       ;; and require network access.
-       #:tests? #f))
+     (list
+      ;; Package's tests appear to be hardcoded to the author's gitconfig
+      ;; and require network access.
+      #:tests? #f
+      #:go go-1.21
+      #:import-path "github.com/Songmu/gitconfig"))
     (propagated-inputs
      (list go-github-com-goccy-yaml))
     (synopsis "Go library to get configuration values from gitconfig")
