@@ -27982,8 +27982,14 @@ format.")
         (base32 "0cccrqc10r8781ba81x8r2frs3pl2m4hkm599k5358ak0xr7xgjb"))))
     (build-system python-build-system)
     (arguments
-     ;; Comptability tests fail so they are disabled.
-     `(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/test_compatibility.py"
+                (("test_07_non_posix_shell")
+                 "__off_test_07_non_posix_shell")))))))
     (inputs
      (list python-dateutil))
     (home-page "https://gitlab.com/doctormo/python-crontab/")
