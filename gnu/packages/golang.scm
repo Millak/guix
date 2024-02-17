@@ -45,6 +45,7 @@
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Brennan Vincent <brennan@umanwizard.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1114,6 +1115,38 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                      ("api"          "share/go/api"        ,tests)
                      ("test"         "share/go/test"       ,tests))))))))))))
 
+(define-public go-1.22
+  (package
+    (inherit go-1.21)
+    (name "go")
+    (version "1.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00j6sn2zysk5pdzxw1wfdi31wggzw1h1026ah3x3mi85dwsijhjs"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.21)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'unpatch-perl-shebangs
+              (lambda _
+                ;; Avoid inclusion of perl in closure by rewriting references
+                ;; to perl input in sourcecode generators and test scripts
+                (substitute* (find-files "src" "\\.pl$")
+                  (("^#!.*")
+                   "#!/usr/bin/env perl\n"))))))))
+    (native-inputs
+     ;; Go 1.22 and later requires Go 1.20 (min. 1.20.6, which we don't have)
+     ;; as the bootstrap toolchain.
+     (alist-replace "go"
+                    (list go-1.21)
+                    (package-native-inputs go-1.21)))))
+
 (define-public go go-1.17)
 
 (define make-go-std
@@ -1157,6 +1190,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.19 (make-go-std go-1.19))
 (define-public go-std-1.20 (make-go-std go-1.20))
 (define-public go-std-1.21 (make-go-std go-1.21))
+(define-public go-std-1.22 (make-go-std go-1.22))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
