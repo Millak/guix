@@ -230,7 +230,7 @@ which allows users to view a desktop computing environment.")
 (define-public spice
   (package
     (name "spice")
-    (version "0.15.1")
+    (version "0.15.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -238,7 +238,7 @@ which allows users to view a desktop computing environment.")
                 "spice-server/spice-" version ".tar.bz2"))
               (sha256
                (base32
-                "0ym3n60gq0kzzknk5ir8ib09cxsak9hkv7mmgsyic69jmdkszadd"))))
+                "10av05vk60jzqjhqbsw5zdwqmx6gpr50045wqiqp9483gw8vd7kd"))))
     (build-system gnu-build-system)
     (propagated-inputs
       (list openssl-1.1 pixman spice-protocol))
