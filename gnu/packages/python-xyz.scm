@@ -27864,17 +27864,17 @@ the Trio framework}.")
 (define-public python-humanize
   (package
     (name "python-humanize")
-    (version "0.5.1")
+    (version "4.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "humanize" version))
         (sha256
          (base32
-          "06dvhm3k8lf2rayn1gxbd46y0fy1db26m3h9vrq7rb1ib08mfgx4"))))
-    (arguments
-     '(#:tests? #f)) ; tests not in pypi archive
-    (build-system python-build-system)
+          "006vpl19bffy9fn0sssxbfakcvgrx7fhvy6l515fzln7vwpqf7zf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-freezegun python-pytest))
     (home-page "https://github.com/jmoiron/humanize")
     (synopsis "Print numerical information in a human-readable form")
     (description "This package provides a Python module that displays numbers
