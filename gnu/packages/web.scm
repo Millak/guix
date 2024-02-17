@@ -8231,7 +8231,7 @@ compressed JSON header blocks.
 (define-public nghttp3
   (package
     (name "nghttp3")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -8240,12 +8240,10 @@ compressed JSON header blocks.
                            "nghttp3-" version ".tar.gz"))
        (sha256
         (base32
-         "1fzvadnwb03jlm180313gg5m4fg09qdcc67fwcfrv9zs22anaa55"))))
+         "0xfa3nbpv3d514ssjpxvizqmss8z330w9p0bp045w4qsyr1vkj8c"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config
-           ;; Required by tests.
-           cunit))
+     (list pkg-config))
     (arguments
      (list
       #:configure-flags
