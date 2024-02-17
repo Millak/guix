@@ -37,7 +37,27 @@ def path_to_saves(gamedir, save_directory=None):
     if not save_directory:
         return gamedir + "/saves"
 
-    return os.path.join(os.path.expanduser("~/.renpy"), save_directory)
+    prefix = os.environ.get("RENPY_PATH_TO_SAVES",
+                            os.path.expanduser("~/.renpy"))
+
+    return os.path.join(prefix, save_directory)
+
+def path_to_logdir(basedir):
+    return basedir
+
+def predefined_searchpath(commondir):
+    import renpy
+
+    # The default gamedir, in private.
+    searchpath = [ renpy.config.gamedir ]
+
+    if env_searchpath := os.environ.get("RENPY_SEARCHPATH"):
+        searchpath.extend(env_searchpath.split("::"))
+
+    if commondir and os.path.isdir(commondir):
+        searchpath.append(commondir)
+
+    return searchpath
 
 def main():
     try:
