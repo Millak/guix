@@ -29215,17 +29215,9 @@ files.  These files are used to translate strings in android apps.")
        (uri (pypi-uri "watchdog" version))
        (sha256
         (base32 "1rx2nyl0cyj0v4ja795cl3gi26577c5wg48syr3byz3ndkgpavm3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-k"
-                       ;; This test failed.
-                       "not test_kill_auto_restart")))))))
+     (list #:test-flags #~(list "-k" "not test_kill_auto_restart")))
     (propagated-inputs
      (list python-pathtools python-pyyaml))
     (native-inputs
