@@ -3738,15 +3738,15 @@ If several repos are related, it helps to see their status together.")
                             (string-append zsh-completion "/_ghq"))))
              #t)))))
     (native-inputs
-     `(("git" ,git-minimal)))
+     (list git-minimal))
     (inputs
-     `(("github.com/songmu/gitconfig" ,go-github-com-songmu-gitconfig)
-       ("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
-       ("github.com/motemen/go-colorine" ,go-github-com-motemen-go-colorine)
-       ("github.com/saracen/walker" ,go-github-com-saracen-walker)
-       ("github.com/urfave/cli/v2" ,go-github-com-urfave-cli-v2)
-       ("golang.org/x/net/html" ,go-golang-org-x-net-html)
-       ("golang.org/x/sync/errgroup" ,go-golang.org-x-sync-errgroup)))
+     (list go-github-com-songmu-gitconfig
+           go-github-com-mattn-go-isatty
+           go-github-com-motemen-go-colorine
+           go-github-com-saracen-walker
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-net-html
+           go-golang.org-x-sync-errgroup))
     (synopsis "Manage remote repository clones")
     (description
      "@code{ghq} provides a way to organize remote repository clones, like
