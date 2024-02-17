@@ -3720,23 +3720,24 @@ If several repos are related, it helps to see their status together.")
                 "155sfmhmh4ia3iinm1s8fk7fxyn5dxdryad9xkbg7mr3i3ikqjwh"))))
     (build-system go-build-system)
     (arguments
-     '(#:install-source? #f
-       #:import-path "github.com/x-motemen/ghq"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-completions
-           (lambda* (#:key outputs import-path #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash-completion (string-append out "/etc/bash_completion.d"))
-                    (zsh-completion (string-append out "/share/zsh/site-functions")))
-               (with-directory-excursion (string-append "src/" import-path)
-                 (mkdir-p bash-completion)
-                 (copy-file "misc/bash/_ghq"
-                            (string-append bash-completion "/ghq"))
-                 (mkdir-p zsh-completion)
-                 (copy-file "misc/zsh/_ghq"
-                            (string-append zsh-completion "/_ghq"))))
-             #t)))))
+     (list
+      #:install-source? #f
+      #:go go-1.21
+      #:import-path "github.com/x-motemen/ghq"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key outputs import-path #:allow-other-keys)
+              (let* ((out #$output)
+                     (bash-completion (string-append out "/etc/bash_completion.d"))
+                     (zsh-completion (string-append out "/share/zsh/site-functions")))
+                (with-directory-excursion (string-append "src/" import-path)
+                  (mkdir-p bash-completion)
+                  (copy-file "misc/bash/_ghq"
+                             (string-append bash-completion "/ghq"))
+                  (mkdir-p zsh-completion)
+                  (copy-file "misc/zsh/_ghq"
+                             (string-append zsh-completion "/_ghq")))))))))
     (native-inputs
      (list git-minimal))
     (inputs
