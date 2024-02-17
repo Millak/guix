@@ -90,16 +90,16 @@ different (virtual) machine than the one to which the USB device is attached.")
 (define-public virglrenderer
   (package
     (name "virglrenderer")
-    (version "0.10.4")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.freedesktop.org/virgl/virglrenderer")
+                    (url "https://gitlab.freedesktop.org/virgl/virglrenderer.git")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06pwavrknyhghlxyh7ckq4scjx47v9fhy08r6pn194whzvzivmqg"))))
+                "0xw2qk8557gqpm1ssgk3ccshgljm6sh3wbbwpsp9cl0h4hdf2wq2"))))
     (build-system meson-build-system)
     (inputs (list libepoxy mesa))
     (native-inputs (list pkg-config python))
