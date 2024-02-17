@@ -1597,7 +1597,7 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
 (define-public libdjinterop
   (package
     (name "libdjinterop")
-    (version "0.16.0")
+    (version "0.20.2")
     (source
      (origin
        (method git-fetch)
@@ -1606,15 +1606,8 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16nrqpr90vb9ggmp9j73m0hspd7pmfdhh0g6iyp8vd7kx7g17qnk"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; crate_test writes a database file to the source tree.
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files ".")))))))
+        (base32 "0gbaji3d105vwshjfmnbxqrs42jjjxp41jqj5srncrfv3xmzsfkr"))))
+    (build-system cmake-build-system)
     (native-inputs
      (list boost pkg-config))
     (inputs
