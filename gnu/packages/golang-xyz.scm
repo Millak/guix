@@ -110,6 +110,29 @@ substitution.")
 syntax highlighted HTML, ANSI-coloured text, etc.")
     (license license:expat)))
 
+(define-public go-github-com-alecthomas-chroma-v2
+  (package
+    (inherit go-github-com-alecthomas-chroma)
+    (name "go-github-com-alecthomas-chroma-v2")
+    (version "2.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/chroma")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j9zz77ppi4r4ncnanzj84h7bsg0qdqrhgd5kkjiv09afm31jx83"))))
+    (arguments
+     (list #:go go-1.19
+           #:import-path "github.com/alecthomas/chroma/v2"))
+    (propagated-inputs
+     (list go-github-com-dlclark-regexp2))
+    (native-inputs
+     (list go-github-com-alecthomas-assert-v2
+           go-github-com-alecthomas-repr))))
+
 (define-public go-github-com-alecthomas-participle-v2
   (package
     (name "go-github-com-alecthomas-participle-v2")
