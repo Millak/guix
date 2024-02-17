@@ -4557,7 +4557,7 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
@@ -4565,14 +4565,14 @@ network.")
                            "releases/download/v" version "/"
                            "ngtcp2-" version ".tar.xz"))
        (sha256
-        (base32 "158acn01df6sxqjqx4h948phpcgc2da88aiqn9p2jqgqph48brxh"))))
+        (base32 "16qkik9185ygkr351a7q59l1rv6dzw51j4f7vkzfvzh385kqdqy3"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags
       ;; openssl package does not support QUIC interface, so just gnutls
       #~(list "--with-gnutls")))
-    (native-inputs (list cunit pkg-config))
+    (native-inputs (list pkg-config))
     (inputs (list gnutls))
     (home-page "https://nghttp2.org/ngtcp2/")
     (synopsis "QUIC protocol implementation")
