@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -1135,6 +1136,33 @@ Metrics library.")
 efficiently works with standard packages like @code{io}, @code{bufio}, etc..
 Use waterutil with it to work with TUN/TAP packets/frames.")
     (license license:bsd-3)))
+
+(define-public go-github-com-songmu-gitconfig
+  (package
+    (name "go-github-com-songmu-gitconfig")
+    (version "0.1.0")
+    (home-page "https://github.com/songmu/gitconfig")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y01h496a7pfj1g2bclls5b0nl3vnj7nz610jj1dzq9kxrwxk7fk"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/Songmu/gitconfig"
+       ;; Package's tests appear to be hardcoded to the author's gitconfig
+       ;; and require network access.
+       #:tests? #f))
+    (propagated-inputs
+     (list go-github-com-goccy-yaml))
+    (synopsis "Go library to get configuration values from gitconfig")
+    (description
+     "@{gitconfig} is a package to get configuration values from gitconfig.")
+    (license license:expat)))
 
 (define-public go-github-com-stathat-go
   (let ((commit "74669b9f388d9d788c97399a0824adbfee78400e")
