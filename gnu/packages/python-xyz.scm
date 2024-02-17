@@ -28094,22 +28094,17 @@ enumeration library in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1p1a0ywlg5sq0ilcphmz9h4kayscz0q1lyfk57j7mwxyx4gl9cpi"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-k"
-                       (string-append
-                        ;; Networking isn't available for these tests.
-                        "not test_integration_with_listener_ipv6"
-                        " and not test_launch_and_close_v4_v6"
-                        " and not test_launch_and_close_context_manager"
-                        " and not test_launch_and_close"
-                        " and not test_close_multiple_times"))))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Networking isn't available for these tests.
+                    "not test_integration_with_listener_ipv6"
+                    " and not test_launch_and_close_v4_v6"
+                    " and not test_launch_and_close_context_manager"
+                    " and not test_launch_and_close"
+                    " and not test_close_multiple_times"))))
     (native-inputs
      (list python-pytest))
     (propagated-inputs
