@@ -31148,7 +31148,7 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
 (define-public python-simpervisor
   (package
     (name "python-simpervisor")
-    (version "0.4")
+    (version "1.0.0")
     (source
       (origin
         ;; Tests not included in release.
@@ -31158,8 +31158,8 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1brsisx7saf4ic0dih1n5y7rbdbwn1ywv9pl32bch3061r46prvv"))))
-    (build-system python-build-system)
+         (base32 "0drvqxbr6fpydb4d7z5dhn97d578gf39sd8cawyl6ksf1f4y8yzg"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f  ; Test suite can't find aiohttp.
        #:phases
@@ -31171,7 +31171,10 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
                (invoke "pytest" "--maxfail" "3" "--verbose"))
              #t)))))
     (native-inputs
-     (list python-aiohttp python-pytest python-pytest-asyncio))
+     (list python-aiohttp
+           python-hatchling
+           python-pytest
+           python-pytest-asyncio))
     (home-page "https://github.com/yuvipanda/simpervisor")
     (synopsis "Simple async process supervisor")
     (description
