@@ -2276,8 +2276,57 @@ including HSMs or Cloud KMS services.")
 implementation.")
     (license license:expat)))
 
+(define-public rust-ed25519-dalek-2
+  (package
+    (name "rust-ed25519-dalek")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ed25519-dalek" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w88cafwglg9hjizldbmlza0ns3hls81zk1bcih3m5m3h67algaa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Some tests aren't shipped in the crate.
+                            "--skip=vectors::against_reference_implementation"
+                            "--skip=check_validation_criteria"
+                            "--skip=find_validation_criteria")
+       #:cargo-inputs (("rust-curve25519-dalek" ,rust-curve25519-dalek-4)
+                       ("rust-ed25519" ,rust-ed25519-2)
+                       ("rust-merlin" ,rust-merlin-3)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-blake2" ,rust-blake2-0.10)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-curve25519-dalek" ,rust-curve25519-dalek-4)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha3" ,rust-sha3-0.10)
+        ("rust-toml" ,rust-toml-0.7)
+        ("rust-x25519-dalek" ,rust-x25519-dalek-2))))
+    (home-page "https:///doc.dalek.rs/ed25519_dalek")
+    (synopsis "Ed25519 EdDSA key generations, signing, and verification")
+    (description
+     "This package provides fast and efficient ed25519 @code{EdDSA} key
+generations, signing, and verification in pure Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-ed25519-dalek-1
   (package
+    (inherit rust-ed25519-dalek-2)
     (name "rust-ed25519-dalek")
     (version "1.0.1")
     (source
@@ -2299,13 +2348,8 @@ implementation.")
          ("rust-serde" ,rust-serde-1)
          ("rust-serde-bytes" ,rust-serde-bytes-0.11)
          ("rust-sha2" ,rust-sha2-0.9)
-         ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://dalek.rs")
-    (synopsis "Ed25519 EdDSA key generations, signing, and verification")
-    (description
-      "This package provides fast and efficient ed25519 EdDSA key generations,
-signing, and verification in pure Rust.")
-    (license license:bsd-3)))
+         ("rust-zeroize" ,rust-zeroize-1))))))
+
 
 (define-public rust-elliptic-curve-0.13
   (package
