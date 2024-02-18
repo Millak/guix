@@ -107,9 +107,9 @@ files).  This assumes LIBRARY uses Libtool."
     (name (string-append (package-name library) "-static"))
     (arguments
      (substitute-keyword-arguments (package-arguments library)
-       ((#:configure-flags flags ''())
-        `(append '("--disable-shared" "--enable-static")
-                 ,flags))))))
+       ((#:configure-flags flags #~'())
+        #~(append '("--disable-shared" "--enable-static")
+                  #$flags))))))
 
 (define-public cryptsetup-static
   ;; Stripped-down statically-linked 'cryptsetup' command for use in initrds.
