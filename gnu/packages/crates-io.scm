@@ -12888,6 +12888,19 @@ need compiler-rt intrinsics.")
 Rust compiler.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-compiletest-rs-0.9
+  (package
+    (inherit rust-compiletest-rs-0.10)
+    (name "rust-compiletest-rs")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "compiletest_rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wmk12mb8xskdv5mf3p33l2w4w76bcxjx3zlwn94zslaf6xrnj3h"))))))
+
 (define-public rust-compiletest-rs-0.3
   (package
     (inherit rust-compiletest-rs-0.10)
