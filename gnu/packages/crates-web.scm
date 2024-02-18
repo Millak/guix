@@ -3715,6 +3715,35 @@ applications written in Rust.  Its API is inspired by the popular
 @code{express} framework for JavaScript.")
     (license license:expat)))
 
+(define-public rust-opentelemetry-http-0.10
+  (package
+    (name "rust-opentelemetry-http")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "opentelemetry-http" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17irqlgsqr1f0in5rhvgl224x2gdcycy8w3ybydlyrdyx2f1hlbz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-isahc" ,rust-isahc-1)
+                       ("rust-opentelemetry" ,rust-opentelemetry-0.21)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-surf" ,rust-surf-2)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/open-telemetry/opentelemetry-rust")
+    (synopsis "Helpers for exchange of traces and metrics over HTTP")
+    (description
+     "This package provides helper implementations for exchange of traces
+and metrics over HTTP.")
+    (license license:asl2.0)))
+
 (define-public rust-reqwest-0.11
   (package
     (name "rust-reqwest")
