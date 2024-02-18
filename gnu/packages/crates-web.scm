@@ -4074,6 +4074,32 @@ that integrates with Rust idioms.")
         ("rust-test-case" ,rust-test-case-1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))))
 
+(define-public rust-json5-0.4
+  (package
+    (name "rust-json5")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "json5" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h9hni897zmn3vcixfbwwkj2gkz27h7z9dah8bk1qv37mwhxpc4n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-pest" ,rust-pest-2)
+                       ("rust-pest-derive" ,rust-pest-derive-2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-matches" ,rust-matches-0.1)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/callum-oakley/json5-rs")
+    (synopsis "Rust JSON5 serializer and deserializer which speaks Serde")
+    (description
+     "This package provides a Rust JSON5 serializer and deserializer
+which speaks Serde.")
+    (license license:isc)))
+
 (define-public rust-jsonwebtoken-7
   (package
     (name "rust-jsonwebtoken")
