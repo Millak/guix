@@ -2795,17 +2795,17 @@ response bodies.")
     (description "This package provides types and traits for HTTP clients.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-http-range-header-0.3
+(define-public rust-http-range-header-0.4
   (package
     (name "rust-http-range-header")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http-range-header" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13vm511vq3bhschkw2xi9nhxzkw53m55gn9vxg7qigfxc29spl5d"))))
+        (base32 "1zhigmvyrk50jzll6nmn7n1rxkfzh8xn0838dvdvnj52rlqyzr1w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
@@ -2814,9 +2814,23 @@ response bodies.")
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/MarcusGrass/parse-range-headers")
-    (synopsis "No-dep range header parser")
-    (description "This crate provides a no-dep range header parser.")
+    (synopsis "Zero-dependency range header parser")
+    (description "This package provides a range header parser without any
+dependencies.")
     (license license:expat)))
+
+(define-public rust-http-range-header-0.3
+  (package
+    (inherit rust-http-range-header-0.4)
+    (name "rust-http-range-header")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "http-range-header" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13vm511vq3bhschkw2xi9nhxzkw53m55gn9vxg7qigfxc29spl5d"))))))
 
 (define-public rust-http-types-2
   (package
