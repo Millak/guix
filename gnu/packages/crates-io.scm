@@ -49523,26 +49523,26 @@ trait of proptest.")
         ("rust-criterion" ,rust-criterion-0.2)
         ("rust-proptest" ,rust-proptest-0.9))))))
 
-(define-public rust-prost-derive-0.9
+(define-public rust-prost-0.11
   (package
-    (name "rust-prost-derive")
-    (version "0.9.0")
+    (name "rust-prost")
+    (version "0.11.9")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "prost-derive" version))
+       (uri (crate-uri "prost" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zi0qway5anz5ik3k1yrc2av81sjcqvqy9lnivv0nzp0ccr1mk7r"))))
+        (base32 "1kc1hva2h894hc0zf6r4r8fsxfpazf7xn5rj3jya9sbrsyhym0hb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-prost-derive" ,rust-prost-derive-0.11))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-log" ,rust-log-0.4)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/tokio-rs/prost")
     (synopsis "Protocol Buffers implementation for the Rust language")
     (description
@@ -49552,6 +49552,7 @@ language.")
 
 (define-public rust-prost-0.9
   (package
+    (inherit rust-prost-0.11)
     (name "rust-prost")
     (version "0.9.0")
     (source
@@ -49561,18 +49562,57 @@ language.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00b0xfn80alw7h2pzr2z4dycyvsys4h5878sifaq9zdlbhkpjj24"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
-        ("rust-prost-derive" ,rust-prost-derive-0.9))))
+        ("rust-prost-derive" ,rust-prost-derive-0.9))))))
+
+(define-public rust-prost-derive-0.11
+  (package
+    (name "rust-prost-derive")
+    (version "0.11.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d3mw2s2jba1f7wcjmjd6ha2a255p2rmynxhm1nysv9w1z8xilp5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/tokio-rs/prost")
     (synopsis "Protocol Buffers implementation for the Rust language")
     (description
      "This package provides a Protocol Buffers implementation for the Rust
 language.")
     (license license:asl2.0)))
+
+(define-public rust-prost-derive-0.9
+  (package
+    (inherit rust-prost-derive-0.11)
+    (name "rust-prost-derive")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zi0qway5anz5ik3k1yrc2av81sjcqvqy9lnivv0nzp0ccr1mk7r"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
 
 ;; It's recommended that rust-protobuf, rust-protobuf-codegen
 ;; and rust-probuf-codegen-pure be the same version
