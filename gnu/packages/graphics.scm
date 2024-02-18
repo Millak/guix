@@ -385,7 +385,7 @@ objects!")
 (define-public autotrace
   (package
     (name "autotrace")
-    (version "0.31.9")
+    (version "0.31.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -394,7 +394,7 @@ objects!")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fsg13pg72ac51l3fkzvyf7h9mzbvfxp9vfjfiwkyvx6hbm83apj"))))
+                "0ai91c567c5z560s4zjgjclgca1pm61h8cb8c8q84wg3xvkhmc9x"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--disable-static")
@@ -422,7 +422,11 @@ objects!")
            imagemagick
            libjpeg-turbo
            libpng
-           pstoedit))
+           pstoedit
+           ;; pango is required because of libtool, from the imagemagick
+           ;; library files (.la), which records all its transitive
+           ;; dependencies.
+           pango))
     (home-page "https://github.com/autotrace/autotrace")
     (synopsis "Bitmap to vector graphics converter")
     (description "AutoTrace is a utility for converting bitmap into vector
