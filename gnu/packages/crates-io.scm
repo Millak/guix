@@ -54023,6 +54023,29 @@ Rust.")
     (description "This package provides core APIs for Rayon.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-rclite-0.2
+  (package
+    (name "rust-rclite")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rclite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fa379adiwincgywigi341zd969d3459ljq71n5ymwwficp0r7zf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-branches" ,rust-branches-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/fereidani/rclite")
+    (synopsis "Reference counting compatible with Arc and Rc APIs")
+    (description
+     "This package provides reference counting, which is compatible with
+Arc and Rc APIs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rctree-0.5
   (package
     (name "rust-rctree")
