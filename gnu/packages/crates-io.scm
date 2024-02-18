@@ -84209,8 +84209,43 @@ for terminal and other window-less applications.")
      "Bindings for all Web APIs, a procedurally generated crate from WebIDL.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-web-time-1
+  (package
+    (name "rust-web-time")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "web-time" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fx05yqx83dhx628wb70fyy10yjfq1jpl20qfqhdkymi13rq0ras"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; TODO: check if not all files included.
+       #:cargo-inputs (("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-pollster" ,rust-pollster-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/daxpedda/web-time")
+    (synopsis "Drop-in replacement for std::time for Wasm in browsers")
+    (description
+     "This package provides a drop-in replacement for @code{std::time}
+for Wasm in browsers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-web-time-0.2
   (package
+    (inherit rust-web-time-1)
     (name "rust-web-time")
     (version "0.2.4")
     (source
@@ -84220,11 +84255,10 @@ for terminal and other window-less applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1q6gk0nkwbfz30g1pz8g52mq00zjx7m5im36k3474aw73jdh8c5a"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Not all files included.
+     `(#:tests? #f      ; TODO: check if not all files included.
        #:cargo-inputs (("rust-js-sys" ,rust-js-sys-0.3)
-                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+                        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
        #:cargo-development-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
@@ -84233,12 +84267,7 @@ for terminal and other window-less applications.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-web-sys" ,rust-web-sys-0.3))))
-    (home-page "https://github.com/daxpedda/web-time")
-    (synopsis "Drop-in replacement for std::time for Wasm in browsers")
-    (description
-     "Drop-in replacement for @code{std::time} for Wasm in browsers.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-web-sys" ,rust-web-sys-0.3))))))
 
 (define-public rust-webbrowser-0.8
   (package
