@@ -1342,6 +1342,22 @@ authpriv.*;auth.info                    /var/log/secure
                       (kill (- pid) SIGTERM)
                       (apply throw key args)))))))
          (stop #~(make-kill-destructor))
+         (actions
+          (list (shepherd-action
+                 (name 'configuration)
+                 (documentation
+                  "Display the configuration of this virtual build machine.")
+                 (procedure
+                  #~(lambda (_)
+                      (format #t "CPU: ~a~%"
+                              #$(virtual-build-machine-cpu config))
+                      (format #t "number of CPU cores: ~a~%"
+                              #$(virtual-build-machine-cpu-count config))
+                      (format #t "memory size: ~a MiB~%"
+                              #$(virtual-build-machine-memory-size config))
+                      (format #t "initial date: ~a~%"
+                              #$(date->string
+                                 (virtual-build-machine-date config))))))))
          (auto-start? (virtual-build-machine-auto-start? config)))))
 
 (define (authorize-guest-substitutes-on-host)

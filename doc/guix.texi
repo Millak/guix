@@ -36396,7 +36396,11 @@ set to a date several years in the past, and on a CPU model that
 corresponds to that date---a model possibly older than that of your
 machine.  This lets you rebuild today software from the past that would
 otherwise fail to build due to a time trap or other issues in its build
-process.
+process.  You can view the VM's config like this:
+
+@example
+herd configuration build-vm
+@end example
 
 You can configure the build VM, as in this example:
 
