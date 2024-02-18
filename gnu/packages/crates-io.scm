@@ -48202,8 +48202,45 @@ relative path from a provided base directory path to the provided
 path.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pcap-1
+  (package
+    (name "rust-pcap")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pcap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ygzsi7v2x9ld5cb61dfg8jgifs2rln6qlknypzqjjnmfgy3bscr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-errno" ,rust-errno-0.2)
+                       ("rust-etherparse" ,rust-etherparse-0.13)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-gat-std" ,rust-gat-std-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.6)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tun-tap" ,rust-tun-tap-0.1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.36))
+       #:cargo-development-inputs (("rust-eui48" ,rust-eui48-1)
+                                   ("rust-mockall" ,rust-mockall-0.11)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-tempdir" ,rust-tempdir-0.3))))
+    (inputs (list libpcap))
+    (home-page "https://github.com/rust-pcap/pcap")
+    (synopsis "Packet capture API around (w)pcap")
+    (description
+     "This package provides a packet capture API around pcap/wpcap.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pcap-0.7
   (package
+    (inherit rust-pcap-1)
     (name "rust-pcap")
     (version "0.7.0")
     (source
@@ -48214,7 +48251,6 @@ path.")
        (sha256
         (base32 "14blflnbj87z3ajlj1hszsl6k7rwa338y4aw2yjm2j0xdpjvj4pr"))))
     (native-inputs (list libpcap))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; can't find crate for `futures`
        #:cargo-inputs
@@ -48224,11 +48260,7 @@ path.")
         ("rust-mio" ,rust-mio-0.6)
         ("rust-tokio-core" ,rust-tokio-core-0.1))
        #:cargo-development-inputs
-       (("rust-tempdir" ,rust-tempdir-0.3))))
-    (home-page "https://github.com/rust-pcap/pcap")
-    (synopsis "Packet capture API around pcap/wpcap")
-    (description "This package provides a packet capture API around pcap/wpcap.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-tempdir" ,rust-tempdir-0.3))))))
 
 (define-public rust-pcap-sys-0.1
   (package
