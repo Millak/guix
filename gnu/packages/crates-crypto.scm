@@ -6216,8 +6216,37 @@ One-Time Password library.")
        (("rust-generic-array" ,rust-generic-array-0.12)
         ("rust-subtle" ,rust-subtle-2))))))
 
+(define-public rust-x25519-dalek-2
+  (package
+    (name "rust-x25519-dalek")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x25519-dalek" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xyjgqpsa0q6pprakdp58q1hy45rf8wnqqscgzx0gyw13hr6ir67"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-curve25519-dalek" ,rust-curve25519-dalek-4)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-rand-core" ,rust-rand-core-0.6))))
+    (home-page "https://doc.dalek.rs/x25519_dalek")
+    (synopsis "X25519 elliptic curve Diffie-Hellman key exchange")
+    (description
+     "This crate provides a Rust implementation of x25519 elliptic curve
+Diffie-Hellman key exchange, with curve operations provided by
+@code{curve25519-dalek}.")
+    (license license:bsd-3)))
+
 (define-public rust-x25519-dalek-1
   (package
+    (inherit rust-x25519-dalek-2)
     (name "rust-x25519-dalek")
     (version "1.2.0")
     (source
@@ -6228,25 +6257,15 @@ One-Time Password library.")
        (sha256
         (base32 "0xz0m1pczss9r25d1r52420dl2picdypbcn5ycmlwssp9awvd4i3"))
        (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "Cargo.toml"
-             (("version = \"=1.3\"") "version = \"^1.3\""))))))
-    (build-system cargo-build-system)
+       (snippet '(substitute* "Cargo.toml"
+                   (("version = \"=1.3\"") "version = \"^1.3\"")))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-curve25519-dalek" ,rust-curve25519-dalek-3)
         ("rust-rand-core" ,rust-rand-core-0.5)
         ("rust-serde" ,rust-serde-1)
-        ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://dalek.rs/")
-    (synopsis "X25519 elliptic curve Diffie-Hellman key exchange")
-    (description
-     "This crate provides a pure-Rust implementation of x25519 elliptic curve
-Diffie-Hellman key exchange, with curve operations provided by
-@code{curve25519-dalek}.")
-    (license license:bsd-3)))
+        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-x25519-dalek-ng-1
   (package
