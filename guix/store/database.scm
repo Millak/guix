@@ -178,27 +178,20 @@ If FILE doesn't exist, create it and initialize it as a new database.  Pass
       ((#(id)) id)
       (_ #f))))
 
-(define path-id-sql
-  "SELECT id FROM ValidPaths WHERE path = :path")
-
 (define* (path-id db path)
   "If PATH exists in the 'ValidPaths' table, return its numerical
 identifier.  Otherwise, return #f."
-  (let ((stmt (sqlite-prepare db path-id-sql #:cache? #t)))
+  (let ((stmt (sqlite-prepare
+               db
+               "
+SELECT id FROM ValidPaths WHERE path = :path"
+               #:cache? #t)))
     (sqlite-bind-arguments stmt #:path path)
     (let ((result (sqlite-fold cons '() stmt)))
       (sqlite-finalize stmt)
       (match result
         ((#(id) . _) id)
         (_ #f)))))
-
-(define update-sql
-  "UPDATE ValidPaths SET hash = :hash, registrationTime = :time, deriver =
-:deriver, narSize = :size WHERE id = :id")
-
-(define insert-sql
-  "INSERT INTO ValidPaths (path, hash, registrationTime, deriver, narSize)
-VALUES (:path, :hash, :time, :deriver, :size)")
 
 (define-inlinable (assert-integer proc in-range? key number)
   (unless (integer? number)
@@ -222,14 +215,25 @@ of course. Returns the row id of the row that was modified or inserted."
 
   (let ((id (path-id db path)))
     (if id
-        (let ((stmt (sqlite-prepare db update-sql #:cache? #t)))
+        (let ((stmt (sqlite-prepare
+                     db
+                     "
+UPDATE ValidPaths
+SET hash = :hash, registrationTime = :time, deriver = :deriver, narSize = :size
+WHERE id = :id"
+                     #:cache? #t)))
           (sqlite-bind-arguments stmt #:id id
                                  #:deriver deriver
                                  #:hash hash #:size nar-size #:time time)
           (sqlite-fold cons '() stmt)
           (sqlite-finalize stmt)
           (last-insert-row-id db))
-        (let ((stmt (sqlite-prepare db insert-sql #:cache? #t)))
+        (let ((stmt (sqlite-prepare
+                     db
+                     "
+INSERT INTO ValidPaths (path, hash, registrationTime, deriver, narSize)
+VALUES (:path, :hash, :time, :deriver, :size)"
+                     #:cache? #t)))
           (sqlite-bind-arguments stmt
                                  #:path path #:deriver deriver
                                  #:hash hash #:size nar-size #:time time)
@@ -237,13 +241,15 @@ of course. Returns the row id of the row that was modified or inserted."
           (sqlite-finalize stmt)
           (last-insert-row-id db)))))
 
-(define add-reference-sql
-  "INSERT OR REPLACE INTO Refs (referrer, reference) VALUES (:referrer, :reference);")
-
 (define (add-references db referrer references)
   "REFERRER is the id of the referring store item, REFERENCES is a list
 ids of items referred to."
-  (let ((stmt (sqlite-prepare db add-reference-sql #:cache? #t)))
+  (let ((stmt (sqlite-prepare
+               db
+               "
+INSERT OR REPLACE INTO Refs (referrer, reference)
+VALUES (:referrer, :reference)"
+               #:cache? #t)))
     (for-each (lambda (reference)
                 (sqlite-reset stmt)
                 (sqlite-bind-arguments stmt #:referrer referrer
