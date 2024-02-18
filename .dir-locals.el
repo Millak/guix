@@ -131,7 +131,6 @@
    (eval . (put 'with-database 'scheme-indent-function 2))
    (eval . (put 'call-with-database 'scheme-indent-function 1))
    (eval . (put 'call-with-transaction 'scheme-indent-function 1))
-   (eval . (put 'with-statement 'scheme-indent-function 3))
    (eval . (put 'call-with-retrying-transaction 'scheme-indent-function 1))
 
    (eval . (put 'call-with-container 'scheme-indent-function 1))
