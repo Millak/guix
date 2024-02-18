@@ -17622,6 +17622,30 @@ custom derives.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-dary-heap-0.3
+  (package
+    (name "rust-dary-heap")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dary_heap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jm04p72s7xij3cr71h59dw07s63nah5b10sh8akcr2129zx2qkp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+        ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/hanmertens/dary_heap")
+    (synopsis "D-ary heap")
+    (description "This package provides a d-ary heap.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dashmap-5
   (package
     (name "rust-dashmap")
