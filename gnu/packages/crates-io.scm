@@ -34160,8 +34160,32 @@ algorithm and related formats (ZLIB, GZIP).")
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-2))))))
 
+(define-public rust-libflate-lz77-2
+  (package
+    (name "rust-libflate-lz77")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate_lz77" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "096map4a8xvf3819kgdxbg08nf97nggg9lvrdgn7c5a5ikxm4pxy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `libflate`
+       #:cargo-inputs
+       (("rust-core2" ,rust-core2-0.4)
+        ("rust-hashbrown" ,rust-hashbrown-0.13)
+        ("rust-rle-decode-fast" ,rust-rle-decode-fast-1))))
+    (home-page "https://github.com/sile/libflate")
+    (synopsis "LZ77 encoder for libflate crate")
+    (description "This package provides a LZ77 encoder for libflate crate.")
+    (license license:expat)))
+
 (define-public rust-libflate-lz77-1
   (package
+    (inherit rust-libflate-lz77-2)
     (name "rust-libflate-lz77")
     (version "1.2.0")
     (source
@@ -34171,18 +34195,13 @@ algorithm and related formats (ZLIB, GZIP).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1gxc75fb2sk0xgrh3qxvxcx1l93yhmyxn9241r251wl5zj5klbd5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-core2" ,rust-core2-0.4)
         ("rust-hashbrown" ,rust-hashbrown-0.13)
         ("rust-rle-decode-fast" ,rust-rle-decode-fast-1))
        #:cargo-development-inputs
-       (("rust-libflate" ,rust-libflate-1))))
-    (home-page "https://github.com/sile/libflate")
-    (synopsis "LZ77 encoder for libflate crate")
-    (description "This package provides a LZ77 encoder for libflate crate.")
-    (license license:expat)))
+       (("rust-libflate" ,rust-libflate-1))))))
 
 (define-public rust-libfuzzer-sys-0.4
   (package
