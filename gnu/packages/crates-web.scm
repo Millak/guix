@@ -3492,8 +3492,72 @@ bottlenecks encountered in highly concurrent code by avoiding shared writes
 and locking in the core framework.")
     (license license:expat)))
 
+(define-public rust-isahc-1
+  (package
+    (name "rust-isahc")
+    (version "1.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "isahc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1scfgyv3dpjbkqa9im25cd12cs6rbd8ygcaw67f3dx41sys08kik"))
+       (modules '((guix build utils)))
+       (snippet '(substitute* "Cargo.toml"
+                   ((".*static-curl.*") "")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `testserver`
+       #:cargo-inputs (("rust-async-channel" ,rust-async-channel-1)
+                       ("rust-castaway" ,rust-castaway-0.1)
+                       ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
+                       ("rust-curl" ,rust-curl-0.4)
+                       ("rust-curl-sys" ,rust-curl-sys-0.4)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-event-listener" ,rust-event-listener-2)
+                       ("rust-futures-lite" ,rust-futures-lite-1)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-httpdate" ,rust-httpdate-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.9)
+                       ("rust-polling" ,rust-polling-2)
+                       ("rust-publicsuffix" ,rust-publicsuffix-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-slab" ,rust-slab-0.4)
+                       ("rust-sluice" ,rust-sluice-0.5)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracing-futures" ,rust-tracing-futures-0.2)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-waker-fn" ,rust-waker-fn-1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-indicatif" ,rust-indicatif-0.15)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-test-case" ,rust-test-case-2)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list curl openssl zlib))
+    (home-page "https://github.com/sagebind/isahc")
+    (synopsis "Practical and fun HTTP client")
+    (description
+     "Isahc is an acronym that stands for Incredible Streaming Asynchronous
+HTTP Client.  It is an asynchronous HTTP client for the Rust language.  It
+uses libcurl as an HTTP engine inside, and provides an easy-to-use API on top
+that integrates with Rust idioms.")
+    (license license:expat)))
+
 (define-public rust-isahc-0.9
   (package
+    (inherit rust-isahc-1)
     (name "rust-isahc")
     (version "0.9.14")
     (source
@@ -3503,11 +3567,9 @@ and locking in the core framework.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "12iqz5fj0509pr813pds2fgdk649a0b6ipvy3pqjwb1ywh68m572"))
-    (snippet
-     #~(begin (use-modules (guix build utils))
-              (substitute* "Cargo.toml"
-                (("\"static-curl\", ") ""))))))
-    (build-system cargo-build-system)
+       (modules '((guix build utils)))
+       (snippet '(substitute* "Cargo.toml"
+                   (("\"static-curl\", ") "")))))
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `testserver`
        #:cargo-inputs
@@ -3538,19 +3600,7 @@ and locking in the core framework.")
         ("rust-indicatif" ,rust-indicatif-0.15)
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-test-case" ,rust-test-case-1)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list curl openssl zlib))
-    (home-page "https://github.com/sagebind/isahc")
-    (synopsis "Practical HTTP client")
-    (description
-     "Isahc is an acronym that stands for Incredible Streaming Asynchronous
-HTTP Client.  It is an asynchronous HTTP client for the Rust language.  It
-uses libcurl as an HTTP engine inside, and provides an easy-to-use API on top
-that integrates with Rust idioms.")
-    (license license:expat)))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))))
 
 (define-public rust-multipart-0.18
   (package
