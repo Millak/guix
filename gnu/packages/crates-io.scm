@@ -43052,8 +43052,31 @@ prove a function can't ever panic.")
 make porting your crate to no_std *easy*.")
     (license license:expat)))
 
+(define-public rust-no-std-net-0.6
+  (package
+    (name "rust-no-std-net")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "no-std-net" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ravflgyh0q2142gjdz9iav5yqci3ga7gbnk4mmfcnqkrq54lya3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/dunmatt/no-std-net")
+    (synopsis "Rust's @code{std::net} without the @code{std}")
+    (description "This package provides Rust's @code{std::net} in an environment
+without @code{std}.")
+    (license license:expat)))
+
 (define-public rust-no-std-net-0.5
   (package
+    (inherit rust-no-std-net-0.6)
     (name "rust-no-std-net")
     (version "0.5.0")
     (source
@@ -43063,17 +43086,7 @@ make porting your crate to no_std *easy*.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0lkilh0wc7big3m5lsn9wqiz2xvj21kgmpbc15z92j93n51wxkhv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/dunmatt/no-std-net")
-    (synopsis "Rust's std::net... without the @code{std}")
-    (description "This package provides Rust's std::net for environment
-without the @code{std}.")
-    (license license:expat)))
+         "0lkilh0wc7big3m5lsn9wqiz2xvj21kgmpbc15z92j93n51wxkhv"))))))
 
 (define-public rust-nodrop-0.1
   (package
