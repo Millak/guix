@@ -5915,8 +5915,62 @@ deserialization.")
         ("rust-http" ,rust-http-0.1)
         ("rust-mime" ,rust-mime-0.3))))))
 
+(define-public rust-warp-0.3
+  (package
+    (name "rust-warp")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "warp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sfimrpxkyka1mavfhg5wa4x977qs8vyxa510c627w9zw0i2xsf1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-compression" ,rust-async-compression-0.3)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-headers" ,rust-headers-0.3)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-mime-guess" ,rust-mime-guess-2)
+        ("rust-multer" ,rust-multer-2)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tokio-tungstenite" ,rust-tokio-tungstenite-0.20)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-tower-service" ,rust-tower-service-0.3)
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-handlebars" ,rust-handlebars-4)
+        ("rust-listenfd" ,rust-listenfd-1)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tracing-log" ,rust-tracing-log-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/seanmonstar/warp")
+    (synopsis "Serve the web at warp speeds")
+    (description "Warp is a composable, web server framework.")
+    (license license:expat)))
+
 (define-public rust-warp-0.2
   (package
+    (inherit rust-warp-0.3)
     (name "rust-warp")
     (version "0.2.5")
     (source
@@ -5926,7 +5980,6 @@ deserialization.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "01wl8kv5hh1dd7gcwdrmn9xfs7jjsh9yc8xa06ph8yf9akgyc6zl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -5951,11 +6004,7 @@ deserialization.")
         ("rust-tower-service" ,rust-tower-service-0.3)
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
-        ("rust-urlencoding" ,rust-urlencoding-1))))
-    (home-page "https://github.com/seanmonstar/warp")
-    (synopsis "Composable web server framework")
-    (description "Warp is a composable, web server framework.")
-    (license license:expat)))
+        ("rust-urlencoding" ,rust-urlencoding-1))))))
 
 (define-public rust-web-view-0.7
   (package
