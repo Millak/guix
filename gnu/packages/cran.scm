@@ -116,6 +116,25 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+(define-public r-abbreviate
+  (package
+    (name "r-abbreviate")
+    (version "0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "abbreviate" version))
+       (sha256
+        (base32 "1cvjdbi17qz8gr5898zchm5fyz4n51z66lwps25v8a9mhwab8imi"))))
+    (properties `((upstream-name . "abbreviate")))
+    (build-system r-build-system)
+    (home-page "https://github.com/sigbertklinke/abbreviate")
+    (synopsis "Readable string abbreviation")
+    (description
+     "This package abbreviates strings to a specified minimum number of
+characters, such that the strings remain unique (if they originally were).")
+    (license license:gpl3)))
+
 (define-public r-aer
   (package
     (name "r-aer")
