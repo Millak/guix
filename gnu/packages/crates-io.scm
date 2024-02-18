@@ -70875,6 +70875,33 @@ and process stack traces from native applications, minidumps or minified
 @code{JavaScript}.")
     (license license:expat)))
 
+(define-public rust-symbolic-demangle-12
+  (package
+    (name "rust-symbolic-demangle")
+    (version "12.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symbolic-demangle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s0s4af53p9h1xwgz5842wa4qdl7ikq43sy4frzac820v899iabn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
+                       ("rust-msvc-demangler" ,rust-msvc-demangler-0.9)
+                       ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+                       ("rust-symbolic-common" ,rust-symbolic-common-12))
+       #:cargo-development-inputs
+       (("rust-similar-asserts" ,rust-similar-asserts-1))))
+    (home-page "https://github.com/getsentry/symbolic")
+    (synopsis "Library to demangle symbols from various compilers")
+    (description
+     "This package provides a library to demangle symbols from various
+languages and compilers.")
+    (license license:expat)))
+
 (define-public rust-symlink-0.1
   (package
     (name "rust-symlink")
