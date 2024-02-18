@@ -31291,8 +31291,9 @@ library.")
        #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/lo48576/iri-string")
     (synopsis "IRI as string types")
-    (description "String types for @acronym{IRIs, Internationalized Resource
-Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
+    (description
+      "This package provides string types for @acronym{IRIs, Internationalized
+Resource Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-is-ci-1
