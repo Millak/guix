@@ -70825,6 +70825,35 @@ executed by swayipc.")
 sway's IPC interface.")
     (license license:expat)))
 
+(define-public rust-symbolic-common-12
+  (package
+    (name "rust-symbolic-common")
+    (version "12.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symbolic-common" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zhda5h4qykrb38x9yb6s846hpq59mzhglkclb9v4fxvqvxzzk0w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `symbolic_testutils`
+       #:cargo-inputs (("rust-debugid" ,rust-debugid-0.8)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-similar-asserts" ,rust-similar-asserts-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/getsentry/symbolic")
+    (synopsis "Common types and utilities for the symbolic library")
+    (description
+     "Common types and utilities for symbolic: a library to symbolicate
+and process stack traces from native applications, minidumps or minified
+@code{JavaScript}.")
+    (license license:expat)))
+
 (define-public rust-symlink-0.1
   (package
     (name "rust-symlink")
