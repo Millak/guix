@@ -27097,6 +27097,26 @@ derived from an internal hasher used in FireFox and Rustc.")
 time, for nonorderable alphabets.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gat-std-0.1
+  (package
+    (name "rust-gat-std")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gat-std" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14v4ldnzi8y8zkcj2qq7rj4af5ygk0s9iklflssxpcdgqzsfp3p0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gat-std-proc" ,rust-gat-std-proc-0.1))))
+    (home-page "https://github.com/CraftSpider/gat-std")
+    (synopsis "Variants of Rust std traits that use GATs")
+    (description "This package provides variants of Rust std traits that
+use GATs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gat-std-proc-0.1
   (package
     (name "rust-gat-std-proc")
