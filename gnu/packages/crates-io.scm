@@ -14763,40 +14763,6 @@ to the @code{is_x86_feature_detected!} macro.")
     (description "This package provides bindings to Google's cpu profiler.")
     (license license:bsd-2)))
 
-(define-public rust-uom-0.34
-  (package
-    (name "rust-uom")
-    (version "0.34.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "uom" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "190n79b5ywa9w0j13ld0q6dphz7vzsjkwrpp8pjnwrczsvfhxxg8"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-num-complex" ,rust-num-complex-0.4)
-                       ("rust-num-rational" ,rust-num-rational-0.4)
-                       ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-typenum" ,rust-typenum-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-num-bigint" ,rust-num-bigint-0.4))
-       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5)
-                                   ("rust-quickcheck" ,rust-quickcheck-0.8)
-                                   ("rust-serde-json" ,rust-serde-json-1)
-                                   ("rust-static-assertions" ,rust-static-assertions-1))))
-    (home-page "https://github.com/iliekturtles/uom")
-    (synopsis "Units of measurement")
-    (description
-     "@code{uom} (Units of measurement) is a crate that does automatic type-safe
-zero-cost dimensional analysis.  You can create your own systems or use the pre-built
-International System of Units (SI) which is based on the International System of
-Quantities (ISQ) and includes numerous quantities (length, mass, time, ...) with
-conversion factors for even more numerous measurement units (meter, kilometer, foot,
-mile, ...).")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-cradle-0.2
   (package
     (name "rust-cradle")
@@ -76166,6 +76132,40 @@ untrusted inputs in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0byf88b7ca1kb5aap8f6npp6xncvg95dnma8ipmnmd4n9r5izkam"))))))
+
+(define-public rust-uom-0.34
+  (package
+    (name "rust-uom")
+    (version "0.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "uom" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "190n79b5ywa9w0j13ld0q6dphz7vzsjkwrpp8pjnwrczsvfhxxg8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-complex" ,rust-num-complex-0.4)
+                       ("rust-num-rational" ,rust-num-rational-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-typenum" ,rust-typenum-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.5)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/iliekturtles/uom")
+    (synopsis "Units of measurement")
+    (description
+     "@code{uom} (Units of measurement) is a crate that does automatic type-safe
+zero-cost dimensional analysis.  You can create your own systems or use the pre-built
+International System of Units (SI) which is based on the International System of
+Quantities (ISQ) and includes numerous quantities (length, mass, time, ...) with
+conversion factors for even more numerous measurement units (meter, kilometer, foot,
+mile, ...).")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-ureq-2
   (package
