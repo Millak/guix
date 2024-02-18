@@ -2587,6 +2587,51 @@ be used to implement arbitrary protocols.")
     (description "Kuznyechik (GOST R 34.12-2015) block cipher")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-mas-jose-0.7
+  (package
+    (name "rust-mas-jose")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mas-jose" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x1cikddf2z3994374ql0qs02l9mxrlb74cy4pbq3yrlzcfjb6mk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-ecdsa" ,rust-ecdsa-0.16)
+                       ("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-hmac" ,rust-hmac-0.12)
+                       ("rust-k256" ,rust-k256-0.13)
+                       ("rust-mas-iana" ,rust-mas-iana-0.7)
+                       ("rust-p256" ,rust-p256-0.13)
+                       ("rust-p384" ,rust-p384-0.13)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rsa" ,rust-rsa-0.9)
+                       ("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-sec1" ,rust-sec1-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-with" ,rust-serde-with-3)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-1)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3))))
+    (home-page "https://matrix-org.github.io/matrix-authentication-service/")
+    (synopsis "JSON Object Signing and Encryption (JWT & co.) utilities")
+    (description "This package provides JSON Object Signing and Encryption
+(JWT & co.) utilities.")
+    (license license:asl2.0)))
+
 (define-public rust-md-5-0.10
   (package
     (name "rust-md-5")
