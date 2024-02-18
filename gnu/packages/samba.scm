@@ -451,6 +451,14 @@ many event types, including timers, signals, and the classic file descriptor eve
        #:tests? (assoc-ref %build-inputs "lmdb")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'remove-crypt-reference
+           ;; The following is needed because Python.h propagates
+           ;; HAVE_CRYPT_H, which is then seen from lib/replace/ but talloc
+           ;; doesn't need it at all.
+           (lambda _
+             (substitute* "lib/replace/replace.h"
+               (("#include <crypt.h>")
+                ""))))
          (replace 'configure
            ;; ldb use a custom configuration script that runs waf.
            (lambda* (#:key outputs #:allow-other-keys)
