@@ -29923,6 +29923,28 @@ variant of this library is available separately as @code{im}.")
     (description "This package provides a minimal terminfo libary.")
     (license license:asl2.0)))
 
+(define-public rust-imbl-sized-chunks-0.1
+  (package
+    (name "rust-imbl-sized-chunks")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "imbl-sized-chunks" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qzdw55na2w6fd44p7y9rh05nxa98gzpaigmwg57sy7db3xhch0l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-array-ops" ,rust-array-ops-0.1)
+                       ("rust-bitmaps" ,rust-bitmaps-3)
+                       ("rust-refpool" ,rust-refpool-0.4))))
+    (home-page "https://github.com/jneem/imbl-sized-chunks")
+    (synopsis "Sized chunk datatypes")
+    (description "This package provides sized chunk datatypes.")
+    (license license:mpl2.0)))
+
 (define-public rust-impl-codec-0.5
   (package
     (name "rust-impl-codec")
