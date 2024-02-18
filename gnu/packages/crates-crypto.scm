@@ -3616,6 +3616,34 @@ Standards (PKCS) #5: Password-Based Cryptography Specification Version
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-spki" ,rust-spki-0.4))))))
 
+(define-public rust-pkcs7-0.4
+  (package
+    (name "rust-pkcs7")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs7" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rvp9gm7vzcbbzz6vr6xz6ri2szgxm35j0zk5dhf01b40sz7i4fp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-der" ,rust-der-0.7)
+                       ("rust-spki" ,rust-spki-0.7)
+                       ("rust-x509-cert" ,rust-x509-cert-0.2))
+       #:cargo-development-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-x509-cert" ,rust-x509-cert-0.2))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs7")
+    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #7")
+    (description
+     "This package is a pure Rust implementation of Public-Key
+Cryptography Standards (PKCS) #7: Cryptographic Message Syntax
+Specification (RFC 5652).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pkcs8-0.10
   (package
     (name "rust-pkcs8")
