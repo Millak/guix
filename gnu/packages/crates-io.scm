@@ -50832,6 +50832,28 @@ serialization library.")
 a system.")
     (license license:expat)))
 
+(define-public rust-platforms-3
+  (package
+    (name "rust-platforms")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "platforms" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k7q6pigmnvgpfasvssb12m2pv3pc94zrhrfg9by3h3wmhyfqvb2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://rustsec.org")
+    (synopsis "Registry of valid Rust platforms from the Rust compiler")
+    (description
+     "This package provides a Rust platform registry with information
+about valid Rust platforms (target triple, target_arch, target_os),
+sourced from the Rust compiler.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pledge-0.4
   (package
     (name "rust-pledge")
