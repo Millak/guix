@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2519,6 +2520,48 @@ Hash-based Message Authentication Code}.")
      "This package is a pure Rust implementation of the @acronym{HMAC,
 Hash-based Message Authentication Code algorithm} for SHA1.")
     (license license:bsd-3)))
+
+(define-public rust-k256-0.13
+  (package
+    (name "rust-k256")
+    (version "0.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "k256" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ysq18pjz040am5llgly90464x7qqq98yxfbcsladq96gsvgjvwm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-ecdsa" ,rust-ecdsa-0.16)
+                       ("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
+                       ("rust-hex-literal" ,rust-hex-literal-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serdect" ,rust-serdect-0.2)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-signature" ,rust-signature-2))
+       #:cargo-development-inputs (("rust-blobby" ,rust-blobby-0.3)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-ecdsa" ,rust-ecdsa-0.16)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-num-bigint" ,rust-num-bigint-0.4)
+                                   ("rust-num-traits" ,rust-num-traits-0.2)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand-core" ,rust-rand-core-0.6)
+                                   ("rust-sha3" ,rust-sha3-0.10))))
+    (home-page
+     "https://github.com/RustCrypto/elliptic-curves/tree/master/k256")
+    (synopsis
+     "Library supporting general-purpose elliptic curve group operations")
+    (description
+     "This package provides a secp256k1 elliptic curve library written in pure
+Rust with support for ECDSA signing/verification/public-key recovery,
+@dfn{Taproot Schnorr signatures} (BIP340), @dfn{Elliptic Curve Diffie-Hellman}
+(ECDH), and general-purpose secp256k1 elliptic curve group operations which can
+be used to implement arbitrary protocols.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-kuznyechik-0.8
   (package
