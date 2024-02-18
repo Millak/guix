@@ -55618,6 +55618,25 @@ can handle huge texts and memory-incoherent edits with ease.")
      "This package provides a library for generic lossless syntax trees.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rpassword-6
+  (package
+    (inherit rust-rpassword-7)
+    (name "rust-rpassword")
+    (version "6.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rpassword" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0mnrpxvai78mn9wqkqx8wp1gd280jjhn29ixd1dm84l6i2hrkw1b"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-winapi" ,rust-winapi-0.3))))))
+
 (define-public rust-rpassword-5
   (package
     (inherit rust-rpassword-6)
@@ -56433,25 +56452,6 @@ floating-point, and complex numbers based on GMP, MPFR and MPC.")
     (description "This package provides a crate for reading passwords in
 console applications.")
     (license license:asl2.0)))
-
-(define-public rust-rpassword-6
-  (package
-    (inherit rust-rpassword-7)
-    (name "rust-rpassword")
-    (version "6.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rpassword" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0mnrpxvai78mn9wqkqx8wp1gd280jjhn29ixd1dm84l6i2hrkw1b"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-run-script-0.10
   (package
