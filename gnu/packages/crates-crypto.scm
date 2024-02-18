@@ -6150,6 +6150,42 @@ cryptographic implementations.")
      "This package provides the Tiger cryptographic hash function.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tls-codec-0.4
+  (package
+    (name "rust-tls-codec")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tls_codec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0spv5d8gjpmil4x14d8jk6wps59r4y7kdj77par8b30g6ff8rrxm"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tls-codec-derive" ,rust-tls-codec-derive-0.4)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-anstyle" ,rust-anstyle-1)
+        ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-lex" ,rust-clap-lex-0.5)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/tls_codec")
+    (synopsis "Rust implementation of TLS (de)serialization")
+    (description
+     "This package provides a Rust implementation of TLS serialization
+and deserialization.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-tls-codec-derive-0.4
   (package
     (name "rust-tls-codec-derive")
