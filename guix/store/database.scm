@@ -167,16 +167,19 @@ If FILE doesn't exist, create it and initialize it as a new database.  Pass
     ((_ file db exp ...)
      (call-with-database file (lambda (db) exp ...)))))
 
+(define (sqlite-step-and-reset statement)
+  (let ((val (sqlite-step statement)))
+    (sqlite-reset statement)
+    val))
+
 (define (last-insert-row-id db)
   ;; XXX: (sqlite3) currently lacks bindings for 'sqlite3_last_insert_rowid'.
   ;; Work around that.
-  (let* ((stmt   (sqlite-prepare db "SELECT last_insert_rowid();"
-                                 #:cache? #t))
-         (result (sqlite-fold cons '() stmt)))
-    (sqlite-finalize stmt)
-    (match result
-      ((#(id)) id)
-      (_ #f))))
+  (let ((stmt (sqlite-prepare db
+                              "SELECT last_insert_rowid();"
+                              #:cache? #t)))
+    (vector-ref (sqlite-step-and-reset stmt)
+                0)))
 
 (define* (path-id db path)
   "If PATH exists in the 'ValidPaths' table, return its numerical
@@ -187,11 +190,9 @@ identifier.  Otherwise, return #f."
 SELECT id FROM ValidPaths WHERE path = :path"
                #:cache? #t)))
     (sqlite-bind-arguments stmt #:path path)
-    (let ((result (sqlite-fold cons '() stmt)))
-      (sqlite-finalize stmt)
-      (match result
-        ((#(id) . _) id)
-        (_ #f)))))
+    (match (sqlite-step-and-reset stmt)
+      (#(id) id)
+      (#f #f))))
 
 (define-inlinable (assert-integer proc in-range? key number)
   (unless (integer? number)
@@ -225,9 +226,8 @@ WHERE id = :id"
           (sqlite-bind-arguments stmt #:id id
                                  #:deriver deriver
                                  #:hash hash #:size nar-size #:time time)
-          (sqlite-fold cons '() stmt)
-          (sqlite-finalize stmt)
-          (last-insert-row-id db))
+          (sqlite-step-and-reset stmt)
+          id)
         (let ((stmt (sqlite-prepare
                      db
                      "
@@ -237,8 +237,7 @@ VALUES (:path, :hash, :time, :deriver, :size)"
           (sqlite-bind-arguments stmt
                                  #:path path #:deriver deriver
                                  #:hash hash #:size nar-size #:time time)
-          (sqlite-fold cons '() stmt)             ;execute it
-          (sqlite-finalize stmt)
+          (sqlite-step-and-reset stmt)
           (last-insert-row-id db)))))
 
 (define (add-references db referrer references)
@@ -251,13 +250,10 @@ INSERT OR REPLACE INTO Refs (referrer, reference)
 VALUES (:referrer, :reference)"
                #:cache? #t)))
     (for-each (lambda (reference)
-                (sqlite-reset stmt)
                 (sqlite-bind-arguments stmt #:referrer referrer
                                        #:reference reference)
-                (sqlite-fold cons '() stmt)       ;execute it
-                (last-insert-row-id db))
-              references)
-    (sqlite-finalize stmt)))
+                (sqlite-step-and-reset stmt))
+              references)))
 
 (define (timestamp)
   "Return a timestamp, either the current time of SOURCE_DATE_EPOCH."
