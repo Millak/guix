@@ -655,7 +655,9 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1krid2hlvs808jl9zmv7m6zx92samc60gymhwr2mwwykicwbnks8"))))
+        (base32 "1krid2hlvs808jl9zmv7m6zx92samc60gymhwr2mwwykicwbnks8"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "benchmarks"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/goccy/go-json"))
