@@ -14256,8 +14256,58 @@ queue.")
        (("rust-easy-parallel" ,rust-easy-parallel-3)
         ("rust-fastrand" ,rust-fastrand-1))))))
 
+(define-public rust-config-0.13
+  (package
+    (name "rust-config")
+    (version "0.13.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jjag1x3rl77zjykbrykzhd5fsiv8vy40y4lxkj46xicjw8qwwr3"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-json5" ,rust-json5-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-pathdiff" ,rust-pathdiff-0.2)
+                       ("rust-ron" ,rust-ron-0.7)
+                       ("rust-rust-ini" ,rust-rust-ini-0.18)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-toml" ,rust-toml-0.5)
+                       ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-float-cmp" ,rust-float-cmp-0.9)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-notify" ,rust-notify-4)
+                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-temp-env" ,rust-temp-env-0.2)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-warp" ,rust-warp-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/mehcode/config-rs")
+    (synopsis "Layered configuration system for Rust applications")
+    (description
+     "This package provides a layered configuration system for Rust
+applications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-config-0.11
   (package
+    (inherit rust-config-0.13)
     (name "rust-config")
     (version "0.11.0")
     (source
@@ -14267,7 +14317,6 @@ queue.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0sdkxv77m65frsn3bx0r3v7asxar3gy3hmghcfk6h4rbijars6qv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -14278,13 +14327,7 @@ queue.")
         ("rust-serde-hjson" ,rust-serde-hjson-0.9)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4))))
-    (home-page "https://github.com/mehcode/config-rs")
-    (synopsis "Layered configuration system for Rust applications")
-    (description
-     "This package provides a layered configuration system for Rust
-applications.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-yaml-rust" ,rust-yaml-rust-0.4))))))
 
 (define-public rust-config-0.10
   (package
