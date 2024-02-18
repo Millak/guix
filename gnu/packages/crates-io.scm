@@ -22564,6 +22564,35 @@ testing.")
 like Don libes expect.")
     (license license:expat)))
 
+(define-public rust-eyeball-0.8
+  (package
+    (name "rust-eyeball")
+    (version "0.8.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "eyeball" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yw01cm6316xrq26nz3nhlvnsfahc96j692brrai04c2v69jhj22"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-criterion" ,rust-criterion-0.5)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-readlock" ,rust-readlock-0.1)
+                       ("rust-readlock-tokio" ,rust-readlock-tokio-0.1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-stream-assert" ,rust-stream-assert-0.1)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/jplatte/eyeball")
+    (synopsis "Add observability to your Rust types")
+    (description "Add observability to your Rust types!")
+    (license license:mpl2.0)))
+
 (define-public rust-eyre-0.6
   (package
     (name "rust-eyre")
