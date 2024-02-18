@@ -1851,6 +1851,27 @@ re-exported cipher crate.")
 ristretto255 and Curve25519.")
     (license license:bsd-3)))
 
+(define-public rust-curve25519-dalek-derive-0.1
+  (package
+    (name "rust-curve25519-dalek-derive")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "curve25519-dalek-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cry71xxrr0mcy5my3fb502cwfxy6822k4pm19cwrilrg7hq4s7l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://doc.dalek.rs/curve25519_dalek")
+    (synopsis "curve25519-dalek Derives")
+    (description "This package provides curve25519-dalek Derives.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-curve25519-dalek-ng-4
   (package
     (name "rust-curve25519-dalek-ng")
