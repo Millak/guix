@@ -2087,7 +2087,7 @@ used with local NetDRMS sites.")
 (define-public python-drizzle
   (package
     (name "python-drizzle")
-    (version "1.14.4")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have the test data sets
@@ -2096,7 +2096,7 @@ used with local NetDRMS sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01zsq1r3p9lig0aik01szncd7nbmyi561mhi1n44yjhh7d86fp8y"))))
+        (base32 "06qh3b60xvm5f2p09l2njwwsh0n95s54r730fyfn66w8mvr1jk82"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2112,7 +2112,7 @@ used with local NetDRMS sites.")
     (propagated-inputs
      (list python-astropy python-numpy))
     (native-inputs
-     (list python-flake8 python-pytest python-setuptools-scm))
+     (list python-pytest python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/drizzle")
     (synopsis
      "Astronomical tool for combining dithered images into a single image")
