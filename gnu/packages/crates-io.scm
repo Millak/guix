@@ -53987,6 +53987,28 @@ in codeblocks, while assuring quality with a powerful test suite.")
          ("rust-regex" ,rust-regex-1)
          ("rust-tendril" ,rust-tendril-0.4))))))
 
+(define-public rust-pulldown-cmark-to-cmark-7
+  (package
+    (inherit rust-pulldown-cmark-to-cmark-10)
+    (name "rust-pulldown-cmark-to-cmark")
+    (version "7.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulldown-cmark-to-cmark" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "03f6bnqjzchmzs4qaf63pirgj95b0x3l2rlp1wj1z27mp734phcb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-pulldown-cmark" ,rust-pulldown-cmark-0.8))
+       #:cargo-development-inputs
+       (("rust-indoc" ,rust-indoc-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
+
 (define-public rust-pulldown-cmark-0.4
   (package
     (inherit rust-pulldown-cmark-0.8)
@@ -54059,37 +54081,6 @@ in codeblocks, while assuring quality with a powerful test suite.")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-0.9)
         ("rust-getopts" ,rust-getopts-0.2))))))
-
-(define-public rust-pulldown-cmark-to-cmark-7
-  (package
-    (name "rust-pulldown-cmark-to-cmark")
-    (version "7.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pulldown-cmark-to-cmark" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "03f6bnqjzchmzs4qaf63pirgj95b0x3l2rlp1wj1z27mp734phcb"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-pulldown-cmark" ,rust-pulldown-cmark-0.8))
-       #:cargo-development-inputs
-       (("rust-indoc" ,rust-indoc-1)
-        ("rust-pretty-assertions"
-         ,rust-pretty-assertions-0.7))))
-    (home-page
-     "https://github.com/Byron/pulldown-cmark-to-cmark")
-    (synopsis
-     "Convert pulldown-cmark Events back to the string they were parsed from")
-    (description
-     "This package provides a convert pulldown-cmark Events back to the string
-they were parsed from")
-    (license license:asl2.0)))
 
 (define-public rust-pulse-0.5
   (package
