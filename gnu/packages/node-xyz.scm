@@ -1732,3 +1732,8 @@ files in RAM at once.
 @item Prefer to open input files one at a time than all at once.
 @end enumerate")
     (license license:expat)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above in alphabetic order.
+;;;
