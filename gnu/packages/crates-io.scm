@@ -3267,6 +3267,25 @@ the abi_stable and structural crates.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-as-variant-1
+  (package
+    (name "rust-as-variant")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "as_variant" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13vryhfcslf50f8j1msnxg5689bzwz56z45dgzxqd7r40wis53zk"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/jplatte/as_variant")
+    (synopsis "Macro to convert enums with newtype variants to Option")
+    (description
+     "This package provides a simple macro to convert enums with newtype
+variants to `Option`s.")
+    (license license:mpl2.0)))
+
 (define-public rust-asio-sys-0.2
   (package
     (name "rust-asio-sys")
