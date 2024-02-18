@@ -55184,6 +55184,20 @@ to write.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-test" ,rust-tokio-test-0.4))))))
 
+(define-public rust-quick-xml-0.26
+  (package
+    (inherit rust-quick-xml-0.27)
+    (name "rust-quick-xml")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quick-xml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1kckgj8qscpi23y62zrfmni73k6h78nvhs3z9myiwq9q7g3b2l3z"))))))
+
 (define-public rust-quick-xml-0.22
   (package
     (inherit rust-quick-xml-0.27)
