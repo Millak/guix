@@ -36887,6 +36887,27 @@ in html5ever/xml5ever")
        (("rust-rustc-test" ,rust-rustc-test-0.3)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-mas-iana-0.7
+  (package
+    (name "rust-mas-iana")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mas-iana" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18yz6lv54crny8nmx4dpy3j2j00v8s80zsczzcg4fh1jyw6q4j0w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://matrix-org.github.io/matrix-authentication-service/")
+    (synopsis "IANA registry data for JOSE and OAuth 2.0")
+    (description "This package provides IANA registry data for JOSE and
+OAuth 2.0.")
+    (license license:asl2.0)))
+
 (define-public rust-matchit-0.7
   (package
     (name "rust-matchit")
