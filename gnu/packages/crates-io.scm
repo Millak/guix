@@ -39924,6 +39924,32 @@ types as proposed in RFC 1158.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-netlink-packet-audit-0.5
+  (package
+    (name "rust-netlink-packet-audit")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "netlink-packet-audit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i2imw6qpdbafc7bczc7c92gx1pxvz2x0a41qdi20wn85y0589xg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-netlink-packet-core" ,rust-netlink-packet-core-0.7)
+                       ("rust-netlink-packet-utils" ,rust-netlink-packet-utils-0.5)
+                       ("rust-netlink-proto" ,rust-netlink-proto-0.11))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/rust-netlink/netlink-packet-audit")
+    (synopsis "Netlink packet types")
+    (description "This package provides netlink packet types.")
+    (license license:expat)))
+
 (define-public rust-netlink-packet-core-0.7
   (package
     (name "rust-netlink-packet-core")
