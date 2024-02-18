@@ -7927,6 +7927,26 @@ program to verify sandboxing measures are adequate.")
         ("rust-rustls" ,rust-rustls-0.16)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
+(define-public rust-branches-0.1
+  (package
+    (name "rust-branches")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "branches" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0alxmzmms4s8vv1v94y2kdq49a4p7728fgkpxx36z2m092bznn3r"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/fereidani/branches")
+    (synopsis "Branch hinting prediction and control functions")
+    (description
+     "This package provides branch hinting prediction and control functions for
+stable Rust including likely, unlikely, assume and abort to help algorithm
+optimization.")
+    (license license:expat)))
+
 (define-public rust-bresenham-0.1
   (package
     (name "rust-bresenham")
