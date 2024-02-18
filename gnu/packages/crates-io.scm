@@ -43313,6 +43313,40 @@ giga, kibi.")
      "This package can convert numbers into stack-allocated byte arrays.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-oauth2-types-0.7
+  (package
+    (name "rust-oauth2-types")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oauth2-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08pis87992xd6gj072k4kr4inlaaviq6as5h65pnjmk86siky37x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-language-tags" ,rust-language-tags-0.3)
+                       ("rust-mas-iana" ,rust-mas-iana-0.7)
+                       ("rust-mas-jose" ,rust-mas-jose-0.7)
+                       ("rust-parse-display" ,rust-parse-display-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-with" ,rust-serde-with-3)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1))))
+    (home-page "https://matrix-org.github.io/matrix-authentication-service/")
+    (synopsis "OAuth 2.0 types used by the Matrix Authentication Service")
+    (description "This package provides OAuth 2.0 types used by the Matrix
+Authentication Service.")
+    (license license:asl2.0)))
+
 (define-public rust-obfstr-0.3
   (package
     (name "rust-obfstr")
