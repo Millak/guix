@@ -1169,8 +1169,38 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
        (("rust-cipher" ,rust-cipher-0.3)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
+(define-public rust-chacha20poly1305-0.10
+  (package
+    (name "rust-chacha20poly1305")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chacha20poly1305" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dfwq9ag7x7lnd0znafpcn8h7k4nfr9gkzm0w7sc1lcj451pkk8h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-chacha20" ,rust-chacha20-0.9)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-poly1305" ,rust-poly1305-0.8)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-aead" ,rust-aead-0.5))))
+    (home-page "https://github.com/RustCrypto/AEADs/tree/master/chacha20poly1305")
+    (synopsis "Rust implementation of ChaCha20Poly1305 Authenticated Encryption")
+    (description
+     "Pure Rust implementation of the ChaCha20Poly1305 Authenticated Encryption
+with Additional Data Cipher (RFC 8439) with optional architecture-specific
+hardware acceleration.  Also contains implementations of the XChaCha20Poly1305
+extended nonce variant of ChaCha20Poly1305, and the reduced-round
+ChaCha8Poly1305 and ChaCha12Poly1305 lightweight variants.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-chacha20poly1305-0.9
   (package
+    (inherit rust-chacha20poly1305-0.10)
     (name "rust-chacha20poly1305")
     (version "0.9.1")
     (source
@@ -1185,7 +1215,6 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
         '(begin
            (substitute* "Cargo.toml"
              (("version = \">=1, <1.5\"") "version = \"^1\""))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aead" ,rust-aead-0.4)
@@ -1194,17 +1223,7 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
         ("rust-poly1305" ,rust-poly1305-0.7)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
-       (("rust-aead" ,rust-aead-0.4))))
-    (home-page "https://github.com/RustCrypto/AEADs/tree/master/chacha20poly1305")
-    (synopsis
-     "Pure Rust implementation of ChaCha20Poly1305 Authenticated Encryption")
-    (description
-     "Pure Rust implementation of the ChaCha20Poly1305 Authenticated
-Encryption with Additional Data Cipher (RFC 8439) with optional
-architecture-specific hardware acceleration.  Also contains implementations of
-the XChaCha20Poly1305 extended nonce variant of ChaCha20Poly1305, and the
-reduced-round ChaCha8Poly1305 and ChaCha12Poly1305 lightweight variants.")
-    (license (list license:asl2.0 license:expat))))
+       (("rust-aead" ,rust-aead-0.4))))))
 
 (define-public rust-cipher-0.4
   (package
