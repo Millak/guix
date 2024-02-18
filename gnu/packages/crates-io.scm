@@ -70357,6 +70357,38 @@ file.")
        #:cargo-inputs
        (("rust-vte" ,rust-vte-0.10))))))
 
+(define-public rust-strobe-rs-0.8
+  (package
+    (name "rust-strobe-rs")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "strobe-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bdb9fqjpgck3fzmlsdsq5b14zhm1l66f0xp9x6gmk6c3j527fzs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-keccak" ,rust-keccak-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-big-array" ,rust-serde-big-array-0.4)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/rozbb/strobe-rs")
+    (synopsis "Rust implementation of the Strobe protocol framework")
+    (description
+     "This package provides an implementation of the Strobe protocol
+framework in pure Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-strong-xml-0.6
   (package
     (name "rust-strong-xml")
