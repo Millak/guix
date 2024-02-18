@@ -51813,6 +51813,49 @@ with alignment, avoid heap allocation, and avoid repetitive calculations.")
 and should not be relied upon directly.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pprof-0.13
+  (package
+    (name "rust-pprof")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pprof" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jqi6yakwwhln5b1vr3aprgl2kdlvsmidqh24is7wk6k3g2rfp7g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; no method named `flamegraph` found for struct `pprof::Report`
+       #:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-findshlibs" ,rust-findshlibs-0.10)
+        ("rust-inferno" ,rust-inferno-0.11)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-prost" ,rust-prost-0.12)
+        ("rust-prost-build" ,rust-prost-build-0.12)
+        ("rust-prost-derive" ,rust-prost-derive-0.12)
+        ("rust-protobuf" ,rust-protobuf-2)
+        ("rust-protobuf-codegen-pure" ,rust-protobuf-codegen-pure-2)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-symbolic-demangle" ,rust-symbolic-demangle-12)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/tikv/pprof-rs")
+    (synopsis "Internal perf tools for rust programs")
+    (description "This package provides internal perf tools for Rust
+programs.")
+    (license license:asl2.0)))
+
 (define-public rust-pq-sys-0.4
   (package
     (name "rust-pq-sys")
