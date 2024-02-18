@@ -34112,8 +34112,34 @@ for raw deflate, zlib, and gzip data.")
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-flate2" ,rust-flate2-1))))))
 
+(define-public rust-libflate-2
+  (package
+    (name "rust-libflate")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gxjqgbzzn6sdalrd2cfn7zb14c75if3dx3nzz3sz58pmra5czcz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-adler32" ,rust-adler32-1)
+                       ("rust-core2" ,rust-core2-0.4)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-dary-heap" ,rust-dary-heap-0.3)
+                       ("rust-libflate-lz77" ,rust-libflate-lz77-2))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-2))))
+    (home-page "https://github.com/sile/libflate")
+    (synopsis "DEFLATE algorithm and related formats (ZLIB, GZIP)")
+    (description "This package provides a Rust implementation of DEFLATE
+algorithm and related formats (ZLIB, GZIP).")
+    (license license:expat)))
+
 (define-public rust-libflate-1
   (package
+    (inherit rust-libflate-2)
     (name "rust-libflate")
     (version "1.1.1")
     (source
@@ -34123,19 +34149,13 @@ for raw deflate, zlib, and gzip data.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07hlzg1zly4dw9s39fv2ik6nfcjpjgx82b5kkf3bafdvdvvlldhn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-adler32" ,rust-adler32-1)
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-libflate-lz77" ,rust-libflate-lz77-1))
        #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2))))
-    (home-page "https://github.com/sile/libflate")
-    (synopsis "DEFLATE algorithm and related formats (ZLIB, GZIP)")
-    (description "This package provides a Rust implementation of DEFLATE
-algorithm and related formats (ZLIB, GZIP).")
-    (license license:expat)))
+       (("rust-clap" ,rust-clap-2))))))
 
 (define-public rust-libflate-0.1
   (package
