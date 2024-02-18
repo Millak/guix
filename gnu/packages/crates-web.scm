@@ -3405,6 +3405,45 @@ with hyper.")
        #:cargo-development-inputs
        (("rust-tokio" ,rust-tokio-0.2))))))
 
+(define-public rust-hyper-util-0.1
+  (package
+    (name "rust-hyper-util")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1akngan7j0n2n0wd25c6952mvqbkj9gp1lcwzyxjc0d37l8yyf6a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; could not find `client` in `hyper_util`
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-http-body" ,rust-http-body-1)
+                       ("rust-hyper" ,rust-hyper-1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tower" ,rust-tower-0.4)
+                       ("rust-tower-service" ,rust-tower-service-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-http-body-util" ,rust-http-body-util-0.1)
+        ("rust-hyper" ,rust-hyper-1)
+        ("rust-pnet-datalink" ,rust-pnet-datalink-0.34)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4))))
+    (home-page "https://hyper.rs")
+    (synopsis "@code{hyper} utilities")
+    (description "This package provides utilities for the @code{hyper} crate.")
+    (license license:expat)))
+
 (define-public rust-iron-0.6
   (package
     (name "rust-iron")
