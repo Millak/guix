@@ -388,6 +388,7 @@ example, modify the message headers or body, or encrypt or sign the message.")
            readline
            linux-pam
            libltdl
+           libxcrypt
            gdbm
            ;; Required for SEARCH CHARSET.
            libunistring))
