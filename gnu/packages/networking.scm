@@ -179,6 +179,7 @@
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
@@ -1774,23 +1775,23 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.7")
+    (version "4.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0xw7iagh37y02qgzgmb2xf1qagbphv5lpgra8lq3x0pzrc27p7x7"))))
-    (build-system cmake-build-system)
+        (base32 "04aqg5w8yfikqc1446c2zr2h4yyd5napwkhskdvr2galdycxb2wm"))))
+    (build-system qt-build-system)
     (arguments
      (list
       ;; This causes the plugins to register runpaths for the wireshark
       ;; libraries, which would otherwise cause the validate-runpath phase to
       ;; fail.
-      #:configure-flags #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS="
-                                               "-Wl,-rpath=" #$output "/lib")
-                                "-DUSE_qt6=ON")
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath=" #$output "/lib"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -1799,11 +1800,7 @@ of the same name.")
                 (invoke "ctest" "-VV"
                         "-j" (if parallel-tests?
                                  (number->string (parallel-job-count))
-                                 "1")
-                        ;; Skip the suite_extcaps.case_extcaps.test_sdjournal
-                        ;; test as it requires sdjournal (from systemd) and
-                        ;; fails.
-                        "-E" "suite_extcaps")))))))
+                                 "1"))))))))
     (inputs
      (list c-ares
            glib
@@ -1816,7 +1813,7 @@ of the same name.")
            libssh
            libxml2
            lz4
-           lua
+           lua-5.2
            mit-krb5
            `(,nghttp2 "lib")
            minizip
@@ -1827,6 +1824,7 @@ of the same name.")
            qtsvg
            sbc
            snappy
+           speexdsp
            zlib
            `(,zstd "lib")))
     (native-inputs
@@ -1842,7 +1840,7 @@ of the same name.")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of
 network frames.")
-    (home-page "https://www.wireshark.org/")
+    (home-page "https://www.wireshark.org")
     (license license:gpl2+)))
 
 (define-public fping
