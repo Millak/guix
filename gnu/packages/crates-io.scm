@@ -11040,6 +11040,20 @@ box''.")
 types that works on stable Rust.")
     (license license:expat)))
 
+(define-public rust-castaway-0.1
+  (package
+    (inherit rust-castaway-0.2)
+    (name "rust-castaway")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "castaway" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xhspwy477qy5yg9c3jp713asxckjpx0vfrmz5l7r5zg7naqysd2"))))
+    (arguments '())))
+
 (define-public rust-cblas-sys-0.1
   (package
     (name "rust-cblas-sys")
