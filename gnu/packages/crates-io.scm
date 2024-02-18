@@ -36043,6 +36043,26 @@ lexer.")
      "Cross-platform retrieval of a network interface MAC address.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-macaddr-1
+  (package
+    (name "rust-macaddr")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "macaddr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n5jxn79krlql810c4w3hdkvyqc01141dc5y6fr9sxff2yy0pvms"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1))))
+    (home-page "https://github.com/svartalf/rust-macaddr")
+    (synopsis "MAC address types")
+    (description "This pakcage provides MAC address types.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-macrotest-1
   (package
     (name "rust-macrotest")
