@@ -31783,6 +31783,59 @@ package.  It is obsolete for indoc versions > 1.")))
 signature.")
     (license license:expat)))
 
+(define-public rust-inferno-0.11
+  (package
+    (name "rust-inferno")
+    (version "0.11.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inferno" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ndqcz0p6n4gqrqlq53j42v516nnnii0ljshx634cjnlkj1hy7rj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=collapse::dtrace::tests::test_collapse_multi_dtrace"
+         "--skip=collapse::dtrace::tests::test_collapse_multi_dtrace_simple"
+         "--skip=collapse::perf::tests::test_collapse_multi_perf"
+         "--skip=collapse::perf::tests::test_collapse_multi_perf_simple"
+         "--skip=collapse::perf::tests::test_multiple_skip_after"
+         "--skip=collapse::perf::tests::test_one_skip_after")
+       #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+                       ("rust-dashmap" ,rust-dashmap-5)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-num-format" ,rust-num-format-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-quick-xml" ,rust-quick-xml-0.26)
+                       ("rust-rgb" ,rust-rgb-0.8)
+                       ("rust-str-stack" ,rust-str-stack-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-libflate" ,rust-libflate-2)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-testing-logger" ,rust-testing-logger-0.1))))
+    (home-page "https://github.com/jonhoo/inferno")
+    (synopsis "Rust port of the FlameGraph performance profiling tools")
+    (description
+     "@code{inferno} is a Rust port of the @code{FlameGraph} performance
+profiling tool suite.")
+    (license license:cddl1.0)))
+
 (define-public rust-inflate-0.4
   (package
     (name "rust-inflate")
