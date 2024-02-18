@@ -3790,6 +3790,28 @@ assertions on the result of your program's run.")
      "This package asserts that a value matches a pattern in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-assert-matches2-0.1
+  (package
+    (name "rust-assert-matches2")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "assert_matches2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mnz1wgz1s2s1985h44mdhy2m7615jjyr9pzq359injqqja2v0qm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://codeberg.org/jplatte/assert_matches2")
+    (synopsis
+     "Assert_matches! macro that brings variables from the pattern into scope")
+    (description
+     "This package provides a version of the assert_matches! macro that brings
+variables from the pattern into scope.")
+    (license license:mpl2.0)))
+
 (define-public rust-assert2-0.3
   (package
     (name "rust-assert2")
