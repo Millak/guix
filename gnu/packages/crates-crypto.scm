@@ -6150,6 +6150,31 @@ cryptographic implementations.")
      "This package provides the Tiger cryptographic hash function.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tls-codec-derive-0.4
+  (package
+    (name "rust-tls-codec-derive")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tls_codec_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1704w8zpgpj40yjgq9dddnnfzmq44p63n0606c1g6y8fcm2zb7ld"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `tls_codec`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
+    (home-page
+     "https://github.com/RustCrypto/formats/tree/master/tls_codec/derive")
+    (synopsis "Derive macros for the tls_codec trait")
+    (description
+      "This package provides Derive macros for the tls_codec trait.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-totp-lite-2
   (package
     (name "rust-totp-lite")
