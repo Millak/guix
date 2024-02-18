@@ -50323,8 +50323,45 @@ including most strategies and the testing framework itself.")
        #:cargo-development-inputs
        (("rust-regex" ,rust-regex-0.2))))))
 
+(define-public rust-proptest-derive-0.4
+  (package
+    (name "rust-proptest-derive")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proptest-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vhb7zmnbmn0qvv6x7ibs88pg0mn6d3131c9qzlq982w80vn7wcw"))
+       (modules '((guix build utils)))
+       ;; Need never_type nightly feature.
+       (snippet '(begin (delete-file "tests/uninhabited-pass.rs")
+                        (delete-file "tests/enum.rs")
+                        (delete-file "tests/skip.rs")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; can't find crate for `proptest_derive`
+         "--skip=compile_test")
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-compiletest-rs" ,rust-compiletest-rs-0.9)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-proptest" ,rust-proptest-1))))
+    (home-page
+     "https://proptest-rs.github.io/proptest/proptest-derive/index.html")
+    (synopsis "Custom-derive for the Arbitrary trait of proptest")
+    (description "This package provides a custom-derive for the Arbitrary
+trait of proptest.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-proptest-derive-0.3
   (package
+    (inherit rust-proptest-derive-0.4)
     (name "rust-proptest-derive")
     (version "0.3.0")
     (source
@@ -50334,7 +50371,6 @@ including most strategies and the testing framework itself.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1p4x6k1zxq9lrpk46npdnzj6894mjx5bpwkwrdk63ird72an5d4h"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Needs nightly features.
        #:cargo-inputs
@@ -50344,13 +50380,7 @@ including most strategies and the testing framework itself.")
        #:cargo-development-inputs
        (("rust-compiletest-rs" ,rust-compiletest-rs-0.3)
         ("rust-criterion" ,rust-criterion-0.2)
-        ("rust-proptest" ,rust-proptest-1))))
-    (home-page
-     "https://altsysrq.github.io/proptest-book/proptest-derive/index.html")
-    (synopsis "Custom-derive for the Arbitrary trait of proptest")
-    (description "This package provides a Custom-derive for the Arbitrary
-trait of proptest.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-proptest" ,rust-proptest-1))))))
 
 (define-public rust-proptest-derive-0.1
   (package
