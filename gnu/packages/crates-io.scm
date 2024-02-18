@@ -10624,6 +10624,29 @@ chain, the first matching branch is the item that gets emitted.")
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
+(define-public rust-cfg-vis-0.3
+  (package
+    (name "rust-cfg-vis")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cfg-vis" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1745qzkxar9yd3wy4gzzsakv1cjcibhgnr3m2p5f43y1byzw78n3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/TOETOE55/cfg-vis")
+    (synopsis "Macro to support `#[cfg()]` on visibility")
+    (description
+     "This package provides a macro to support `#[cfg()]` on visibility.")
+    (license license:expat)))
+
 (define-public rust-chan-0.1
   (package
     (name "rust-chan")
