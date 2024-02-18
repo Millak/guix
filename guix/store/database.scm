@@ -204,42 +204,6 @@ SELECT id FROM ValidPaths WHERE path = :path"
            "Integer ~A out of range: ~S" (list key number)
            (list number))))
 
-(define* (update-or-insert db #:key path deriver hash nar-size time)
-  "The classic update-if-exists and insert-if-doesn't feature that sqlite
-doesn't exactly have... they've got something close, but it involves deleting
-and re-inserting instead of updating, which causes problems with foreign keys,
-of course. Returns the row id of the row that was modified or inserted."
-
-  ;; Make sure NAR-SIZE is valid.
-  (assert-integer "update-or-insert" positive? #:nar-size nar-size)
-  (assert-integer "update-or-insert" (cut >= <> 0) #:time time)
-
-  (let ((id (path-id db path)))
-    (if id
-        (let ((stmt (sqlite-prepare
-                     db
-                     "
-UPDATE ValidPaths
-SET hash = :hash, registrationTime = :time, deriver = :deriver, narSize = :size
-WHERE id = :id"
-                     #:cache? #t)))
-          (sqlite-bind-arguments stmt #:id id
-                                 #:deriver deriver
-                                 #:hash hash #:size nar-size #:time time)
-          (sqlite-step-and-reset stmt)
-          id)
-        (let ((stmt (sqlite-prepare
-                     db
-                     "
-INSERT INTO ValidPaths (path, hash, registrationTime, deriver, narSize)
-VALUES (:path, :hash, :time, :deriver, :size)"
-                     #:cache? #t)))
-          (sqlite-bind-arguments stmt
-                                 #:path path #:deriver deriver
-                                 #:hash hash #:size nar-size #:time time)
-          (sqlite-step-and-reset stmt)
-          (last-insert-row-id db)))))
-
 (define (add-references db referrer references)
   "REFERRER is the id of the referring store item, REFERENCES is a list
 ids of items referred to."
@@ -265,9 +229,9 @@ VALUES (:referrer, :reference)"
          (make-time time-utc 0 seconds)
          (current-time time-utc)))))
 
-(define* (sqlite-register db #:key path (references '())
-                          deriver hash nar-size
-                          (time (timestamp)))
+(define* (register-valid-path db #:key path (references '())
+                              deriver hash nar-size
+                              (time (timestamp)))
   "Registers this stuff in DB.  PATH is the store item to register and
 REFERENCES is the list of store items PATH refers to; DERIVER is the '.drv'
 that produced PATH, HASH is the base16-encoded Nix sha256 hash of
@@ -276,15 +240,51 @@ being converted to nar form.  TIME is the registration time to be recorded in
 the database or #f, meaning \"right now\".
 
 Every store item in REFERENCES must already be registered."
-  (let ((id (update-or-insert db #:path path
-                              #:deriver deriver
-                              #:hash hash
-                              #:nar-size nar-size
-                              #:time (time-second time))))
-    ;; Call 'path-id' on each of REFERENCES.  This ensures we get a
-    ;; "non-NULL constraint" failure if one of REFERENCES is unregistered.
-    (add-references db id
-                    (map (cut path-id db <>) references))))
+
+  (define registration-time
+    (time-second time))
+
+  ;; Make sure NAR-SIZE is valid.
+  (assert-integer "sqlite-register" positive? #:nar-size nar-size)
+  (assert-integer "sqlite-register" (cut >= <> 0) #:time registration-time)
+
+  (define id
+    (let ((existing-id (path-id db path)))
+      (if existing-id
+          (let ((stmt (sqlite-prepare
+                       db
+                       "
+UPDATE ValidPaths
+SET hash = :hash, registrationTime = :time, deriver = :deriver, narSize = :size
+WHERE id = :id"
+                       #:cache? #t)))
+            (sqlite-bind-arguments stmt
+                                   #:id existing-id
+                                   #:deriver deriver
+                                   #:hash hash
+                                   #:size nar-size
+                                   #:time registration-time)
+            (sqlite-step-and-reset stmt)
+            existing-id)
+          (let ((stmt (sqlite-prepare
+                       db
+                       "
+INSERT INTO ValidPaths (path, hash, registrationTime, deriver, narSize)
+VALUES (:path, :hash, :time, :deriver, :size)"
+                       #:cache? #t)))
+            (sqlite-bind-arguments stmt
+                                   #:path path
+                                   #:deriver deriver
+                                   #:hash hash
+                                   #:size nar-size
+                                   #:time registration-time)
+            (sqlite-step-and-reset stmt)
+            (last-insert-row-id db)))))
+
+  ;; Call 'path-id' on each of REFERENCES.  This ensures we get a
+  ;; "non-NULL constraint" failure if one of REFERENCES is unregistered.
+  (add-references db id
+                  (map (cut path-id db <>) references)))
 
 
 ;;;
