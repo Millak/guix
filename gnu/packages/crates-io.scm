@@ -50288,8 +50288,31 @@ both WASM and native applications")
     (description "This package provides utils for proc-macro.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pnet-base-0.34
+  (package
+    (name "rust-pnet-base")
+    (version "0.34.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pnet_base" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k2z3jh6vw99bwl0ckpsd142n4yiscza1bmj3b86i2xk7bxzck7y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-no-std-net" ,rust-no-std-net-0.6)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/libpnet/libpnet")
+    (synopsis "Fundamental base types and code used by pnet.")
+    (description
+     "This crate implements fundamental base types and code used by pnet.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pnet-base-0.27
   (package
+    (inherit rust-pnet-base-0.34)
     (name "rust-pnet-base")
     (version "0.27.2")
     (source
@@ -50299,17 +50322,9 @@ both WASM and native applications")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1v8bcbv9jh581ill77qjzzw2ay76pl781982yclj3xky96m8hijf"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-serde-test" ,rust-serde-test-1))))
-    (home-page "https://github.com/libpnet/libpnet")
-    (synopsis "Fundamental base types and code used by pnet")
-    (description
-     "This crate implements fundamental base types and code used by pnet.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-pnet-datalink-0.27
   (package
