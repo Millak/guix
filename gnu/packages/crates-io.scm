@@ -70389,6 +70389,29 @@ file.")
 framework in pure Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-strobe-rs-0.5
+  (package
+    (inherit rust-strobe-rs-0.8)
+    (name "rust-strobe-rs")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "strobe-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10s7f7kr5zlza5f5r06wp0ylhyvp904hyw1kagz9r27af7hsx6qs"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-tiny-keccak" ,rust-tiny-keccak-2))
+       #:cargo-development-inputs
+       (("rust-hex" ,rust-hex-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-strong-xml-0.6
   (package
     (name "rust-strong-xml")
