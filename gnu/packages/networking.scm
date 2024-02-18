@@ -407,13 +407,17 @@ them in order to efficiently transfer a minimal amount of data.")
            #:phases
            #~(modify-phases %standard-phases
                #$@(if (target-aarch64?)
-                      ;; The 'log_process' test fails on aarch64-linux with a
-                      ;; SIGinvalid error (see:
-                      ;; https://bugs.libcamera.org/show_bug.cgi?id=173).
                       #~((add-after 'unpack 'disable-problematic-tests
                            (lambda _
+                             ;; The 'log_process' test fails on aarch64-linux with a
+                             ;; SIGinvalid error (see:
+                             ;; https://bugs.libcamera.org/show_bug.cgi?id=173).
                              (substitute* "test/log/meson.build"
                                ((".*'name': 'log_process'.*")
+                                ""))
+                             ;; The 'file' test fails on aarch64-linux with SIGinvalid.
+                             (substitute* "test/meson.build"
+                               ((".*'name': 'file'.*")
                                 "")))))
                       #~())
                (add-after 'install 'move-doc-and-gst
