@@ -5920,15 +5920,15 @@ edited, converted, compressed and saved.")
 (define-public lsp-dsp-lib
   (package
     (name "lsp-dsp-lib")
-    (version "0.5.14")
+    (version "1.0.20")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://github.com/sadko4u/lsp-dsp-lib/"
+        (uri (string-append "https://github.com/lsp-plugins/lsp-dsp-lib/"
                             "releases/download/" version
-                            "/lsp-dsp-lib-" version "-src.tar.gz"))
+                            "/lsp-dsp-lib-src-" version ".tar.gz"))
         (sha256
-         (base32 "1gcznkyybywbgdi2fhx27i8sckhy6ahvxax72b213g1lr5aaw7bq"))))
+         (base32 "1951d7c08d1g808jgq4r1iacyxb9qr3bpb13r4ybs7bcm8qys02h"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
@@ -5945,7 +5945,7 @@ edited, converted, compressed and saved.")
                  (lambda _
                    (invoke "make" "config"
                            (string-append "PREFIX=" #$output)))))))
-    (home-page "https://github.com/sadko4u/lsp-dsp-lib")
+    (home-page "https://github.com/lsp-plugins/lsp-dsp-lib")
     (synopsis "Digital signal processing library")
     (description "The LSP DSP library provides a set of functions that perform
 SIMD-optimized computing on several hardware architectures.  All functions
