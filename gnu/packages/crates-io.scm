@@ -65933,8 +65933,33 @@ and Jaro-Winkler.")
         (base32
          "0z3zzvmilfldp4xw42qbkjf901dcnbk58igrzsvivydjzd24ry37"))))))
 
+(define-public rust-structmeta-0.2
+  (package
+    (name "rust-structmeta")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "structmeta" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bcj4c2p2j091mn9ld2hbcx77flqjx65ihb9gbb5c12gal4rxbbq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-structmeta-derive" ,rust-structmeta-derive-0.2)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/frozenlib/structmeta")
+    (synopsis "Parse Rust's attribute arguments by defining a struct.")
+    (description "This package lets you parse Rust's attribute arguments by
+defining a struct.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-structmeta-0.1
   (package
+    (inherit rust-structmeta-0.2)
     (name "rust-structmeta")
     (version "0.1.6")
     (source (origin
@@ -65944,18 +65969,12 @@ and Jaro-Winkler.")
               (sha256
                (base32
                 "0alyl12b7fab8izrpliil73sxs1ivr5vm0pisallmxlb4zb44j0h"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-structmeta-derive" ,rust-structmeta-derive-0.1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/frozenlib/structmeta")
-    (synopsis "Parse Rust's attribute arguments by defining a struct.")
-    (description "This package lets you parse Rust's attribute arguments by
-defining a struct.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-structmeta-derive-0.2
   (package
