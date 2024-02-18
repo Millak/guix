@@ -65957,8 +65957,32 @@ and Jaro-Winkler.")
 defining a struct.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-structmeta-derive-0.2
+  (package
+    (name "rust-structmeta-derive")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "structmeta-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "005ybz4ha874w81pg15n00p01m9hir1dpl8p0352s1wpfgzwl2x6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/frozenlib/structmeta")
+    (synopsis "Derive macro for structmeta crate")
+    (description
+     "This package provides a derive macro for the structmeta crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-structmeta-derive-0.1
   (package
+    (inherit rust-structmeta-derive-0.2)
     (name "rust-structmeta-derive")
     (version "0.1.6")
     (source (origin
@@ -65968,17 +65992,11 @@ defining a struct.")
               (sha256
                (base32
                 "14vxik2m3dm7bwx016qfz062fwznkbq02fyq8vby545m0pj0nhi4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/frozenlib/structmeta")
-    (synopsis "Derive macro for structmeta crate")
-    (description "This package lets you parse Rust's attribute arguments by
-defining a struct.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-structopt-0.3
   (package
