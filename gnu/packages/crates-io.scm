@@ -65248,6 +65248,26 @@ UTF-8.")
     (description "This package provides a static string buffer.")
     (license license:boost1.0)))
 
+(define-public rust-stream-assert-0.1
+  (package
+    (name "rust-stream-assert")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stream_assert" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15jbd1wzd1pl7mc7wkhrcnj5km4bv51gng664w23y0f9ff56gavz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3))))
+    (home-page "https://codeberg.org/jplatte/stream_assert")
+    (synopsis "Macros to simplify testing of `Stream` based APIs")
+    (description "This package provides macros to simplify testing of
+`Stream` based APIs.")
+    (license license:mpl2.0)))
+
 (define-public rust-streaming-decompression-0.1
   (package
     (name "rust-streaming-decompression")
