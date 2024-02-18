@@ -68786,6 +68786,28 @@ UTF-8.")
     (description "This package provides a static string buffer.")
     (license license:boost1.0)))
 
+(define-public rust-str-stack-0.1
+  (package
+    (name "rust-str-stack")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "str_stack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sxl8xd8kiaffsryqpfwcb02lnd3djfin7gf38ag5980908vd4ch"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Stebalien/str_stack")
+    (synopsis "String allocator for allocating many write-once strings")
+    (description
+     "This package provides a string allocator for allocating many write-once
+strings.  This library is primarily useful for parsing where you need to
+repeatedly build many strings, use them, and then throw them away.  Instead of
+allocating many independent strings, this library will put them all in the same
+buffer.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-stream-assert-0.1
   (package
     (name "rust-stream-assert")
