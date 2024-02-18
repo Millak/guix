@@ -54122,6 +54122,29 @@ reference counting.")
      "This package provides a weird alternative to @code{Arc<RwLock<T>>}.")
     (license license:mpl2.0)))
 
+(define-public rust-readlock-tokio-0.1
+  (package
+    (name "rust-readlock-tokio")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "readlock-tokio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zc356rp6x0imb4rq2jyq238lv065h4gnyr7zsh3c6aj0s4kd8zv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rclite" ,rust-rclite-0.2)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/jplatte/readlock")
+    (synopsis "Weird alternative to Arc<RwLock<T>> using tokio's RwLock")
+    (description
+     "This package provides a weird alternative to Arc<@code{RwLock<T>>},
+using tokio's @code{RwLock}")
+    (license license:mpl2.0)))
+
 (define-public rust-recycler-0.1
   (package
     (name "rust-recycler")
