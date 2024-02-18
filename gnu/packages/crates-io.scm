@@ -20734,34 +20734,6 @@ Emacs' support for dynamic modules.")
      "This crate provides an implementation of RFC 5322 email messages.")
     (license license:expat)))
 
-(define-public rust-lettre-email-0.9
-  (package
-    (name "rust-lettre-email")
-    (version "0.9.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lettre_email" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1mar4njchjd33q7s47r43njjj8farkb78f8ica77jj6gil7lh0px"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.10)
-        ("rust-email" ,rust-email-0.0.20)
-        ("rust-lettre" ,rust-lettre-0.9)
-        ("rust-mime" ,rust-mime-0.3)
-        ("rust-time" ,rust-time-0.1)
-        ("rust-uuid" ,rust-uuid-0.7))))
-    (home-page "https://github.com/lettre/lettre")
-    (synopsis "Mailer library for Rust")
-    (description "Lettre is a mailer library for Rust.  It provides multiple
-transport methods, unicode support, secure delivery with SMTP using encryption
-and authentication, easy email builders, and async support.")
-    (license license:expat)))
-
 (define-public rust-emojis-0.5
   (package
     (name "rust-emojis")
@@ -33312,6 +33284,34 @@ requires non-const function calls to be computed.")
     (synopsis "Rust email client")
     (description "lettre is an email client for Rust programs allowing easily
 sending emails from Rust applications.")
+    (license license:expat)))
+
+(define-public rust-lettre-email-0.9
+  (package
+    (name "rust-lettre-email")
+    (version "0.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lettre_email" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mar4njchjd33q7s47r43njjj8farkb78f8ica77jj6gil7lh0px"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-email" ,rust-email-0.0.20)
+        ("rust-lettre" ,rust-lettre-0.9)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-uuid" ,rust-uuid-0.7))))
+    (home-page "https://github.com/lettre/lettre")
+    (synopsis "Mailer library for Rust")
+    (description "Lettre is a mailer library for Rust.  It provides multiple
+transport methods, unicode support, secure delivery with SMTP using encryption
+and authentication, easy email builders, and async support.")
     (license license:expat)))
 
 (define-public rust-levenshtein-1
