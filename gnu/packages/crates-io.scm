@@ -37775,25 +37775,6 @@ proofs.  It automates the Fiat-Shamir transform, so that by using Merlin,
 non-interactive protocols can be implemented as if they were interactive.")
     (license license:expat)))
 
-(define-public rust-thousands-0.2
-  (package
-    (name "rust-thousands")
-    (version "0.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "thousands" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0848gnkn7ah51lrx15z9zmn701ipn6gc4xbk4kfdlfahkypkpxiv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t))
-    (home-page "https://github.com/tov/thousands-rs")
-    (synopsis "Adds digit separators to numerals, configurably.")
-    (description "This package provides thousand separators for numerals.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-twox-hash-1
   (package
     (name "rust-twox-hash")
@@ -70313,6 +70294,25 @@ handle Unicode characters correctly.")
     (synopsis "Implementation detail of the thiserror crate")
     (description "This package provides an implementation detail of the
 @code{thiserror} crate.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-thousands-0.2
+  (package
+    (name "rust-thousands")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "thousands" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0848gnkn7ah51lrx15z9zmn701ipn6gc4xbk4kfdlfahkypkpxiv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/tov/thousands-rs")
+    (synopsis "Adds digit separators to numerals, configurably.")
+    (description "This package provides thousand separators for numerals.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-thread-id-4
