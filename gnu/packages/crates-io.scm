@@ -18929,6 +18929,27 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
 type.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-deadpool-runtime-0.1
+  (package
+    (name "rust-deadpool-runtime")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deadpool-runtime" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j9zmm37z6m4fnkf40z6qwidi4z1gwk0piqzx7yz6riazrjakpv3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/bikeshedder/deadpool")
+    (synopsis "Dead simple async pool utitities for sync managers")
+    (description "This package provides dead simple async pool utitities
+for sync managers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-debug-helper-0.3
   (package
     (name "rust-debug-helper")
