@@ -2211,8 +2211,47 @@ support for added entropy.")
      "ECIES on Twisted Edwards Curve25519 using AES-GCM and HKDF-SHA256.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ed25519-2
+  (package
+    (name "rust-ed25519")
+    (version "2.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ed25519" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lydzdf26zbn82g7xfczcac9d7mzm3qgx934ijjrd5hjpjx32m8i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-pkcs8" ,rust-pkcs8-0.10)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-ed25519-dalek" ,rust-ed25519-dalek-2)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-ring-compat" ,rust-ring-compat-0.8))))
+    (home-page "https://github.com/RustCrypto/signatures/tree/master/ed25519")
+    (synopsis "Edwards Digital Signature Algorithm over Curve25519")
+    (description
+      "EdDSA over Curve25519 is specified in RFC 8032.  This package
+contains an ed25519::Signature type which other packages can use in
+conjunction with the signature::Signer and signature::Verifier traits.
+It doesn't contain an implementation of Ed25519.
+
+These traits allow packages which produce and consume Ed25519 signatures
+to be written abstractly in such a way that different signer/verifier
+providers can be plugged in, enabling support for using different Ed25519
+implementations, including HSMs or Cloud KMS services.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ed25519-1
   (package
+    (inherit rust-ed25519-2)
     (name "rust-ed25519")
     (version "1.5.3")
     (source (origin
@@ -2234,20 +2273,7 @@ support for added entropy.")
        (("rust-bincode" ,rust-bincode-1)
         ("rust-ed25519-dalek" ,rust-ed25519-dalek-1)
         ("rust-hex-literal" ,rust-hex-literal-0.3)
-        ("rust-rand-core" ,rust-rand-core-0.5))))
-    (home-page "https://github.com/RustCrypto/signatures/tree/master/ed25519")
-    (synopsis "Edwards Digital Signature Algorithm (EdDSA) over Curve25519")
-    (description
-      "EdDSA over Curve25519 is specified in RFC 8032.  This package contains
-an ed25519::Signature type which other packages can use in conjunction with
-the signature::Signer and signature::Verifier traits It doesn't contain an
-implementation of Ed25519.
-
-These traits allow packages which produce and consume Ed25519 signatures to be
-written abstractly in such a way that different signer/verifier providers can
-be plugged in, enabling support for using different Ed25519 implementations,
-including HSMs or Cloud KMS services.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-rand-core" ,rust-rand-core-0.5))))))
 
 (define-public rust-ed25519-compact-2
   (package
