@@ -74129,6 +74129,21 @@ a C API.")
      "This Rust library lets you set environment variables temporarily.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-temp-env-0.2
+  (package
+    (inherit rust-temp-env-0.3)
+    (name "rust-temp-env")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "temp-env" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mxbfwcrbzgplf5ixs4n2xsl3pqazna25h2kfjwc9y6xq8v72425"))))
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))))
+
 (define-public rust-temp-testdir-0.2
   (package
     (name "rust-temp-testdir")
