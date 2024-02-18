@@ -22593,6 +22593,31 @@ like Don libes expect.")
     (description "Add observability to your Rust types!")
     (license license:mpl2.0)))
 
+(define-public rust-eyeball-im-0.4
+  (package
+    (name "rust-eyeball-im")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "eyeball-im" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pb2dmqji80hj1c7skk5pg0w64lsqaanmm8ngf3fa2v7v4lsn7q2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-imbl" ,rust-imbl-2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-stream-assert" ,rust-stream-assert-0.1))))
+    (home-page "https://github.com/jplatte/eyeball")
+    (synopsis "Observable collections based on the `im` crate")
+    (description "Observable collections based on the `im` crate.")
+    (license license:mpl2.0)))
+
 (define-public rust-eyre-0.6
   (package
     (name "rust-eyre")
