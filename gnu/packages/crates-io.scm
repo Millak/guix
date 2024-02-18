@@ -16254,28 +16254,6 @@ all the formatting features of the format! macro, except for the fill
 character.")
     (license license:asl2.0)))
 
-(define-public rust-rusticata-macros-4
-  (package
-    (name "rust-rusticata-macros")
-    (version "4.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rusticata-macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "03dmfxhgwzpm1360iwcpcg3y18ddgya0i0hc599am212pdvj7ib5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-nom" ,rust-nom-7))))
-    (home-page "https://github.com/rusticata/rusticata-macros")
-    (synopsis "Helper macros for Rusticata")
-    (description "Helper macros for Rusticata.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-cssparser-0.29
   (package
     (name "rust-cssparser")
@@ -57811,6 +57789,28 @@ rustc compiler.")
        ((#:cargo-inputs cargo-inputs)
         `(("rust-failure" ,rust-failure-0.1)
           ,@(alist-delete "rust-anyhow" cargo-inputs)))))))
+
+(define-public rust-rusticata-macros-4
+  (package
+    (name "rust-rusticata-macros")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rusticata-macros" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "03dmfxhgwzpm1360iwcpcg3y18ddgya0i0hc599am212pdvj7ib5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nom" ,rust-nom-7))))
+    (home-page "https://github.com/rusticata/rusticata-macros")
+    (synopsis "Helper macros for Rusticata")
+    (description "Helper macros for Rusticata.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-rustix-0.38
   (package
