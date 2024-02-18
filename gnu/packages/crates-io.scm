@@ -29923,6 +29923,45 @@ variant of this library is available separately as @code{im}.")
     (description "This package provides a minimal terminfo libary.")
     (license license:asl2.0)))
 
+(define-public rust-imbl-2
+  (package
+    (name "rust-imbl")
+    (version "2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "imbl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11bhchs0d1bbbmr8ari4y4d62vqxs7xg4fkhjlhgbv98h0n193cp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-bitmaps" ,rust-bitmaps-3)
+                       ("rust-imbl-sized-chunks" ,rust-imbl-sized-chunks-0.1)
+                       ("rust-proptest" ,rust-proptest-1)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.6)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-refpool" ,rust-refpool-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs
+       (("rust-metrohash" ,rust-metrohash-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-proptest-derive" ,rust-proptest-derive-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/jneem/imbl")
+    (synopsis "Immutable collection datatypes")
+    (description "This crate provides immutable collection datatypes.")
+    (license license:mpl2.0)))
+
 (define-public rust-imbl-sized-chunks-0.1
   (package
     (name "rust-imbl-sized-chunks")
