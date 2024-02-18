@@ -246,6 +246,7 @@ external dependencies.")
             jansson
             libarchive
             libtirpc
+            libxcrypt
             linux-pam
             lmdb
             mit-krb5
