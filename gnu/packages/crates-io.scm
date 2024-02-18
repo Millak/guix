@@ -45928,6 +45928,34 @@ system for OpenSSL.")
      "Extra FFI bindings to OpenSSL that require a C shim.")
     (license license:expat)))
 
+(define-public rust-opentelemetry-0.21
+  (package
+    (name "rust-opentelemetry")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "opentelemetry" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12jfmyx8k9q2sjlx4wp76ddzaf94i7lnkliv1c9mj164bnd36chy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-sink" ,rust-futures-sink-0.3)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-urlencoding" ,rust-urlencoding-2))))
+    (home-page "https://github.com/open-telemetry/opentelemetry-rust")
+    (synopsis "Metrics collection and distributed tracing framework")
+    (description
+     "This package provides a metrics collection and distributed tracing
+framework.")
+    (license license:asl2.0)))
+
 (define-public rust-opml-1
   (package
     (name "rust-opml")
