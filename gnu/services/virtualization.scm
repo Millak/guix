@@ -36,6 +36,7 @@
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
   #:use-module (gnu services dbus)
+  #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services ssh)
   #:use-module (gnu services)
@@ -1208,6 +1209,11 @@ authpriv.*;auth.info                    /var/log/secure
                      (service openssh-service-type
                               (openssh-configuration
                                (openssh openssh-sans-x)))
+
+                     ;; Run GC once per hour.
+                     (simple-service 'perdiodic-gc mcron-service-type
+                                     (list #~(job "12 * * * *"
+                                                  "guix gc -F 2G")))
 
                      (modify-services %base-services
                        ;; By default, the secret service introduces a
