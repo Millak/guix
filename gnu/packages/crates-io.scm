@@ -5592,6 +5592,43 @@ film grain data.")
     (description "This crate provides casts and checked casts.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-backoff-0.4
+  (package
+    (name "rust-backoff")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "backoff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h80d9xn5wngxdgza2m8w4x1kyhk0x6k9ydvsj50j2pcn6fdnbdn"))
+       (modules '((guix build utils)))
+       ;; XXX: Doctest hangs for no apparent reason.
+       (snippet '(substitute* "src/lib.rs"
+                              (("```rust\n")
+                               "```rust,no_run\n")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-instant" ,rust-instant-0.1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/ihrwein/backoff")
+    (synopsis "Retry operations with exponential backoff policy")
+    (description "Retry operations with exponential backoff policy.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-backon-0.4
   (package
     (name "rust-backon")
