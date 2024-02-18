@@ -4768,6 +4768,40 @@ Digital Signature Algorithm} (ECDSA).")
         ;; build dependencies
         ("rust-cc" ,rust-cc-1))))))
 
+(define-public rust-ring-compat-0.8
+  (package
+    (name "rust-ring-compat")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ring-compat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m2vvmbg607f55afx75b9kxbyx6b5wqvhhfv2445z08b2np7pknc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-ecdsa" ,rust-ecdsa-0.16)
+                       ("rust-ed25519" ,rust-ed25519-2)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-p256" ,rust-p256-0.13)
+                       ("rust-p384" ,rust-p384-0.13)
+                       ("rust-pkcs8" ,rust-pkcs8-0.10)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-signature" ,rust-signature-2))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.4))))
+    (home-page "https://github.com/RustCrypto/ring-compat")
+    (synopsis "RustCrypto trait and ring crypto algorithm compatibility")
+    (description
+     "This package provides compatibility for using @code{RustCrypto}
+traits with cryptographic algorithm implementations from @code{ring}.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ripemd-0.1
   (package
     (name "rust-ripemd")
