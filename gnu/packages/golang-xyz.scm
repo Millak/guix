@@ -52,6 +52,10 @@
 ;;;
 ;;; Code:
 
+;;;
+;;; Libraries:
+;;;
+
 (define-public go-github-com-a8m-envsubst
   (package
     (name "go-github-com-a8m-envsubst")
@@ -1046,6 +1050,24 @@ CPU quota.")
      (substitute-keyword-arguments
          (package-arguments go-github-com-op-go-logging)
        ((#:import-path _) "gopkg.in/op/go-logging.v1")))))
+
+;;;
+;;; Executables:
+;;;
+
+(define-public go-pixelmatch
+  (package
+    (inherit go-github-com-orisano-pixelmatch)
+    (name "go-pixelmatch")
+    (arguments
+     (list
+      #:import-path "github.com/orisano/pixelmatch/cmd/pixelmatch"
+      #:unpack-path "github.com/orisano/pixelmatch"
+      #:install-source? #f))
+    (synopsis "Pixel-level image comparison command")
+    (description
+     "This package provides a CLI build from the
+go-github-com-orisano-pixelmatch source.")))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
