@@ -2617,8 +2617,31 @@ challenge lists, respond to Basic and Digest challenges.  It is likely to be
 extended with server support and additional auth schemes.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-http-body-1
+  (package
+    (name "rust-http-body")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "http-body" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hyn8n3iadrbwq8y0p1rl1275s4nm49bllw5wji29g4aa3dqbb0w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-http" ,rust-http-1))))
+    (home-page "https://github.com/hyperium/http-body")
+    (synopsis "Asynchronous, streaming, HTTP request or response body")
+    (description
+     "This package provides a trait representing an asynchronous, streaming,
+HTTP request or response body.")
+    (license license:expat)))
+
 (define-public rust-http-body-0.4
   (package
+    (inherit rust-http-body-1)
     (name "rust-http-body")
     (version "0.4.6")
     (source
@@ -2628,18 +2651,11 @@ extended with server support and additional auth schemes.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1lmyjfk6bqk6k9gkn1dxq770sb78pqbqshga241hr5p995bb5skw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
-        ("rust-http" ,rust-http-0.2))))
-    (home-page "https://github.com/hyperium/http-body")
-    (synopsis "Asynchronous, streaming, HTTP request or response body")
-    (description
-     "This crate provides a trait representing an asynchronous, streaming,
-HTTP request or response body.")
-    (license license:expat)))
+        ("rust-http" ,rust-http-0.2))))))
 
 (define-public rust-http-body-0.3
   (package
