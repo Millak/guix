@@ -1578,6 +1578,42 @@ PEM-encodings commonly used to store keys and certificates at rest.")
     (description "This package provides a Rust parser for the TLS protocol.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-x509-cert-0.2
+  (package
+    (name "rust-x509-cert")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x509-cert" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "155f42vm6m7phn8w7s2wmk9vli3ws45dqpk5z3jilw0a04syj08k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-const-oid" ,rust-const-oid-0.9)
+                       ("rust-der" ,rust-der-0.7)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-spki" ,rust-spki-0.7)
+                       ("rust-tls-codec" ,rust-tls-codec-0.4))
+       #:cargo-development-inputs
+       (("rust-ecdsa" ,rust-ecdsa-0.16)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-p256" ,rust-p256-0.13)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rsa" ,rust-rsa-0.9)
+        ("rust-rstest" ,rust-rstest-0.18)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/x509-cert")
+    (synopsis "X.509 Public Key Infrastructure Certificate format in Rust")
+    (description
+     "This package provides a pure Rust implementation of the X.509
+Public Key Infrastructure Certificate format as described in RFC 5280.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-x509-parser-0.15
   (package
     (name "rust-x509-parser")
