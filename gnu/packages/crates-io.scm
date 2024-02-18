@@ -55618,6 +55618,33 @@ can handle huge texts and memory-incoherent edits with ease.")
      "This package provides a library for generic lossless syntax trees.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rpds-1
+  (package
+    (name "rust-rpds")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rpds" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "194hjbsicmgqi3dyllqrz09mmhh597m2j9l49lr16cyfscambqd0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-archery" ,rust-archery-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/orium/rpds")
+    (synopsis "Persistent data structures with structural sharing")
+    (description "This package provides support for fully persistent data
+structures with structural sharing.")
+    (license license:mpl2.0)))
+
 (define-public rust-rspec-1
   (package
     (name "rust-rspec")
@@ -56425,33 +56452,6 @@ console applications.")
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))))
-
-(define-public rust-rpds-1
-  (package
-    (name "rust-rpds")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rpds" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "194hjbsicmgqi3dyllqrz09mmhh597m2j9l49lr16cyfscambqd0"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-archery" ,rust-archery-1)
-                       ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-bincode" ,rust-bincode-1)
-        ("rust-criterion" ,rust-criterion-0.5)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-static-assertions" ,rust-static-assertions-1))))
-    (home-page "https://github.com/orium/rpds")
-    (synopsis "Persistent data structures with structural sharing")
-    (description "This package provides support for fully persistent data
-structures with structural sharing.")
-    (license license:mpl2.0)))
 
 (define-public rust-run-script-0.10
   (package
