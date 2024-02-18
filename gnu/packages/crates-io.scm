@@ -54102,6 +54102,26 @@ reference counting.")
 @code{rdrand} and @code{rdseed} instructions")
     (license license:isc)))
 
+(define-public rust-readlock-0.1
+  (package
+    (name "rust-readlock")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "readlock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18l0la7zxavbw1ppfigq84f994lyw65rbpl4hlf5gakd37kj7cyp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rclite" ,rust-rclite-0.2))))
+    (home-page "https://github.com/jplatte/readlock")
+    (synopsis "Weird alternative to Arc<RwLock<T>>")
+    (description
+     "This package provides a weird alternative to @code{Arc<RwLock<T>>}.")
+    (license license:mpl2.0)))
+
 (define-public rust-recycler-0.1
   (package
     (name "rust-recycler")
