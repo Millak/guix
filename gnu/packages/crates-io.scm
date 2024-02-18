@@ -31115,6 +31115,24 @@ stable toolchain.")
 Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ipnetwork-0.18
+  (package
+    (inherit rust-ipnetwork-0.20)
+    (name "rust-ipnetwork")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ipnetwork" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mfkcrw8dxys6vi9bpvk2x1dyc8qi5wvrpc8jqinnm43n4wxg220"))))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-ipnetwork-0.17
   (package
     (inherit rust-ipnetwork-0.20)
