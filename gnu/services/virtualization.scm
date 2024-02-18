@@ -1239,6 +1239,7 @@ authpriv.*;auth.info                    /var/log/secure
                                 (virtual-build-machine-name config)))
            (format 'compressed-qcow2)
            (partition-table-type 'mbr)
+           (volatile-root? #f)
            (shared-store? #f)
            (size %default-virtual-build-machine-image-size)
            (partitions (match (image-partitions base)
