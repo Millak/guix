@@ -50326,8 +50326,36 @@ both WASM and native applications")
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-pnet-datalink-0.34
+  (package
+    (name "rust-pnet-datalink")
+    (version "0.34.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pnet_datalink" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zlq1z3y6flpqh0x2yqczxvzavwpr3mlazbzjv9vnzh6y2mm8n5d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ipnetwork" ,rust-ipnetwork-0.20)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-netmap-sys" ,rust-netmap-sys-0.1)
+                       ("rust-pcap" ,rust-pcap-1)
+                       ("rust-pnet-base" ,rust-pnet-base-0.34)
+                       ("rust-pnet-sys" ,rust-pnet-sys-0.34)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/libpnet/libpnet")
+    (synopsis "Cross-platform, datalink layer networking")
+    (description
+     "This crate implements cross-platform, datalink layer networking.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pnet-datalink-0.27
   (package
+    (inherit rust-pnet-datalink-0.34)
     (name "rust-pnet-datalink")
     (version "0.27.2")
     (source
@@ -50337,22 +50365,15 @@ both WASM and native applications")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1iws7c2mf88ip43ccmr5p8r6kzb6lwsg3amgc4pvy8wx9nf1q02r"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ipnetwork" ,rust-ipnetwork-0.17)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-netmap-sys" ,rust-netmap-sys-0.1)
-        ("rust-pcap" ,rust-pcap-0.7)
-        ("rust-pnet-base" ,rust-pnet-base-0.27)
-        ("rust-pnet-sys" ,rust-pnet-sys-0.27)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/libpnet/libpnet")
-    (synopsis "Cross-platform, datalink layer networking")
-    (description
-     "This crate implements cross-platform, datalink layer networking.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-ipnetwork" ,rust-ipnetwork-0.17)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-netmap-sys" ,rust-netmap-sys-0.1)
+                       ("rust-pcap" ,rust-pcap-0.7)
+                       ("rust-pnet-base" ,rust-pnet-base-0.27)
+                       ("rust-pnet-sys" ,rust-pnet-sys-0.27)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-pnet-sys-0.34
   (package
