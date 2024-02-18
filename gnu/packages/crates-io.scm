@@ -4690,6 +4690,37 @@ multi-consumer channels.")
        (("rust-easy-parallel" ,rust-easy-parallel-3)
         ("rust-futures-lite" ,rust-futures-lite-1))))))
 
+(define-public rust-async-compat-0.2
+  (package
+    (name "rust-async-compat")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-compat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06s625ydwms36y4sn723mwq7s4bba2gmp9pq0y65s2gb3xy712pn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-blocking" ,rust-blocking-1)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-warp" ,rust-warp-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/smol-rs/async-compat")
+    (synopsis "Compatibility adapter between tokio and futures")
+    (description
+     "This package provides compatibility adapter between tokio and futures.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-compression-0.4
   (package
     (name "rust-async-compression")
