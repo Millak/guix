@@ -78341,6 +78341,35 @@ render properties.")
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.6))))))
 
+(define-public rust-tun-tap-0.1
+  (package
+    (name "rust-tun-tap")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tun-tap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0l5yp9xs5kyhzrkqfhnqjwj97ylzr5xd0g6jfp42miv7jd77liws"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=it_receives_packets"
+                            "--skip=it_sents_packets")
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-futures" ,rust-futures-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mio" ,rust-mio-0.6)
+                       ("rust-tokio-core" ,rust-tokio-core-0.1))
+       #:cargo-development-inputs (("rust-etherparse" ,rust-etherparse-0.9)
+                                   ("rust-serial-test" ,rust-serial-test-0.4)
+                                   ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/vorner/tuntap")
+    (synopsis "TUN/TAP interface wrapper")
+    (description "This package provides a TUN/TAP interface wrapper.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-twoway-0.2
   (package
     (name "rust-twoway")
