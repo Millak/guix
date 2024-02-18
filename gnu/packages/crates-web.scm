@@ -7451,3 +7451,44 @@ with webpki.")
 implementation of webview, a tiny cross-platform library to render web-based
 GUIs as desktop applications.")
     (license license:expat)))
+
+(define-public rust-wiremock-0.5
+  (package
+    (name "rust-wiremock")
+    (version "0.5.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wiremock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sf2adr5q3xqrj4sa89fmbr5vl3x51wb1cfp63fr1wrlmwzab8qk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-assert-json-diff" ,rust-assert-json-diff-2)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-deadpool" ,rust-deadpool-0.9)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-timer" ,rust-futures-timer-3)
+                       ("rust-http-types" ,rust-http-types-2)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-actix-rt" ,rust-actix-rt-2)
+                                   ("rust-async-std" ,rust-async-std-1)
+                                   ("rust-isahc" ,rust-isahc-1)
+                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-surf" ,rust-surf-2)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list curl openssl zlib))
+    (home-page "https://github.com/LukeMathWalker/wiremock-rs")
+    (synopsis "HTTP mocking to test Rust applications.")
+    (description "This package provides HTTP mocking to test Rust
+applications.")
+    (license (list license:expat license:asl2.0))))
