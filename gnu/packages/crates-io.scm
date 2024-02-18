@@ -32653,14 +32653,14 @@ that works on WASM too.")
 (define-public rust-integer-encoding-3
   (package
     (name "rust-integer-encoding")
-    (version "3.0.2")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "integer-encoding" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1f0mk7d694g2sz4my5zh7i5w4kijx5y16x6dip7fv0pazx013hch"))))
+        (base32 "00ng7jmv6pqwqc8w1297f768bn0spwwicdr7hb40baax00r3gc4b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
