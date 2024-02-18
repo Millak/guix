@@ -2353,8 +2353,27 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
                                    ("rust-sha2" ,rust-sha2-0.10)
                                    ("rust-sha3" ,rust-sha3-0.10))))))
 
+(define-public rust-fiat-crypto-0.2
+  (package
+    (name "rust-fiat-crypto")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fiat-crypto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10hkkkjynhibvchznkxx81gwxqarn9i5sgz40d6xxb8xzhsz8xhn"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/mit-plv/fiat-crypto")
+    (synopsis "Fiat-crypto generated Rust")
+    (description "This crate provides the extracted Rust code from the Coq
+@code{fiat-crypto} libraries.")
+    (license (list license:expat license:asl2.0 license:bsd-1))))
+
 (define-public rust-fiat-crypto-0.1
   (package
+    (inherit rust-fiat-crypto-0.2)
     (name "rust-fiat-crypto")
     (version "0.1.11")
     (source
@@ -2363,13 +2382,8 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
        (uri (crate-uri "fiat-crypto" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12gyr01z3bkahbxcrj2nsdq42qbqgq12w32dvpr6a7930i0qfxi1"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/mit-plv/fiat-crypto")
-    (synopsis "Fiat-crypto generated Rust")
-    (description "This crate provides the extracted Rust code from the Coq
-@code{fiat-crypto} libraries.")
-    (license (list license:expat license:asl2.0))))
+        (base32
+         "12gyr01z3bkahbxcrj2nsdq42qbqgq12w32dvpr6a7930i0qfxi1"))))))
 
 (define-public rust-ghash-0.5
   (package
