@@ -23136,6 +23136,33 @@ they follow.  Etcetera, on the other hand, gives you the choice.")
      "This package contains LLVM generated 256-bit integer intrinsics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-eui48-1
+  (package
+    (name "rust-eui48")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "eui48" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00cpf25kc3mxhqnahm0bw9xl19gr2pzc5g84dvkc4mwdbsn1hx48"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-regex" ,rust-regex-1)
+                       ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1))))
+    (home-page "https://github.com/abaumhauer/eui48")
+    (synopsis "Library to generate and parse IEEE EUI-48 and EUI-64")
+    (description
+     "This package provides a library to generate and parse IEEE EUI-48
+and EUI-64, also known as MAC-48 media access control addresses.  The
+IEEE claims trademarks on the names EUI-48 and EUI-64, in which EUI is an
+abbreviation for Extended Unique Identifier.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-evdev-0.12
   (package
     (name "rust-evdev")
