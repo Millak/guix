@@ -4430,6 +4430,30 @@ assertions on the result of your program's run.")
     (description "Macro for static assert types implement a trait or not")
     (license license:expat)))
 
+(define-public rust-assert-json-diff-2
+  (package
+    (name "rust-assert-json-diff")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "assert-json-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04mg3w0rh3schpla51l18362hsirl23q93aisws2irrj32wg5r27"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-version-sync" ,rust-version-sync-0.8))))
+    (home-page "https://github.com/davidpdrsn/assert-json-diff")
+    (synopsis "Easily compare two JSON values and get great output")
+    (description "This package lets you easily compare two JSON values
+and get great output.")
+    (license license:expat)))
+
 (define-public rust-assert-matches-1
   (package
     (name "rust-assert-matches")
