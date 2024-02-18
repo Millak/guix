@@ -16153,34 +16153,6 @@ feature flags.")
 number ``crunching``.")
     (license license:expat)))
 
-(define-public rust-rodio-0.15
-  (package
-    (name "rust-rodio")
-    (version "0.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rodio" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "07kkrx0hxfcqgkpg0lrh9355bj1rl0k65nwsk3qwdri6yvlkj2gc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-claxon" ,rust-claxon-0.4)
-                       ("rust-cpal" ,rust-cpal-0.13)
-                       ("rust-hound" ,rust-hound-3)
-                       ("rust-lewton" ,rust-lewton-0.10)
-                       ("rust-minimp3" ,rust-minimp3-0.5)
-                       ("rust-symphonia" ,rust-symphonia-0.4))
-       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.9))))
-    (native-inputs (list pkg-config))
-    (inputs (list alsa-lib))
-    (home-page "https://github.com/RustAudio/rodio")
-    (synopsis "Pure Rust audio playback library")
-    (description "Audio playback library written in pure Rust that supports
-many formats including AAC, FLAC, MP3, MP4 and WAV.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-cssparser-0.29
   (package
     (name "rust-cssparser")
@@ -55310,6 +55282,34 @@ MessagePack format.")
     (synopsis "Model a project roadmap as a directed acyclic graph")
     (description "Model a project roadmap as a directed acyclic graph.")
     (license license:expat-0)))
+
+(define-public rust-rodio-0.15
+  (package
+    (name "rust-rodio")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rodio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07kkrx0hxfcqgkpg0lrh9355bj1rl0k65nwsk3qwdri6yvlkj2gc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-claxon" ,rust-claxon-0.4)
+                       ("rust-cpal" ,rust-cpal-0.13)
+                       ("rust-hound" ,rust-hound-3)
+                       ("rust-lewton" ,rust-lewton-0.10)
+                       ("rust-minimp3" ,rust-minimp3-0.5)
+                       ("rust-symphonia" ,rust-symphonia-0.4))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.9))))
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib))
+    (home-page "https://github.com/RustAudio/rodio")
+    (synopsis "Pure Rust audio playback library")
+    (description "Audio playback library written in pure Rust that supports
+many formats including AAC, FLAC, MP3, MP4 and WAV.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-roff-0.2
   (package
