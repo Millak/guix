@@ -39716,8 +39716,40 @@ for Rust structs.")
 to merge two objects of the same type into one.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-merlin-3
+  (package
+    (name "rust-merlin")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "merlin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z9rh9jlpcs0i0cijbs6pcq26gl4qwz05y7zbnv7h2gwk4kqxhsq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-hex" ,rust-hex-0.3)
+                       ("rust-keccak" ,rust-keccak-0.1)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-curve25519-dalek-ng" ,rust-curve25519-dalek-ng-4)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+        ("rust-strobe-rs" ,rust-strobe-rs-0.5))))
+    (home-page "https://docs.rs/merlin")
+    (synopsis
+     "Composable proof transcripts for public-coin arguments of knowledge")
+    (description
+     "Merlin is a STROBE-based transcript construction for zero-knowledge
+proofs.  It automates the Fiat-Shamir transform, so that by using Merlin,
+non-interactive protocols can be implemented as if they were interactive.")
+    (license license:expat)))
+
 (define-public rust-merlin-2
   (package
+    (inherit rust-merlin-3)
     (name "rust-merlin")
     (version "2.0.0")
     (source
@@ -39735,15 +39767,7 @@ to merge two objects of the same type into one.")
          ("rust-hex" ,rust-hex-0.3)
          ("rust-keccak" ,rust-keccak-0.1)
          ("rust-rand-core" ,rust-rand-core-0.5)
-         ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://docs.rs/merlin")
-    (synopsis "Composable proof transcripts for public-coin arguments of
-knowledge")
-    (description
-     "Merlin is a STROBE-based transcript construction for zero-knowledge
-proofs.  It automates the Fiat-Shamir transform, so that by using Merlin,
-non-interactive protocols can be implemented as if they were interactive.")
-    (license license:expat)))
+         ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-metrics-macros-0.2
   (package
