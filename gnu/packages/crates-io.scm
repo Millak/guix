@@ -45850,6 +45850,34 @@ definitions compiled to support read+write async.")
 parallelism and safety in mind.")
     (license license:asl2.0)))
 
+(define-public rust-parse-display-derive-0.8
+  (package
+    (name "rust-parse-display-derive")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "parse-display-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hgkhjnk0xlaixql207p7vvg41vyq7y7gdqdijh8vxysr297hlb8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.7)
+                       ("rust-structmeta" ,rust-structmeta-0.2)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/frozenlib/parse-display")
+    (synopsis
+     "Procedural macro to implement Display and FromStr using common settings")
+    (description
+     "This package provides a procedural macro to implement @code{Display} and
+@code{FromStr} using common settings.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-parse-zoneinfo-0.3
   (package
     (name "rust-parse-zoneinfo")
