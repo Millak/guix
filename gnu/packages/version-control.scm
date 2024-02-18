@@ -2927,9 +2927,16 @@ email header.")
                ;; XXX: dnspython attempts to read /etc/resolv.conf when loading
                ;; resolver.py, which breaks the sanity check in dependent
                ;; packages.  This should rather be fixed in dnspython.
-               (delete 'sanity-check))))
+               (delete 'sanity-check)
+               ;; This ensures git is present when called.
+               (add-after 'unpack 'hardcode-git-bin
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (find-files "b4" "\\.py$")
+                     (("\\['git'")
+                      (string-append
+                       "['" (search-input-file inputs "bin/git") "'"))))))))
     (inputs
-     (list python-dkimpy python-dnspython python-requests))
+     (list git-minimal python-dkimpy python-dnspython python-requests))
     (propagated-inputs
      (list patatt))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
