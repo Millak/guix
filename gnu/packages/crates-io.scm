@@ -22618,6 +22618,35 @@ like Don libes expect.")
     (description "Observable collections based on the `im` crate.")
     (license license:mpl2.0)))
 
+(define-public rust-eyeball-im-util-0.5
+  (package
+    (name "rust-eyeball-im-util")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "eyeball-im-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q4r3qi46s8mnvn2y9pk322y4qdl4j81pa53q7xg4c9zncma5zn0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-eyeball-im" ,rust-eyeball-im-0.4)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-imbl" ,rust-imbl-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs
+       (("rust-eyeball" ,rust-eyeball-0.8)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-stream-assert" ,rust-stream-assert-0.1)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/jplatte/eyeball")
+    (synopsis "Helpful utilities for `eyeball-im`")
+    (description "Helpful utilities for `eyeball-im`.")
+    (license license:mpl2.0)))
+
 (define-public rust-eyre-0.6
   (package
     (name "rust-eyre")
