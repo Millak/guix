@@ -1816,8 +1816,49 @@ re-exported cipher crate.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-cipher" ,rust-cipher-0.2))))))
 
+(define-public rust-curve25519-dalek-4
+  (package
+    (name "rust-curve25519-dalek")
+    (version "4.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "curve25519-dalek" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j7kqchcgycs4a11gvlda93h9w2jr05nn4hjpfyh2kn94a4pnrqa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-curve25519-dalek-derive" ,rust-curve25519-dalek-derive-0.1)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-ff" ,rust-ff-0.13)
+        ("rust-fiat-crypto" ,rust-fiat-crypto-0.2)
+        ("rust-group" ,rust-group-0.13)
+        ("rust-platforms" ,rust-platforms-3)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-hex" ,rust-hex-0.4)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-core" ,rust-rand-core-0.6)
+                                   ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://doc.dalek.rs/curve25519_dalek")
+    (synopsis "Group operations on ristretto255 and Curve25519")
+    (description
+     "This package provides a pure-Rust implementation of group operations
+on ristretto255 and Curve25519.")
+    (license license:bsd-3)))
+
 (define-public rust-curve25519-dalek-3
   (package
+    (inherit rust-curve25519-dalek-4)
     (name "rust-curve25519-dalek")
     (version "3.2.0")
     (source
@@ -1827,7 +1868,6 @@ re-exported cipher crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0q8v97275cy6v4ly6y2qwv9a8phnpjg9sy8kv7r6mgdjfacxz7qb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
@@ -1843,13 +1883,7 @@ re-exported cipher crate.")
         ("rust-criterion" ,rust-criterion-0.3)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-rand" ,rust-rand-0.7)
-        ("rust-sha2" ,rust-sha2-0.9))))
-    (home-page "https://dalek.rs/curve25519-dalek")
-    (synopsis "Group operations on ristretto255 and Curve25519")
-    (description
-     "This package provides a pure-Rust implementation of group operations on
-ristretto255 and Curve25519.")
-    (license license:bsd-3)))
+        ("rust-sha2" ,rust-sha2-0.9))))))
 
 (define-public rust-curve25519-dalek-derive-0.1
   (package
