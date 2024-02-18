@@ -18901,8 +18901,40 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
      "This crate is a framework for writing D-Bus method handlers (legacy).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-deadpool-0.9
+  (package
+    (name "rust-deadpool")
+    (version "0.9.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deadpool" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vl5qg5pfx0c9c41g299clfdgz9la6z8361aycb21cia1zwy07s2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-deadpool-runtime" ,rust-deadpool-runtime-0.1)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-retain-mut" ,rust-retain-mut-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-config" ,rust-config-0.13)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-itertools" ,rust-itertools-0.10)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/bikeshedder/deadpool")
+    (synopsis "Dead simple async pool")
+    (description
+     "Deadpool is a dead simple async pool for connections and objects
+of any type.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-deadpool-0.7
   (package
+    (inherit rust-deadpool-0.9)
     (name "rust-deadpool")
     (version "0.7.0")
     (source
@@ -18912,7 +18944,6 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0vb18xvhmyg6gvvq5vrcqmy4x26ryrmkqpsgwmb4bvkav1wn24ix"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -18921,13 +18952,7 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
         ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/bikeshedder/deadpool")
-    (synopsis "Dead simple async pool")
-    (description
-     "Deadpool is a dead simple async pool for connections and objects of any
-type.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-deadpool-runtime-0.1
   (package
