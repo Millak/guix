@@ -16203,31 +16203,6 @@ many formats including AAC, FLAC, MP3, MP4 and WAV.")
      "@code{roxmltree} represents an XML 1.0 document as a read-only tree.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rtoolbox-0.0.1
-  (package
-    (name "rust-rtoolbox")
-    (version "0.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rtoolbox" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0jjjngwn1fa39kschc8zb4hynp4b0jdind7z225cph7m2k2j4kh3"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "")
-    (synopsis "Utility functions for other crates")
-    (description
-     "This package provides utility functions for other crates with no
-backwards compatibility guarantees.")
-    (license license:asl2.0)))
-
 (define-public rust-cssparser-0.29
   (package
     (name "rust-cssparser")
@@ -56420,6 +56395,31 @@ character.")
 resources (links, addresses, arp tables, route tables) via the netlink route
 protocol.")
     (license license:expat)))
+
+(define-public rust-rtoolbox-0.0.1
+  (package
+    (name "rust-rtoolbox")
+    (version "0.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rtoolbox" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jjjngwn1fa39kschc8zb4hynp4b0jdind7z225cph7m2k2j4kh3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "")
+    (synopsis "Utility functions for other crates")
+    (description
+     "This package provides utility functions for other crates with no
+backwards compatibility guarantees.")
+    (license license:asl2.0)))
 
 (define-public rust-rug-1
   (package
