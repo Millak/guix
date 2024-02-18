@@ -19033,6 +19033,27 @@ of any type.")
 for sync managers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-deadpool-sync-0.1
+  (package
+    (name "rust-deadpool-sync")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deadpool-sync" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02habnbf9gna5yg5parpfbgz1342mzyxmd5lcz7f9jhk9i4p1nzq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-deadpool-runtime" ,rust-deadpool-runtime-0.1)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/bikeshedder/deadpool")
+    (synopsis "Dead simple async pool utitities for sync managers")
+    (description "This package provides dead simple async pool utitities
+for sync managers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-debug-helper-0.3
   (package
     (name "rust-debug-helper")
