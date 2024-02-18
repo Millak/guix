@@ -268,6 +268,33 @@ quantiles over an unbounded data stream within low memory and CPU bounds.")
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
+(define-public go-github-com-coocood-freecache
+  (package
+    (name "go-github-com-coocood-freecache")
+    (version "1.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coocood/freecache")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iw0s07qy8g1lncwl524c524wh56djl0vn6i3bm91cnwzav7ihjl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/coocood/freecache"))
+    (propagated-inputs (list go-github-com-cespare-xxhash))
+    (home-page "https://github.com/coocood/freecache")
+    (synopsis "Caching library for Go")
+    (description
+     "This library provides caching capabilities for Go with no garbage
+collection overhead and high concurrent performance.  An unlimited number of
+objects can be cached in memory without increased latency or degraded
+throughput.")
+    (license license:expat)))
+
 (define-public go-github-com-coreos-go-systemd-activation
   (package
     (name "go-github-com-coreos-go-systemd-activation")
