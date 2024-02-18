@@ -46979,8 +46979,39 @@ usability when dealing with Rust Options.")
 PartialOrd types, like floats.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ordered-float-4
+  (package
+    (name "rust-ordered-float")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ordered-float" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kjqcvvbcsibbx3hnj7ag06bd9gv2zfi5ja6rgyh2kbxbh3zfvd7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-borsh" ,rust-borsh-1)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-proptest" ,rust-proptest-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rkyv" ,rust-rkyv-0.7)
+                       ("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-speedy" ,rust-speedy-0.8))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/reem/rust-ordered-float")
+    (synopsis "Wrappers for total ordering on floats")
+    (description
+     "This package provides wrappers for total ordering on floats in Rust.")
+    (license license:expat)))
+
 (define-public rust-ordered-float-3
   (package
+    (inherit rust-ordered-float-4)
     (name "rust-ordered-float")
     (version "3.4.0")
     (source (origin
@@ -46990,7 +47021,6 @@ PartialOrd types, like floats.")
               (sha256
                (base32
                 "1gr31ksgbqariv6hz3s5bc15a5vh4k65dyn8m7j59lhnji0b2knq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
                        ("rust-bytemuck" ,rust-bytemuck-1)
@@ -47000,12 +47030,8 @@ PartialOrd types, like floats.")
                        ("rust-rkyv" ,rust-rkyv-0.7)
                        ("rust-schemars" ,rust-schemars-0.8)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-speedy" ,rust-speedy-0.8))))
-    (home-page "https://github.com/reem/rust-ordered-float")
-    (synopsis "Wrappers for total ordering on floats")
-    (description
-     "This package provides wrappers for total ordering on floats in Rust.")
-    (license license:expat)))
+                       ("rust-speedy" ,rust-speedy-0.8))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-ordered-float-2
   (package
