@@ -4207,13 +4207,22 @@ files or Python scripts that define a list of migration steps.")
        (method url-fetch)
        (uri (pypi-uri "mysqlclient" version))
        (sha256
-        (base32
-         "1rf5l8hazs3v18hmcrm90z3hi9wxv553ipwd5l6kj8j7l6p7abzv"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;XXX: requires a live database
-    (inputs
-     `(("mysql-dev" ,mariadb "dev")))
-    (home-page "https://github.com/PyMySQL/mysqlclient-python")
+        (base32 "1rf5l8hazs3v18hmcrm90z3hi9wxv553ipwd5l6kj8j7l6p7abzv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'fix-test
+                 (lambda _
+                   (substitute* "tests/test_MySQLdb_times.py"
+                     (("^import mock")
+                      "from unittest import mock")))))
+           #:test-flags
+           #~'("tests/test__mysql.py"   ;tests not needing a live db
+               "tests/test_MySQLdb_times.py")))
+    (native-inputs (list python-pytest))
+    (inputs (list mariadb-connector-c))
+    (home-page "https://github.com/PyMySQL/mysqlclient")
     (synopsis "MySQLdb is an interface to the popular MySQL database server for Python")
     (description "MySQLdb is an interface to the popular MySQL database server
 for Python.  The design goals are:
