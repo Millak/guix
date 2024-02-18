@@ -8832,7 +8832,7 @@ library.")
        (sha256
         (base32 "07f6l9ka63dnc85npxq5g7bn1ja7lad0w2wixqdlyabdvc4l2hp5"))))
     (propagated-inputs (modify-inputs (package-propagated-inputs libxml++)
-                         (append glibmm-2.64)))))
+                         (append glibmm-2.66)))))
 
 ;; This is the last release providing the 2.6 API, hence the name.
 (define-public libxml++-2
@@ -8850,7 +8850,7 @@ library.")
        (sha256
         (base32 "05slsbhc25z7kwlc28ydl3dfyp7rgbmz1fxj9z6gcvpg3hkghj2m"))))
     (propagated-inputs (modify-inputs (package-propagated-inputs libxml++)
-                         (append glibmm-2.64)))))
+                         (append glibmm-2.66)))))
 
 (define-public gdm
   (package

@@ -1736,7 +1736,7 @@ text rendering library.")
        (sha256
         (base32 "0ya3yb36d745m5ccgwhgxl8xjh82hiys3lvk08zqyq0s8x6y03s1"))))
     (propagated-inputs
-     (list cairomm-1.14 glibmm-2.64 pango))))
+     (list cairomm-1.14 glibmm-2.66 pango))))
 
 (define-public atkmm
   (package
@@ -1804,7 +1804,7 @@ text rendering library.")
         (base32 "1b8vycqzr3lfvk2l73f4kk74hj48081zbh9r1r2ilr3h8xh7cs0i"))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs atkmm)
-       (replace "glibmm" glibmm-2.64)))))
+       (replace "glibmm" glibmm-2.66)))))
 
 (define-public gtkmm
   (package
@@ -1914,7 +1914,7 @@ tutorial.")
      (strip-keyword-arguments
       '(#:configure-flags) (package-arguments gtkmm)))
     (propagated-inputs
-     (list atkmm-2.28 cairomm-1.14 glibmm-2.64 gtk+-2 pangomm-2.46))))
+     (list atkmm-2.28 cairomm-1.14 glibmm-2.66 gtk+-2 pangomm-2.46))))
 
 (define-public gtksourceviewmm
   (package

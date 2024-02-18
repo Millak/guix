@@ -995,11 +995,11 @@ libraries.")
 useful for C++.")
     (license license:lgpl2.1+)))
 
- (define-public glibmm-2.64
+ (define-public glibmm-2.66
    (package
     (inherit glibmm)
     (name "glibmm")
-    (version "2.64.5")
+    (version "2.66.6")
     (source
      (origin
        (method url-fetch)
@@ -1008,7 +1008,7 @@ useful for C++.")
                        (version-major+minor version)
                        "/glibmm-" version ".tar.xz"))
        (sha256
-        (base32 "11m37sbx0i18cl17d0fkq0bik4bbzlb5n8kcl651jhci5ipci3sh"))))
+        (base32 "0bqm9vqwhas69q6n89wd2xgxvrlkpxra13dzsx8m67hqk0jp8n2k"))))
      (propagated-inputs
       (modify-inputs (package-propagated-inputs glibmm)
         (replace "libsigc++" libsigc++-2)))))

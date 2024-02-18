@@ -210,7 +210,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
       ;; and "glib" in Requires
       (propagated-inputs
        (list glib
-             glibmm-2.64
+             glibmm-2.66
              libserialport
              libusb
              libftdi

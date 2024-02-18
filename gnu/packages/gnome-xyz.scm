@@ -1560,7 +1560,7 @@ that are completely black and completely white.")
     (native-inputs
      (list gettext-minimal pkg-config))
     (inputs
-     (list acl attr glibmm-2.64 gtkmm-3 nautilus))
+     (list acl attr glibmm-2.66 gtkmm-3 nautilus))
     (home-page "https://rofi.roger-ferrer.org/eiciel")
     (synopsis "Manage extended file attributes")
     (description "Eiciel is a plugin for nautilus to graphically edit ACL and
