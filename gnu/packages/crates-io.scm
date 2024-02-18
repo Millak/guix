@@ -55618,6 +55618,29 @@ can handle huge texts and memory-incoherent edits with ease.")
      "This package provides a library for generic lossless syntax trees.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rpassword-7
+  (package
+    (name "rust-rpassword")
+    (version "7.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rpassword" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08l3jbjwpsj6awm4lacm2bcj3cn9jhy4j6q21n68k49lmdiwyy36"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rtoolbox" ,rust-rtoolbox-0.0.1)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/conradkleinespel/rpassword")
+    (synopsis "Read passwords in Rust console applications")
+    (description "This package provides a crate for reading passwords in
+console applications.")
+    (license license:asl2.0)))
+
 (define-public rust-rpassword-6
   (package
     (inherit rust-rpassword-7)
@@ -56429,29 +56452,6 @@ protocol.")
     (description "This is a Rust library of arbitrary-precision integers, rational,
 floating-point, and complex numbers based on GMP, MPFR and MPC.")
     (license license:lgpl3+)))
-
-(define-public rust-rpassword-7
-  (package
-    (name "rust-rpassword")
-    (version "7.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "rpassword" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "08l3jbjwpsj6awm4lacm2bcj3cn9jhy4j6q21n68k49lmdiwyy36"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-rtoolbox" ,rust-rtoolbox-0.0.1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/conradkleinespel/rpassword")
-    (synopsis "Read passwords in Rust console applications")
-    (description "This package provides a crate for reading passwords in
-console applications.")
-    (license license:asl2.0)))
 
 (define-public rust-run-script-0.10
   (package
