@@ -4201,26 +4201,19 @@ files or Python scripts that define a list of migration steps.")
 (define-public python-mysqlclient
   (package
     (name "python-mysqlclient")
-    (version "2.0.1")
+    (version "2.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mysqlclient" version))
        (sha256
-        (base32 "1rf5l8hazs3v18hmcrm90z3hi9wxv553ipwd5l6kj8j7l6p7abzv"))))
+        (base32 "0hdznfz9095d2qhl7awbp39s7wpqbxn37xzan487qzaf8srrzg1k"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'fix-test
-                 (lambda _
-                   (substitute* "tests/test_MySQLdb_times.py"
-                     (("^import mock")
-                      "from unittest import mock")))))
-           #:test-flags
+     (list #:test-flags
            #~'("tests/test__mysql.py"   ;tests not needing a live db
                "tests/test_MySQLdb_times.py")))
-    (native-inputs (list python-pytest))
+    (native-inputs (list pkg-config python-pytest))
     (inputs (list mariadb-connector-c))
     (home-page "https://github.com/PyMySQL/mysqlclient")
     (synopsis "MySQLdb is an interface to the popular MySQL database server for Python")
