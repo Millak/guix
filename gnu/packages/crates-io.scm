@@ -1871,6 +1871,27 @@ writing colored text to a terminal.")
 type.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anymap2-0.13
+  (package
+    (name "rust-anymap2")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anymap2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "031kw3bp0zh2pn9fcayaw0w0gydgpgfhm08pg4yz5cml9jwv60fk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f))    ; cannot transmute between types of different sizes
+    (home-page "https://github.com/azriel91/anymap2")
+    (synopsis "Safe and convenient store for one value of each type")
+    (description
+     "This package provides a safe and convenient store for one value of
+each type.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-app-dirs2-2
   (package
     (name "rust-app-dirs2")
