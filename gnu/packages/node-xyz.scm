@@ -1191,51 +1191,6 @@ This package provides the @code{AbstractBinding} class, the base for all Node
 SerialPort bindings.  You wouldn't use this class directly, but instead extend
 it to make a new binding for a different platform or underling technology.")))
 
-(define-public node-serialport-parser-delimiter
-  (package
-    (inherit node-serialport)
-    (name "node-serialport-parser-delimiter")
-    (version "9.2.4")
-    (inputs `())
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda args
-             (chdir "packages/parser-delimiter"))))
-       #:tests? #f))
-    (synopsis "Node SerialPort parser to split data on a delimiter")
-    (description "Node SerialPort is a modular suite of Node.js packages for
-accessing serial ports.  The Guix package @code{node-serialport} provides the
-recommended high-level interface.
-
-Parsers are used to take raw binary data and transform them into usable
-messages.  This package provides @code{Delimiter}, a parser that emits data
-each time a specified byte sequence is received.")))
-
-(define-public node-serialport-parser-readline
-  (package
-    (inherit node-serialport)
-    (name "node-serialport-parser-readline")
-    (version "9.2.4")
-    (inputs
-     (list node-serialport-parser-delimiter))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda args
-             (chdir "packages/parser-readline"))))
-       #:tests? #f))
-    (synopsis "Node SerialPort parser to split data on newlines")
-    (description "Node SerialPort is a modular suite of Node.js packages for
-accessing serial ports.  The Guix package @code{node-serialport} provides the
-recommended high-level interface.
-
-Parsers are used to take raw binary data and transform them into usable
-messages.  This package provides @code{Readline}, a parser that emits data
-after a (configurable) newline delimiter is received.")))
-
 (define-public node-serialport-bindings
   (package
     (inherit node-serialport)
@@ -1291,6 +1246,51 @@ This package provides the @code{Binding} class, which uses a native addon to
 talk to the underlying system.  You never have to use @code{Binding} objects
 directly.  There is also a @code{MockBinding} available (but not yet packaged
 for Guix) to assist with testing.")))
+
+(define-public node-serialport-parser-delimiter
+  (package
+    (inherit node-serialport)
+    (name "node-serialport-parser-delimiter")
+    (version "9.2.4")
+    (inputs `())
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda args
+             (chdir "packages/parser-delimiter"))))
+       #:tests? #f))
+    (synopsis "Node SerialPort parser to split data on a delimiter")
+    (description "Node SerialPort is a modular suite of Node.js packages for
+accessing serial ports.  The Guix package @code{node-serialport} provides the
+recommended high-level interface.
+
+Parsers are used to take raw binary data and transform them into usable
+messages.  This package provides @code{Delimiter}, a parser that emits data
+each time a specified byte sequence is received.")))
+
+(define-public node-serialport-parser-readline
+  (package
+    (inherit node-serialport)
+    (name "node-serialport-parser-readline")
+    (version "9.2.4")
+    (inputs
+     (list node-serialport-parser-delimiter))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda args
+             (chdir "packages/parser-readline"))))
+       #:tests? #f))
+    (synopsis "Node SerialPort parser to split data on newlines")
+    (description "Node SerialPort is a modular suite of Node.js packages for
+accessing serial ports.  The Guix package @code{node-serialport} provides the
+recommended high-level interface.
+
+Parsers are used to take raw binary data and transform them into usable
+messages.  This package provides @code{Readline}, a parser that emits data
+after a (configurable) newline delimiter is received.")))
 
 (define-public node-serialport-parser-regex
   (package
