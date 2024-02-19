@@ -454,6 +454,25 @@ JSON Web Tokens.  The currently supported signing algorithms are HMAC SHA,
 RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
     (license license:expat)))
 
+(define-public go-github-com-golang-jwt-jwt-v5
+  (package
+    (inherit go-github-com-golang-jwt-jwt-v4)
+    (name "go-github-com-golang-jwt-jwt-v5")
+    (version "5.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang-jwt/jwt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0px12zhdmzqjj5zlcr136rcsilpmi4chiz6arxv49q372j4nhmia"))))
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/golang-jwt/jwt/v5"))))
+
 (define-public go-github-com-gxed-hashland-keccakpg
   (let ((commit "d9f6b97f8db22dd1e090fd0bbbe98f09cc7dd0a8")
         (revision "0"))
