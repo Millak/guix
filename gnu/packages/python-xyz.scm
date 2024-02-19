@@ -18924,6 +18924,23 @@ text.")
        (sha256
         (base32 "189n8hpijy14jfan4ha9f5n06mnl33cxz7ay92wjqgkr639s0vg9"))))))
 
+(define-public python-monthdelta
+  (package
+    (name "python-monthdelta")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "MonthDelta" version))
+       (sha256
+        (base32 "0iwcsk7ryjw5h1wp10ykwd01f3am8gdlga6461q1v1njsk0rxh41"))))
+    (build-system pyproject-build-system)
+    (home-page "http://packages.python.org/MonthDelta")
+    (synopsis "Date computations with months")
+    (description
+     "MonthDelta provides functionality to do date computations with months.")
+    (license license:expat)))
+
 (define-public python-moto
   (package
     (name "python-moto")
