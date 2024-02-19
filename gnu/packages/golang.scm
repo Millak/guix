@@ -7911,7 +7911,7 @@ use one of our glamorous default themes.")
 (define-public go-github-com-coreos-go-semver
   (package
     (name "go-github-com-coreos-go-semver")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7920,7 +7920,7 @@ use one of our glamorous default themes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0770h1mpig2j5sbiha3abnwaw8p6dg9i87r8pc7cf6m4kwml3sc9"))))
+                "0vs04yykv1bwgvbyvi1m7ps83w06wzplw4giw8jac2iidx0x74v5"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/coreos/go-semver"))
