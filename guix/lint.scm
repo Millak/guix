@@ -84,10 +84,10 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-6)                      ;Unicode string ports
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 rdelim)
   #:export (check-description-style
             check-inputs-should-be-native
@@ -823,8 +823,8 @@ for connections to complete; when TIMEOUT is #f, wait as long as needed."
                   ;; Return RESPONSE, unless the final response as we follow
                   ;; redirects is not 200.
                   (if location
-                      (let-values (((status response2)
-                                    (loop location (cons location visited))))
+                      (let ((status response2 (loop location
+                                                    (cons location visited))))
                         (case status
                           ((http-response)
                            (values 'http-response
@@ -926,8 +926,7 @@ display a message including MESSAGE and return ERROR-VALUE."
 (define (validate-uri uri package field)
   "Return #t if the given URI can be reached, otherwise return a warning for
 PACKAGE mentioning the FIELD."
-  (let-values (((status argument)
-                (probe-uri uri #:timeout 3)))     ;wait at most 3 seconds
+  (let ((status argument (probe-uri uri #:timeout 3))) ;wait at most 3 seconds
     (case status
       ((http-response)
        (cond ((= 200 (response-code argument))
