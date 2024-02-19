@@ -35559,14 +35559,14 @@ model.")
 (define-public r-igraph
   (package
     (name "r-igraph")
-    (version "2.0.1.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "igraph" version))
        (sha256
         (base32
-         "0rl8yklm7fpyjsgvjnljp6ldyj393qizi2sd5hsvmbm78h5c9dhv"))))
+         "0kfc9blyy54cz0m4mdzzwgvn0rkil49kdk438411mx62g2vxby9l"))))
     (properties
      `((upstream-name . "igraph")
        (updater-extra-native-inputs . ("which"))))
@@ -35582,7 +35582,8 @@ model.")
            r-magrittr
            r-matrix
            r-pkgconfig
-           r-rlang))
+           r-rlang
+           r-vctrs))
     (home-page "https://igraph.org")
     (synopsis "Network analysis and visualization")
     (description
