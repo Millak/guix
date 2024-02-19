@@ -34,17 +34,17 @@
 (define-public nicotine+
   (package
     (name "nicotine+")
-    (version "3.2.1")
+    (version "3.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Nicotine-Plus/nicotine-plus")
                     (commit version)))
               (file-name (git-file-name name version))
-              (sha256 (base32 "1x08z5lvkdl62dkc11vrsackgzsh1vr9vp3vgsgfzjyrvlsybmfw"))
+              (sha256 (base32 "1qzc8k2pkw4sgb4p1qrd9d71j8m5v834v0df5qvdfwgnmsn4dnzj"))
               (modules '((guix build utils)))
               ;; Remove test that relies on network access.
-              (snippet '(delete-file-recursively "test/integration"))))
+              (snippet '(delete-file-recursively "pynicotine/tests/unit/test_version.py"))))
     (build-system python-build-system)
     (arguments
      `(#:imported-modules ((guix build glib-or-gtk-build-system)
@@ -72,7 +72,7 @@
              (when tests?
                (invoke "xvfb-run" "python" "-m" "unittest")))))))
     (inputs
-     (list bash-minimal gspell gtk+ python-pygobject libappindicator python-pytaglib))
+     (list bash-minimal gspell gtk python-pygobject libappindicator python-pytaglib))
     (native-inputs
      (list gettext-minimal xvfb-run))
     (home-page "https://nicotine-plus.org/")
