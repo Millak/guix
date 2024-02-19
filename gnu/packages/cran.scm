@@ -20362,7 +20362,7 @@ preparing, executing, and processing HTTP requests.")
            r-rapidjsonr
            r-rlang
            r-tibble))
-    (home-page "https://github.com/rstats-db/bigrquery")
+    (home-page "https://github.com/r-dbi/bigrquery")
     (synopsis "R interface to Google's BigQuery API")
     (description
      "This package provides an R interface to Google's BigQuery database.")
