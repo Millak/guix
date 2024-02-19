@@ -482,6 +482,58 @@ a Tetris-like game.")
                    license:gpl2+
                    license:gpl3+))))
 
+(define-public sugar-chat-activity
+  ;; The last release was in 2019 and since then commits have been published
+  ;; that include build fixes and translation updates.
+  (let ((commit "a6a14b99576619639fd82fd265c4af096bcf52dc")
+        (revision "1"))
+    (package
+      (name "sugar-chat-activity")
+      (version (git-version "86" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/chat")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gp1ljazm119hqzwz0rkr6k588ngd68manndm808pj5vgbv7qsdq"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gdk-pixbuf
+             gobject-introspection
+             gtk+
+             gstreamer
+             gst-plugins-base
+             python-pygobject
+             sugar-toolkit-gtk3
+             telepathy-glib))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/chat.html")
+      (synopsis "Sugar activity to chat")
+      (description "Chat is an activity used to exchange messages with friends
+or classmates.")
+      (license license:gpl2+))))
+
 (define-public sugar-help-activity
   (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
         (revision "1"))
