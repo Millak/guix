@@ -31865,12 +31865,24 @@ Additional arguments to pass to the @command{varnishd} process.
 
 @subheading Whoogle Search
 @cindex Whoogle Search
+
 @uref{https://github.com/benbusby/whoogle-search, Whoogle Search} is a
-self-hosted, ad-free, privacy-respecting metasearch engine that collects
-and displays Google search results.
+self-hosted, ad-free, privacy-respecting meta search engine that collects
+and displays Google search results.  By default, you can configure it by
+adding this line to the @code{services} field of your operating system
+declaration:
+
+@lisp
+(service whoogle-service-type)
+@end lisp
+
+As a result, Whoogle Search runs as local Web server, which you can
+access by opening @indicateurl{http://localhost:5000} in your browser.
+The configuration reference is given below.
 
 @defvar whoogle-service-type
-Service type for Whoogle Search.
+Service type for Whoogle Search.  Its value must be a
+@code{whoogle-configuration} record---see below.
 @end defvar
 
 @deftp {Data Type} whoogle-configuration
