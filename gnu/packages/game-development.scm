@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016, 2017 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018 Julian Graham <joolean@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
@@ -58,6 +58,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
   #:use-module (gnu packages)
@@ -115,6 +116,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -452,6 +454,40 @@ provide connectivity for client applications written in any language.")
 compiling NML files (along with their associated language, sound and graphic
 files) into @file{.grf} and/or @file{.nfo} files.")
     (license license:gpl2+)))
+
+(define-public python-pybox2d
+  (package
+    (name "python-pybox2d")
+    (version "2.3.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pybox2d/pybox2d")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0dha28yscr1lpyzy9ygqc01a8pyf7n9vavyxikqh469wr2zcacna"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; It is not clear how to run the tests
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'build 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs (list swig))
+    (home-page "https://github.com/pybox2d/pybox2d")
+    (synopsis "2D game physics for Python")
+    (description
+     "Pybox2d is a 2D physics library for your games and simple simulations.
+It's based on the Box2D library, written in C++.  It supports several shape
+types (circle, polygon, thin line segments), and quite a few joint
+types (revolute, prismatic, wheel, etc.).")
+    (license license:zlib)))
 
 (define-public python-sge
   (package
