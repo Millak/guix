@@ -33337,7 +33337,8 @@ filter.")
        (uri (cran-uri "sglOptim" version))
        (sha256
         (base32
-         "15bkkvgp9v9vsp65wps48g3c2fa0fj1025hbrziywq14j7wayyjr"))))
+         "15bkkvgp9v9vsp65wps48g3c2fa0fj1025hbrziywq14j7wayyjr"))
+       (patches (search-patches "r-sgloptim.patch"))))
     (properties
      `((upstream-name . "sglOptim")))
     (build-system r-build-system)
