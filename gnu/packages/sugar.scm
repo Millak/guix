@@ -24,6 +24,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -727,6 +728,67 @@ looking for why an activity or Sugar is not working properly.")
     (description "Try to make your way through an increasingly difficult path,
 or you can also play with a friend!")
     (license license:gpl3+)))
+
+(define-public sugar-physics-activity
+  (let ((commit "cfd17b82b783f1ce4952ccdef6a8ddbe3d8f3e46")
+        (revision "1"))
+    (package
+      (name "sugar-physics-activity")
+      (version (git-version "35" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/physics")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0yzq4cbgcngf1ayi4bsn04l3mz6pnayd6db9bv0v9xfrpjmffvyk"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'inject-load-path
+              (lambda _
+                (substitute* "activity.py"
+                  (("^import os")
+                   (string-append "\
+import sys, os
+for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
+    try:
+        sys.path.index(directory)
+    except ValueError:
+        sys.path.insert(1, directory)
+")))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             gdk-pixbuf))
+      (inputs
+       (list python-pybox2d
+             python-pygame
+             sugar-toolkit-gtk3
+             gettext-minimal))
+      (home-page "https://github.com/sugarlabs/physics")
+      (synopsis "Physical world simulator and playground")
+      (description "Physics is a physical world simulator and playground---you
+can add squares, circles, triangles, or draw your own shapes, and see them
+come to life with forces (think gravity, Newton!), friction (scrrrrape), and
+inertia (ahh, slow down!).")
+      (license license:gpl3+))))
 
 (define-public sugar-read-activity
   (let ((commit "25f69e41a4fa69d93c73c0c9367b4777a014b1cd")
