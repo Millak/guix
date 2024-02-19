@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2010-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2019, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2022-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -566,17 +566,21 @@ specified in SOURCE, an <upstream-source>."
              (properties (package-properties package))
              (ignore (or (assoc-ref properties ignore-property) '()))
              (extra (or (assoc-ref properties extra-property) '())))
-        (append (if (null? ignore)
-                    inputs
-                    (remove (lambda (input)
-                              (member (upstream-input-downstream-name input)
-                                      ignore))
-                            inputs))
-                (map (lambda (name)
-                       (upstream-input
-                        (name name)
-                        (downstream-name name)))
-                     extra)))))
+        (sort
+         (append (if (null? ignore)
+                     inputs
+                     (remove (lambda (input)
+                               (member (upstream-input-downstream-name input)
+                                       ignore))
+                             inputs))
+                 (map (lambda (name)
+                        (upstream-input
+                         (name name)
+                         (downstream-name name)))
+                      extra))
+         (lambda (a b)
+           (string-ci<? (upstream-input-downstream-name a)
+                        (upstream-input-downstream-name b)))))))
 
   (define regular-inputs
     (filtered-inputs upstream-source-regular-inputs
