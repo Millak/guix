@@ -9590,14 +9590,14 @@ acceptance regions, log-ratio plots and Q-Q plots.")
 (define-public r-sm
   (package
     (name "r-sm")
-    (version "2.2-5.7.1")
+    (version "2.2-6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sm" version))
        (sha256
         (base32
-         "0mql7rlm8wkdwmx1lv7pscdk9ibvsdpfdv8bpaz1hv2gn4pc637a"))))
+         "0q8xav1alammiyiw2p8y0qq94ag5rln910jry8q3sb2p38ly79i7"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "http://www.stats.gla.ac.uk/~adrian/sm/")
