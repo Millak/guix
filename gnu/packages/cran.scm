@@ -4069,17 +4069,17 @@ same time tries to group instances from the same class together.")
 (define-public r-callr
   (package
     (name "r-callr")
-    (version "3.7.3")
+    (version "3.7.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "callr" version))
        (sha256
         (base32
-         "0knh5yxhxwjz96kbjrq524w4j8cac10k6mghhmblq79s0zgzwysn"))))
+         "1cspwxqmfpdvlklyvvdwpvbifjp7nm703jp1q2hg48zgqd2kdak9"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-r6 r-processx))
+     (list r-processx r-r6))
     (home-page "https://github.com/r-lib/callr#readme")
     (synopsis "Call R from R")
     (description
