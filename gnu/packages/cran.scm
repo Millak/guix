@@ -22936,13 +22936,13 @@ additional utilities for genomic regions processing.")
 (define-public r-setrng
   (package
     (name "r-setrng")
-    (version "2022.4-1")
+    (version "2024.2-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "setRNG" version))
               (sha256
                (base32
-                "09089vr5x8snwxh38kdhgpjl3jl7zrk056f6f9a2jg5lsrmnxh31"))))
+                "0h2wbpsi07c48h72zjglvp9b58hq3j77289sah32qg6vnw41pcp3"))))
     (properties `((upstream-name . "setRNG")))
     (build-system r-build-system)
     (home-page "https://distr.r-forge.r-project.org/")
