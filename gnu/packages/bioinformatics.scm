@@ -2542,11 +2542,24 @@ Python.")
     (arguments
      (list
       #:test-flags
-      '(list "-k"
-             ;; These tests fail because they require internet access.
-             (string-append "not test_download.py"
-                            " and not test_htsget.py"
-                            " and not test_commands.py"))
+      '(list
+        ;; These tests fail because they require internet access.
+        "--ignore=tests/functional/test_download.py"
+        "--ignore=tests/functional/test_htsget.py"
+        "-k"
+        (string-append "not test_error_5xx"
+                       " and not test_error_too_many_requests"
+                       ;; Something's wrong here.  On some powerful machines
+                       ;; (but not on my laptop) these fail, and tests like
+                       ;; test_file_is_saved_into_an_existing_directory_which_was_specified_by_the_user
+                       ;; take a *very* long time to complete.
+                       ;;
+                       ;; It looks like "dataset_in_fire.download" takes an
+                       ;; unusually long time on those machines.  We disable
+                       ;; tests that fail under these conditions.
+                       " and not test_download_file"
+                       " and not test_output_file_is_removed_if_md5_was_invalid"
+                       " and not test_post_stats_if_download_succeeded"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
