@@ -1337,28 +1337,6 @@ Parsers are used to take raw binary data and transform them into usable
 messages.  This package provides @code{Readline}, a parser that emits data
 after a (configurable) newline delimiter is received.")))
 
-(define-public node-serialport-parser-regex
-  (package
-    (inherit node-serialport)
-    (name "node-serialport-parser-regex")
-    (version "9.2.4")
-    (inputs `())
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda args
-             (chdir "packages/parser-regex"))))
-       #:tests? #f))
-    (synopsis "Node SerialPort parser to split data on a regular expression")
-    (description "Node SerialPort is a modular suite of Node.js packages for
-accessing serial ports.  The Guix package @code{node-serialport} provides the
-recommended high-level interface.
-
-Parsers are used to take raw binary data and transform them into usable
-messages.  This package provides @code{Regex}, a parser that uses a regular
-expression to split the incoming text.")))
-
 (define-public node-serialport-parser-ready
   (package
     (inherit node-serialport)
@@ -1381,6 +1359,28 @@ Parsers are used to take raw binary data and transform them into usable
 messages.  This package provides @code{Ready}, a parser that waits for a
 specified sequence of ``ready'' bytes before emitting a ready event and
 emitting data events.")))
+
+(define-public node-serialport-parser-regex
+  (package
+    (inherit node-serialport)
+    (name "node-serialport-parser-regex")
+    (version "9.2.4")
+    (inputs `())
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda args
+             (chdir "packages/parser-regex"))))
+       #:tests? #f))
+    (synopsis "Node SerialPort parser to split data on a regular expression")
+    (description "Node SerialPort is a modular suite of Node.js packages for
+accessing serial ports.  The Guix package @code{node-serialport} provides the
+recommended high-level interface.
+
+Parsers are used to take raw binary data and transform them into usable
+messages.  This package provides @code{Regex}, a parser that uses a regular
+expression to split the incoming text.")))
 
 (define-public node-serialport-parser-inter-byte-timeout
   (package
