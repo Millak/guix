@@ -415,7 +415,7 @@ interface and is based on GNU Guile.")
               (replace "guile-fibers"
                 (this-package-native-input "guile-fibers"))))))
 
-(define-public shepherd shepherd-0.9)
+(define-public shepherd shepherd-0.10)
 
 (define-public guile2.2-shepherd
   (package
