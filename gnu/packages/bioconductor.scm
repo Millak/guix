@@ -9981,13 +9981,13 @@ analysis of TCR repertoire libraries based on theoretical model fits.")
 (define-public r-pscbs
   (package
     (name "r-pscbs")
-    (version "0.66.0")
+    (version "0.67.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PSCBS" version))
        (sha256
-        (base32 "14rs2wywipbkia3dbzfhpnkmfgdvm2bf586lggsx63sywlv5d02q"))))
+        (base32 "1gnd2nkh587dqpnbk5fsai7hx261vm405550rhlxffvs366x3596"))))
     (properties `((upstream-name . "PSCBS")))
     (build-system r-build-system)
     (arguments
