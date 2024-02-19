@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018, 2019, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -983,14 +983,16 @@ code.")
                   "0w0dff3s7wv2d9m78a4jhckiik58q38wx6wpbba5hzbs4yxz35ck"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; no tests
-         #:make-flags
-         (list "OS=linux"
-               (string-append "TARGET=" (assoc-ref %outputs "out")))
-         #:phases
-         (modify-phases %standard-phases
+       (list
+        #:tests? #false                 ;no tests
+        #:parallel-build? #false        ;not supported
+        #:make-flags
+        #~(list "OS=linux"
+                (string-append "TARGET=" #$output))
+        #:phases
+        '(modify-phases %standard-phases
            (add-after 'unpack 'chdir
-             (lambda _ (chdir "loader") #t))
+             (lambda _ (chdir "loader")))
            (delete 'configure))))
       (native-inputs
        (list openspin (make-propeller-toolchain)))
