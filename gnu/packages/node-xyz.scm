@@ -1126,22 +1126,55 @@ both @file{stderr} and to a timestamped file.")
 @uref{https://semver.org/, SemVer.org} specification.")
     (license license:isc)))
 
-(define-public node-serialport-binding-abstract
+(define-public node-serialport
   (package
-    (name "node-serialport-binding-abstract")
-    (version "9.2.3")
+    (name "node-serialport")
+    (version "9.2.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/serialport/node-serialport")
-             (commit "v9.2.7")))
-       (file-name (git-file-name "serialport-monorepo" version))
+             (commit (string-append "v" version))))
        (sha256
         (base32 "0x7zm59a5ff5yygjyw15xs3r5m3rb8av1yfrh4snn44mrwq87yg8"))))
     (inputs
-     (list node-debug))
+     (list node-serialport-bindings
+           node-serialport-parser-delimiter
+           node-serialport-parser-readline
+           node-serialport-parser-regex
+           node-serialport-parser-ready
+           node-serialport-parser-inter-byte-timeout
+           node-serialport-parser-cctalk
+           node-serialport-parser-byte-length
+           node-serialport-stream
+           node-debug))
     (build-system node-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies `("@serialport/binding-mock"))))
+         (add-after 'unpack 'chdir
+           (lambda args
+             (chdir "packages/serialport"))))
+       #:tests? #f))
+    (home-page "https://serialport.io")
+    (synopsis "Node.js package to access serial ports")
+    (description "Node SerialPort is a modular suite of Node.js packages for
+accessing serial ports.  This package is the recommended entry point for most
+projects.  It combines a high-level Node.js stream interface with a useful
+default set of parsers and bindings.")
+    (license license:expat)))
+
+(define-public node-serialport-binding-abstract
+  (package
+    (inherit node-serialport)
+    (name "node-serialport-binding-abstract")
+    (version "9.2.3")
+    (inputs
+     (list node-debug))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1149,7 +1182,6 @@ both @file{stderr} and to a timestamped file.")
            (lambda args
              (chdir "packages/binding-abstract"))))
        #:tests? #f))
-    (home-page "https://serialport.io")
     (synopsis "Abstract base class for Node SerialPort bindings")
     (description "Node SerialPort is a modular suite of Node.js packages for
 accessing serial ports.  The Guix package @code{node-serialport} provides the
@@ -1157,12 +1189,11 @@ recommended high-level interface.
 
 This package provides the @code{AbstractBinding} class, the base for all Node
 SerialPort bindings.  You wouldn't use this class directly, but instead extend
-it to make a new binding for a different platform or underling technology.")
-    (license license:expat)))
+it to make a new binding for a different platform or underling technology.")))
 
 (define-public node-serialport-parser-delimiter
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-parser-delimiter")
     (version "9.2.4")
     (inputs `())
@@ -1184,7 +1215,7 @@ each time a specified byte sequence is received.")))
 
 (define-public node-serialport-parser-readline
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-parser-readline")
     (version "9.2.4")
     (inputs
@@ -1207,7 +1238,7 @@ after a (configurable) newline delimiter is received.")))
 
 (define-public node-serialport-bindings
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-bindings")
     (version "9.2.7")
     (native-inputs
@@ -1263,7 +1294,7 @@ for Guix) to assist with testing.")))
 
 (define-public node-serialport-parser-regex
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-parser-regex")
     (version "9.2.4")
     (inputs `())
@@ -1285,7 +1316,7 @@ expression to split the incoming text.")))
 
 (define-public node-serialport-parser-ready
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-parser-ready")
     (version "9.2.4")
     (inputs `())
@@ -1308,7 +1339,7 @@ emitting data events.")))
 
 (define-public node-serialport-parser-inter-byte-timeout
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-parser-inter-byte-timeout")
     (version "9.2.4")
     (inputs `())
@@ -1330,7 +1361,7 @@ data if there is a pause between packets for the specified amount of time.")))
 
 (define-public node-serialport-parser-cctalk
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-parser-cctalk")
     (version "9.2.4")
     (inputs `())
@@ -1353,7 +1384,7 @@ received.")))
 
 (define-public node-serialport-parser-byte-length
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-parser-byte-length")
     (version "9.2.4")
     (inputs `())
@@ -1375,7 +1406,7 @@ as a buffer every time a specified number of bytes are received.")))
 
 (define-public node-serialport-stream
   (package
-    (inherit node-serialport-binding-abstract)
+    (inherit node-serialport)
     (name "node-serialport-stream")
     (version "9.2.4")
     (inputs
@@ -1400,39 +1431,6 @@ This package provides an interface for using Node SerialPort bindings via the
 Node.js Stream API.  The stream is a duplex stream, allowing for reading and
 writing.  It has additional methods for managing the SerialPort
 connection.")))
-
-(define-public node-serialport
-  (package
-    (inherit node-serialport-binding-abstract)
-    (name "node-serialport")
-    (version "9.2.7")
-    (inputs
-     (list node-serialport-bindings
-           node-serialport-parser-delimiter
-           node-serialport-parser-readline
-           node-serialport-parser-regex
-           node-serialport-parser-ready
-           node-serialport-parser-inter-byte-timeout
-           node-serialport-parser-cctalk
-           node-serialport-parser-byte-length
-           node-serialport-stream
-           node-debug))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (delete-dependencies `("@serialport/binding-mock"))
-             ))
-         (add-after 'unpack 'chdir
-           (lambda args
-             (chdir "packages/serialport"))))
-       #:tests? #f))
-    (synopsis "Node.js package to access serial ports")
-    (description "Node SerialPort is a modular suite of Node.js packages for
-accessing serial ports.  This package is the recommended entry point for most
-projects.  It combines a high-level Node.js stream interface with a useful
-default set of parsers and bindings.")))
 
 (define-public node-sqlite3
   (package
