@@ -58,6 +58,7 @@
 ;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2514,6 +2515,27 @@ the changeset hash of commits.  The signure is embedded directly in the
 changeset itself; there won't be any extra commits.  Either GnuPG or OpenSSL
 can be used for signing.")
       (license license:gpl2))))                   ;per commitsigs.py
+
+(define-public heatwave
+  (package
+    (name "heatwave")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "heatwave" version))
+       (sha256
+        (base32 "1zzwmb9hvbyswzjgap02rrq8p44hb6xlzk1wd8w01mh2vva0xlx7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-click
+           python-gitpython
+           python-monthdelta))
+    (home-page "https://github.com/james-stoup/heatwave")
+    (synopsis "Heat map visualization of a git repository")
+    (description
+     "This package provides a way of visualizing a heat map of a git repo.")
+    (license license:gpl3)))
 
 (define-public neon
   (package
