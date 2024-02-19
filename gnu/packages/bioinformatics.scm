@@ -11641,11 +11641,11 @@ single-cell data.")
       (license license:gpl3))))
 
 (define-public r-archr
-  (let ((commit "92ab814f86be0cea75c661f9827a9549c2cf47f5")
+  (let ((commit "c61b0645d1482f80dcc24e25fbd915128c1b2500")
         (revision "1"))
     (package
       (name "r-archr")
-      (version (git-version "1.0.1" revision commit))
+      (version (git-version "1.0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -11654,7 +11654,7 @@ single-cell data.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1m1vp3kkpvd0fcviv5vb3gcbm3w91ih6gm9ivg48swnbqny44kqb"))))
+          (base32 "0sgdfd8iwgj8cssj2zr3gmshg8nv54q6dd8asjf99i39qkni7p9i"))))
       (properties `((upstream-name . "ArchR")))
       (build-system r-build-system)
       (propagated-inputs
