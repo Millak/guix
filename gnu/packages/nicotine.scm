@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2022 Fatima Toothpaste <fatimatoothpaste@disroot.org>
+;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +21,7 @@
 (define-module (gnu packages nicotine)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system python)
   #:use-module (gnu packages bash)
@@ -35,46 +37,51 @@
   (package
     (name "nicotine+")
     (version "3.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Nicotine-Plus/nicotine-plus")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256 (base32 "1qzc8k2pkw4sgb4p1qrd9d71j8m5v834v0df5qvdfwgnmsn4dnzj"))
-              (modules '((guix build utils)))
-              ;; Remove test that relies on network access.
-              (snippet '(delete-file-recursively "pynicotine/tests/unit/test_version.py"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nicotine-Plus/nicotine-plus")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qzc8k2pkw4sgb4p1qrd9d71j8m5v834v0df5qvdfwgnmsn4dnzj"))
+       (modules '((guix build utils)))
+       ;; Remove test that relies on network access.
+       (snippet '(delete-file-recursively
+                  "pynicotine/tests/unit/test_version.py"))))
     (build-system python-build-system)
     (arguments
-     `(#:imported-modules ((guix build glib-or-gtk-build-system)
+     (list
+      #:imported-modules `((guix build glib-or-gtk-build-system)
                            ,@%python-build-system-modules)
-       #:modules
-       ((guix build utils)
-        (guix build python-build-system)
-        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append
-                          (assoc-ref outputs "out")
-                          "/bin/nicotine"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))))
-         (add-after 'wrap-program 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-         (add-after 'glib-or-gtk-wrap 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "xvfb-run" "python" "-m" "unittest")))))))
-    (inputs
-     (list bash-minimal gspell gtk python-pygobject libappindicator python-pytaglib))
-    (native-inputs
-     (list gettext-minimal xvfb-run))
+      #:modules `((guix build utils)
+                  (guix build python-build-system)
+                  ((guix build glib-or-gtk-build-system)
+                   #:prefix glib-or-gtk:))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'wrap-program
+                     (lambda _
+                       (wrap-program (string-append #$output "/bin/nicotine")
+                         `("GI_TYPELIB_PATH" ":" prefix
+                           (,(getenv "GI_TYPELIB_PATH"))))))
+                   (add-after 'wrap-program 'glib-or-gtk-wrap
+                     (assoc-ref glib-or-gtk:%standard-phases
+                                'glib-or-gtk-wrap))
+                   (add-after 'glib-or-gtk-wrap 'glib-or-gtk-compile-schemas
+                     (assoc-ref glib-or-gtk:%standard-phases
+                                'glib-or-gtk-compile-schemas))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "xvfb-run" "python" "-m" "unittest")))))))
+    (inputs (list bash-minimal
+                  gspell
+                  gtk
+                  python-pygobject
+                  libappindicator
+                  python-pytaglib))
+    (native-inputs (list gettext-minimal xvfb-run))
     (home-page "https://nicotine-plus.org/")
     (synopsis "Graphical client for Soulseek")
     (description
