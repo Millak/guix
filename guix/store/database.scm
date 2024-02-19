@@ -40,8 +40,10 @@
             store-database-file
             call-with-database
             with-database
-            path-id
-            sqlite-register
+
+            valid-path-id
+
+            register-valid-path
             register-items
             %epoch
             reset-timestamps
@@ -181,9 +183,9 @@ If FILE doesn't exist, create it and initialize it as a new database.  Pass
     (vector-ref (sqlite-step-and-reset stmt)
                 0)))
 
-(define* (path-id db path)
-  "If PATH exists in the 'ValidPaths' table, return its numerical
-identifier.  Otherwise, return #f."
+(define (valid-path-id db path)
+  "If PATH exists in the 'ValidPaths' table, return its numerical identifier.
+Otherwise, return #f."
   (let ((stmt (sqlite-prepare
                db
                "
@@ -249,7 +251,7 @@ Every store item in REFERENCES must already be registered."
   (assert-integer "sqlite-register" (cut >= <> 0) #:time registration-time)
 
   (define id
-    (let ((existing-id (path-id db path)))
+    (let ((existing-id (valid-path-id db path)))
       (if existing-id
           (let ((stmt (sqlite-prepare
                        db
@@ -284,7 +286,8 @@ VALUES (:path, :hash, :time, :deriver, :size)"
   ;; Call 'path-id' on each of REFERENCES.  This ensures we get a
   ;; "non-NULL constraint" failure if one of REFERENCES is unregistered.
   (add-references db id
-                  (map (cut path-id db <>) references)))
+                  (map (cut valid-path-id db <>) references)))
+
 
 
 ;;;
@@ -361,18 +364,18 @@ typically by adding them as temp-roots."
     ;; When TO-REGISTER is already registered, skip it.  This makes a
     ;; significant differences when 'register-closures' is called
     ;; consecutively for overlapping closures such as 'system' and 'bootcfg'.
-    (unless (path-id db to-register)
+    (unless (valid-path-id db to-register)
       (let-values (((hash nar-size) (nar-sha256 real-file-name)))
         (call-with-retrying-transaction db
           (lambda ()
-            (sqlite-register db #:path to-register
-                             #:references (store-info-references item)
-                             #:deriver (store-info-deriver item)
-                             #:hash (string-append
-                                     "sha256:"
-                                     (bytevector->base16-string hash))
-                             #:nar-size nar-size
-                             #:time registration-time))))))
+            (register-valid-path db #:path to-register
+                                 #:references (store-info-references item)
+                                 #:deriver (store-info-deriver item)
+                                 #:hash (string-append
+                                         "sha256:"
+                                         (bytevector->base16-string hash))
+                                 #:nar-size nar-size
+                                 #:time registration-time))))))
 
   (let* ((prefix   (format #f "registering ~a items" (length items)))
          (progress (progress-reporter/bar (length items)

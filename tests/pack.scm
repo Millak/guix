@@ -209,7 +209,7 @@
                               (and (every valid-file?
                                           '("α" "λ")
                                           '("alpha" "lambda"))
-                                   (integer? (path-id db #$tree)))))))))))
+                                   (integer? (valid-path-id db #$tree)))))))))))
       (built-derivations (list check))))
 
   (unless store (test-skip 1))
