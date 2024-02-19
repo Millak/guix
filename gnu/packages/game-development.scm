@@ -1311,13 +1311,13 @@ interface (API).")
 (define-public python-pygame
   (package
     (name "python-pygame")
-    (version "2.1.2")
+    (version "2.5.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pygame" version))
               (sha256
                (base32
-                "0g6j79naab7583kymf1bgxc5l5c9h5laq887rmvh8vw8iyifrl6n"))))
+                "0jn2n70hmgr33yc6xzdi33cs5w7jnmgi44smyxfarrrrsnsrxf61"))))
     (build-system python-build-system)
     (arguments
      (list
