@@ -13091,27 +13091,29 @@ The following completions are currently available:
     (license license:gpl3+)))
 
 (define-public emacs-sway
-  (package
-    (name "emacs-sway")
-    (version "0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/thblt/sway.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1w29dkl7s835zgwnc4jx1cp84s6mmwbvlil8z2c31psy0rlajc6i"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/thblt/sway.el")
-    (synopsis "Communication with the Sway window manager")
-    (description
-     "This is a basic library to control the Sway window manager from Emacs.
+  (let ((commit "84eae5e16a643eb00b0a422ded751cceb17cc8f0")
+        (revision "0"))
+    (package
+      (name "emacs-sway")
+      (version (git-version "0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/thblt/sway.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "194plzc6rg7a5j3f68say0znix34yp8421cdlkwnw345czh52mjn"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/thblt/sway.el")
+      (synopsis "Communication with the Sway window manager")
+      (description
+       "This is a basic library to control the Sway window manager from Emacs.
 Its main use case is in combination with popup managers like Shackle, to
 use frames instead of windows while still giving focus to existing frames
 instead of duplicating them.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-sweet-theme
   (let ((commit "78f741806ecebe01224bf54d09ad80e306652508")
