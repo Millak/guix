@@ -899,49 +899,40 @@ exception-handling library.")
                 "1ypcn0yxk9ny7qg8s8h3px2wpimhfgkwk7x1548ky12iqmdjjmcn"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
+     (list
+      #:imported-modules `((guix build python-build-system)
                            ,@%cmake-build-system-modules)
-       #:configure-flags '("-D2GEOM_BUILD_SHARED=ON"
-                           "-D2GEOM_BOOST_PYTHON=ON"
-                           ;; Compiling the Cython bindings fail (see:
-                           ;; https://gitlab.com/inkscape/lib2geom/issues/21).
-                           "-D2GEOM_CYTHON_BINDINGS=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-python-lib-install-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((python-version (@ (guix build python-build-system)
-                                       python-version))
-                    (python-maj-min-version (python-version
-                                             (assoc-ref inputs "python")))
-                    (site-package (string-append
-                                   (assoc-ref outputs "out")
-                                   "/lib/python" python-maj-min-version
-                                   "/site-packages")))
-               (substitute* '("src/cython/CMakeLists.txt"
-                              "src/py2geom/CMakeLists.txt")
-                 (("PYTHON_LIB_INSTALL \"[^\"]*\"")
-                  (format #f "PYTHON_LIB_INSTALL ~s" site-package))))))
-         ,@(if (target-x86-32?)
-               `((add-after 'unpack 'skip-faulty-test
-                   (lambda _
-                     ;; This test fails on i686 when comparing floating point
-                     ;; values, probably due to excess precision.  However,
-                     ;; '-fexcess-precision' is not implemented for C++ in
-                     ;; GCC 10 so just skip it.
-                     (substitute* "tests/CMakeLists.txt"
-                       (("bezier-test") "")))))
-               '()))))
-    (native-inputs `(("python" ,python-wrapper)
-                     ("googletest" ,googletest)
-                     ("pkg-config" ,pkg-config)))
-    (inputs `(("cairo" ,cairo)
-              ("pycairo" ,python-pycairo)
-              ("double-conversion" ,double-conversion)
-              ("glib" ,glib)
-              ("gsl" ,gsl)))
-    (propagated-inputs
-     (list boost))               ;referred to in 2geom/pathvector.h.
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system) #:prefix python:))
+      #:configure-flags
+      #~(list "-D2GEOM_BUILD_SHARED=ON"
+              "-D2GEOM_BOOST_PYTHON=ON"
+              ;; Compiling the Cython bindings fail (see:
+              ;; https://gitlab.com/inkscape/lib2geom/issues/21).
+              "-D2GEOM_CYTHON_BINDINGS=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-python-lib-install-path
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* '("src/cython/CMakeLists.txt"
+                             "src/py2geom/CMakeLists.txt")
+                (("PYTHON_LIB_INSTALL \"[^\"]*\"")
+                 (format #f "PYTHON_LIB_INSTALL ~s"
+                         (python:site-packages inputs outputs))))))
+          #$@(if (target-x86-32?)
+                 #~((add-after 'unpack 'skip-faulty-test
+                      (lambda _
+                        ;; This test fails on i686 when comparing floating point
+                        ;; values, probably due to excess precision.  However,
+                        ;; '-fexcess-precision' is not implemented for C++ in
+                        ;; GCC 10 so just skip it.
+                        (substitute* "tests/CMakeLists.txt"
+                          (("bezier-test") "")))))
+                 #~()))))
+    (native-inputs (list python-wrapper googletest pkg-config))
+    (inputs (list cairo python-pycairo double-conversion glib gsl))
+    (propagated-inputs (list boost))    ;included in 2geom/pathvector.h
     (home-page "https://gitlab.com/inkscape/lib2geom/")
     (synopsis "C++ 2D graphics library")
     (description "2geom is a C++ library of mathematics for paths, curves,
