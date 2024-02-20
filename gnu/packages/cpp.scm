@@ -38,7 +38,7 @@
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2023-2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Peepo Froggings <peepofroggings@tutanota.de>
 
@@ -575,6 +575,29 @@ unified access to TCP/UDP sockets, serial ports, console, and files streams.
 It also allows a server application to wait for any activity on any
 combination of these streams.")
     (license license:bsd-3)))
+
+(define-public debug-assert
+  (package
+    (name "debug-assert")
+    (version "1.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/foonathan/debug_assert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z9wfh9h83rv6khm6s6bym40vgv2igy4yh665ygsdxwamil254b9"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))    ; no tests
+    (home-page "https://github.com/foonathan/debug_assert")
+    (synopsis "Assertion macro for C++")
+    (description
+     "debug_assert is a C++11 header-only library which provides the
+@code{DEBUG_ASSERT()} macro, which among other features can be selectively
+enabled in different parts of your code.")
+      (license license:zlib)))
 
 (define-public xsimd
   (package
