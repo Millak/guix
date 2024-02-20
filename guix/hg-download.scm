@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2019, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
@@ -117,9 +117,11 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                 (parameterize ((%verify-swh-certificate? #f))
                   (format (current-error-port)
                           "Trying to download from Software Heritage...~%")
-                  (swh-download #$(hg-reference-url ref)
-                                #$(hg-reference-changeset ref)
-                                #$output)))))))
+                  (or (swh-download-directory-by-nar-hash #$hash '#$hash-algo
+                                                          #$output)
+                      (swh-download #$(hg-reference-url ref)
+                                    #$(hg-reference-changeset ref)
+                                    #$output))))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "hg-checkout") build
