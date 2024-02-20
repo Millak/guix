@@ -79250,7 +79250,12 @@ crate.")
        (uri (crate-uri "zerocopy-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yzd3057gr3csn3x4wrl8y4ji52hr8rirbh9cz487svvzp8xp66l"))))
+        (base32 "1yzd3057gr3csn3x4wrl8y4ji52hr8rirbh9cz487svvzp8xp66l"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (arguments
      `(#:tests? #f  ; can't find crate for `rustc`
        #:cargo-inputs
