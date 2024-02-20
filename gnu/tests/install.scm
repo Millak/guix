@@ -1194,7 +1194,9 @@ store a couple of full system images.")
         ((images (run-install %encrypted-root-not-boot-os
                               %encrypted-root-not-boot-os-source
                               #:script
-                              %encrypted-root-not-boot-installation-script))
+                              %encrypted-root-not-boot-installation-script
+                              #:target-size
+                              (* 1600 MiB)))
          (command (qemu-command* images)))
       (run-basic-test %encrypted-root-not-boot-os command
                       "encrypted-root-not-boot-os"
