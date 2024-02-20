@@ -67,9 +67,38 @@ Run IMPORTER with ARGS.\n"))
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
+  -i, --insert           insert packages into file alphabetically"))
+  (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
   (show-bug-report-information))
+
+(define (import-as-definitions importer args proc)
+  "Wrap package expressions from IMPORTER with 'define-public and invoke
+PROC callback."
+  (if (member importer importers)
+      (match (apply (resolve-importer importer) args)
+        ((and expr (or ('package _ ...)
+                       ('let _ ...)))
+         (proc (package->definition expr)))
+        ((and expr ('define-public _ ...))
+         (proc expr))
+        ((expressions ...)
+         (for-each (lambda (expr)
+                     (match expr
+                       ((and expr (or ('package _ ...)
+                                      ('let _ ...)))
+                        (proc (package->definition expr)))
+                       ((and expr ('define-public _ ...))
+                        (proc expr))))
+                   expressions))
+        (x
+         (leave (G_ "'~a' import failed~%") importer)))
+      (let ((hint (string-closest importer importers #:threshold 3)))
+        (report-error (G_ "~a: invalid importer~%") importer)
+        (when hint
+          (display-hint (G_ "Did you mean @code{~a}?~%") hint))
+        (exit 1))))
 
 (define-command (guix-import . args)
   (category packaging)
@@ -84,33 +113,28 @@ Run IMPORTER with ARGS.\n"))
      (exit 0))
     ((or ("-V") ("--version"))
      (show-version-and-exit "guix import"))
+    ((or ("-i" file importer args ...)
+         ("--insert" file importer args ...))
+     (let ((find-and-insert
+             (lambda (expr)
+               (match expr
+                 (('define-public term _ ...)
+                  (let ((source-properties
+                          (find-definition-insertion-location
+                            file term)))
+                    (if source-properties
+                      (insert-expression source-properties expr)
+                      (let ((port (open-file file "a")))
+                        (pretty-print-with-comments port expr)
+                        (newline port)
+                        (close-port port)))))))))
+       (import-as-definitions importer args find-and-insert)))
     ((importer args ...)
-     (if (member importer importers)
-         (let ((print (lambda (expr)
-                        (leave-on-EPIPE
-                         (pretty-print-with-comments (current-output-port) expr)))))
-           (match (apply (resolve-importer importer) args)
-             ((and expr (or ('package _ ...)
-                            ('let _ ...)))
-              (print (package->definition expr)))
-             ((and expr ('define-public _ ...))
-              (print expr))
-             ((? list? expressions)
-              (for-each (lambda (expr)
-                          (match expr
-                            ((and expr (or ('package _ ...)
-                                           ('let _ ...)))
-                             (print (package->definition expr)))
-                            ((and expr ('define-public _ ...))
-                             (print expr)))
-                          ;; Two newlines: one after the closing paren, and
-                          ;; one to leave a blank line.
-                          (newline) (newline))
-                        expressions))
-             (x
-              (leave (G_ "'~a' import failed~%") importer))))
-         (let ((hint (string-closest importer importers #:threshold 3)))
-           (report-error (G_ "~a: invalid importer~%") importer)
-           (when hint
-             (display-hint (G_ "Did you mean @code{~a}?~%") hint))
-           (exit 1))))))
+     (let ((print (lambda (expr)
+                    (leave-on-EPIPE
+                      (pretty-print-with-comments
+                        (current-output-port) expr)
+                      ;; Two newlines: one after the closing paren, and
+                      ;; one to leave a blank line.
+                      (newline) (newline)))))
+       (import-as-definitions importer args print)))))
