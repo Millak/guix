@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -765,27 +765,50 @@ current process."
                  (list (strerror err))
                  (list err)))))))
 
-(define (kernel? pid)
-  "Return #t if PID designates a \"kernel thread\" rather than a normal
-user-land process."
-  (let ((stat (call-with-input-file (format #f "/proc/~a/stat" pid)
-                (compose string-tokenize read-string))))
-    ;; See proc.txt in Linux's documentation for the list of fields.
-    (match stat
-      ((pid tcomm state ppid pgrp sid tty_nr tty_pgrp flags min_flt
-            cmin_flt maj_flt cmaj_flt utime stime cutime cstime
-            priority nice num_thread it_real_value start_time
-            vsize rss rsslim
-            (= string->number start_code) (= string->number end_code) _ ...)
-       ;; Got this obscure trick from sysvinit's 'killall5' program.
-       (and (zero? start_code) (zero? end_code))))))
+(define (linux-process-flags pid)                 ;copied from the Shepherd
+  "Return the process flags of @var{pid} (or'd @code{PF_} constants), assuming
+the Linux /proc file system is mounted; raise a @code{system-error} exception
+otherwise."
+  (call-with-input-file (string-append "/proc/" (number->string pid)
+                                       "/stat")
+    (lambda (port)
+      (define line
+        (read-string port))
+
+      ;; Parse like systemd's 'is_kernel_thread' function.
+      (let ((offset (string-index line #\))))     ;offset past 'tcomm' field
+        (match (and offset
+                    (string-tokenize (string-drop line (+ offset 1))))
+          ((state ppid pgrp sid tty-nr tty-pgrp flags . _)
+           (or (string->number flags) 0))
+          (_
+           0))))))
+
+;; Per-process flag defined in <linux/sched.h>.
+(define PF_KTHREAD #x00200000)                    ;I am a kernel thread
+
+(define (linux-kernel-thread? pid)
+  "Return true if @var{pid} is a Linux kernel thread."
+  (= PF_KTHREAD (logand (linux-process-flags pid) PF_KTHREAD)))
+
+(define pseudo-process?
+  (if (string-contains %host-type "linux")
+      (lambda (pid)
+        "Return true if @var{pid} denotes a \"pseudo-process\" such as a Linux
+kernel thread rather than a \"regular\" process.  A pseudo-process is one that
+may never terminate, even after sending it SIGKILL---e.g., kthreadd on Linux."
+        (catch 'system-error
+          (lambda ()
+            (linux-kernel-thread? pid))
+          (const #f)))
+      (const #f)))
 
 (define (processes)
   "Return the list of live processes."
   (sort (filter-map (lambda (file)
                       (let ((pid (string->number file)))
                         (and pid
-                             (not (kernel? pid))
+                             (not (pseudo-process? pid))
                              pid)))
                     (scandir "/proc"))
         <))
