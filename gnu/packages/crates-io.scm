@@ -30627,7 +30627,12 @@ over in-place and buffer-to-buffer modes of operation.")
        (uri (crate-uri "insta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z7v6mzm1djv9sn1k9j796xl2i3llwzj82klcz1cybsbwc5n0r2x"))))
+        (base32 "1z7v6mzm1djv9sn1k9j796xl2i3llwzj82klcz1cybsbwc5n0r2x"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
