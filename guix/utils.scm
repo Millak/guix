@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
 
 (define-module (guix utils)
   #:use-module (guix config)
+  #:autoload   (guix read-print) (object->string*)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
@@ -145,6 +147,7 @@
             go-to-location
             edit-expression
             delete-expression
+            insert-expression
 
             filtered-port
             decompressed-port
@@ -501,6 +504,14 @@ the trailing line is included in the edited expression."
 (define (delete-expression source-properties)
   "Delete the expression specified by SOURCE-PROPERTIES."
   (edit-expression source-properties (const "") #:include-trailing-newline? #t))
+
+(define (insert-expression source-properties expr)
+  "Insert EXPR before the top-level expression specified by
+SOURCE-PROPERTIES."
+  (let* ((expr (object->string* expr 0))
+         (insert (lambda (str)
+                   (string-append expr "\n\n" str))))
+    (edit-expression source-properties insert)))
 
 
 ;;;

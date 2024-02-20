@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -272,6 +273,19 @@ skip these tests."
                        (line     . 0)
                        (column   . 9))
                      string-reverse)
+    (call-with-input-file temp-file get-string-all)))
+
+(test-equal "insert-expression"
+  "(define-public package-1\n  'package)\n
+(define-public package-2\n  'package)\n"
+  (begin
+    (call-with-output-file temp-file
+      (lambda (port)
+        (display "(define-public package-2\n  'package)\n" port)))
+    (insert-expression `((filename . ,temp-file)
+                         (line     . 0)
+                         (column   . 0))
+                       `(define-public package-1 'package))
     (call-with-input-file temp-file get-string-all)))
 
 (test-equal "string-distance"
