@@ -245,14 +245,19 @@ endif()~%~%"
              (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
            (add-after 'install 'wrap-program
              ;; Ensure Python is available at runtime.
-             (lambda _
+             (lambda* (#:key inputs #:allow-other-keys)
                (wrap-program (string-append #$output "/bin/inkscape")
+                 `("PATH" prefix
+                   (,(dirname (search-input-file inputs "bin/python"))))
                  `("GUIX_PYTHONPATH" prefix
                    (,(getenv "GUIX_PYTHONPATH")))
                  ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Inkscape to load
                  ;; its own icons in pure environments.
                  `("GDK_PIXBUF_MODULE_FILE" =
-                   (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+                   (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                 ;; Ensure GObject Introspection typelibs are found.
+                 `("GI_TYPELIB_PATH" ":" prefix
+                   (,(getenv "GI_TYPELIB_PATH")))))))))
      (inputs
       (list (librsvg-for-system)        ;for the pixbuf loader
             autotrace
@@ -279,9 +284,16 @@ endif()~%~%"
             poppler
             popt
             potrace
+            ;; These Python dependencies are used by the Inkscape extension
+            ;; management system.  To verify that it is working, visit the
+            ;; Extensions -> Manage Extensions... menu.
+            python-appdirs
+            python-cssselect
             python-lxml
             python-numpy
+            python-pygobject
             python-pyserial
+            python-requests
             python-scour
             python-wrapper
             readline))
@@ -337,8 +349,7 @@ as the native format.")
                   `("GDK_PIXBUF_MODULE_FILE" =
                     (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))))
     (inputs (modify-inputs (package-inputs inkscape/stable)
-              (append imagemagick         ;for libMagickCore and libMagickWand
-                      python-cssselect))) ;to render qrcode
+              (append imagemagick)))    ;for libMagickCore and libMagickWand
     (native-inputs
      (modify-inputs (package-native-inputs inkscape/stable)
                     ;; Only use 1 imagemagick across the package build.
