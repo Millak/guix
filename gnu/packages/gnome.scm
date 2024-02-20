@@ -77,6 +77,7 @@
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9042,7 +9043,18 @@ logo='~a'~%" icon))))))
                   (for-each (lambda (desktop)
                               (symlink desktop (basename desktop)))
                             (find-files
-                             (string-append settings "/etc/xdg"))))))))))
+                             (string-append settings "/etc/xdg")))))))
+          ;; GDM needs some additional programs available via XDG_DATA_DIRS,
+          ;; to make accessibility settings and related services available.
+          (add-after 'install 'wrap-accessibility-dependencies
+            (lambda _
+              (wrap-program (string-append #$output "/bin/gdm")
+                `("XDG_DATA_DIRS" ":" prefix
+                  #$(map (lambda (input)
+                           (file-append (this-package-input input) "/share"))
+                         '("at-spi2-core"
+                           "dconf"
+                           "gnome-control-center")))))))))
     (native-inputs
      (list `(,glib "bin")               ;for glib-compile-schemas, etc.
            dconf
@@ -9065,7 +9077,12 @@ logo='~a'~%" icon))))))
            iso-codes
            libcanberra
            libgudev
-           linux-pam))
+           linux-pam
+
+           ;; accessibility dependencies
+           at-spi2-core
+           dconf
+           gnome-control-center))
     (synopsis "Display manager for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GDM/")
     (description
