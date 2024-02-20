@@ -998,19 +998,20 @@ OpenSSL should be used.")
 (define-public r-estimability
   (package
     (name "r-estimability")
-    (version "1.4.1")
+    (version "1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "estimability" version))
               (sha256
                (base32
-                "090i1xwdp4fwj8jr8nk13w49516lfkk5mq1w7l0lff9g8lgaynn6"))))
+                "0s6w8vnq0jc136d2mpf6pgg45rbxccrlsgdy89pgksnbaxhmyb5k"))))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/estimability")
     (synopsis "Tools for assessing estimability of linear predictions")
-    (description "Provides tools for determining estimability of linear
-functions of regression coefficients, and @code{epredict} methods that handle
-non-estimable cases correctly.")
+    (description "This package provides tools for determining estimability of
+linear functions of regression coefficients, and @code{epredict} methods that
+handle non-estimable cases correctly.")
     (license license:gpl2+)))
 
 (define-public r-labeling
