@@ -148,6 +148,7 @@
             edit-expression
             delete-expression
             insert-expression
+            find-definition-insertion-location
 
             filtered-port
             decompressed-port
@@ -512,6 +513,24 @@ SOURCE-PROPERTIES."
          (insert (lambda (str)
                    (string-append expr "\n\n" str))))
     (edit-expression source-properties insert)))
+
+(define (find-definition-insertion-location file term)
+  "Search in FILE for a top-level public definition whose defined term
+alphabetically succeeds TERM. Return the location if found, or #f
+otherwise."
+  (let ((search-term (symbol->string term)))
+    (call-with-input-file file
+      (lambda (port)
+        (do ((syntax (read-syntax port)
+                     (read-syntax port)))
+          ((match (syntax->datum syntax)
+             (('define-public current-term _ ...)
+              (string> (symbol->string current-term)
+                       search-term))
+             ((? eof-object?) #t)
+             (_ #f))
+           (and (not (eof-object? syntax))
+                (syntax-source syntax))))))))
 
 
 ;;;

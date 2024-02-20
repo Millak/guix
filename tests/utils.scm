@@ -288,6 +288,20 @@ skip these tests."
                        `(define-public package-1 'package))
     (call-with-input-file temp-file get-string-all)))
 
+(test-equal "find-definition-insertion-location"
+  (list `((filename . ,temp-file) (line . 0) (column . 0))
+        `((filename . ,temp-file) (line . 5) (column . 0))
+        #f)
+  (begin
+    (call-with-output-file temp-file
+      (lambda (port)
+        (display "(define-public package-1\n  'foo)\n\n" port)
+        (display "(define foo 'bar)\n\n" port)
+        (display "(define-public package-2\n  'baz)\n" port)))
+    (map (lambda (term)
+           (find-definition-insertion-location temp-file term))
+         (list 'package 'package-1 'package-2))))
+
 (test-equal "string-distance"
   '(0 1 1 5 5)
   (list
