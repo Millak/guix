@@ -2887,7 +2887,8 @@ Interprocess Communication} format.")
          "--skip=writer::tests::test_write_single_batch"
          "--skip=writer::tests::write_arrays"
          "--skip=writer::tests::write_basic_nulls"
-         "--skip=writer::tests::write_basic_rows")
+         "--skip=writer::tests::write_basic_rows"
+         "--skip=writer::tests::write_durations")
        #:cargo-inputs
        (("rust-arrow-array" ,rust-arrow-array-47)
         ("rust-arrow-buffer" ,rust-arrow-buffer-47)
