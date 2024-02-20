@@ -38,6 +38,7 @@
 ;;; Copyright © 2022-2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
+;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1006,6 +1007,34 @@ work with FlowSOM and flow-cytometry use-cases.")
     (description
      "This package provides tools to calculate the Earth Mover's
 Distance (EMD).")
+    (license license:expat)))
+
+(define-public r-fuzzyjoin
+  (package
+    (name "r-fuzzyjoin")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fuzzyjoin" version))
+       (sha256
+        (base32 "0s5rhqz8vih4za3a8k1k7i3gq8hj0w7bqnakw40k6mg87jvyzsj7"))))
+    (properties `((upstream-name . "fuzzyjoin")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-geosphere
+                             r-purrr
+                             r-stringdist
+                             r-stringr
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/dgrtwo/fuzzyjoin")
+    (synopsis "Join tables together on inexact matching")
+    (description
+     "Join tables together based not on whether columns match exactly, but
+whether they are similar by some comparison.  Implementations include string
+distance and regular expression matching.")
     (license license:expat)))
 
 (define-public r-gfonts
