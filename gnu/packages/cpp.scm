@@ -3322,6 +3322,66 @@ the std::optional for C++11/14/17, with support for monadic operations added in
 C++23.")
     (license license:cc0)))
 
+(define-public type-safe
+  (package
+    (name "type-safe")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/foonathan/type_safe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qb4g9x22m8w9d7n9793cbig5a06wlhzqwlr276yxvz5yyzsxjfg"))
+       (modules '((guix build utils)))
+       ;; Remove bundled debug_assert.
+       ;; Keep external/external.cmake because it enables
+       ;; TYPE_SAFE_HAS_IMPORTED_TARGETS, required for installing the CMake
+       ;; config files.
+       (snippet #~(delete-file-recursively "external/debug_assert"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DTYPE_SAFE_BUILD_TEST_EXAMPLE=ON"
+                   "-DTYPE_SAFE_BUILD_DOC=OFF") ; needs standardese
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-dependencies
+                 (lambda _
+                   (substitute*
+                       (list "include/type_safe/detail/assert.hpp"
+                             "include/type_safe/detail/force_inline.hpp")
+                     (("#include <debug_assert.hpp>")
+                      (string-append "#include <"
+                                     #$(this-package-input "debug-assert")
+                                     "/include/debug_assert.hpp>")))
+                   (substitute* "test/CMakeLists.txt"
+                     (("^if\\(NOT EXISTS .*/catch\\.hpp\\)") "if(FALSE)")
+                     (("^(target_include_directories\\(type_safe_test) .*"
+                       all prefix)
+                      (string-append all prefix " PRIVATE \""
+                                     #$(this-package-native-input "catch2")
+                                     "/include/catch2\")\n")))))
+               (add-after 'install 'fix-cmake-config
+                 (lambda _
+                   (substitute* (string-append
+                                 #$output
+                                 "/lib/cmake/type_safe/type_safe-config.cmake")
+                     (("^(find_dependency\\(debug_assert)\\)" _ prefix)
+                      (string-append prefix " PATHS \""
+                                     #$(this-package-input "debug-assert")
+                                     "/lib/cmake/debug_assert\")"))))))))
+    (native-inputs (list catch2))
+    (inputs (list debug-assert))
+    (home-page "https://github.com/foonathan/type_safe")
+    (synopsis "C++ abstractions for preventing bugs via the type system")
+    (description "type_safe is a C++ header-only library which provides
+abstractions for defining more appropriate types, thus allowing C++'s type
+system to prevent more bugs.")
+    (license license:expat)))
+
 (define-public cpp-ada-url-parser
   (package
     (name "cpp-ada-url-parser")
