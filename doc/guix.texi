@@ -14342,7 +14342,7 @@ statistical and graphical environment}.
 
 Information is extracted from the @file{DESCRIPTION} file of the package.
 
-The command command below imports metadata for the Cairo R package:
+The command below imports metadata for the Cairo R package:
 
 @example
 guix import cran Cairo
@@ -14402,10 +14402,10 @@ Information about the package is obtained from the TeX Live package
 database, a plain text file that is included in the
 @code{texlive-scripts} package.  The source code is downloaded from
 possibly multiple locations in the SVN repository of the Tex Live
-project.
+project.  Note that therefore SVN must be installed and in @code{$PATH};
+run @code{guix install subversion} if needed.
 
-The command command below imports metadata for the @code{fontspec}
-TeX package:
+The command below imports metadata for the @code{fontspec} TeX package:
 
 @example
 guix import texlive fontspec
