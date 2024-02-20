@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix scripts import)
+  #:use-module (guix import utils)
   #:use-module (guix ui)
   #:use-module (guix scripts)
   #:use-module (guix read-print)
@@ -89,12 +91,18 @@ Run IMPORTER with ARGS.\n"))
                          (pretty-print-with-comments (current-output-port) expr)))))
            (match (apply (resolve-importer importer) args)
              ((and expr (or ('package _ ...)
-                            ('let _ ...)
-                            ('define-public _ ...)))
+                            ('let _ ...)))
+              (print (package->definition expr)))
+             ((and expr ('define-public _ ...))
               (print expr))
              ((? list? expressions)
               (for-each (lambda (expr)
-                          (print expr)
+                          (match expr
+                            ((and expr (or ('package _ ...)
+                                           ('let _ ...)))
+                             (print (package->definition expr)))
+                            ((and expr ('define-public _ ...))
+                             (print expr)))
                           ;; Two newlines: one after the closing paren, and
                           ;; one to leave a blank line.
                           (newline) (newline))
