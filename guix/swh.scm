@@ -54,6 +54,7 @@
             visit-snapshot-url
             visit-status
             visit-number
+            visit-type
             visit-snapshot
 
             snapshot?
@@ -312,6 +313,7 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (url visit-url "origin_visit_url")
   (snapshot-url visit-snapshot-url "snapshot_url" string*) ;string | #f
   (status visit-status "status" string->symbol)   ;'full | 'partial | 'ongoing
+  (type   visit-type "type" string->symbol)       ;'git | 'git-checkout | ...
   (number visit-number "visit"))
 
 ;; <https://archive.softwareheritage.org/api/1/snapshot/4334c3ed4bb208604ed780d8687fe523837f1bd1/>
