@@ -454,6 +454,27 @@ match datasets quickly.  It also contains functions for various cosmological
 calculations.")
     (license license:gpl3)))
 
+(define-public r-cetcolor
+  (package
+    (name "r-cetcolor")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cetcolor" version))
+       (sha256
+        (base32 "0kygdcr9ldanr0z4qpygwh0padki7s2ad0j6myky601g4228z79q"))))
+    (properties `((upstream-name . "cetcolor")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/coatless-rpkg/cetcolor")
+    (synopsis "CET perceptually uniform color maps")
+    (description
+     "This package provides a collection of perceptually uniform color maps
+made by Peter Kovesi (2015) \"Good Colour Maps: How to Design Them\"
+<arXiv:1509.03700> at the Centre for Exploration Targeting (CET).")
+    (license license:cc-by-sa4.0)))
+
 ;; The package sources include multiple non-minified JavaScript files and the
 ;; v5.1.0 variant of d3.js.  The d3.js file is not minified.
 (define-public r-chromomap
