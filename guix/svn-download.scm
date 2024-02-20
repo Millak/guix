@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2016, 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2019, 2021-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -94,12 +94,14 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
     (with-imported-modules
         (source-module-closure '((guix build svn)
                                  (guix build download-nar)
-                                 (guix build utils)))
+                                 (guix build utils)
+                                 (guix swh)))
       (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
                              guile-lzlib)
         #~(begin
             (use-modules (guix build svn)
                          (guix build download-nar)
+                         (guix swh)
                          (ice-9 match))
 
             (or (svn-fetch (getenv "svn url")
@@ -111,7 +113,10 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                                           (_ #f))
                            #:user-name (getenv "svn user name")
                            #:password (getenv "svn password"))
-                (download-nar #$output))))))
+                (download-nar #$output)
+                (parameterize ((%verify-swh-certificate? #f))
+                  (swh-download-directory-by-nar-hash #$hash '#$hash-algo
+                                                      #$output)))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
@@ -174,13 +179,15 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
     (with-imported-modules
         (source-module-closure '((guix build svn)
                                  (guix build download-nar)
-                                 (guix build utils)))
+                                 (guix build utils)
+                                 (guix swh)))
       (with-extensions (list guile-json guile-gnutls   ;for (guix swh)
                              guile-lzlib)
         #~(begin
             (use-modules (guix build svn)
                          (guix build utils)
                          (guix build download-nar)
+                         (guix swh)
                          (srfi srfi-1)
                          (ice-9 match))
 
@@ -206,7 +213,14 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                 (begin
                   (when (file-exists? #$output)
                     (delete-file-recursively #$output))
-                  (download-nar #$output)))))))
+                  (or (download-nar #$output)
+                      (parameterize ((%verify-swh-certificate? #f))
+                        ;; SWH keeps HASH as an ExtID for the combination of
+                        ;; files/directories, which allows us to retrieve the
+                        ;; entire combination at once:
+                        ;; <https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/issues/5263>.
+                        (swh-download-directory-by-nar-hash
+                         #$hash '#$hash-algo #$output)))))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
