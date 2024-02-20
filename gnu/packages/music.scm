@@ -234,12 +234,11 @@
                                 #$(cc-for-target) " -o")))
               (chdir "src")))
           (add-after 'install 'wrap-program
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (wrap-program (string-append (assoc-ref outputs "out")
-                                           "/bin/alsa-scarlett-gui")
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/alsa-scarlett-gui")
                 ;; For GtkFileChooserDialog.
                 `("GSETTINGS_SCHEMA_DIR" =
-                  (,(string-append (assoc-ref inputs "gtk")
+                  (,(string-append #$(this-package-input "gtk")
                                    "/share/glib-2.0/schemas"))))))
           (delete 'configure))))
     (inputs
