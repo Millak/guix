@@ -24631,14 +24631,14 @@ sets of URLs.")
 (define-public r-ggforce
   (package
     (name "r-ggforce")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggforce" version))
        (sha256
         (base32
-         "0wqq8l7lq96k4w0vq12jcg7clvgia8s35jjbqq1s0py4cgxijhml"))))
+         "1a2i1rl27yqh8kxjpphwcv05p19l2aw07q9gxl4x8iv8xpkb0if1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
