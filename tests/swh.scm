@@ -109,6 +109,80 @@
                  (directory-entry-length entry)))
          (lookup-directory "123"))))
 
+(test-equal "lookup-origin-revision"
+  '("cd86c72084993d9ef26fc9e24b73cea612b8c97b"
+    "d173c707ee88e3c89401ad77fafa65fcd9e9f5be")
+  (let ()
+    ;; Make sure that 'lookup-origin-revision' does the job, and in particular
+    ;; that it doesn't stop until it has found an actual revision:
+    ;; 'git-checkout visits point to directories instead of revisions.
+    ;; See <https://issues.guix.gnu.org/69070>.
+    (define visits
+      ;; Two visits of differing types: the first visit (type 'git-checkout')
+      ;; points to a directory, the second one (type 'git') points to a
+      ;; revision.
+      "[ {
+    \"origin\": \"https://example.org/repo.git\",
+    \"visit\": 1,
+    \"type\": \"git-checkout\",
+    \"date\": \"2020-05-17T21:43:45.422977+00:00\",
+    \"status\": \"full\",
+    \"metadata\": {},
+    \"type\": \"git-checkout\",
+    \"origin_visit_url\": \"/visit/42\",
+    \"snapshot_url\": \"/snapshot/1\"
+  }, {
+    \"origin\": \"https://example.org/repo.git\",
+    \"visit\": 2,
+    \"type\": \"git\",
+    \"date\": \"2020-05-17T21:43:49.422977+00:00\",
+    \"status\": \"full\",
+    \"metadata\": {},
+    \"type\": \"git\",
+    \"origin_visit_url\": \"/visit/41\",
+    \"snapshot_url\": \"/snapshot/2\"
+  } ]")
+    (define snapshot-for-git-checkout
+      "{ \"id\": 42,
+         \"branches\": { \"1.3.2\": {
+           \"target\": \"e4a4be18fae8d9c6528abff3bc9088feb19a76c7\",
+           \"target_type\": \"directory\",
+           \"target_url\": \"/directory/e4a4be18fae8d9c6528abff3bc9088feb19a76c7\"
+         }}
+       }")
+    (define snapshot-for-git
+      "{ \"id\": 42,
+         \"branches\": { \"1.3.2\": {
+           \"target\": \"e4a4be18fae8d9c6528abff3bc9088feb19a76c7\",
+           \"target_type\": \"revision\",
+           \"target_url\": \"/revision/e4a4be18fae8d9c6528abff3bc9088feb19a76c7\"
+         }}
+       }")
+    (define revision
+      "{ \"author\": {},
+         \"committer\": {},
+         \"committer_date\": \"2018-05-17T21:43:49.422977+00:00\",
+         \"date\": \"2018-05-17T21:43:49.422977+00:00\",
+         \"directory\": \"d173c707ee88e3c89401ad77fafa65fcd9e9f5be\",
+         \"directory_url\": \"/directory/d173c707ee88e3c89401ad77fafa65fcd9e9f5be\",
+         \"id\": \"cd86c72084993d9ef26fc9e24b73cea612b8c97b\",
+         \"merge\": false,
+         \"message\": \"Fix.\",
+         \"parents\": [],
+         \"type\": \"what type?\"
+       }")
+
+    (with-http-server `((200 ,%origin)
+                        (200 ,visits)
+                        (200 ,snapshot-for-git-checkout)
+                        (200 ,snapshot-for-git)
+                        (200 ,revision))
+      (parameterize ((%swh-base-url (%local-url)))
+        (let ((revision (lookup-origin-revision "https://example.org/repo.git"
+                                                "1.3.2")))
+          (list (revision-id revision)
+                (revision-directory revision)))))))
+
 (test-equal "lookup-directory-by-nar-hash"
   "swh:1:dir:84a8b34591712c0a90bab0af604188bcd1fe3153"
   (with-json-result %external-id
