@@ -2572,9 +2572,21 @@ Python.")
                          python-responses python-mock))
     (home-page "https://github.com/EGA-archive/ega-download-client")
     (synopsis "EGA download client")
-    (description
-     "PyEGA3 is a tool for viewing and downloading files from authorized EGA
-datasets.")
+    (description "PyEGA3 is a tool for viewing and downloading files from
+authorized EGA datasets.  It uses the EGA data API and has several key
+features:
+
+@itemize
+@item Files are transferred over secure https connections and received
+  unencrypted, so no need for decryption after download.
+@item Downloads resume from where they left off in the event that the
+  connection is interrupted.
+@item Supports file segmenting and parallelized download of segments,
+  improving overall performance.
+@item After download completes, file integrity is verified using checksums.
+@item Implements the GA4GH-compliant htsget protocol for download of genomic
+  ranges for data files with accompanying index files.
+@end itemize\n")
     (license license:asl2.0)))
 
 (define-public python-scdamandtools
@@ -4093,39 +4105,7 @@ omics data.")
     (license license:bsd-3)))
 
 (define-public python-pyega3
-  (package
-    (name "python-pyega3")
-    (version "3.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyega3" version))
-              (sha256
-               (base32
-                "1k736in8g27rarx65ym9xk50x53zjg75h37bb8ljynxv04rypx2q"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; The tests require network access.
-    (native-inputs
-     (list python-psutil python-htsget))
-    (propagated-inputs
-     (list python-requests python-tqdm python-urllib3 python-responses))
-    (home-page "https://github.com/EGA-archive/ega-download-client")
-    (synopsis "Python client for EGA")
-    (description "This package is a python-based tool for viewing and
-downloading files from authorized EGA datasets.  It uses the EGA data API and
-has several key features:
-@itemize
-@item Files are transferred over secure https connections and received
-  unencrypted, so no need for decryption after download.
-@item Downloads resume from where they left off in the event that the
-  connection is interrupted.
-@item Supports file segmenting and parallelized download of segments,
-  improving overall performance.
-@item After download completes, file integrity is verified using checksums.
-@item Implements the GA4GH-compliant htsget protocol for download of genomic
-  ranges for data files with accompanying index files.
-@end itemize\n")
-    (license license:asl2.0)))
+  (deprecated-package "python-pyega3" python-ega-download-client))
 
 (define-public python-pysam
   (package
