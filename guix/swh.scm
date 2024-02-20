@@ -474,10 +474,11 @@ and use of ALGORITHM."
                              hash)
          external-id-target))
 
-(define (origin-visits origin)
-  "Return the list of visits of ORIGIN, a record as returned by
-'lookup-origin'."
-  (call (swh-url (origin-visits-url origin))
+(define* (origin-visits origin #:optional (max 10))
+  "Return the list of the up to MAX latest visits of ORIGIN, a record as
+returned by 'lookup-origin'."
+  (call (string-append (swh-url (origin-visits-url origin))
+                       "?per_page=" (number->string max))
         (lambda (port)
           (map json->visit (vector->list (json->scm port))))))
 
