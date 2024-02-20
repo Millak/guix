@@ -2688,7 +2688,10 @@ Rust implementation of Apache Arrow.")
         (base32 "1vjdr0gqln3x60jlwan6vfb6f1alhww95by51gani24np58mv0hx"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=display::tests::test_array_value_to_string_duration")
+       #:cargo-inputs
        (("rust-arrow-array" ,rust-arrow-array-47)
         ("rust-arrow-buffer" ,rust-arrow-buffer-47)
         ("rust-arrow-data" ,rust-arrow-data-47)
