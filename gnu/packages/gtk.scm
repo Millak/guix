@@ -2774,12 +2774,12 @@ popovers.")
         (base32 "141fm7mbqib0011zmkv3g8vxcjwa7hypmq71ahdyhnj2sjvy4a67"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib-bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config
+           python))
     (inputs
      (list cairo glib gtk+ python-pygobject))
     (arguments
@@ -2795,8 +2795,7 @@ popovers.")
                                (assoc-ref inputs "python-pygobject")
                                "\\\", \\\""
                                (assoc-ref outputs "out")
-                               "\\\"))")))
-             #t)))))
+                               "\\\"))"))))))))
     (synopsis "Canvas widget for GTK+")
     (description "GooCanvas is a canvas widget for GTK+ that uses the cairo 2D
 library for drawing.")
