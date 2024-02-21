@@ -3041,36 +3041,28 @@ using a system-independent interface.")
     (license license:expat)))
 
 (define-public python-pyportmidi
-  (package
-    (name "python-pyportmidi")
-    (version (package-version portmidi))
-    (source (package-source portmidi))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; no tests included
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir "pm_python") #t))
-         (add-after 'enter-dir 'fix-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               ;; Use Python 3 syntax
-               (("print (\".*\")" _ text)
-                (string-append "print(" text ")\n"))
-               ;; TODO.txt and CHANGES.txt don't exist
-               (("CHANGES =.*") "CHANGES = \"\"\n")
-               (("TODO =.*") "TODO = \"\"\n"))
-             #t)))))
-    (inputs
-     (list portmidi alsa-lib))
-    (native-inputs
-     (list python-cython unzip))
-    (home-page "https://portmedia.sourceforge.net/portmidi/")
-    (synopsis "Python bindings to PortMidi")
-    (description
-     "This package provides Python bindings to the PortMidi library.")
-    (license license:expat)))
+  (let ((commit "d9e5ee00b208b09618fa0d4a5bbce3c9c077b386")
+        (revision "0"))
+    (package
+      (name "python-pyportmidi")
+      (version (git-version "0.0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/PortMidi/pm_python")
+               (commit commit)))
+         (sha256
+          (base32 "1jvp9na8d1hw46w9ybhkimbavfb3ysw7hp30cbk6dj40k5y5vgvz"))
+         (file-name (git-file-name name version))))
+      (build-system python-build-system)
+      (inputs (list portmidi alsa-lib))
+      (native-inputs (list python-cython))
+      (home-page "https://github.com/PortMidi")
+      (synopsis "Python bindings to PortMidi")
+      (description
+       "This package provides Python bindings to the PortMidi library.")
+      (license license:expat))))
 
 (define-public frescobaldi
   (package
