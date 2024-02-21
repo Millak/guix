@@ -6,7 +6,7 @@
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2014, 2015 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1201,12 +1201,14 @@ with the Linux kernel.")
                 "1zvp0qdfbdyqrzydz18d9zg3n5ygy8ps7cmny1bvsp8h1q05c99f"))
               (patches
                (cons (search-patch "glibc-2.33-riscv64-miscompilation.patch")
-                     ;; Remove a patch that's become irrelevant and that does not
-                     ;; apply to this version.
-                     (remove (lambda (patch)
-                               (string=? (basename patch)
-                                         "glibc-hurd-clock_gettime_monotonic.patch"))
-                             (origin-patches (package-source glibc)))))))
+                     ;; Remove patches that are irrelevant or do not apply to
+                     ;; this version.
+                     (remove
+                      (lambda (patch)
+                        (member (basename patch)
+                                '("glibc-2.35-CVE-2023-4911.patch"
+                                  "glibc-hurd-clock_gettime_monotonic.patch")))
+                             (origin-patches (package-source glibc-2.35)))))))
     (arguments
      (substitute-keyword-arguments (package-arguments glibc)
        ((#:configure-flags flags ''())
