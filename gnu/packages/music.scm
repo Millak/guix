@@ -3040,6 +3040,39 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
 using a system-independent interface.")
     (license license:expat)))
 
+(define-public portmidi-2
+  (package
+    (name "portmidi")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PortMidi/portmidi")
+             (commit "b808babecdc5d05205467dab5c1006c5ac0fdfd4")))
+       (sha256
+        (base32 "05a3dfpgbpcg08p8a3acjrrd1qy5hvvray2kz2asygy1vf3mx85s"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f       ;Tests are interactive and can be found in the
+       #:configure-flags ;pm_tests/ directory of the build tree.
+       (list "-DBUILD_PORTMIDI_TESTS=On")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-version
+                    (lambda _
+                      (substitute* "CMakeLists.txt"
+                        (("2.0.3")
+                         (version))))))))
+    (inputs (list alsa-lib))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/PortMidi/")
+    (synopsis "Library for MIDI I/O")
+    (description
+     "PortMidi is a library supporting real-time input and output of MIDI data
+using a system-independent interface.")
+    (license license:expat)))
+
 (define-public python-pyportmidi
   (let ((commit "d9e5ee00b208b09618fa0d4a5bbce3c9c077b386")
         (revision "0"))
@@ -3056,7 +3089,7 @@ using a system-independent interface.")
           (base32 "1jvp9na8d1hw46w9ybhkimbavfb3ysw7hp30cbk6dj40k5y5vgvz"))
          (file-name (git-file-name name version))))
       (build-system python-build-system)
-      (inputs (list portmidi alsa-lib))
+      (inputs (list portmidi-2 alsa-lib))
       (native-inputs (list python-cython))
       (home-page "https://github.com/PortMidi")
       (synopsis "Python bindings to PortMidi")
@@ -3091,7 +3124,7 @@ using a system-independent interface.")
     (inputs
      (list lilypond
            poppler
-           portmidi
+           portmidi-2
            python-ly
            python-poppler-qt5
            python-pyportmidi
