@@ -17536,6 +17536,61 @@ Alternatively, the @code{modify-services} macro can be used:
   (delete avahi-service-type))
 @end lisp
 
+@unnumberedsubsec Inspecting Services
+
+@cindex troubleshooting, for system services
+@cindex inspecting system services
+@cindex system services, inspecting
+As you work on your system configuration, you might wonder why some
+system service doesn't show up or why the system is not as you expected.
+There are several ways to inspect and troubleshoot problems.
+
+@cindex dependency graph, of Shepherd services
+First, you can inspect the dependency graph of Shepherd services like
+so:
+
+@example
+guix system shepherd-graph /etc/config.scm | \
+  guix shell xdot -- xdot -
+@end example
+
+This lets you visualize the Shepherd services as defined in
+@file{/etc/config.scm}.  Each box is a service as would be shown by
+@command{sudo herd status} on the running system, and each arrow denotes
+a dependency (in the sense that if service @var{A} depends on @var{B},
+then @var{B} must be started before @var{A}).
+
+@cindex extension graph, of services
+Not all ``services'' are Shepherd services though, since Guix System
+uses a broader definition of the term (@pxref{Services}).  To visualize
+system services and their relations at a higher level, run:
+
+@example
+guix system extension-graph /etc/config.scm | \
+  guix shell xdot -- xdot -
+@end example
+
+This lets you view the @dfn{service extension graph}: how services
+``extend'' each other, for instance by contributing to their
+configuration.  @xref{Service Composition}, to understand the meaning of
+this graph.
+
+Last, you may also find it useful to inspect your system configuration
+at the REPL (@pxref{Using Guix Interactively}).  Here is an example
+session:
+
+@example
+$ guix repl
+scheme@@(guix-user)> ,use (gnu)
+scheme@@(guix-user)> (define os (load "config.scm"))
+scheme@@(guix-user)> ,pp (map service-kind (operating-system-services os))
+$1 = (#<service-type localed cabba93>
+      @dots{})
+@end example
+
+@xref{Service Reference}, to learn about the Scheme interface to
+manipulate and inspect services.
+
 @unnumberedsubsec Instantiating the System
 
 @cindex system instantiation
