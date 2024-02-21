@@ -41,7 +41,7 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
-;;; Copyright © 2021, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
@@ -213,7 +213,9 @@ the leaves of a full binary tree.")
        (file-name (git-file-name name version))
        (sha256 (base32 "11sg9x08zl2nr7a723h462knz5lf58sgvkhv1mgc9z3hhkhvbsja"))))
     (build-system meson-build-system)
-    (native-inputs (list pkg-config scdoc))
+    (native-inputs (list pkg-config scdoc
+                         ;; for wayland-scanner
+                         wayland))
     (inputs (list wayland wlroots-0.16 libxkbcommon))
     (home-page "https://github.com/cage-kiosk/cage")
     (synopsis "Wayland kiosk")
