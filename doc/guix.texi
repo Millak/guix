@@ -732,14 +732,17 @@ ready to use it.
 
 @cindex installing Guix from binaries
 @cindex installer script
-This section describes how to install Guix on an arbitrary system from a
-self-contained tarball providing binaries for Guix and for all its
-dependencies.  This is often quicker than installing from source, which
-is described in the next sections.  The only requirement is to have
-GNU@tie{}tar and Xz.
+This section describes how to install Guix from a self-contained tarball
+providing binaries for Guix and for all its dependencies.  This is often
+quicker than installing from source, which is described in the next
+sections.  Binary installation requires a system using a Hurd or Linux
+kernel; the GNU@tie{}tar and Xz commands must also be available.
+
+@quotation Important
+This section only applies to systems without Guix.  Following it for
+existing Guix installations will overwrite important system files.
 
 @c Note duplicated from the ``Installation'' node.
-@quotation Note
 We recommend the use of this
 @uref{https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh,
 shell installer script}.  The script automates the download, installation, and
