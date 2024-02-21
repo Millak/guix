@@ -23994,6 +23994,27 @@ releases/download/v0.10.1/mathquill-0.10.1.tgz")
 authoring books and technical documents with R Markdown.")
     (license license:gpl3)))
 
+(define-public r-options
+  (package
+    (name "r-options")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "options" version))
+       (sha256
+        (base32 "0pprbp2pxvgh120f8dahswws44gpdm4f4nlq3h3nvqrlhnspwnb8"))))
+    (properties `((upstream-name . "options")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://dgkf.github.io/options/")
+    (synopsis "Simple, consistent package options")
+    (description
+     "This package provides simple mechanisms for defining and interpreting
+package options.  It provides helpers for interpreting environment variables,
+global options, defining default values and more.")
+    (license license:expat)))
+
 (define-public r-optparse
   (package
     (name "r-optparse")
