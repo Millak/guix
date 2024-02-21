@@ -1907,16 +1907,16 @@ text rendering library.")
                 (string-append out "/share/doc")
                 (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("glib:bin" ,glib "bin")
-       ("m4" ,m4)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("xsltproc" ,libxslt)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list graphviz
+           doxygen
+           `(,glib "bin")
+           m4
+           mm-common
+           perl
+           pkg-config
+           python
+           libxslt
+           xorg-server-for-tests))
     (propagated-inputs
      (list cairomm glibmm gtk pangomm))
     (synopsis "C++ Interfaces for GTK+ and GNOME")
