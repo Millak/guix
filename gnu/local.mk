@@ -1808,7 +1808,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-feedparser-missing-import.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
-  %D%/packages/patches/python-poppler-qt5-fix-build.patch	\
   %D%/packages/patches/python-pyreadstat-link-libiconv.patch	\
   %D%/packages/patches/python-pyls-black-41.patch		\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\

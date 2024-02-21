@@ -434,40 +434,25 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 (define-public python-poppler-qt5
   (package
     (name "python-poppler-qt5")
-    (version "21.1.0")
+    (version "21.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-poppler-qt5" version))
-        (sha256
-         (base32
-          "0b82gm4i75q5v19kfbq0h4y0b2vcwr2213zkhxh6l0h45kdndmxd"))
-       (patches (search-patches "python-poppler-qt5-fix-build.patch"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-poppler-qt5" version))
+       (sha256
+        (base32 "1q3gvmsmsq3llf9mcbhlkryrgprqrw2z7wmnvagy180f3y2fhxxl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; There are no tests.  The check phase just causes a rebuild.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               ;; This check always fails, so disable it.
-               (("if not check_qtxml\\(\\)")
-                "if True"))
-             ;; We need to pass an extra flag here.  This cannot be in
-             ;; configure-flags because it should not be passed for the
-             ;; installation phase.
-             ((@@ (guix build python-build-system) call-setuppy)
-              "build_ext" (list (string-append "--pyqt-sip-dir="
-                                               (assoc-ref inputs "python-pyqt")
-                                               "/share/sip")) #t))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list python-sip-4 python-pyqt poppler-qt5 qtbase-5))
-    (home-page "https://pypi.org/project/python-poppler-qt5/")
-    (synopsis "Python bindings for Poppler-Qt5")
+     `(;; The sipbuild.api backend builder expects a Python dictionary as per
+       ;; https://peps.python.org/pep-0517/#config-settings, but we
+       ;; give it lists and it fails.  The next line is a workaround.
+       #:configure-flags '#nil
+       #:tests? #f))
+    (native-inputs (list pkg-config))
+    (inputs (list python-sip python-pyqt-builder python-pyqt poppler-qt5
+                  qtbase-5))
+    (home-page "https://github.com/frescobaldi/python-poppler-qt5")
+    (synopsis "Python binding to Poppler-Qt5")
     (description
      "This package provides Python bindings for the Qt5 interface of the
 Poppler PDF rendering library.")
