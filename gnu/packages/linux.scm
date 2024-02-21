@@ -3005,7 +3005,7 @@ configuration files that can be used for specific audio hardware.")
 (define-public alsa-lib
   (package
     (name "alsa-lib")
-    (version "1.2.4")
+    (version "1.2.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3013,7 +3013,7 @@ configuration files that can be used for specific audio hardware.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1xq8d48wfy59qw4x7383j32n8j5njndw5hcgnmlg9pvclphlnmgp"))))
+                "0kdvjlknc50fwfdkxj0z12xbz21skb3gnwlh6lvsvycmp5ljygwz"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath="
