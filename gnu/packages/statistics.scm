@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Vicente Vera Parra <vicentemvp@gmail.com>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -6808,8 +6808,8 @@ Java package that provides routines for various statistical distributions.")
     (license license:gpl2+)))
 
 (define-public emacs-ess
-  (let ((commit "3691ecc642eab5d016887e42699648e0eeeef566")
-        (version "18.10.2")
+  (let ((commit "ab2faeca1ba6c456333312c58f58ef9e5ef4aa8b")
+        (version "24.01.1")
         (revision "1"))
     (package
       (name "emacs-ess")
@@ -6821,7 +6821,7 @@ Java package that provides routines for various statistical distributions.")
                (url "https://github.com/emacs-ess/ESS")
                (commit commit)))
          (sha256
-          (base32 "19p8djsbgvahpsx1w8i6h3qvpbdr4isjwm3wi82yk2648ri0qsq1"))
+          (base32 "0jfdfqpa3x1zm65cllkzhqir057xd3hxi4z2ddii1i26zy56iikf"))
          (file-name (git-file-name name version))
          (modules '((guix build utils)))
          (snippet
@@ -6839,9 +6839,6 @@ Java package that provides routines for various statistical distributions.")
               ;; Stop install-info from trying to update the info directory.
               (substitute* "doc/Makefile"
                 ((".*/dir.*") ""))
-              ;; Fix r-help-mode test.
-              (substitute* "test/ess-test-r.el"
-                (("\\(equal ess-help-object \"plot.default\")") "t"))
               ;; Avoid generating ess-autoloads.el twice.
               (substitute* "Makefile"
                 (("all: lisp doc etc autoloads")
@@ -6871,9 +6868,6 @@ Java package that provides routines for various statistical distributions.")
           #~(modify-phases %standard-phases
               (delete 'configure)
               (add-before 'check 'skip-failing-tests
-                ;; The command-without-trailing-newline-test and other
-                ;; tests fail for unknown reasons (see:
-                ;; https://github.com/emacs-ess/ESS/issues/1272).
                 (lambda _
                   (let-syntax
                       ((disable-tests
@@ -6885,22 +6879,7 @@ Java package that provides routines for various statistical distributions.")
                              (((string-append "^\\(ert-deftest " test-name ".*")
                                all)
                               (string-append all "(skip-unless nil)\n"))
-                             ...))))
-                       (disable-etests  ;different test syntax
-                        (syntax-rules ()
-                          ((_ file ())
-                           (syntax-error "test names list must not be empty"))
-                          ((_ file (test-name ...))
-                           (emacs-batch-edit-file file
-                             '(progn
-                               (mapc (lambda (test)
-                                       (goto-char (point-min))
-                                       (search-forward
-                                        (format "etest-deftest %s " test))
-                                       (beginning-of-line)
-                                       (kill-sexp))
-                                     (list test-name ...))
-                               (basic-save-buffer)))))))
+                             ...)))))
                     (disable-tests (list "test/ess-test-inf.el"
                                          "test/ess-test-r.el")
                                    ("ess--derive-connection-path"
@@ -6910,15 +6889,10 @@ Java package that provides routines for various statistical distributions.")
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
                                     "ess-set-working-directory-test"
-                                    "ess-test-r-startup-directory"))
-                    (disable-etests "test/ess-test-r-eval.el"
-                                    ("ess-r-eval-ns-env-roxy-tracebug-test"
-                                     "ess-r-eval-sink-freeze-test"))
-                    (disable-etests
-                     "test/ess-test-inf.el"
-                     ("command-without-trailing-newline-test")))))
+                                    "ess-test-r-startup-directory")))))
               (replace 'check
-                (lambda _ (invoke "make" "test")))))))
+                (lambda* (#:key tests? #:allow-other-keys)
+                  (when tests? (invoke "make" "test"))))))))
       (native-inputs (list perl r-roxygen2 texinfo))
       (inputs (list emacs-minimal r-minimal))
       (propagated-inputs (list emacs-julia-mode))
