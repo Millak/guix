@@ -1813,7 +1813,7 @@ text rendering library.")
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
+     `(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
        #:configure-flags
        (list
         "-Dbuild-documentation=true")
@@ -1828,14 +1828,14 @@ text rendering library.")
                 (string-append out "/share/doc")
                 (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("m4" ,m4)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("xsltproc" ,libxslt)))
+     (list graphviz
+           doxygen
+           m4
+           mm-common
+           perl
+           pkg-config
+           python
+           libxslt))
     (propagated-inputs
      (list glibmm at-spi2-core))
     (synopsis "C++ bindings for ATK")
