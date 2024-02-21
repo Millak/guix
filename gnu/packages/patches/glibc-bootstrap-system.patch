@@ -6,23 +6,23 @@ instead uses the hard-coded absolute file name of `bash'.
 In addition, status should be initialized to 0 and not -1.
 
 diff --git a/libio/iopopen.c b/libio/iopopen.c
-index ebc381ed7c..e0d3ed1bc3 100644
+index 4cc405f2de..8842c989c8 100644
 --- a/libio/iopopen.c
 +++ b/libio/iopopen.c
-@@ -85,7 +85,7 @@ spawn_process (posix_spawn_file_actions_t *fa, FILE *fp, const char *command,
- 	return false;
+@@ -86,7 +86,7 @@ spawn_process (posix_spawn_file_actions_t *fa, FILE *fp, const char *command,
+ 	}
      }
  
--  if (__posix_spawn (&((_IO_proc_file *) fp)->pid, _PATH_BSHELL, fa, 0,
-+  if (__posix_spawnp (&((_IO_proc_file *) fp)->pid, "sh", fa, 0,
- 		     (char *const[]){ (char*) "sh", (char*) "-c",
- 		     (char *) command, NULL }, __environ) != 0)
-     return false;
+-  err = __posix_spawn (&((_IO_proc_file *) fp)->pid, _PATH_BSHELL, fa, 0,
++  err = __posix_spawnp (&((_IO_proc_file *) fp)->pid, "sh", fa, 0,
+ 		       (char *const[]){ (char*) "sh", (char*) "-c", (char*) "--",
+ 		       (char *) command, NULL }, __environ);
+   if (err != 0)
 diff --git a/sysdeps/posix/system.c b/sysdeps/posix/system.c
-index a03f478fc7..94da6facf3 100644
+index 488b95163b..56b8a028ae 100644
 --- a/sysdeps/posix/system.c
 +++ b/sysdeps/posix/system.c
-@@ -101,7 +101,7 @@ cancel_handler (void *arg)
+@@ -100,7 +100,7 @@ cancel_handler (void *arg)
  static int
  do_system (const char *line)
  {
@@ -31,7 +31,7 @@ index a03f478fc7..94da6facf3 100644
    int ret;
    pid_t pid;
    struct sigaction sa;
-@@ -145,7 +145,7 @@ do_system (const char *line)
+@@ -144,7 +144,7 @@ do_system (const char *line)
    __posix_spawnattr_setflags (&spawn_attr,
  			      POSIX_SPAWN_SETSIGDEF | POSIX_SPAWN_SETSIGMASK);
  
@@ -39,8 +39,9 @@ index a03f478fc7..94da6facf3 100644
 +  ret = __posix_spawnp (&pid, SHELL_NAME, 0, &spawn_attr,
  		       (char *const[]){ (char *) SHELL_NAME,
  					(char *) "-c",
- 					(char *) line, NULL },
-
+ 					(char *) "--",
+diff --git a/include/spawn.h b/include/spawn.h
+index 4a0b1849da..9e47f74391 100644
 --- a/include/spawn.h
 +++ b/include/spawn.h
 @@ -5,6 +5,9 @@
