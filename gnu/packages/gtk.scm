@@ -2136,15 +2136,18 @@ yet remaining very close in spirit to original API.")
              (system "Xvfb :1 +extension GLX &")
              (setenv "DISPLAY" ":1"))))))
     (native-inputs
-     `(("adwaita-icon-theme" ,adwaita-icon-theme)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("perl-extutils-depends" ,perl-extutils-depends)
-       ("perl-extutils-pkgconfig" ,perl-extutils-pkgconfig)
-       ("perl-test-simple" ,perl-test-simple)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list adwaita-icon-theme
+           `(,gtk+ "bin")
+           gobject-introspection
+           perl-extutils-depends
+           perl-extutils-pkgconfig
+           perl-test-simple
+           xorg-server-for-tests))
     (propagated-inputs
-     (list gtk+ perl-cairo-gobject perl-carp perl-exporter
+     (list gtk+
+           perl-cairo-gobject
+           perl-carp
+           perl-exporter
            perl-glib-object-introspection))
     (home-page "https://metacpan.org/dist/Gtk3")
     (synopsis "Perl interface to the 3.x series of the gtk+ toolkit")
