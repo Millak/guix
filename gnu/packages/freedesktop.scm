@@ -827,7 +827,10 @@ the freedesktop.org XDG Base Directory specification.")
              "-Dcgroup-controller=elogind"
              "-Dman=true"
              ;; Disable some tests.
-             "-Dslow-tests=false"))
+             "-Dslow-tests=false"
+             ;; Adjust the default user shell to /bin/sh (otherwise it is set
+             ;; to /bin/bash).
+             "-Ddefault-user-shell=/bin/sh"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-pkttyagent-path
@@ -846,11 +849,8 @@ the freedesktop.org XDG Base Directory specification.")
                (("PKGSYSCONFDIR") "\"/etc/elogind\""))))
          (add-after 'unpack 'adjust-tests
            (lambda _
-             ;; Skip the user-util tests, which depends on users such as
-             ;; 'root' existing in the build environment.
              (substitute* "src/test/meson.build"
-               ((".*'test-user-util.c'.*") "")
-               ((".*'test-cgroup.c'.*") ""))
+               ((".*'test-cgroup.c'.*") "")) ;no cgroup in container
              ;; This test tries to copy some bytes from /usr/lib/os-release,
              ;; which does not exist in the build container.  Choose something
              ;; more likely to be available.
