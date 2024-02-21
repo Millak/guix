@@ -876,17 +876,17 @@ attacks on the privacy of Tor users.")
 
 ;; We copy the official build id, which can be found there:
 ;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
-(define %mullvadbrowser-build-date "20240115174108")
+(define %mullvadbrowser-build-date "20240213150358")
 
 ;; To find the last version, look at
 ;; https://mullvad.net/en/download/browser/linux.
-(define %mullvadbrowser-version "13.0.9")
+(define %mullvadbrowser-version "13.0.10")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-mullvad-browser-".
-(define %mullvadbrowser-firefox-version "115.7.0esr-13.0-1-build1")
+(define %mullvadbrowser-firefox-version "115.8.0esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
 (define translation-mullvad-browser
@@ -914,7 +914,7 @@ attacks on the privacy of Tor users.")
          version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1f930j3c1xq88cqlqmnj0m00k0hd63cmgnxd788sp9hz56al22sc"))))
+         "1dkkk90lhvmhmi89rfjkx2m0ynyj0zajhxhxfmkzjj6bflmzgipv"))))
     (arguments
      (list
       #:install-plan
@@ -955,7 +955,7 @@ Mullvad Browser.")
          %mullvadbrowser-firefox-version ".tar.xz"))
        (sha256
         (base32
-         "16chkc07pqr4ypmmgy4z2grvlpvbyr161gpzy72w35dgzzff46f9"))))
+         "09wawhb3ci0i7038xs0cqvlm37i90a5iwn9m2p5gaal5cz55dz3n"))))
     (arguments
      (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
        ((#:phases phases)
