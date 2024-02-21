@@ -1722,16 +1722,16 @@ OpenJDK.")
   (package
     (inherit openjdk17)
     (name "jbr")
-    (version "17.0.7-b1020")
+    (version "17.0.10b1207.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/JetBrains/JetBrainsRuntime.git")
-                     (commit (string-append "jb" version))))
+                     (commit (string-append "jbr-release-" version))))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
+                "1n9i07i243wrnnnvj05j81qhx3b5dry8y423pnbrrdn8fcwm1f2d"))
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk17)
