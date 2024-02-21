@@ -1539,7 +1539,7 @@ that are completely black and completely white.")
 (define-public eiciel
   (package
     (name "eiciel")
-    (version "0.9.13.1")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1548,19 +1548,27 @@ that are completely black and completely white.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rhhw0h1hyg5kvxhjxkdz03vylgax6912mg8j4lvcz6wlsa4wkvj"))))
+                "0lhnrxhbg80pqjy9f8yiqi7x48rb6m2cmkffv25ssjynsmdnar0s"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:tests? #f ; no tests
-       #:configure-flags
-       (list (string-append "-Dnautilus-extension-dir="
-                            (assoc-ref %outputs "out")
-                            "/lib/nautilus/site-extensions"))))
+     (list
+      #:glib-or-gtk? #t
+      #:tests? #f ; no tests
+      #:configure-flags
+      #~(list (string-append "-Dnautilus-extension-dir="
+                             #$output
+                             "/lib/nautilus/site-extensions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache : true")
+                 "gtk_update_icon_cache : false")))))))
     (native-inputs
-     (list gettext-minimal pkg-config))
+     (list gettext-minimal `(,glib "bin") itstool pkg-config))
     (inputs
-     (list acl attr glibmm-2.66 gtkmm-3 nautilus))
+     (list acl attr glibmm gtkmm nautilus))
     (home-page "https://rofi.roger-ferrer.org/eiciel")
     (synopsis "Manage extended file attributes")
     (description "Eiciel is a plugin for nautilus to graphically edit ACL and
