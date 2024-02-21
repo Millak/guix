@@ -1210,7 +1210,7 @@ with the Linux kernel.")
                                   "glibc-hurd-clock_gettime_monotonic.patch")))
                              (origin-patches (package-source glibc-2.35)))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments glibc)
+     (substitute-keyword-arguments (package-arguments glibc-2.35)
        ((#:configure-flags flags ''())
         ;; There are undefined references to pthread symbols while linking
         ;; 'support/links-dso-program.cc'.  Since this isn't needed here, turn
