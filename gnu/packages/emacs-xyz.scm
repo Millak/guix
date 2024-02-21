@@ -17761,6 +17761,28 @@ a (typically) noncontiguous set of text.")
 Additionally it can display the number of unread emails in the mode line.")
       (license license:gpl3+))))
 
+(define-public emacs-mu4e-column-faces
+  (package
+    (name "emacs-mu4e-column-faces")
+    (version "20221213.2206")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Alexander-Miller/mu4e-column-faces.git")
+             (commit "1bbb646ea07deb1bd2daa4c6eb36e0f65aac40b0")))
+       (sha256
+        (base32 "12cb37lj8j1fd5kp3gbnzgknb57j5l8xgrnhb60ysff66m1mbrr7"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list mu))
+    (home-page "https://github.com/Alexander-Miller/mu4e-column-faces")
+    (synopsis "Faces for individual mu4e columns")
+    (description
+     "This package provides a minor mode for individual column faces in mu4e's
+mail overview.")
+    (license license:gpl3+)))
+
 (define-public emacs-mu4e-jump-to-list
   (let ((commit "358bba003543b49ffa266e503e54aebd0ebe614b")
         (revision "1"))
