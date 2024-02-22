@@ -191,7 +191,7 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
                 "0dpx2wmcclmd3jkprdljz3makq12vd0sjv3xnvlj5vk1lg7glb7g"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-django))
+     (list python-django python-setuptools python-wheel))
     (home-page "https://github.com/epicserve/django-cache-url")
     (synopsis "Configure Django cache settings from URLs")
     (description
@@ -229,7 +229,9 @@ with a @var{CACHE_URL} environment variable.")
            python-dj-email-url
            python-dj-search-url
            python-django-cache-url
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://django-configurations.readthedocs.io/")
     (synopsis "Helper module for organizing Django settings")
     (description
@@ -755,6 +757,7 @@ conn_max_age argument to easily enable Django’s connection pool.")
                (base32
                 "16k91rvd9889xxrrf84a3zb0jpinizhfqdmafn54zxa8kqrf7zsm"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/migonzalvar/dj-email-url")
     (synopsis "Configure email settings from URLs")
     (description
@@ -775,6 +778,7 @@ settings from URLs.")
                (base32
                 "0h7vshhglym6af2pplkyivk6y0g0ncq0xpdzi88kq2sha9c1lka2"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/dstufft/dj-search-url")
     (synopsis "Configure Haystack search from URLs")
     (description

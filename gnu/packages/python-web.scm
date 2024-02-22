@@ -222,11 +222,13 @@
            python-pytest-rerunfailures
            python-pytest-vcr
            python-pytest-xdist
+           python-setuptools
            python-types-requests
            python-types-toml
            python-types-urllib3
            python-typing-extensions
-           python-urllib3))
+           python-urllib3
+           python-wheel))
     (home-page "https://github.com/huggingface/huggingface_hub")
     (synopsis "Client library for accessing the huggingface.co hub")
     (description
@@ -330,7 +332,9 @@ reusable library for parsing, manipulating, and generating URIs.")
                          python-pytest-checkdocs
                          python-pytest-cov
                          python-pytest-enabler
-                         python-pytest-mypy))
+                         python-pytest-mypy
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/jaraco/portend")
     (synopsis "Monitor TCP ports for bound or unbound states")
     (description
@@ -635,7 +639,7 @@ using @url{https://github.com/saghul/pycares,pycares}.")
                (base32
                 "1xbfa4gmlmyj6bihdl5p4mr7nd6z79rfi92wcqkmcy4f643frivr"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list openssl))
     (propagated-inputs
      (list python-certifi python-pylsqpack python-pyopenssl))
@@ -1539,6 +1543,7 @@ content using a variety of algorithms.")
                 "138bh6x1yy0qpk63bxa7mxnd97gfdm1fkpwm8wrdz3g3z0fca79c"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-cryptography python-deprecated))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/latchset/jwcrypto")
     (synopsis "Implementation of JOSE Web standards")
     (description
@@ -1561,7 +1566,7 @@ Encryption} (JOSE) Web Standards.")
         (base32 "1vinddg8sbh3v9n1r1wmvjx6ydk8xp7scbvhb3csl4y9xz7vhk6g"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (inputs
      (list pcre))
     (home-page "https://github.com/Kronuz/pyScss")
@@ -1994,7 +1999,7 @@ C, yielding parse times that can be a thirtieth of the html5lib parse times.")
                 "1acd1a4f66gi4plqnsml7cf33qp83mxsnmnqpdwkpj7597xkvyl4"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-setuptools python-setuptools-scm python-wheel))
     (home-page "https://github.com/sanic-org/html5tagger")
     (synopsis "Create HTML documents from Python")
     (description
@@ -2463,7 +2468,7 @@ cssutils not receiving updates as of 1.0.2.")
                 "1x4nrvb1p1byi1whmspik7lbh303akdlh762dayfxam3hycsh5kk"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-lxml python-pytest))
+     (list python-lxml python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/scrapy/cssselect")
     (synopsis "CSS3 selector parser and translator to XPath 1.0")
     (description
@@ -3743,7 +3748,8 @@ than Python’s urllib2 library.")
      (propagated-inputs (list python-cryptography
                               python-pyspnego
                               python-requests))
-    (native-inputs (list python-pytest python-pytest-mock))
+    (native-inputs (list python-pytest python-pytest-mock python-setuptools
+                         python-wheel))
     (home-page "https://github.com/requests/requests-kerberos")
     (synopsis "Kerberos authentication handler for python-requests")
     (description "This package provides a Kerberos authentication handler for
@@ -5822,7 +5828,7 @@ for URL parsing and changing.")
                 "1vbd3ndhmxi8scxgxs6sc7r0rdaliqd80384n06nyb3haqz25inm"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-arrow python-pytz python-requests))
-    (native-inputs (list python-requests-mock))
+    (native-inputs (list python-requests-mock python-setuptools python-wheel))
     (home-page "https://github.com/ucfopen/canvasapi")
     (synopsis "API wrapper for the Canvas LMS")
     (description
@@ -7963,6 +7969,7 @@ as a Python package.")
      ;; PyPi sources does not contain tests, recursive dependency on
      ;; python-sanic.
      (list #:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/sanic-org/sanic-routing/")
     (synopsis "Routing component for Sanic")
     (description "Internal package for @code{python-sanic}, which provides
@@ -7985,6 +7992,7 @@ the @code{BasicRouter}.")
      ;; python-sanic.
      (list #:tests? #f))
     (propagated-inputs (list python-httpx python-sanic-bootstrap))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/sanic-org/sanic-testing/")
     (synopsis "Test clients for Sanic")
     (description "Internal package for @code{python-sanic}, which is
@@ -8081,7 +8089,7 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
      (inherit python-sanic)
      (name "python-sanic-bootstrap")
      (arguments (list #:tests? #f))
-     (native-inputs '())))
+     (native-inputs (list python-setuptools python-wheel))))
 
 (define-public python-socketio
   (package
@@ -8617,7 +8625,7 @@ GCS, Azure Blob Storage, gzip, bz2, etc.)")
          "1cd4b3w5g3pfccsg79kjj27fwi216ip927rjq7isp8pfjzlp8nzd"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/scrapy/w3lib")
     (synopsis "Python library of web-related functions")
     (description
@@ -8914,7 +8922,7 @@ by asyncio.")
             python-typing-extensions
             python-w3lib))
     (native-inputs
-      (list python-psutil python-pytest))
+      (list python-psutil python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/scrapy/parsel")
     (synopsis "Extract data from HTML and XML using XPath and CSS selectors")
     (description "Parsel is a library to extract and remove data from
@@ -9717,7 +9725,8 @@ hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
                             ;; Integration tests depend on docker.
                             (delete-file-recursively "tests/integration"))))))
     (propagated-inputs (list python-requests))
-    (native-inputs (list python-pytest python-pyyaml python-setuptools-scm))
+    (native-inputs (list python-pytest python-pyyaml python-setuptools
+                         python-setuptools-scm python-wheel))
     (home-page "https://github.com/netbox-community/pynetbox")
     (synopsis "NetBox API client library")
     (description "Python module to query and edit data stored in a

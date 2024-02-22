@@ -74,6 +74,7 @@
            python-requests
            python-sqlalchemy
            python-sqlalchemy-utils))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://git.sr.ht/~sircmpwn/core.sr.ht")
     (synopsis "Shared code for all sourcehut projects")
     (description
@@ -104,6 +105,7 @@
             (lambda _ (setenv "PKGVER" #$version))))))
     (propagated-inputs
      (list python-core-sr-ht))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://git.sr.ht/~sircmpwn/scm.sr.ht")
     (synopsis "Shared support code for sr.ht source control services")
     (description

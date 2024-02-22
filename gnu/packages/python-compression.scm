@@ -388,6 +388,7 @@ and decompression by implementing Python bindings for the ISA-L library.")
                 "1qiwmavmxy6ba89mrdkzk52hqrd4awnp4yca395pxp2np66pf81g"))))
     ;; FIXME: Unbundle ls-qpack and xxhash!
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/aiortc/pylsqpack")
     (synopsis "Python bindings for @code{ls-qpack}")
     (description

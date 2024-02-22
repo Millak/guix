@@ -468,6 +468,7 @@ C++ library as well as various command-line tools to to work with HDT.")
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f)) ;no test suite
     (propagated-inputs (list python-html5lib python-rdflib python-requests))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://www.w3.org/2012/pyRdfa/")
     (synopsis "RDFa Python distiller/parser library")
     (description "This library can extract RDFa 1.1 from (X)HTML, SVG, or XML.

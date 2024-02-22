@@ -4786,11 +4786,18 @@ more.")
                 "0bazk3k2dyzlrh7yxs4pc76m5ysm7riia3ncg7as3xr4y9dy29bx"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-asyncio python-pytest-runner python-asynctest
-           python-pytest-mock))
+     (list python-asynctest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-pytest-runner
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-aiofiles python-aiosqlite python-cryptography
-           python-importlib-metadata python-dateutil python-pytz
+     (list python-aiofiles
+           python-aiosqlite
+           python-cryptography
+           python-dateutil python-pytz
+           python-importlib-metadata
            python-sortedcontainers))
     (synopsis "OPC UA / IEC 62541 client and server library")
     (description "This package provides an OPC UA / IEC 62541 client and

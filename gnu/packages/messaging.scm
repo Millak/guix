@@ -1177,12 +1177,16 @@ simultaneously and therefore appear under the same nickname on IRC.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests? (invoke "python" "-m" "unittest" "-v")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list glib
            glib-networking
            libsoup-minimal
            python-gssapi
            python-idna
+           python-packaging
            python-precis-i18n
            python-pygobject))
     (synopsis "Non-blocking XMPP Module")

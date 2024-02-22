@@ -738,6 +738,7 @@ HID-Class devices.")
                           "    '" libhidapi-hidraw.so "',\n"
                           "    '" libhidapi-libusb.so "',\n")))))))))
     (inputs (list hidapi))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/apmorton/pyhidapi")
     (synopsis "Python @code{ctypes} bindings for HIDAPI library")
     (description "Python @code{ctypes} bindings for HIDAPI library.")

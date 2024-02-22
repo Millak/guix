@@ -179,7 +179,11 @@ sources.")
                 "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-sphinx)
-       (replace "python-docutils" python-docutils-0.15)))))
+       (replace "python-docutils" python-docutils-0.15)))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-sphinx)
+       (delete python-flit-core)
+       (append python-setuptools python-wheel)))))
 
 (define-public python-sphinxcontrib-apidoc
   (package
@@ -238,6 +242,7 @@ Apple help books.")
                 "1jaihs22d8jfvk1fnv5j7hcza89hxj979ib0b4mh130cr53mmicy"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-sphinx))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/pradyunsg/sphinx-basic-ng")
     (synopsis "Modernised skeleton for Sphinx themes")
     (description
@@ -637,7 +642,9 @@ integrate Sphinx documents in web templates and to handle searches.")
            python-pillow
            python-pytest
            python-pytest-cov
-           python-sphinx))
+           python-setuptools
+           python-sphinx
+           python-wheel))
     (home-page "https://sphinx-gallery.github.io/stable/index.html")
     (synopsis "Generate an examples gallery automatically")
     (description
@@ -732,6 +739,7 @@ introspection of @code{zope.interface} instances in code.")
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-pygments))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://alabaster.readthedocs.io/")
     (synopsis "Configurable sidebar-enabled Sphinx theme")
     (description "Alabaster is a visually (c)lean, responsive, configurable

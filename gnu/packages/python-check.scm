@@ -108,6 +108,7 @@
        (sha256
         (base32 "0cs8xya465wvb9dw0kdl7cvkxwrslhbma66y44r1mmsajcll7imc"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/assertpy/assertpy")
     (synopsis "Simple assertion library for unit testing")
     (description

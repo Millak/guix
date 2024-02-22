@@ -159,7 +159,11 @@ expressions.")
                    (call-with-output-file "src/tzdata/zoneinfo/__init__.py"
                      (const #t)))))))
     (inputs (list tzdata))
-    (native-inputs (list python-pytest python-pytest-subtests))
+    (native-inputs
+     (list python-pytest
+           python-pytest-subtests
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/python/tzdata")
     (synopsis "Python wrapper of IANA time zone data")
     (description "This package provides a thin Python wrapper around tzdata.")

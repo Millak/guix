@@ -4662,7 +4662,7 @@ time.")
                  (string-append
                   (assoc-ref inputs "kernel-headers") "/include/linux"))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/gvalkov/python-evdev")
     (synopsis "Bindings to the Linux input handling subsystem")
     (description
@@ -5298,6 +5298,7 @@ SMBus access.")
                       (string-append "-L" #$(this-package-input "i2c-tools")
                                      "/lib"))))))))
     (inputs (list i2c-tools))
+    (native-inputs (list python-setuptools python-wheel))
     (synopsis "I2C/SMBus access for Python")
     (description "This package provides a Python library to access
 @acronym{I2C, Inter-Integrated Circuit} and @acronym{SMBus, System

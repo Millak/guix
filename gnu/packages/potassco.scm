@@ -629,6 +629,7 @@ into Python programs easier.")
                      ;; XXX: Does this cross-compile?
                      (patch-shebang script)))))))
     (propagated-inputs (list python-clingo))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://potassco.org/")
     (synopsis "Solve probabilistic logic programs")
     (description "This package provides a system to solve probabilistic
@@ -714,6 +715,9 @@ as logic programs.")
                    ;; XXX: python-clingo-dl installs clingodl instead…
                    (("clingo-dl") "clingodl"))))))
    (build-system pyproject-build-system)
+   (native-inputs
+    (list python-setuptools
+          python-wheel))
    (propagated-inputs
     (list python-clingo
           python-clingo-dl

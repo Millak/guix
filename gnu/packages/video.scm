@@ -2365,6 +2365,7 @@ videoformats depend on the configuration flags of ffmpeg.")
                                 `("PATH" ":" prefix
                                   (,(search-input-file inputs ffm))))))))))
     (inputs (list bash-minimal ffmpeg))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/slhck/ffmpeg-progress-yield")
     (synopsis "Run an ffmpeg command with progress")
     (description "This package allows an ffmpeg command to run with progress.
@@ -2398,7 +2399,7 @@ It is usually a complement to @code{ffmpeg-normalize}.")
                          (ffm (search-input-file inputs "bin/ffmpeg")))
                      (wrap-program ffn
                        `("FFMPEG_PATH" = (,ffm)))))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list bash-minimal ffmpeg))
     (propagated-inputs (list ffmpeg-progress-yield
                              python-colorama

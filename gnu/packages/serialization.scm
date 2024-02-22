@@ -945,6 +945,7 @@ game development and other performance-critical applications.")
        (sha256
         (base32 "11gzc7mhl984248q6abz5rrsph76j0y99mwk24xc90sxpcxr2j59"))))
     (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://google.github.io/flatbuffers/")
     (synopsis "FlatBuffers serialization for Python")
     (description "This package provides the @code{FlatBuffers} serialization

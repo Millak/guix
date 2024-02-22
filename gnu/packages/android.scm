@@ -56,6 +56,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -737,6 +738,7 @@ file system.")
                 "11as7n2mj3nbqsqb3ivyv9985n73i022s748qvjg36cs8ig50afx"))))
     (build-system pyproject-build-system)
     (inputs (list python-requests python-argcomplete python-urllib3 gnupg))
+    (native-inputs (list python-setuptools python-wheel))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (add-before 'build 'patch-gnupg
