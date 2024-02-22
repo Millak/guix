@@ -33576,8 +33576,28 @@ simple but powerful Org contents.")
        (sha256
         (base32 "15jfwrdawj8flgyfqhsfhdlnam6n5gzw5minnixwxyp69q5vxnpw"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons "^src/" %default-include)
+      #:tests? #t
+      ;; <https://github.com/emacs-eldev/eldev/issues/99#issuecomment-1912637609>
+      #:test-command #~(list "eldev" "-X" "-dtTC" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-eldev
+            (lambda _
+              (setenv "HOME"
+                      (string-append (getcwd) "/.eldev"))
+              (with-output-to-file "Eldev-local"
+                (lambda _
+                  (format #t "~s"
+                          '(dolist (d (split-string (getenv
+                                                     "EMACSLOADPATH")
+                                                    ":" t))
+                                   (ignore-errors
+                                    (eldev-use-local-dependency d)))))))))))
+    (native-inputs (list emacs-buttercup emacs-eldev))
     (propagated-inputs (list emacs-org))
-    (arguments '(#:include (cons "^src/" %default-include)))
     (home-page "https://github.com/ox-tufte/ox-tufte")
     (synopsis "Tufte HTML Org mode export backend")
     (description
