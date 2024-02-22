@@ -1074,6 +1074,11 @@ NeoVim) to enable you to run shell commands in background and read output in the
 quickfix window in realtime.")
     (license license:expat)))
 
+(define-public neovim-asyncrun
+  (package
+    (inherit vim-asyncrun)
+    (name "neovim-asyncrun")))
+
 (define-public vim-dispatch
   (package
     (name "vim-dispatch")
