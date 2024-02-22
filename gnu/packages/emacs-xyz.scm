@@ -1034,14 +1034,14 @@ uploading PlatformIO projects.")
 (define-public emacs-hyperbole
   (package
     (name "emacs-hyperbole")
-    (version "8.0.0")
+    (version "9.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "hyperbole-" version ".tar"))
        (sha256
-        (base32 "171x7jad62xd0n3xgs32dksyhn5abxj1kna0qgm65mm0v73hrv8d"))))
+        (base32 "07kpyp3ggf4knakn18niy819l184apx4d9vbcwv57j8zyqgn4c3l"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons* "DEMO"
