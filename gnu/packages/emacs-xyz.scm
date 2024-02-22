@@ -21925,7 +21925,7 @@ Features:
 (define-public emacs-evil-matchit
   (package
     (name "emacs-evil-matchit")
-    (version "3.0.2")
+    (version "3.0.4")
     (source
      (origin
        (method git-fetch)
@@ -21934,7 +21934,7 @@ Features:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0igz4kcfb01f9h49n5x9p1idzap54nkw62i1xrql1zlj54s8rv6b"))))
+        (base32 "1m5y5n38w0ijzx2kl9d0nnw70ykx2prmnvv4ip9siad71k7wpwjg"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-evil))
