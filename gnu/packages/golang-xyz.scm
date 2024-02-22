@@ -2,7 +2,8 @@
 ;;; Copyright © 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
@@ -1092,6 +1093,31 @@ included in this package.")
 Metrics library.")
       (home-page "https://github.com/rcrowley/go-metrics")
       (license license:bsd-2))))
+
+(define-public go-github-com-shirou-gopsutil
+  (let ((commit "47ef3260b6bf6ead847e7c8fc4101b33c365e399")
+        (revision "0"))
+    (package
+      (name "go-github-com-shirou-gopsutil")
+      (version (git-version "v2.19.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/shirou/gopsutil")
+                       (commit commit))) ; XXX
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0x1g4r32q4201nr2b754xnrrndmwsrhfr7zg37spya86qrmijnws"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/shirou/gopsutil"))
+      (synopsis "Process and system monitoring in Go")
+      (description "This package provides a library for retrieving information
+on running processes and system utilization (CPU, memory, disks, network,
+sensors).")
+      (home-page "https://github.com/shirou/gopsutil")
+      (license license:bsd-3))))
 
 (define-public go-github-com-skip2-go-qrcode
   (package
