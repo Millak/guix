@@ -24629,7 +24629,7 @@ expansions for debugging with Edebug as normal.")
 (define-public emacs-parent-mode
   (package
     (name "emacs-parent-mode")
-    (version "2.3")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -24638,12 +24638,14 @@ expansions for debugging with Edebug as normal.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i5bc7lyyrx6swqlrp9l5x72yzwi53qn6ldrfs99gh08b3yvsnni"))))
+        (base32 "1ki22rkbyglr3wppjph6gy23lcx2nwj9w0ff9h3ryd197j4yvvgi"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/Fanael/parent-mode")
     (synopsis "Get major mode's parent modes")
-    (description "Get major mode's parent modes")
-    (license license:gpl3+)))
+    (description
+     "This package provides a function to list all current major mode's parent
+modes.")
+    (license license:bsd-2)))
 
 (define-public emacs-lacarte
   (let ((commit "79afc5d2406dae5aabc1c12089e8e2e1990abd85")
