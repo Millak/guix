@@ -24640,6 +24640,12 @@ expansions for debugging with Edebug as normal.")
        (sha256
         (base32 "1ki22rkbyglr3wppjph6gy23lcx2nwj9w0ff9h3ryd197j4yvvgi"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "emacs" "--batch"
+                             "-l" "parent-mode-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/Fanael/parent-mode")
     (synopsis "Get major mode's parent modes")
     (description
