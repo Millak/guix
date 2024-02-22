@@ -32616,14 +32616,14 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-tramp
   (package
     (name "emacs-tramp")
-    (version "2.6.2.0")
+    (version "2.6.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "tramp-" version ".tar"))
        (sha256
-        (base32 "06wpaqjr3qw1424k9rh5i28yxrkzh1z5dczpgp7mpv823l2x8ip3"))))
+        (base32 "145riknpdvw7rvpz20m766yci3w012f241mw38pbbb9cb8pn2rbf"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -32638,8 +32638,6 @@ well as an option for visually flashing evaluated s-expressions.")
               (emacs-substitute-variables "tramp.el"
                 ("tramp-encoding-shell"
                  (search-input-file inputs "/bin/sh"))))))))
-    (inputs
-     (list bash))
     (home-page "https://savannah.gnu.org/projects/tramp")
     (synopsis "Remote file editing package for Emacs")
     (description
