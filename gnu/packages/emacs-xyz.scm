@@ -2594,7 +2594,7 @@ on the Flexoki colour scheme by Steph Ango.")
 (define-public emacs-flycheck
   (package
     (name "emacs-flycheck")
-    (version "32")
+    (version "34.1")
     (source
      (origin
        (method git-fetch)
@@ -2602,7 +2602,7 @@ on the Flexoki colour scheme by Steph Ango.")
              (url "https://github.com/flycheck/flycheck/")
              (commit version)))
        (sha256
-        (base32 "0dx6wqxz1yfp4shas4yn6abqc8bz21ks3glcyzznm3xspjdaq21s"))
+        (base32 "1rhsrbbg3y50qc4drbdgwa1z0hw7w84blgr0xl6zi9mqnjnak495"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
