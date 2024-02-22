@@ -254,43 +254,43 @@ endif()~%~%"
                  `("GDK_PIXBUF_MODULE_FILE" =
                    (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
      (inputs
-      (list autotrace
+      (list (librsvg-for-system)        ;for the pixbuf loader
+            autotrace
             bash-minimal
+            boost
+            freetype
             gdl-minimal
-            gtkmm-3
-            gtk+
             gsl
             gspell
-            poppler
+            gtk+
+            gtkmm-3
+            lcms
             lib2geom
+            libcdr
+            libgc
             libjpeg-turbo
             libpng
-            libxml2
-            libxslt
-            libgc
-            (librsvg-for-system)        ;for the pixbuf loader
             libsoup-minimal-2
-            libcdr
             libvisio
             libwpd
             libwpg
-            freetype
+            libxml2
+            libxslt
+            poppler
             popt
             potrace
-            lcms
-            boost
-            python-wrapper
-            python-scour
-            python-pyserial
-            python-numpy
             python-lxml
+            python-numpy
+            python-pyserial
+            python-scour
+            python-wrapper
             readline))
      (native-inputs
-      (list bc
+      (list `(,glib "bin")
+            bc
             gettext-minimal
-            imagemagick/stable          ;for tests
-            `(,glib "bin")
             googletest
+            imagemagick/stable          ;for tests
             perl
             pkg-config))
      (home-page "https://inkscape.org/")
