@@ -7879,7 +7879,7 @@ every time the power supply source is changed.")
                     (("\"tlp-stat\"")
                      (string-append "'" tlp-stat "'"))
                     (("/usr/share/tlp/defaults.conf")
-                     (string-append "'" defaults.conf "'")))
+                     defaults.conf))
                   (substitute* "ui_config_objects/gtkusblist.py"
                     (("\"lsusb\"")
                      (string-append "'" lsusb "'")))
