@@ -1107,6 +1107,11 @@ asynchronous adapters (including tmux, screen, and a headless mode), and when
 the job completes, errors will be loaded and parsed automatically.")
       (license license:vim))))
 
+(define-public neovim-dispatch
+  (package
+    (inherit vim-dispatch)
+    (name "neovim-dispatch")))
+
 (define-public vim-gemini-vim
   ;; No releases have been tagged.
   (let ((commit "f300c54174fc0db8fb68f1bc04307b58612e9630")
