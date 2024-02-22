@@ -26,14 +26,20 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages commencement)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages openldap)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -153,4 +159,88 @@ The NX proxy (client) binary
 Helper script
 @end table")
     (home-page "https://github.com/ArcticaProject/nx-libs")
+    (license license:gpl2)))
+
+(define-public x2goclient
+  (package
+    (name "x2goclient")
+    (version "4.1.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://code.x2go.org/releases/source/x2goclient/x2goclient-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0g6aba8kpsixq4486a8mga945lp31y0mzwa2krs5qqiiip3v72xb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list (string-append "SHELL="
+                             (search-input-file %build-inputs "bin/bash"))
+              "QT_VERSION=5"
+              "INSTALL_DIR=install -d -m 755"
+              "INSTALL_FILE=install -m 644"
+              "INSTALL_PROGRAM=install -m 755"
+              (string-append "PREFIX=" #$output)
+              (string-append "ETCDIR=" #$output "/etc"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/onmainwindow.cpp"
+                (("/usr/sbin/sshd")
+                 (search-input-file inputs "sbin/sshd"))))))))
+    (native-inputs
+     (list man2html
+           pkg-config
+           qtbase-5
+           qttools-5))
+    (inputs
+     (list cups
+           libssh
+           libxpm
+           nx-libs
+           openldap
+           openssh
+           pulseaudio
+           qtbase-5
+           qtx11extras
+           qtsvg-5))
+    (synopsis "Remote desktop and application solution")
+    (description
+     "X2Go enables you to access a graphical desktop of a computer via
+SSH (Secure Shell).  This package provides the X2Go Client, which can connect
+to the X2Go Server.  Basic features of X2Go include:
+@itemize
+@item
+Graphical remote desktop that works well over both low bandwidth and high
+bandwidth connections
+@item
+The ability to disconnect and reconnect to a session, even from another
+client
+@item
+Support for sound
+@item
+Support for as many simultaneous users as the computer's resources will
+allow
+@item
+Traffic is securely tunneled over SSH
+@item
+File sharing from client to server
+@item
+Printer sharing from client to server
+@item
+Easily select from multiple desktop environments (e.g., MATE, GNOME, KDE)
+@item
+Remote support possible via desktop sharing
+@item
+The ability to access single applications by specifying the name of the
+desired executable in the client configuration or selecting one of the
+pre-defined common applications.
+@end itemize")
+    (home-page "https://wiki.x2go.org/doku.php")
     (license license:gpl2)))
