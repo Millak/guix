@@ -14146,29 +14146,26 @@ an Emacs buffer.")
     (native-inputs
      (list emacs-ert-expectations))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-shell
-           ;; Setting the SHELL environment variable is required for the tests
-           ;; to find sh.
-           (lambda _
-             (setenv "SHELL" (which "sh"))
-             #t))
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((node (assoc-ref inputs "node")))
-               ;; Specify the absolute file names of the various
-               ;; programs so that everything works out-of-the-box.
-               (make-file-writable "nodejs-repl.el")
-               (emacs-substitute-variables
-                   "nodejs-repl.el"
-                 ("nodejs-repl-command"
-                  (string-append node "/bin/node")))))))
-       #:tests? #t
-       #:test-command '("emacs" "-Q" "--batch"
-                        "-L" "."
-                        "-l" "test/test.el"
-                        "-f" "ert-run-tests-batch-and-exit")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-shell
+            ;; Setting the SHELL environment variable is required for the tests
+            ;; to find sh.
+            (lambda _
+              (setenv "SHELL" (which "sh"))))
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((node (search-input-file inputs "/bin/node")))
+                ;; Specify the absolute file names of the various
+                ;; programs so that everything works out-of-the-box.
+                (emacs-substitute-variables "nodejs-repl.el"
+                  ("nodejs-repl-command" node))))))
+      #:tests? #t
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-L" "."
+                             "-l" "test/test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/abicky/nodejs-repl.el")
     (synopsis "Node.js REPL inside Emacs")
     (description
