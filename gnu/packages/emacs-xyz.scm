@@ -17377,7 +17377,7 @@ provides functions to convert hash tables from and to alists and plists.")
 (define-public emacs-log4e
   (package
     (name "emacs-log4e")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -17386,7 +17386,7 @@ provides functions to convert hash tables from and to alists and plists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01nq8im693w7h7pwayd9snz1nhv2k6s969hvgyqn2qh337ly8rwy"))))
+        (base32 "1x08dz18zhifkhrwdbh57izzidaf6vy1vb865f4xrqs6blgfiwj4"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
