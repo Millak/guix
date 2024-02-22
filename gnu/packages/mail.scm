@@ -27,7 +27,7 @@
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
@@ -4616,6 +4616,37 @@ score.")
     (description "This package provides a tool to extract, recover and
 undelete email messages from Outlook Express .dbx files.")
     (license license:gpl3+)))
+
+(define-public libdbx
+  (package
+    (name "libdbx")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/ol2mbox/LibDBX/v"
+                                  version "/libdbx_"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0fs4268qcy99nhl8345sv257b002530y77idkf6z9i7qxmqghq4w"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (for-each (lambda (file)
+                          (install-file file
+                                        (string-append #$output "/bin")))
+                        (list "readdbx" "readoe")))))))
+    (home-page "http://sourceforge.net/projects/ol2mbox/")
+    (synopsis "Tools for conversion of Outlook Express files to mailbox format")
+    (description "This package provides tools for the conversion of Outlook
+Express data files to standard mailbox format.")
+    (license license:gpl2+)))
 
 (define-public libpst
   (package
