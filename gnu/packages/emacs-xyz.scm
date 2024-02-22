@@ -39011,27 +39011,25 @@ into the current buffer.")
      "This package provides notification functions for Org Agenda.")))
 
 (define-public emacs-flymake-mypy
-  (let ((commit "d79e158f9ed3065ab692cd0d4048aac985c4fecd")
-        (revision "0"))
-    (package
-      (name "emacs-flymake-mypy")
-      (version "0.3.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/com4/flymake-mypy")
-                      (commit version)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zaa2kljsmm13layqmb7dwd7l2x3a5ymzzmzjjhykc67kbyjvvkk"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/com4/flymake-mypy")
-      (synopsis "Flymake checker for mypy")
-      (description
-"This package provides Flymake support for Python static type checking
+  (package
+    (name "emacs-flymake-mypy")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/com4/flymake-mypy")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w9bx0ay7jshwflndmf0ix5ghglw57isp2903x3jiv79lkd28xhg"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/com4/flymake-mypy")
+    (synopsis "Flymake checker for mypy")
+    (description
+     "This package provides Flymake support for Python static type checking
 using mypy.")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public emacs-mpv
   ;; No release since Dec 28, 2021.
