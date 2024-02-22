@@ -956,6 +956,37 @@ makes extraction of setup/teardown behavior (as well as invoking the system
 under test) much simpler.")
     (license license:expat)))
 
+(define-public go-go-etcd-io-gofail
+  (package
+    (name "go-go-etcd-io-gofail")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/etcd-io/gofail")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jh0qjgfb2irshwj7an3lj0w9bv6c5gbnkdhisgpdr7x7hk682m1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.etcd.io/gofail"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://pkg.go.dev/go.etcd.io/gofail")
+    (synopsis "Failpoints for go")
+    (description
+     "This package provides an implementation of
+@url{http://www.freebsd.org/cgi/man.cgi?query=fail,failpoints} for Golang.")
+    (license license:asl2.0)))
+
 (define-public go-golang-org-sql-mock
   (let ((commit "e98392b8111b45f8126e00af035a0dd95dc12e8b")
         (version "1.3.3")
