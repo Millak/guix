@@ -14130,7 +14130,7 @@ an Emacs buffer.")
 (define-public emacs-nodejs-repl
   (package
     (name "emacs-nodejs-repl")
-    (version "0.2.4")
+    (version "0.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14139,7 +14139,7 @@ an Emacs buffer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a5mmg3cmdi73giblp07ksl06xzl9nb2m3f96ny4r3rv0ar3v1bx"))))
+                "06in0nnynrj6ciwbch4x8s65n6d750ikarvrdcjypi0cb0vscwsk"))))
     (build-system emacs-build-system)
     (inputs
      (list node-lts))
