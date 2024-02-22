@@ -429,8 +429,8 @@ if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
      ,@(list (file-if-not-empty
               'bashrc
               (if (home-bash-configuration-guix-defaults? config)
-                  (list (serialize-field 'aliases)
-                        (plain-file-content %default-bashrc))
+                  (list (plain-file-content %default-bashrc)
+                        (serialize-field 'aliases))
                   (list (serialize-field 'aliases))))
              (file-if-not-empty 'bash-logout)))))
 
