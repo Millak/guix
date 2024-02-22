@@ -195,7 +195,6 @@
   #:use-module (guix packages)
   #:use-module (guix svn-download)
   #:use-module (guix utils)
-  #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
