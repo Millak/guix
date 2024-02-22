@@ -16270,7 +16270,7 @@ being deleted, changed, yanked, or pasted when using evil commands")
 (define-public emacs-goggles
   (package
     (name "emacs-goggles")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -16279,7 +16279,7 @@ being deleted, changed, yanked, or pasted when using evil commands")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0crll7r1qzpipimrahbfgk31f6rys58gzsbiwi65l0gqw49699sx"))))
+        (base32 "1fczxygg1blfmlwswck49rllww77rc7qn91wqw1kvjwfz31sk8z4"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/goggles")
     (synopsis "Pulse modified region")
