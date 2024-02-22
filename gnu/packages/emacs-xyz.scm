@@ -267,6 +267,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages wordnet)
   #:use-module (gnu packages photo)
+  #:use-module (gnu packages tor)
   #:use-module (gnu packages uml)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages ocaml)
@@ -28588,7 +28589,7 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.0.9")
+    (version "2.1.2")
     (source
      (origin
        (method git-fetch)
@@ -28597,7 +28598,7 @@ and comments.")
              (commit version)))
        (sha256
         (base32
-         "17475zkvhj7yc3sxv0snmvxf84mkl30l78s28gzzm3j15p806cbd"))
+         "0c2iq6rb179zh9qbw7prxsjbiz77j060pj75s82wbbz5xjavzgp5"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -28611,10 +28612,14 @@ and comments.")
                  (search-input-file inputs "/bin/yt-dlp")))
               (emacs-substitute-variables "yeetube-mpv.el"
                 ("yeetube-mpv-path"
-                 (search-input-file inputs "/bin/mpv")))
+                 (search-input-file inputs "/bin/mpv"))
+                ("yeetube-mpv-torsocks"
+                 (search-input-file inputs "/bin/torsocks")))))
+          (add-after 'unpack 'relax-check
+            (lambda _
               (substitute* "yeetube-mpv.el"
                 (("\\(yeetube-mpv-check\\)") "")))))))
-    (inputs (list mpv yt-dlp))
+    (inputs (list mpv torsocks yt-dlp))
     (propagated-inputs (list emacs-compat))
     (home-page "https://thanosapollo.com/blog/yeetube/")
     (synopsis "Youtube and Invidious front-end for Emacs")
