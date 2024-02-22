@@ -1080,29 +1080,32 @@ quickfix window in realtime.")
     (name "neovim-asyncrun")))
 
 (define-public vim-dispatch
-  (package
-    (name "vim-dispatch")
-    (version "1.8")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/tpope/vim-dispatch")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1m8b5mn2zqlphzs6xfwykwmghf6p0wabrhpjmh7vav35jgcxc4wl"))))
-    (build-system vim-build-system)
-    (arguments
-     (list #:plugin-name "dispatch"))
-    (home-page "https://github.com/tpope/vim-dispatch")
-    (synopsis "Asynchronous build and test dispatcher")
-    (description "Leverage the power of Vim's compiler plugins without being
+  ;; Last release was in June 2019.
+  (let ((commit "4c695bc052cad2ae6b980aebbe48d046466e27ae")
+        (revision "1"))
+    (package
+      (name "vim-dispatch")
+      (version (git-version "1.8" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/tpope/vim-dispatch")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "13c63n7gylny2s84k05cpl4cjn070d3qk6yagxny23yanz29hc15"))))
+      (build-system vim-build-system)
+      (arguments
+       (list #:plugin-name "dispatch"))
+      (home-page "https://github.com/tpope/vim-dispatch")
+      (synopsis "Asynchronous build and test dispatcher")
+      (description "Leverage the power of Vim's compiler plugins without being
 bound by synchronicity.  Kick off builds and test suites using one of several
 asynchronous adapters (including tmux, screen, and a headless mode), and when
 the job completes, errors will be loaded and parsed automatically.")
-    (license license:vim)))
+      (license license:vim))))
 
 (define-public vim-gemini-vim
   ;; No releases have been tagged.
