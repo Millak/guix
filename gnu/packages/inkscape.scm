@@ -305,9 +305,9 @@ as the native format.")
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments inkscape/stable)
-       ;; ((#:configure-flags flags ''())
-       ;;  ;; Enable ImageMagick support.
-       ;;  #~(delete "-DWITH_IMAGE_MAGICK=OFF" #$flags))
+       ((#:configure-flags flags ''())
+        ;; Enable ImageMagick support.
+        #~(delete "-DWITH_IMAGE_MAGICK=OFF" #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'wrap-program
