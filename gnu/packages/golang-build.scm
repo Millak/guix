@@ -238,6 +238,8 @@ loading algorithms.")
         #~(modify-phases %standard-phases
             ;; Source-only package
             (delete 'build))))
+      (propagated-inputs
+       (list go-golang-org-x-sys go-golang-org-x-term go-golang-org-x-text))
       (home-page "https://go.googlesource.com/net")
       (synopsis "Go supplemental networking libraries")
       (description "This package provides supplemental Go networking libraries.")
@@ -261,19 +263,6 @@ loading algorithms.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "17zhim2m0r8nyy18g2lsawxm4rawix2qbjyn80x9vc6jc8fv05m9")))))))
-
-(define-public go-golang-org-x-net-html
-  (package
-    (inherit go-golang-org-x-net)
-    (name "go-golang-org-x-net-html")
-    (arguments
-     '(#:import-path "golang.org/x/net/html"
-       #:unpack-path "golang.org/x/net"))
-    (propagated-inputs (list go-golang-org-x-text))
-    (home-page "https://godoc.org/golang.org/x/net/html")
-    (synopsis "HTML5-compliant tokenizer and parser")
-    (description
-     "This package provides an HTML5-compliant tokenizer and parser.")))
 
 (define-public go-golang-org-x-sync
   (let ((commit "8fcdb60fdcc0539c5e357b2308249e4e752147f1")

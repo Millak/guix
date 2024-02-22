@@ -1471,7 +1471,7 @@ of a Unix terminal to HTML code.")
            go-github-com-spf13-afero
            go-github-com-urfave-cli
            go-github-com-yuin-goldmark
-           go-golang-org-x-net-html
+           go-golang-org-x-net
            go-gopkg-in-ini-v1
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/errata-ai/vale")

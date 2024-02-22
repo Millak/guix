@@ -3849,7 +3849,7 @@ If several repos are related, it helps to see their status together.")
            go-github-com-motemen-go-colorine
            go-github-com-saracen-walker
            go-github-com-urfave-cli-v2
-           go-golang-org-x-net-html
+           go-golang-org-x-net
            go-golang.org-x-sync-errgroup))
     (synopsis "Manage remote repository clones")
     (description
