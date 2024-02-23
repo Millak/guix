@@ -216,7 +216,7 @@ installed; this is useful for files that are meant to be included."
                                 (documentation-file-regexp
                                  %documentation-file-regexp)
                                 #:allow-other-keys)
-  "Install files that mactch DOCUMENTATION-FILE-REGEXP."
+  "Install files that match DOCUMENTATION-FILE-REGEXP."
   (let* ((out (assoc-ref outputs "out"))
          (doc (string-append out "/share/doc/"
                              (strip-store-file-name out))))
