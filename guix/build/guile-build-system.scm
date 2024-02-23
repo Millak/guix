@@ -187,6 +187,12 @@ installed; this is useful for files that are meant to be included."
     (let ((source-files
            (with-directory-excursion source-directory
              (find-files "." scheme-file-regexp))))
+      (for-each
+       (lambda (file)
+         (install-file (string-append source-directory "/" file)
+                       (string-append module-dir
+                                      "/" (dirname file))))
+       source-files)
       (invoke-each
        (filter-map (lambda (file)
                      (and (or (not not-compiled-file-regexp)
@@ -202,14 +208,7 @@ installed; this is useful for files that are meant to be included."
                                  flags)))
                    source-files)
        #:max-processes (parallel-job-count)
-       #:report-progress report-build-progress)
-
-      (for-each
-       (lambda (file)
-         (install-file (string-append source-directory "/" file)
-                       (string-append module-dir
-                                      "/" (dirname file))))
-       source-files))
+       #:report-progress report-build-progress))
     #t))
 
 (define* (install-documentation #:key outputs
