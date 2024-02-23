@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -294,7 +294,8 @@ VERSION is the target version of the boot-parameters record."
                                 this-operating-system)))
   (services operating-system-user-services        ; list of services
             (thunked)                     ;allow for system-dependent services
-            (default %base-services))
+            (default %base-services)
+            (sanitize validate-service-list))
 
   (pam-services operating-system-pam-services     ; list of PAM services
                 (default (base-pam-services)))
