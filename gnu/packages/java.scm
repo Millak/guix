@@ -1298,10 +1298,10 @@ new Date();"))
                    (catch 'decoding-error
                      (lambda ()
                        (substitute* file
-                         (("VERSIONED_JNI_LIB_NAME\\(\"(.*)\", \"(.*)\"\\)"
+                         (("VERSIONED_JNI_LIB_NAME\\(\"([^\"]*)\", \"([^\"]*)\"\\)"
                            _ name version)
                           (string-append "\"" (find-library name) "\""))
-                         (("JNI_LIB_NAME\\(\"(.*)\"\\)" _ name)
+                         (("JNI_LIB_NAME\\(\"([^\"]*)\"\\)" _ name)
                           (string-append "\"" (find-library name) "\""))))
                      (lambda _
                        ;; Those are safe to skip.
