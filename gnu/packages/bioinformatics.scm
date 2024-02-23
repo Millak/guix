@@ -5930,6 +5930,82 @@ be of arbitrary length. Repeats with pattern size in the range from 1 to 2000
 bases are detected.")
     (license license:osl2.1)))
 
+(define-public trust4
+  (package
+    (name "trust4")
+    (version "1.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/liulab-dfci/TRUST4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "058wd5bklgcsb0r8l7n1ffakbj4c3ac5hjyvmaqhr3p233fl44z7"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Remove bundled samtools
+                   (delete-file-recursively "samtools-0.1.19")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;there are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-samtools-headers
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("LINKPATH= -I./samtools-0.1.19 -L./samtools-0.1.19")
+                 (string-append "LINKPATH= -I."
+                                #$(this-package-native-input "samtools")
+                                "/include/samtools"
+                                " -L."
+                                #$(this-package-native-input "samtools")
+                                "/lib"))
+                (("./samtools-0.1.19/")
+                 (string-append #$(this-package-native-input
+                                   "samtools") "/lib/")))
+              (substitute* "alignments.hpp"
+                (("samtools-0.1.19")
+                 (string-append #$(this-package-native-input
+                                   "samtools") "/include/samtools")))))
+          (delete 'configure) ; No configure.
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((bin (string-append (assoc-ref outputs "out") "/bin"))
+                    (scripts (string-append #$output
+                                            "/share/trust4/scripts")))
+                (install-file "annotator" bin)
+                (install-file "bam-extractor" bin)
+                (install-file "fastq-extractor" bin)
+                (install-file "run-trust4" bin)
+                (install-file "trust4" bin)
+                ;; install scripts stored in the scrips dir
+                (for-each (lambda (file)
+                            (chmod file #o555))
+                          (find-files "scripts" "\\.p(y|l)"))
+                (copy-recursively "scripts" scripts)
+                (delete-file-recursively "scripts")
+                ;; install the rest of the scripts that are in the main dir
+                (for-each (lambda (file)
+                            (chmod file #o555)
+                            (install-file file bin))
+                          (find-files "." "\\.(pl|py|sh)"))))))))
+    (native-inputs (list automake samtools-0.1))
+    (inputs (list perl python-wrapper zlib))
+    (home-page "https://github.com/liulab-dfci/TRUST4")
+    (synopsis "TCR and BCR assembly from RNA-seq data")
+    (description "This package is analyzing @acronym{TCR, T cell receptor} and
+@acronym{BCR, B cell receptor} sequences using unselected RNA sequencing data,
+profiled from fluid and solid tissues, including tumors.  TRUST4 performs de
+novo assembly on V, J, C genes including the hypervariable @acronym{CDR3,
+complementarity-determining region 3} and reports consensus contigs of BCR/TCR
+sequences.  TRUST4 then realigns the contigs to IMGT reference gene sequences to
+identify the corresponding gene and CDR3 details.  TRUST4 supports both single-end
+and paired-end bulk or single-cell sequencing data with any read length.")
+    (license license:gpl3)))
+
 (define-public diamond
   (package
     (name "diamond")
