@@ -92,19 +92,21 @@ fetched, recursively.  Return #t on success, #f otherwise."
 
 
 (define* (git-fetch-with-fallback url commit directory
-                                  #:key (git-command "git")
+                                  #:key (item directory)
+                                  (git-command "git")
                                   hash hash-algorithm
                                   lfs? recursive?)
   "Like 'git-fetch', fetch COMMIT from URL into DIRECTORY, but fall back to
-alternative methods when fetching from URL fails: attempt to download a nar,
-and if that also fails, download from the Software Heritage archive.  When
-HASH and HASH-ALGORITHM are provided, they are interpreted as the nar hash of
-the directory of interested and are used as its content address at SWH."
+alternative methods when fetching from URL fails: attempt to download a nar
+for ITEM, and if that also fails, download from the Software Heritage archive.
+When HASH and HASH-ALGORITHM are provided, they are interpreted as the nar
+hash of the directory of interested and are used as its content address at
+SWH."
   (or (git-fetch url commit directory
                  #:lfs? lfs?
                  #:recursive? recursive?
                  #:git-command git-command)
-      (download-nar directory)
+      (download-nar item directory)
 
       ;; As a last resort, attempt to download from Software Heritage.
       ;; Disable X.509 certificate verification to avoid depending

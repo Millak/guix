@@ -114,10 +114,13 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
       ;; on ambient authority, hence the PATH value below.
       (setenv "PATH" "/run/current-system/profile/bin:/bin:/usr/bin")
 
+      ;; Note: When doing a '--check' build, DRV-OUTPUT and OUTPUT are
+      ;; different, hence the #:item argument below.
       (git-fetch-with-fallback url commit output
                                #:hash hash
                                #:hash-algorithm algo
                                #:recursive? recursive?
+                               #:item (derivation-output-path drv-output)
                                #:git-command %git))))
 
 (define (assert-low-privileges)
