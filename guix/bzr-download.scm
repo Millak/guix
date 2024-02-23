@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,20 +52,40 @@
     (module-ref distro 'breezy)))
 
 (define* (bzr-fetch ref hash-algo hash
-                       #:optional name
-                       #:key (system (%current-system)) (guile (default-guile))
-                       (bzr (bzr-package)))
+                    #:optional name
+                    #:key (system (%current-system)) (guile (default-guile))
+                    (bzr (bzr-package)))
   "Return a fixed-output derivation that fetches REF, a <bzr-reference>
 object.  The output is expected to have recursive hash HASH of type
 HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
+  (define guile-json
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
+
+  (define guile-lzlib
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
+
+  (define guile-gnutls
+    (module-ref (resolve-interface '(gnu packages tls)) 'guile-gnutls))
+
   (define build
-    (with-imported-modules (source-module-closure
-                            '((guix build bzr)))
-      #~(begin
-          (use-modules (guix build bzr))
-          (bzr-fetch
-           (getenv "bzr url") (getenv "bzr reference") #$output
-           #:bzr-command (string-append #+bzr "/bin/brz")))))
+    (with-extensions (list guile-gnutls guile-lzlib guile-json)
+      (with-imported-modules (source-module-closure
+                              '((guix build bzr)
+                                (guix build utils)
+                                (guix build download-nar)))
+        #~(begin
+            (use-modules (guix build bzr)
+                         (guix build download-nar)
+                         (guix build utils)
+                         (srfi srfi-34))
+
+            (or (guard (c ((invoke-error? c)
+                           (report-invoke-error c)
+                           #f))
+                  (bzr-fetch (getenv "bzr url") (getenv "bzr reference")
+                             #$output
+                             #:bzr-command (string-append #+bzr "/bin/brz")))
+                (download-nar #$output))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "bzr-branch") build
@@ -79,7 +100,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
                       #:system system
-                      #:local-build? #t  ;don't offload repo branching
+                      #:local-build? #t          ;don't offload repo branching
                       #:hash-algo hash-algo
                       #:hash hash
                       #:recursive? #t
