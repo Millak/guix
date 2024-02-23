@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2019, 2020, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,9 +57,9 @@ ITEM."
       (restore-file decompressed-port
                     item))))
 
-(define (download-nar item)
-  "Download and extract the normalized archive for ITEM.  Return #t on
-success, #f otherwise."
+(define* (download-nar item #:optional (output item))
+  "Download and extract to OUTPUT the normalized archive for ITEM, a store
+item.  Return #t on success, #f otherwise."
   ;; Let progress reports go through.
   (setvbuf (current-error-port) 'none)
   (setvbuf (current-output-port) 'none)
@@ -96,10 +96,10 @@ success, #f otherwise."
                                              #:download-size size)))
                  (if (string-contains url "/lzip")
                      (restore-lzipped-nar port-with-progress
-                                          item
+                                          output
                                           size)
                      (restore-file port-with-progress
-                                   item)))
+                                   output)))
                (newline)
                #t))))
       (()
