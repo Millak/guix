@@ -184,32 +184,32 @@ installed; this is useful for files that are meant to be included."
                              (#f "")
                              (path (string-append ":" path)))))
 
-  (let ((source-files
+    (let ((source-files
            (with-directory-excursion source-directory
              (find-files "." scheme-file-regexp))))
-    (invoke-each
-     (filter-map (lambda (file)
-                   (and (or (not not-compiled-file-regexp)
-                            (not (string-match not-compiled-file-regexp
-                                               file)))
-                        (cons* guild
-                               "guild" "compile"
-                               "-L" source-directory
-                               "-o" (string-append go-dir
-                                                   (file-sans-extension file)
-                                                   ".go")
-                               (string-append source-directory "/" file)
-                               flags)))
-                 source-files)
-     #:max-processes (parallel-job-count)
-     #:report-progress report-build-progress)
+      (invoke-each
+       (filter-map (lambda (file)
+                     (and (or (not not-compiled-file-regexp)
+                              (not (string-match not-compiled-file-regexp
+                                                 file)))
+                          (cons* guild
+                                 "guild" "compile"
+                                 "-L" source-directory
+                                 "-o" (string-append go-dir
+                                                     (file-sans-extension file)
+                                                     ".go")
+                                 (string-append source-directory "/" file)
+                                 flags)))
+                   source-files)
+       #:max-processes (parallel-job-count)
+       #:report-progress report-build-progress)
 
-    (for-each
-     (lambda (file)
+      (for-each
+       (lambda (file)
          (install-file (string-append source-directory "/" file)
                        (string-append module-dir
                                       "/" (dirname file))))
-     source-files))
+       source-files))
     #t))
 
 (define* (install-documentation #:key outputs
