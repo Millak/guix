@@ -92,6 +92,7 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages texinfo)
   #:use-module ((srfi srfi-1) #:select (fold alist-delete))
@@ -1756,20 +1757,21 @@ OpenJDK.")
   (package
     (inherit openjdk21)
     (name "jbr")
-    (version "21-b240.22")
+    (version "21.0.2b375.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/JetBrains/JetBrainsRuntime.git")
-                     (commit (string-append "jb" version))))
+                     (commit (string-append "jbr-release-" version))))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1sx48mm5vap4ab1qr6hy25wlgxljmhvpvrqiqiq692izr8dh7j4c"))
+                "15rcwbch0xxzcgggc34lna9dwimwqsc0z4mvw5hd428414gz71iy"))
               (patches (search-patches "openjdk-21-fix-rpath.patch"
                                        "jbr-17-xcursor-no-dynamic.patch"))))
     (inputs
      `(("wayland" ,wayland)
+       ("libxkbcommon" ,libxkbcommon) ; for wayland
        ,@(package-inputs openjdk21)))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk21)
