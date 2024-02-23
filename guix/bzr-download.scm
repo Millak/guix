@@ -24,7 +24,7 @@
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix store)
-
+  #:use-module (ice-9 match)
   #:export (bzr-reference
             bzr-reference?
             bzr-reference-url
@@ -72,20 +72,26 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
       (with-imported-modules (source-module-closure
                               '((guix build bzr)
                                 (guix build utils)
+                                (guix build download)
                                 (guix build download-nar)))
         #~(begin
             (use-modules (guix build bzr)
                          (guix build download-nar)
+                         ((guix build download)
+                          #:select (download-method-enabled?))
                          (guix build utils)
                          (srfi srfi-34))
 
-            (or (guard (c ((invoke-error? c)
-                           (report-invoke-error c)
-                           #f))
-                  (bzr-fetch (getenv "bzr url") (getenv "bzr reference")
-                             #$output
-                             #:bzr-command (string-append #+bzr "/bin/brz")))
-                (download-nar #$output))))))
+            (or (and (download-method-enabled? 'upstream)
+                     (guard (c ((invoke-error? c)
+                                (report-invoke-error c)
+                                #f))
+                       (bzr-fetch (getenv "bzr url") (getenv "bzr reference")
+                                  #$output
+                                  #:bzr-command
+                                  (string-append #+bzr "/bin/brz"))))
+                (and (download-method-enabled? 'nar)
+                     (download-nar #$output)))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "bzr-branch") build
@@ -95,7 +101,11 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                       #:script-name "bzr-download"
                       #:env-vars
                       `(("bzr url" . ,(bzr-reference-url ref))
-                        ("bzr reference" . ,(bzr-reference-revision ref)))
+                        ("bzr reference" . ,(bzr-reference-revision ref))
+                        ,@(match (getenv "GUIX_DOWNLOAD_METHODS")
+                            (#f '())
+                            (value
+                             `(("GUIX_DOWNLOAD_METHODS" . ,value)))))
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")

@@ -93,6 +93,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define build
     (with-imported-modules
         (source-module-closure '((guix build svn)
+                                 (guix build download)
                                  (guix build download-nar)
                                  (guix build utils)
                                  (guix swh)))
@@ -100,23 +101,28 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                              guile-lzlib)
         #~(begin
             (use-modules (guix build svn)
+                         ((guix build download)
+                          #:select (download-method-enabled?))
                          (guix build download-nar)
                          (guix swh)
                          (ice-9 match))
 
-            (or (svn-fetch (getenv "svn url")
-                           (string->number (getenv "svn revision"))
-                           #$output
-                           #:svn-command #+(file-append svn "/bin/svn")
-                           #:recursive? (match (getenv "svn recursive?")
-                                          ("yes" #t)
-                                          (_ #f))
-                           #:user-name (getenv "svn user name")
-                           #:password (getenv "svn password"))
-                (download-nar #$output)
-                (parameterize ((%verify-swh-certificate? #f))
-                  (swh-download-directory-by-nar-hash #$hash '#$hash-algo
-                                                      #$output)))))))
+            (or (and (download-method-enabled? 'upstream)
+                     (svn-fetch (getenv "svn url")
+                                (string->number (getenv "svn revision"))
+                                #$output
+                                #:svn-command #+(file-append svn "/bin/svn")
+                                #:recursive? (match (getenv "svn recursive?")
+                                               ("yes" #t)
+                                               (_ #f))
+                                #:user-name (getenv "svn user name")
+                                #:password (getenv "svn password")))
+                (and (download-method-enabled? 'nar)
+                     (download-nar #$output))
+                (and (download-method-enabled? 'swh)
+                     (parameterize ((%verify-swh-certificate? #f))
+                       (swh-download-directory-by-nar-hash #$hash '#$hash-algo
+                                                           #$output))))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
@@ -139,7 +145,11 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                         ,@(if (svn-reference-password ref)
                               `(("svn password"
                                  . ,(svn-reference-password ref)))
-                              '()))
+                              '())
+                        ,@(match (getenv "GUIX_DOWNLOAD_METHODS")
+                            (#f '())
+                            (value
+                             `(("GUIX_DOWNLOAD_METHODS" . ,value)))))
 
                       #:system system
                       #:hash-algo hash-algo
@@ -178,6 +188,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define build
     (with-imported-modules
         (source-module-closure '((guix build svn)
+                                 (guix build download)
                                  (guix build download-nar)
                                  (guix build utils)
                                  (guix swh)))
@@ -186,6 +197,8 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
         #~(begin
             (use-modules (guix build svn)
                          (guix build utils)
+                         ((guix build download)
+                          #:select (download-method-enabled?))
                          (guix build download-nar)
                          (guix swh)
                          (srfi srfi-1)
@@ -197,30 +210,33 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                    ;; single file.
                    (unless (string-suffix? "/" location)
                      (mkdir-p (string-append #$output "/" (dirname location))))
-                   (svn-fetch (string-append (getenv "svn url") "/" location)
-                              (string->number (getenv "svn revision"))
-                              (if (string-suffix? "/" location)
-                                  (string-append #$output "/" location)
-                                  (string-append #$output "/" (dirname location)))
-                              #:svn-command #+(file-append svn "/bin/svn")
-                              #:recursive? (match (getenv "svn recursive?")
-                                             ("yes" #t)
-                                             (_ #f))
-                              #:user-name (getenv "svn user name")
-                              #:password (getenv "svn password")))
+                   (and (download-method-enabled? 'upstream)
+                        (svn-fetch (string-append (getenv "svn url") "/" location)
+                                   (string->number (getenv "svn revision"))
+                                   (if (string-suffix? "/" location)
+                                       (string-append #$output "/" location)
+                                       (string-append #$output "/" (dirname location)))
+                                   #:svn-command #+(file-append svn "/bin/svn")
+                                   #:recursive? (match (getenv "svn recursive?")
+                                                  ("yes" #t)
+                                                  (_ #f))
+                                   #:user-name (getenv "svn user name")
+                                   #:password (getenv "svn password"))))
                  (call-with-input-string (getenv "svn locations")
                    read))
                 (begin
                   (when (file-exists? #$output)
                     (delete-file-recursively #$output))
-                  (or (download-nar #$output)
-                      (parameterize ((%verify-swh-certificate? #f))
-                        ;; SWH keeps HASH as an ExtID for the combination of
-                        ;; files/directories, which allows us to retrieve the
-                        ;; entire combination at once:
-                        ;; <https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/issues/5263>.
-                        (swh-download-directory-by-nar-hash
-                         #$hash '#$hash-algo #$output)))))))))
+                  (or (and (download-method-enabled? 'nar)
+                           (download-nar #$output))
+                      (and (download-method-enabled? 'swh)
+                           ;; SWH keeps HASH as an ExtID for the combination
+                           ;; of files/directories, which allows us to
+                           ;; retrieve the entire combination at once:
+                           ;; <https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/issues/5263>.
+                           (parameterize ((%verify-swh-certificate? #f))
+                             (swh-download-directory-by-nar-hash
+                              #$hash '#$hash-algo #$output))))))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
@@ -245,7 +261,11 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                         ,@(if (svn-multi-reference-password ref)
                               `(("svn password"
                                  . ,(svn-multi-reference-password ref)))
-                              '()))
+                              '())
+                        ,@(match (getenv "GUIX_DOWNLOAD_METHODS")
+                            (#f '())
+                            (value
+                             `(("GUIX_DOWNLOAD_METHODS" . ,value)))))
 
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"

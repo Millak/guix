@@ -19,6 +19,8 @@
 
 (define-module (guix build git)
   #:use-module (guix build utils)
+  #:use-module ((guix build download)
+                #:select (download-method-enabled?))
   #:autoload   (guix build download-nar) (download-nar)
   #:autoload   (guix swh) (%verify-swh-certificate?
                            swh-download
@@ -102,17 +104,20 @@ for ITEM, and if that also fails, download from the Software Heritage archive.
 When HASH and HASH-ALGORITHM are provided, they are interpreted as the nar
 hash of the directory of interested and are used as its content address at
 SWH."
-  (or (git-fetch url commit directory
-                 #:lfs? lfs?
-                 #:recursive? recursive?
-                 #:git-command git-command)
-      (download-nar item directory)
+  (or (and (download-method-enabled? 'upstream)
+           (git-fetch url commit directory
+                      #:lfs? lfs?
+                      #:recursive? recursive?
+                      #:git-command git-command))
+      (and (download-method-enabled? 'nar)
+           (download-nar item directory))
 
       ;; As a last resort, attempt to download from Software Heritage.
       ;; Disable X.509 certificate verification to avoid depending
       ;; on nss-certs--we're authenticating the checkout anyway.
       ;; XXX: Currently recursive checkouts are not supported.
       (and (not recursive?)
+           (download-method-enabled? 'swh)
            (parameterize ((%verify-swh-certificate? #f))
              (format (current-error-port)
                      "Trying to download from Software Heritage...~%")
