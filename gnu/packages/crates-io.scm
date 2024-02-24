@@ -25369,6 +25369,29 @@ cross platform API.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-finl-unicode-1
+  (package
+    (name "rust-finl-unicode")
+    (version "1.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "finl_unicode" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "1ipdx778849czik798sjbgk5yhwxqybydac18d2g9jb20dxdrkwg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-unicode-categories" ,rust-unicode-categories-0.1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
+    (home-page "https://github.com/dahosek/finl_unicode")
+    (synopsis "Unicode handling library")
+    (description "Library for handling Unicode functionality.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fixed-1
   (package
     (name "rust-fixed")
