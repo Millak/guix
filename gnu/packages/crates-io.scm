@@ -19960,8 +19960,31 @@ for arbitrary structs.")
          ("rust-quote" ,rust-quote-0.6)
          ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-derive-builder-macro-0.13
+  (package
+    (name "rust-derive-builder-macro")
+    (version "0.13.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "derive_builder_macro" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09q17rzgf8bsj8n1bhlf4f93nmqg8va6321ppcd07f1mzg1nh0w7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-derive-builder-core" ,rust-derive-builder-core-0.13)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
+    (synopsis "Automatically implement the builder pattern for arbitrary structs")
+    (description
+     "This crate provides a Rust macro to automatically implement the builder
+pattern for arbitrary structs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-builder-macro-0.12
   (package
+    (inherit rust-derive-builder-macro-0.13)
     (name "rust-derive-builder-macro")
     (version "0.12.0")
     (source (origin
@@ -19971,18 +19994,9 @@ for arbitrary structs.")
               (sha256
                (base32
                 "17p71qzh7x1q2yxzz3xrg73zw3xl0h479b7ybyjm0s1rg9fa7kgb"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-derive-builder-core" ,rust-derive-builder-core-0.12)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
-    (synopsis
-     "Rust macro to automatically implement the builder pattern for arbitrary structs")
-    (description
-     "This crate provides a Rust macro to automatically implement the builder
-pattern for arbitrary structs.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-derive-builder-core" ,rust-derive-builder-core-0.12)
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-derive-builder-macro-0.11
   (package
