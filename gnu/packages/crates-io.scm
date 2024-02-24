@@ -17336,6 +17336,30 @@ feature flags.")
 number ``crunching``.")
     (license license:expat)))
 
+(define-public rust-csscolorparser-0.6
+  (package
+    (name "rust-csscolorparser")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "csscolorparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gxh11hajx96mf5sd0az6mfsxdryfqvcfcphny3yfbfscqq7sapb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cint" ,rust-cint-0.3)
+                       ("rust-lab" ,rust-lab-0.11)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-rgb" ,rust-rgb-0.8)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/mazznoer/csscolorparser-rs")
+    (synopsis "CSS color parser library")
+    (description "This crate is a CSS color parser library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cssparser-0.33
   (package
     (name "rust-cssparser")
