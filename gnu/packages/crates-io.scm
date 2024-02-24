@@ -33748,14 +33748,14 @@ parser in Rust.")
 (define-public rust-libc-0.2
   (package
     (name "rust-libc")
-    (version "0.2.151")
+    (version "0.2.153")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x28f0zgp4zcwr891p8n9ag9w371sbib30vp4y6hi2052frplb9h"))))
+        (base32 "1gg7m1ils5dms5miq9fyllrcp0jxnbpgkx71chd2i0lafa8qy6cw"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
