@@ -3781,8 +3781,7 @@ containers.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/spf13/afero"))
-    (propagated-inputs
-     `(("golang.org/x/text" ,go-golang-org-x-text)))
+    (propagated-inputs (list go-github-com-pkg-sftp go-golang-org-x-text))
     (home-page "https://github.com/spf13/afero")
     (synopsis "File system abstraction for Go")
     (description
