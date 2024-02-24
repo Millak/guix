@@ -36282,6 +36282,25 @@ functions and static variables these libraries contain.")
 information.")
     (license license:expat)))
 
+(define-public rust-libmath-0.2
+  (package
+    (name "rust-libmath")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libmath" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00j546nfjsd4i1z1di800crazjyz6bv0dc63sn0awlx86ill3lyz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/scoobadog/libmath-rs")
+    (synopsis "Mathematical utilities")
+    (description "This package provides some mathematical utilities.")
+    (license license:expat)))
+
 (define-public rust-libmimalloc-sys-0.1
   (package
     (name "rust-libmimalloc-sys")
