@@ -30045,6 +30045,30 @@ already-hashed or hash-like data.")
 @code{#[derive(Hash32)]}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hashbag-0.1
+  (package
+    (name "rust-hashbag")
+    (version "0.1.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hashbag" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14wx5rx11h0nb1rmlwmiw7719q2qf941x7ipcdg8yahb0sr99x4q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-griddle" ,rust-griddle-0.5)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/jonhoo/hashbag.git")
+    (synopsis "Unordered multiset implementation using a hash bag")
+    (description
+     "This crate implements an unordered multiset implementation using a hash bag.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hashbrown-0.14
   (package
     (name "rust-hashbrown")
