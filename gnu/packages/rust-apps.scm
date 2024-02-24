@@ -727,6 +727,89 @@ While it does not seek to mirror all of find's powerful functionality, it provid
 defaults for 80% of the use cases.")
      (license (list license:expat license:asl2.0))))
 
+(define-public gitui
+  (package
+    (name "gitui")
+    (version "0.25.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gitui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19xv6bvp0hs1m5y8a0myifvh8xrxrv14wd4gknlsrka0l7d8ijg7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; disable vendor-openssl from default flags
+       ;; use oniguruma regex lib which is faster and makes gitui 25% smaller
+       #:features '("ghemoji" "regex-onig" "trace-libgit")
+       #:cargo-build-flags
+       '("--release" "--no-default-features")
+       #:cargo-test-flags
+       '("--release" "--no-default-features"
+         "--features" "ghemoji regex-onig trace-libgit"
+         "--"
+         ;; this test fails with permission denied error
+         "--skip=test_symbolic_links")
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+          (replace 'install
+             ;; Add --no-default-features to the install phase.
+             (lambda* (#:key outputs features #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out")))
+                  (invoke "cargo" "install" "--no-track"
+                          "--path" "."
+                          "--root" out
+                          "--no-default-features"
+                          "--features" (string-join features))))))
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-asyncgit" ,rust-asyncgit-0.25)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bugreport" ,rust-bugreport-0.5)
+                       ("rust-bwrap" ,rust-bwrap-1)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-easy-cast" ,rust-easy-cast-0.5)
+                       ("rust-filetreelist" ,rust-filetreelist-0.5)
+                       ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+                       ("rust-gh-emoji" ,rust-gh-emoji-1)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-notify" ,rust-notify-6)
+                       ("rust-notify-debouncer-mini" ,rust-notify-debouncer-mini-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-ratatui" ,rust-ratatui-0.24)
+                       ("rust-rayon-core" ,rust-rayon-core-1)
+                       ("rust-ron" ,rust-ron-0.8)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-scopetime" ,rust-scopetime-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-shellexpand" ,rust-shellexpand-3)
+                       ("rust-simplelog" ,rust-simplelog-0.12)
+                       ("rust-struct-patch" ,rust-struct-patch-0.4)
+                       ("rust-syntect" ,rust-syntect-5)
+                       ("rust-tui-textarea" ,rust-tui-textarea-0.4)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-truncate" ,rust-unicode-truncate-0.2)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-which" ,rust-which-6))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 libssh2 openssl zlib))
+    (home-page "https://github.com/extrawurst/gitui")
+    (synopsis "Terminal UI for git")
+    (description "This package provides a fast Terminal UI for git.")
+    (license license:expat)))
+
 (define-public hexyl
   (package
     (name "hexyl")
