@@ -64288,16 +64288,20 @@ of a C-like enum.")
 (define-public rust-serde-spanned-0.6
   (package
     (name "rust-serde-spanned")
-    (version "0.6.4")
+    (version "0.6.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "serde_spanned" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "102ym47sr1y48ml42wjv6aq8y77bij1qckx1j0gb3rbka21jn0hj"))))
+               (base32 "1hgh6s3jjwyzhfk3xwb6pnnr1misq9nflwq0f026jafi37s24dpb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+     `(#:tests? #f      ; unresolved import `toml`
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-untagged" ,rust-serde-untagged-0.1))))
     (home-page "https://github.com/toml-rs/toml")
     (synopsis "Encoder and decoder of TOML-formatted files and streams")
     (description "This package provides a native Rust encoder and decoder of
