@@ -966,6 +966,29 @@ generation.")
 similar to unit tests.")
     (license license:asl2.0)))
 
+(define-public greatest
+  (package
+   (name "greatest")
+   (version "1.5.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/silentbicycle/greatest")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "11rajkb5m7mlzi3i3v0i27k6rrjw3x8a7bl6fkc29igzpwfbxndy"))))
+   (build-system copy-build-system)
+   (arguments (list #:install-plan
+                    #~'(("greatest.h" "include/"))))
+   (home-page "https://github.com/silentbicycle/greatest")
+   (synopsis "Single-header test system")
+   (description "Greatest is a single-header test system for C, including
+macros for defining tests, grouping them into suites, and providing a test
+runner.  It is quite unopinionated with most of its features being optional.")
+   (license license:isc)))
+
 (define-public cpputest
   (package
     (name "cpputest")
