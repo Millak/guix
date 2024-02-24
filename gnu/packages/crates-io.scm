@@ -6861,6 +6861,27 @@ and no more (caveat: black_box is still missing!).")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-better-panic-0.3
+  (package
+    (name "rust-better-panic")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "better-panic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0djh7qs39z0mbkzxs4nrc9ngnyjpsxq67lqfv75q91i63b8y3abg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-console" ,rust-console-0.15)
+                       ("rust-syntect" ,rust-syntect-4))))
+    (home-page "https://github.com/mitsuhiko/better-panic")
+    (synopsis "Pretty panic backtraces")
+    (description "Pretty panic backtraces inspired by Python's tracebacks.")
+    (license license:expat)))
+
 (define-public rust-bigdecimal-0.4
   (package
     (name "rust-bigdecimal")
