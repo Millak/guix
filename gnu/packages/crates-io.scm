@@ -23055,6 +23055,25 @@ deserialized from environment variables.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-str-buf" ,rust-str-buf-1))))))
 
+(define-public rust-escape8259-0.5
+  (package
+    (name "rust-escape8259")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "escape8259" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vjpfnk9fyq6qcc18bq7yfk9ahi2r12lfywr4rwcsvv6wc8ljkxs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rustversion" ,rust-rustversion-1))))
+    (home-page "https://github.com/ericseppanen/escape8259")
+    (synopsis "RFC8259-compliant string escaping and un-escaping")
+    (description "RFC8259-compliant string escaping and un-escaping.")
+    (license license:expat)))
+
 (define-public rust-escaper-0.1
   (package
     (name "rust-escaper")
