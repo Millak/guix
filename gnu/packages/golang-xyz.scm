@@ -1099,15 +1099,15 @@ Metrics library.")
   (package
     (name "go-github-com-shirou-gopsutil")
     (version "2.21.11")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/shirou/gopsutil")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gpb10xkdwfimn1sp4jhrvzz4p3zgmdb78q8v23nap3yi6v4bff5"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shirou/gopsutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gpb10xkdwfimn1sp4jhrvzz4p3zgmdb78q8v23nap3yi6v4bff5"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1132,7 +1132,8 @@ Metrics library.")
     (native-inputs
      (list go-github-com-stretchr-testify procps))
     (synopsis "Process and system monitoring in Go")
-    (description "This package provides a library for retrieving information
+    (description
+     "This package provides a library for retrieving information
 on running processes and system utilization (CPU, memory, disks, network,
 sensors).")
     (home-page "https://github.com/shirou/gopsutil")
