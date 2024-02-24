@@ -75501,8 +75501,34 @@ writing colored text to a terminal.")
     (description "Terminal capabilities with type-safe getters.")
     (license license:wtfpl2)))
 
+(define-public rust-termion-3
+  (package
+    (name "rust-termion")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termion" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19f7q542ih13j13jp5lr750z5yav7v035pmz46zznkahb9ki6y21"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; tests require a terminal
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-libredox" ,rust-libredox-0.0.2)
+                       ("rust-numtoa" ,rust-numtoa-0.1)
+                       ("rust-redox-termios" ,rust-redox-termios-0.1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://gitlab.redox-os.org/redox-os/termion")
+    (synopsis "Library for manipulating terminals")
+    (description
+     "This package provides a bindless library for manipulating terminals.")
+    (license license:expat)))
+
 (define-public rust-termion-2
   (package
+    (inherit rust-termion-3)
     (name "rust-termion")
     (version "2.0.3")
     (source (origin
@@ -75512,7 +75538,6 @@ writing colored text to a terminal.")
               (sha256
                (base32
                 "0zcxsj2mms9hv8gizg2x3358ibjynzwvj5w6asr4683gxxyqqr64"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:tests? #f ;tests require a terminal
            #:cargo-inputs
@@ -75520,12 +75545,7 @@ writing colored text to a terminal.")
              ("rust-libredox" ,rust-libredox-0.0.2)
              ("rust-numtoa" ,rust-numtoa-0.1)
              ("rust-redox-termios" ,rust-redox-termios-0.1)
-             ("rust-serde" ,rust-serde-1))))
-    (home-page "https://gitlab.redox-os.org/redox-os/termion")
-    (synopsis "Library for manipulating terminals")
-    (description
-     "This package provides a bindless library for manipulating terminals.")
-    (license license:expat)))
+             ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-termion-1
   (package
