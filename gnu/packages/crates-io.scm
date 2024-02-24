@@ -55284,6 +55284,33 @@ compliant email address validation.")
 on rustdoc JSON output from the nightly toolchain.")
     (license license:expat)))
 
+(define-public rust-public-api-0.32
+  (package
+    (inherit rust-public-api-0.33)
+    (name "rust-public-api")
+    (version "0.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "public-api" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02wpk9j21fxjf5is5jpkq00cl7vvpnkib1l72v7wylkw8ah5rgfq"))))
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-hashbag" ,rust-hashbag-0.1)
+                       ("rust-rustdoc-types" ,rust-rustdoc-types-0.23)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-expect-test" ,rust-expect-test-1)
+                                   ("rust-itertools" ,rust-itertools-0.11)
+                                   ("rust-predicates" ,rust-predicates-3)
+                                   ("rust-rustdoc-json" ,rust-rustdoc-json-0.8)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-puffin-0.18
   (package
     (name "rust-puffin")
