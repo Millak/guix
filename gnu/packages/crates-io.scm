@@ -33258,6 +33258,28 @@ requires non-const function calls to be computed.")
     (description "Read the ELF dependency tree.")
     (license license:expat)))
 
+(define-public rust-leb128-0.2
+  (package
+    (name "rust-leb128")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "leb128" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rxxjdn76sjbrb08s4bi7m4x47zg68f71jzgx8ww7j0cnivjckl8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.8))))
+    (home-page "https://github.com/gimli-rs/leb128")
+    (synopsis
+     "Read and write DWARF LEB128 variable length integer encoding")
+    (description
+     "Read and write DWARF's @code{Little Endian Base 128} (LEB128) variable
+length integer encoding.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-lebe-0.5
   (package
     (name "rust-lebe")
