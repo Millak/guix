@@ -351,13 +351,11 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
         (base32 "1rhk80ybd2zranay76z1ysifnnm786lg9kiiijcwv76qy95in9ks"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:configure-flags (list (string-append "--prefix="
-                                              (assoc-ref %outputs "out")))
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:configure-flags #~(list (string-append "--prefix=" #$output))
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:test-target "test"))
     (inputs (list lcrq librecast libsodium libbsd))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
