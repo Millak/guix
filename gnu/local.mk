@@ -1812,7 +1812,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-sip-include-dirs.patch	\
   %D%/packages/patches/python-sgmllib3k-assertions.patch	\
   %D%/packages/patches/python-sphinx-prompt-docutils-0.19.patch	\
-  %D%/packages/patches/python-telingo-fix-comparison.patch	\
   %D%/packages/patches/python-typeguard-python3.10.patch	\
   %D%/packages/patches/python-uqbar-python3.10.patch	        \
   %D%/packages/patches/python-wxwidgets-type-errors.patch	\

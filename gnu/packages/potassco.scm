@@ -520,17 +520,16 @@ the most probable model as well as finding all models and their probabilities.")
 (define-public python-telingo
   (package
     (name "python-telingo")
-    (version "2.1.1")
+    (version "2.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/potassco/telingo")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "python-telingo-fix-comparison.patch"))
               (sha256
                (base32
-                "0g3khxfdzc2hc7dkiyyqhb399h6h21m5wkp6wy8w71n0m32fiy53"))))
+                "1q6hlh4b5hsa4n5agvmfa9rhsxfd2g6kpl4b9kfccwbmf6dh51k6"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-clingo))
     (home-page "https://potassco.org/")
