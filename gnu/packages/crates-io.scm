@@ -77417,13 +77417,13 @@ parser.")
 (define-public rust-toml-test-data-1
   (package
     (name "rust-toml-test-data")
-    (version "1.4.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "toml-test-data" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0bgdwyjsqgpwwi5s1w483a1g3qrwmq0l3742k07575qzcc6sx0h0"))))
+               (base32 "0pf13igrg0rm5fmy1sj57y9m313wyfwwjrqxgp3fhg41kvcvmdf6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-include-dir" ,rust-include-dir-0.7))))
