@@ -71333,6 +71333,29 @@ and Jaro-Winkler.")
         (base32
          "0z3zzvmilfldp4xw42qbkjf901dcnbk58igrzsvivydjzd24ry37"))))))
 
+(define-public rust-struct-patch-derive-0.4
+  (package
+    (name "rust-struct-patch-derive")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "struct-patch-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nsdjvm1xinqx53s520y4fkqshjdfff3r4rglamrzrgb4yf38jpi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/yanganto/struct-patch/")
+    (synopsis "Library for partial updates of structs")
+    (description
+     "This package provides a library that helps you implement partial updates
+for your structs.")
+    (license license:expat)))
+
 (define-public rust-structmeta-0.2
   (package
     (name "rust-structmeta")
