@@ -482,7 +482,7 @@ into Python programs easier.")
 (define-public python-plingo
   (package
     (name "python-plingo")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -491,7 +491,7 @@ into Python programs easier.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mp0pdjzwpl7bpba20iwszx9x49gsyl2rhrp7w7xpwjqdjrp23r8"))))
+                "0bdz755c6isp29layvzsw9c4kr12x7b5d8ip37ay3cl4dlq4bid3"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
