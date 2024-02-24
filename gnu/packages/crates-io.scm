@@ -71411,19 +71411,17 @@ framework in pure Rust.")
      "This package provides a strong typed XML parser, based on xmlparser.")
     (license license:expat)))
 
-(define-public rust-strsim-0.10
+(define-public rust-strsim-0.11
   (package
     (name "rust-strsim")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "strsim" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "08s69r4rcrahwnickvi0kq49z524ci50capybln83mg6b473qivk"))))
+        (base32 "00gsdp2x1gkkxsbjxgrjyil2hsbdg49bwv8q2y1f406dwk4p7q2y"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/dguo/strsim-rs")
     (synopsis "Rust implementations of string similarity metrics")
@@ -71431,6 +71429,19 @@ framework in pure Rust.")
 metrics.  It includes Hamming, Levenshtein, OSA, Damerau-Levenshtein, Jaro,
 and Jaro-Winkler.")
     (license license:expat)))
+
+(define-public rust-strsim-0.10
+  (package
+    (inherit rust-strsim-0.11)
+    (name "rust-strsim")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "strsim" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08s69r4rcrahwnickvi0kq49z524ci50capybln83mg6b473qivk"))))))
 
 (define-public rust-strsim-0.9
   (package
