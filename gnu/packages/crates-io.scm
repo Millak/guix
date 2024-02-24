@@ -64013,6 +64013,25 @@ with one of the implemented strategies.")
          (base32
           "09sy9wbqp409pkwmqni40qmwa99ldqpl48pp95m1xw8sc19qy9cl"))))))
 
+(define-public rust-scopetime-0.1
+  (package
+    (name "rust-scopetime")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scopetime" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ngkasx6l072cvigx7q5r33i8acjardr4g8jnwdrcym4758f5vb6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/extrawurst/gitui")
+    (synopsis "Log scope runtime")
+    (description "This create is for logging runtime of arbitrary scope.")
+    (license license:expat)))
+
 (define-public rust-scraper-0.12
   (package
     (name "rust-scraper")
