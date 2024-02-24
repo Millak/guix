@@ -62663,6 +62663,36 @@ rustc compiler.")
      `(#:cargo-inputs
        (("rust-semver" ,rust-semver-0.1))))))
 
+(define-public rust-rustdoc-json-0.8
+  (package
+    (name "rust-rustdoc-json")
+    (version "0.8.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustdoc-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "120k214xy255pfvizb6xlks0yv7psgjr3nh6l9xj9bgdfis747m2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-cargo-manifest" ,rust-cargo-manifest-0.13)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.8))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-expect-test" ,rust-expect-test-1)
+                                   ("rust-predicates" ,rust-predicates-3)
+                                   ("rust-public-api" ,rust-public-api-0.33)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page
+     "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json")
+    (synopsis "Utilities for working with rustdoc JSON.")
+    (description "Utilities for working with rustdoc JSON.")
+    (license license:expat)))
+
 (define-public rust-rustdoc-stripper-0.1
   (package
     (name "rust-rustdoc-stripper")
