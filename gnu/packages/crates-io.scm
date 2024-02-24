@@ -84735,6 +84735,29 @@ using @code{bindgen}.")
     (description "The Unicode Bidi Algorithm (UBA).")
     (license (list license:expat))))
 
+(define-public rust-wezterm-color-types-0.2
+  (package
+    (name "rust-wezterm-color-types")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wezterm-color-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xvphmrqgg69v9l879xj5lq010z13f5ixi854ykmny6j7m47lvjc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-csscolorparser" ,rust-csscolorparser-0.6)
+                       ("rust-deltae" ,rust-deltae-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-wezterm-dynamic" ,rust-wezterm-dynamic-0.1))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "Types for colors")
+    (description "This package provides types for working with colors.")
+    (license license:expat)))
+
 (define-public rust-wezterm-dynamic-0.2
   (package
     (name "rust-wezterm-dynamic")
