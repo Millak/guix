@@ -29574,6 +29574,36 @@ provides standard printing of search results, similar to grep itself.")
      "Fast line oriented regex searching as a library.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-griddle-0.5
+  (package
+    (name "rust-griddle")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "griddle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qv3ynh0dzfjqz3wxz8yfkda1jxz8jam9mhjrlbv328v34i1vf3b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.7)
+                       ("rust-hashbrown" ,rust-hashbrown-0.11)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-fnv" ,rust-fnv-1)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rayon" ,rust-rayon-1)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/jonhoo/griddle.git")
+    (synopsis "HashMap variant that spreads resize load across inserts")
+    (description
+     "This package provides a @code{HashMap} variant that spreads resize load
+across inserts.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-group-0.13
   (package
     (name "rust-group")
