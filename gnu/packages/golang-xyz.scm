@@ -46,7 +46,8 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
-  #:use-module (gnu packages golang-crypto))
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages linux))
 
 ;;; Commentary:
 ;;;
@@ -1095,29 +1096,47 @@ Metrics library.")
       (license license:bsd-2))))
 
 (define-public go-github-com-shirou-gopsutil
-  (let ((commit "47ef3260b6bf6ead847e7c8fc4101b33c365e399")
-        (revision "0"))
-    (package
-      (name "go-github-com-shirou-gopsutil")
-      (version (git-version "v2.19.7" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/shirou/gopsutil")
-                       (commit commit))) ; XXX
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0x1g4r32q4201nr2b754xnrrndmwsrhfr7zg37spya86qrmijnws"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/shirou/gopsutil"))
-      (synopsis "Process and system monitoring in Go")
-      (description "This package provides a library for retrieving information
+  (package
+    (name "go-github-com-shirou-gopsutil")
+    (version "2.21.11")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/shirou/gopsutil")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gpb10xkdwfimn1sp4jhrvzz4p3zgmdb78q8v23nap3yi6v4bff5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/shirou/gopsutil"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-v3
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       ;; We remove the separately included v3 module.
+                       (delete-file-recursively (string-append "src/"
+                                                               import-path
+                                                               "/v3"))))
+                   (add-before 'check 'remove-failing-tests
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        ;; host_test.go tries to access files such as
+                        ;; /var/run/utmp that do not exist in the build
+                        ;; environment.
+                        (string-append "src/" import-path "/host/host_test.go")))))))
+    (propagated-inputs
+     (list go-github-com-tklauser-go-sysconf go-golang-org-x-sys))
+    (native-inputs
+     (list go-github-com-stretchr-testify procps))
+    (synopsis "Process and system monitoring in Go")
+    (description "This package provides a library for retrieving information
 on running processes and system utilization (CPU, memory, disks, network,
 sensors).")
-      (home-page "https://github.com/shirou/gopsutil")
-      (license license:bsd-3))))
+    (home-page "https://github.com/shirou/gopsutil")
+    (license license:bsd-3)))
 
 (define-public go-github-com-skip2-go-qrcode
   (package
