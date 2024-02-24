@@ -55249,6 +55249,41 @@ compliant email address validation.")
         ("rust-regex" ,rust-regex-1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-public-api-0.33
+  (package
+    (name "rust-public-api")
+    (version "0.33.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "public-api" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i1qg7z96l0y5cjna6kppsvkvlpqkvmsns75zjb61jbsh3pfwndp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-hashbag" ,rust-hashbag-0.1)
+                       ("rust-rustdoc-types" ,rust-rustdoc-types-0.23)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-expect-test" ,rust-expect-test-1)
+        ("rust-itertools" ,rust-itertools-0.12)
+        ("rust-predicates" ,rust-predicates-3)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rustdoc-json" ,rust-rustdoc-json-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page
+     "https://github.com/Enselic/cargo-public-api/tree/main/public-api")
+    (synopsis "List diff public API of Rust library crates")
+    (description "List and diff the public API of Rust library crates.  Relies
+on rustdoc JSON output from the nightly toolchain.")
+    (license license:expat)))
+
 (define-public rust-puffin-0.18
   (package
     (name "rust-puffin")
