@@ -26176,6 +26176,23 @@ implementation that is more efficient for smaller hash keys.")
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-font8x8-0.3
+  (package
+    (name "rust-font8x8")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "font8x8" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0znh67wfv3pyx12619rm8v59fc3ig2ai6pfgqxl855hsf6w8hm47"))))
+    (build-system cargo-build-system)
+    (home-page "https://gitlab.com/saibatizoku/font8x8-rs")
+    (synopsis "8x8 monochrome bitmap font")
+    (description "8x8 monochrome bitmap font for rendering.")
+    (license license:expat)))
+
 (define-public rust-force-send-sync-1
   (package
     (name "rust-force-send-sync")
