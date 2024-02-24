@@ -380,7 +380,18 @@ editor (console only)")
                      "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))
             (add-after 'build 'build-trampolines
               (lambda* (#:key make-flags #:allow-other-keys)
-                (apply invoke "make" "trampolines" make-flags)))))))
+                (apply invoke "make" "trampolines" make-flags)))
+            (add-after 'validate-runpath 'validate-comp-integrity
+              (lambda* (#:key outputs #:allow-other-keys)
+                (if #$(%current-target-system)
+                    (display "Cannot validate native-comp on cross builds.\n")
+                    (invoke
+                     (string-append (assoc-ref outputs "out") "/bin/emacs")
+                     "--batch"
+                     "--load"
+                     #$(local-file
+                        (search-auxiliary-file "emacs/comp-integrity.el"))
+                     "-f" "ert-run-tests-batch-and-exit"))))))))
     (inputs
      (modify-inputs (package-inputs emacs-minimal)
        (prepend gnutls
