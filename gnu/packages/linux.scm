@@ -3054,12 +3054,13 @@ MIDI functionality to the Linux-based operating system.")
     (name "alsa-utils")
     (version "1.2.11")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "ftp://ftp.alsa-project.org/pub/utils/"
-                                 name "-" version ".tar.bz2"))
-             (sha256
-              (base32
-               "19r8qi6b7sd2p1mhxfqrp18wrgjw5s6rp5ygimb1w59zi0xcmils"))))
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.alsa-project.org/files/pub/lib/"
+                    name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "19r8qi6b7sd2p1mhxfqrp18wrgjw5s6rp5ygimb1w59zi0xcmils"))))
     (build-system gnu-build-system)
     (arguments
      (list
