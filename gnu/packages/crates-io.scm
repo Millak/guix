@@ -71605,8 +71605,36 @@ struct.")
      "Parse command line argument by defining a struct, derive crate.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-strum-0.26
+  (package
+    (name "rust-strum")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "strum" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0przl5xmy1gzf4rlp8ff7wla43slsyk1vlg2xdjsk6nzmpl96fvj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=EnumMessage"
+                            "--skip=EnumProperty"
+                            "--skip=EnumIterator")
+       #:cargo-inputs (("rust-phf" ,rust-phf-0.10)
+                       ("rust-strum-macros" ,rust-strum-macros-0.26))
+       #:cargo-development-inputs (("rust-strum-macros" ,rust-strum-macros-0.26))))
+    (home-page "https://github.com/Peternator7/strum")
+    (synopsis "Set of traits for working with enums and strings")
+    (description
+     "Strum is a set of macros and traits for working with enums and strings
+easier in Rust.")
+    (license license:expat)))
+
 (define-public rust-strum-0.25
   (package
+    (inherit rust-strum-0.26)
     (name "rust-strum")
     (version "0.25.0")
     (source
@@ -71616,20 +71644,11 @@ struct.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "09g1q55ms8vax1z0mxlbva3vm8n2r1179kfvbccnkjcidzm58399"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved import `strum::EnumIter`
-       #:cargo-inputs
-       (("rust-phf" ,rust-phf-0.10)
-        ("rust-strum-macros" ,rust-strum-macros-0.25))
-       #:cargo-development-inputs
-       (("rust-strum-macros" ,rust-strum-macros-0.25))))
-    (home-page "https://github.com/Peternator7/strum")
-    (synopsis "Set of traits for working with enums and strings")
-    (description
-     "Strum is a set of macros and traits for working with enums and strings
-easier in Rust.")
-    (license license:expat)))
+       #:cargo-inputs (("rust-phf" ,rust-phf-0.10)
+                       ("rust-strum-macros" ,rust-strum-macros-0.25))
+       #:cargo-development-inputs (("rust-strum-macros" ,rust-strum-macros-0.25))))))
 
 (define-public rust-strum-0.24
   (package
