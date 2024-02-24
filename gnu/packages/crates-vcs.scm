@@ -421,6 +421,34 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-git2-hooks-0.3
+  (package
+    (name "rust-git2-hooks")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2-hooks" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1grq79ggjp2b10yxl205kjkfqcijmmncnf47az3g1g713irpzgwx"))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.6 libssh2 openssl zlib))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; missing git2_testing
+       #:cargo-inputs (("rust-git2" ,rust-git2-0.17)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-shellexpand" ,rust-shellexpand-3)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/extrawurst/gitui")
+    (synopsis "Git hooks")
+    (description "This crate adds git hooks support based on git2-rs.")
+    (license license:expat)))
+
 (define-public rust-gix-0.56
   (package
     (name "rust-gix")
