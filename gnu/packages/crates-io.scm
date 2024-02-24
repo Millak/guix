@@ -12412,7 +12412,7 @@ how to behave across the three main input sources")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.4.16")
+    (version "4.5.4")
     (source
      (origin
        (method url-fetch)
@@ -12420,7 +12420,7 @@ how to behave across the three main input sources")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0ialpybl8n8ybfikzy5f07d64pfdajls0s00bf4wgkh4q20liraq"))))
+         "1828wm9qws5gh2xnimnvmp2vria6d6hsxnqmhnm84dwjcxm0dg4h"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
@@ -12430,9 +12430,9 @@ how to behave across the three main input sources")
            `(("rust-humantime" ,rust-humantime-2)
              ("rust-rustversion" ,rust-rustversion-1)
              ("rust-shlex" ,rust-shlex-1)
-             ("rust-snapbox" ,rust-snapbox-0.4)
+             ("rust-snapbox" ,rust-snapbox-0.5)
              ("rust-trybuild" ,rust-trybuild-1)
-             ("rust-trycmd" ,rust-trycmd-0.14))))
+             ("rust-trycmd" ,rust-trycmd-0.15))))
     (home-page "https://clap.rs/")
     (synopsis "Command Line Argument Parser")
     (description
