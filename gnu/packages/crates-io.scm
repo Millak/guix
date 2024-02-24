@@ -73853,14 +73853,14 @@ the absence of concurrency.")
 (define-public rust-syntect-5
   (package
     (name "rust-syntect")
-    (version "5.1.0")
+    (version "5.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "syntect" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14cg314vzabi45cdbqgcpav0dlx3d18blp24n3z8pl7q7cq4naz0"))))
+        (base32 "1ca68wxr8qs99ivqc266492sz8qwfngswizr7hrh8mlrcfiwykc7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;missing files
@@ -73873,18 +73873,23 @@ the absence of concurrency.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-onig" ,rust-onig-6)
         ("rust-plist" ,rust-plist-1)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.7)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.8)
         ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-yaml-rust" ,rust-yaml-rust-0.4))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-expect-test" ,rust-expect-test-1)
         ("rust-getopts" ,rust-getopts-0.2)
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-public-api" ,rust-public-api-0.33)
         ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1))))
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rustdoc-json" ,rust-rustdoc-json-0.8)
+        ("rust-rustup-toolchain" ,rust-rustup-toolchain-0.1))))
     (home-page "https://github.com/trishume/syntect")
     (synopsis "Library for syntax highlighting and code intelligence")
     (description
