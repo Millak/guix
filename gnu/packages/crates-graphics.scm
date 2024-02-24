@@ -973,6 +973,25 @@ and iOS.")
      "This package provides a library to perform image color model conversion.")
     (license license:expat-0)))
 
+(define-public rust-deltae-0.3
+  (package
+    (name "rust-deltae")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deltae" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d3hw9hpvicl9x0x34jr2ybjk5g5ym1lhbyz6zj31110gq8zaaap"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-clap" ,rust-clap-4))))
+    (home-page "https://gitlab.com/ryanobeirne/deltae")
+    (synopsis "Calculate delta-e between two colors")
+    (description "Calculate Delta E between two colors in CIE Lab space.")
+    (license license:expat)))
+
 (define-public rust-drm-0.10
   (package
     (name "rust-drm")
