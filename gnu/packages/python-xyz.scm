@@ -32058,7 +32058,10 @@ and frame grabber interface.")
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
                               "and not test_generator_cleanup "
-                              "and not test_generator_selection ")))))
+                              "and not test_generator_selection "
+                              ;; … and there's more of them
+                              "and not test_cxx_compiler "
+                              "and not test_fortran_compiler ")))))
           (add-after 'install 'install-cmake
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((lib (string-append (assoc-ref outputs "out")
