@@ -562,6 +562,29 @@ of unit files.")))
 metrics to Graphite.")
     (license license:bsd-2)))
 
+(define-public go-github-com-dave-jennifer
+  (package
+    (name "go-github-com-dave-jennifer")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dave/jennifer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01sgafbds8n5zs61qf057whn06yj6avz30xgxk6pllf22528558m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/dave/jennifer"))
+    (home-page "https://github.com/dave/jennifer")
+    (synopsis "Code generator for Go")
+    (description "This package provides functionality to generate Go code.")
+    (license license:expat)))
+
 (define-public go-github-com-dimchansky-utfbom
   (package
     (name "go-github-com-dimchansky-utfbom")
