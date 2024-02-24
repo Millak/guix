@@ -281,13 +281,12 @@ protocols.")
                 "1m29p4bsafzbchnkidyrnglfdf1c9pnq6akkmivi23qdv9kj51dg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))
-                            (string-append "PREFIX="
-                                           (assoc-ref %outputs "out"))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"))
     (home-page "https://librecast.net/lcrq.html")
     (synopsis "Librecast RaptorQ library")
     (description
