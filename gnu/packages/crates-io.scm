@@ -75476,8 +75476,36 @@ writing colored text to a terminal.")
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-terminfo-0.8
+  (package
+    (name "rust-terminfo")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "terminfo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13s9920jzmnr0jidik8yn6gvkic9n39sl28440mx4x8pd2kd6v36"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=Database"
+                            "--skip=expand::expand"
+                            "--skip=src/lib.rs")
+       #:cargo-inputs (("rust-dirs" ,rust-dirs-4)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.11))))
+    (home-page "https://github.com/meh/rust-terminfo")
+    (synopsis "Terminal information")
+    (description "Terminal capabilities with type-safe getters.")
+    (license license:wtfpl2)))
+
 (define-public rust-terminfo-0.7
   (package
+    (inherit rust-terminfo-0.8)
     (name "rust-terminfo")
     (version "0.7.3")
     (source
@@ -75487,19 +75515,13 @@ writing colored text to a terminal.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0zkln56bsixjad6rsfy9mm15d9ygm89i63cn3gn685hjwrvik5vn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-dirs" ,rust-dirs-2)
-        ("rust-fnv" ,rust-fnv-1)
-        ("rust-nom" ,rust-nom-5)
-        ("rust-phf" ,rust-phf-0.8)
-        ("rust-phf-codegen" ,rust-phf-codegen-0.8))))
-    (home-page "https://github.com/meh/rust-terminfo")
-    (synopsis "Terminal information")
-    (description "Terminal capabilities with type-safe getters.")
-    (license license:wtfpl2)))
+       #:cargo-inputs (("rust-dirs" ,rust-dirs-2)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-nom" ,rust-nom-5)
+                       ("rust-phf" ,rust-phf-0.8)
+                       ("rust-phf-codegen" ,rust-phf-codegen-0.8))))))
 
 (define-public rust-termion-3
   (package
