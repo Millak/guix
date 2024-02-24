@@ -1394,6 +1394,38 @@ an interface to implement any other minifier.")
 sockets.")
       (license license:expat))))
 
+(define-public go-github-com-ugorji-go-codec
+  (package
+    (name "go-github-com-ugorji-go-codec")
+    (version "1.2.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ugorji/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11j0sd7kli2bh2npfr2znnvdjsk118rs8khqzfdp6pb5jm0l20ib"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ugorji/go/codec"
+      #:unpack-path "github.com/ugorji/go"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-benchmarks
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively (string-append "src/"
+                                                               import-path
+                                                               "/bench")))))))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/ugorji/go")
+    (synopsis "Codec and encoding library for various serialization formats")
+    (description
+     "This package provides a high performance and feature rich codec and
+encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
+    (license license:expat)))
+
 (define-public go-github-com-valyala-fasthttp
   (package
     (name "go-github-com-valyala-fasthttp")
