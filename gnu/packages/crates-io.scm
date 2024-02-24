@@ -1911,6 +1911,31 @@ text to a terminal.")
 writing colored text to a terminal.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anstyle-svg-0.1
+  (package
+    (name "rust-anstyle-svg")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anstyle-svg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yi8d0cv1spcisch35b1f7q7lz7j7yyircrnvgaxcj5l8zadlvcb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests segfault.
+       #:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-anstyle-lossy" ,rust-anstyle-lossy-1)
+                       ("rust-html-escape" ,rust-html-escape-0.2)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-snapbox" ,rust-snapbox-0.5))))
+    (home-page "https://github.com/rust-cli/anstyle")
+    (synopsis "Convert ANSI escape codes to SVG")
+    (description "Convert ANSI escape codes to SVG.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-antidote-1
   (package
     (name "rust-antidote")
