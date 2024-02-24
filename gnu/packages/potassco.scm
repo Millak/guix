@@ -32,6 +32,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages graphviz)
@@ -42,6 +43,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages re2c)
   #:use-module (gnu packages sphinx))
 
 (define-public libpotassco
@@ -157,6 +159,7 @@ satisfiability checking (SAT).")
               (snippet
                #~(begin
                    (delete-file-recursively "clasp")
+                   (delete-file-recursively "libgringo/gen")
                    (delete-file-recursively "third_party")))
               (sha256
                (base32
@@ -214,7 +217,8 @@ satisfiability checking (SAT).")
                                 "propagator" "propgator-sequence-mining"
                                 "symbol" "visitor"))))))))))
     (inputs (list catch2-3 clasp libpotassco))
-    (native-inputs (list mpark-variant
+    (native-inputs (list bison re2c
+                         mpark-variant
                          pkg-config
                          tl-optional
                          tsl-hopscotch-map
