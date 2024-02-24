@@ -62663,6 +62663,27 @@ rustc compiler.")
      "This package provides a tool to manipulate rustdoc comments.")
     (license license:asl2.0)))
 
+(define-public rust-rustdoc-types-0.23
+  (package
+    (name "rust-rustdoc-types")
+    (version "0.23.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustdoc-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "095jdf44p0b02xq0n9vx1qpnrfgdqkd8nsbmp61r0s4x0q4nyr6c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/aDotInTheVoid/rustdoc-types/")
+    (synopsis "Types for rustdoc's json output")
+    (description "Types for rustdoc's json output.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustfix-0.7
   (package
     (name "rust-rustfix")
