@@ -28363,6 +28363,27 @@ getters and setters on fields.")
 pointers above 2G.")
     (license license:gpl3)))
 
+(define-public rust-gh-emoji-1
+  (package
+    (name "rust-gh-emoji")
+    (version "1.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gh-emoji" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dwc7kr1dsb4bn8n87x7363c2c6vc4pi9fy6s74nk0r8vxhxz2pb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-phf" ,rust-phf-0.11)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page "https://lib.rs/crates/gh-emoji")
+    (synopsis "Convert @code{:emoji:} to Unicode")
+    (description
+     "Convert @code{:emoji:} to Unicode using @code{GitHub's} emoji names.")
+    (license license:expat)))
+
 (define-public rust-ghost-0.1
   (package
     (name "rust-ghost")
