@@ -61695,7 +61695,6 @@ please consider using @code{async-std} or @code{tokio}.")
      `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
                        ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))))
 
-
 (define-public rust-rust-htslib-0.38
   (package
     (name "rust-rust-htslib")
@@ -63209,6 +63208,30 @@ font rendering.")
         ("rust-image" ,rust-image-0.21)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))))
+
+(define-public rust-rustup-toolchain-0.1
+  (package
+    (name "rust-rustup-toolchain")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustup-toolchain" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15fcw826mrgml07qw1h0ylgqvhj3wr7ggry2dwr9q63z8rh6yh34"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-expect-test" ,rust-expect-test-1)
+                                   ("rust-public-api" ,rust-public-api-0.32)
+                                   ("rust-rustdoc-json" ,rust-rustdoc-json-0.8))))
+    (home-page
+     "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolchain")
+    (synopsis "Utilities for rustup toolchain")
+    (description "Utilities for working with rustup toolchains.")
+    (license license:expat)))
 
 (define-public rust-rustversion-1
   (package
