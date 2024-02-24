@@ -39519,6 +39519,26 @@ specified in RFC 6238.  It supports reading secrets in HEX and multiple base32
 variations, including non-standard base32 encodings.")
        (license license:gpl3+))))
 
+(define-public emacs-back-button
+  (package
+    (name "emacs-back-button")
+    (version "0.6.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/rolandwalker/back-button.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hmn3jlsqgpc602lbcs9wzw0hgr5qpjdcxi2hjlc1cp27ilyscnf"))))
+    (build-system emacs-build-system)
+    (synopsis "Visual navigation through mark rings in Emacs")
+    (description "This package provides a way for the user to navigate
+through mark rings (in both directions, and globally or locally).")
+    (home-page "https://www.emacswiki.org/emacs/BackButton")
+    (license license:bsd-2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
