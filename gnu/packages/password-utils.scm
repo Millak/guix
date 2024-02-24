@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1561,6 +1562,37 @@ are not using it.  It uses the same GPG key to encrypt passwords and tomb,
 therefore you don't need to manage more key or secret.  Moreover, you can ask
 pass-tomb to automatically close your store after a given time.")
     (license license:gpl3+)))
+
+(define-public pass-coffin
+  (package
+    (name "pass-coffin")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ayushnix/pass-coffin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1486ikwsdjsj74qf949vk47r8mfp2mbbdc3scs8786nnnkhzc89n"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests
+      #:make-flags #~(list (string-append "PREFIX="
+                                          #$output)
+                           (string-append "BASHCOMPDIR="
+                                          #$output "/etc/bash_completion.d"))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs (list password-store tar))
+    (home-page "https://github.com/ayushnix/pass-coffin")
+    (synopsis "Pass extension to keep the tree of passwords encrypted")
+    (description
+     "Pass-coffin is a pass extension that hides the password store
+data inside a GPG encrypted file, which we'll call a coffin.")
+    (license license:gpl3)))
 
 (define-public xkcdpass
   (package
