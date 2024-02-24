@@ -36693,23 +36693,23 @@ Linux userspace APIs.")
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
-(define-public rust-libtest-mimic-0.6
+(define-public rust-libtest-mimic-0.7
   (package
     (name "rust-libtest-mimic")
-    (version "0.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "libtest-mimic" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                 "1rwwdrzc5hmfisc9c3zcvnab14rgh0zfa636c2jbhv4az5qf73bd"))))
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libtest-mimic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02y7l5bcwli37hl625bp6l0m95mry8cavwj3nkl55zgc8iplq3vz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-clap" ,rust-clap-4)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-threadpool" ,rust-threadpool-1))
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-escape8259" ,rust-escape8259-0.5)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-threadpool" ,rust-threadpool-1))
        #:cargo-development-inputs
        (("rust-fastrand" ,rust-fastrand-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
@@ -36719,6 +36719,27 @@ Linux userspace APIs.")
      "Write your own test harness that looks and behaves like the built-in test
 harness used by @code{rustc --test}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-libtest-mimic-0.6
+  (package
+    (inherit rust-libtest-mimic-0.7)
+    (name "rust-libtest-mimic")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libtest-mimic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                 "1rwwdrzc5hmfisc9c3zcvnab14rgh0zfa636c2jbhv4az5qf73bd"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-threadpool" ,rust-threadpool-1))
+       #:cargo-development-inputs
+       (("rust-fastrand" ,rust-fastrand-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-libtest-mimic-0.5
   (package
