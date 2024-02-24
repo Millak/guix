@@ -83,6 +83,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -2921,16 +2922,20 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.12.3")
+    (version "0.13.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "b4" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/utils/b4/b4.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qpa0ahw1d86mdgs09ykq5pd0lm8083ds6j0knalw757yh31akmn"))))
-    (build-system python-build-system)
+        (base32
+         "1dijszinn00r6d0lxii3jz36h2c23zavbgz1m8finp5v6kaiafcg"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f                  ;no tests
+     (list #:tests? (not (%current-target-system)) ;git path hardcoded.
            #:phases
            #~(modify-phases %standard-phases
                ;; XXX: dnspython attempts to read /etc/resolv.conf when loading
@@ -2945,9 +2950,14 @@ email header.")
                       (string-append
                        "['" (search-input-file inputs "bin/git") "'"))))))))
     (inputs
-     (list git-minimal python-dkimpy python-dnspython python-requests))
-    (propagated-inputs
-     (list patatt))
+     (list git-filter-repo
+           git-minimal
+           patatt
+           python-dkimpy
+           python-dnspython
+           python-requests))
+    (native-inputs
+     (list python-pytest))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
     (synopsis "Tool for working with patches in public-inbox archives")
     (description
