@@ -67733,6 +67733,25 @@ diff output.")
 small to medium sized project")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-simplerand-1
+  (package
+    (name "rust-simplerand")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simplerand" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yw9p3sk5c57gwz60ydpvsbx9kkwyccwlcv0z3q4v66b4455libh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/PumpkinSeed/srand")
+    (synopsis "Random number generator")
+    (description "Simple and fast random number generator.")
+    (license license:expat)))
+
 (define-public rust-simple-logger-4
   (package
     (name "rust-simple-logger")
