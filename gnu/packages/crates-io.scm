@@ -70275,6 +70275,26 @@ SPIR-V.")
     (description "This package provides a runtime for a stack-alocated map.")
     (license license:expat)))
 
+(define-public rust-stability-0.1
+  (package
+    (name "rust-stability")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stability" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kn3vcicmpg8bnyalp15i2j0dbv6c0wc62022bcs58jdi5vv3lgb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/sagebind/stability")
+    (synopsis "Rust API stability attributes")
+    (description "Rust API stability attributes for the rest of us.")
+    (license license:expat)))
+
 (define-public rust-stable-deref-trait-1
   (package
     (name "rust-stable-deref-trait")
