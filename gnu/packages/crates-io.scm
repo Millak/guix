@@ -53216,14 +53216,14 @@ dependency to expose a precomputed hash.")
 (define-public rust-predicates-3
   (package
     (name "rust-predicates")
-    (version "3.0.4")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "predicates" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "182q0wiabllvbg0nzfkf8a6qkbk0ckrkmfbk7k5ijgrfbibjiz3d"))))
+        (base32 "1s676s13sva6ikv2qmfmm7n3y3jnzvwbbhy1xzgnr4h58vyppf38"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -53233,7 +53233,6 @@ dependency to expose a precomputed hash.")
        (("rust-anstyle" ,rust-anstyle-1)
         ("rust-difflib" ,rust-difflib-0.4)
         ("rust-float-cmp" ,rust-float-cmp-0.9)
-        ("rust-itertools" ,rust-itertools-0.11)
         ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
         ("rust-predicates-core" ,rust-predicates-core-1)
         ("rust-regex" ,rust-regex-1))
