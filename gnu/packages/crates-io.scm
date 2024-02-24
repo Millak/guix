@@ -67345,8 +67345,58 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
                (base32
                 "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))))
 
+(define-public rust-snapbox-0.5
+  (package
+    (name "rust-snapbox")
+    (version "0.5.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "snapbox" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ajnz1yv53jh667gdj4jpapy3g7sadnkfzyl4f2gcy7nxkhl3i4a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-anstyle-svg" ,rust-anstyle-svg-0.1)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-content-inspector" ,rust-content-inspector-0.2)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-escargot" ,rust-escargot-0.5)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-ignore" ,rust-ignore-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
+                       ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
+                       ("rust-os-pipe" ,rust-os-pipe-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-similar" ,rust-similar-2)
+                       ("rust-snapbox-macros" ,rust-snapbox-macros-0.3)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-wait-timeout" ,rust-wait-timeout-0.2)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
+    (synopsis "Snapshot testing toolbox")
+    (description
+     "Snapbox is a snapshot-testing toolbox that is ready to use for verifying
+output from
+
+@itemize
+@item Function return values
+@item CLI stdout/stderr
+@item Filesystem changes
+@end itemize
+
+It is also flexible enough to build your own test harness like @code{trycmd}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-snapbox-0.4
   (package
+    (inherit rust-snapbox-0.5)
     (name "rust-snapbox")
     (version "0.4.16")
     (source (origin
@@ -67356,7 +67406,6 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
               (sha256
                (base32
                 "1v732vpzkjyawwvcq2xdf5q4s6bxrqmqih8kgc5gada9vwq5l53k"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anstream" ,rust-anstream-0.6)
@@ -67378,21 +67427,7 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-windows-sys" ,rust-windows-sys-0.52))))
-    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
-    (synopsis "Snapshot testing toolbox")
-    (description
-     "Snapbox is a snapshot-testing toolbox that is ready to use for verifying
-output from
-
-@itemize
-@item Function return values
-@item CLI stdout/stderr
-@item Filesystem changes
-@end itemize
-
-It is also flexible enough to build your own test harness like @code{trycmd}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))))))
 
 (define-public rust-snapbox-0.2
   (package
