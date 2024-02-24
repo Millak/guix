@@ -82817,8 +82817,34 @@ UTF-32 types are provided, including support for malformed encoding.")
 command-line, uniformly on all platforms")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-winnow-0.6
+  (package
+    (name "rust-winnow")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winnow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y71bhxjhjf62c1631rpvmjyz3fmhg5i6jfb3z3kxk0mgz292hbs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph.
+       #:cargo-inputs (("rust-anstream" ,rust-anstream-0.3)
+                       ("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-terminal-size" ,rust-terminal-size-0.2))))
+    (home-page "https://github.com/winnow-rs/winnow")
+    (synopsis "Byte-oriented, zero-copy, parser combinators library")
+    (description "This package provides a byte-oriented, zero-copy, parser
+combinators library.")
+    (license license:expat)))
+
 (define-public rust-winnow-0.5
   (package
+    (inherit rust-winnow-0.6)
     (name "rust-winnow")
     (version "0.5.31")
     (source
@@ -82828,7 +82854,6 @@ command-line, uniformly on all platforms")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0734xa05a1x1wg2kcphdhfb39pdcy5qpaf1sjll6qk8kdcp8i94p"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency graph.
        #:cargo-inputs
@@ -82836,12 +82861,7 @@ command-line, uniformly on all platforms")
         ("rust-anstyle" ,rust-anstyle-1)
         ("rust-is-terminal" ,rust-is-terminal-0.4)
         ("rust-memchr" ,rust-memchr-2)
-        ("rust-terminal-size" ,rust-terminal-size-0.2))))
-    (home-page "https://github.com/winnow-rs/winnow")
-    (synopsis "Byte-oriented, zero-copy, parser combinators library")
-    (description "This package provides a byte-oriented, zero-copy, parser
-combinators library.")
-    (license license:expat)))
+        ("rust-terminal-size" ,rust-terminal-size-0.2))))))
 
 (define-public rust-winnow-0.4
   (package
