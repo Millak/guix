@@ -12368,18 +12368,18 @@ how to behave across the three main input sources")
 (define-public rust-clap-derive-4
   (package
     (name "rust-clap-derive")
-    (version "4.4.7")
+    (version "4.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hk4hcxl56qwqsf4hmf7c0gr19r9fbxk0ah2bgkr36pmmaph966g"))))
+        (base32 "0r2gs2p10pb435w52xzsgz2mmx5qd3qfkmk29y4mbz9ph11k30aj"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
-           `(("rust-heck" ,rust-heck-0.4)
+           `(("rust-heck" ,rust-heck-0.5)
              ("rust-proc-macro2" ,rust-proc-macro2-1)
              ("rust-quote" ,rust-quote-1)
              ("rust-syn" ,rust-syn-2))))
