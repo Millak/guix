@@ -364,6 +364,9 @@ Lua code.")))
      (substitute-keyword-arguments (package-arguments clingo)
        ((#:configure-flags flags #~'())
         #~(cons* "-DCLINGO_BUILD_WITH_PYTHON=pip"
+                 (string-append "-DCMAKE_MODULE_PATH="
+                                #$(this-package-native-input "python-scikit-build")
+                                "/lib/cmake/modules")
                  "-DCLINGO_USE_LIB=yes"
                  #$flags))
        ((#:imported-modules _ '())
