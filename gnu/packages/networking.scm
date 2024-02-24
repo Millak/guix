@@ -532,13 +532,12 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
         (base32 "01m0q4n2hy3csbzil8ivjyzb1mh4w9jlh9iiv6z53kasl7aas27i"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))
-                            (string-append "PREFIX="
-                                           (assoc-ref %outputs "out"))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"))
     (inputs (list libsodium lcrq libbsd))
     (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
