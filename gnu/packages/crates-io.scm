@@ -19713,21 +19713,21 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
        (sha256
         (base32 "1rp0z4k0j5ip0bx6dssg97l4q6bakhf6lm5h1lpr3p3kwjsi585i"))))))
 
-(define-public rust-derive-builder-0.12
+(define-public rust-derive-builder-0.13
   (package
     (name "rust-derive-builder")
-    (version "0.12.0")
+    (version "0.13.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "derive_builder" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1y4p569zcvpmly5s5hmjp9h83drxvdp6kj6bb61h225mhj3pfrwd"))))
+                "1irqx6bz74kx48ivdwqp2xl1ibr8dbdwgh6573r8g00d82gicncg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.12))
+       (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.13))
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
         ("rust-rustversion" ,rust-rustversion-1)
@@ -19739,6 +19739,28 @@ Instead, enable the @code{derive} feature of the @code{arbitrary} crate.")
     (description "Rust macro to automatically implement the builder pattern
 for arbitrary structs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-derive-builder-0.12
+  (package
+    (inherit rust-derive-builder-0.13)
+    (name "rust-derive-builder")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "derive_builder" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1y4p569zcvpmly5s5hmjp9h83drxvdp6kj6bb61h225mhj3pfrwd"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-derive-builder-macro" ,rust-derive-builder-macro-0.12))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-derive-builder-0.11
   (package
