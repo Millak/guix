@@ -32954,6 +32954,23 @@ bytestring representations.")
      "Simple procedural macro attribute for repetitive tests.")
     (license license:expat)))
 
+(define-public rust-invalidstring-0.1
+  (package
+    (name "rust-invalidstring")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "invalidstring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vxin67ybys7ihmwr5xvvwqv3q7lcn2pxg1skw14xr8kjpa0z5nj"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/extrawurst/gitui")
+    (synopsis "Invalid string data for testing")
+    (description "This crate is just for testing invalid string data.")
+    (license license:expat)))
+
 (define-public rust-inventory-0.3
   (package
     (name "rust-inventory")
