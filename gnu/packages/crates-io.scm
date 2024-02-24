@@ -71719,8 +71719,37 @@ easier in Rust.")
      `(#:cargo-inputs
        (("rust-strum-macros" ,rust-strum-macros-0.18))))))
 
+(define-public rust-strum-macros-0.26
+  (package
+    (name "rust-strum-macros")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "strum_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "066dsk2f1psyyjllr1yc50251jvpjyh585m0fkcl0rypjgy1fd3s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=enum_discriminants"
+                            "--skip=static_variants_array")
+       #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-strum" ,rust-strum-0.26))))
+    (home-page "https://github.com/Peternator7/strum")
+    (synopsis "Set of macros for working with enums and strings")
+    (description
+     "This crate provides helpful macros for working with enums and strings.")
+    (license license:expat)))
+
 (define-public rust-strum-macros-0.25
   (package
+    (inherit rust-strum-macros-0.26)
     (name "rust-strum-macros")
     (version "0.25.3")
     (source
@@ -71730,19 +71759,13 @@ easier in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "184y62g474zqb2f7n16x3ghvlyjbh50viw32p9w9l5lwmjlizp13"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-rustversion" ,rust-rustversion-1)
                        ("rust-syn" ,rust-syn-2))
-       #:cargo-development-inputs (("rust-strum" ,rust-strum-0.25))))
-    (home-page "https://github.com/Peternator7/strum")
-    (synopsis "Set of macros for working with enums and strings")
-    (description
-     "This crate provides helpful macros for working with enums and strings.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-strum" ,rust-strum-0.25))))))
 
 (define-public rust-strum-macros-0.24
   (package
