@@ -3009,8 +3009,8 @@ configuration files that can be used for specific audio hardware.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-"
-                    version ".tar.bz2"))
+                    "https://www.alsa-project.org/files/pub/lib/"
+                    name "-" version ".tar.bz2"))
               (sha256
                (base32
                 "0kdvjlknc50fwfdkxj0z12xbz21skb3gnwlh6lvsvycmp5ljygwz"))))
