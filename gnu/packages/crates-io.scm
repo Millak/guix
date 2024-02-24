@@ -85013,6 +85013,32 @@ using @code{bindgen}.")
     (description "The Unicode Bidi Algorithm (UBA).")
     (license (list license:expat))))
 
+(define-public rust-wezterm-blob-leases-0.1
+  (package
+    (name "rust-wezterm-blob-leases")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wezterm-blob-leases" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02z6m7p9vf4wvr9g2qv1kxp6zaxxli4ziphhcjbnivbyvw55wnlf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-mac-address" ,rust-mac-address-1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "Image blob caching/leasing for wezterm")
+    (description "Manage image blob caching/leasing for wezterm.")
+    (license license:expat)))
+
 (define-public rust-wezterm-color-types-0.2
   (package
     (name "rust-wezterm-color-types")
