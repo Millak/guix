@@ -58188,8 +58188,69 @@ random generic types.")
     (license
      (list license:zlib license:asl2.0 license:expat))))
 
+(define-public rust-ratatui-0.26
+  (package
+    (name "rust-ratatui")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ratatui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n1ivnbpng797ssrw1rv1i0j4sjgylm3bssn1m5n2qkcpy7jzcdw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=buffer::tests::index_of_panics_on_out_of_bounds"
+         "--skip=buffer::tests::pos_of_panics_on_out_of_bounds"
+         "--skip=buffer::Buffer::index_of"
+         "--skip=buffer::Buffer::pos_of"
+         "--skip=terminal::frame::Frame"
+         "--skip=src/widgets.rs")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cassowary" ,rust-cassowary-0.3)
+                       ("rust-compact-str" ,rust-compact-str-0.7)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-indoc" ,rust-indoc-2)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-lru" ,rust-lru-0.12)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-stability" ,rust-stability-0.1)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-termion" ,rust-termion-3)
+                       ("rust-termwiz" ,rust-termwiz-0.22)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-argh" ,rust-argh-0.1)
+                                   ("rust-better-panic" ,rust-better-panic-0.3)
+                                   ("rust-cargo-husky" ,rust-cargo-husky-1)
+                                   ("rust-color-eyre" ,rust-color-eyre-0.6)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-derive-builder" ,rust-derive-builder-0.13)
+                                   ("rust-fakeit" ,rust-fakeit-1)
+                                   ("rust-font8x8" ,rust-font8x8-0.3)
+                                   ("rust-palette" ,rust-palette-0.7)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+                                   ("rust-rstest" ,rust-rstest-0.18)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/ratatui-org/ratatui")
+    (synopsis "Library for cooking up terminal user interfaces")
+    (description
+     "This package provides a library that's all about cooking up terminal user
+interfaces.")
+    (license license:expat)))
+
 (define-public rust-ratatui-0.24
   (package
+    (inherit rust-ratatui-0.26)
     (name "rust-ratatui")
     (version "0.24.0")
     (source
@@ -58199,7 +58260,6 @@ random generic types.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "099433has5bhl6zbckpv2qskb66h7xz4rfgc6xn5cyjjzdy93g0f"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -58231,13 +58291,7 @@ random generic types.")
         ("rust-fakeit" ,rust-fakeit-1)
         ("rust-palette" ,rust-palette-0.7)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/ratatui-org/ratatui")
-    (synopsis "Library for cooking up terminal user interfaces")
-    (description
-     "This package provides a library that's all about cooking up terminal user
-interfaces.")
-    (license license:expat)))
+        ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-ratatui-0.20
   (package
