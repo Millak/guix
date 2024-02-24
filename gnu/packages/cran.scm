@@ -35,7 +35,7 @@
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022-2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1494,6 +1494,44 @@ can read and write both the metadata and the cell data in a Sheet.")
 matrix decomposition, sparse principal components analysis, and sparse
 canonical correlation analysis.")
     (license license:gpl2+)))
+
+(define-public r-rpresto
+  (package
+    (name "r-rpresto")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RPresto" version))
+       (sha256
+        (base32 "1q8c3h328iwscnayxj8qc71s2hkqdqwnpf38kn3zz3ks66qzjf8c"))))
+    (properties `((upstream-name . "RPresto")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bit64
+           r-dbi
+           r-dbplyr
+           r-dplyr
+           r-httr
+           r-jsonlite
+           r-lifecycle
+           r-lubridate
+           r-openssl
+           r-progress
+           r-purrr
+           r-rlang
+           r-stringi
+           r-tibble
+           r-vctrs))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/prestodb/RPresto")
+    (synopsis "DBI connector to Presto")
+    (description
+     "This package implements a DBI compliant interface to
+@url{https://prestodb.io/, Presto}, a distributed SQL query engine for running
+interactive analytic queries against data sources of all sizes ranging from
+gigabytes to petabytes.")
+    (license license:bsd-3)))
 
 (define-public r-prettydoc
   (package
