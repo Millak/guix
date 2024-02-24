@@ -11825,6 +11825,24 @@ usage.")
 interoperation between crates in Rust.")
     (license (list license:expat license:asl2.0 license:zlib))))
 
+(define-public rust-circular-0.3
+  (package
+    (name "rust-circular")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "circular" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1slb0zd1xj0fjd0ql86zs57l1xbn5ywsyj1d8397bcvc1yg27z5h"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/sozu-proxy/circular")
+    (synopsis "stream abstraction for nom")
+    (description
+     "This package provides a stream abstraction designed for use with nom.")
+    (license license:expat)))
+
 (define-public rust-ci-info-0.3
   (package
     (name "rust-ci-info")
