@@ -85152,6 +85152,29 @@ json-like data values.")
 json-like data values.")
     (license license:expat)))
 
+(define-public rust-wezterm-input-types-0.1
+  (package
+    (name "rust-wezterm-input-types")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wezterm-input-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zp557014d458a69yqn9dxfy270b6kyfdiynr5p4algrb7aas4kh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-euclid" ,rust-euclid-0.22)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-wezterm-dynamic" ,rust-wezterm-dynamic-0.2))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "Wezterm input types")
+    (description "Input types for wezterm.")
+    (license license:expat)))
+
 (define-public rust-which-6
   (package
     (name "rust-which")
