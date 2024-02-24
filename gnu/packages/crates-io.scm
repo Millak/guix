@@ -9462,6 +9462,27 @@ packed, growable bit-vector.  Its API mirrors that of @code{Vec} where
 reasonable.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-bwrap-1
+  (package
+    (name "rust-bwrap")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bwrap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15dv9mawgmwgpj88k832qjdi94w70advg9zv28bpgig5k8qs6gfi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/micl2e2/bwrap")
+    (synopsis "Embedded systems-friendly library for wrapping text")
+    (description
+     "This package provides a fast, lightweight, embedded systems-friendly
+library for wrapping text.")
+    (license (list license:expat license:gpl3+))))
+
 (define-public rust-byte-pool-0.2
   (package
     (name "rust-byte-pool")
