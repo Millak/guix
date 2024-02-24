@@ -411,7 +411,11 @@ Python code.")))
     (version (package-version clingo-dl))
     (arguments
      (list
-      #:configure-flags #~'("-DPYCLINGODL_ENABLE=pip")
+      #:configure-flags
+      #~(list "-DPYCLINGODL_ENABLE=pip"
+              (string-append "-DCMAKE_MODULE_PATH="
+                             #$(this-package-native-input "python-scikit-build")
+                             "/lib/cmake/modules"))
       #:tests? #f
       #:imported-modules  `(,@%cmake-build-system-modules
                             (guix build python-build-system))
@@ -433,6 +437,8 @@ Python code.")))
     (inputs (modify-inputs (package-inputs clingo-dl)
               (prepend python-wrapper)))
     (propagated-inputs (list python-clingo python-cffi))
+    (native-inputs (modify-inputs (package-native-inputs clingo-dl)
+                     (prepend python-scikit-build)))
     (synopsis "Python bindings for clingo-dl")
     (description "This package allows users to add the clingo-dl propagator
 as a theory to clingo from Python code.  It also supports running clingo-dl
