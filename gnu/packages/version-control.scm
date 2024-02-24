@@ -2900,13 +2900,13 @@ based on a manifest file published by servers.")
 (define-public patatt
   (package
     (name "patatt")
-    (version "0.4.9")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "patatt" version))
        (sha256
-        (base32 "0fpbkmdlnz9s1lakw11jlrzpz4mb6f4dksdiir9g1ppq0g34sy58"))))
+        (base32 "0a0a5ndlnv7dk2smn8algss6q17gbd6mc7yacz17c9cxabv2c24q"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; No tests.
     (propagated-inputs
