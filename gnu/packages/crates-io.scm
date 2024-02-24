@@ -25253,6 +25253,29 @@ representation.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-redox-syscall" ,rust-redox-syscall-0.1))))))
 
+(define-public rust-filetreelist-0.5
+  (package
+    (name "rust-filetreelist")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "filetreelist" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i7lnk5ncbjg2nfgadx8phmv7ihaak5872cclrdv54bl620id132"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/extrawurst/gitui")
+    (synopsis "Filetree abstraction")
+    (description
+     "Filetree abstraction based on a sorted path list, supports key based
+navigation events, folding, scrolling and more.")
+    (license license:expat)))
+
 (define-public rust-field-offset-0.3
   (package
     (name "rust-field-offset")
