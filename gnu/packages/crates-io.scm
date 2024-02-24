@@ -84608,6 +84608,28 @@ available on a platform.")
 using @code{bindgen}.")
     (license license:mpl2.0)))
 
+(define-public rust-wezterm-bidi-0.2
+  (package
+    (name "rust-wezterm-bidi")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wezterm-bidi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v7kwmnxfplv9kgdmamn6csbn2ag5xjr0y6gs797slk0alsnw2hc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-wezterm-dynamic" ,rust-wezterm-dynamic-0.2))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-k9" ,rust-k9-0.12))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "Unicode Bidi Algorithm")
+    (description "The Unicode Bidi Algorithm (UBA).")
+    (license (list license:expat))))
+
 (define-public rust-wezterm-dynamic-0.2
   (package
     (name "rust-wezterm-dynamic")
