@@ -447,7 +447,7 @@ directly from the python command line.")))
 (define-public python-clorm
   (package
     (name "python-clorm")
-    (version "1.4.1")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -456,7 +456,7 @@ directly from the python command line.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jx99y71mrgdicn1da5dwz5nzgvvpabrikff783sg4shbv2cf0b5"))))
+                "1wbxniq60ph7bdaypcaahym7jxmlnm2zhrfmrgrk441i1iaida24"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
