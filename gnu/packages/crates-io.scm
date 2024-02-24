@@ -79600,8 +79600,39 @@ available on a platform.")
 using @code{bindgen}.")
     (license license:mpl2.0)))
 
+(define-public rust-which-6
+  (package
+    (name "rust-which")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "which" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "070hbvl3hjxywychmz7nj5gbsprdm38rir3kqnm48zzp1g0y19bz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=it_works")
+       #:cargo-inputs (("rust-either" ,rust-either-1)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/harryfei/which-rs.git")
+    (synopsis "Rust equivalent of @command{which}")
+    (description
+     "This package provides a cross-platform Rust equivalent of the
+Unix @command{which} command.  It returns the full path of an installed
+executable.")
+    (license license:expat)))
+
 (define-public rust-which-5
   (package
+    (inherit rust-which-6)
     (name "rust-which")
     (version "5.0.0")
     (source
@@ -79616,7 +79647,6 @@ using @code{bindgen}.")
         '(begin (substitute* "Cargo.toml"
                   (("\"= *([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
                    (string-append "\"^" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -79628,14 +79658,7 @@ using @code{bindgen}.")
                        ("rust-regex" ,rust-regex-1)
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-windows-sys" ,rust-windows-sys-0.48))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/harryfei/which-rs.git")
-    (synopsis "Rust equivalent of @command{which}")
-    (description
-     "This package provides a cross-platform Rust equivalent of the
-Unix @command{which} command.  It returns the full path of an installed
-executable.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-which-4
   (package
