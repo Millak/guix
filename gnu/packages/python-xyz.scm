@@ -32058,7 +32058,15 @@ and frame grabber interface.")
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
                               "and not test_generator_cleanup "
-                              "and not test_generator_selection "))))))))
+                              "and not test_generator_selection ")))))
+          (add-after 'install 'install-cmake
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((lib (string-append (assoc-ref outputs "out")
+                                        "/lib/cmake/modules")))
+                (mkdir-p lib)
+                (with-directory-excursion "skbuild/resources/cmake"
+                   (for-each (lambda (file) (install-file file lib))
+                             (find-files "." "\\.cmake")))))))))
     (native-inputs
      (list cmake-minimal
            gfortran
