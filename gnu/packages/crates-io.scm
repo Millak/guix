@@ -10827,6 +10827,29 @@ GNOME libsecret.")
 automatically on cargo test.")
     (license license:expat)))
 
+(define-public rust-cargo-manifest-0.13
+  (package
+    (name "rust-cargo-manifest")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-manifest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13a0dgqchxjmhr4idswpri2l3lwv7fxga69yj5hvylla0adg8vxz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.8))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1))))
+    (home-page "https://github.com/LukeMathWalker/cargo-manifest")
+    (synopsis "Parse and manipulate manifests @code{Cargo.toml} files")
+    (description "This package provides a helper crate to parse and manipulate
+manifests in @code{Cargo.toml} files.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-cargo-metadata-0.18
   (package
     (name "rust-cargo-metadata")
