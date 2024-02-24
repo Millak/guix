@@ -233,7 +233,7 @@ satisfiability checking (SAT).")
 (define-public clingo-dl
   (package
     (name "clingo-dl")
-    (version "1.4.0")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -241,7 +241,7 @@ satisfiability checking (SAT).")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0dncwj63vdm6958vb7355d5j9mdr7hm037j4z82yz6l77jg3sipw"))))
+               (base32 "0vf51pgwgiac801gr6w5pnxb6wa0kacz09ncrcn25w5siz17g4si"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f        ; no tests
                      #:configure-flags #~`("-DPYCLINGODL_ENABLE=off")))
