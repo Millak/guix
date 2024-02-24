@@ -2704,6 +2704,37 @@ addition and subtraction for all combinations of signed and unsigned 32-bit and
 64-bit integers.")
     (license license:expat)))
 
+(define-public wide-integer
+  (let ((commit "22b8428746248e682d5276f8e8b7fb52af73ea47")
+        (revision "1314"))              ; commit count
+   (package
+    (name "wide-integer")
+    (version (git-version "0" revision commit))
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/ckormanyos/wide-integer")
+                   (commit commit)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "0bhjnbdcphv5kddddh8kpwjpjix23m12vmfsz0r6wjc5d27md33z"))
+             (modules '((guix build utils)))
+             (snippet #~(substitute* "CMakeLists.txt"
+                          (("WideIntegerTargets") "wide-integer-targets")
+                          (("WideIntegerConfig") "wide-integer-config")
+                          (("WideInteger") "wide-integer")))))
+    (build-system cmake-build-system)
+    (native-inputs (list boost))
+    (home-page "https://github.com/ckormanyos/wide-integer")
+    (synopsis "C++ template for arbitrary-precision integers")
+    (description "This package implements a generic template for extended
+width signed and unsigned integral types.  Up to 63 limbs of any built-in
+integer type are supported, and can be used to build powers of two like
+int128_t, uint256_t, but also somewhat esoteric types such as int24_t,
+uint80_t, or uint1536_t.  The provided types can be used in much the same
+way as basic integer types.")
+    (license license:boost1.0))))
+
 (define-public wdl
   ;; No tag is available.
   (let ((commit "da86a62d11e46e4ecd8b16f9775cb5188340a0e2")
