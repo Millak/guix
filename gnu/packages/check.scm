@@ -3127,6 +3127,36 @@ retried.")
 allowing you to declaratively define \"match\" rules.")
     (license license:bsd-3)))
 
+(define-public theft
+  (package
+   (name "theft")
+   (version "0.4.5")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/silentbicycle/theft")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1n2mkawfl2bpd4pwy3mdzxwlqjjvb5bdrr2x2gldlyqdwbk7qjhd"))
+            (snippet #~(begin
+                         (delete-file "vendor/greatest.h")))))
+   (build-system gnu-build-system)
+   (arguments (list #:make-flags #~(list "VENDOR="
+                                         (string-append "CC=" #$(cc-for-target))
+                                         (string-append "PREFIX=" #$output))
+                    #:test-target "test"
+                    #:phases
+                    #~(modify-phases %standard-phases
+                        (delete 'bootstrap)
+                        (delete 'configure))))
+   (native-inputs (list greatest))
+   (home-page "https://github.com/silentbicycle/theft")
+   (synopsis "Property-based testing for C")
+   (description "Theft is a library for property-based testing.")
+   (license license:isc)))
+
 (define-public unittest-cpp
   (package
     (name "unittest-cpp")
