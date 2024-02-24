@@ -28118,17 +28118,17 @@ IEEE 754-2008 binary16 type.")
 (define-public rust-home-0.5
   (package
     (name "rust-home")
-    (version "0.5.5")
+    (version "0.5.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "home" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nqx1krijvpd03d96avsdyknd12h8hs3xhxwgqghf8v9xxzc4i2l"))))
+        (base32 "19grxyg35rqfd802pcc9ys1q3lafzlcjcv2pl2s5q8xpyr5kblg3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.48))))
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.52))))
     (home-page "https://github.com/rust-lang/cargo")
     (synopsis "Shared definitions of home directories")
     (description "This package provides the definition of @code{home_dir}
