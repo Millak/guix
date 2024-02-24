@@ -84762,6 +84762,27 @@ using @code{bindgen}.")
 json-like data values.")
     (license license:expat)))
 
+(define-public rust-wezterm-dynamic-0.1
+  (package
+    (inherit rust-wezterm-dynamic-0.2)
+    (name "rust-wezterm-dynamic")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wezterm-dynamic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1al8fmfr852m62mlcr0v2lg3a18icl2sv79zv7jnv9v0rk07hpm7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-ordered-float" ,rust-ordered-float-3)
+        ("rust-strsim" ,rust-strsim-0.10)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-wezterm-dynamic-derive" ,rust-wezterm-dynamic-derive-0.1))
+       #:cargo-development-inputs (("rust-maplit" ,rust-maplit-1))))))
+
 (define-public rust-wezterm-dynamic-derive-0.1
   (package
     (name "rust-wezterm-dynamic-derive")
