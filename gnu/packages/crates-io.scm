@@ -21693,8 +21693,30 @@ Rust.")
      "This package provides lightweight binding to DirectWrite.")
     (license license:mpl2.0)))
 
+(define-public rust-easy-cast-0.5
+  (package
+    (name "rust-easy-cast")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "easy-cast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mizff08p0rlmgvi81rqdblji372rhr17xlvzmqylfsz2iw6g4qh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--") ; fails in --release mode
+       #:cargo-inputs (("rust-libm" ,rust-libm-0.2))))
+    (home-page "https://github.com/kas-gui/easy-cast")
+    (synopsis "Type conversions which are expected to succeed")
+    (description "This library is written to make numeric type conversions
+easy.")
+    (license license:asl2.0)))
+
 (define-public rust-easy-cast-0.4
   (package
+    (inherit rust-easy-cast-0.5)
     (name "rust-easy-cast")
     (version "0.4.4")
     (source
@@ -21704,15 +21726,9 @@ Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "13ilmaplp2s4vw1vjh4pwbzk7jdxrn0kpf0rk5sli0s1ikp05lab"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs (("rust-libm" ,rust-libm-0.2))))
-    (home-page "https://github.com/kas-gui/easy-cast")
-    (synopsis "Type conversions which are expected to succeed")
-    (description "This library is written to make numeric type conversions
-easy.")
-    (license license:asl2.0)))
+       #:cargo-inputs (("rust-libm" ,rust-libm-0.2))))))
 
 (define-public rust-easy-parallel-3
   (package
