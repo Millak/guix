@@ -78187,8 +78187,41 @@ etc. distance calculations and string search.")
 (with support for inline tests).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-trycmd-0.15
+  (package
+    (name "rust-trycmd")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trycmd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05sklyyprn2a365jzby0zn7z97p6mpgi2yzlr2s506m80cvdnkj6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
+                       ("rust-escargot" ,rust-escargot-0.5)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-humantime" ,rust-humantime-2)
+                       ("rust-humantime-serde" ,rust-humantime-serde-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-snapbox" ,rust-snapbox-0.5)
+                       ("rust-toml-edit" ,rust-toml-edit-0.22))))
+    (home-page "https://github.com/assert-rs/trycmd")
+    (synopsis "Snapshot testing for a herd of CLI tests")
+    (description "trycmd is a test harness that will enumerate test case files
+and run them to verify the results, taking inspiration from @code{trybuild} and
+@code{cram}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-trycmd-0.14
   (package
+    (inherit rust-trycmd-0.15)
     (name "rust-trycmd")
     (version "0.14.19")
     (source (origin
@@ -78197,7 +78230,6 @@ etc. distance calculations and string search.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "1yz4prkmnb1y406p0aq3r8yf11alj8i94yvnz3k07c9glir9607d"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anstream" ,rust-anstream-0.6)
@@ -78211,13 +78243,7 @@ etc. distance calculations and string search.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-shlex" ,rust-shlex-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
-        ("rust-toml-edit" ,rust-toml-edit-0.20))))
-    (home-page "https://github.com/assert-rs/trycmd")
-    (synopsis "Snapshot testing for a herd of CLI tests")
-    (description "trycmd is a test harness that will enumerate test case files
-and run them to verify the results, taking inspiration from @code{trybuild} and
-@code{cram}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-toml-edit" ,rust-toml-edit-0.20))))))
 
 (define-public rust-trycmd-0.13
   (package
