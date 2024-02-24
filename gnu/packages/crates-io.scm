@@ -81191,6 +81191,35 @@ or dashboards.")
 render properties.")
     (license license:expat)))
 
+(define-public rust-tui-textarea-0.4
+  (package
+    (name "rust-tui-textarea")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tui-textarea" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13mxwxqq6r6kplszs2r2qlnc8hw4hpk2zgrzjby9q6ll3znqrqx3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-crossterm" ,rust-crossterm-0.25)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-ratatui" ,rust-ratatui-0.24)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-termion" ,rust-termion-2)
+                       ("rust-termwiz" ,rust-termwiz-0.20)
+                       ("rust-tui" ,rust-tui-0.19)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/rhysd/tui-textarea")
+    (synopsis "Text editor widget for ratatui and tui-rs")
+    (description
+     "Tui-textarea is a text editor widget for ratatui and tui-rs.  This
+multi-line text editor can be easily put as part of your TUI application.")
+    (license license:expat)))
+
 (define-public rust-tuikit-0.5
   (package
     (name "rust-tuikit")
