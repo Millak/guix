@@ -84575,6 +84575,33 @@ available on a platform.")
 using @code{bindgen}.")
     (license license:mpl2.0)))
 
+(define-public rust-wezterm-dynamic-0.2
+  (package
+    (name "rust-wezterm-dynamic")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wezterm-dynamic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dbppcd5s509w3b25q2fx2c4c52cwdl61yw1fvh38rx8ryx2icfz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-ordered-float" ,rust-ordered-float-4)
+        ("rust-strsim" ,rust-strsim-0.10)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-wezterm-dynamic-derive" ,rust-wezterm-dynamic-derive-0.1))
+       #:cargo-development-inputs (("rust-maplit" ,rust-maplit-1))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "Config serialization for wezterm")
+    (description
+     "This package provides configuration serialization for wezterm via dynamic
+json-like data values.")
+    (license license:expat)))
+
 (define-public rust-wezterm-dynamic-derive-0.1
   (package
     (name "rust-wezterm-dynamic-derive")
