@@ -24197,6 +24197,28 @@ handling type for easy idiomatic error handling and reporting in Rust.")
     (description "Simple file accessibility checks in rust.")
     (license license:expat)))
 
+(define-public rust-fakeit-1
+  (package
+    (name "rust-fakeit")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fakeit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zsz58zfawf3zk9ig3n7dbd382lgndjx0xxngwsymilcgipr0bfi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libmath" ,rust-libmath-0.2)
+                       ("rust-rand" ,rust-rand-0.6)
+                       ("rust-simplerand" ,rust-simplerand-1)
+                       ("rust-uuid" ,rust-uuid-0.8))))
+    (home-page "https://github.com/PumpkinSeed/fakeit")
+    (synopsis "Fake data generator")
+    (description "Fake data generator library with 130+ functions.")
+    (license license:expat)))
+
 (define-public rust-fake-simd-0.1
   (package
     (name "rust-fake-simd")
