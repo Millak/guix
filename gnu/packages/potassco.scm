@@ -146,7 +146,7 @@ satisfiability checking (SAT).")
 (define-public clingo
   (package
     (name "clingo")
-    (version "5.6.2")
+    (version "5.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -160,7 +160,7 @@ satisfiability checking (SAT).")
                    (delete-file-recursively "third_party")))
               (sha256
                (base32
-                "19s59ndcm2yj0kxlikfxnx2bmp6b7n31wq1zvwc7hyk37rqarwys"))))
+                "1mxl3gwx55sf2ifcb92mfy989c50yqpnq0d0r2mxdqr0riy40hjb"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -184,6 +184,7 @@ satisfiability checking (SAT).")
                   "find_package(mpark_variant)\n"
                   "find_package(tsl-sparse-map)\n"
                   "find_package(tsl-ordered-map)\n"
+                  "find_package(wide-integer)\n"
                   "find_package(Catch2 3 REQUIRED)")))
               (substitute* "libclingo/CMakeLists.txt"
                 (("\"cmake/Clingo\"") "\"cmake/clingo\"")
@@ -191,7 +192,8 @@ satisfiability checking (SAT).")
                 (("ClingoConfigVersion\\.cmake")
                  "clingo-config-version.cmake"))
               (substitute* "libgringo/CMakeLists.txt"
-                (("mpark::variant") "mpark_variant"))
+                (("mpark::variant") "mpark_variant")
+                (("math::wide_integer") "wide-integer::wide-integer"))
               (substitute* "cmake/ClingoConfig.cmake.in"
                 (("find_package\\(Clasp") "find_package(clasp"))
               (rename-file "cmake/ClingoConfig.cmake.in"
@@ -217,7 +219,8 @@ satisfiability checking (SAT).")
                          tl-optional
                          tsl-hopscotch-map
                          tsl-ordered-map
-                         tsl-sparse-map))
+                         tsl-sparse-map
+                         wide-integer))
     (home-page "https://potassco.org/")
     (synopsis "Grounder and solver for logic programs")
     (description "Clingo computes answer sets for a given logic program.")
