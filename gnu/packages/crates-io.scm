@@ -64398,7 +64398,7 @@ library's old @code{scoped_thread_local!} macro for providing scoped access to
 (define-public rust-scopeguard-1
   (package
     (name "rust-scopeguard")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
       (origin
         (method url-fetch)
@@ -64406,7 +64406,7 @@ library's old @code{scoped_thread_local!} macro for providing scoped access to
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1kbqm85v43rq92vx7hfiay6pmcga03vrjbbfwqpyj3pwsg3b16nj"))))
+          "0jcz9sd47zlsgcnm1hdw0664krxwb5gczlif4qngj2aif8vky54l"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/bluss/scopeguard")
     (synopsis "Scope guard which will run a closure even out of scope")
