@@ -1190,6 +1190,43 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
       (home-page "https://github.com/stathat/go")
       (license license:expat))))
 
+(define-public go-github-com-tklauser-go-sysconf
+  (package
+    (name "go-github-com-tklauser-go-sysconf")
+    (version "0.3.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tklauser/go-sysconf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07vkimncnmh89706s49599h2w9gwa6jyrv70f8ifw90nsh766km9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/tklauser/go-sysconf"
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'remove-failing-tests
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        ;; sysconf_test.go (among others) tries to read the
+                        ;; number of online CPUs using /proc/stat and
+                        ;; /sys/devices/system/cpu/online. These files are not
+                        ;; accessible in the test environment.
+                        (string-append "src/" import-path
+                                       "/cgotest/sysconf_test.go")))))))
+    (propagated-inputs (list go-golang-org-x-sys
+                             go-github-com-tklauser-numcpus))
+    (home-page "https://github.com/tklauser/go-sysconf")
+    (synopsis "Go implementation of @code{sysconf}")
+    (description
+     "This package implements @code{sysconf} and provides the associated
+@code{SC_*} constants to query system configuration values at run time.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tklauser-numcpus
   (package
     (name "go-github-com-tklauser-numcpus")
