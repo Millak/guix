@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1188,6 +1189,42 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
       (description "This is a Go package for posting to a StatHat account.")
       (home-page "https://github.com/stathat/go")
       (license license:expat))))
+
+(define-public go-github-com-tklauser-numcpus
+  (package
+    (name "go-github-com-tklauser-numcpus")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tklauser/numcpus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xcwk42zr6q72zvkqdd9nbyhvq11rmwm2164mr2rvbb9z7alkff8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/tklauser/numcpus"
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'remove-failing-tests
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (with-directory-excursion (string-append "src/"
+                                                                import-path)
+                         (for-each delete-file-recursively
+                                   ;; These tests try to access
+                                   ;; /sys/devices/system/cpu, which is not
+                                   ;; available in the test environment.
+                                   '("numcpus_test.go" "numcpus_linux_test.go"))))))))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/tklauser/numcpus")
+    (synopsis "Provides information about the number of CPUs in the system")
+    (description
+     "This package provides both library functions and a command-line tool to
+query information regarding the number of CPUs available to the system.")
+    (license license:asl2.0)))
 
 (define-public go-go-uber-org-automaxprocs
   (package
