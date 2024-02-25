@@ -9224,6 +9224,40 @@ tupfiles, such as rule definitions, user-defined variables, macros, flags, bin
 variables, and so on.  The mode also allows you to execute Tup commands.")
     (license license:gpl3+)))
 
+(define-public emacs-combobulate
+  (let ((commit "c7e4670a3047c0b58dff3746577a5c8e5832cfba")
+        (revision "1"))
+    (package
+      (name "emacs-combobulate")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mickeynp/combobulate")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "063w2sm0c7xhg3ml31xp870azb0sv7z689lnbnjnbl3rfdy4kg50"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list tree-sitter-javascript
+             tree-sitter-python
+             tree-sitter-typescript))
+      (native-inputs
+       (list python-minimal))
+      (home-page "https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter")
+      (synopsis "Structured editing and navigation in Emacs with tree-sitter")
+      (description
+       "Combobulate is a package that adds structured editing and movement to
+a wide range of programming languages.  Unlike most programming major modes
+that use error-prone imperative code and regular expressions to determine
+what's what in your code, Combobulate uses Emacs 29's tree-sitter library.
+Tree-sitter maintains a concrete syntax tree of your code; it gives
+Combobulate absolute clarity of all aspects of your code, enabling more
+correct movement and editing than you would otherwise have.")
+      (license license:gpl3+))))
+
 (define-public emacs-compat
   (package
     (name "emacs-compat")
