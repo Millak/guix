@@ -1,23 +1,28 @@
 #!@BASH@
 # -*- mode: scheme; coding: utf-8; -*-
 
-# XXX: We have to go through Bash because there's no command-line switch to
-# augment %load-compiled-path, and because of the silly 127-byte limit for
-# the shebang line in Linux.
-# Use `load-compiled' because `load' (and `-l') doesn't otherwise load our
-# .go file (see <http://bugs.gnu.org/12519>).
-# Unset 'GUILE_LOAD_COMPILED_PATH' to make sure we do not stumble upon
-# incompatible .go files.  See
-# <https://lists.gnu.org/archive/html/guile-devel/2016-03/msg00000.html>.
+# XXX: We have to go through Bash because there's no Guile command-line switch to
+# ignore the various Guile load path related environment variables.
 
+# Unset 'GUILE_LOAD_PATH' to make sure we do not stumble upon
+# incompatible Guile files (see
+# <https://lists.gnu.org/archive/html/guile-devel/2016-03/msg00000.html>).
+
+unset GUILE_LOAD_PATH
 unset GUILE_LOAD_COMPILED_PATH
+unset GUILE_SYSTEM_PATH
 unset GUILE_SYSTEM_COMPILED_PATH
+
+# Use `load-compiled' because `load' (and `-l') doesn't otherwise load our
+# .go file, or causes extraneous `stat' system calls when the "-C" "/" arguments
+# are provided.
 main="(@ (gnu build-support ld-wrapper) ld-wrapper)"
-exec @GUILE@ -c "(load-compiled \"@SELF@.go\") (apply $main (cdr (command-line)))" "$@"
+exec @GUILE@ -c "(load-compiled \"@SELF@.go\") ($main (command-line))" "$@"
 !#
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -285,9 +290,9 @@ library outside of ~a: ~s~%"
       result
       (expand-arguments result)))
 
-(define (ld-wrapper . args)
+(define (ld-wrapper args)
   ;; Invoke the real `ld' with ARGS, augmented with `-rpath' switches.
-  (let* ((args (expand-arguments args))
+  (let* ((args (expand-arguments (cdr args))) ;strip arg0
          (path (library-search-path args))
          (libs (library-files-linked args path))
          (args (append args (rpath-arguments libs))))
