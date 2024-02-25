@@ -31857,6 +31857,41 @@ handling those variations.")
 Qt applications.")
     (license license:expat)))
 
+(define-public python-pystray
+  (package
+    (name "python-pystray")
+    (version "0.19.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moses-palmer/pystray")
+             (commit "1907f8681d6d421517c63d94f425f9cdd74d0034")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vj6c8s7rbc7xc4bi5brx5629ls1ri9prcw9290v85hagilmp609"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; The test suite requires user interaction, there are no automated
+      ;; tests.
+      #:tests? #false
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'sanity-check 'use-dummy-backend
+                     (lambda _
+                       ;; Without setting this, pystray tries to connect to
+                       ;; X11 on import.
+                       (setenv "PYSTRAY_BACKEND" "dummy"))))))
+    (native-inputs (list python-sphinx))
+    (propagated-inputs (list python-pillow python-six python-xlib))
+    (home-page "https://github.com/moses-palmer/pystray")
+    (synopsis "Create a system tray icon")
+    (description "This library allows you to create a system tray icon.
+It makes it possible to specify an icon, a title and a callback for when
+the icon is activated.  The icon and title can be changed after the icon
+has been created, and the visibility of the icon can be toggled.")
+    (license license:lgpl3+)))
+
 (define-public python-bitstring
   (package
     (name "python-bitstring")
