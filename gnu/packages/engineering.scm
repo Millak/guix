@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
@@ -3272,6 +3272,8 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
                   (guix build utils))
       #:configure-flags
       #~(list "--disable-static"
+              (string-append "--with-vimdir=" #$output
+                             "/share/vim/vimfiles/pack/guix/start/poke")
               (string-append "--with-lispdir="
                              (emacs:elpa-directory #$output)))))
     (home-page "https://www.gnu.org/software/poke/#documentation")
