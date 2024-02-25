@@ -9582,6 +9582,12 @@ in their documentation}.
 The key @code{#:go} can be used to specify the Go compiler package with
 which to build the package.
 
+The phase @code{check} provides a wrapper for @code{go test} which
+builds a test binary (or multiple binaries), vets the code and then runs
+the test binary.  Build, test and test binary flags can be provided as
+@code{#:test-flags} parameter, default is @code{'()}.  See @code{go help
+test} and @code{go help testflag} for more details.
+
 @end defvar
 
 @defvar glib-or-gtk-build-system
