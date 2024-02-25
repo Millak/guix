@@ -2,7 +2,7 @@
 ;;; Copyright © 2017-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2021, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
@@ -833,6 +833,8 @@ transformed into common image formats for display or printing.")
                            (guix build python-build-system))
        #:modules (,@%gnu-build-system-modules
                   ((guix build python-build-system) #:select (site-packages)))
+       ;; The build process peaks around 4GB/RAM per core.
+       #:parallel-build? #f
        #:configure-flags
        (list (string-append "--with-boost="
                             (assoc-ref %build-inputs "boost"))
