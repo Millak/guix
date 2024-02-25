@@ -8770,9 +8770,7 @@ inspired by the causal messaging system in the Pony programming language.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/cheggaaa/pb/v3"
-       ;; XXX: it does have tests but I'm not sure how to run them.
-       ;; go-build-system is looking in the wrong directory.
-       #:tests? #f))
+       #:unpack-path "github.com/cheggaaa/pb"))
     (propagated-inputs
      (list go-golang-org-x-sys
            go-github-com-rivo-uniseg
