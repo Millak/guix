@@ -31,6 +31,7 @@
   #:use-module (gnu packages debian)
   #:use-module (gnu packages file)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages xiph))
 
 (define-public patool
