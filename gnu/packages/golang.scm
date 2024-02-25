@@ -8772,9 +8772,7 @@ inspired by the causal messaging system in the Pony programming language.")
      '(#:import-path "github.com/cheggaaa/pb/v3"
        #:unpack-path "github.com/cheggaaa/pb"))
     (propagated-inputs
-     (list go-golang-org-x-sys
-           go-github-com-rivo-uniseg
-           go-github-com-mattn-go-runewidth
+     (list go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-colorable
            go-github-com-fatih-color
