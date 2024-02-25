@@ -578,7 +578,13 @@ workspaces.
        (method url-fetch)
        (uri (pypi-uri "databind.core" version))
        (sha256
-        (base32 "130hr19kbzizx9n2q7cwfzfk20ii3cqmqjrzb16psnafll303k2d"))))
+        (base32 "130hr19kbzizx9n2q7cwfzfk20ii3cqmqjrzb16psnafll303k2d"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; The problem with python-typing-extensions >= 4.7 is only
+                 ;; with python-3.7.
+                 (substitute* "pyproject.toml"
+                   ((",<4.7.*") "\"\n"))))))
     (build-system pyproject-build-system)
     (arguments
      (list
