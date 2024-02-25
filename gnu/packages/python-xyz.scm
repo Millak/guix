@@ -25954,6 +25954,26 @@ submitting it.")
 python-mpv, but it uses the JSON IPC protocol instead of the C API.")
     (license license:asl2.0)))
 
+(define-public python-jellyfin-apiclient
+  (package
+    (name "python-jellyfin-apiclient")
+    (version "1.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jellyfin-apiclient-python" version))
+       (sha256
+        (base32 "0r67cp9nizvn3cbslgi30zpd3mw4a6zal0ygik3jv5lni1xdkk5w"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-certifi python-requests python-urllib3
+                             python-websocket-client))
+    (home-page "https://github.com/jellyfin/jellyfin-apiclient-python")
+    (synopsis "Python API client for Jellyfin")
+    (description "The Jellyfin ApiClient Python package makes it possible
+to use the Jellyfin API from Python.  It was extracted from the Jellyfin
+Kodi plugin.")
+    (license license:gpl3+)))
+
 (define-public python-parso
   (package
     (name "python-parso")
