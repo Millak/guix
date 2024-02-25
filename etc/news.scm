@@ -31,6 +31,21 @@
 (channel-news
  (version 0)
 
+ (entry (commit "06d01c610e3bee61e38a177aecda5982d5b338ae")
+        (title
+         (en "The GNOME Display Manager uses Wayland by default")
+         (de "GNOME Display Manager nutzt nun Wayland als Vorgabe")
+         (fr "GDM utilise Wayland par défaut")
+         (zh "GNOME 顯示管理器（GDM）服務默認啓用 Wayland 支持"))
+        (body
+         (en "The @code{gdm-service-type} is configured to use Wayland instead
+of Xorg by default.")
+         (de "Der Dienst @code{gdm-service-type} verwendet nun Wayland
+als Vorgabe anstelle von Xorg.")
+         (fr "Le service @code{gdm-service-type} est configuré par défaut pour
+utiliser Wayland au lieu de Xorg.")
+         (zh "@code{gdm-service-type} 預設已由 Xorg 改爲 Wayland。")))
+
  (entry (commit "498db4de1f09414adf68a3a383f0178434035179")
         (title
          (en "The udev service also manages hardware configuration files")
