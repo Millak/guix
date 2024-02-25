@@ -20,6 +20,9 @@
 ;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;; Copyright © 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
+;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;; Copyright © 2024 Vivien Kraus <vivien@planete-kraus.eu>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -27,6 +30,24 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "498db4de1f09414adf68a3a383f0178434035179")
+        (title
+         (en "The udev service also manages hardware configuration files")
+         (de "Udev verwaltet nun auch Hardwarekonfigurationen")
+         (fr "Le service udev gère maintenant les configurations de matériel")
+         (zh "udev 服務現可管理硬件配置文件"))
+        (body
+         (en "The @code{udev-service-type} can now be configured and extended
+with eudev hardware configuration files (named @dfn{hwdb} by the eudev
+project).")
+         (de "Der Udev-Dienst kann nun mit Hardwaredatenbanken (auch als
+@dfn{hwdb} bekannt) konfiguriert und erweitert werden.")
+         (fr "Le type de service @code{udev-service-type} peut maintenant être
+configuré et étendu avec des fichiers de configuration de matériel (appelés
+@dfn{hwdb} par le projet eudev).")
+         (zh "現可使用 eudev 的硬件配置文件（@dfn{hwdb}）設置及拓展
+@code{udev-service-type}。")))
 
  (entry (commit "10a193596368443f441077525ebbddf787d91e4b")
         (title
