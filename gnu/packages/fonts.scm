@@ -216,7 +216,7 @@ in print.  With attention to detail for high resolution rendering.")
 (define-public font-intel-one-mono
   (package
     (name "font-intel-one-mono")
-    (version "1.2.1")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -225,8 +225,26 @@ in print.  With attention to detail for high resolution rendering.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1md57997nzkz75ambsahawzy1x71qvkp6f87zcqibksm66yvcjdc"))))
+                "0w9isn8az1k3a3q4m2llwnryy79i5v30dx1hfaf90x0zkj98ky5h"))))
+    (outputs '("out" "ttf" "woff"))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'split-outputs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out-fonts (string-append (assoc-ref outputs "out")
+                                                   "/share/fonts"))
+                         (ttf-fonts (string-append (assoc-ref outputs "ttf")
+                                                   "/share/fonts"))
+                         (woff-fonts (string-append (assoc-ref outputs "woff")
+                                                    "/share/fonts")))
+                     (mkdir-p ttf-fonts)
+                     (mkdir-p woff-fonts)
+                     (rename-file (string-append out-fonts "/truetype")
+                                  (string-append ttf-fonts "/truetype"))
+                     (rename-file (string-append out-fonts "/web")
+                                  (string-append woff-fonts "/web"))))))))
     (home-page "https://github.com/intel/intel-one-mono")
     (synopsis "Expressive monospaced font family")
     (description
@@ -586,6 +604,30 @@ The unified Libertinus family consists of:
 @item Libertinus Math, an original matching OpenType math font.
 @end enumerate\n")
     (license license:silofl1.1)))
+
+(define-public font-libre-franklin
+  (let ((commit "bfc61d6e403771c2e90aa6e0bd54975633974fb2")
+        (revision "0"))
+    (package
+      (name "font-libre-franklin")
+      (version (git-version "1.015" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/impallari/Libre-Franklin")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "07rm9fkhm8ckxpaj0zixl4vgzmj6bj4xzbaqm5hngdjds1bjv1ls"))))
+      (build-system font-build-system)
+      (home-page "https://fonts.google.com/specimen/Libre+Franklin")
+      (synopsis "Font family based on Franklin Gothic")
+      (description
+       "The Libre Franklin font family is an open source interpretation and
+expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
+      (license license:silofl1.1))))
 
 (define-public font-terminus
   (package

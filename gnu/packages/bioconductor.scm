@@ -3413,13 +3413,13 @@ to understand their data better and discover new insights.")
 (define-public r-annotationhubdata
   (package
     (name "r-annotationhubdata")
-    (version "1.32.0")
+    (version "1.32.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationHubData" version))
        (sha256
-        (base32 "0jkz65z7l9vaxid6vpsr4rdavarkayfrgkybzhwf9va82jsnkd3z"))))
+        (base32 "09x2njf32lvj2irpjffjn2bsh42zkchirb7779xfyh745iis57mm"))))
     (properties `((upstream-name . "AnnotationHubData")))
     (build-system r-build-system)
     (arguments
@@ -7563,13 +7563,13 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "4.0.14")
+    (version "4.0.15")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "1a0icqi1im4vw2r6wjc5ibjsci7yqcdhk8bn8kyvsp1ld1ri538n"))))
+                "08fsb0h4kqm31ynrhxinmnwjyij1350v352411q11iv8v9sk4z48"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -9981,13 +9981,13 @@ analysis of TCR repertoire libraries based on theoretical model fits.")
 (define-public r-pscbs
   (package
     (name "r-pscbs")
-    (version "0.66.0")
+    (version "0.67.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PSCBS" version))
        (sha256
-        (base32 "14rs2wywipbkia3dbzfhpnkmfgdvm2bf586lggsx63sywlv5d02q"))))
+        (base32 "1gnd2nkh587dqpnbk5fsai7hx261vm405550rhlxffvs366x3596"))))
     (properties `((upstream-name . "PSCBS")))
     (build-system r-build-system)
     (arguments
@@ -13532,13 +13532,13 @@ information.")
 (define-public r-glmgampoi
   (package
     (name "r-glmgampoi")
-    (version "1.14.2")
+    (version "1.14.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "glmGamPoi" version))
               (sha256
                (base32
-                "1swbp560ss5sksf1m10c6md4b81yc9qwa6in64j4zzksmrn9jn2d"))))
+                "0lbsavr9mhka8s7i056h4jjb1v36v3sshrhdz74n8qadm7fy59l5"))))
     (properties `((upstream-name . "glmGamPoi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -19507,14 +19507,14 @@ populations, splice site strength, conservation, etc.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.32.2")
+    (version "1.32.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "0cmcg39a5939y517vhvwanqh1fwzyx6pbq47nc5cpswf7pn9cv5x"))))
+         "1mbjh1n13y08mc8vdm10lsd3i7mc4vm3855lvm08fm9685siz909"))))
     (properties
      `((upstream-name . "variancePartition")))
     (build-system r-build-system)
@@ -22129,13 +22129,13 @@ variable and significantly correlated genes.")
 (define-public r-sparsearray
   (package
     (name "r-sparsearray")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SparseArray" version))
        (sha256
-        (base32 "19cy1nmmi65fxh012ymgp1kg112yl1m0khcs4y034p5iwlfv7fp6"))))
+        (base32 "0gz1j8g020bp88i5idrhj9qrixgar3wvxxna46ds60q6d8lsn4vi"))))
     (properties `((upstream-name . "SparseArray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics

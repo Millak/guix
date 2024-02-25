@@ -19,10 +19,12 @@
 (define-module (gnu packages sugar)
   #:use-module (gnu packages)
   #:use-module (gnu packages abiword)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -35,6 +37,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages time)
@@ -480,6 +483,58 @@ a Tetris-like game.")
                    license:gpl2+
                    license:gpl3+))))
 
+(define-public sugar-chat-activity
+  ;; The last release was in 2019 and since then commits have been published
+  ;; that include build fixes and translation updates.
+  (let ((commit "a6a14b99576619639fd82fd265c4af096bcf52dc")
+        (revision "1"))
+    (package
+      (name "sugar-chat-activity")
+      (version (git-version "86" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/chat")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gp1ljazm119hqzwz0rkr6k588ngd68manndm808pj5vgbv7qsdq"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gdk-pixbuf
+             gobject-introspection
+             gtk+
+             gstreamer
+             gst-plugins-base
+             python-pygobject
+             sugar-toolkit-gtk3
+             telepathy-glib))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/chat.html")
+      (synopsis "Sugar activity to chat")
+      (description "Chat is an activity used to exchange messages with friends
+or classmates.")
+      (license license:gpl2+))))
+
 (define-public sugar-help-activity
   (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
         (revision "1"))
@@ -674,6 +729,67 @@ looking for why an activity or Sugar is not working properly.")
 or you can also play with a friend!")
     (license license:gpl3+)))
 
+(define-public sugar-physics-activity
+  (let ((commit "cfd17b82b783f1ce4952ccdef6a8ddbe3d8f3e46")
+        (revision "1"))
+    (package
+      (name "sugar-physics-activity")
+      (version (git-version "35" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/physics")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0yzq4cbgcngf1ayi4bsn04l3mz6pnayd6db9bv0v9xfrpjmffvyk"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'inject-load-path
+              (lambda _
+                (substitute* "activity.py"
+                  (("^import os")
+                   (string-append "\
+import sys, os
+for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
+    try:
+        sys.path.index(directory)
+    except ValueError:
+        sys.path.insert(1, directory)
+")))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             gdk-pixbuf))
+      (inputs
+       (list python-pybox2d
+             python-pygame
+             sugar-toolkit-gtk3
+             gettext-minimal))
+      (home-page "https://github.com/sugarlabs/physics")
+      (synopsis "Physical world simulator and playground")
+      (description "Physics is a physical world simulator and playground---you
+can add squares, circles, triangles, or draw your own shapes, and see them
+come to life with forces (think gravity, Newton!), friction (scrrrrape), and
+inertia (ahh, slow down!).")
+      (license license:gpl3+))))
+
 (define-public sugar-read-activity
   (let ((commit "25f69e41a4fa69d93c73c0c9367b4777a014b1cd")
         (revision "1"))
@@ -767,6 +883,92 @@ controls.")
       (description "Terminal is a full-screen text mode program that provides
 a Command-Line Interface (CLI) to the system.")
       (license (list license:gpl2+ license:gpl3+)))))
+
+(define-public sugar-turtleart-activity
+  (let ((commit "a4340adea18efbdb987eca6477fa71d5c924811f")
+        (revision "1"))
+    (package
+      (name "sugar-turtleart-activity")
+      (version (git-version "202" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/turtleart-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11agqyahjhxb7bakzix63lazcbin0jfiypqx0sm2i85bsl30fp7y"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'patch-locations
+              (lambda _
+                (substitute* "setup.py"
+                  (("'/usr/share/applications")
+                   "'share/applications"))))
+            (add-after 'unpack 'patch-tool-references
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* '("TurtleArtActivity.py"
+                               "TurtleArt/turtleblocks.py")
+                  (("glib-compile-schemas")
+                   (search-input-file inputs "/bin/glib-compile-schemas")))
+                (substitute* '("plugins/turtle_blocks_extras/turtle_blocks_extras.py"
+                               "pysamples/speak.py"
+                               "TurtleArt/tacollaboration.py")
+                  (("'espeak")
+                   (string-append "'" (search-input-file inputs "/bin/espeak"))))
+                (substitute* '("pysamples/csound.py"
+                               "plugins/turtle_blocks_extras/turtle_blocks_extras.py")
+                  (("'csound '")
+                   (string-append "'" (search-input-file inputs "/bin/csound")
+                                  " '")))
+                (substitute* '("plugins/turtle_blocks_extras/turtle_blocks_extras.py"
+                               "pysamples/speak.py"
+                               "TurtleArt/tacollaboration.py")
+                  (("\\| aplay")
+                   (string-append "| "
+                                  (search-input-file inputs "/bin/aplay"))))
+                (substitute* "pysamples/sinewave.py"
+                  (("'speaker-test")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/speaker-test"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gstreamer
+             gtk+
+             telepathy-glib
+             webkitgtk-for-gtk3))
+      (inputs
+       (list alsa-utils
+             csound
+             espeak
+             (list glib "bin")
+             gettext-minimal
+             sugar-toolkit-gtk3))
+      (home-page "https://help.sugarlabs.org/en/turtleart.html")
+      (synopsis "Block-based Logo programming environment")
+      (description "Turtle Art, also known as Turtle Blocks, is an activity
+with a Logo-inspired graphical “turtle” that draws colorful art based on
+snap-together visual programming elements.  Its “low floor” provides an easy
+entry point for beginners.  It also has “high ceiling” programming, graphics,
+mathematics, and Computer Science features which will challenge the more
+adventurous student.")
+      (license license:expat))))
 
 (define-public sugar-typing-turtle-activity
   (package

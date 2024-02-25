@@ -25,6 +25,7 @@
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
+;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5385,4 +5386,35 @@ performance library of basic building blocks for deep learning applications.")
     (home-page "https://ggml.ai")
     (synopsis "Read and write ML models in GGUF for GGML")
     (description "A Python library for reading and writing GGUF & GGML format ML models.")
+    (license license:expat)))
+
+(define-public python-gymnasium
+  (package
+    (name "python-gymnasium")
+    (version "0.29.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gymnasium" version))
+       (sha256
+        (base32 "1cab4wsnlsxn2z90qmymv8ppmsq8yq2amiqwid3r0xfbxx92flqs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cloudpickle python-farama-notifications
+                             python-importlib-metadata python-numpy
+                             python-typing-extensions))
+    (native-inputs (list python-pytest python-scipy))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-tests-module
+            (lambda _
+              (with-output-to-file "tests/__init__.py"
+                (lambda _ (display ""))))))))
+    (home-page "https://gymnasium.farama.org/")
+    (synopsis
+     "Standard API for reinforcement learning and a set of reference environments")
+    (description
+     "This package provides a standard API for reinforcement learning and a
+diverse set of reference environments (formerly Gym).")
     (license license:expat)))

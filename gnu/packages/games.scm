@@ -7270,6 +7270,7 @@ fight against their plot and save his fellow rabbits from slavery.")
     (synopsis "Data files for 0ad")
     (description "0ad-data provides the data files required by the game 0ad.")
     (home-page "https://play0ad.com")
+    (properties '((hidden? . #t)))
     (license (list (license:fsdg-compatible
                     "http://tavmjong.free.fr/FONTS/ArevCopyright.txt"
                     "Similar to the license of the Bitstream Vera fonts.")

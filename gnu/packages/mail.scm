@@ -27,7 +27,7 @@
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
@@ -195,7 +195,6 @@
   #:use-module (guix packages)
   #:use-module (guix svn-download)
   #:use-module (guix utils)
-  #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -281,14 +280,14 @@ example, modify the message headers or body, or encrypt or sign the message.")
 (define-public mailutils
   (package
     (name "mailutils")
-    (version "3.16")
+    (version "3.17")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/mailutils/mailutils-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1h02l0zilxsak1sxpm15vhfaahd8rwvcksc88cc7c0wc626ia784"))
+               "1sc45gpvnrcf7b627n8cxsp379kk2s3x68c2z19gwrkmqg7bljgs"))
              (patches
               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
@@ -4616,6 +4615,37 @@ score.")
     (description "This package provides a tool to extract, recover and
 undelete email messages from Outlook Express .dbx files.")
     (license license:gpl3+)))
+
+(define-public libdbx
+  (package
+    (name "libdbx")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/ol2mbox/LibDBX/v"
+                                  version "/libdbx_"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0fs4268qcy99nhl8345sv257b002530y77idkf6z9i7qxmqghq4w"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (for-each (lambda (file)
+                          (install-file file
+                                        (string-append #$output "/bin")))
+                        (list "readdbx" "readoe")))))))
+    (home-page "http://sourceforge.net/projects/ol2mbox/")
+    (synopsis "Tools for conversion of Outlook Express files to mailbox format")
+    (description "This package provides tools for the conversion of Outlook
+Express data files to standard mailbox format.")
+    (license license:gpl2+)))
 
 (define-public libpst
   (package

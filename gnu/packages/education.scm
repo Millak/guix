@@ -1163,3 +1163,37 @@ mentored learning for programming languages.")
     (description "Mazo is a learning application that helps you memorize
 simple concepts using multimedia flash cards and spaced reviews.")
     (license license:public-domain)))
+
+(define-public tagainijisho
+  (package
+    (name "tagainijisho")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/Gnurou/tagainijisho/releases/download/"
+             version
+             "/tagainijisho-" version ".tar.gz"))
+       (sha256
+        (base32
+         "00whfcnpn42asxmafcfbcmpwfwyv40qaqdk28psa1vp0lainmyhh"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f))                ;no test target
+    (native-inputs
+     (list qttools-5))
+    (synopsis "Japanese dictionary and learning assistant")
+    (description
+     "Tagaini Jisho is a Japanese dictionary and kanji lookup tool.  It aims
+at becoming your Japanese study assistant.  It allows you to quickly search
+for entries and mark those that you wish to study, along with tags and
+personal notes.  It also let you train entries you are studying and follows
+your progression in remembering them.  Finally, it makes it easy to review
+entries you did not remember by listing them on screen or printing them on
+a small booklet.
+
+Tagaini Jisho also features complete stroke order animations for more than
+6000 kanji.")
+    (home-page "https://www.tagaini.net")
+    (license license:gpl3+)))

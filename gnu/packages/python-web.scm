@@ -102,6 +102,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
@@ -1280,28 +1281,30 @@ other HTTP libraries.")
 (define-public httpie
   (package
     (name "httpie")
-    (version "3.2.1")
+    (version "3.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "httpie" version))
        (sha256
         (base32
-         "1v736y2h7lcyrnxs9y5sf4xwzgll7pc2s6r3ny929mm8lcn07h69"))))
+         "140w4mr0w7scpf4j5qm4h475vbwrgxzkdwyygwcmql1r1cgngywb"))))
     (build-system python-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run them.
      '(#:tests? #f))
     (propagated-inputs
-     (list python-colorama
+     (list python-charset-normalizer
+           python-colorama
+           python-defusedxml
+           python-importlib-metadata
+           python-multidict
+           python-pip
            python-pygments
            python-requests
            python-requests-toolbelt
-           python-pysocks
-           python-charset-normalizer
-           python-defusedxml
            python-rich
-           python-multidict))
+           python-setuptools))
     (home-page "https://httpie.io")
     (synopsis "cURL-like tool for humans")
     (description
@@ -7055,6 +7058,71 @@ interpreter written in pure Python.")
      "This package provices a simple implementation of Encrypted Content
 Encoding for HTTP.")
     (license license:expat)))
+
+(define-public python-cloud-init
+  (package
+    (name "python-cloud-init")
+    (version "23.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/canonical/cloud-init")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0przjj2j1ws6b7sbgqxnffsarbbwl00lhq3bn7yiksp8kg8np1m1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; This requires usermod
+        "--ignore=tests/unittests/distros/test_create_users.py"
+        ;; This writes to /var
+        "--ignore=tests/unittests/net/test_dhcp.py"
+        "-k"
+        (string-append
+         ;; This test messes with PATH, so it cannot find mkdir
+         "not test_path_env_gets_set_from_main"
+         ;; These all fail because /bin/sh doesn't exist.  We cannot patch
+         ;; this because the generated scripts must use /bin/sh as they are
+         ;; supposed to be run on minimal systems.
+         " and not test_handler_creates_and_runs_bootcmd_script_with_instance_id"
+         " and not test_handler_runs_bootcmd_script_with_error"
+         " and not test_subp_combined_stderr_stdout"
+         " and not test_handle_part"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-references
+           (lambda _
+             (substitute* "tests/unittests/cmd/test_clean.py"
+               (("#!/bin/sh") (string-append "#!" (which "sh")))))))))
+    (propagated-inputs
+     (list python-configobj
+           python-jinja2
+           python-jsonpatch
+           python-jsonschema
+           python-netifaces
+           python-oauthlib
+           python-pyserial
+           python-pyyaml
+           python-responses))
+    (native-inputs
+     (list procps ;for ps when running tests
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-passlib))
+    (home-page "https://github.com/canonical/cloud-init")
+    (synopsis "Cloud instance initialization tools")
+    (description
+     "Cloud-init is the multi-distribution method for cross-platform cloud
+instance initialization.  It is supported across all major public cloud
+providers, provisioning systems for private cloud infrastructure, and
+bare-metal installations.")
+    ;; Either license can be chosen
+    (license (list license:asl2.0 license:gpl3))))
 
 (define-public python-cloudscraper
   (package

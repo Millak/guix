@@ -80,6 +80,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -496,7 +497,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 ;; The current "mainline" kernel.
 
-(define-public linux-libre-6.7-version "6.7.4")
+(define-public linux-libre-6.7-version "6.7.5")
 (define-public linux-libre-6.7-gnu-revision "gnu")
 (define deblob-scripts-6.7
   (linux-libre-deblob-scripts
@@ -506,7 +507,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vb2pd0wdfl9p5qi8hj1i5xg1p4pyrp01iqhap9xbb2yai4l80j5")))
 (define-public linux-libre-6.7-pristine-source
   (let ((version linux-libre-6.7-version)
-        (hash (base32 "036nk3h7vqzd7gnxan2173kpss5qm2pci1lvd58gh90azigrz3gn")))
+        (hash (base32 "1zrralagnv9yr8qdg7lc05735691dbh92mgwfyxrq5xqc504dxi9")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.7)))
@@ -514,7 +515,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.6-version "6.6.16")
+(define-public linux-libre-6.6-version "6.6.17")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
@@ -524,7 +525,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0kavbby960k7wg355p3hjb9v1c4gnk8dv3lkfhpz44ayhv7kihg5")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "0c5a9agdr27bwd1z6790whczb858z8i34hhn548lzbdylfamf7dj")))
+        (hash (base32 "0si20m9ckir826jg40bh7sh4kwlp610rnc3gwsgs4nm7dfcm0xpf")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
@@ -532,7 +533,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.77")
+(define-public linux-libre-6.1-version "6.1.78")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -542,7 +543,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1jg2v1nxd6i5x536vmd1l14xhpzrcimpmjfipb1zkrwil102y25f")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "07grng6rrgpy6c3465hwqhn3gcdam1c8rwya30vgpk8nfxbfqm1v")))
+        (hash (base32 "12fn23m2xwdlv6gr1s8872lk8mvigqkblvlhr54nh8rik2b6n835")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -2004,6 +2005,17 @@ GnuPG-based password manager like @code{pass}.")
   (package
     (inherit linux-libre)
     (name "linux-libre-documentation")
+    (source
+     (origin
+       (inherit linux-libre-source)
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/Documentation/sphinx/kernel_feat.py?id=c23de7ceae59e4ca5894c3ecf4f785c50c0fa428")
+           (sha256
+            (base32
+             "0inw2pl7nh82sw8bhvvzqa61552bisl78yc1nyl2x6dmpyppzrld")))))))
     (arguments
      (list
       #:tests? #f
@@ -5288,6 +5300,51 @@ existing Docker images.  Singularity requires kernel support for container
 isolation or root privileges.")
     (license license:bsd-3)))
 
+(define-public python-spython
+  (package
+    (name "python-spython")
+    (version "0.3.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "spython" version))
+       (sha256
+        (base32 "0kly851k6mj7xzcybciav5d0pq5q04pzg7c5a1g712bqbxkha4ck"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Configure absolute path to singularity.
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((singularity (search-input-file inputs "bin/singularity")))
+                (substitute* "spython/utils/terminal.py"
+                  (("software=\"singularity\"")
+                   (string-append "software=\"" singularity "\"")))
+                (substitute* (list "spython/utils/terminal.py"
+                                   "spython/main/help.py"
+                                   "spython/main/base/command.py")
+                  (("\\[\"singularity\"")
+                   (string-append "[\"" singularity "\"")))
+                (substitute* "spython/main/execute.py"
+                  (("shutil.which\\(\"singularity\"\\)")
+                   (string-append "shutil.which(\"" singularity "\")"))))))
+          ;; Skip tests that require network access.
+          (add-before 'check 'skip-tests
+            (lambda _
+              (delete-file "spython/tests/test_client.py"))))))
+    (inputs
+     (list singularity))
+    (native-inputs
+     (list python-pytest
+           python-pytest-runner))
+    (home-page "https://github.com/singularityhub/singularity-cli")
+    (synopsis "Singularity Python client")
+    (description "@code{python-spython} is a Python library to interact with
+Singularity containers.")
+    (license license:mpl2.0)))
+
 (define-public libnvme
   (package
     (name "libnvme")
@@ -7845,7 +7902,7 @@ every time the power supply source is changed.")
                     (("\"tlp-stat\"")
                      (string-append "'" tlp-stat "'"))
                     (("/usr/share/tlp/defaults.conf")
-                     (string-append "'" defaults.conf "'")))
+                     defaults.conf))
                   (substitute* "ui_config_objects/gtkusblist.py"
                     (("\"lsusb\"")
                      (string-append "'" lsusb "'")))

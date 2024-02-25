@@ -31,6 +31,7 @@
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,6 +124,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages selinux)
@@ -143,6 +145,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -2310,6 +2313,59 @@ the image.
 
 @end enumerate")
     (license license:asl2.0)))
+
+(define-public ruby-vagrant-spec-helper-basic
+  (package
+    (name "ruby-vagrant-spec-helper-basic")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant-spec-helper-basic" version))
+              (sha256
+               (base32
+                "1qhxxc07dhrma1s1x2g9sma7xxgwzs20s6v5pv9jrpz6bl4b527n"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f))  ;; has not tests
+    (synopsis "Helper for vagrant-spec")
+    (description "This package is an internal helper for vagrant-spec.  Don't
+use it.")
+    (home-page "https://github.com/hashicorp/vagrant-spec")
+    (license license:mpl2.0)))
+
+(define-public ruby-vagrant-spec
+  (package
+    (name "ruby-vagrant-spec")
+    (version "0.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant_spec" version))
+              (sha256
+               (base32
+                "1bkzz3mj7kzsv6k0ii8w31cgkpiqw3wvmvv2c6rknsavqqnagb4g"))))
+    (build-system ruby-build-system)
+    ;; (native-inputs (list ruby-rubocop ruby-vagrant-spec-helper-basic))
+    (propagated-inputs (list ruby-coveralls ruby-serverspec ruby-dep))
+    (arguments
+     (list
+      #:tests? #f  ;; tests require vagrant
+      ;; target 'test' includes 'cops' and running some ansible-playbook
+      #:test-target "unit"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                (("Bundler::GemHelper") "require 'bundler'\nBundler::GemHelper"))))
+          (add-before 'check 'prepare-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (synopsis "Specification and tests for Vagrant")
+    (description "@code{vagrant-spec} is a both a specification of how Vagrant
+and its various components should behave as well as a library of testing
+helpers that let you write your own unit and acceptance tests for Vagrant.")
+    (home-page "https://github.com/hashicorp/vagrant-spec")
+    (license license:mpl2.0)))
 
 (define-public python-vagrant
   (package

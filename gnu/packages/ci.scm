@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -209,14 +209,15 @@ intended as a replacement for Hydra.")
              (use-modules (ice-9 popen))
 
              (mkdir-p "../build/js")
-             (for-each (lambda (name)
-                         (let* ((file
-                                 (assoc-ref inputs (string-append name ".js")))
-                                (port
+             (invoke "tar" "-xf" (assoc-ref inputs "chart.js.tgz")
+                     "--strip-components" "2"
+                     "package/dist/chart.js")
+             (for-each (lambda (file minified-file)
+                         (let* ((port
                                  (open-pipe* OPEN_READ "uglifyjs" file))
                                 (destination
                                  (string-append
-                                  "../build/js/" name ".min.js")))
+                                  "../build/js/" minified-file)))
 
                            (call-with-output-file destination
                              (lambda (output-port)
@@ -226,9 +227,12 @@ intended as a replacement for Hydra.")
                              (unless (zero? exit)
                                (error "uglifyjs failed" exit)))))
 
-                       '("vue"
-                         "vue-router"
-                         "Chart"))
+                       (list (assoc-ref inputs "vue.js")
+                             (assoc-ref inputs "vue-router.js")
+                             "chart.js")
+                       (list "vue.min.js"
+                             "vue-router.min.js"
+                             "Chart.min.js"))
 
              ;; ansi_up.js isn't minified
              (copy-file (assoc-ref inputs "ansi_up.js")
@@ -260,13 +264,13 @@ intended as a replacement for Hydra.")
                  (sha256
                   (base32
                    "1dx8wn38ds8d01kkih26fx1yrisg3kpz61qynjr4zil03ap0hrlr"))))
-       ("Chart.js"
+       ("chart.js.tgz"
         ,(origin (method url-fetch)
                  (uri (string-append "https://github.com/chartjs/Chart.js/"
-                                     "releases/download/v2.7.2/Chart.js"))
+                                     "releases/download/v3.9.1/chart.js-3.9.1.tgz"))
                  (sha256
                   (base32
-                   "05m3gk6hqjx92j20drnk7q075qpjraywqaf25lnglmsgsgpiqsr7"))))))
+                   "1ikjgspaknqlhpjad17563yph4pvrh8dkzjdx58pl23gg58hf7hi"))))))
     (synopsis "Lightweight continuous integration service")
     (description
      "Laminar is a lightweight and modular continuous integration service.  It

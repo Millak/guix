@@ -23,6 +23,7 @@
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1251,7 +1252,7 @@ extracting, creating, and converting between formats.")
            python-pyyaml
            python-requests
            python-responses
-           python-ruamel.yaml
+           python-ruamel.yaml-0.16
            python-tqdm
            ;; XXX: This is dragged in by libarchive and is needed at runtime.
            zstd))
@@ -1512,8 +1513,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "d9fa7947c25d0624c568f744ad2a2683a43e5644")
-        (revision "96"))
+  (let ((commit "9f1545b15269523eac109b54e1a62f4c0cda837e")
+        (revision "97"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1524,7 +1525,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1l4d0fvk2pg4n6d532xb50iqa7py6v68298l3xd5g50dxl1f4jwp"))
+                  "1h35jjpvl7lipbys8q7ivx13cffkya6n0jpc91ckag3z2vb09iwp"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

@@ -2525,6 +2525,70 @@ Python.")
     ;; licensed lgpl2.1+
     (license (list license:expat license:lgpl2.1+))))
 
+(define-public python-ega-download-client
+  (package
+    (name "python-ega-download-client")
+    (version "5.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/EGA-archive/ega-download-client")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k9rfq2yyvfxs5sq9lsm8krp9ddx4s18hv85ikf3b37zv24kpwjk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; These tests fail because they require internet access.
+        "--ignore=tests/functional/test_download.py"
+        "--ignore=tests/functional/test_htsget.py"
+        "-k"
+        (string-append "not test_error_5xx"
+                       " and not test_error_too_many_requests"
+                       ;; Something's wrong here.  On some powerful machines
+                       ;; (but not on my laptop) these fail, and tests like
+                       ;; test_file_is_saved_into_an_existing_directory_which_was_specified_by_the_user
+                       ;; take a *very* long time to complete.
+                       ;;
+                       ;; It looks like "dataset_in_fire.download" takes an
+                       ;; unusually long time on those machines.  We disable
+                       ;; tests that fail under these conditions.
+                       " and not test_download_file"
+                       " and not test_output_file_is_removed_if_md5_was_invalid"
+                       " and not test_post_stats_if_download_succeeded"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("==") ">=")))))))
+    (propagated-inputs (list python-htsget python-psutil python-requests
+                             python-tqdm python-urllib3))
+    (native-inputs (list python-coverage python-pytest python-pyfakefs
+                         python-responses python-mock))
+    (home-page "https://github.com/EGA-archive/ega-download-client")
+    (synopsis "EGA download client")
+    (description "PyEGA3 is a tool for viewing and downloading files from
+authorized EGA datasets.  It uses the EGA data API and has several key
+features:
+
+@itemize
+@item Files are transferred over secure https connections and received
+  unencrypted, so no need for decryption after download.
+@item Downloads resume from where they left off in the event that the
+  connection is interrupted.
+@item Supports file segmenting and parallelized download of segments,
+  improving overall performance.
+@item After download completes, file integrity is verified using checksums.
+@item Implements the GA4GH-compliant htsget protocol for download of genomic
+  ranges for data files with accompanying index files.
+@end itemize\n")
+    (license license:asl2.0)))
+
 (define-public python-scdamandtools
   (package
     (name "python-scdamandtools")
@@ -4041,39 +4105,7 @@ omics data.")
     (license license:bsd-3)))
 
 (define-public python-pyega3
-  (package
-    (name "python-pyega3")
-    (version "3.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyega3" version))
-              (sha256
-               (base32
-                "1k736in8g27rarx65ym9xk50x53zjg75h37bb8ljynxv04rypx2q"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; The tests require network access.
-    (native-inputs
-     (list python-psutil python-htsget))
-    (propagated-inputs
-     (list python-requests python-tqdm python-urllib3 python-responses))
-    (home-page "https://github.com/EGA-archive/ega-download-client")
-    (synopsis "Python client for EGA")
-    (description "This package is a python-based tool for viewing and
-downloading files from authorized EGA datasets.  It uses the EGA data API and
-has several key features:
-@itemize
-@item Files are transferred over secure https connections and received
-  unencrypted, so no need for decryption after download.
-@item Downloads resume from where they left off in the event that the
-  connection is interrupted.
-@item Supports file segmenting and parallelized download of segments,
-  improving overall performance.
-@item After download completes, file integrity is verified using checksums.
-@item Implements the GA4GH-compliant htsget protocol for download of genomic
-  ranges for data files with accompanying index files.
-@end itemize\n")
-    (license license:asl2.0)))
+  (deprecated-package "python-pyega3" python-ega-download-client))
 
 (define-public python-pysam
   (package
@@ -4962,37 +4994,52 @@ Note that this package has been deprecated in favor of @code{pyfaidx}.")
 (define-public python-schema-salad
   (package
     (name "python-schema-salad")
-    (version "8.2.20211116214159")
+    (version "8.5.20240102191335")
     (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "schema-salad" version))
-       (sha256
-        (base32
-         "005dh2y45x92zl8sf2sqjmfvcqr4hrz8dfckgkckv87003v7lwqc"))))
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "schema-salad" version))
+        (sha256
+         (base32
+          "035202p696i3jylb8b3nm9qcxsqby15hhqn1dl4nrz73a17p0ckx"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'skip-failing-tests
-           (lambda _
-             ;; Skip tests that require network access.
-             (substitute* "schema_salad/tests/test_cwl11.py"
-               (("^def test_(secondaryFiles|outputBinding)" all)
-                (string-append "@pytest.mark.skip(reason="
-                               "\"test requires network access\")\n"
-                               all))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; Set exact version.
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (string-append "version=\"" #$version "\"")))))
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              ;; Skip tests that require network access.
+              (let ((skip-test
+                     (lambda (test-pattern)
+                       (string-append "@pytest.mark.skip(reason="
+                                      "\"test requires network access\")\n"
+                                      test-pattern))))
+                (substitute* "schema_salad/tests/test_cg.py"
+                  (("^def test_(load(_by_yaml_metaschema|_metaschema|_cwlschema|)|include|idmap|idmap2)\\(" all)
+                   (skip-test all)))
+                (substitute* "schema_salad/tests/test_cwl11.py"
+                  (("^def test_(secondaryFiles|outputBinding|yaml_tab_error)\\(" all)
+                   (skip-test all)))
+                (substitute* "schema_salad/tests/test_examples.py"
+                  (("^def test_bad_schemas\\(" all)
+                   (skip-test all)))))))))
     (propagated-inputs
      (list python-cachecontrol
-           python-lockfile
-           python-mistune
+           python-importlib-resources
+           python-mistune-next
+           python-mypy-extensions
            python-rdflib
-           python-rdflib-jsonld
            python-requests
-           python-ruamel.yaml
-           python-typing-extensions))
+           python-ruamel.yaml))
     (native-inputs
-     (list python-black python-pytest python-pytest-runner))
+     (list python-black python-pytest python-pytest-runner python-pytest-xdist))
     (home-page "https://github.com/common-workflow-language/schema_salad")
     (synopsis "Schema Annotations for Linked Avro Data (SALAD)")
     (description
@@ -5084,10 +5131,104 @@ resources for bioinformatics.")
 doublets in single-cell RNA-seq data.")
     (license license:expat)))
 
+(define-public python-cwlformat
+  (package
+    (name "python-cwlformat")
+    (version "2022.02.18")
+    (source
+     ;; The PyPI tarball is missing Readme.md. Readme.md is required for the
+     ;; build.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rabix/cwl-format")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0agkz2w86k91rc9m5vx5hsqi5nm6fcmzkng6j99hjapz0r9233ql"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-importlib-resources
+           python-ruamel.yaml))
+    (home-page "https://github.com/rabix/cwl-format")
+    (synopsis "Prettifier for CWL code")
+    (description "@code{python-cwlformat} is a specification and a reference
+implementation for a very opinionated @acronym{CWL, Common Workflow Language}
+code formatter.  It outputs CWL in a standardized YAML format.")
+    (license license:asl2.0)))
+
+(define-public python-cwl-upgrader
+  (package
+    (name "python-cwl-upgrader")
+    (version "1.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cwl-upgrader" version))
+       (sha256
+        (base32
+         "12j6z8nvwnzjjyypz59hwj5hmrcri2r6aknw52n9dbj6lbzbdd2p"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-ruamel.yaml
+           python-schema-salad))
+    (home-page "https://github.com/common-workflow-language/cwl-upgrader")
+    (synopsis "CWL document upgrader")
+    (description "@code{python-cwl-upgrader} is a standalone upgrader for
+@acronym{CWL, Common Workflow Language} documents from version draft-3, v1.0,
+and v1.1 to v1.2.")
+    (license license:asl2.0)))
+
+(define-public python-cwl-utils
+  (package
+    (name "python-cwl-utils")
+    (version "0.32")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cwl-utils" version))
+       (sha256
+        (base32
+         "06wkw8d8cqm3hnz8xwnysz874gwaym36c358cr7frw5iglhvsj98"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-append "not test_graph_split"
+                             " and not test_load_document_with_remote_uri"
+                             " and not test_remote_packing"
+                             " and not test_remote_packing_github_soft_links"
+                             " and not test_value_from_two_concatenated_expressions"))))
+    (inputs
+     (list node))
+    (native-inputs
+     (list python-mypy-extensions
+           python-pytest
+           python-pytest-mock
+           python-pytest-runner))
+    (propagated-inputs
+     (list python-cwl-upgrader
+           python-cwlformat
+           python-packaging
+           python-rdflib
+           python-requests
+           python-ruamel.yaml
+           python-schema-salad))
+    (home-page "https://github.com/common-workflow-language/cwl-utils")
+    (synopsis "Python utilities for CWL")
+    (description "@code{python-cwl-utils} provides python utilities and
+autogenerated classes for loading and parsing CWL v1.0, CWL v1.1, and CWL v1.2
+documents.")
+    (license license:asl2.0)))
+
 (define-public cwltool
   (package
     (name "cwltool")
-    (version "3.1.20220119140128")
+    (version "3.1.20240112164112")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5096,56 +5237,51 @@ doublets in single-cell RNA-seq data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jmrm0qrqgka79avc1kq63fgh20gx6g07fc8p3iih4k85vhdyl3f"))))
+                "1fpc5kqgpbn48g5vlvy64p297x2wm3gfz8casgpk15ap593wwh33"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-version-restrictions
-           (lambda _
-             (substitute* "setup.py"
-               (("== 1.5.1") ">=1.5.1")))) ; prov
-         (add-after 'unpack 'dont-use-git
-           (lambda _
-             (substitute* "gittaggers.py"
-               (("self.git_timestamp_tag\\(\\)")
-                (string-append "time.strftime('.%Y%m%d%H%M%S', time.gmtime(int("
-                               (string-drop ,version 4) ")))")))))
-         (add-after 'unpack 'modify-tests
-           (lambda _
-             ;; Tries to connect to the internet.
-             (delete-file "tests/test_content_type.py")
-             (delete-file "tests/test_udocker.py")
-             (delete-file "tests/test_http_input.py")
-             (substitute* "tests/test_load_tool.py"
-               (("def test_load_graph_fragment_from_packed")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_load_graph_fragment_from_packed")))
-             (substitute* "tests/test_examples.py"
-               (("def test_env_filtering")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_env_filtering")))
-             ;; Tries to use cwl-runners.
-             (substitute* "tests/test_examples.py"
-               (("def test_v1_0_arg_empty_prefix_separate_false")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_v1_0_arg_empty_prefix_separate_false")))
-
-             (substitute* '("cwltool/schemas/v1.1/tests/env-tool1.cwl"
-                            "cwltool/schemas/v1.1/tests/env-tool2.cwl"
-                            "cwltool/schemas/v1.1/tests/imported-hint.cwl"
-                            "tests/subgraph/env-tool2.cwl"
-                            "tests/subgraph/env-tool2_req.cwl"
-                            "tests/subgraph/env-wf2_subwf-packed.cwl"
-                            "tests/subgraph/env-tool2_no_env.cwl")
-               (("\"/bin/sh\"") (string-append "\"" (which "sh") "\"")))
-             ;; Pytest doesn't know what to do with "-n auto"
-             (substitute* "tox.ini"
-               (("-n auto") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-version-restrictions
+            (lambda _
+              (substitute* "setup.py"
+                (("== 1.5.1") "> 1.5.1")))) ; prov
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; Set exact version.
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (string-append "version=\"" #$version "\"")))))
+          (add-after 'unpack 'modify-tests
+            (lambda _
+              ;; Tries to connect to the internet.
+              (delete-file "tests/test_content_type.py")
+              (delete-file "tests/test_udocker.py")
+              (delete-file "tests/test_http_input.py")
+              (substitute* "tests/test_load_tool.py"
+                (("def test_load_graph_fragment_from_packed")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_load_graph_fragment_from_packed")))
+              (substitute* "tests/test_examples.py"
+                (("def test_env_filtering")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_env_filtering")))
+              ;; Tries to use cwl-runners.
+              (substitute* "tests/test_examples.py"
+                (("def test_v1_0_arg_empty_prefix_separate_false")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_v1_0_arg_empty_prefix_separate_false")))
+              (substitute* '("tests/subgraph/env-tool2.cwl"
+                             "tests/subgraph/env-tool2_req.cwl"
+                             "tests/subgraph/env-wf2_subwf-packed.cwl"
+                             "tests/subgraph/env-tool2_no_env.cwl")
+                (("\"/bin/sh\"") (string-append "\"" (which "sh") "\""))))))))
     (inputs
      (list python-argcomplete
            python-bagit
            python-coloredlogs
+           python-cwl-utils
            python-mypy-extensions
            python-prov
            python-pydot
@@ -5155,6 +5291,7 @@ doublets in single-cell RNA-seq data.")
            python-ruamel.yaml
            python-schema-salad
            python-shellescape
+           python-spython
            python-typing-extensions
            ;; Not listed as needed but still necessary:
            node))
@@ -5165,7 +5302,8 @@ doublets in single-cell RNA-seq data.")
            python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-pytest-runner))
+           python-pytest-runner
+           python-pytest-xdist))
     (home-page
      "https://github.com/common-workflow-language/common-workflow-language")
     (synopsis "Common Workflow Language reference implementation")
@@ -11602,11 +11740,11 @@ single-cell data.")
       (license license:gpl3))))
 
 (define-public r-archr
-  (let ((commit "92ab814f86be0cea75c661f9827a9549c2cf47f5")
+  (let ((commit "c61b0645d1482f80dcc24e25fbd915128c1b2500")
         (revision "1"))
     (package
       (name "r-archr")
-      (version (git-version "1.0.1" revision commit))
+      (version (git-version "1.0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -11615,7 +11753,7 @@ single-cell data.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1m1vp3kkpvd0fcviv5vb3gcbm3w91ih6gm9ivg48swnbqny44kqb"))))
+          (base32 "0sgdfd8iwgj8cssj2zr3gmshg8nv54q6dd8asjf99i39qkni7p9i"))))
       (properties `((upstream-name . "ArchR")))
       (build-system r-build-system)
       (propagated-inputs

@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,6 +92,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libcanberra)
@@ -156,7 +158,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
 (define-public tilda
   (package
     (name "tilda")
-    (version "1.5.4")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -165,7 +167,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
              (commit (string-append "tilda-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q2i9ny8sh7zjzgvkx8vcvk593wcvchjc4xq4nrlqdd377r7cg5q"))))
+        (base32 "1ad5jlyg9izm2rid115dv70af6j5i96p91i685c0h9vlrn5sviqs"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -173,7 +175,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
                     (lambda _
                       (for-each make-file-writable
                                 (find-files "po" ".")) #t)))))
-    (native-inputs (list autoconf automake gettext-minimal pkg-config))
+    (native-inputs (list autoconf-2.71 automake gettext-minimal pkg-config))
     (inputs (list libconfuse vte))
     (synopsis "GTK+-based drop-down terminal")
     (description
@@ -184,29 +186,6 @@ is similar to the built-in consoles in some applications.  Tilda is highly
 configurable through a graphical wizard.")
     (home-page "https://github.com/lanoxx/tilda")
     (license license:gpl2+)))
-
-(define-public tilda-dbus
-  (package
-    (inherit tilda)
-    (name "tilda")
-    (version "1.6-alpha")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lanoxx/tilda")
-             (commit "51a980a55ad6d750daa21d43a66d44577dad277b")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1pdarmlxkap9v689s88b89l5hi4vspsrrysh7pbm9rhdjmzk5m2c"))))
-    (synopsis "GTK+-based drop-down terminal with experimental D-Bus support")
-    (description
-     "Tilda is a terminal emulator similar to normal terminals like
-gnome-terminal (GNOME) or Konsole (KDE), with the difference that it drops down
-from the edge of a screen when a certain configurable hotkey is pressed.  This
-is similar to the built-in consoles in some applications.  Tilda is highly
-configurable through a graphical wizard.  This version enables D-Bus support
-which is necessary for using Tilda on Wayland.")))
 
 (define-public termite
   (package
@@ -1727,3 +1706,30 @@ ephemeral serial ports.  It features automatic port detection, port enumeration,
 support for non-standard baud rates, the ability to wait for ports to appear,
 and the ability to read and write via stdin and stdout.")
     (license license:expat)))
+
+(define-public roxterm
+  (package
+    (name "roxterm")
+    (version "3.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/realh/roxterm.git")
+                     (commit version)))
+              (sha256
+               (base32
+                "19y4lxwj18pr231597rnyyk6f5hwvsajjv7w21wb5c62jjjyfrws"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ; No tests
+    (native-inputs
+     (list docbook-xsl docbook-xml (list glib "bin") libxml2 libxslt
+           pkg-config))
+    (inputs
+     (list dbus dbus-glib gtk+ pcre vte))
+    (synopsis "ROXTerm terminal emulator")
+    (description "This package provides a terminal emulator with hyperlink
+support.  It's based on VTE and aimed at power users.")
+    (home-page "https://realh.github.io/roxterm/")
+    ;; src/gresources.c is under LGPL 2.1+
+    (license (list license:gpl2+ license:lgpl2.1+))))

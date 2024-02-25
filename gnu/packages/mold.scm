@@ -35,7 +35,7 @@
 (define-public mold
   (package
     (name "mold")
-    (version "2.3.2")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -44,22 +44,10 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p6w92caysy9h0vkl26iv3viv0lvwzvbd357yykls0p13hnzlzkr"))
+        (base32 "0rqw7p61qijxhbfm887xbh8idbp5w30axvwgmm68s03xirnr7ymr"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Fix detection of i686 systems.
-            ;; This can be removed with the next release of mold.
-            (substitute* "test/elf/common.inc"
-              (("echo i386") "echo i686"))
-            (substitute* '("test/elf/common.inc"
-                           "test/elf/global-offset-table.sh"
-                           "test/elf/i386_tls-module-base.sh"
-                           "test/elf/large-alignment-dso.sh"
-                           "test/elf/large-alignment.sh"
-                           "test/elf/nocopyreloc.sh"
-                           "test/elf/range-extension-thunk.sh")
-              (("MACHINE = i386") "MACHINE = i686"))
             (for-each
              (lambda (x)
                (delete-file-recursively (string-append "third-party/" x)))
@@ -93,7 +81,7 @@
               ;; but compiler in Guix will insert the path of gcc-lib and
               ;; glibc into the output binary.
               (delete-file "test/elf/rpath.sh"))))))
-    (inputs (list mimalloc openssl tbb xxhash zlib `(,zstd "lib")))
+    (inputs (list mimalloc tbb xxhash zlib `(,zstd "lib")))
     (home-page "https://github.com/rui314/mold")
     (synopsis "Fast linker")
     (description

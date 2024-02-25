@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -156,6 +157,12 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
                           (format
                            #t
                            (G_ "Skipping ~a (not an empty directory)... done\n")
+                           directory))
+                         ;; This happens when the directory is a mounted device.
+                         ((= EBUSY errno)
+                          (format
+                           #t
+                           (G_ "Skipping ~a (underlying device is busy)... done\n")
                            directory))
                          ((= ENOENT errno) #t)
                          ((= ENOTDIR errno) #t)

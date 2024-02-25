@@ -68,6 +68,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
@@ -84,6 +85,8 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages m4)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openldap)
@@ -108,6 +111,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
 
 (define-public autofs
@@ -1220,6 +1224,70 @@ to read all files, and it does not support all the compression methods in
 APFS.")
       (home-page "https://github.com/sgan81/apfs-fuse")
       (license license:gpl2+))))
+
+(define-public snapper
+  (package
+    (name "snapper")
+    (version "0.10.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openSUSE/snapper")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nwmyzjwid1lf29dsr6w72dr781c81xyrjpk5y3scn4r55b5df0h"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "dists")
+           (delete-file-recursively "zypp-plugin")
+           (substitute* '("configure.ac" "doc/Makefile.am")
+             ((".*dists.*") "")
+             ((".*zypp-plugin.*") ""))
+           (substitute* "Makefile.am"
+             (("zypp-plugin") ""))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relative-file-locations
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (let* ((out (assoc-ref outputs "out")))
+                              (substitute* (list "scripts/Makefile.am"
+                                                 "data/Makefile.am")
+                                (("/usr/share")
+                                 (string-append out "/share"))
+                                (("/usr/lib")
+                                 (string-append out "/lib"))
+                                (("/etc/")
+                                 (string-append out "/etc/"))))
+                            (substitute* "client/Makefile.am"
+                              (("/usr/lib")
+                               "@libdir@")))))))
+    (home-page "https://snapper.io")
+    (native-inputs
+     (list glibc-locales autoconf automake libtool pkg-config))
+    (inputs
+     (list btrfs-progs
+           e2fsprogs
+           `(,util-linux "lib")
+           linux-pam
+           dbus
+           libxml2
+           json-c
+           acl
+           boost
+           ncurses/tinfo
+           libxslt
+           docbook-xsl
+           gettext-minimal))
+    (synopsis "Manage Btrfs file system snapshots and allow roll-backs")
+    (description "This package provides Snapper, a tool that helps with
+managing snapshots of Btrfs subvolumes and thin-provisioned LVM volumes.  It
+can create and compare snapshots, revert differences between them, and
+supports automatic snapshots timelines.")
+    (license license:gpl2)))
 
 (define-public xfstests
   ;; The last release (1.1.0) is from 2011.

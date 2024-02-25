@@ -46,7 +46,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021, 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
@@ -189,6 +189,39 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
+
+(define-public duckdb
+  (package
+    (name "duckdb")
+    (version "0.9.2")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/duckdb/duckdb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0dbsxyiz7c8sxflbfj87qv0b2s69zk802vsk5h00ra8w8fcbqlj0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; There is no git checkout from which to read the version tag.
+            (substitute* "CMakeLists.txt"
+              (("set\\(DUCKDB_VERSION \"[^\"]*\"")
+               (string-append "set(DUCKDB_VERSION \"v" #$version "-dev0\"")))))))
+    (build-system cmake-build-system)
+    (home-page "https://duckdb.org")
+    (synopsis "In-process SQL OLAP database management system")
+    (description "CLI and C/C++ source libraries for DuckDB, a relational
+(table-oriented) @acronym{DBMS, Database Management System} that supports
+@acronym{SQL, Structured Query Language}, contains a columnar-vectorized query
+execution engine, and provides transactional @acronym{ACID, Atomicity
+Consistency Isolation and Durability} guarantees via bulk-optimized
+@acronym{MVCC, Multi-Version Concurrency Control}.  Data can be stored in
+persistent, single-file databases with support for secondary indexes.")
+    (license license:expat)))
 
 (define-public ephemeralpg
   (package
@@ -3349,6 +3382,10 @@ etc., and an SQL engine for performing simple SQL queries.")
     (arguments
      '(#:tests? #f      ; Tests try to use a running mongodb server.
        #:import-path "gopkg.in/mgo.v2"))
+    (propagated-inputs
+     (list go-gopkg.in-tomb.v2))
+    (inputs
+     (list cyrus-sasl))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/mgo.v2")

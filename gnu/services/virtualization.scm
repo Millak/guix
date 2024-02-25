@@ -36,6 +36,7 @@
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
   #:use-module (gnu services dbus)
+  #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services ssh)
   #:use-module (gnu services)
@@ -1209,6 +1210,11 @@ authpriv.*;auth.info                    /var/log/secure
                               (openssh-configuration
                                (openssh openssh-sans-x)))
 
+                     ;; Run GC once per hour.
+                     (simple-service 'perdiodic-gc mcron-service-type
+                                     (list #~(job "12 * * * *"
+                                                  "guix gc -F 2G")))
+
                      (modify-services %base-services
                        ;; By default, the secret service introduces a
                        ;; pre-initialized /etc/guix/acl file in the VM.  Thus,
@@ -1239,6 +1245,7 @@ authpriv.*;auth.info                    /var/log/secure
                                 (virtual-build-machine-name config)))
            (format 'compressed-qcow2)
            (partition-table-type 'mbr)
+           (volatile-root? #f)
            (shared-store? #f)
            (size %default-virtual-build-machine-image-size)
            (partitions (match (image-partitions base)
@@ -1335,6 +1342,22 @@ authpriv.*;auth.info                    /var/log/secure
                       (kill (- pid) SIGTERM)
                       (apply throw key args)))))))
          (stop #~(make-kill-destructor))
+         (actions
+          (list (shepherd-action
+                 (name 'configuration)
+                 (documentation
+                  "Display the configuration of this virtual build machine.")
+                 (procedure
+                  #~(lambda (_)
+                      (format #t "CPU: ~a~%"
+                              #$(virtual-build-machine-cpu config))
+                      (format #t "number of CPU cores: ~a~%"
+                              #$(virtual-build-machine-cpu-count config))
+                      (format #t "memory size: ~a MiB~%"
+                              #$(virtual-build-machine-memory-size config))
+                      (format #t "initial date: ~a~%"
+                              #$(date->string
+                                 (virtual-build-machine-date config))))))))
          (auto-start? (virtual-build-machine-auto-start? config)))))
 
 (define (authorize-guest-substitutes-on-host)
@@ -1500,7 +1523,8 @@ CONFIG, a <virtual-build-machine>, is up and running."
                                 (srfi srfi-34))
 
                    (guard (c ((service-not-found-error? c) #f))
-                     (->bool (current-service '#$service-name))))))
+                     (->bool (live-service-running
+                              (current-service '#$service-name)))))))
 
 (define (build-vm-guix-extension config)
   (define vm-ssh-key

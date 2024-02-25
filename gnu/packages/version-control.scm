@@ -50,6 +50,8 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -110,6 +112,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -2926,9 +2929,16 @@ email header.")
                ;; XXX: dnspython attempts to read /etc/resolv.conf when loading
                ;; resolver.py, which breaks the sanity check in dependent
                ;; packages.  This should rather be fixed in dnspython.
-               (delete 'sanity-check))))
+               (delete 'sanity-check)
+               ;; This ensures git is present when called.
+               (add-after 'unpack 'hardcode-git-bin
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (find-files "b4" "\\.py$")
+                     (("\\['git'")
+                      (string-append
+                       "['" (search-input-file inputs "bin/git") "'"))))))))
     (inputs
-     (list python-dkimpy python-dnspython python-requests))
+     (list git-minimal python-dkimpy python-dnspython python-requests))
     (propagated-inputs
      (list patatt))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
@@ -3620,24 +3630,24 @@ defects faster.")
                (invoke git-exe "config" "--global" "user.name" "GitHub Actions")
                #t)
              #t)))))
-    (native-inputs
-     `(("go-github-com-emirpasic-gods" ,go-github-com-emirpasic-gods)
-       ("go-github-com-go-git-gcfg" ,go-github-com-go-git-gcfg)
-       ("go-github-com-go-git-go-billy" ,go-github-com-go-git-go-billy)
-       ("go-github-com-imdario-mergo" ,go-github-com-imdario-mergo)
-       ("go-github-com-jbenet-go-context" ,go-github-com-jbenet-go-context)
-       ("go-github-com-kevinburke-ssh-config" ,go-github-com-kevinburke-ssh-config)
-       ("go-github-com-mitchellh-go-homedir" ,go-github-com-mitchellh-go-homedir)
-       ("go-github-com-sergi-go-diff" ,go-github-com-sergi-go-diff)
-       ("go-github-com-xanzy-ssh-agentf" ,go-github-com-xanzy-ssh-agent)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-gopkg-in-warnings" ,go-gopkg-in-warnings)
-       ("go-github-com-go-git-go-git-fixtures" ,go-github-com-go-git-go-git-fixtures)
-       ("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)
-       ("go-github-com-alcortesm-tgz" ,go-github-com-alcortesm-tgz)
-       ("go-golang-org-x-text" ,go-golang-org-x-text)
-       ("git" ,git)))
+    (propagated-inputs
+     (list go-github-com-alcortesm-tgz
+           go-github-com-emirpasic-gods
+           go-github-com-go-git-gcfg
+           go-github-com-go-git-go-billy
+           go-github-com-go-git-go-git-fixtures
+           go-github-com-imdario-mergo
+           go-github-com-jbenet-go-context
+           go-github-com-kevinburke-ssh-config
+           go-github-com-mitchellh-go-homedir
+           go-github-com-sergi-go-diff
+           go-github-com-xanzy-ssh-agent
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-text
+           go-gopkg-in-check-v1
+           go-gopkg-in-warnings))
+    (native-inputs (list git))
     (home-page "https://github.com/go-git/")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
@@ -3719,33 +3729,34 @@ If several repos are related, it helps to see their status together.")
                 "155sfmhmh4ia3iinm1s8fk7fxyn5dxdryad9xkbg7mr3i3ikqjwh"))))
     (build-system go-build-system)
     (arguments
-     '(#:install-source? #f
-       #:import-path "github.com/x-motemen/ghq"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-completions
-           (lambda* (#:key outputs import-path #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash-completion (string-append out "/etc/bash_completion.d"))
-                    (zsh-completion (string-append out "/share/zsh/site-functions")))
-               (with-directory-excursion (string-append "src/" import-path)
-                 (mkdir-p bash-completion)
-                 (copy-file "misc/bash/_ghq"
-                            (string-append bash-completion "/ghq"))
-                 (mkdir-p zsh-completion)
-                 (copy-file "misc/zsh/_ghq"
-                            (string-append zsh-completion "/_ghq"))))
-             #t)))))
+     (list
+      #:install-source? #f
+      #:go go-1.21
+      #:import-path "github.com/x-motemen/ghq"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key outputs import-path #:allow-other-keys)
+              (let* ((out #$output)
+                     (bash-completion (string-append out "/etc/bash_completion.d"))
+                     (zsh-completion (string-append out "/share/zsh/site-functions")))
+                (with-directory-excursion (string-append "src/" import-path)
+                  (mkdir-p bash-completion)
+                  (copy-file "misc/bash/_ghq"
+                             (string-append bash-completion "/ghq"))
+                  (mkdir-p zsh-completion)
+                  (copy-file "misc/zsh/_ghq"
+                             (string-append zsh-completion "/_ghq")))))))))
     (native-inputs
-     `(("git" ,git-minimal)))
+     (list git-minimal))
     (inputs
-     `(("github.com/songmu/gitconfig" ,go-github-com-songmu-gitconfig)
-       ("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
-       ("github.com/motemen/go-colorine" ,go-github-com-motemen-go-colorine)
-       ("github.com/saracen/walker" ,go-github-com-saracen-walker)
-       ("github.com/urfave/cli/v2" ,go-github-com-urfave-cli-v2)
-       ("golang.org/x/net/html" ,go-golang-org-x-net-html)
-       ("golang.org/x/sync/errgroup" ,go-golang.org-x-sync-errgroup)))
+     (list go-github-com-songmu-gitconfig
+           go-github-com-mattn-go-isatty
+           go-github-com-motemen-go-colorine
+           go-github-com-saracen-walker
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-net-html
+           go-golang.org-x-sync-errgroup))
     (synopsis "Manage remote repository clones")
     (description
      "@code{ghq} provides a way to organize remote repository clones, like
@@ -3837,25 +3848,64 @@ TkDiff is included for browsing and merging your changes.")
 (define-public git-filter-repo
   (package
     (name "git-filter-repo")
-    (version "2.29.0")
+    (version "2.38.0")
     (source
      (origin
-       ;; Use a release tarball instead of 'git-fetch' because it contains
-       ;; pre-compiled man-pages which are too hard to build in this context
-       ;; as it depends on Git's Makefile.
-       (method url-fetch)
-       (uri (string-append "https://github.com/newren/git-filter-repo/releases/"
-                           "download/v" version
-                           "/git-filter-repo-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/newren/git-filter-repo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "00nn7k9jqrybb762486fmigsnbcn9lbvimgpfvvarz4ikdp9y9pb"))))
-    (build-system copy-build-system)
+         "1al43zpw1mdfy9i05w4xw178abypjwnkk52lqvmbl19lr1l47r4i"))
+       ;; Modified from <https://github.com/newren/git-filter-repo/pull/477>.
+       ;; Used with 'unpack-git-source phase.
+       (patches (search-patches "git-filter-repo-generate-doc.patch"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:install-plan
-       '(("git-filter-repo" "libexec/git-core/")
-         ("Documentation/man1/" "share/man/man1")
-         ("/" "" #:include ()))))
+     (list
+      #:tests? #f                       ;No tests.
+      #:imported-modules
+      `(,@%gnu-build-system-modules
+        (guix build python-build-system))
+      #:modules
+      '((guix build gnu-build-system)
+        ((guix build python-build-system) #:select (site-packages))
+        (guix build utils)
+        (srfi srfi-26))
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              (string-append "VERSION=" #$(package-version this-package)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'unpack-git-source
+            (lambda _
+              (let* ((old-path (getcwd))
+                     (doc-source (string-append old-path "/Documentation")))
+                (mkdir-p "git-source")
+                (chdir "git-source")
+                ((assoc-ref %standard-phases 'unpack)
+                 #:source #+(package-source git))
+                (for-each
+                 (cut install-file <> doc-source)
+                 (find-files "." "asciidoc\\.conf$|manpage.*\\.xsl$"))
+                (chdir old-path)
+                (delete-file-recursively "git-source"))))
+          (add-before 'build 'set-pythondir
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("(pythondir = ).*" _ pre)
+                 (string-append pre (site-packages inputs outputs))))))
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "doc" make-flags))))))
+    (native-inputs
+     (list asciidoc
+           docbook-xsl
+           libxml2                        ;for XML_CATALOG_FILES
+           xmlto))
     (inputs (list python))                ;for the shebang
     (home-page "https://github.com/newren/git-filter-repo")
     (synopsis "Quickly rewrite Git repository history")
@@ -4001,3 +4051,53 @@ file into Darcs, Git, Mercurial, Bazaar, Subversion, or CVS repositories.  It
 comes as a command line app and also an Emacs interface.")
     (home-page "https://porkrind.org/commit-patch/")
     (license license:gpl2+)))
+
+(define-public git-sizer
+  (package
+    (name "git-sizer")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/github/git-sizer")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b4sl4djnfaxwph41y4bh9yal4bpd1nz4403ryp7nzna7h2x0zis"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/github/git-sizer"
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* '("src/github.com/github/git-sizer/git_sizer_test.go")
+               (("bin/git-sizer")
+                (string-append (assoc-ref outputs "out")
+                               "/bin/git-sizer")))))
+         (replace 'check
+           (lambda* (#:key tests? import-path #:allow-other-keys)
+             (when tests?
+               (for-each (lambda (test)
+                           (invoke "go" "test" "-v" "-run" test import-path))
+                         ;; TestExec and TestSubmodule require a copy of the
+                         ;; Git repository.
+                         '("TestBomb" "TestFromSubdir" "TestRefgroups"
+                           "TestRefSelections" "TestTaggedTags"))))))))
+    (native-inputs (list git))
+    (propagated-inputs
+     (list go-github-com-cli-safeexec
+           go-github-com-davecgh-go-spew
+           go-github-com-pmezard-go-difflib
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-go-uber-org-goleak
+           go-golang-org-x-sync
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/github/git-sizer")
+    (synopsis "Analyze size of a Git repo")
+    (description "Compute various size metrics for a Git repository, flagging
+those that might cause problems or inconvenience.")
+    (license license:expat)))

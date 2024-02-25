@@ -179,6 +179,7 @@
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
@@ -280,13 +281,12 @@ protocols.")
                 "1m29p4bsafzbchnkidyrnglfdf1c9pnq6akkmivi23qdv9kj51dg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))
-                            (string-append "PREFIX="
-                                           (assoc-ref %outputs "out"))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"))
     (home-page "https://librecast.net/lcrq.html")
     (synopsis "Librecast RaptorQ library")
     (description
@@ -351,13 +351,11 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
         (base32 "1rhk80ybd2zranay76z1ysifnnm786lg9kiiijcwv76qy95in9ks"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:configure-flags (list (string-append "--prefix="
-                                              (assoc-ref %outputs "out")))
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:configure-flags #~(list (string-append "--prefix=" #$output))
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:test-target "test"))
     (inputs (list lcrq librecast libsodium libbsd))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
@@ -531,13 +529,12 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
         (base32 "01m0q4n2hy3csbzil8ivjyzb1mh4w9jlh9iiv6z53kasl7aas27i"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))
-                            (string-append "PREFIX="
-                                           (assoc-ref %outputs "out"))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"))
     (inputs (list libsodium lcrq libbsd))
     (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
@@ -1774,23 +1771,23 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.7")
+    (version "4.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0xw7iagh37y02qgzgmb2xf1qagbphv5lpgra8lq3x0pzrc27p7x7"))))
-    (build-system cmake-build-system)
+        (base32 "04aqg5w8yfikqc1446c2zr2h4yyd5napwkhskdvr2galdycxb2wm"))))
+    (build-system qt-build-system)
     (arguments
      (list
       ;; This causes the plugins to register runpaths for the wireshark
       ;; libraries, which would otherwise cause the validate-runpath phase to
       ;; fail.
-      #:configure-flags #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS="
-                                               "-Wl,-rpath=" #$output "/lib")
-                                "-DUSE_qt6=ON")
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath=" #$output "/lib"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -1799,11 +1796,7 @@ of the same name.")
                 (invoke "ctest" "-VV"
                         "-j" (if parallel-tests?
                                  (number->string (parallel-job-count))
-                                 "1")
-                        ;; Skip the suite_extcaps.case_extcaps.test_sdjournal
-                        ;; test as it requires sdjournal (from systemd) and
-                        ;; fails.
-                        "-E" "suite_extcaps")))))))
+                                 "1"))))))))
     (inputs
      (list c-ares
            glib
@@ -1816,7 +1809,7 @@ of the same name.")
            libssh
            libxml2
            lz4
-           lua
+           lua-5.2
            mit-krb5
            `(,nghttp2 "lib")
            minizip
@@ -1827,6 +1820,7 @@ of the same name.")
            qtsvg
            sbc
            snappy
+           speexdsp
            zlib
            `(,zstd "lib")))
     (native-inputs
@@ -1842,7 +1836,7 @@ of the same name.")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of
 network frames.")
-    (home-page "https://www.wireshark.org/")
+    (home-page "https://www.wireshark.org")
     (license license:gpl2+)))
 
 (define-public fping
@@ -4557,7 +4551,7 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
@@ -4565,14 +4559,14 @@ network.")
                            "releases/download/v" version "/"
                            "ngtcp2-" version ".tar.xz"))
        (sha256
-        (base32 "158acn01df6sxqjqx4h948phpcgc2da88aiqn9p2jqgqph48brxh"))))
+        (base32 "16qkik9185ygkr351a7q59l1rv6dzw51j4f7vkzfvzh385kqdqy3"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags
       ;; openssl package does not support QUIC interface, so just gnutls
       #~(list "--with-gnutls")))
-    (native-inputs (list cunit pkg-config))
+    (native-inputs (list pkg-config))
     (inputs (list gnutls))
     (home-page "https://nghttp2.org/ngtcp2/")
     (synopsis "QUIC protocol implementation")

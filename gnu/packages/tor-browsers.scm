@@ -53,6 +53,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages hunspell)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libcanberra)
@@ -149,16 +150,16 @@
 
 ;; We copy the official build id, which can be found there:
 ;; https://aus1.torproject.org/torbrowser/update_3/release/.
-(define %torbrowser-build-date "20240115174022")
+(define %torbrowser-build-date "20240213172118")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "13.0.9")
+(define %torbrowser-version "13.0.10")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "115.7.0esr-13.0-1-build1")
+(define %torbrowser-firefox-version "115.8.0esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
 ;; If Tor Browser and Mullvad Browser updates are not synchronized, maybe this
@@ -180,11 +181,11 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "767ab5111f065b82151275775af5ecf7a529ef48")))
+          (commit "a50fa943d7428ebe6e4e6b09f175e098a97eec63")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "034s0ivbama497xq0904q8p6d7n2f2aa2vn2jcs9g4bvmhgwicw4"))))
+      "0kvjdkgfdl0sh413wrli9pn7ygv9idrq5yvsi5q8c4bmnnxfig7c"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -200,7 +201,7 @@
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "0j143r24xzmq38nd5z1xqsa9zp35lws9rvlj6hb9xn3dnl67gh59"))))
+         "1v4jbgzw640lnsyxk275w62xdyqbw0p0fwvkzfawpg4d3pqp7fpw"))))
     (arguments
      (list
       #:install-plan
@@ -236,7 +237,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "0h05js9j1drzw5q98nlphsmvlp1k2a71z5jd06xk6pz29w6322pw"))))
+         "0lbarj4i21f6jkpk2ji1cmgv625yhqyjksln97zgbbki43bx09v6"))))
     (build-system mozilla-build-system)
     (inputs
      (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
@@ -271,7 +272,7 @@ Browser.")
            ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
            ffmpeg-5
            libvpx
-           (force (@@ (gnu packages gnuzilla) icu4c-73-promise))
+           icu4c-73
            pixman
            pulseaudio
            mesa
@@ -876,17 +877,17 @@ attacks on the privacy of Tor users.")
 
 ;; We copy the official build id, which can be found there:
 ;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
-(define %mullvadbrowser-build-date "20240115174108")
+(define %mullvadbrowser-build-date "20240213150358")
 
 ;; To find the last version, look at
 ;; https://mullvad.net/en/download/browser/linux.
-(define %mullvadbrowser-version "13.0.9")
+(define %mullvadbrowser-version "13.0.10")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-mullvad-browser-".
-(define %mullvadbrowser-firefox-version "115.7.0esr-13.0-1-build1")
+(define %mullvadbrowser-firefox-version "115.8.0esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
 (define translation-mullvad-browser
@@ -914,7 +915,7 @@ attacks on the privacy of Tor users.")
          version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1f930j3c1xq88cqlqmnj0m00k0hd63cmgnxd788sp9hz56al22sc"))))
+         "1dkkk90lhvmhmi89rfjkx2m0ynyj0zajhxhxfmkzjj6bflmzgipv"))))
     (arguments
      (list
       #:install-plan
@@ -955,7 +956,7 @@ Mullvad Browser.")
          %mullvadbrowser-firefox-version ".tar.xz"))
        (sha256
         (base32
-         "16chkc07pqr4ypmmgy4z2grvlpvbyr161gpzy72w35dgzzff46f9"))))
+         "09wawhb3ci0i7038xs0cqvlm37i90a5iwn9m2p5gaal5cz55dz3n"))))
     (arguments
      (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
        ((#:phases phases)

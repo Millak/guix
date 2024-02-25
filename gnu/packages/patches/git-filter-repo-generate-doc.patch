@@ -1,0 +1,88 @@
+From 56e6857e71d2b2a2236625f3c8b112bd40a8b164 Mon Sep 17 00:00:00 2001
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Fri, 16 Feb 2024 00:21:06 +0800
+Subject: [PATCH] Add documentation generation.
+
+This requires the manpage XSL and asciidoc config files from git 2.41.0.
+
+Modified-by: Hilton Chain <hako@ultrarare.space>
+---
+ Documentation/Makefile | 34 ++++++++++++++++++++++++++++++++++
+ Makefile               | 17 +++--------------
+ 2 files changed, 37 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/Makefile
+
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+new file mode 100644
+index 0000000..d81ffbe
+--- /dev/null
++++ b/Documentation/Makefile
+@@ -0,0 +1,34 @@
++MAN_BASE_URL := $(prefix)/share/doc/git-doc/
++VERSION := $(git log --pretty="%H" -n 1)
++
++ASCIIDOC := asciidoc
++ASCIIDOC_EXTRA :=
++ASCIIDOC_HTML := xhtml11
++ASCIIDOC_DOCBOOK := docbook
++ASCIIDOC_CONF := -f asciidoc.conf
++ASCIIDOC_COMMON := $(ASCIIDOC) $(ASCIIDOC_EXTRA) $(ASCIIDOC_CONF) \
++		-amanmanual='git-filter-repo Manual' -amansource='git-filter-repo $(VERSION)'
++ASCIIDOC_DEPS := asciidoc.conf
++TXT_TO_HTML := $(ASCIIDOC_COMMON) -b $(ASCIIDOC_HTML)
++TXT_TO_XML := $(ASCIIDOC_COMMON) -b $(ASCIIDOC_DOCBOOK)
++MANPAGE_XSL := manpage-normal.xsl
++XMLTO := xmlto
++XMLTO_EXTRA := -m manpage-bold-literal.xsl \
++		--stringparam man.base.url.for.relative.links='$(MAN_BASE_URL)'
++
++manpage-prereqs := $(wildcard manpage*.xsl)
++manpage-cmd := $(XMLTO) -m $(MANPAGE_XSL) $(XMLTO_EXTRA) man
++
++%.xml : %.txt $(ASCIIDOC_DEPS)
++	$(TXT_TO_XML) -d manpage -o $@ $<
++
++man1/%.1 : %.xml $(manpage-prereqs)
++	mkdir -p man1
++	$(manpage-cmd) -o man1 $<
++
++html/%.html : %.txt $(ASCIIDOC_DEPS)
++	mkdir -p html
++	$(TXT_TO_HTML) -d manpage -o $@ $<
++
++man: man1/git-filter-repo.1
++html: html/git-filter-repo.html
+diff --git a/Makefile b/Makefile
+index a443450..d965ae5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -20,21 +20,10 @@ test:
+ fixup_locale:
+ 	sed -ie s%@@LOCALEDIR@@%$(localedir)% git-filter-repo
+
+-# People installing from tarball will already have man1/git-filter-repo.1 and
+-# html/git-filter-repo.html.  But let's support people installing from a git
+-# clone too; for them, just cheat and snag a copy of the built docs that I
+-# record in a different branch.
+-snag_docs: Documentation/man1/git-filter-repo.1 Documentation/html/git-filter-repo.html
++doc:
++	$(MAKE) -C Documentation man html
+
+-Documentation/man1/git-filter-repo.1:
+-	mkdir -p Documentation/man1
+-	git show origin/docs:man1/git-filter-repo.1 >Documentation/man1/git-filter-repo.1
+-
+-Documentation/html/git-filter-repo.html:
+-	mkdir -p Documentation/html
+-	git show origin/docs:html/git-filter-repo.html >Documentation/html/git-filter-repo.html
+-
+-install: snag_docs #fixup_locale
++install: doc #fixup_locale
+ 	install -Dm0755 git-filter-repo "$(DESTDIR)/$(bindir)/git-filter-repo"
+ 	install -dm0755 "$(DESTDIR)/$(pythondir)"
+ 	ln -sf "$(bindir)/git-filter-repo" "$(DESTDIR)/$(pythondir)/git_filter_repo.py"
+
+base-commit: cbc6535694380d3a3bf3e5c96410d4ce7e8de94f
+--
+2.41.0
+

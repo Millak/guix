@@ -92,6 +92,7 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages texinfo)
   #:use-module ((srfi srfi-1) #:select (fold alist-delete))
@@ -1298,10 +1299,10 @@ new Date();"))
                    (catch 'decoding-error
                      (lambda ()
                        (substitute* file
-                         (("VERSIONED_JNI_LIB_NAME\\(\"(.*)\", \"(.*)\"\\)"
+                         (("VERSIONED_JNI_LIB_NAME\\(\"([^\"]*)\", \"([^\"]*)\"\\)"
                            _ name version)
                           (string-append "\"" (find-library name) "\""))
-                         (("JNI_LIB_NAME\\(\"(.*)\"\\)" _ name)
+                         (("JNI_LIB_NAME\\(\"([^\"]*)\"\\)" _ name)
                           (string-append "\"" (find-library name) "\""))))
                      (lambda _
                        ;; Those are safe to skip.
@@ -1722,16 +1723,16 @@ OpenJDK.")
   (package
     (inherit openjdk17)
     (name "jbr")
-    (version "17.0.7-b1020")
+    (version "17.0.10b1207.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/JetBrains/JetBrainsRuntime.git")
-                     (commit (string-append "jb" version))))
+                     (commit (string-append "jbr-release-" version))))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
+                "1n9i07i243wrnnnvj05j81qhx3b5dry8y423pnbrrdn8fcwm1f2d"))
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk17)
@@ -1756,20 +1757,21 @@ OpenJDK.")
   (package
     (inherit openjdk21)
     (name "jbr")
-    (version "21-b240.22")
+    (version "21.0.2b375.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/JetBrains/JetBrainsRuntime.git")
-                     (commit (string-append "jb" version))))
+                     (commit (string-append "jbr-release-" version))))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1sx48mm5vap4ab1qr6hy25wlgxljmhvpvrqiqiq692izr8dh7j4c"))
+                "15rcwbch0xxzcgggc34lna9dwimwqsc0z4mvw5hd428414gz71iy"))
               (patches (search-patches "openjdk-21-fix-rpath.patch"
                                        "jbr-17-xcursor-no-dynamic.patch"))))
     (inputs
      `(("wayland" ,wayland)
+       ("libxkbcommon" ,libxkbcommon) ; for wayland
        ,@(package-inputs openjdk21)))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk21)

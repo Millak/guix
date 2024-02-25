@@ -67,6 +67,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -208,7 +209,7 @@ the leaves of a full binary tree.")
        (sha256 (base32 "11sg9x08zl2nr7a723h462knz5lf58sgvkhv1mgc9z3hhkhvbsja"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config scdoc))
-    (inputs (list wayland wlroots libxkbcommon))
+    (inputs (list wayland wlroots-0.16 libxkbcommon))
     (home-page "https://github.com/cage-kiosk/cage")
     (synopsis "Wayland kiosk")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
@@ -1150,7 +1151,7 @@ the XDG Autostart specification.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1159,7 +1160,7 @@ the XDG Autostart specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l0brayvcifrc5rxxkqfrskd6523vs3allg2cxhwkixqf2ddg7kh"))))
+                "0fmjvmsm2ikcmdzrf6xwyq6vxb9p1dd3bhvz3bvi7q7rb2g8h8pi"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"))
     (native-inputs
@@ -1168,7 +1169,7 @@ the XDG Autostart specification.")
            tllist
            scdoc))
     (inputs
-     (list wlroots wayland fcft dbus libpng))
+     (list wlroots-0.16 wayland fcft dbus libpng))
     (home-page "https://codeberg.org/dnkl/fnott")
     (synopsis "Keyboard driven and lightweight Wayland notification daemon")
     (description "Fnott is a keyboard driven and lightweight notification daemon
@@ -1570,7 +1571,7 @@ started automatically on the first call via D-Bus.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list wlroots))
+     (list wlroots-0.16))
     (home-page "https://github.com/djpohly/dwl")
     (synopsis "Dynamic window manager for Wayland")
     (description
@@ -1623,14 +1624,14 @@ its size
 (define-public polybar
   (package
     (name "polybar")
-    (version "3.6.3")
+    (version "3.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/polybar/polybar/releases/"
                            "download/" version "/polybar-" version ".tar.gz"))
        (sha256
-        (base32 "19azx5dpfyfh0pv4q2fcrf4p7a0pc5d13m7lnv3qy8376mbmhmzj"))))
+        (base32 "03zz2c3ckxqbwixc2qhsnasq4j4sfia71v75li9w97d0bcwavrjx"))))
     (build-system cmake-build-system)
     (arguments
      ;; Test is disabled because it requires downloading googletest from the
@@ -1676,7 +1677,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.16.2")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -1685,7 +1686,9 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
+        (base32 "1hj4gq5vx8in65622yvjm8bwqkw2vpc556k9my997a0hn0ricj37"))
+         ;; This patch can be removed once hwdata in Guix supports pkg-config
+         (patches (search-patches "wlroots-hwdata-fallback.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -1706,6 +1709,7 @@ functionality to display information about the most commonly used services.")
     (propagated-inputs
      (list ;; As required by wlroots.pc.
            eudev
+           libdisplay-info
            libinput-minimal
            libxkbcommon
            mesa
@@ -1730,6 +1734,23 @@ Wayland compositor")
     (description "wlroots is a set of pluggable, composable, unopinionated
 modules for building a Wayland compositor.")
     (license license:expat)))  ; MIT license
+
+(define-public wlroots-0.16
+  (package
+    (inherit wlroots)
+    (name "wlroots-0.16")
+    (version "0.16.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
+                         (delete libdisplay-info)))))
 
 (define-public sway
   (package
@@ -1775,7 +1796,7 @@ modules for building a Wayland compositor.")
                   pcre2
                   swaybg
                   wayland
-                  wlroots))
+                  wlroots-0.16))
     (native-inputs
      (cons* linux-pam mesa pkg-config scdoc wayland-protocols
             (if (%current-target-system)
@@ -1864,7 +1885,7 @@ corners, shadows, inactive window dimming, etc.")
   (package
     (inherit swaylock)
     (name "swaylock-effects")
-    (version "1.6.11")
+    (version "1.7.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1874,7 +1895,7 @@ corners, shadows, inactive window dimming, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j7dxn66xqlf6iv2arqzz7mxlh7nf85anvpyf30d2frcidarda9h"))))
+         "0cgpbzdpxj6bbpa8jwql1snghj21mhryyvj6sk46g66lqvwlrqbj"))))
     (arguments
      (list #:configure-flags #~'("-Dsse=false")))
     (synopsis "Screen locking utility for Wayland compositors with effects")
@@ -2106,7 +2127,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.4.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2115,7 +2136,7 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "016s2896mnf4dnyyrqp2pnqrvrqn404c6b16d5kcjf1p21003lp5"))))
+        (base32 "1mc2zcqsv79y7682nwi1gn8p751zwflm9zirl98v2q2kvx334k8a"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config scdoc))
@@ -2967,7 +2988,7 @@ shows a notification for the user on the screen.")
                 (("/etc/") (string-append #$output "/etc/"))
                 (("/usr/share/") (string-append #$output "/usr/share/"))))))))
     (native-inputs (list pkg-config scdoc))
-    (inputs (list libevdev pango wlroots))
+    (inputs (list libevdev pango wlroots-0.16))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
     (description
@@ -2975,6 +2996,49 @@ shows a notification for the user on the screen.")
 for wayland conceptually based on the X11 window manager
 @command{ratpoison}.")
     (license license:expat)))
+
+(define-public libdisplay-info
+  (let ((commit "ebee35935dad01478ae1ae5ead298c4cd8018ac2")
+        (revision "0"))
+    (package
+      (name "libdisplay-info")
+      (version (git-version "0.2.0-dev" revision commit))
+      (home-page "https://gitlab.freedesktop.org/emersion/libdisplay-info")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page) (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ly8acdjxn8l55y0wc07n7pb6rzh9dpr1vbsakdib2zrl0i5yh3a"))))
+      (build-system meson-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-before 'configure 'fix-meson-file
+                       (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                         (substitute* "meson.build"
+                           (("/usr/share/hwdata/pnp.ids")
+                            (string-append (assoc-ref (or native-inputs inputs)
+                                                      "hwdata")
+                                           "/share/hwdata/pnp.ids"))))))))
+      (native-inputs (list `(,hwdata "pnp") python))
+      (synopsis "EDID and DisplayID library")
+      (description
+       "This package provides a library to read @acronym{EDID, Extended
+Display Identification Data} and DisplayID metadata from display devices.  It
+has the following goals:
+
+@enumerate
+@item
+Provide a set of high-level, easy-to-use, opinionated functions
+as well as low-level functions to access detailed information.
+@item
+Simplicity and correctness over performance and resource usage.
+@item
+Well-tested and fuzzed.
+@end enumerate")
+      (license license:expat))))
 
 (define-public libucl
   (package
@@ -3003,7 +3067,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.6.5")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3012,7 +3076,7 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04401k1i6b9s2v6mbhw5llla8fdpkhmgz826iva246iqch9z20lx"))))
+                "17p3wcnggnd4v37z1dgv8nmc35nq4261s8sglr44bf71vjircggz"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))
@@ -3064,7 +3128,7 @@ session.  Nor does it depend on any UI toolkits such as Qt or GTK.")
            linux-pam
            pango
            wayland
-           wlroots))
+           wlroots-0.16))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags
@@ -3342,7 +3406,7 @@ Type=Application~%"
 (define-public avizo
   (package
     (name "avizo")
-    (version "1.2.1")
+    (version "1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3351,7 +3415,7 @@ Type=Application~%"
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ddv5ssxfjbzhqskbbhi9qj1yqkraiv3r8svfmp9s5nnfpid8aba"))))
+                "01v1c9376pbjndyhj9r6f214kzhivl1m9pkl05sdkcj0v6n0wgsn"))))
     (build-system meson-build-system)
     (inputs (list gtk+))
     (native-inputs

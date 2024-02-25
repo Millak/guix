@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -645,7 +646,7 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
-    (version "0.9.10")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch)
@@ -654,13 +655,16 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bg8p4c6r8r0kixdxv2m8xmdsmb1zl5sd8czswpccldjk3c358wp"))))
+        (base32 "1krid2hlvs808jl9zmv7m6zx92samc60gymhwr2mwwykicwbnks8"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "benchmarks"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/goccy/go-json"))
     (home-page "https://github.com/goccy/go-json")
     (synopsis "JSON encoder/decoder in Go")
-    (description "Fast JSON encoder/decoder compatible with encoding/json for Go.")
+    (description
+     "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
 
 (define-public go-github-com-google-go-github
@@ -688,6 +692,29 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
     (description "@code{go-github} is a Go client library for accessing the
 GitHub API v3.")
     (license license:bsd-3)))
+
+;; For chezmoi-1.8.10
+(define-public go-github-com-google-go-github-v33
+  (package
+    (inherit go-github-com-google-go-github)
+    (name "go-github-com-google-go-github-v33")
+    (version "33.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-github")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-google-go-github)
+       ((#:unpack-path _ "github.com/google/go-github/v26")
+        "github.com/google/go-github/v33")
+       ((#:import-path _ "github.com/google/go-github/v26/github")
+        "github.com/google/go-github/v33/github")))))
 
 (define-public go-github-com-google-safehtml
   (package
@@ -1399,7 +1426,8 @@ sockets.")
            go-github-com-valyala-tcplisten
            go-golang-org-x-crypto
            go-golang-org-x-net
-           go-golang-org-x-sys))
+           go-golang-org-x-sys
+           go-golang-org-x-text))
     (home-page "https://github.com/valyala/fasthttp")
     (synopsis "Provides fast HTTP server and client API")
     (description

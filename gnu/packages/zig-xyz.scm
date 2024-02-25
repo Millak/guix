@@ -52,7 +52,17 @@
     (build-system zig-build-system)
     (arguments
      (list
-      #:zig-build-flags #~(list "-Dxwayland")   ;experimental xwayland support
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-wayland-session
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (wayland-sessions
+                      (string-append out "/share/wayland-sessions")))
+                (mkdir-p wayland-sessions)
+                (install-file "contrib/river.desktop"
+                              wayland-sessions)))))
+      #:zig-build-flags #~(list "-Dxwayland") ;experimental xwayland support
       #:zig-release-type "safe"))
     (native-inputs (list libevdev
                          libxkbcommon
@@ -61,7 +71,7 @@
                          scdoc
                          wayland
                          wayland-protocols
-                         wlroots))
+                         wlroots-0.16))
     (home-page "https://github.com/riverwm/river")
     (synopsis "Dynamic tiling Wayland compositor")
     (description

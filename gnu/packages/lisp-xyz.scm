@@ -42,6 +42,7 @@
 ;;; Copyright © 2023 Gabriel Hondet <gabriel.hondet@cominety.net>
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
+;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15481,71 +15482,71 @@ functions.")
   (sbcl-package->ecl-package sbcl-cl-dejavu))
 
 (define-public sbcl-mcclim
-  (let ((commit "ece91cf035e2ccb1c6eb0bb867ae2bc45f627982")
-        (revision "3"))
-    (package
-      (name "sbcl-mcclim")
-      (version (git-version "0.9.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/McCLIM/McCLIM")
-               (commit commit)))
-         (file-name (git-file-name "cl-mcclim" version))
-         (sha256
-          (base32 "0prn4f0nz604ykcg8004f1vndgjm7181wrlblq6mhasphca28c2k"))))
-      (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-fiveam pkg-config))
-      (inputs
-       (list fontconfig
-             freetype
-             harfbuzz
-             sbcl-alexandria
-             sbcl-babel
-             sbcl-bordeaux-threads
-             sbcl-cffi
-             sbcl-cl-base64
-             sbcl-cl-dejavu
-             sbcl-cl-freetype2
-             sbcl-cl-pdf
-             sbcl-cl-unicode
-             sbcl-cl-vectors
-             sbcl-cl-who
-             sbcl-closer-mop
-             sbcl-clx
-             sbcl-flexi-streams
-             sbcl-flexichain
-             sbcl-log4cl
-             sbcl-opticl
-             sbcl-slime-swank
-             sbcl-spatial-trees
-             sbcl-trivial-features
-             sbcl-trivial-garbage
-             sbcl-trivial-gray-streams
-             sbcl-zpb-ttf))
-      (arguments
-       '(#:asd-systems '("mcclim"
-                         "clim-examples"
-                         ;; clim-debugger is required by cleavir.
-                         "clim-debugger")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "Extensions/fontconfig/src/functions.lisp"
-                 (("libfontconfig\\.so")
-                  (search-input-file inputs "/lib/libfontconfig.so")))
-               (substitute* "Extensions/harfbuzz/src/functions.lisp"
-                 (("libharfbuzz\\.so")
-                  (search-input-file inputs "/lib/libharfbuzz.so"))))))))
-      (home-page "https://mcclim.common-lisp.dev/")
-      (synopsis "Common Lisp GUI toolkit")
-      (description
-       "McCLIM is an implementation of the @emph{Common Lisp Interface Manager
+  (package
+    (name "sbcl-mcclim")
+    (version "0.9.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/McCLIM/McCLIM")
+             (commit (string-append version "-yule"))))
+       (file-name (git-file-name "cl-mcclim" version))
+       (sha256
+        (base32 "0gbi61jnnsz6fvhv18mf57jkq46bvcd0355vqdcnrni7xyi10sk8"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-fiveam pkg-config))
+    (inputs
+     (list fontconfig
+           freetype
+           harfbuzz
+           sbcl-alexandria
+           sbcl-babel
+           sbcl-bordeaux-threads
+           sbcl-cffi
+           sbcl-cl-base64
+           sbcl-cl-dejavu
+           sbcl-cl-freetype2
+           sbcl-cl-pdf
+           sbcl-cl-unicode
+           sbcl-cl-vectors
+           sbcl-cl-who
+           sbcl-closer-mop
+           sbcl-cluffer
+           sbcl-clx
+           sbcl-flexi-streams
+           sbcl-flexichain
+           sbcl-log4cl
+           sbcl-lorem-ipsum
+           sbcl-opticl
+           sbcl-slime-swank
+           sbcl-spatial-trees
+           sbcl-trivial-features
+           sbcl-trivial-garbage
+           sbcl-trivial-gray-streams
+           sbcl-zpb-ttf))
+    (arguments
+     '(#:asd-systems '("mcclim"
+                       "clim-examples"
+                       ;; clim-debugger is required by cleavir.
+                       "clim-debugger")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "Extensions/fontconfig/src/functions.lisp"
+               (("libfontconfig\\.so")
+                (search-input-file inputs "/lib/libfontconfig.so")))
+             (substitute* "Extensions/harfbuzz/src/functions.lisp"
+               (("libharfbuzz\\.so")
+                (search-input-file inputs "/lib/libharfbuzz.so"))))))))
+    (home-page "https://mcclim.common-lisp.dev/")
+    (synopsis "Common Lisp GUI toolkit")
+    (description
+     "McCLIM is an implementation of the @emph{Common Lisp Interface Manager
 specification}, a toolkit for writing GUIs in Common Lisp.")
-      (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public cl-mcclim
   (sbcl-package->cl-source-package sbcl-mcclim))

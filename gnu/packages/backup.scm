@@ -74,6 +74,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -1347,7 +1348,7 @@ compression parameters used by Gzip.")
                      (invoke "pytest")))))))
     (inputs
      (list borg python-colorama python-jsonschema python-requests
-           python-ruamel.yaml))
+           python-ruamel.yaml-0.16))
     (native-inputs
      (list python-flexmock python-pytest python-pytest-cov))
     (home-page "https://torsion.org/borgmatic/")

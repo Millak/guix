@@ -1056,7 +1056,7 @@ halfspaces) or by their double description with both representations.")
 (define-public arpack-ng
   (package
     (name "arpack-ng")
-    (version "3.9.0")
+    (version "3.9.1")
     (home-page "https://github.com/opencollab/arpack-ng")
     (source (origin
               (method git-fetch)
@@ -1064,9 +1064,10 @@ halfspaces) or by their double description with both representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09smxilyn8v9xs3kpx3nlj2s7ql3v8z40mpc09kccbb6smyd35iv"))
-              (patches (search-patches "arpack-ng-propagate-rng-state.patch"))))
+                "0bbw6a48py9fjlif2n4x75skyjskq2hghffjqzm85wnsnsjdlaqw"))))
     (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DICB=ON")))
     (native-inputs
      (list pkg-config))
     (inputs

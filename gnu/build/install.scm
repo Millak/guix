@@ -2,6 +2,7 @@
 ;;; Copyright © 2013-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -134,8 +135,6 @@ STORE."
     (directory "/var/guix/gcroots")
     (directory "/var/empty")                        ; for no-login accounts
     (directory "/var/db")                           ; for dhclient, etc.
-    (directory "/var/run")
-    (directory "/run")
     (directory "/mnt")
     (directory "/var/guix/profiles/per-user/root" 0 0)
 

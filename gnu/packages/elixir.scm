@@ -108,18 +108,21 @@
                 ;; program, for example `iex -S mix`, so we should not wrap
                 ;; mix into shell script.
                 (substitute* (string-append out "/bin/mix")
-                  (("Mix.start\\(\\)") "\
-~w[GUIX_ELIXIR_LIBS ERL_LIBS]
+                  (("Mix.start\\(\\)")
+                   (format #f "\
+~~w[GUIX_ELIXIR_LIBS ERL_LIBS]
 |> Enum.map(&System.get_env/1)
 |> Enum.reject(&is_nil/1)
 |> Enum.join(\":\")
 |> case do \"\" -> :ok; erl_libs -> System.put_env(\"ERL_LIBS\", erl_libs) end
-Mix.start()"))
+System.put_env(\"MIX_REBAR3\", System.get_env(\"MIX_REBAR3\", \"~a\"))
+Mix.start()"
+                           (search-input-file inputs "/bin/rebar3"))))
                 (for-each (lambda (program)
                             (wrap-program (string-append out "/bin/" program)
                               '("ERL_LIBS" prefix ("${GUIX_ELIXIR_LIBS}"))))
                           programs)))))))
-    (inputs (list erlang git))
+    (inputs (list erlang rebar3 git))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_ELIXIR_LIBS")

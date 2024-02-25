@@ -146,6 +146,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4598,6 +4599,53 @@ a certain expected condition.")
 Cython for speed.")
     (license license:expat)))
 
+(define-public python-daft
+  (package
+    (name "python-daft")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "daft" version))
+              (sha256
+               (base32
+                "1r8jsfavd624q2q61f863lk6has6mv5csswh39saafd5khwf0xry"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+               ;; The following tests compare matplotlib output with
+               ;; previously generated images.  They fail due to minor
+               ;; differences in where matplotlib places labels.
+               "not test_bca[png]"
+               " and not test_classic[png]"
+               " and not test_deconvolution[png]"
+               " and not test_exoplanets[png]"
+               " and not test_fixed[png]"
+               " and not test_gaia[png]"
+               " and not test_galex[png]"
+               " and not test_huey_p_newton[png]"
+               " and not test_logo[png]"
+               " and not test_no_circles[png]"
+               " and not test_no_gray[png]"
+               " and not test_recursive[png]"
+               " and not test_thick_lines[png]"
+               " and not test_weaklensing[png]"
+               " and not test_wordy[png]"))))
+    (propagated-inputs (list python-matplotlib python-numpy))
+    (native-inputs (list python-pytest))
+    (home-page "https://docs.daft-pgm.org/")
+    (synopsis "PGM rendering library")
+    (description "Daft is a Python package that uses matplotlib to
+render pixel-perfect probabilistic graphical models for publication in
+a journal or on the internet.  With a short Python script and an
+intuitive model-building syntax you can design directed (Bayesian
+Networks, directed acyclic graphs) and undirected (Markov random fields)
+models and save them in any formats that matplotlib supports (including
+PDF, PNG, EPS and SVG).")
+    (license license:expat)))
+
 (define-public python-portalocker
   (package
     (name "python-portalocker")
@@ -5769,7 +5817,7 @@ e.g. filters, callbacks and errbacks can all be promises.")
     (build-system python-build-system)
     (arguments
      (list #:tests? #f)) ; tests not distributed on pypi
-    (home-page "https://github.com/benfogle/virtualenv")
+    (home-page "https://github.com/benfogle/crossenv")
     (synopsis "Cross-compiling virtualenv for Python")
     (description "This package is a tool for cross-compiling extension
 modules.  It creates a special virtual environment such that @command{pip} or
@@ -26385,7 +26433,7 @@ Public Suffix List's private domains as well.")
 (define-public python-tldr
   (package
     (name "python-tldr")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
        ;; There's no test in PyPI.
@@ -26395,7 +26443,7 @@ Public Suffix List's private domains as well.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hxmprqg8c4cvs19n7f80f3y7jj74i8sc2dmq2gdjmsdrb54bbzc"))))
+        (base32 "0hkjsnz03p9pdfgk85wampha4pyr82bwmnj8hj6kigc784ddy2ag"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -27818,13 +27866,7 @@ a mypy plugin that smooths over some limitations in the basic type hints.
        (file-name (git-file-name name version))
        (sha256
         (base32 "1yk2ak991kbl30xg8ldpggack1lwkizd7s5cpr28ir34z8iyjnpi"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-pytest-trio python-trustme))
     (propagated-inputs (list python-async-generator python-trio python-wsproto))
     (home-page "https://github.com/HyperionGray/trio-websocket")
@@ -27842,17 +27884,17 @@ the Trio framework}.")
 (define-public python-humanize
   (package
     (name "python-humanize")
-    (version "0.5.1")
+    (version "4.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "humanize" version))
         (sha256
          (base32
-          "06dvhm3k8lf2rayn1gxbd46y0fy1db26m3h9vrq7rb1ib08mfgx4"))))
-    (arguments
-     '(#:tests? #f)) ; tests not in pypi archive
-    (build-system python-build-system)
+          "006vpl19bffy9fn0sssxbfakcvgrx7fhvy6l515fzln7vwpqf7zf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-freezegun python-pytest))
     (home-page "https://github.com/jmoiron/humanize")
     (synopsis "Print numerical information in a human-readable form")
     (description "This package provides a Python module that displays numbers
@@ -27945,17 +27987,27 @@ format.")
 (define-public python-crontab
   (package
     (name "python-crontab")
-    (version "2.5.1")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
-        (base32 "0cccrqc10r8781ba81x8r2frs3pl2m4hkm599k5358ak0xr7xgjb"))))
+        (base32 "0yd3vdhl7z8lxa30czsry65srha51ppdcwnhjgxx9pwx0djp9yvr"))))
     (build-system python-build-system)
     (arguments
-     ;; Comptability tests fail so they are disabled.
-     `(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              (substitute* '("tests/test_compatibility.py"
+                             "tests/test_frequency.py")
+                (("test_07_non_posix_shell")
+                 "__off_test_07_non_posix_shell")
+                ;; AssertionError: 48 != 24
+                (("test_20_frequency_at_year")
+                 "__off_test_20_frequency_at_year")))))))
     (inputs
      (list python-dateutil))
     (home-page "https://gitlab.com/doctormo/python-crontab/")
@@ -27963,6 +28015,42 @@ format.")
     (description "This Python module can read, write crontab files, and
 access the system cron automatically and simply using a direct API.")
     (license license:lgpl3+)))
+
+(define-public python-apscheduler
+  (package
+    (name "python-apscheduler")
+    (version "3.10.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "APScheduler" version))
+              (sha256
+               (base32
+                "0jpg9jyx95jafkq0hz6sx7r4l2z5gc599ivb9278kgnr4wdhgpz6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytz
+                             python-six
+                             python-tzlocal))
+    (native-inputs (list python-mock
+                         python-twisted
+                         python-gevent
+                         python-setuptools-scm
+                         python-sqlalchemy
+                         python-pyside-6
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-pytest-tornado5))
+    (home-page "https://github.com/agronholm/apscheduler")
+    (synopsis "Task scheduling library for Python")
+    (description "Advanced Python Scheduler (APScheduler) is a Python library
+that lets you schedule your Python code to be executed later, either just once
+or periodically.
+
+You can add new jobs or remove old ones on the fly as you please.  If you store
+your jobs in a database, they will also survive scheduler restarts and maintain
+their state.  When the scheduler is restarted, it will then run all the jobs it
+should have run while it was offline.")
+    (license license:expat)))
 
 (define-public python-pylzma
   (package
@@ -28020,22 +28108,17 @@ enumeration library in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1p1a0ywlg5sq0ilcphmz9h4kayscz0q1lyfk57j7mwxyx4gl9cpi"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-k"
-                       (string-append
-                        ;; Networking isn't available for these tests.
-                        "not test_integration_with_listener_ipv6"
-                        " and not test_launch_and_close_v4_v6"
-                        " and not test_launch_and_close_context_manager"
-                        " and not test_launch_and_close"
-                        " and not test_close_multiple_times"))))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Networking isn't available for these tests.
+                    "not test_integration_with_listener_ipv6"
+                    " and not test_launch_and_close_v4_v6"
+                    " and not test_launch_and_close_context_manager"
+                    " and not test_launch_and_close"
+                    " and not test_close_multiple_times"))))
     (native-inputs
      (list python-pytest))
     (propagated-inputs
@@ -28207,14 +28290,10 @@ translating between quadkey and tile coordinates.")
         (uri (pypi-uri "xyzservices" version))
         (sha256
           (base32 "1paxv4i0dws85md7csv7pf80jl3xh792mx8rxnsrk61ks3ivbsyg"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list
+      #:test-flags #~(list "-m" "not request")))
     (native-inputs
      (list python-pytest python-mercantile python-requests))
     (home-page "https://github.com/geopandas/xyzservices")
@@ -29202,17 +29281,9 @@ files.  These files are used to translate strings in android apps.")
        (uri (pypi-uri "watchdog" version))
        (sha256
         (base32 "1rx2nyl0cyj0v4ja795cl3gi26577c5wg48syr3byz3ndkgpavm3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-k"
-                       ;; This test failed.
-                       "not test_kill_auto_restart")))))))
+     (list #:test-flags #~(list "-k" "not test_kill_auto_restart")))
     (propagated-inputs
      (list python-pathtools python-pyyaml))
     (native-inputs
@@ -29667,6 +29738,37 @@ HTML-containing files.")
 usable as a configuration language.  This Python package implements parsing and
 dumping of JSON5 data structures.")
     (license license:asl2.0)))
+
+(define-public python-farama-notifications
+  (package
+    (name "python-farama-notifications")
+    (version "0.0.4")
+    (source
+     ;; The version on pypi does not include tests.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Farama-Foundation/Farama-Notifications")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k1x48xpvhankw7vbjp20ljwran247aphc2qncqrxivrkgzwjjji"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python3" "tests/ci-test.py")))))))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/Farama-Foundation/Farama-Notifications")
+    (synopsis "Notifications for all Farama Foundation maintained libraries")
+    (description
+     "This package allows for providing notifications for all Farama
+Foundation maintained libraries.")
+    (license license:expat)))
 
 (define-public python-freetype-py
   (package
@@ -30752,7 +30854,7 @@ and have a maximum lifetime built-in.")
 (define-public python-devtools
   (package
     (name "python-devtools")
-    (version "0.6")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
@@ -30761,18 +30863,28 @@ and have a maximum lifetime built-in.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15zczdcm90wl54c68f1qjb05nkd5bjsc9xjl3lk4frs7k7wkmrvp"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-pytest-mock))
-    (propagated-inputs
-     (list python-pygments))
+        (base32 "0snmx7f0s44rzzx8advzmgj5av9dlpz1kx05f7ysya8xrhv5nwfl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest")
-                      #t)))))
+     (list
+      #:test-flags
+      ;; Disable some failing tests.
+      #~(list "-k" (string-append "not test_print_subprocess"
+                                  " and not test_simple")
+              "--ignore=tests/test_insert_assert.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Pygments 2.12.0 is available.
+                (("2.15.0") "2.12.0")
+                ;; executing 0.8.2 is available.
+                (("1.1.1") "0.8.2")))))))
+    (native-inputs
+     (list python-hatchling python-pytest python-pytest-mock))
+    (propagated-inputs
+     (list python-asttokens python-executing python-pygments))
     (home-page "https://github.com/samuelcolvin/python-devtools")
     (synopsis "Debug command and development tools")
     (description
@@ -31102,7 +31214,7 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
 (define-public python-simpervisor
   (package
     (name "python-simpervisor")
-    (version "0.4")
+    (version "1.0.0")
     (source
       (origin
         ;; Tests not included in release.
@@ -31112,20 +31224,18 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1brsisx7saf4ic0dih1n5y7rbdbwn1ywv9pl32bch3061r46prvv"))))
-    (build-system python-build-system)
+         (base32 "0drvqxbr6fpydb4d7z5dhn97d578gf39sd8cawyl6ksf1f4y8yzg"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f  ; Test suite can't find aiohttp.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--maxfail" "3" "--verbose"))
-             #t)))))
+     (list
+      #:test-flags '(list "-n" (number->string (parallel-job-count)))))
     (native-inputs
-     (list python-aiohttp python-pytest python-pytest-asyncio))
+     (list python-aiohttp
+           python-hatchling
+           python-psutil
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist))
     (home-page "https://github.com/yuvipanda/simpervisor")
     (synopsis "Simple async process supervisor")
     (description
@@ -33303,7 +33413,7 @@ Python @code{set} interface.")
                         "--maxfail=1" "tests/"))))))))
     (propagated-inputs
      (list python-click python-configobj python-dotenv-0.13.0
-           python-ruamel.yaml python-toml python-tomli))
+           python-ruamel.yaml-0.16 python-toml python-tomli))
     (native-inputs
      (list python-django python-flask python-pytest python-pytest-cov
            python-pytest-mock))

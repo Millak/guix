@@ -17,6 +17,8 @@
 ;;; Copyright © 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -622,6 +624,29 @@ object, without whitespace.")
       (home-page "https://github.com/dominictarr/JSON.sh")
       (license (list license:expat license:asl2.0))))) ;dual-licensed
 
+(define-public ckdl
+  (package
+    (name "ckdl")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tjol/ckdl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zdpil61lm141lcxmfrg7jvfjp2n98v5q2rfqzm4wiqcdprgmasv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DDOWNLOAD_TEST_DATA=OFF")))
+    (home-page "https://ckdl.readthedocs.io/en/latest/")
+    (synopsis "C library for parsing and emitting KDL")
+    (description "@samp{ckdl} is a C library for parsing and emitting KDL.
+This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
+    (license license:expat)))
+
 (define-public capnproto
   (package
     (name "capnproto")
@@ -720,14 +745,14 @@ includes the following features:
 (define-public python-ruamel.yaml
   (package
     (name "python-ruamel.yaml")
-    (version "0.16.13")
+    (version "0.18.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ruamel.yaml" version))
        (sha256
         (base32
-         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))
+         "06rimidc9nb3i3r90n3a1zwf0qxw24zqykb3wpxwd1p72yifc9wb"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
@@ -746,10 +771,22 @@ and has round-trip loaders and dumpers.  It supports comments.  Block
 style and key ordering are kept, so you can diff the source.")
     (license license:expat)))
 
+(define-public python-ruamel.yaml-0.16
+  (package
+    (inherit python-ruamel.yaml)
+    (version "0.16.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ruamel.yaml" version))
+       (sha256
+        (base32
+         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))))
+
 (define-public python-ruamel.yaml.clib
   (package
     (name "python-ruamel.yaml.clib")
-    (version "0.2.6")
+    (version "0.2.8")
     (source
       (origin
         ;; pypi release code has cythonized code without corresponding source.
@@ -760,7 +797,7 @@ style and key ordering are kept, so you can diff the source.")
         (file-name (string-append name "-" version "-checkout"))
         (sha256
          (base32
-          "05m3y7pjfbaarqbbgw1k6gs6cnnmxnwadjipxvw1aaaqk3s236cs"))
+          "0qspqnk72xrjj17b00hjibbzjk3krsrakzf08wxwz7z908cv6278"))
         (modules '((guix build utils)))
         (snippet
          '(begin
