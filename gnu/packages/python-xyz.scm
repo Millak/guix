@@ -147,6 +147,7 @@
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
+;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25935,6 +25936,23 @@ various online judges.  This command automates downloading sample
 cases, generating additional test cases, testing for your code, and
 submitting it.")
     (license license:expat)))
+
+(define-public python-mpv-jsonipc
+  (package
+    (name "python-mpv-jsonipc")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-mpv-jsonipc" version))
+       (sha256
+        (base32 "0ymdwrx544a6gn6wm9dixpgzbfrbpxvcj5ys7m41cgb4lvpvx691"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/iwalton3/python-mpv-jsonipc")
+    (synopsis "Python API to control MPV using JSON IPC")
+    (description "Python MPV JSONIPC implements an interface similar to
+python-mpv, but it uses the JSON IPC protocol instead of the C API.")
+    (license license:asl2.0)))
 
 (define-public python-parso
   (package
