@@ -115,7 +115,7 @@
 (define-public pspp
   (package
     (name "pspp")
-    (version "1.4.1")
+    (version "2.0.0")
     (source
      (origin
       (method url-fetch)
@@ -123,11 +123,16 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "0lqrash677b09zxdlxp89z6k02y4i23mbqg83956dwl69wc53dan"))))
+        "1pyqlab9kw65wxc8pilcwb64l18w37xxdg3r6n287c7mda4cpxm8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-test-suite
+		 (lambda _
+		   (substitute* "tests/output/tex.at"
+		     (("AT_CHECK\\(\\[LC_ALL=C.UTF-8 pspp")
+		      "AT_CHECK([LC_ALL=en_US.UTF-8 pspp"))))
                (add-before 'check 'prepare-tests
                  ;; Prevent irrelevant errors that cause test output mismatches:
                  ;; ‘Fontconfig error: No writable cache directories’
@@ -149,7 +154,7 @@
            `(,glib "bin") ;for glib-genmarshal
            perl
            pkg-config
-           python-2 ;for tests
+           python-3 ;for tests
            texinfo))
     (home-page "https://www.gnu.org/software/pspp/")
     (synopsis "Statistical analysis")
