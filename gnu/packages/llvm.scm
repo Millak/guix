@@ -55,6 +55,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -2200,6 +2201,23 @@ LLVM."))))
 (define-public ocaml-llvm-9 (make-ocaml-llvm llvm-9))
 (define-public ocaml-llvm-10 (make-ocaml-llvm llvm-10))
 (define-public ocaml-llvm-11 (make-ocaml-llvm llvm-11))
+
+(define-public wllvm
+  (package
+    (name "wllvm")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wllvm" version))
+       (sha256
+        (base32 "0cf31hixzq5bzkxv91rvadlhrpxzy934134scv4frj85bxbpl19y"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/SRI-CSL/whole-program-llvm")
+    (synopsis "Whole Program LLVM")
+    (description "This package provides a toolkit for building whole-program
+LLVM bitcode files.")
+    (license license:expat)))
 
 (define-public llvm-julia
   (package
