@@ -4461,7 +4461,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "14.0.0")
+    (version "14.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4471,7 +4471,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08x01jcibmx03g9p0sjikp3dyynw6is6gyn0m3cy1gwkpkwk2ad2"))))
+         "1idw58vs8r6g6xy2qkhccgc79hwx4r5rr4bhd6ilxx56fwq9hkn2"))))
     (build-system cmake-build-system)
     (arguments
      (list
