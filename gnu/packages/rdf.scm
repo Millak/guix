@@ -367,21 +367,6 @@ powerful language for representing information.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
 
-(define-public python-rdflib-5
-  (package
-    (inherit python-rdflib)
-    (version "5.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "rdflib" version))
-        (sha256
-         (base32
-          "0mdi7xh4zcr3ngqwlgqdqf0i5bxghwfddyxdng1zwpiqkpa9s53q"))))
-    ;; XXX: Lazily disable tests because they require a lot of work
-    ;; and this package is only transitional.
-    (arguments '(#:tests? #f))))
-
 ;; Note: This package is only needed for rdflib < 6.0; supersede when
 ;; the above are removed.
 (define-public python-rdflib-jsonld
