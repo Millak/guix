@@ -23984,8 +23984,18 @@ manipulation, or @code{stdout}.")
          (base32
           "1vi2fj31vygfcqrkimdmk52q2ldw08g9fn4v4zlgdfgcjlhqyhxn"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-rdflib-6-compatibility
+            (lambda _
+              ;; See https://github.com/trungdong/prov/issues/151
+              (substitute* "src/prov/tests/test_rdf.py"
+                (("\\.serialize\\(format=\"nt\"\\)")
+                 ".serialize(format=\"nt\", encoding=\"utf-8\")")))))))
     (propagated-inputs
-     (list python-dateutil python-lxml python-networkx python-rdflib-5))
+     (list python-dateutil python-lxml python-networkx python-rdflib))
     (native-inputs
      (list graphviz python-pydot))
     (home-page "https://github.com/trungdong/prov")
