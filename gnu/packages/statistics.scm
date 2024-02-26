@@ -1259,13 +1259,13 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.4.4")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "0iiywrzv8j0npasvzgkxwhw0zqisf4xmpx06jl0lsq1ybl3fqxid"))))
+        (base32 "1qlh231dwsa7j0pzlw6xdm68d7r0v64916p66bg9lh1dw3a1ryh7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
