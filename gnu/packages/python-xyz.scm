@@ -1101,19 +1101,29 @@ during long operations.")
 (define-public python-lunr
   (package
     (name "python-lunr")
-    (version "0.6.0")
+    (version "0.7.0.post1")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "lunr" version))
        (sha256
-        (base32 "106akalywfmnypzkdrhgz4n4740a8xayspybsw59kq06vz8i2qrc"))))
-    (build-system python-build-system)
+        (base32 "1njb23lw619ppidqdzygdrscna4z15n9xjc4cc7yxiskkgsriz00"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" "not TestLanguageSupport"
+             "--ignore-glob=tests/acceptance_tests/*")))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-coverage
+           python-hatch-fancy-pypi-readme
+           python-hatchling
+           python-pytest
+           python-pytest-timeout
+           python-tox))
     (propagated-inputs
-     (list python-nltk-3.4))
+     (list python-importlib-metadata python-typing-extensions))
     (home-page
      "https://github.com/yeraydiazdiaz/lunr.py")
     (synopsis "Full-text search library")
