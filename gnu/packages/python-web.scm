@@ -44,7 +44,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
@@ -8409,7 +8409,7 @@ compatibility with Microformats1 (mf1).")
 (define-public python-extruct
   (package
     (name "python-extruct")
-    (version "0.13.0")
+    (version "0.16.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -8418,7 +8418,7 @@ compatibility with Microformats1 (mf1).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "075zldf3dqcc429z1vk2ngbmv034bnlyk6arh3rh30jbsvz9pzl5"))))
+                "1s05sz6nghrap1gjkg3vsqz6djld6lczd6w3r1542ir8n7binl7a"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -8436,7 +8436,6 @@ compatibility with Microformats1 (mf1).")
            python-mf2py
            python-pyrdfa3
            python-rdflib
-           python-rdflib-jsonld
            python-w3lib))
     (home-page "https://github.com/scrapinghub/extruct")
     (synopsis "Extract embedded metadata from HTML markup")
