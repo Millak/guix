@@ -911,8 +911,10 @@ other git-like projects such as @code{libgit2}.")
                    '()))
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-arm32?)
+         ,@(if (or (target-arm32?) (target-hurd?))
              ;; Some tests are flaky on armhf.
+             ;; On GNU/Hurd, the 'diff/workdir' test in libgit2 1.7.1 fails
+             ;; while comparing st.st_size to zero.
              '((add-before 'check 'pre-check
                  (lambda _
                    (setenv "GITTEST_FLAKY_STAT" "true"))))
