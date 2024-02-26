@@ -16206,14 +16206,14 @@ Affymetrix arrays.")
 (define-public r-a4
   (package
     (name "r-a4")
-    (version "1.50.0")
+    (version "1.50.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "a4" version))
        (sha256
         (base32
-         "1hdqnipg326z2k7vs6sc1brc9lvvhmr2l6cjp4f9a205g4q7r9rr"))))
+         "0sibsmn7ma2imhfn2pn1fvy6hinzlmsczmx944fzg0aj1lpjcdqr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-a4base r-a4classif r-a4core r-a4preproc r-a4reporting))
