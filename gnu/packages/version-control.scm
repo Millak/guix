@@ -874,7 +874,7 @@ which has been extracted into a standalone library for compatibility with
 other git-like projects such as @code{libgit2}.")
       (license license:lgpl2.1+))))
 
-(define-public libgit2
+(define-public libgit2-1.5
   (package
     (name "libgit2")
     (version "1.5.1")
@@ -941,6 +941,10 @@ provided as a re-entrant linkable library with a solid API, allowing you to
 write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
+
+(define-public libgit2
+  ;; Default version of libgit2.
+  libgit2-1.5)
 
 (define-public libgit2-1.7
   (package
