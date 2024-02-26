@@ -2767,14 +2767,14 @@ organisms via the @code{g:Profiler} toolkit.")
 (define-public r-gprofiler2
   (package
     (name "r-gprofiler2")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gprofiler2" version))
        (sha256
         (base32
-         "1zbfvpb4qqj6vipz0ps4pyy14h6rc4jaqfa8q4zrbhi5vvw9805r"))))
+         "1klmg0zj5kr663dzgfzpy1yn161znmjcjq8pl3rahjh2lwaahbmh"))))
     (properties `((upstream-name . "gprofiler2")))
     (build-system r-build-system)
     (propagated-inputs
