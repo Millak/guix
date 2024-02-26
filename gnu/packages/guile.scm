@@ -869,9 +869,7 @@ type system, elevating types to first-class status.")
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
-     ;; libgit2@1.4.3 ‘fixed’ a git CVE it never shared, breaking Guix.  Use
-     ;; 1.3 for now; see <https://issues.guix.gnu.org/55399> for alternatives.
-     (list guile-3.0 libgit2-1.3))
+     (list guile-3.0 libgit2-1.7))
     (propagated-inputs
      (list guile-bytestructures))
     (synopsis "Guile bindings for libgit2")
