@@ -155,8 +155,7 @@ data in a standard way.")
          "-k" (string-append "not test_doc_readme "
                              "and not test_sphinx "
                              "and not test_pep561_mypy"))))
-    (native-inputs
-     (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/beartype/beartype")
     (synopsis "Fast runtime type checking for Python")
     (description "Beartype aims to be a very fast runtime type checking tool
@@ -219,7 +218,11 @@ tests in cram.")
          "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-flake8 python-pytest-xdist python-tabulate))
+     (list python-pytest-flake8
+           python-pytest-xdist
+           python-setuptools
+           python-tabulate
+           python-wheel))
     (propagated-inputs
      (list python-pytest python-six))
     (home-page "https://github.com/nicoulaj/pytest-csv")

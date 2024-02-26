@@ -29953,8 +29953,7 @@ enumeration library in Python.")
                     " and not test_launch_and_close_context_manager"
                     " and not test_launch_and_close"
                     " and not test_close_multiple_times"))))
-    (native-inputs
-     (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-ifaddr))
     (home-page "https://github.com/jstasiak/python-zeroconf")
@@ -30163,7 +30162,11 @@ translating between quadkey and tile coordinates.")
      (list
       #:test-flags #~(list "-m" "not request")))
     (native-inputs
-     (list python-pytest python-mercantile python-requests))
+     (list python-pytest
+           python-mercantile
+           python-requests
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/geopandas/xyzservices")
     (synopsis "Source of XYZ tiles providers")
     (description "@code{xyzservices} is a lightweight library providing a
@@ -31165,7 +31168,10 @@ files.  These files are used to translate strings in android apps.")
     (propagated-inputs
      (list python-pathtools python-pyyaml))
     (native-inputs
-     (list python-pytest-cov python-pytest-timeout))
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-setuptools python-wheel))
     (home-page "https://github.com/gorakhargosh/watchdog")
     (synopsis "File system events monitoring")
     (description "This package provides a way to monitor file system events
