@@ -15581,14 +15581,14 @@ Models\" (Hastie and Tibshirani, 1990).")
 (define-public r-superlearner
   (package
     (name "r-superlearner")
-    (version "2.0-28.1")
+    (version "2.0-29")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SuperLearner" version))
        (sha256
         (base32
-         "19kb4shfhj5aigjm1ljmlvr0jmgcbd6yl4gl3wfddy0nk2wi2bvm"))))
+         "0g1baz8jakgfwdh5bd9hrg1nm4ljpnxiiy5pmf00d27ld7wh6sr3"))))
     (properties `((upstream-name . "SuperLearner")))
     (build-system r-build-system)
     (propagated-inputs
