@@ -948,6 +948,15 @@ safety and thread safety guarantees.")
          (inherit (package-source base-rust))
          (patches '()))))))
 
+(define-public rust-1.76
+  (let ((base-rust (rust-bootstrapped-package rust-1.75 "1.76.0"
+                    "08f06shp6l72qrv5fwg1is7yzr6kwj8av0l9h5k243bz781zyp4y")))
+    (package
+      (inherit base-rust)
+      ;; Need llvm >= 16.0
+      (inputs (modify-inputs (package-inputs base-rust)
+                             (replace "llvm" llvm-17))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
