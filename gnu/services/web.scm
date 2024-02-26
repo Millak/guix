@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
+;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -103,6 +104,8 @@
             nginx-configuration-nginx
             nginx-configuration-shepherd-requirement
             nginx-configuration-log-directory
+            nginx-configuration-log-format
+            nginx-configuration-log-formats
             nginx-configuration-log-level
             nginx-configuration-run-directory
             nginx-configuration-server-blocks
@@ -113,6 +116,12 @@
             nginx-configuration-global-directives
             nginx-configuration-extra-content
             nginx-configuration-file
+
+            nginx-log-format-configuration
+            nginx-log-format-configuration?
+            nginx-log-format-configuration-name
+            nginx-log-format-configuration-escape
+            nginx-log-format-configuration-format
 
             nginx-server-configuration
             nginx-server-configuration?
@@ -525,6 +534,23 @@
                   (httpd-configuration))
                 (description "Run the Apache httpd Web server.")))
 
+(define-record-type* <nginx-log-format-configuration>
+  nginx-log-format-configuration make-nginx-log-format-configuration
+  nginx-log-format-configuration?
+  (name                nginx-log-format-configuration-name)
+  (escape              nginx-log-format-configuration-escape
+                       (sanitize assert-valid-log-format-escape)
+                       (default 'default))
+  (format              nginx-log-format-configuration-format))
+
+(define (assert-valid-log-format-escape escape)
+  "Ensure @var{escape} is one of @code{'default}, @code{'json}, or
+@code{'none}."
+  (unless (memq escape '(default json none))
+    (raise
+     (formatted-message (G_ "unknown log format escape '~a'~%") escape)))
+  escape)
+
 (define-record-type* <nginx-server-configuration>
   nginx-server-configuration make-nginx-server-configuration
   nginx-server-configuration?
@@ -583,6 +609,10 @@
   (log-level     nginx-configuration-log-level
                  (sanitize assert-valid-log-level)
                  (default 'error))
+  (log-format    nginx-configuration-log-format     ;symbol
+                 (default 'combined))
+  (log-formats   nginx-configuration-log-formats    ;list of <nginx-log-format-configuration>
+                 (default '()))
   (run-directory nginx-configuration-run-directory  ;string
                  (default "/var/run/nginx"))
   (server-blocks nginx-configuration-server-blocks
@@ -637,6 +667,12 @@ of index files."
      (format #f "~a { ~{~a~}}~%" key (map emit-global-directive alist)))
     ((key . value)
      (format #f "~a ~a;~%" key value))))
+
+(define emit-nginx-log-format-config
+  (match-lambda
+    (($ <nginx-log-format-configuration> name escape format)
+     (list "    log_format " (symbol->string name) " escape="
+           (symbol->string escape) " " format ";\n"))))
 
 (define emit-nginx-location-config
   (match-lambda
@@ -723,7 +759,7 @@ of index files."
   (match-record config
                 <nginx-configuration>
                 (nginx log-directory run-directory
-                 log-level
+                 log-level log-format log-formats
                  server-blocks upstream-blocks
                  server-names-hash-bucket-size
                  server-names-hash-bucket-max-size
@@ -745,7 +781,8 @@ of index files."
            "    fastcgi_temp_path " run-directory "/fastcgi_temp;\n"
            "    uwsgi_temp_path " run-directory "/uwsgi_temp;\n"
            "    scgi_temp_path " run-directory "/scgi_temp;\n"
-           "    access_log " log-directory "/access.log;\n"
+           (map emit-nginx-log-format-config log-formats)
+           "    access_log " log-directory "/access.log " (symbol->string log-format) ";\n"
            "    include " nginx "/share/nginx/conf/mime.types;\n"
            (if lua-package-path
                #~(format #f "    lua_package_path ~s;~%"

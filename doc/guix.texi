@@ -32403,10 +32403,19 @@ started.
 @item @code{log-directory} (default: @code{"/var/log/nginx"})
 The directory to which NGinx will write log files.
 
+@item @code{log-format} (default: @code{'combined}) (type: symbol)
+Logging format for the access log. Nginx defaults to the httpd-like
+format named @code{'combined}.  Other formats can be defined using
+@code{log-formats}.
+
+@item @code{log-formats} (default: @code{'()})
+A list of additional @dfn{log formats} to define, the elements should be
+of type @code{<nginx-log-format-configuration>}.
+
 @item @code{log-level} (default: @code{'error}) (type: symbol)
-Logging level, which can be any of the following values: @code{'debug},
-@code{'info}, @code{'notice}, @code{'warn}, @code{'error}, @code{'crit},
-@code{'alert}, or @code{'emerg}.
+Logging level for the error log, which can be any of the following
+values: @code{'debug}, @code{'info}, @code{'notice}, @code{'warn},
+@code{'error}, @code{'crit}, @code{'alert}, or @code{'emerg}.
 
 @item @code{run-directory} (default: @code{"/var/run/nginx"})
 The directory in which NGinx will create a pid file, and write temporary
@@ -32535,6 +32544,31 @@ flattened into one line.
 (extra-content `("include /etc/nginx/custom-config.conf;"
                  ("include " ,%custom-config.conf ";")))
 @end lisp
+
+@end table
+@end deftp
+
+@deftp {Data Type} nginx-log-format-configuration
+Data type representing the configuration of a custom Nginx log format.
+This type has the following parameters:
+
+@table @asis
+@item @code{name} (type: symbol)
+The name of the log format as a symbol.
+
+@item @code{escape} (default: @code{'default}) (type: symbol)
+The mode used to escape values of variables in the format.  The
+supported values are:
+
+@itemize
+@item @code{'default}, to escape all characters outside of the ASCII
+      printable range.
+@item @code{'json}, to escape all characters invalid in JSON strings.
+@item @code{'none}, to disable escaping.
+@end itemize
+
+@item @code{format} (type: string)
+The format as accepted by the @code{log_format} directive.
 
 @end table
 @end deftp
