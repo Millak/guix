@@ -1,5 +1,5 @@
---- netsurf-3.8/utils/split-messages.pl.orig	1969-12-31 18:00:00.000000000 -0600
-+++ netsurf-3.8/utils/split-messages.pl	2018-08-30 00:18:58.158367530 -0500
+--- netsurf-3.11/tools/split-messages.pl.orig
++++ netsurf-3.11/tools/split-messages.pl
 @@ -238,7 +238,7 @@
  
      if( $opt{gzip} )
