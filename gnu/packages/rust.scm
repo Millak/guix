@@ -1027,12 +1027,12 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.75))
+  (let ((base-rust rust-1.76))
     (package
       (inherit base-rust)
       (properties (append
                     (alist-delete 'hidden? (package-properties base-rust))
-                    (clang-compiler-cpu-architectures "15")))
+                    (clang-compiler-cpu-architectures "17")))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (source
        (origin
@@ -1041,6 +1041,7 @@ safety and thread safety guarantees.")
           '(begin
              (for-each delete-file-recursively
                        '("src/llvm-project"
+                         "vendor/jemalloc-sys/jemalloc"
                          "vendor/openssl-src/openssl"
                          "vendor/tikv-jemalloc-sys/jemalloc"
                          ;; These are referenced by the cargo output
