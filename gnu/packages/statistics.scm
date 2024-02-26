@@ -1297,13 +1297,13 @@ aesthetic attributes.")
 (define-public r-ggdendro
   (package
     (name "r-ggdendro")
-    (version "0.1.23")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggdendro" version))
               (sha256
                (base32
-                "1f4fz9llmbpb8gh90aid7dvriadx16xdhsl7832yw4pyqj4fjcrs"))))
+                "0sdayyzvhkbli0ha68mc0f7cgp36njv9ign37d63l21hvd6w6h0r"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-mass))
