@@ -31,6 +31,45 @@
 (channel-news
  (version 0)
 
+ (entry (commit "523f3def65ab061a87f4fc9e6f9008e6a78fafb5")
+        (title
+         (en "GNOME updated to version 44 with a more modular desktop service")
+         (de "GNOME auf Version 44 aktualisiert mit modularem Dienst")
+         (fr "Mise à jour de GNOME en version 44 avec un service plus modulaire")
+         (zh "GNOME 44 更新，帶來更加模塊化的桌面服務"))
+        (body
+         (en "The @code{gnome-desktop-service-type} now differentiates between
+shell, utilities, and extra-packages among other fields to bring more structure
+in its configuration.
+
+With the update to GNOME 44, some shell extensions have been deprecated and
+others removed.  If any @code{gnome-shell-extension-@dots{}} package causes
+an error while running your usual update routine, make sure to remove it from
+your profile.")
+         (de "Der Dienst @code{gnome-desktop-service-type} unterscheidet nun
+unter anderem zwischen den Feldern shell, utilities und extra-packages, und
+bringt so etwas mehr Struktur in die Konfiguration.
+
+Mit dem Update zu GNOME 44 wurden einige Erweiterungen als obsolet deklariert
+und andere entfernt.  Falls ein Paket, dessen Name mit
+@code{gnome-shell-extension-} beginnt, zu einem Fehler während Ihrer
+Update-Routine führt, entfernen Sie es von Ihrem Profil.")
+         (fr "Le service @code{gnome-desktop-service-type} sépare
+maintenant les champs @code{shell}, @code{utilities} et @code{extra-
+packages} (entre autres) pour donner plus de structure à sa
+configuration.
+
+Pendant la mise à jour vers GNOME 44, certaines extensions du shell ont
+été dépréciées et d’autres supprimées. Si un paquet nommé
+@code{gnome-shell-extension-@dots{}} émet une erreur quand vous
+effectuez la mise à jour, vous devriez l’enlever de votre profil.")
+         (zh "@code{gnome-desktop-service-type} 設置新增 @code{shell}、
+@code{utilities}、@code{extra-packages} 等字段，使得 GNOME 桌面配置更加模塊化。
+
+隨着 GNOME 44 更新，一些 GNOME Shell 拓展已被棄用或刪除。更新中若有關於
+@code{gnome-shell-extension-@dots{}} 軟件包的錯誤，請將對應軟件包從 profile 中
+刪除。")))
+
  (entry (commit "06d01c610e3bee61e38a177aecda5982d5b338ae")
         (title
          (en "The GNOME Display Manager uses Wayland by default")
