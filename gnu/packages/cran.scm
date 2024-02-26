@@ -32651,19 +32651,19 @@ recommendations for developers.")
 (define-public r-loo
   (package
     (name "r-loo")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "loo" version))
        (sha256
-        (base32 "040jk0zmpljq3ayd87bjy5vwwfy49im6kylp6z4wnqisypyn1nk6"))))
+        (base32 "0dnbbflglm7b29vr11rfrawnys9s3rl4h00h6xh9smjyalqz6r3n"))))
     (properties `((upstream-name . "loo")))
     (build-system r-build-system)
     (inputs
      (list pandoc))
     (propagated-inputs
-     (list r-checkmate r-matrixstats))
+     (list r-checkmate r-matrixstats r-posterior))
     (native-inputs
      (list r-knitr))
     (home-page "https://mc-stan.org/loo/")
