@@ -1323,14 +1323,14 @@ agnes cluster diagrams.")
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.3.5")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "155qa55wr9vf2j2j4qjqqlkdaqlvvlvsm2wmysnhli47bfh6vd4c"))))
+         "1d1sidm2qi1nrp1hhf010xji66aj8sn833fv4a39gli2c560p4i6"))))
     (build-system r-build-system)
     (native-inputs
      (list pkg-config))
