@@ -133,25 +133,26 @@ greatest common divisor operations.")
 (define-public cm
   (package
    (name "cm")
-   (version "0.4.2")
+   (version "0.4.3")
    (source (origin
             (method url-fetch)
             (uri (string-append
-                  "http://www.multiprecision.org/downloads/cm-"
+                  "https://www.multiprecision.org/downloads/cm-"
                   version ".tar.gz"))
             (sha256
              (base32
-              "1c6m00wiw3rs5f0lq6c80rdr3dzklsvh69l8w3s7bj2r6yha6qbw"))))
+              "01dha0hl0daappjiydpk4ngl9nxkxli6a48jp6d7v85yjjykac5j"))))
    (build-system gnu-build-system)
    (propagated-inputs
-     (list mpfrcx zlib)) ; Header files included from cm_common.h.
+     (list mpfrcx zlib)) ; Header files included from lib/cm.h.
    (inputs
-     (list pari-gp))
+     (list flint pari-gp))
    (synopsis "CM constructions for elliptic curves")
    (description
     "The CM software implements the construction of ring class fields of
 imaginary quadratic number fields and of elliptic curves with complex
-multiplication via floating point approximations.  It consists of libraries
+multiplication via floating point approximations, and the elliptic curve
+primality proving algorithm (ECPP).  It consists of libraries
 that can be called from within a C program and of executable command
 line applications.")
    (license license:gpl3+)
