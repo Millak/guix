@@ -2250,7 +2250,13 @@ TrueType font files in your system's user and system font directories.")
                 "1h6cslvid5v8fiymydj4irrzi8f91knsx8rgbzp2b8favclhwxxg"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/signintech/gopdf"))
+     (list
+      #:import-path "github.com/signintech/gopdf"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-examples
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/examples")))))))
     (propagated-inputs (list go-github-com-pkg-errors
                              go-github-com-phpdave11-gofpdi))
     (home-page "https://github.com/signintech/gopdf")
