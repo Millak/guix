@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
@@ -295,6 +295,34 @@ PARI is also available as a C library to allow for faster computations.
 GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
    (license license:gpl2)
    (home-page "https://pari.math.u-bordeaux.fr/")))
+
+(define-public paritwine
+  (package
+    (name "paritwine")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.multiprecision.org/downloads/" name
+                    "-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "15m5jxmhx5zivk1k9wxpmzs8kqva3kvgxizdrkrmmp1qycn85n23"))))
+    (build-system gnu-build-system)
+    (propagated-inputs (list pari-gp
+                             gmp
+                             mpfr
+                             mpc
+                             cmh
+                             flint)) ; referenced in src/paritwine.h
+    (synopsis "Glue library between PARI/GP and other mathematics libraries")
+    (description
+     "PariTwine is a glue library between the system for computer algebra
+and number theory PARI/GP and a number of other mathematics libraries,
+currently GMP, GNU MPFR, GNU MPC, FLINT and CMH.")
+    (license license:gpl2+)
+    (home-page "https://www.multiprecision.org/paritwine/index.html")))
 
 (define-public cmh
   (package
