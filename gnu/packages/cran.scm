@@ -34335,14 +34335,14 @@ Kemeny distance and correlation coefficient.")
 (define-public r-fastshap
   (package
     (name "r-fastshap")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastshap" version))
        (sha256
         (base32
-         "112hc585aryzc5pgvr3qaa7arlx2h2sj9jlq9xha3nncyzqkh7c6"))))
+         "1j6bnkv4q8n85xlvzm5p6p4yg8wdp6an6skbvdif5g9c376hzqb2"))))
     (properties `((upstream-name . "fastshap")))
     (build-system r-build-system)
     (propagated-inputs
