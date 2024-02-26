@@ -14215,14 +14215,14 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.6.4")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "1mhkb2k9l0fp7xxhx69h1cxyh8gnlpwr5rjiw25s7rp1czwmyjk5"))))
+         "1lzpabpdrwx3331b9qn43376r25bzgph1j9gbxzqjhzr1h871cpb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-openssl r-r6 r-ragg r-uuid r-xml2 r-zip))
