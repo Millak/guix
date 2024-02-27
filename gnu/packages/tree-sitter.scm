@@ -527,6 +527,14 @@ which will be used as a snippet in origin."
      (git-version "0.0.1" revision commit)
      #:commit commit)))
 
+(define-public tree-sitter-ron
+  (tree-sitter-grammar
+   "ron" "RON"
+   "1la5v0nig3xp1z2v3sj36hb7wkkjch46dmxf457px7ly43x4cb83"
+   "0.2.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-ron"
+   #:license (list license:asl2.0 license:expat)))
+
 (define-public tree-sitter-ruby
   ;; There are a lot of additions, the last tag was placed more than 1 year ago
   (let ((commit "206c7077164372c596ffa8eaadb9435c28941364")
