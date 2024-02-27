@@ -187,13 +187,13 @@
            xcb-util-keysyms
            xcb-util-wm))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:tests? #f                      ; no check target
-       #:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" %output))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))           ; no configure script
+           #:tests? #f                      ; no check target
+           #:make-flags
+           #~(list "CC=gcc"
+                   (string-append "PREFIX=" #$output))))
     (home-page "https://github.com/baskerville/bspwm")
     (synopsis "Tiling window manager based on binary space partitioning")
     (description "bspwm is a tiling window manager that represents windows as
