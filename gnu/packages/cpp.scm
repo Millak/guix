@@ -279,16 +279,18 @@ use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
     (name "c2ffi")
     ;; As per the c2ffi README: the first three elements are encoding the
     ;; required Clang/LLVM version, and the last one is the c2ffi revision.
-    (version "12.0.0.0")
+    (version "16.0.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rpav/c2ffi")
-             (commit (string-append "v" version))))
+             ;; Upstream is not tagging releases consistently.
+             ;; (commit (string-append "v" version))
+             (commit "097cbe61ca02dc79ea60859aa056975131a9d985")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qq8dfismd20d9kfxpfvwz07v9mfvd0y7p5r3c92mk2pm4xnmzfy"))
+        (base32 "1mqhw4838chl495gaj9z0731ahkmqb4f3wlc1qalk82fdsaniyd5"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* "CMakeLists.txt"
@@ -309,9 +311,9 @@ LLVMOption LLVMBitReader LLVMProfileData")))))
              (when tests?
                (invoke "./bin/c2ffi" "--help")))))))
     (native-inputs
-     (list clang-12)) ; CMakeLists.txt invokes `clang -print-resource-dir`
+     (list clang-16)) ; CMakeLists.txt invokes `clang -print-resource-dir`
     (inputs
-     (list clang-12)) ; Compiled with gcc, but links against libclang-cpp.so
+     (list clang-16)) ; Compiled with gcc, but links against libclang-cpp.so
     (home-page "https://github.com/rpav/c2ffi")
     (synopsis "Clang-based FFI wrapper generator")
     (description
