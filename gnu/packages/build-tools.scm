@@ -667,6 +667,29 @@ majority of the OBS functionality is available via commands and the rest can
 be reached via direct API calls.")
     (license license:gpl2+)))
 
+(define-public compdb
+  (package
+    (name "compdb")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Sarcasm/compdb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f4x0gm5n1mr87dx3gzn5da16a1qhd2y3kz22dl5xsd9pd720l4w"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-configparser))
+    (home-page "https://github.com/Sarcasm/compdb")
+    (synopsis "Compilation database Swiss army knife")
+    (description
+     "@command{compdb} is a command line tool to manipulate compilation
+databases.  It eases the usage of tooling in a codebase by spoon-feeding the
+right compilation options.")
+    (license license:expat)))
+
 (define-public compiledb
   (package
     (name "compiledb")
