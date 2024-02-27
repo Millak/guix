@@ -551,6 +551,18 @@ which will be used as a snippet in origin."
    "1pk4mb3gh62xk0qlhxa8ihhxvnf7grrcchwg2xv99yy6yb3yh26b"
    "0.20.4"))
 
+(define-public tree-sitter-ungrammar
+  ;; No releases yet.
+  (let ((commit "debd26fed283d80456ebafa33a06957b0c52e451")
+        (revision "0"))
+    (tree-sitter-grammar
+     "ungrammar" "Ungrammar"
+     "09bbml1v1m6a9s9y9q1p2264ghf3fhb6kca1vj3qm19yq87xrnvy"
+     (git-version "0.0.2" revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-ungrammar"
+     #:article "an")))
+
 (define-public tree-sitter-clojure
   (tree-sitter-grammar
    "clojure" "Clojure"
