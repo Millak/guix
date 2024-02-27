@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
+;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1781,6 +1782,29 @@ scikit-learn.  It includes algorithms that are useful but do not satisfy the
 scikit-learn inclusion criteria, for instance due to their novelty or lower
 citation number.")
       (license license:bsd-3))))
+
+(define-public python-mord
+  (package
+    (name "python-mord")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mord" version))
+       (sha256
+        (base32 "1cvv9b9w69v0inq0zgcw0vmkiq3zn9q9r6clkynpzjik9rrh405n"))))
+    (build-system pyproject-build-system)
+    ;; v0.7 does not provide any test cases
+    ;; v0.6 relies on deprecated scikit-learn functionality
+    (arguments `(#:tests? #f))
+    (inputs (list python-numpy python-scipy python-scikit-learn))
+    (home-page "https://pypi.org/project/mord/")
+    (synopsis "Ordinal regression models for scikit-learn")
+    (description
+     "This package provides a collection of ordinal regression models for
+machine learning in Python.  They are intended to be used with scikit-learn
+and are compatible with its API.")
+    (license license:bsd-3)))
 
 (define-public python-thinc
   (package
