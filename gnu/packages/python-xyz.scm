@@ -12510,20 +12510,27 @@ connect strings, then issue SQL commands within IPython or IPython Notebook.")
 (define-public python-traitlets
   (package
     (name "python-traitlets")
-    (version "5.9.0")
+    (version "5.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traitlets" version))
        (sha256
         (base32
-         "1ndslgsan1g5xhrvxrv2x03zcfvjb8nzfd90y1m7bkv8khdf5kgn"))))
+         "0zjj8ha4z5lbhhmvcl3q8wp5qmwqq0lwxma3d8qvh10s6xdi11c5"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" "not mypy_list_typing and not mypy_dict_typing")))
     (native-inputs
-     (list python-hatchling
+     (list python-argcomplete
+           python-hatchling
+           python-mypy
            python-pre-commit
            python-pytest
-           python-pytest-mock))
+           python-pytest-mock
+           python-pytest-mypy-testing))
     (home-page "https://ipython.org")
     (synopsis "Configuration system for Python applications")
     (description
