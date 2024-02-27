@@ -1341,7 +1341,7 @@ Guile will work for XBindKeys.")
         (base32 "1winwzdy9yxvxnrv8gqpigl9y0c2px27mnms62bdilp4x6llrs9r"))))
     (build-system gnu-build-system)
     (inputs
-     (list asciidoc libxcb xcb-util xcb-util-keysyms xcb-util-wm))
+     (list libxcb xcb-util xcb-util-keysyms xcb-util-wm))
     (arguments
      (list #:phases #~(modify-phases %standard-phases (delete 'configure))
            #:tests? #f  ; no check target
