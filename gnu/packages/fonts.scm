@@ -1187,11 +1187,23 @@ family.")
        (method url-fetch)
        (uri (string-append
              "https://github.com/googlefonts/noto-cjk/releases/download/Sans"
-             version "/03_NotoSansCJK-OTC.zip"))
+             version "/01_NotoSansCJK-OTF-VF.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1v9yda7r98g4a3pk0y3cjbgc1i2lv4ax0f0v6aqasfzz4ldlx3sj"))))
+        (base32 "1ka37kqyd0sfqwk485nv6ihrdjl5xycr38m4jq40r2lzmpmkmqym"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (chdir "..")         ;For license.
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "Variable/OTC"
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "Variable/OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))))))))
+    (outputs '("out" "otf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
