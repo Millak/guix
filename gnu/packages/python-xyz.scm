@@ -4399,44 +4399,44 @@ standard.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.33.3")
+    (version "0.35.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "1nngffz21afhfi266smf4s5mn5dfd0ykdnirfls9bwnzxbkh6a3j"))))
-    (build-system python-build-system)
+         "0zd59yqqb2lzg3f9lkd3yw1wanwy5wkis3n6d826m0bz1gi664ld"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-dnspython python-greenlet python-six))
+     (list python-dnspython python-greenlet python-monotonic))
     (native-inputs
-     (list python-nose))
+     (list python-black
+           python-hatchling
+           python-hatch-vcs
+           python-pytest
+           python-isort
+           python-twine))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              "not TestGetaddrinfo"
+              " and not TestProxyResolver"
+              " and not test_noraise_dns_tcp"
+              " and not test_raise_dns_tcp"
+              " and not test_hosts_no_network"
+              " and not test_patcher_existing_locks"
+              " and not test_dns_methods_are_green"))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'avoid-OSError
            (lambda _
              ;; If eventlet tries to load greendns, an OSError is thrown when
              ;; getprotobyname is called.  Thankfully there is an environment
              ;; variable to disable the greendns import, so use it:
-             (setenv "EVENTLET_NO_GREENDNS" "yes")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke
-                "nosetests"
-                "-v" "tests/"
-                "-I" "greendns_test.py"
-                "-I" "socket_test.py"
-                "-e" "test_018b_http_10_keepalive_framing"
-                ;; The following two tests fail with Python 3.10.  See
-                ;; <https://github.com/eventlet/eventlet/issues/730>.
-                "-e" "test_patcher_existing_locks_locked"
-                ;; And see <https://github.com/eventlet/eventlet/issues/739>.
-                "-e" "test_017_ssl_zeroreturnerror"
-                ;; This test is failing on some architectures
-                "-e" "test_fork_after_monkey_patch")))))))
+             (setenv "EVENTLET_NO_GREENDNS" "yes"))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
