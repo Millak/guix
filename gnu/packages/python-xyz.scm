@@ -2413,6 +2413,28 @@ using distutils2-like setup.cfg files for a package's metadata with a
 distribute/setuptools setup.py script.")
     (license license:bsd-2)))
 
+(define-public python-rapidfuzz
+  (package
+    (name "python-rapidfuzz")
+    (version "3.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rapidfuzz" version))
+       (sha256
+        (base32 "1rrx043zqqql31pcp92k61digibymp3l382gaxr4h8717kp0nrim"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-packaging
+           python-pytest
+           python-scikit-build
+           python-setuptools))
+    (home-page "https://github.com/rapidfuzz/RapidFuzz")
+    (synopsis "Rapid fuzzy string matching")
+    (description "RapidFuzz is a fast string matching library for Python and
+C++, which is using the string similarity calculations from FuzzyWuzzy.")
+    (license license:expat)))
+
 (define-public python-rawkit
   (package
     (name "python-rawkit")
