@@ -3332,6 +3332,20 @@ dialects in Hong Kong and Taiwan.")))
                (base32
                 "1916bb834y4r4312g14zid7w3pbx1i70jcgkkfbf4z20grrj891m"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "VAR"
+                       (for-each delete-file (find-files "." "\\.ttf$"))
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))
+                     (with-directory-excursion "TTF"
+                       (install #:outputs `(("out" . ,#$output:ttf))))))))))
+    (outputs '("out" "otf" "ttf"))
     (home-page "https://chiron-fonts.github.io/")
     (synopsis "Traditional Chinese Song typeface")
     (description
