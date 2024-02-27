@@ -478,6 +478,13 @@ which will be used as a snippet in origin."
    "1pbnmvhy2gq4vg1b0sjzmjm4s2gsgdjh7h01yj8qrrqbcl29c463"
    "0.19.0"))
 
+(define-public tree-sitter-kdl
+  (tree-sitter-grammar
+   "kdl" "KDL"
+   "1015x24ffrvzb0m0wbqdzmaqavpnjw0gvcagxi9b6vj3n1ynm0ps"
+   "1.1.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-kdl"))
+
 (define-public tree-sitter-ocaml
   (tree-sitter-grammar
    "ocaml" "OCaml (.ml and .mli)"
