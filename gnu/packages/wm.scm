@@ -192,7 +192,7 @@
                (delete 'configure))           ; no configure script
            #:tests? #f                      ; no check target
            #:make-flags
-           #~(list "CC=gcc"
+           #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "PREFIX=" #$output))))
     (home-page "https://github.com/baskerville/bspwm")
     (synopsis "Tiling window manager based on binary space partitioning")
