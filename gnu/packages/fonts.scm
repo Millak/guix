@@ -1215,17 +1215,29 @@ CJK fonts.")
 (define-public font-google-noto-serif-cjk
   (package
     (name "font-google-noto-serif-cjk")
-    (version "2.001")
+    (version "2.002")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://github.com/googlefonts/noto-cjk/releases/download/Serif"
-             version "/04_NotoSerifCJKOTC.zip"))
+             version "/02_NotoSerifCJK-OTF-VF.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1l6r3sz2s0vcyfx6ria7wqcq45zp40gxgg97lh8hpmajhzw301ig"))))
+        (base32 "007jk7rmfapq5zq4ji9d1l5gpp34p98l9ylhiw33q42d66v2g717"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (chdir "..")         ;For license.
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "Variable/OTC"
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "Variable/OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))))))))
+    (outputs '("out" "otf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
