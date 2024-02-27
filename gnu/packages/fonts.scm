@@ -3321,7 +3321,7 @@ dialects in Hong Kong and Taiwan.")))
 (define-public font-chiron-sung-hk
   (package
     (name "font-chiron-sung-hk")
-    (version "1.010")
+    (version "1.011")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3330,7 +3330,7 @@ dialects in Hong Kong and Taiwan.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "065p1gc5xjwc4kfw8bqpsbhaf1p4w0k4l0j04vjsjhcl4k9vyvfz"))))
+                "1916bb834y4r4312g14zid7w3pbx1i70jcgkkfbf4z20grrj891m"))))
     (build-system font-build-system)
     (home-page "https://chiron-fonts.github.io/")
     (synopsis "Traditional Chinese Song typeface")
