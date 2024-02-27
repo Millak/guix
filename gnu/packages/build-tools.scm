@@ -347,14 +347,7 @@ resembles Python.")
      (list #:test-flags #~(list "tests"
                                 ;; The test_pep518 tries to install
                                 ;; dependencies from the network using pip.
-                                "-k" "not test_pep518")
-           #:phases
-           '(modify-phases %standard-phases
-              ;; This additional top directory confuses setuptools.  We could
-              ;; work around this by overriding the detection of the project
-              ;; directory, but deleting this directory is easier.
-              (add-after 'unpack 'delete-directory
-                (lambda _ (delete-file-recursively "LICENSES"))))))
+                                "-k" "not test_pep518")))
     (propagated-inputs
      (list meson
            ninja
