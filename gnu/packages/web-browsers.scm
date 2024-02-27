@@ -559,7 +559,7 @@ GUI.  It is based on PyQt6 and QtWebEngine.")
 (define-public vimb
   (package
     (name "vimb")
-    (version "3.6.0")
+    (version "3.7.0")
     (source
      (origin
        (method git-fetch)
@@ -567,7 +567,7 @@ GUI.  It is based on PyQt6 and QtWebEngine.")
              (url "https://github.com/fanglingsu/vimb/")
              (commit version)))
        (sha256
-        (base32 "0228khh3lqbal046k6akqah7s5igq9s0wjfjbdjam75kjj42pbhj"))
+        (base32 "1yazd0hm6vsz7sqp5qf3zzjmvqs3can6sbm2ijlfcj4v3kz42vrm"))
        (file-name (git-file-name name version))))
     (build-system glib-or-gtk-build-system)
     (arguments
@@ -577,7 +577,12 @@ GUI.  It is based on PyQt6 and QtWebEngine.")
                           (string-append "PREFIX=" %output))
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))
+         (delete 'configure)
+         (add-after 'unpack 'fix-config-mk
+           (lambda* _
+             (substitute* "config.mk"
+               (("webkit2gtk-4\\.1")
+                "webkit2gtk-4.0")))))))
     (inputs
      `(("glib-networking" ,glib-networking)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
