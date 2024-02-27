@@ -41,7 +41,7 @@
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -1343,14 +1343,14 @@ Guile will work for XBindKeys.")
     (inputs
      (list asciidoc libxcb xcb-util xcb-util-keysyms xcb-util-wm))
     (arguments
-     `(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:tests? #f  ; no check target
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" %output)
-             ;; Keep the documentation where the build system installs LICENSE.
-             (string-append "DOCPREFIX=" %output
-                            "/share/doc/" ,name "-" ,version))))
+     (list #:phases #~(modify-phases %standard-phases (delete 'configure))
+           #:tests? #f  ; no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   ;; Keep the documentation where the build system installs LICENSE.
+                   (string-append "DOCPREFIX=" #$output
+                                  "/share/doc/" #$name "-" #$version))))
     (home-page "https://github.com/baskerville/sxhkd")
     (synopsis "Simple X hotkey daemon")
     (description "sxhkd is a simple X hotkey daemon with a powerful and
