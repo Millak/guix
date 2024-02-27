@@ -25219,7 +25219,9 @@ manipulation, or @code{stdout}.")
                       (if tests?
                           (invoke "pytest" "-vv")
                           (format #t "test suite not run~%")))))))
-    (native-inputs (list python-pretend python-pytest))
+    (native-inputs
+     (list python-flit-core
+           python-pretend python-pytest))
     (propagated-inputs (list python-pyparsing python-six))
     (home-page "https://github.com/pypa/packaging")
     (synopsis "Core utilities for Python packages")

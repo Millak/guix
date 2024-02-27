@@ -472,18 +472,20 @@ that client code uses to construct the grammar directly in Python code.")
 (define-public python-packaging-bootstrap
   (package
     (name "python-packaging-bootstrap")
-    (version "21.3")
+    (version "23.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "packaging" version))
        (sha256
         (base32
-         "1sygirdrqgv4f1ckh9nhpcw1yfidrh3qjl86wq8vk6nq4wlw8iyx"))))
-    (build-system python-build-system)
+         "1ifgjb0d0bnnm78hv3mnl7hi233m7jamb2plma752djh83lv13q4"))))
+    (build-system pyproject-build-system)
     (arguments `(#:tests? #f))         ;disabled to avoid extra dependencies
     (propagated-inputs
      (list python-pyparsing python-six-bootstrap))
+    (native-inputs
+     (list python-flit-core))
     (home-page "https://github.com/pypa/packaging")
     (synopsis "Core utilities for Python packages")
     (description "Packaging is a Python module for dealing with Python packages.
