@@ -457,6 +457,15 @@ which will be used as a snippet in origin."
      (git-version "0.14.0" revision commit)
      #:commit commit)))
 
+(define-public tree-sitter-hcl
+  (tree-sitter-grammar
+   "hcl" "HCL"
+   "1yydi61jki7xpabi0aq6ykz4w4cya15g8rp34apb6qq9hm4lm9di"
+   "1.1.0"
+   #:article "an"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-hcl"
+   #:license license:asl2.0))
+
 (define-public tree-sitter-java
   (tree-sitter-grammar
    "java" "Java"
