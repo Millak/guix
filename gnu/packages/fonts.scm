@@ -1092,6 +1092,51 @@ utilities to ease adding new glyphs to the font.")
        (sha256
         (base32 "087jg8ahpq35xwyrmvm9ivxl0wjic2j4r28bbrwqmgdva9brms40"))))
     (build-system font-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build font-build-system)
+        (guix build utils)
+        (ice-9 ftw))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (define* (install source #:optional (output #$output))
+                (let ((%install (assoc-ref %standard-phases 'install)))
+                  (with-directory-excursion source
+                    (%install #:outputs `(("out" . ,output))))))
+
+              (define (scan-directory name)
+                (scandir name (lambda (file)
+                                (not (member file '("." ".." "LICENSE"))))))
+
+              (define (install-font-variant variant)
+                "Given font variant VARIANT, install one of its formats,
+variable TTF or OTF or TTF."
+                (with-directory-excursion variant
+                  (let ((formats (scan-directory ".")))
+                    (cond
+                     ((member "variable-ttf" formats)
+                      (install "variable-ttf"))
+                     ((member "otf" formats)
+                      (install "otf"))
+                     ((member "ttf" formats)
+                      (install "ttf"))))))
+
+              (define (install-font font)
+                "Given FONT, install one of its variants, either full or
+unhinted, and install its hinted variant into 'ttf' output.  According to the
+source, unhinted and hinted variants are always available."
+                (with-directory-excursion font
+                  (if (member "full" (scan-directory "."))
+                      (install-font-variant "full")
+                      (install-font-variant "unhinted"))
+                  (install "hinted" #$output:ttf)))
+
+              (with-directory-excursion "fonts"
+                (for-each install-font (scan-directory "."))))))))
+    (outputs '("out" "ttf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
