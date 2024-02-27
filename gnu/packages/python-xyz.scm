@@ -13055,17 +13055,25 @@ than the default.")
 (define-public python-ipython
   (package
     (name "python-ipython")
-    (version "8.5.0")
+    (version "8.22.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ipython" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipython/ipython")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "114z175hnv1lgprj06zfcil7lkq013rggjbrc43gsxkmv1fdyyq9"))))
-    (build-system python-build-system)
+        (base32 "1gpy8842sdq4wk8h5xns1k7k75wb31vvv4ycjglx4ri5kwwz44aa"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These need git.
+             "not test_json_getsysinfo and not IPython.utils.sysinfo.sys_info")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'make-docs-reproducible
            (lambda _
              (substitute* "IPython/sphinxext/ipython_directive.py"
@@ -13073,39 +13081,36 @@ than the default.")
                ((".*datetime.datetime.now\\(\\)") "")
                (("%timeit") "# %timeit"))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
              (when tests?
                (setenv "HOME" "/tmp/")  ;required by some tests
-               (invoke "python" "-m" "pytest" "-vv")))))))
+               (apply invoke "python" "-m" "pytest" "-vv"
+                      test-flags)))))))
     (inputs (list readline which))
     (propagated-inputs
-     (list python-backcall
+     (list python-colorama
            python-decorator
+           python-exceptiongroup
            python-jedi
-           python-jinja2
-           python-jsonschema
-           python-matplotlib
            python-matplotlib-inline
-           python-mistune
-           python-nbformat
-           python-numpy
-           python-numpydoc
            python-pexpect
-           python-pickleshare
            python-prompt-toolkit
            python-pygments
-           python-pyzmq
-           python-simplegeneric
            python-stack-data
-           python-terminado
-           python-traitlets))
+           python-traitlets
+           python-typing-extensions))
     (native-inputs
-     (list graphviz
-           pkg-config
-           ;; For tests.
+     (list python-curio
+           python-matplotlib
+           python-nbformat
+           python-numpy
+           python-pandas
+           python-pickleshare
            python-pytest
-           python-requests
-           python-testpath))
+           python-pytest-asyncio
+           python-setuptools
+           python-testpath
+           python-wheel))
     (home-page "https://ipython.org")
     (synopsis "IPython is a tool for interactive computing in Python")
     (description
