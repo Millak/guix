@@ -1774,19 +1774,20 @@ modules for building a Wayland compositor.")
         (base32 "1n36vgpi4bg2gkiq4fam4khly1z9bjinmjclzq5vfx0z8h7a5bzz"))))
     (build-system meson-build-system)
     (arguments
-     `(;; elogind is propagated by wlroots -> libseat
-       ;; and would otherwise shadow basu.
-       #:configure-flags '("-Dsd-bus-provider=basu")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'hardcode-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Hardcode path to swaybg.
-             (substitute* "sway/config.c"
-               (("strdup..swaybg..")
-                (string-append "strdup(\"" (assoc-ref inputs "swaybg")
-                               "/bin/swaybg\")")))
-             #t)))))
+     (list
+      ;; elogind is propagated by wlroots -> libseat
+      ;; and would otherwise shadow basu.
+      #:configure-flags
+      #~'("-Dsd-bus-provider=basu")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'hardcode-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hardcode path to swaybg.
+              (substitute* "sway/config.c"
+                (("strdup..swaybg..")
+                 (format #f "strdup(\"~a\")"
+                         (search-input-file inputs "bin/swaybg")))))))))
     (inputs (list basu
                   cairo
                   gdk-pixbuf
