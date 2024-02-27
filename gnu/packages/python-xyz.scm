@@ -22465,13 +22465,13 @@ collections of data.")
 (define-public python-prompt-toolkit
   (package
     (name "python-prompt-toolkit")
-    (version "3.0.29")
+    (version "3.0.43")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "prompt_toolkit" version))
        (sha256
-        (base32 "19vf5cahp3imdpwhgvk55g3dvqmc6ga175r4vkq79kffx1h0yr5x"))))
+        (base32 "0zgzn02ffc9njpz0pfsin30nwmm3754cig20l1jvqv0h4spvf9rm"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
