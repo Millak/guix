@@ -629,7 +629,13 @@ Python dataclasses.")
        (method url-fetch)
        (uri (pypi-uri "databind.json" version))
        (sha256
-        (base32 "1lm864d7arfq0pw64hyc83bwn1z94wjg7a22q1xf0qkjynqs70gg"))))
+        (base32 "1lm864d7arfq0pw64hyc83bwn1z94wjg7a22q1xf0qkjynqs70gg"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; The problem with python-typing-extensions >= 4.7 is only
+                 ;; with python-3.7.
+                 (substitute* "pyproject.toml"
+                   ((",<4.7.*") "\"\n"))))))
     (build-system pyproject-build-system)
     (arguments
      (list
