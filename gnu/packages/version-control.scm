@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015-2023 Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -949,7 +949,7 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2-1.7
   (package
     (inherit libgit2)
-    (version "1.7.1")
+    (version "1.7.2")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -959,7 +959,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "1wq6a91k97gbsyafla39yvn1lnr559hqc41ksz1qxv7flf5kyvfx"))
+                "0i95jwrwx4svh5l4dpa5r4a99f813hlm7nzzkbqzmnw4pkyxhlvx"))
               ;; We need to use the bundled xdiff until an option is given
               ;; to use the one from git.
               (modules '((guix build utils)))
