@@ -32661,25 +32661,25 @@ positioning, and keyboard input.")
     (name "python-readme-renderer")
     (version "41.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "readme_renderer" version))
-        (sha256
-         (base32
-            "1xvkf2i075rdqkwdrcrw4xglziqd7qs5lb2rbxr5snizi7ji2jsg"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "readme_renderer" version))
+       (sha256
+        (base32
+         "1xvkf2i075rdqkwdrcrw4xglziqd7qs5lb2rbxr5snizi7ji2jsg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       '(list "-k"
-             (string-append
-              ;; These tests fail due to slight differences in the generated
-              ;; vs expected HTML, e.g. because of difference in whitespace or
-              ;; line breaks. (See also
-              ;; https://github.com/pypa/readme_renderer/issues/234).
-              "not test_md_fixtures[test_CommonMark_008.md]"
-              " and not test_rst_fixtures[test_rst_008.rst]"
-              " and not GFM"))))
+        (string-append
+         ;; These tests fail due to slight differences in the generated
+         ;; vs expected HTML, e.g. because of difference in whitespace or
+         ;; line breaks. (See also
+         ;; https://github.com/pypa/readme_renderer/issues/234).
+         "not test_md_fixtures[test_CommonMark_008.md]"
+         " and not test_rst_fixtures[test_rst_008.rst]"
+         " and not GFM"))))
     (propagated-inputs
      (list python-bleach
            python-docutils
@@ -32688,14 +32688,15 @@ positioning, and keyboard input.")
            python-cmarkgfm))           ;required by postorius
     (native-inputs
      (list python-pytest
+           python-setuptools
            python-wheel))
     (home-page "https://github.com/pypa/readme_renderer")
     (synopsis "Render README files in Warehouse")
     (description
      "Readme Renderer is a library that will safely render arbitrary README
 files into HTML.  It is designed to be used in Warehouse to render the
-@code{long_description} for packages.  It can handle Markdown, reStructuredText,
-and plain text.")
+@code{long_description} for packages.  It can handle Markdown,
+reStructuredText, and plain text.")
     (license license:asl2.0)))
 
 (define-public python-lazr-delegates
