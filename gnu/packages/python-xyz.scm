@@ -23734,31 +23734,44 @@ JPEG2000 and GIF files in pure Python.")
 (define-public python-argcomplete
   (package
     (name "python-argcomplete")
-    (version "1.11.1")
+    (version "3.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "argcomplete" version))
        (sha256
         (base32
-         "0h1przxffrhqvi46k40pzjsvdrq4zc3sl1pc96kkigqppq0vdrss"))
-       (patches (search-patches "python-argcomplete-1.11.1-fish31.patch"))))
-    (build-system python-build-system)
+         "18h023ma2m2gw8w8dm2pvv4k0vpli94293jl57p2ch4vln79xr7k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; pip: command not found
+               (substitute* "test/test.py"
+                 (("def test_console_script")
+                  "def __disable_test_console_script"))
+               (invoke "python3" "./test/test.py" "-v")))))))
     (native-inputs
      (list python-coverage
-           python-flake8
+           python-mypy
            python-pexpect
+           python-setuptools
            python-wheel
            tcsh
            fish
-           bash))            ;full Bash for 'test_file_completion'
+           bash  ;full Bash for 'test_file_completion'
+           zsh))
     (home-page "https://github.com/kislyuk/argcomplete")
     (synopsis "Shell tab completion for Python argparse")
     (description "argcomplete provides extensible command line tab completion
-     of arguments and options for Python scripts using @code{argparse}.  It's
-     particularly useful for programs with many options or sub-parsers that can
-     dynamically suggest completions ; for example, when browsing resources over the
-     network.")
+of arguments and options for Python scripts using @code{argparse}.  It's
+particularly useful for programs with many options or sub-parsers that can
+dynamically suggest completions ; for example, when browsing resources over
+the network.")
     (license license:asl2.0)))
 
 (define-public python-csscompressor
