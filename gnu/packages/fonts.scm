@@ -1147,7 +1147,7 @@ display all Unicode symbols.")
 (define-public font-google-noto-emoji
   (package
     (name "font-google-noto-emoji")
-    (version "2.038")
+    (version "2.042")
     (source
      (origin
        (method git-fetch)
@@ -1157,7 +1157,7 @@ display all Unicode symbols.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rgmcc6nqq805iqr8kvxxlk5cf50q714xaxk3ld6rjrd69kb8ix9"))))
+         "17i7awyqz9jv0j2blcf0smmpas375c3pdhjv1zqzl861g8qm1lm2"))))
     (build-system font-build-system)
     (arguments
      (list
@@ -1167,11 +1167,10 @@ display all Unicode symbols.")
             (lambda _
               ;; Note this ensures the correct license file is installed.
               (chdir "fonts")))
-          (add-after 'enter-font-directory 'remove-unsupported
-            (lambda* _
-              (delete-file "NotoColorEmoji_WindowsCompatible.ttf")
-              (delete-file "Noto-COLRv1-noflags.ttf")
-              (delete-file "Noto-COLRv1.ttf"))))))
+          (replace 'install
+            (lambda _
+              (let ((dir (string-append #$output "/share/fonts/truetype")))
+                (install-file "NotoColorEmoji.ttf" dir)))))))
     (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
     (synopsis "Font for rendering color emoji characters")
     (description
