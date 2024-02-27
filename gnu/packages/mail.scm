@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
@@ -4217,7 +4217,15 @@ related tools to process winmail.dat files.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))))
+          (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))
+         (snippet
+          #~(begin (use-modules (guix build utils))
+                   ;; Don't try to redefine loff_t.
+                   (substitute* "utils.c"
+                     (("typedef off_t loff_t;")
+                      (string-append "#ifdef __APPLE__\n"
+                                     "typedef off_t loff_t;\n"
+                                     "#endif\n")))))))
       (build-system gnu-build-system)
       (inputs
        (list libgit2))
