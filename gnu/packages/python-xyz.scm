@@ -29,7 +29,7 @@
 ;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016–2018, 2021–2023 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2018, 2021–2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -18020,17 +18020,17 @@ that deprecated code is eventually removed.")
 (define-public python-jmespath
   (package
    (name "python-jmespath")
-   (version "1.0.0")
+   (version "1.0.1")
    (source
     (origin
      (method url-fetch)
      (uri (pypi-uri "jmespath" version))
      (sha256
       (base32
-       "0pmzfi230zfgiq2rz896kbb9f7mp0lnrjdl6x1npvxfixn0f5454"))))
+       "1gpdc1f0q5c9scmbw1l9g40jjfk3pxwg91ayvn7xbvvddlh1n9lh"))))
    (build-system python-build-system)
    (native-inputs
-    (list python-nose))
+    (list python-pytest))
    (synopsis "JSON Matching Expressions")
    (description "JMESPath (pronounced “james path”) is a Python library that
 allows one to declaratively specify how to extract elements from a JSON
