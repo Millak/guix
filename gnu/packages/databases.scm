@@ -3643,6 +3643,53 @@ designed for efficient and high-performing database access, adapted into a
 simple and Pythonic domain language.")
     (license license:x11)))
 
+(define-public python-sqlalchemy-2
+  (package
+    (name "python-sqlalchemy")
+    (version "2.0.27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "SQLAlchemy" version))
+       (sha256
+        (base32 "1y1l4lwhvgs7ivwhcp4vljjdsaha77x9859kz65virhzlxlyv9l6"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-typing-extensions))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-tests
+            (lambda _
+              ;; Remove expensive tests.
+              (for-each delete-file
+                        '("test/ext/mypy/test_mypy_plugin_py3k.py"
+                          "test/typing/test_mypy.py"
+                          "test/aaa_profiling/test_memusage.py"))
+              (substitute* "test/engine/test_pool.py"
+                ;; Disable a test that fails randomly.
+                (("def test_recycle_pool_no_race")
+                 "def _test_recycle_pool_no_race"))))
+          ;; According to the pyproject.toml, greenlet is optional.
+          (add-after 'unpack 'remove-dependency-on-greenlet
+            (lambda _
+              (substitute* "setup.cfg"
+                (("greenlet != 0.4.17")
+                 "#greenlet != 0.4.17"))
+              (substitute* "PKG-INFO"
+                (("Requires-Dist: greenlet")
+                 "#Requires-Dist: greenlet")))))))
+    (home-page "https://www.sqlalchemy.org")
+    (synopsis "SQL toolkit and object relational mapper")
+    (description
+     "SQLAlchemy is the Python SQL toolkit and @acronym{ORM, Object Relational Mapper}
+that gives application developers the full power and flexibility of SQL.  It provides
+a full suite of well known enterprise-level persistence patterns, designed for
+efficient and high-performing database access, adapted into a simple and Pythonic
+domain language.")
+    (license license:expat)))
+
 (define-public python-sqlalchemy-stubs
   (package
     (name "python-sqlalchemy-stubs")
