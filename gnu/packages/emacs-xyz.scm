@@ -1378,6 +1378,30 @@ some utility functions, and commands using that infrastructure.")
 its mode line.")
       (license license:gpl3+))))
 
+(define-public emacs-project-tab-groups
+  (let ((commit "2658405d5f3c539fbd9ccf95297a016a2c91816a")
+        (revision "1"))
+    (package
+      (name "emacs-project-tab-groups")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fritzgrabo/project-tab-groups.git")
+               (commit commit)))
+         (sha256
+          (base32 "1zg9kxyjz942ib9lii0in67hwqil2xlz78vjm1qqypw3zaivhh7p"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/fritzgrabo/project-tab-groups")
+      (synopsis "Support a \"one tab group per project\" workflow")
+      (description "This package provides a global minor mode that enhances the
+Emacs built-in @code{project.el} library to support keeping projects isolated
+in named tab groups.  This package automates the steps you’d otherwise need to
+do manually if you wanted to keep the buffers of a project neatly isolated in
+separate, named tab groups.")
+      (license license:gpl3+))))
+
 (define-public emacs-golden-ratio
   (let ((commit "375c9f287dfad68829582c1e0a67d0c18119dab9")
         (revision "0"))
