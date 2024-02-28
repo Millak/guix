@@ -337,23 +337,23 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.38")
+    (version "9.19.21")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ftp.isc.org/isc/bind9/" version
                            "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "03y52iyc2g63lkk9x2vaizpr0jv27g1z6mcxnjw8m8l4kaflrx4d"))
-       (patches
-        (search-patches "bind-re-add-attr-constructor-priority.patch"))))
+        (base32 "133f1aq8acaz9z03cl0gcrj4pq0hqm6c3sm4hz67d37phndsjs1b"))))
     (build-system gnu-build-system)
     (outputs `("out" "utils"))
     (inputs
      ;; It would be nice to add GeoIP and gssapi once there are packages.
      (list libcap
+           liburcu
            libuv
            libxml2
+           `(,nghttp2 "lib")
            openssl
            p11-kit
            python
