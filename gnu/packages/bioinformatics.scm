@@ -3778,7 +3778,9 @@ gapped, local, and paired-end alignment modes.")
        ,#~(append #$(if (not (target-x86?))
                         #~'("POPCNT_CAPABILITY=0")
                         #~'())
-                  (list "CC=gcc" "all"
+                  (list (string-append "CC=" #$(cc-for-target))
+                        (string-append "CXX=" #$(cxx-for-target))
+                        "all"
                         (string-append "prefix=" #$output)))
        #:phases
        (modify-phases %standard-phases
