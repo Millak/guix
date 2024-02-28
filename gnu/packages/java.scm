@@ -11075,20 +11075,20 @@ those in Perl and JavaScript.")
                      "-Dtest.resources.dir=src/test/resources"
                      "org.testng.TestNG" "src/test/resources/testng.xml"))))))
     (propagated-inputs
-     `(("junit" ,java-junit)
-       ("java-jsr305" ,java-jsr305)
-       ("java-bsh" ,java-bsh)
-       ("java-jcommander" ,java-jcommander)
-       ("java-guice" ,java-guice)
-       ("snakeyaml" ,java-snakeyaml)))
+     (list java-junit
+           java-jsr305
+           java-bsh
+           java-jcommander
+           java-guice
+           java-snakeyaml))
     (native-inputs
-     `(("guava" ,java-guava)
-       ("java-javax-inject" ,java-javax-inject)
-       ("java-hamcrest" ,java-hamcrest-all)
-       ("java-assertj" ,java-assertj)
-       ("java-mockito" ,java-mockito-1)
-       ("cglib" ,java-cglib)
-       ("aopalliance" ,java-aopalliance)))
+     (list java-guava
+           java-javax-inject
+           java-hamcrest-all
+           java-assertj
+           java-mockito-1
+           java-cglib
+           java-aopalliance))
     (home-page "https://testng.org")
     (synopsis "Testing framework")
     (description "TestNG is a testing framework inspired from JUnit and NUnit
