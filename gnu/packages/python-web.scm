@@ -39,7 +39,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2020, 2022 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2022, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -8789,6 +8789,39 @@ starlette.")
      "This package provides a stateless implementation of @dfn{Cross-Site
 Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
 pattern.")
+    (license license:expat)))
+
+(define-public python-fastapi-pagination-minimal
+  (package
+    (name "python-fastapi-pagination-minimal")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/uriyyo/fastapi-pagination")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkcphjk1qy680v1hkmqbs4p7srvx020wy39b97anrn9dyyi5ah6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests depend on python-cassandra,
+     ;; which is not yet packaged in Guix.
+     `(#:tests? #f))
+    (native-inputs
+     (list poetry))
+    ;; These are the only required dependencies,
+    ;; please add all optional dependencies to the
+    ;; full python-fastapi-pagination below.
+    (propagated-inputs (list python-fastapi
+                             python-pydantic))
+    (home-page "https://github.com/uriyyo/fastapi-pagination")
+    (synopsis "FastAPI pagination library")
+    (description "@code{fastapi-pagination} is a Python library designed to
+simplify pagination in FastAPI applications.  It provides a set of utility
+functions and data models to help you paginate your database queries and
+return paginated responses to your clients.")
     (license license:expat)))
 
 (define-public python-pyactiveresource
