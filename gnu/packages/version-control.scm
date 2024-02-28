@@ -878,7 +878,7 @@ other git-like projects such as @code{libgit2}.")
 (define-public libgit2-1.5
   (package
     (name "libgit2")
-    (version "1.5.1")
+    (version "1.5.2")
     (source (origin
               ;; Since v1.1.1, release artifacts are no longer offered (see:
               ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
@@ -889,7 +889,7 @@ other git-like projects such as @code{libgit2}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04ypzpicpgq1wh6anwcmjjyh2b854lvjhxq0hq2hbsx7kb14qc1b"))
+                "0v9jdaxmqrzbs9v5vhh2xf5xv9h29q8qqn8vmns279ljx1zav5yd"))
               (modules '((guix build utils)))
               (snippet
                '(begin
