@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -66,14 +66,14 @@
   ;; directory.
   (package
     (name "gnucash")
-    (version "5.3")
+    (version "5.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                            version "/gnucash-" version ".tar.bz2"))
        (sha256
-        (base32 "0npilq0spalpg1ma956j7vlbn0yc5f0z5imy4kbyksl5ql4cnn0l"))))
+        (base32 "0fzds1yq298c3rvi07if1bfxff904jbzmsb27wr0ddwjp1xzdnml"))))
     (outputs '("out" "doc" "debug" "python"))
     (build-system cmake-build-system)
     (arguments
@@ -214,13 +214,11 @@ installed as well as Yelp, the Gnome help browser.")
       (source
        (origin
          (method url-fetch)
-         ;; The filename for version 5.3 is gnucash-docs-5.2.tar.gz, not
-         ;; gnucash-docs-5.3.tar.gz.
          (uri (string-append
                "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
-               version "/gnucash-docs-5.2" revision ".tar.gz"))
+               version "/gnucash-docs-" version revision ".tar.gz"))
          (sha256
-          (base32 "16xlxwdgc0w4cg9kxg4w2f1y974cb16wq2c9icq5qrh3nj0nbsxr"))))
+          (base32 "1ay8jzxrsb9qmbx0v12kqdjk6l3j7cafgxswa92yynihv5ahymlk"))))
       (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.
