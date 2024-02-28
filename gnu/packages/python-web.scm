@@ -8824,6 +8824,38 @@ functions and data models to help you paginate your database queries and
 return paginated responses to your clients.")
     (license license:expat)))
 
+(define-public python-fastapi-pagination
+  (package
+    (inherit python-fastapi-pagination-minimal)
+    (name "python-fastapi-pagination")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs
+                     python-fastapi-pagination-minimal)
+       (prepend python-asyncpg
+                python-databases
+                python-django
+                python-fastapi
+                python-pydantic
+                python-sqlalchemy
+                (package
+                  (inherit python-tortoise-orm)
+                  (arguments
+                   (substitute-keyword-arguments (package-arguments
+                                                  python-tortoise-orm)
+                     ((#:phases phases '%standard-phases)
+                      `(modify-phases ,phases
+                        (delete 'sanity-check)))))
+                  (propagated-inputs
+                   (modify-inputs (package-propagated-inputs python-tortoise-orm)
+                     (replace "python-aiosqlite" python-aiosqlite)))))))
+    (description
+     (string-append (package-description python-fastapi-pagination-minimal)
+                    "
+
+This package, as opposed to @code{python-fastapi-pagination-minimal}, depends on
+all available optional dependencies supported by mainline
+@code{fastapi-pagination}."))))
+
 (define-public python-pyactiveresource
   (package
     (name "python-pyactiveresource")
