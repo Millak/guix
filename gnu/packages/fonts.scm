@@ -1013,7 +1013,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "15.1.01")
+    (version "15.1.05")
     (source
      (origin
        (method url-fetch)
@@ -1023,7 +1023,7 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "1dydcqa2nvmnij5jzj10carrzssd3ar24i8zd18pk4zpl84l4pz1"))
+        (base32 "1yi33kxlgw7ds99za5bclh537sw8ggl94nrhhq7hwxaq8dgzaxfj"))
        (snippet
         '(begin
            (use-modules (guix build utils))
