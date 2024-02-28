@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -293,7 +294,7 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.89")
+    (version "2.90")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -301,7 +302,7 @@ prompt the user with the option to go with insecure DNS only.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "02dnxfnman38armn3sw56w80f9wb2vgm3qgm15crs2yg8q1j7g82"))))
+                "1r09l537vi867hlpv6vl7nvqhscvq1kf04m896bfrgrpv2dk0l4f"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
