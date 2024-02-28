@@ -285,26 +285,26 @@ information and periodically output metrics")
     (license license:expat)))
 
 (define-public go-github-com-blang-semver
-    (package
-      (name "go-github-com-blang-semver")
-      (version "3.8.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/blang/semver")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "16s66zbfkn35msmxpkiwf5dv91kzw7yzxzkcv8ma44j7lbgzx5qk"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/blang/semver"))
-      (home-page "https://github.com/blang/semver")
-      (synopsis "Semantic versioning library written in Go")
-      (description
-       "Semver is a library for Semantic versioning written in Go.")
-      (license license:expat)))
+  (package
+    (name "go-github-com-blang-semver")
+    (version "3.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blang/semver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16s66zbfkn35msmxpkiwf5dv91kzw7yzxzkcv8ma44j7lbgzx5qk"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/blang/semver"))
+    (home-page "https://github.com/blang/semver")
+    (synopsis "Semantic versioning library written in Go")
+    (description
+     "Semver is a library for Semantic versioning written in Go.")
+    (license license:expat)))
 
 (define-public go-github-com-bmizerany-perks-quantile
   (package
