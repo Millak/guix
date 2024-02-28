@@ -5168,14 +5168,14 @@ interfaces.")
 (define-public python-click
   (package
     (name "python-click")
-    (version "8.1.3")
+    (version "8.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "click" version))
        (sha256
         (base32
-         "13kvp8visj5xh9d43brnda6q0kc1s40flxa5cw0p0a9hzf5dr0kn"))))
+         "1pm6khdv88h764scik67jki98xbyj367h591j8hpwy4y8nnm766a"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
