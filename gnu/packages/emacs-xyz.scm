@@ -368,6 +368,35 @@
        "This package allows using Ace jump to a candidate in Helm window.")
       (license license:gpl3+))))
 
+(define-public emacs-activities
+  (package
+    (name "emacs-activities")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://elpa.gnu.org/packages/activities-" version ".tar"))
+       (sha256
+        (base32 "0ng9sgajcpal881s3kavkmz0fc38f2h207hpqj62cf14z7bsk0zk"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-persist))
+    (home-page "https://github.com/alphapapa/activities.el")
+    (synopsis "Save/restore sets of windows, tabs/frames, and their buffers")
+    (description
+     "Inspired by Genera's and KDE's concepts of \"activities\", this library
+allows the user to select an \"activity\", the loading of which restores a
+window configuration into a @code{tab-bar} tab or frame, along with the
+buffers shown in each window.  Saving an activity saves the state for later
+restoration.  Switching away from an activity saves the last-used state for
+later switching back to, while still allowing the activity's initial or
+default state to be restored on demand.  Resuming an activity loads the
+last-used state, or the initial/default state when a universal argument is
+provided.  The implementation uses the bookmark system to save buffers
+states–that is, any major mode that supports the bookmark system is
+compatible.")
+    (license license:gpl3+)))
+
 (define-public emacs-bookmark-plus
   (package
     (name "emacs-bookmark-plus")
