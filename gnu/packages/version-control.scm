@@ -96,6 +96,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cook)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)

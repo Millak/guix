@@ -238,6 +238,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (ice-9 match)
@@ -3593,12 +3594,12 @@ for dealing with different structured file formats.")
               ;; In lieu of #:make-flags
               (setenv "CC" #$(cc-for-target))
               (setenv "PKG_CONFIG" #$(pkg-config-for-target))
-              (when #$(%current-target-system)
-                (setenv "RUST_TARGET"
-                        (string-replace
-                          #$(%current-target-system)
-                          "-unknown-linux-gnu"
-                          (string-index #$(%current-target-system) #\-))))
+              #$@(if (%current-target-system)
+                     #~((setenv "RUST_TARGET"
+                                #$(platform-rust-target
+                                    (lookup-platform-by-target
+                                      (%current-target-system)))))
+                     #~())
               ;; Something about the build environment resists building
               ;; successfully with the '--locked' flag.
               (substitute* '("Makefile.am" "Makefile.in")

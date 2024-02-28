@@ -201,9 +201,15 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/cpp.scm 				\
   %D%/packages/cppi.scm				\
   %D%/packages/cran.scm				\
+  %D%/packages/crates-apple.scm		\
+  %D%/packages/crates-crypto.scm		\
   %D%/packages/crates-io.scm			\
   %D%/packages/crates-graphics.scm		\
   %D%/packages/crates-gtk.scm			\
+  %D%/packages/crates-tls.scm			\
+  %D%/packages/crates-vcs.scm			\
+  %D%/packages/crates-web.scm			\
+  %D%/packages/crates-windows.scm		\
   %D%/packages/cross-base.scm			\
   %D%/packages/cross-toolchain.scm		\
   %D%/packages/crypto.scm			\
@@ -2000,13 +2006,14 @@ dist_patch_DATA =						\
   %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
   %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
-  %D%/packages/patches/rust-ring-0.16-missing-files.patch	\
-  %D%/packages/patches/rust-ring-0.16-test-files.patch		\
-  %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
+  %D%/packages/patches/rust-cargo-edit-remove-ureq.patch	\
+  %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
   %D%/packages/patches/rust-ndarray-0.14-remove-blas-src.patch	\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
+  %D%/packages/patches/rust-rspec-1-remove-clippy.patch	\
+  %D%/packages/patches/rust-trash-2-update-windows.patch	\
   %D%/packages/patches/rust-webbrowser-remove-unsupported-os.patch	\
   %D%/packages/patches/rust-wl-clipboard-rs-newer-wl.patch      \
   %D%/packages/patches/rw-igraph-0.10.patch			\

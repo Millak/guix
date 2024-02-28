@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mckinley Olsen <mck.olsen@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -76,8 +76,10 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dlang)
@@ -1510,10 +1512,11 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.3")
+    (version "0.13.1")
     (source
      (origin
-       ;; XXX: The crate at "crates.io" has limited contents.  In particular,
+       ;; XXX: The crate at "crates.io" contains only the alacritty subproject
+       ;; of alacritty and thus has limited contents.  In particular,
        ;; it does not contain "extra" directory with completions, icon, etc.
        (method git-fetch)
        (uri (git-reference
@@ -1521,43 +1524,58 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jbyxnza38c22k7ri8apzn03q91l06isj8la9xca7cz06kn0hha9"))))
+        (base32 "1y5xc9ryn9r0adygq53vrbpb8lazkmcqw38q978pbf0i57nwczrn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f     ; virtual manifest
+     `(#:install-source? #f
+       #:cargo-test-flags
+       '("--release" "--"
+         ;; Completions generated with a different minor version of clap?
+         "--skip=cli::tests::completions")
        #:cargo-inputs
-       (("rust-alacritty-config" ,rust-alacritty-config-0.1)
-        ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
-        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.19)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-cocoa" ,rust-cocoa-0.24)
-        ("rust-copypasta" ,rust-copypasta-0.8)
-        ("rust-crossfont" ,rust-crossfont-0.5)
-        ("rust-dirs" ,rust-dirs-4)
-        ("rust-embed-resource" ,rust-embed-resource-1)
-        ("rust-fnv" ,rust-fnv-1)
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-cocoa" ,rust-cocoa-0.25)
+        ("rust-copypasta" ,rust-copypasta-0.10)
+        ("rust-crossfont" ,rust-crossfont-0.7)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-embed-resource" ,rust-embed-resource-2)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
-        ("rust-glutin" ,rust-glutin-0.30)
+        ("rust-glutin" ,rust-glutin-0.31)
+        ("rust-home" ,rust-home-0.5)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-notify" ,rust-notify-5)
+        ("rust-miow" ,rust-miow-0.6)
+        ("rust-notify" ,rust-notify-6)
         ("rust-objc" ,rust-objc-0.2)
-        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-piper" ,rust-piper-0.2)
+        ("rust-polling" ,rust-polling-3)
         ("rust-png" ,rust-png-0.17)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
         ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-regex-automata" ,rust-regex-automata-0.4)
+        ("rust-rustix-openpty" ,rust-rustix-openpty-0.1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+        ("rust-signal-hook" ,rust-signal-hook-0.3)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-toml" ,rust-toml-0.8)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-wayland-client" ,rust-wayland-client-0.29)
-        ("rust-windows-sys" ,rust-windows-sys-0.36)
-        ("rust-winit" ,rust-winit-0.28)
-        ("rust-x11-dl" ,rust-x11-dl-2)
+        ("rust-vte" ,rust-vte-0.13)
+        ("rust-windows-sys" ,rust-windows-sys-0.48)
+        ("rust-winit" ,rust-winit-0.29)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
-       (("rust-clap-complete" ,rust-clap-complete-3))
+       (("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-toml" ,rust-toml-0.8))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-xdg-open
@@ -1582,7 +1600,9 @@ basic input/output.")
                 (search-input-file inputs (string-append "lib/" all)))
 
                ;; There are several libwayland libraries.
-               (("libwayland-.*\\.so" all)
+               (("libwayland\\.so" all)
+                (search-input-file inputs (string-append "lib/" all)))
+               (("libwayland-[[:alpha:]]*\\.so" all)
                 (search-input-file inputs (string-append "lib/" all)))
                (("libxkbcommon\\.so")
                 (search-input-file inputs "lib/libxkbcommon.so")))))
@@ -1594,21 +1614,30 @@ basic input/output.")
                     (share (string-append out "/share"))
                     (icons (string-append share "/icons/hicolor/scalable/apps"))
                     (tic   (search-input-file (or native-inputs inputs) "/bin/tic"))
-                    (man   (string-append share "/man/man1"))
+                    (man   (string-append share "/man"))
                     (alacritty-bin (car (find-files "target" "^alacritty$"))))
                ;; Install the executable.
                (install-file alacritty-bin bin)
                ;; Install man pages.
-               (mkdir-p man)
-               (copy-file "extra/alacritty.man"
-                          (string-append man "/alacritty.1"))
-               ;; Install example configuration.
-               (install-file "alacritty.yml"
-                             (string-append share "/doc/alacritty-"
-                                            ,(package-version this-package) "/example"))
+               (mkdir-p (string-append man "/man1"))
+               (mkdir-p (string-append man "/man5"))
+               (define (create-manpage manpage)
+                 (let ((mandir (string-append
+                                 "/man" (string-take-right manpage 1) "/")))
+                   (with-input-from-file (string-append manpage ".scd")
+                     (lambda _
+                       (with-output-to-file (string-append man mandir manpage)
+                         (lambda _ (invoke "scdoc")))))))
+               (with-directory-excursion "extra/man"
+                 (for-each create-manpage '("alacritty.1"
+                                            "alacritty-msg.1"
+                                            "alacritty.5"
+                                            "alacritty-bindings.5")))
                ;; Install desktop file.
                (install-file "extra/linux/Alacritty.desktop"
                              (string-append share "/applications"))
+               (install-file "extra/linux/org.alacritty.Alacritty.appdata.xml"
+                             (string-append share "/metainfo"))
                ;; Install icon.
                (mkdir-p icons)
                (copy-file "extra/logo/alacritty-term.svg"
@@ -1631,7 +1660,8 @@ basic input/output.")
     (native-inputs
      (list ncurses
            pkg-config
-           python))
+           python
+           scdoc))
     (inputs
      (list expat
            fontconfig

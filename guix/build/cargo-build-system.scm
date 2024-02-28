@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -162,6 +162,7 @@ libraries or executables."
                    ("powerpc64le-linux-gnu" "powerpc64le-unknown-linux-gnu")
                    ("riscv64-linux-gnu" "riscv64gc-unknown-linux-gnu")
                    ("x86_64-linux-gnu" "x86_64-unknown-linux-gnu")
+                   ("x86_64-linux-gnux32" "x86_64-unknown-linux-gnux32")
                    ("i586-pc-gnu" "i686-unknown-hurd-gnu")
                    ("i686-w64-mingw32" "i686-pc-windows-gnu")
                    ("x86_64-w64-mingw32" "x86_64-pc-windows-gnu")
