@@ -39373,7 +39373,7 @@ navigate through it.")
   ;; There is no proper release.
   ;; The base version is extracted from the README.org.
   (let ((revision "0")
-        (commit  "0b78f4e33b994612fcb305b3cf6d3b1e3b62cea7"))
+        (commit "eafc9828f54dddd594887bb28a7249cf1584230c"))
     (package
       (name "emacs-project-x")
       (version (git-version "0.1.6" revision commit))
@@ -39386,7 +39386,7 @@ navigate through it.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1xxzxxm0jila5s9sfay6ywj2j8pyz4wwcrycvnrrzh0vxcsgzf9s"))))
+          (base32 "141zym1libs14bpqv27ln8f6csxgy67pgcn1l3f44p15g1rc8mhr"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/karthink/project-x")
       (synopsis "Enhancement to Emacs built-in Project library")
