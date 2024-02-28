@@ -317,9 +317,9 @@ written in Go.")
                   go-github-com-francoispqt-gojay
                   go-github-com-fsnotify-fsnotify
                   go-github-com-gogo-protobuf
-                  go-github-com-google-uuid
                   go-github-com-golang-groupcache-lru
                   go-github-com-golang-snappy
+                  go-github-com-google-uuid
                   go-github-com-gorilla-mux
                   go-github-com-gorilla-websocket
                   go-github-com-jackpal-go-nat-pmp
@@ -344,12 +344,11 @@ written in Go.")
                   go-github-com-spaolacci-murmur3
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb
-                  go-gopkg-in-yaml-v2
-                  go-gopkg-in-yaml-v3
                   go-go-uber-org-atomic
                   go-go-uber-org-multierr
                   go-go-uber-org-zap
                   go-golang-org-x-crypto
+                  go-golang-org-x-exp
                   go-golang-org-x-lint
                   go-golang-org-x-mod
                   go-golang-org-x-net
@@ -357,10 +356,11 @@ written in Go.")
                   go-golang-org-x-sync
                   go-golang-org-x-sys
                   go-golang-org-x-term
+                  go-golang-org-x-text
                   go-golang-org-x-tools
                   go-golang-org-x-xerrors
-                  go-golang-org-x-exp
-                  go-golang-org-x-text
+                  go-gopkg-in-yaml-v2
+                  go-gopkg-in-yaml-v3
                   go-lukechampine-com-blake3))
     (native-inputs
      (append (if (%current-target-system)
