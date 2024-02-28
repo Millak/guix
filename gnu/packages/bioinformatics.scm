@@ -3775,14 +3775,17 @@ gapped, local, and paired-end alignment modes.")
      `(#:tests? #f                      ; Tests need various perl modules
        #:test-target "simple-test"
        #:make-flags
-       ,#~(list "CC=gcc" "all"
-                (string-append "prefix=" #$output))
+       ,#~(append #$(if (not (target-x86?))
+                        #~'("POPCNT_CAPABILITY=0")
+                        #~'())
+                  (list "CC=gcc" "all"
+                        (string-append "prefix=" #$output)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
     (inputs
      (list python-wrapper tbb zlib))
-    (supported-systems '("x86_64-linux"))
+    (supported-systems %64bit-supported-systems)
     (home-page "https://bowtie-bio.sourceforge.net/index.shtml")
     (synopsis "Fast aligner for short nucleotide sequence reads")
     (description
