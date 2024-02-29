@@ -118,8 +118,8 @@
                         ;; target libs, not native libs, so this is safe.
                         `(cons "--with-sysroot=/" ,flags)))))))
 
-    ;; For Xtensa, apply Qualcomm's patch.
-    (cross (cond ((string-prefix? "xtensa-" target)
+    ;; For xtensa-ath9k-elf, apply Qualcomm's patch.
+    (cross (cond ((string=? target "xtensa-ath9k-elf")
                   (package-with-patches binutils
                                         (search-patches
                                          "ath9k-htc-firmware-binutils.patch")))
