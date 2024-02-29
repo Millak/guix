@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -618,7 +619,7 @@ Go.  It also includes runtime support libraries for these languages.")
 (define %gcc-11-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 11.
   (append %gcc-10-x86_64-micro-architectures
-          '("sapphirerapids" "alterlake" "rocketlake" ;Intel
+          '("sapphirerapids" "alderlake" "rocketlake" ;Intel
 
             "btver1" "btver2"                     ;AMD
 
