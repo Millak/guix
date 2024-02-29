@@ -97,7 +97,18 @@
   (warning (G_ "'cross-binutils' must be used with keyword arguments~%"))
   (cross-binutils* target #:binutils binutils))
 
-(define* (cross-binutils* target #:key (binutils binutils))
+(define (cross-binutils-package target)
+  "Returns the default package to use for a cross-Binutils for TARGET."
+  (cond
+    ;; The xtensa-ath9k-elf target is used solely to build the firmware for
+    ;; ath9k devices, the patches to binutils have not been updated and
+    ;; only apply to binutils@2.33.
+    ((string=? target "xtensa-ath9k-elf") binutils-2.33)
+    (else binutils)))
+
+(define* (cross-binutils* target
+                          #:key
+                          (binutils (cross-binutils-package target)))
   "Return a cross-Binutils for TARGET using BINUTILS."
   (let ((binutils (package
                     (inherit binutils)

@@ -139,14 +139,8 @@
 
     ;; The firmware is cross-compiled using a "bare bones" compiler (no libc.)
     ;; Use our own tool chain for that.
-    (native-inputs `(("cross-gcc" ,(cross-gcc
-                                    "xtensa-ath9k-elf"
-                                    #:xbinutils (cross-binutils
-                                                 "xtensa-ath9k-elf"
-                                                 #:binutils binutils-2.33)))
-                     ("cross-binutils" ,(cross-binutils
-                                         "xtensa-ath9k-elf"
-                                         #:binutils binutils-2.33))
+    (native-inputs `(("cross-gcc" ,(cross-gcc "xtensa-ath9k-elf"))
+                     ("cross-binutils" ,(cross-binutils "xtensa-ath9k-elf"))
                      ("cmake" ,cmake-minimal)
                      ("perl" ,perl)))
     (home-page "https://wireless.wiki.kernel.org/en/users/Drivers/ath9k_htc")
