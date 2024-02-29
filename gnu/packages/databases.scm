@@ -1480,6 +1480,44 @@ PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
     (license license:asl2.0)))
 
+(define-public pgvector
+  (package
+    (name "pgvector")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pgvector/pgvector")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19zcjrlmyj7gfbn8prh014yq50iy4dg97pirsm7idxsr829vwyc5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Do not use -march=native
+      #:make-flags
+      #~(list "OPTFLAGS="
+              (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (inputs (list postgresql))
+    (home-page "https://github.com/pgvector/pgvector")
+    (synopsis "Vector similarity search for Postgres")
+    (description
+     "This package provides a vector similarity search extension for Postgres.
+Store your vectors with the rest of your data.  It supports:
+
+@itemize
+@item exact and approximate nearest neighbor search;
+@item L2 distance, inner product, and cosine distance;
+@item any language with a Postgres client.
+@end itemize
+")
+    (license (license:x11-style "file://COPYRIGHT"))))
+
 (define-public pgloader
   (package
     (name "pgloader")
