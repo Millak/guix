@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-01 03:18+0000\n"
-"PO-Revision-Date: 2024-01-08 16:37+0000\n"
+"PO-Revision-Date: 2024-02-29 15:28+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.3.1\n"
+"X-Generator: Weblate 5.4\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -643,7 +643,7 @@ msgstr "Reproduzierbare Profile"
 #: guix-git/doc/guix-cookbook.texi:4381 guix-git/doc/guix-cookbook.texi:4382
 #, no-wrap
 msgid "Getting Started"
-msgstr "Einstieg in Guix"
+msgstr "Einstieg"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:185 guix-git/doc/guix-cookbook.texi:4379
