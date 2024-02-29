@@ -1498,11 +1498,23 @@ PostgreSQL extension, providing automatic partitioning across time and space
      (list
       ;; Do not use -march=native
       #:make-flags
-      #~(list "OPTFLAGS="
-              (string-append "DESTDIR=" #$output))
+      '(list "OPTFLAGS=")
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((extension (string-append #$output "/share/extension"))
+                    (lib (string-append #$output "/lib"))
+                    (headers (string-append #$output "/include/server/extension/vector")))
+                (for-each mkdir-p (list extension lib headers))
+                (install-file "vector.so" lib)
+                (chmod (string-append lib "/vector.so") #o755)
+                (install-file "vector.control" extension)
+                (for-each (lambda (file)
+                            (install-file file extension))
+                          (find-files "sql" "\\.sql$"))
+                (install-file "src/vector.h" headers)))))))
     (inputs (list postgresql))
     (home-page "https://github.com/pgvector/pgvector")
     (synopsis "Vector similarity search for Postgres")
