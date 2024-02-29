@@ -99,6 +99,10 @@
               (uri (git-reference
                     (url "https://github.com/qca/open-ath9k-htc-firmware")
                     (commit version)))
+              (modules '((guix build utils)))
+              (snippet
+                ;; Delete binary blobs.
+                #~(for-each delete-file (find-files "." "\\.(a|o)$")))
               (sha256
                (base32
                 "16jbj8avg5jkgvq5lxm0hdxxn4c3zn7fx8b4nxllvr024apk9w23"))
