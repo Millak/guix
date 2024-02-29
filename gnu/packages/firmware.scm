@@ -121,6 +121,7 @@
              ;; 'configure' is a simple script that runs 'cmake' with
              ;; the right flags.
              (substitute* "configure"
+               (("^TARGET.*$") "TARGET=xtensa-elf\n")
                (("^TOOLCHAIN=.*$")
                 (string-append "TOOLCHAIN="
                                (assoc-ref (or native-inputs inputs) "cross-gcc")
