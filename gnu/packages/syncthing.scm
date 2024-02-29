@@ -709,28 +709,29 @@ notification library in Go.")
       (license expat))))
 
 (define-public go-github-com-beorn7-perks-quantile
-    (package
-      (name "go-github-com-beorn7-perks-quantile")
-      (version "1.0.1")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/beorn7/perks")
-                       (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "17n4yygjxa6p499dj3yaqzfww2g7528165cl13haj97hlx94dgl7"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/beorn7/perks/quantile"
-         #:unpack-path "github.com/beorn7/perks"))
-      (synopsis "Compute approximate quantiles over an unbounded data stream")
-      (description "Perks contains the Go package @code{quantile} that computes
+  (package
+    (name "go-github-com-beorn7-perks-quantile")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/beorn7/perks")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17n4yygjxa6p499dj3yaqzfww2g7528165cl13haj97hlx94dgl7"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/beorn7/perks/quantile"
+       #:unpack-path "github.com/beorn7/perks"))
+    (synopsis "Compute approximate quantiles over an unbounded data stream")
+    (description
+     "Perks contains the Go package @code{quantile} that computes
 approximate quantiles over an unbounded data stream within low memory and CPU
 bounds.")
-      (home-page "https://github.com/beorn7/perks")
-      (license expat)))
+    (home-page "https://github.com/beorn7/perks")
+    (license expat)))
 
 (define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil
   (let ((commit "c12348ce28de40eed0136aa2b644d0ee0650e56c")
