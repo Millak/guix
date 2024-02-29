@@ -877,7 +877,8 @@ of PROVENANCE-SERVICE-TYPE to its services."
 
 (define %base-firmware
   ;; Firmware usable by default.
-  (list ath9k-htc-firmware
+  (list ath9k-htc-ar7010-firmware
+        ath9k-htc-ar9271-firmware
         openfwwf-firmware))
 
 (define %base-packages-artwork
