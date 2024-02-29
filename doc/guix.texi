@@ -16663,6 +16663,7 @@ The available targets are:
    - x86_64-linux-gnu
    - x86_64-linux-gnux32
    - x86_64-w64-mingw32
+   - xtensa-ath9k-elf
 @end example
 
 Targets are specified as GNU triplets (@pxref{Specifying Target
@@ -46830,6 +46831,11 @@ from AVR Libc.
 @defvar or1k-elf
 Platform targeting OpenRISC 1000 CPU without an operating system and without a
 C standard library.
+@end defvar
+
+@defvar xtensa-ath9k-elf
+Platform targeting Xtensa CPU used in the Qualcomm Atheros AR7010 and AR9271
+USB 802.11n @acronym{NICs, Network Interface Controllers}.
 @end defvar
 
 @node System Images

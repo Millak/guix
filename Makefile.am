@@ -144,6 +144,7 @@ MODULES =					\
   guix/platforms/powerpc.scm                    \
   guix/platforms/riscv.scm                      \
   guix/platforms/x86.scm                        \
+  guix/platforms/xtensa.scm                     \
   guix/build-system.scm				\
   guix/build-system/agda.scm			\
   guix/build-system/android-ndk.scm		\
