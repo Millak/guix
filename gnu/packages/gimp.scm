@@ -38,6 +38,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages documentation)
@@ -366,6 +367,52 @@ retouching, composition and authoring.  It supports all common image formats
 as well as specialized ones.  It features a highly customizable interface
 that is extensible via a plugin system.")
     (license license:gpl3+))) ; some files are lgplv3
+
+(define-public gimp-next
+  (package
+    (inherit gimp)
+    (name "gimp-next")
+    (version "2.99.18")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.gimp.org/pub/gimp/v"
+                           (version-major+minor version)
+                           "/gimp-" version ".tar.xz"))
+       (sha256
+        (base32 "0vnvdl7x88njyyxkbgdbhz6jwz1qasrxh0fpwk6x1m609alvf6wc"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:modules `((ice-9 popen)
+                       (ice-9 rdelim)
+                       (guix build meson-build-system)
+                       (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-gcc-reference
+                 ;; Avoid reference to GCC.
+                 (lambda _
+                   (let* ((port (open-input-pipe "gcc -v 2>&1 | tail -n 1"))
+                          (cc-version (read-line port)))
+                     (close-pipe port)
+                     (substitute* "app/gimp-version.c"
+                       (("CC_VERSION") (string-append "\"" cc-version "\""))))))
+               (add-after 'install 'move-doc
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out"))
+                         (doc (assoc-ref outputs "doc")))
+                     (mkdir-p (string-append doc "/share"))
+                     (rename-file (string-append out "/share/doc")
+                                  (string-append doc "/share/doc"))))))))
+    (inputs (modify-inputs (package-inputs gimp)
+              (replace "gtk+" gtk+)
+              (prepend libxmu libxt)
+              (prepend python gjs)
+              (prepend libxslt)))
+    (native-inputs (modify-inputs (package-native-inputs gimp)
+                     (prepend appstream-glib
+                              gi-docgen
+                              libarchive)))))
 
 (define-public gimp-fourier
   (package
