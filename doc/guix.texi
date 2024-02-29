@@ -16661,6 +16661,7 @@ The available targets are:
    - powerpc64le-linux-gnu
    - riscv64-linux-gnu
    - x86_64-linux-gnu
+   - x86_64-linux-gnux32
    - x86_64-w64-mingw32
 @end example
 
@@ -46799,6 +46800,11 @@ Platform targeting x86 CPU running GNU/Linux.
 
 @defvar x86_64-linux
 Platform targeting x86 64-bit CPU running GNU/Linux.
+@end defvar
+
+@defvar x86_64-linux-x32
+Platform targeting x86 64-bit CPU running GNU/Linux with the run-time using
+the X32 ABI.
 @end defvar
 
 @defvar i686-mingw
