@@ -1759,6 +1759,21 @@ modules for building a Wayland compositor.")
     (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
                          (delete libdisplay-info)))))
 
+(define-public wlroots-0.15
+  (package
+    (inherit wlroots)
+    (name "wlroots-0.15")
+    (version "0.15.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name "wlroots" version))
+       (sha256
+        (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))))
+
 (define-public wmenu
   (package
     (name "wmenu")
@@ -3248,7 +3263,7 @@ session.  Nor does it depend on any UI toolkits such as Qt or GTK.")
            linux-pam
            pango
            wayland
-           wlroots-0.16))
+           wlroots-0.15))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags
