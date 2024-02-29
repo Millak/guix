@@ -193,8 +193,7 @@ of a larger interface.")
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (list "-Denable-gir=false"
-             "-Dwith-docs=false")))
+       (list "-Dwith-docs=false")))
     (native-inputs
      (list gobject-introspection pkg-config vala))
     (propagated-inputs
