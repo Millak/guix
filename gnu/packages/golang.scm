@@ -9322,7 +9322,7 @@ be used as both a binary and a library.")
 (define-public go-go-uber-org-zap
   (package
     (name "go-go-uber-org-zap")
-    (version "1.16.0")
+    (version "1.24.0")
     (source
      (origin
        (method git-fetch)
@@ -9331,7 +9331,7 @@ be used as both a binary and a library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05ix5wg1r8pgi7fb6084lg4x7mrkvzkh1nxa7zj337w5b9xj0myr"))))
+        (base32 "0lzbbs87fvixzbyv4wpl3s70vm2m0jz2jgdvrviiksc2al451qgs"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "go.uber.org/zap"
