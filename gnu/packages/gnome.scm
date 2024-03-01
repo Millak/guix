@@ -9880,7 +9880,7 @@ shared object databases, search tools and indexing.")
     (native-search-paths
      (list (search-path-specification
             (variable "NAUTILUS_EXTENSION_PATH")
-            (files '("lib/nautilus/site-extensions")))))
+            (files '("lib/nautilus/extensions-4")))))
     (synopsis "File manager for GNOME")
     (home-page "https://wiki.gnome.org/Apps/Nautilus")
     (description
