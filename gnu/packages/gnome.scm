@@ -5475,16 +5475,19 @@ more fun.")
 (define-public gnome-terminal
   (package
     (name "gnome-terminal")
-    (version "3.44.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/" name "/"
-                           (version-major+minor version) "/"
-                           name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0yykb64yi1h0g65q890jf5awjr2sdvfda4xbxnmajcgj3zp20vzv"))))
+    (version "3.48.3")
+    ;; download.gnome.org does not have any version for gnome-terminal more
+    ;; recent than 3.44.1, but the repository has several tags newer than
+    ;; that.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/GNOME/gnome-terminal")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cqh35j57a5ni4xlfjzl46kim6nbhqvxx3jql3gjk414z359i0j6"))))
     (build-system meson-build-system)
     (arguments
      (list
