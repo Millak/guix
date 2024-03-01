@@ -1461,20 +1461,19 @@ HTTP.")
 (define-public bruteforce-luks
   (package
     (name "bruteforce-luks")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/glv2/bruteforce-luks/releases/download/"
-                           version
-                           "/bruteforce-luks-"
-                           version
-                           ".tar.lz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/bruteforce-luks")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yawrlbbklhmvwr99wm7li3r0d5kxvpkwf33a12rji7z0ya5p340"))))
+        (base32 "1fhvm7ykqv2anny6zavd4iwh6gq5rp1r27p3zhn78sd3y34xhkmp"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list lzip))
+     (list autoconf automake))
     (inputs
      (list cryptsetup))
     (synopsis "LUKS encrypted volume cracker")
