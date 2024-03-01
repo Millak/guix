@@ -24,7 +24,7 @@
 ;;; Copyright © 2018, 2019, 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2019,2022 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
@@ -1482,6 +1482,32 @@ HTTP.")
 exhaustive mode to try every password given a charset or in dictionary mode to
 try every password contained in a file.")
     (home-page "https://github.com/glv2/bruteforce-luks")
+    (license license:gpl3+)))
+
+(define-public bruteforce-salted-openssl
+  (package
+    (name "bruteforce-salted-openssl")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/bruteforce-salted-openssl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00w1szj04jb63rh7sq1spc50013jgmz2nwm8k552i9ir8h4phw45"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake))
+    (inputs
+     (list openssl))
+    (synopsis "Bruteforce cracker for openssl encrypted files")
+    (description
+     "This is a cracker for openssl encrypted files.  It can be used either in
+exhaustive mode to try every password given a charset or in dictionary mode to
+try every password contained in a file.")
+    (home-page "https://github.com/glv2/bruteforce-salted-openssl")
     (license license:gpl3+)))
 
 (define-public makepasswd
