@@ -144,6 +144,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system go)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -1600,18 +1601,11 @@ protocols.")
                 (sha256
                  (base32
                   "142wrcism70nf8ffahhd961cqg2pi1h7ic8adfs3zwh0j3pnf41f"))))
-      (build-system trivial-build-system)
+      (build-system copy-build-system)
       (arguments
-       '(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let ((out (assoc-ref %outputs "out"))
-                 (source (assoc-ref %build-inputs "source")))
-             (with-directory-excursion (in-vicinity source module-name)
-               (install-file (string-append module-name ".lua") out))
-             #t))))
-      (home-page #f)
+       `(#:install-plan '((,(string-append module-name "/") "."))))
+      (home-page (string-append "https://modules.prosody.im/"
+                                module-name ".html"))
       (synopsis #f)
       (description #f)
       (license (package-license prosody)))))
