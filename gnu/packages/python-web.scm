@@ -828,6 +828,59 @@ scripting Launchpad via its the web service API.")
 reusable library for parsing, manipulating, and generating URIs.")
     (license license:lgpl3)))
 
+(define-public python-ldaptor
+  (package
+    (name "python-ldaptor")
+    (version "21.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ldaptor" version))
+       (sha256
+        (base32 "0n53czn5pyh8923y282spdb7xc8c9rhn0n43bczanjjx6wcynjcc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-m" "twisted.trial"
+              (string-append "-j" (number->string (parallel-job-count)))
+              "ldaptor")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              ;; Testing with Twisted 22.4 results in infinite loop creating
+              ;; temporary config files, see
+              ;; <https://github.com/twisted/ldaptor/issues/238>.
+              (delete-file "ldaptor/test/test_config.py")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" test-flags)))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-passlib
+           python-pyopenssl
+           python-service-identity ; to pass sanity check, for Twisted[tls]
+           python-pyparsing
+           python-twisted
+           python-zope-interface))
+    (home-page "https://github.com/twisted/ldaptor")
+    (synopsis "Pure-Python Twisted library for LDAP")
+    (description
+     "This package provides a Python Twisted library for LDAP, which key
+feaatures are:
+@itemize
+@item LDAP client logic
+@item separately-accessible LDAP and BER protocol message generation/parsing
+@item ASCII-format LDAP filter generation and parsing
+@item LDIF format data generation
+@item Samba password changing logic
+@end itemize")
+    (license license:expat)))
+
 (define-public python-legacy-cgi
   (package
     (name "python-legacy-cgi")
