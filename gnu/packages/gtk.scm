@@ -36,6 +36,7 @@
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -121,7 +122,11 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 match)
+  ;; Export cairo to break a dependency cycle, as gtk-doc is needed to build
+  ;; the documentation.  Use cairo for other packages and
+  ;; cairo-with-documentation as the public package.
+  #:export (cairo))
 
 (define-public appmenu-gtk-module
   (package
@@ -160,10 +165,10 @@ such as mate-panel and xfce4-panel.")
     (home-page "https://gitlab.com/vala-panel-project/vala-panel-appmenu")
     (license (list license:lgpl3))))
 
-(define-public cairo
+(define cairo
   (package
     (name "cairo")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
@@ -171,30 +176,13 @@ such as mate-panel and xfce4-panel.")
         (string-append "https://cairographics.org/releases/cairo-"
                        version ".tar.xz"))
        (sha256
-        (base32 "0c930mk5xr2bshbdljv005j3j8zr47gqmkry3q6qgvqky6rjjysy"))
-       (patches (search-patches
-		 "cairo-CVE-2018-19876.patch"
-		 "cairo-CVE-2020-35492.patch"))))
-    (build-system glib-or-gtk-build-system)
-    (outputs '("out" "doc"))
+        (base32 "0r0by563s75xyzz0d0j1nmjqmdrk2x9agk7r57p3v8vqp4v0ffi4"))))
+    (build-system meson-build-system)
     (arguments
      `(#:tests? #f ; see http://lists.gnu.org/archive/html/bug-guix/2013-06/msg00085.html
+       #:glib-or-gtk? #t
        #:configure-flags
-       (list
-        "--disable-static"
-        ;; XXX: To be enabled.
-        ;; "--enable-gallium=yes"
-        ;; "--enable-gl=yes"
-        ;; " --enable-glesv2=yes"
-        ;; "--enable-glesv3=yes"
-        ;; "--enable-cogl=yes"
-        ;; "--enable-directfb=yes"
-        ;; "--enable-vg=yes"
-        "--enable-tee=yes"              ;needed for GNU IceCat
-        "--enable-xml=yes"              ;for cairo-xml support
-        (string-append "--with-html-dir="
-                       (assoc-ref %outputs "doc")
-                       "/share/gtk-doc/html"))))
+       (list "-Dtests=disabled")))
     (native-inputs
      `(,@(if (target-hurd?)
              '()
@@ -212,15 +200,10 @@ such as mate-panel and xfce4-panel.")
              '()
              `(("poppler" ,poppler)))))
     (propagated-inputs
-     `( ;; ("cogl" ,cogl)
-       ;; ("directfb" ,directfb)
-       ("fontconfig" ,fontconfig)
+     `(("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("glib" ,glib)
-       ;; ("gtk+" ,gtk+)
        ("libpng" ,libpng)
-       ;; ("librsvg" ,librsvg)
-       ;; ("opengl" ,mesa)
        ("pixman" ,pixman)
        ("x11" ,libx11)
        ("xcb" ,libxcb)
@@ -236,24 +219,50 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
      ;; This project is dual-licensed.
      (list
       license:lgpl2.1+
-      license:mpl1.1))))
+      license:mpl1.1))
+    ;; Hide and have cairo-with-documentation public.
+    (properties '((hidden? . #t)))))
+
+(define-public cairo-with-documentation
+  ;; cairo's docs must be built in a separate package since it requires
+  ;; gtk-doc, which in turn depends on cairo.
+  (package/inherit cairo
+    (properties (alist-delete 'hidden? (package-properties cairo)))
+    (outputs (cons "doc" (package-outputs cairo)))
+    (native-inputs
+     (modify-inputs (package-native-inputs cairo)
+       (prepend gtk-doc)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments cairo)
+       ((#:configure-flags flags ''())
+        #~(cons "-Dgtk_doc=true" #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'move-doc
+              (lambda* (#:key outputs #:allow-other-keys)
+                (mkdir-p (string-append #$output:doc "/share"))
+                (rename-file
+                 (string-append #$output "/share/gtk-doc")
+                 (string-append #$output:doc "/share/gtk-doc"))
+                ;; This directory is now empty so remove it.
+                (rmdir (string-append #$output "/share"))))))))))
 
 (define-public cairo-sans-poppler
   ;; Variant used to break the dependency cycle between Poppler and Cairo.
   (package/inherit cairo
-    (inputs (alist-delete "poppler" (package-inputs cairo)))
-    (properties `((hidden? . #t)))))
+    (inputs (alist-delete "poppler" (package-inputs cairo)))))
 
 (define-public cairo-xcb
   (package/inherit cairo
+    (properties (alist-delete 'hidden? (package-properties cairo)))
     (name "cairo-xcb")
     (inputs
      `(("mesa" ,mesa)
        ,@(package-inputs cairo)))
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       '("--enable-xlib-xcb" "--enable-gl" "--enable-egl")))
+     (substitute-keyword-arguments (package-arguments cairo)
+       ((#:configure-flags flags ''())
+        #~(cons "-Dxlib-xcb=enabled" #$flags))))
     (synopsis "2D graphics library (with X11 support)")))
 
 (define-public harfbuzz
