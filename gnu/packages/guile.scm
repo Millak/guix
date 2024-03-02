@@ -42,6 +42,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
@@ -109,7 +110,19 @@
 
                       ;; The usual /bin/sh...
                       (substitute* "ice-9/popen.scm"
-                        (("/bin/sh") (which "sh"))))))
+                        (("/bin/sh") (which "sh")))))
+                  (add-after 'install 'add-libxcrypt-reference-pkgconfig
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (define out (assoc-ref outputs "out"))
+                      (define libxcrypt
+                        (false-if-exception
+                         (dirname (search-input-file inputs "lib/libcrypt.so.1"))))
+                      (when libxcrypt
+                        (substitute*
+                            (find-files (string-append out "/lib/pkgconfig")
+                                        ".*\\.pc")
+                          (("-lcrypt")
+                           (string-append "-L" libxcrypt " -lcrypt")))))))
 
                 ;; XXX: Several numerical tests and tests related to
                 ;; 'inet-pton' fail on glibc 2.33/GCC 10.  Disable them.
@@ -122,7 +135,7 @@
                       `(("self" ,this-package))
                       '()))
 
-   (inputs (list gawk readline))
+   (inputs (list gawk libxcrypt readline))
 
    ;; Since `guile-1.8.pc' has "Libs: ... -lgmp -lltdl", these must be
    ;; propagated.
