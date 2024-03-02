@@ -137,6 +137,7 @@
 ;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23839,6 +23840,29 @@ Citar note support:
 @item ability to query note citations by reference
 @item ``live'' updating of Citar UI for presence of notes
 @end itemize")
+    (license license:gpl3+)))
+
+(define-public emacs-citar-denote
+  (package
+    (name "emacs-citar-denote")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pprevos/citar-denote")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g476awbrdws7k7smk1qasz15df20zilx3wqbi3wj0i1q2dbsi8z"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-citar emacs-denote))
+    (home-page "https://github.com/pprevos/citar-denote")
+    (synopsis "Emacs package to create and retrieve bibliography notes with
+Citar and Denote")
+    (description
+     "@code{citar-denote} is a minor-mode integrating the Emacs Citar and
+Denote packages to enable create managing bibliographic notes and citations.")
     (license license:gpl3+)))
 
 (define-public emacs-helm-bibtex
