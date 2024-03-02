@@ -792,6 +792,34 @@ Differentiation between text and binary files}.
 wrapping errors and checking if an error contains another error.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-multierror
+  (package
+    (name "go-github-com-hashicorp-go-multierror")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-multierror")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l4s41skdpifndn9s8y6s9vzgghdzg4z8z0lld9qjr28888wzp00"))))
+    (build-system go-build-system)
+    (inputs (list go-github-com-hashicorp-errwrap))
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-multierror"))
+    (home-page "https://github.com/hashicorp/go-multierror")
+    (synopsis "Representing a errors list as a single error for Golang")
+    (description
+     "@code{go-multierror} is Golang module providing a mechanism for
+representing a list of @code{error} values as a single @code{error}.  It is
+fully compatible with the standard @code{errors} package, including
+the functions @code{As}, @code{Is}, and @code{Unwrap}.  This provides a
+standardized approach for introspecting on error values.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hhrutter-tiff
   (package
     (name "go-github-com-hhrutter-tiff")
