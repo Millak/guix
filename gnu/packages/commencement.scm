@@ -3297,8 +3297,18 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define-public guile-final
   ;; This package must be public because other modules refer to it.  However,
   ;; mark it as hidden so that 'fold-packages' ignores it.
-  (with-boot4 (hidden-package
-               (package-with-bootstrap-guile guile-3.0/pinned))))
+  (let ((parent (with-boot4 (hidden-package
+                             (package-with-bootstrap-guile guile-3.0/pinned)))))
+    (package
+      (inherit parent)
+      (inputs
+       (modify-inputs (package-inputs parent)
+         (delete "libxcrypt")))
+      (arguments
+       (substitute-keyword-arguments (package-arguments parent)
+         ((#:phases phases #~%standard-phases)
+          #~(modify-phases #$phases
+              (delete 'add-libxcrypt-reference-pkgconfig))))))))
 
 (define-public glibc-utf8-locales-final
   ;; Now that we have GUILE-FINAL, build the UTF-8 locales.  They are needed

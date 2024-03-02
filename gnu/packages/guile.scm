@@ -176,7 +176,7 @@ without requiring the source code to be rewritten.")
                 (list this-package)
                 '())))
    (inputs
-    (append (list libffi)
+    (append (list libffi libxcrypt)
             (libiconv-if-needed)
 
             ;; We need Bash when cross-compiling because some of the scripts
@@ -251,7 +251,19 @@ without requiring the source code to be rewritten.")
                          '(search-input-file inputs "/bin/bash"))
                         (else
                          '(string-append bash "/bin/bash")))))
-              #t))))))
+              #t)))
+        (add-after 'install 'add-libxcrypt-reference-pkgconfig
+          (lambda* (#:key inputs outputs #:allow-other-keys)
+            (define out (assoc-ref outputs "out"))
+            (define libxcrypt
+              (false-if-exception
+               (dirname (search-input-file inputs "lib/libcrypt.so.1"))))
+            (when libxcrypt
+              (substitute*
+                  (find-files (string-append out "/lib/pkgconfig")
+                              ".*\\.pc")
+                (("-lcrypt")
+                 (string-append "-L" libxcrypt " -lcrypt")))))))))
 
    (native-search-paths
     (list (search-path-specification
