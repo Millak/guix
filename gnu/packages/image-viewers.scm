@@ -767,7 +767,7 @@ displayed in a terminal.")
 (define-public imv
   (package
     (name "imv")
-    (version "4.4.0")
+    (version "4.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -775,7 +775,7 @@ displayed in a terminal.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1zlds43z17jrnsrfz3rf3sb3pa5gkmxaibq87509ikc7p1p09c9c"))
+                "0988rpgzyhb27sbhrh5f2zqccqirmq7xb0naqh9nbl8j1dg897b8"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -792,13 +792,15 @@ displayed in a terminal.")
                        (("imv") (string-append bin "/imv")))))))))
     (native-inputs
      (list asciidoc
+           cmocka
            pkg-config))
     (inputs
      (list freeimage
            glu
            libheif
-           libjpeg-turbo
            libinih
+           libjpeg-turbo
+           libjxl
            libnsgif
            (librsvg-for-system)
            libtiff
