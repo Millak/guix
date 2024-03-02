@@ -231,7 +231,9 @@ output in multiple windows in a terminal.")
      (list #:configure-flags
            #~(list "-DSPDLOG_BUILD_BENCH=OFF"
                    "-DSPDLOG_BUILD_SHARED=ON"
-                   "-DSPDLOG_BUILD_TESTS=ON")))
+                   #$@(if (%current-target-system)
+                          '()
+                          '("-DSPDLOG_BUILD_TESTS=ON")))))
     (native-inputs (list catch2-3))
     (home-page "https://github.com/gabime/spdlog")
     (synopsis "Fast C++ logging library")
