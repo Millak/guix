@@ -40,6 +40,7 @@
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1577,11 +1578,18 @@ system on which to rapidly develop added functionality, or prototype new
 protocols.")
     (license license:x11)))
 
-(define-public prosody-http-upload
+(define (prosody-module module-name)
   (let ((changeset "765735bb590b")
-        (revision "1"))
+        (revision "1")
+        (package-name (string-append
+                       "prosody-"
+                       (string-replace-substring
+                        (if (string-prefix? "mod_" module-name)
+                            (substring module-name 4)
+                            module-name)
+                        "_" "-"))))
     (package
-      (name "prosody-http-upload")
+      (name package-name)
       (version (string-append "0-" revision "." (string-take changeset 7)))
       (source (origin
                 (method hg-fetch)
@@ -1600,47 +1608,28 @@ protocols.")
            (use-modules (guix build utils))
            (let ((out (assoc-ref %outputs "out"))
                  (source (assoc-ref %build-inputs "source")))
-             (with-directory-excursion (in-vicinity source "mod_http_upload")
-               (install-file "mod_http_upload.lua" out))
+             (with-directory-excursion (in-vicinity source module-name)
+               (install-file (string-append module-name ".lua") out))
              #t))))
-      (home-page "https://modules.prosody.im/mod_http_upload.html")
-      (synopsis "XEP-0363: Allow clients to upload files over HTTP")
-      (description "This module implements XEP-0363: it allows clients to
-upload files over HTTP.")
+      (home-page #f)
+      (synopsis #f)
+      (description #f)
       (license (package-license prosody)))))
 
-(define-public prosody-smacks
-  (let ((changeset "67f1d1f22625")
-        (revision "1"))
-    (package
-      (name "prosody-smacks")
-      (version (string-append "0-" revision "." (string-take changeset 7)))
-      (source (origin
-                (method hg-fetch)
-                (uri (hg-reference
-                      (url "https://hg.prosody.im/prosody-modules/")
-                      (changeset changeset)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "020ngpax30fgarah98yvlj0ni8rcdwq60if03a9hqdw8mic0nxxs"))))
-      (build-system trivial-build-system)
-      (arguments
-       '(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let ((out (assoc-ref %outputs "out"))
-                 (source (assoc-ref %build-inputs "source")))
-             (with-directory-excursion (in-vicinity source "mod_smacks")
-               (install-file "mod_smacks.lua" out))
-             #t))))
-      (home-page "https://modules.prosody.im/mod_smacks.html")
-      (synopsis "XEP-0198: Reliability and fast reconnects for XMPP")
-      (description "This module implements XEP-0198: when supported by both
+(define-public prosody-http-upload
+  (package
+    (inherit (prosody-module "mod_http_upload"))
+    (synopsis "XEP-0363: Allow clients to upload files over HTTP")
+    (description "This module implements XEP-0363: it allows clients to
+upload files over HTTP.")))
+
+(define-public prosody-smack
+  (package
+    (inherit (prosody-module "mod_smacks"))
+    (synopsis "XEP-0198: Reliability and fast reconnects for XMPP")
+    (description "This module implements XEP-0198: when supported by both
 the client and server, it can allow clients to resume a disconnected session,
-and prevent message loss.")
-      (license (package-license prosody)))))
+and prevent message loss.")))
 
 (define-public libtoxcore
   (let ((revision "2")
