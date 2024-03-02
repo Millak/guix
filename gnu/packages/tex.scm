@@ -5141,7 +5141,15 @@ multiscript version of @code{biblatex-ms}.")
               "161056627w1lazfpld3lyjwfrl8j8gc4b6dzml46bzwf7mk9ifln")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:link-scripts #~(list "bibexport.sh")))
+    (arguments
+     (list
+      #:link-scripts #~(list "bibexport.sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'fix-bash-shebang
+            (lambda _
+              (substitute* "scripts/bibexport/bibexport.sh"
+                (("/bin/bash") (which "bash"))))))))
     (home-page "https://ctan.org/pkg/bibexport")
     (synopsis "Extract a BibTeX file based on a @file{.aux} file")
     (description
@@ -57054,7 +57062,7 @@ develop documents with LaTeX, in a single application.")
 (define-public texstudio
   (package
     (name "texstudio")
-    (version "4.5.2")
+    (version "4.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -57063,7 +57071,7 @@ develop documents with LaTeX, in a single application.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bzdcsc0273809hx04zqd2famq05q9rpvqcbqhkjqnqp9vxbisig"))))
+                "10w398airsq04vym27n37pw10425f19a7vbhicnwn5iinahdm3s3"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f))                    ;tests work only with debug build

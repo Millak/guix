@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
-;;; Copyright © 2018, 2020-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2021, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
@@ -36,6 +36,7 @@
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
   #:use-module (gnu services dbus)
+  #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services ssh)
   #:use-module (gnu services)
@@ -43,6 +44,8 @@
   #:use-module (gnu system hurd)
   #:use-module (gnu system image)
   #:use-module (gnu system shadow)
+  #:autoload   (gnu system vm) (linux-image-startup-command
+                                virtualized-operating-system)
   #:use-module (gnu system)
   #:use-module (guix derivations)
   #:use-module (guix gexp)
@@ -55,12 +58,20 @@
   #:autoload   (guix self) (make-config.scm)
   #:autoload   (guix platform) (platform-system)
 
+  #:use-module ((srfi srfi-1) #:hide (partition))
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 match)
 
-  #:export (%hurd-vm-operating-system
+  #:export (virtual-build-machine
+            virtual-build-machine-service-type
+
+            %virtual-build-machine-operating-system
+            %virtual-build-machine-default-vm
+
+            %hurd-vm-operating-system
             hurd-vm-configuration
             hurd-vm-configuration?
             hurd-vm-configuration-os
@@ -996,7 +1007,7 @@ specified, the QEMU default path is used."))
 ;;; Secrets for guest VMs.
 ;;;
 
-(define (secret-service-shepherd-services port)
+(define (secret-service-shepherd-services address)
   "Return a Shepherd service that fetches sensitive material at local PORT,
 over TCP.  Reboot upon failure."
   ;; This is a Shepherd service, rather than an activation snippet, to make
@@ -1018,7 +1029,7 @@ over TCP.  Reboot upon failure."
                          "receiving secrets from the host...~%")
                  (force-output (current-error-port))
 
-                 (let ((sent (secret-service-receive-secrets #$port)))
+                 (let ((sent (secret-service-receive-secrets #$address)))
                    (unless sent
                      (sleep 3)
                      (reboot))))))
@@ -1039,9 +1050,13 @@ over TCP.  Reboot upon failure."
 boot time.  This service is meant to be used by virtual machines (VMs) that
 can only be accessed by their host.")))
 
-(define (secret-service-operating-system os)
+(define* (secret-service-operating-system os
+                                          #:optional
+                                          (address
+                                           #~(make-socket-address
+                                              AF_INET INADDR_ANY 1004)))
   "Return an operating system based on OS that includes the secret-service,
-that will be listening to receive secret keys on port 1004, TCP."
+that will be listening to receive secret keys on ADDRESS."
   (operating-system
     (inherit os)
     (services
@@ -1049,7 +1064,7 @@ that will be listening to receive secret keys on port 1004, TCP."
      ;; activation: that requires entropy and thus takes time during boot, and
      ;; those keys are going to be overwritten by secrets received from the
      ;; host anyway.
-     (cons (service secret-service-type 1004)
+     (cons (service secret-service-type address)
            (modify-services (operating-system-user-services os)
              (openssh-service-type
               config => (openssh-configuration
@@ -1059,6 +1074,498 @@ that will be listening to receive secret keys on port 1004, TCP."
               config => (guix-configuration
                          (inherit config)
                          (generate-substitute-key? #f))))))))
+
+
+;;;
+;;; Offloading-as-a-service.
+;;;
+
+(define-record-type* <virtual-build-machine>
+  virtual-build-machine make-virtual-build-machine
+  virtual-build-machine?
+  this-virtual-build-machine
+  (name        virtual-build-machine-name
+               (default 'build-vm))
+  (image       virtual-build-machine-image
+               (thunked)
+               (default
+                 (virtual-build-machine-default-image
+                  this-virtual-build-machine)))
+  (qemu        virtual-build-machine-qemu
+               (default qemu-minimal))
+  (cpu         virtual-build-machine-cpu
+               (thunked)
+               (default
+                 (qemu-cpu-model-for-date
+                  (virtual-build-machine-systems this-virtual-build-machine)
+                  (virtual-build-machine-date this-virtual-build-machine))))
+  (cpu-count   virtual-build-machine-cpu-count
+               (default 4))
+  (memory-size virtual-build-machine-memory-size  ;integer (MiB)
+               (default 2048))
+  (date        virtual-build-machine-date
+               ;; Default to a date "in the past" assuming a common use case
+               ;; is to rebuild old packages.
+               (default (make-date 0 0 00 00 01 01 2020 0)))
+  (port-forwardings virtual-build-machine-port-forwardings
+                    (default
+                      `((,%build-vm-ssh-port . 22)
+                        (,%build-vm-secrets-port . 1004))))
+  (systems     virtual-build-machine-systems
+               (default (list (%current-system))))
+  (auto-start? virtual-build-machine-auto-start?
+               (default #f)))
+
+(define %build-vm-ssh-port
+  ;; Default host port where the guest's SSH port is forwarded.
+  11022)
+
+(define %build-vm-secrets-port
+  ;; Host port to communicate secrets to the build VM.
+  ;; FIXME: Anyone on the host can talk to it; use virtio ports or AF_VSOCK
+  ;; instead.
+  11044)
+
+(define %x86-64-intel-cpu-models
+  ;; List of release date/CPU model pairs representing Intel's x86_64 models.
+  ;; The list is taken from
+  ;; <https://en.wikipedia.org/wiki/List_of_Intel_CPU_microarchitectures>.
+  ;; CPU model strings are those found in 'qemu-system-x86_64 -cpu help'.
+  (letrec-syntax ((cpu-models (syntax-rules ()
+                                ((_ (date model) rest ...)
+                                 (alist-cons (date->time-utc
+                                              (string->date date "~Y-~m-~d"))
+                                             model
+                                             (cpu-models rest ...)))
+                                ((_)
+                                 '()))))
+    (reverse
+     (cpu-models ("2006-01-01" "core2duo")
+                 ("2010-01-01" "Westmere")
+                 ("2008-01-01" "Nehalem")
+                 ("2011-01-01" "SandyBridge")
+                 ("2012-01-01" "IvyBridge")
+                 ("2013-01-01" "Haswell")
+                 ("2014-01-01" "Broadwell")
+                 ("2015-01-01" "Skylake-Client")))))
+
+(define (qemu-cpu-model-for-date systems date)
+  "Return the QEMU name of a CPU model for SYSTEMS that was current at DATE."
+  (if (any (cut string-prefix? "x86_64-" <>) systems)
+      (let ((time (date->time-utc date)))
+        (any (match-lambda
+               ((release-date . model)
+                (and (time<? release-date time)
+                     model)))
+             %x86-64-intel-cpu-models))
+      ;; TODO: Add models for other architectures.
+      "host"))
+
+(define (virtual-build-machine-ssh-port config)
+  "Return the host port where CONFIG has its VM's SSH port forwarded."
+  (any (match-lambda
+         ((host-port . 22) host-port)
+         (_ #f))
+       (virtual-build-machine-port-forwardings config)))
+
+(define (virtual-build-machine-secrets-port config)
+  "Return the host port where CONFIG has its VM's secrets port forwarded."
+  (any (match-lambda
+         ((host-port . 1004) host-port)
+         (_ #f))
+       (virtual-build-machine-port-forwardings config)))
+
+(define %minimal-vm-syslog-config
+  ;; Minimal syslog configuration for a VM.
+  (plain-file "vm-syslog.conf" "\
+# Log most messages to the console, which goes to the serial
+# output, allowing the host to log it.
+*.info;auth.notice;authpriv.none       -/dev/console
+
+# The rest.
+*.=debug                               -/var/log/debug
+authpriv.*;auth.info                    /var/log/secure
+"))
+
+(define %virtual-build-machine-operating-system
+  (operating-system
+    (host-name "build-machine")
+    (bootloader (bootloader-configuration         ;unused
+                 (bootloader grub-minimal-bootloader)
+                 (targets '("/dev/null"))))
+    (file-systems (cons (file-system              ;unused
+                          (mount-point "/")
+                          (device "none")
+                          (type "tmpfs"))
+                        %base-file-systems))
+    (users (cons (user-account
+                  (name "offload")
+                  (group "users")
+                  (supplementary-groups '("kvm"))
+                  (comment "Account used for offloading"))
+                 %base-user-accounts))
+    (services (cons* (service static-networking-service-type
+                              (list %qemu-static-networking))
+                     (service openssh-service-type
+                              (openssh-configuration
+                               (openssh openssh-sans-x)))
+
+                     ;; Run GC once per hour.
+                     (simple-service 'perdiodic-gc mcron-service-type
+                                     (list #~(job "12 * * * *"
+                                                  "guix gc -F 2G")))
+
+                     (modify-services %base-services
+                       ;; By default, the secret service introduces a
+                       ;; pre-initialized /etc/guix/acl file in the VM.  Thus,
+                       ;; clear 'authorize-key?' so that it's not overridden
+                       ;; at activation time.
+                       (guix-service-type config =>
+                                          (guix-configuration
+                                           (inherit config)
+                                           (authorize-key? #f)))
+                       (syslog-service-type config =>
+                                            (syslog-configuration
+                                             (config-file
+                                              %minimal-vm-syslog-config)))
+                       (delete mingetty-service-type)
+                       (delete console-font-service-type))))))
+
+(define %default-virtual-build-machine-image-size
+  ;; Size of the default disk image of virtual build machines.  It should be
+  ;; large enough to let users build a few things.
+  (* 20 (expt 2 30)))
+
+(define (virtual-build-machine-default-image config)
+  (let* ((type (lookup-image-type-by-name 'mbr-raw))
+         (base (os->image %virtual-build-machine-operating-system
+                          #:type type)))
+    (image (inherit base)
+           (name (symbol-append 'build-vm-
+                                (virtual-build-machine-name config)))
+           (format 'compressed-qcow2)
+           (partition-table-type 'mbr)
+           (volatile-root? #f)
+           (shared-store? #f)
+           (size %default-virtual-build-machine-image-size)
+           (partitions (match (image-partitions base)
+                         ((root)
+                          ;; Increase the size of the root partition to match
+                          ;; that of the disk image.
+                          (let ((root-size (- size (* 50 (expt 2 20)))))
+                            (list (partition
+                                   (inherit root)
+                                   (size root-size))))))))))
+
+(define (virtual-build-machine-account-name config)
+  (string-append "build-vm-"
+                 (symbol->string
+                  (virtual-build-machine-name config))))
+
+(define (virtual-build-machine-accounts config)
+  (let ((name (virtual-build-machine-account-name config)))
+    (list (user-group (name name) (system? #t))
+          (user-account
+           (name name)
+           (group name)
+           (supplementary-groups '("kvm"))
+           (comment "Privilege separation user for the virtual build machine")
+           (home-directory "/var/empty")
+           (shell (file-append shadow "/sbin/nologin"))
+           (system? #t)))))
+
+(define (build-vm-shepherd-services config)
+  (define transform
+    (compose secret-service-operating-system
+             operating-system-with-locked-root-account
+             operating-system-with-offloading-account
+             (lambda (os)
+               (virtualized-operating-system os #:full-boot? #t))))
+
+  (define transformed-image
+    (let ((base (virtual-build-machine-image config)))
+      (image
+       (inherit base)
+       (operating-system
+         (transform (image-operating-system base))))))
+
+  (define command
+    (linux-image-startup-command transformed-image
+                                 #:qemu
+                                 (virtual-build-machine-qemu config)
+                                 #:cpu
+                                 (virtual-build-machine-cpu config)
+                                 #:cpu-count
+                                 (virtual-build-machine-cpu-count config)
+                                 #:memory-size
+                                 (virtual-build-machine-memory-size config)
+                                 #:port-forwardings
+                                 (virtual-build-machine-port-forwardings
+                                  config)
+                                 #:date
+                                 (virtual-build-machine-date config)))
+
+  (define user
+    (virtual-build-machine-account-name config))
+
+  (list (shepherd-service
+         (documentation "Run the build virtual machine service.")
+         (provision (list (virtual-build-machine-name config)))
+         (requirement '(user-processes))
+         (modules `((gnu build secret-service)
+                    (guix build utils)
+                    ,@%default-modules))
+         (start
+          (with-imported-modules (source-module-closure
+                                  '((gnu build secret-service)
+                                    (guix build utils)))
+            #~(lambda arguments
+                (let* ((pid  (fork+exec-command (append #$command arguments)
+                                                #:user #$user
+                                                #:group "kvm"
+                                                #:environment-variables
+                                                ;; QEMU tries to write to /var/tmp
+                                                ;; by default.
+                                                '("TMPDIR=/tmp")))
+                       (port #$(virtual-build-machine-secrets-port config))
+                       (root #$(virtual-build-machine-secret-root config))
+                       (address (make-socket-address AF_INET INADDR_LOOPBACK
+                                                     port)))
+                  (catch #t
+                    (lambda _
+                      (if (secret-service-send-secrets address root)
+                          pid
+                          (begin
+                            (kill (- pid) SIGTERM)
+                            #f)))
+                    (lambda (key . args)
+                      (kill (- pid) SIGTERM)
+                      (apply throw key args)))))))
+         (stop #~(make-kill-destructor))
+         (actions
+          (list (shepherd-action
+                 (name 'configuration)
+                 (documentation
+                  "Display the configuration of this virtual build machine.")
+                 (procedure
+                  #~(lambda (_)
+                      (format #t "CPU: ~a~%"
+                              #$(virtual-build-machine-cpu config))
+                      (format #t "number of CPU cores: ~a~%"
+                              #$(virtual-build-machine-cpu-count config))
+                      (format #t "memory size: ~a MiB~%"
+                              #$(virtual-build-machine-memory-size config))
+                      (format #t "initial date: ~a~%"
+                              #$(date->string
+                                 (virtual-build-machine-date config))))))))
+         (auto-start? (virtual-build-machine-auto-start? config)))))
+
+(define (authorize-guest-substitutes-on-host)
+  "Return a program that authorizes the guest's archive signing key (passed as
+an argument) on the host."
+  (define not-config?
+    (match-lambda
+      ('(guix config) #f)
+      (('guix _ ...) #t)
+      (('gnu _ ...) #t)
+      (_ #f)))
+
+  (define run
+    (with-extensions (list guile-gcrypt)
+      (with-imported-modules `(((guix config) => ,(make-config.scm))
+                               ,@(source-module-closure
+                                  '((guix pki)
+                                    (guix build utils))
+                                  #:select? not-config?))
+        #~(begin
+            (use-modules (ice-9 match)
+                         (ice-9 textual-ports)
+                         (gcrypt pk-crypto)
+                         (guix pki)
+                         (guix build utils))
+
+            (match (command-line)
+              ((_ guest-config-directory)
+               (let ((guest-key (string-append guest-config-directory
+                                               "/signing-key.pub")))
+                 (if (file-exists? guest-key)
+                     ;; Add guest key to the host's ACL.
+                     (let* ((key (string->canonical-sexp
+                                  (call-with-input-file guest-key
+                                    get-string-all)))
+                            (acl (public-keys->acl
+                                  (cons key (acl->public-keys (current-acl))))))
+                       (with-atomic-file-replacement %acl-file
+                         (lambda (_ port)
+                           (write-acl acl port))))
+                     (format (current-error-port)
+                             "warning: guest key missing from '~a'~%"
+                             guest-key)))))))))
+
+  (program-file "authorize-guest-substitutes-on-host" run))
+
+(define (initialize-build-vm-substitutes)
+  "Initialize the Hurd VM's key pair and ACL and store it on the host."
+  (define run
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (use-modules (guix build utils)
+                       (ice-9 match))
+
+          (define host-key
+            "/etc/guix/signing-key.pub")
+
+          (define host-acl
+            "/etc/guix/acl")
+
+          (match (command-line)
+            ((_ guest-config-directory)
+             (setenv "GUIX_CONFIGURATION_DIRECTORY"
+                     guest-config-directory)
+             (invoke #+(file-append guix "/bin/guix") "archive"
+                     "--generate-key")
+
+             (when (file-exists? host-acl)
+               ;; Copy the host ACL.
+               (copy-file host-acl
+                          (string-append guest-config-directory
+                                         "/acl")))
+
+             (when (file-exists? host-key)
+               ;; Add the host key to the childhurd's ACL.
+               (let ((key (open-fdes host-key O_RDONLY)))
+                 (close-fdes 0)
+                 (dup2 key 0)
+                 (execl #+(file-append guix "/bin/guix")
+                        "guix" "archive" "--authorize"))))))))
+
+  (program-file "initialize-build-vm-substitutes" run))
+
+(define* (build-vm-activation secret-directory
+                              #:key
+                              offloading-ssh-key
+                              (offloading? #t))
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+
+        (define secret-directory
+          #$secret-directory)
+
+        (define ssh-directory
+          (string-append secret-directory "/etc/ssh"))
+
+        (define guix-directory
+          (string-append secret-directory "/etc/guix"))
+
+        (define offloading-ssh-key
+          #$offloading-ssh-key)
+
+        (unless (file-exists? ssh-directory)
+          ;; Generate SSH host keys under SSH-DIRECTORY.
+          (mkdir-p ssh-directory)
+          (invoke #$(file-append openssh "/bin/ssh-keygen")
+                  "-A" "-f" secret-directory))
+
+        (unless (or (not #$offloading?)
+                    (file-exists? offloading-ssh-key))
+          ;; Generate a user SSH key pair for the host to use when offloading
+          ;; to the guest.
+          (mkdir-p (dirname offloading-ssh-key))
+          (invoke #$(file-append openssh "/bin/ssh-keygen")
+                  "-t" "ed25519" "-N" ""
+                  "-f" offloading-ssh-key)
+
+          ;; Authorize it in the guest for user 'offloading'.
+          (let ((authorizations
+                 (string-append ssh-directory
+                                "/authorized_keys.d/offloading")))
+            (mkdir-p (dirname authorizations))
+            (copy-file (string-append offloading-ssh-key ".pub")
+                       authorizations)
+            (chmod (dirname authorizations) #o555)))
+
+        (unless (file-exists? guix-directory)
+          (invoke #$(initialize-build-vm-substitutes)
+                  guix-directory))
+
+        (when #$offloading?
+          ;; Authorize the archive signing key from GUIX-DIRECTORY in the host.
+          (invoke #$(authorize-guest-substitutes-on-host) guix-directory)))))
+
+(define (virtual-build-machine-offloading-ssh-key config)
+  "Return the name of the file containing the SSH key of user 'offloading'."
+  (string-append "/etc/guix/offload/ssh/virtual-build-machine/"
+                 (symbol->string
+                  (virtual-build-machine-name config))))
+
+(define (virtual-build-machine-activation config)
+  "Return a gexp to activate the build VM according to CONFIG."
+  (build-vm-activation (virtual-build-machine-secret-root config)
+                       #:offloading? #t
+                       #:offloading-ssh-key
+                       (virtual-build-machine-offloading-ssh-key config)))
+
+(define (virtual-build-machine-secret-root config)
+  (string-append "/etc/guix/virtual-build-machines/"
+                 (symbol->string
+                  (virtual-build-machine-name config))))
+
+(define (check-vm-availability config)
+  "Return a Scheme file that evaluates to true if the service corresponding to
+CONFIG, a <virtual-build-machine>, is up and running."
+  (define service-name
+    (virtual-build-machine-name config))
+
+  (scheme-file "check-build-vm-availability.scm"
+               #~(begin
+                   (use-modules (gnu services herd)
+                                (srfi srfi-34))
+
+                   (guard (c ((service-not-found-error? c) #f))
+                     (->bool (live-service-running
+                              (current-service '#$service-name)))))))
+
+(define (build-vm-guix-extension config)
+  (define vm-ssh-key
+    (string-append
+     (virtual-build-machine-secret-root config)
+     "/etc/ssh/ssh_host_ed25519_key.pub"))
+
+  (define host-ssh-key
+    (virtual-build-machine-offloading-ssh-key config))
+
+  (guix-extension
+   (build-machines
+    (list #~(if (primitive-load #$(check-vm-availability config))
+                (list (build-machine
+                       (name "localhost")
+                       (port #$(virtual-build-machine-ssh-port config))
+                       (systems
+                        '#$(virtual-build-machine-systems config))
+                       (user "offloading")
+                       (host-key (call-with-input-file #$vm-ssh-key
+                                   (@ (ice-9 textual-ports)
+                                      get-string-all)))
+                       (private-key #$host-ssh-key)))
+                '())))))
+
+(define virtual-build-machine-service-type
+  (service-type
+   (name 'build-vm)
+   (extensions (list (service-extension shepherd-root-service-type
+                                        build-vm-shepherd-services)
+                     (service-extension guix-service-type
+                                        build-vm-guix-extension)
+                     (service-extension account-service-type
+                                        virtual-build-machine-accounts)
+                     (service-extension activation-service-type
+                                        virtual-build-machine-activation)))
+   (description
+    "Create a @dfn{virtual build machine}: a virtual machine (VM) that builds
+can be offloaded to.  By default, the virtual machine starts with a clock
+running at some point in the past.")
+   (default-value (virtual-build-machine))))
 
 
 ;;;
@@ -1243,24 +1750,26 @@ is added to the OS specified in CONFIG."
            (source-module-closure '((gnu build secret-service)
                                     (guix build utils)))
          #~(lambda ()
-             (let ((pid  (fork+exec-command #$vm-command
-                                            #:user "childhurd"
-                                            ;; XXX TODO: use "childhurd" after
-                                            ;; updating Shepherd
-                                            #:group "kvm"
-                                            #:environment-variables
-                                            ;; QEMU tries to write to /var/tmp
-                                            ;; by default.
-                                            '("TMPDIR=/tmp")))
-                   (port #$(hurd-vm-port config %hurd-vm-secrets-port))
-                   (root #$(hurd-vm-configuration-secret-root config)))
+             (let* ((pid  (fork+exec-command #$vm-command
+                                             #:user "childhurd"
+                                             ;; XXX TODO: use "childhurd" after
+                                             ;; updating Shepherd
+                                             #:group "kvm"
+                                             #:environment-variables
+                                             ;; QEMU tries to write to /var/tmp
+                                             ;; by default.
+                                             '("TMPDIR=/tmp")))
+                    (port #$(hurd-vm-port config %hurd-vm-secrets-port))
+                    (root #$(hurd-vm-configuration-secret-root config))
+                    (address (make-socket-address AF_INET INADDR_LOOPBACK
+                                                  port)))
                (catch #t
                  (lambda _
                    ;; XXX: 'secret-service-send-secrets' won't complete until
                    ;; the guest has booted and its secret service server is
                    ;; running, which could take 20+ seconds during which PID 1
                    ;; is stuck waiting.
-                   (if (secret-service-send-secrets port root)
+                   (if (secret-service-send-secrets address root)
                        pid
                        (begin
                          (kill (- pid) SIGTERM)
@@ -1284,136 +1793,13 @@ is added to the OS specified in CONFIG."
          (shell (file-append shadow "/sbin/nologin"))
          (system? #t))))
 
-(define (initialize-hurd-vm-substitutes)
-  "Initialize the Hurd VM's key pair and ACL and store it on the host."
-  (define run
-    (with-imported-modules '((guix build utils))
-      #~(begin
-          (use-modules (guix build utils)
-                       (ice-9 match))
-
-          (define host-key
-            "/etc/guix/signing-key.pub")
-
-          (define host-acl
-            "/etc/guix/acl")
-
-          (match (command-line)
-            ((_ guest-config-directory)
-             (setenv "GUIX_CONFIGURATION_DIRECTORY"
-                     guest-config-directory)
-             (invoke #+(file-append guix "/bin/guix") "archive"
-                     "--generate-key")
-
-             (when (file-exists? host-acl)
-               ;; Copy the host ACL.
-               (copy-file host-acl
-                          (string-append guest-config-directory
-                                         "/acl")))
-
-             (when (file-exists? host-key)
-               ;; Add the host key to the childhurd's ACL.
-               (let ((key (open-fdes host-key O_RDONLY)))
-                 (close-fdes 0)
-                 (dup2 key 0)
-                 (execl #+(file-append guix "/bin/guix")
-                        "guix" "archive" "--authorize"))))))))
-
-  (program-file "initialize-hurd-vm-substitutes" run))
-
-(define (authorize-guest-substitutes-on-host)
-  "Return a program that authorizes the guest's archive signing key (passed as
-an argument) on the host."
-  (define not-config?
-    (match-lambda
-      ('(guix config) #f)
-      (('guix _ ...) #t)
-      (('gnu _ ...) #t)
-      (_ #f)))
-
-  (define run
-    (with-extensions (list guile-gcrypt)
-      (with-imported-modules `(((guix config) => ,(make-config.scm))
-                               ,@(source-module-closure
-                                  '((guix pki)
-                                    (guix build utils))
-                                  #:select? not-config?))
-        #~(begin
-            (use-modules (ice-9 match)
-                         (ice-9 textual-ports)
-                         (gcrypt pk-crypto)
-                         (guix pki)
-                         (guix build utils))
-
-            (match (command-line)
-              ((_ guest-config-directory)
-               (let ((guest-key (string-append guest-config-directory
-                                               "/signing-key.pub")))
-                 (if (file-exists? guest-key)
-                     ;; Add guest key to the host's ACL.
-                     (let* ((key (string->canonical-sexp
-                                  (call-with-input-file guest-key
-                                    get-string-all)))
-                            (acl (public-keys->acl
-                                  (cons key (acl->public-keys (current-acl))))))
-                       (with-atomic-file-replacement %acl-file
-                         (lambda (_ port)
-                           (write-acl acl port))))
-                     (format (current-error-port)
-                             "warning: guest key missing from '~a'~%"
-                             guest-key)))))))))
-
-  (program-file "authorize-guest-substitutes-on-host" run))
-
 (define (hurd-vm-activation config)
   "Return a gexp to activate the Hurd VM according to CONFIG."
-  (with-imported-modules '((guix build utils))
-    #~(begin
-        (use-modules (guix build utils))
-
-        (define secret-directory
-          #$(hurd-vm-configuration-secret-root config))
-
-        (define ssh-directory
-          (string-append secret-directory "/etc/ssh"))
-
-        (define guix-directory
-          (string-append secret-directory "/etc/guix"))
-
-        (define offloading-ssh-key
-          #$(hurd-vm-configuration-offloading-ssh-key config))
-
-        (unless (file-exists? ssh-directory)
-          ;; Generate SSH host keys under SSH-DIRECTORY.
-          (mkdir-p ssh-directory)
-          (invoke #$(file-append openssh "/bin/ssh-keygen")
-                  "-A" "-f" secret-directory))
-
-        (unless (or (not #$(hurd-vm-configuration-offloading? config))
-                    (file-exists? offloading-ssh-key))
-          ;; Generate a user SSH key pair for the host to use when offloading
-          ;; to the guest.
-          (mkdir-p (dirname offloading-ssh-key))
-          (invoke #$(file-append openssh "/bin/ssh-keygen")
-                  "-t" "ed25519" "-N" ""
-                  "-f" offloading-ssh-key)
-
-          ;; Authorize it in the guest for user 'offloading'.
-          (let ((authorizations
-                 (string-append ssh-directory
-                                "/authorized_keys.d/offloading")))
-            (mkdir-p (dirname authorizations))
-            (copy-file (string-append offloading-ssh-key ".pub")
-                       authorizations)
-            (chmod (dirname authorizations) #o555)))
-
-        (unless (file-exists? guix-directory)
-          (invoke #$(initialize-hurd-vm-substitutes)
-                  guix-directory))
-
-        (when #$(hurd-vm-configuration-offloading? config)
-          ;; Authorize the archive signing key from GUIX-DIRECTORY in the host.
-          (invoke #$(authorize-guest-substitutes-on-host) guix-directory)))))
+  (build-vm-activation (hurd-vm-configuration-secret-root config)
+                       #:offloading?
+                       (hurd-vm-configuration-offloading? config)
+                       #:offloading-ssh-key
+                       (hurd-vm-configuration-offloading-ssh-key config)))
 
 (define (hurd-vm-configuration-offloading-ssh-key config)
   "Return the name of the file containing the SSH key of user 'offloading'."

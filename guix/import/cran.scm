@@ -90,7 +90,7 @@
   (map (lambda (input)
          (case (%input-style)
            ((specification)
-            `(specification->package ,(upstream-input-name input)))
+            `(specification->package ,(upstream-input-downstream-name input)))
            (else
             ((compose string->symbol
                        upstream-input-downstream-name)
@@ -672,6 +672,54 @@ of META, a package in REPOSITORY."
             (string<? (upstream-input-downstream-name input1)
                       (upstream-input-downstream-name input2))))))
 
+(define (phases-for-inputs input-names)
+  "Generate a list of build phases based on the provided INPUT-NAMES, a list
+of package names for all input packages."
+  (let ((rules
+         (list (lambda ()
+                 (and (any (lambda (name)
+                             (member name '("styler" "ExperimentHub")))
+                           input-names)
+                      '(add-after 'unpack 'set-HOME
+                         (lambda _ (setenv "HOME" "/tmp")))))
+               (lambda ()
+                 (and (member "esbuild" input-names)
+                      '(add-after 'unpack 'process-javascript
+                         (lambda* (#:key inputs #:allow-other-keys)
+                           (with-directory-excursion "inst/"
+                             (for-each (match-lambda
+                                         ((source . target)
+                                          (minify source #:target target)))
+                                       '())))))))))
+    (fold (lambda (rule phases)
+            (let ((new-phase (rule)))
+              (if new-phase (cons new-phase phases) phases)))
+          (list)
+          rules)))
+
+(define (maybe-arguments inputs)
+  "Generate a list for the arguments field that can be spliced into a package
+S-expression."
+  (let ((input-names (map upstream-input-name inputs))
+        (esbuild-modules '(#:modules
+                           '((guix build r-build-system)
+                             (guix build minify-build-system)
+                             (guix build utils)
+                             (ice-9 match))
+                           #:imported-modules
+                           `(,@%r-build-system-modules
+                             (guix build minify-build-system)))))
+    (match (phases-for-inputs input-names)
+      (() '())
+      (phases
+       `((arguments
+          (list
+           ,@(if (member "esbuild" input-names)
+                 esbuild-modules '())
+           #:phases
+           '(modify-phases %standard-phases
+              ,@phases))))))))
+
 (define* (description->package repository meta #:key (license-prefix identity)
                                (download-source download))
   "Return the `package' s-expression for an R package published on REPOSITORY
@@ -751,7 +799,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                     `((properties ,`(,'quasiquote ((,'upstream-name . ,name)))))
                     '())
               (build-system r-build-system)
-
+              ,@(maybe-arguments inputs)
               ,@(maybe-inputs (filter (upstream-input-type-predicate 'regular)
                                       inputs)
                               'inputs)
@@ -882,15 +930,25 @@ s-expression corresponding to that package, or #f on failure."
   (define upstream-name
     (package->upstream-name pkg))
 
+  (define type
+    (cond
+     ((bioconductor-data-package? pkg)
+      'annotation)
+     ((bioconductor-experiment-package? pkg)
+      'experiment)
+     ((bioconductor-package? pkg)
+      #true)
+     (else #false)))
+
   (define latest-version
-    (latest-bioconductor-package-version upstream-name))
+    (latest-bioconductor-package-version upstream-name type))
 
   (and latest-version
        ;; Bioconductor does not provide signatures.
        (upstream-source
         (package (package-name pkg))
         (version latest-version)
-        (urls (bioconductor-uri upstream-name latest-version))
+        (urls (bioconductor-uri upstream-name latest-version type))
         (inputs
          (let ((meta (fetch-description 'bioconductor upstream-name)))
            (cran-package-inputs meta 'bioconductor))))))
@@ -944,7 +1002,10 @@ s-expression corresponding to that package, or #f on failure."
   (upstream-updater
    (name 'bioconductor)
    (description "Updater for Bioconductor packages")
-   (pred bioconductor-package?)
+   (pred (lambda (pkg)
+           (or (bioconductor-package? pkg)
+               (bioconductor-data-package? pkg)
+               (bioconductor-experiment-package? pkg))))
    (import latest-bioconductor-release)))
 
 ;;; cran.scm ends here

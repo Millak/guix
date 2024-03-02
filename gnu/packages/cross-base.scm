@@ -745,7 +745,9 @@ returned."
   "Returns PACKAGE that contains a cross-compilation tool chain for TARGET
 with XBINUTILS, XGCC and LIBC (if exists for TARGET)."
   (package
-    (name (string-append (package-name xgcc) "-toolchain"))
+    ;; Using PACKAGE-NAME of XGCC is avoided here as there are platforms that
+    ;; still need a toolchain but don't have a libc (e.g. or1k-elf).
+    (name (string-append "gcc-cross-" target "-toolchain"))
     (version (package-version xgcc))
     (source #f)
     (build-system trivial-build-system)

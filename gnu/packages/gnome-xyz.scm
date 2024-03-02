@@ -13,7 +13,7 @@
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
-;;; Copyright © 2021, 2022 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021, 2022, 2024 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
@@ -1016,33 +1016,33 @@ It uses ES6 syntax and claims to be more actively maintained than others.")
 (define-public gnome-shell-extension-paperwm
   (package
     (name "gnome-shell-extension-paperwm")
-    (version "36.0")
+    (version "44.17.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/paperwm/PaperWM")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ssnabwxrns36c61ppspjkr9i3qifv08pf2jpwl7cjv3pvyn4kly"))
+                "1d91k9qih81wckqf6554kf8grv6q61rkk4g776g0ijpmf35ljdin"))
               (snippet
                '(begin (delete-file "schemas/gschemas.compiled")))))
     (build-system copy-build-system)
     (arguments
-     '(#:install-plan
-       '(("." "share/gnome-shell/extensions/paperwm@hedning:matrix.org"
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "make"))
-             #t)))))
+     (list
+      #:install-plan
+      #~'(("." "share/gnome-shell/extensions/paperwm@paperwm.github.com"
+           #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                             "\\.xml$" "\\.compiled$" "\\.svg$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "schemas"
+                (invoke "make")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin"))) ; for glib-compile-schemas
+     (list `(,glib "bin"))) ; for glib-compile-schemas
     (home-page "https://github.com/paperwm/PaperWM")
     (synopsis "Tiled scrollable window management for GNOME Shell")
     (description "PaperWM is an experimental GNOME Shell extension providing

@@ -86,6 +86,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
@@ -2636,11 +2637,11 @@ replacement.")
     (license license:gpl2+)))
 
 (define-public tdlib
-  (let ((commit "27c3eaeb4964bd5f18d8488e354abde1a4383e49")
+  (let ((commit "c5c55092dd61b9eb15d6bbfd0f02c04c593450e7")
         (revision "0"))
     (package
       (name "tdlib")
-      (version (git-version "1.8.23" revision commit))
+      (version (git-version "1.8.24" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2648,7 +2649,7 @@ replacement.")
                (url "https://github.com/tdlib/td")
                (commit commit)))
          (sha256
-          (base32 "14f65dfmg2p5hyvi3lffvvazwcd3i3jrrw3c2pwrc5yfgxk3662g"))
+          (base32 "1kwbp4ay4zvk9jscp0xv9rv4jz2krm9jya8q81wnvn9qd0ybg94f"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments

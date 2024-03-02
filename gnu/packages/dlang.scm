@@ -5,8 +5,8 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
-;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
 ;;;
@@ -136,8 +136,7 @@ to a minimal test case.")
                     (string-append "my $gdc_dir = \""
                                    (dirname (search-input-file inputs "/bin/gdc"))
                                    "\";\n"))))))))
-      (inputs
-       (list gdc-11 perl))
+      (inputs (list gdc perl))
       (home-page "https://github.com/D-Programming-GDC/gdmd")
       (synopsis "DMD-like wrapper for GDC")
       (description "This package provides a DMD-like wrapper for the
@@ -192,8 +191,8 @@ to a minimal test case.")
        ("libedit" ,libedit)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("lld-wrapper" ,(make-lld-wrapper lld-14 #:lld-as-ld? #t))
-       ("llvm" ,llvm-14)
+     `(("lld-wrapper" ,(make-lld-wrapper lld-15 #:lld-as-ld? #t))
+       ("llvm" ,llvm-15)
        ("ldc" ,gdmd)
        ("ninja" ,ninja)
        ("python-wrapper" ,python-wrapper)
@@ -356,8 +355,176 @@ integration tests...\n")
      (append (delete "llvm"
                      (alist-replace "ldc" (list ldc-bootstrap)
                                     (package-native-inputs ldc-bootstrap)))
-         `(("clang" ,clang-14)          ;propagates llvm and clang-runtime
+         `(("clang" ,clang-15)          ;propagates llvm and clang-runtime
            ("python-lit" ,python-lit))))))
+
+;;; Bootstrap version of phobos that is built with GDC, using GDC's standard
+;;; library.
+(define dmd-bootstrap
+  (package
+    ;; This package is purposefully named just "dmd" and not "dmd-bootstrap",
+    ;; as the final dmd package rewrites references from this one to itself,
+    ;; and their names must have the same length to avoid corrupting the
+    ;; binary.
+    (name "dmd")
+    (version "2.106.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dlang/dmd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "dmd" version))
+              (sha256
+               (base32
+                "1bq4jws1vns2jjzfz7biyngrx9y5pvvgklymhrvb5kvbzky1ldmy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:disallowed-references (list (gexp-input (canonical-package gcc)
+                                                "lib"))
+      ;; Disable tests, as gdmd cannot cope with some arguments used such as
+      ;; '-conf'.
+      #:tests? #f
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              ;; XXX: Proceed despite conflicts from symbols provided by both
+              ;; the source built and GDC.
+              "DFLAGS=-L--allow-multiple-definition"
+              "ENABLE_RELEASE=1"
+              (string-append "HOST_CXX=" #$(cxx-for-target))
+              "HOST_DMD=gdmd"
+              (string-append "INSTALL_DIR=" #$output)
+              ;; Do not build the shared libphobos2.so library, to avoid
+              ;; retaining a reference to gcc:lib.
+              "SHARED=0"
+              (string-append "SYSCONFDIR=" #$output "/etc")
+              "VERBOSE=1"
+              "-f" "posix.mak")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-phobos-source-and-chdir
+            ;; Start with building phobos, which in turns will automatically
+            ;; build druntime and dmd.  A minimal dmd command is still
+            ;; required to do so, which is why we need dmd-bootstrap-0.
+            (lambda _
+              (symlink "." "dmd")  ;to please the build system expected layout
+              (copy-recursively
+               #$(origin
+                   (method git-fetch)
+                   (uri (git-reference
+                         (url "https://github.com/dlang/phobos")
+                         (commit (string-append "v" version))))
+                   (file-name (git-file-name "phobos" version))
+                   (sha256
+                    (base32
+                     "1yw7nb5d78cx9m7sfibv7rfc7wj3w0dw9mfk3d269qpfpnwzs4n9")))
+               "phobos")
+              (chdir "phobos")))
+          (add-after 'copy-phobos-source-and-chdir 'adjust-phobos-install-dirs
+            (lambda _
+              (substitute* "posix.mak"
+                ;; Install to lib directory, not to e.g. 'linux/lib64'.
+                (("\\$\\(INSTALL_DIR)/\\$\\(OS)/\\$\\(lib_dir)")
+                 (string-append #$output "/lib"))
+                ;; Do not install license file, already done by the gnu build
+                ;; system.
+                ((".*\\$\\(INSTALL_DIR)/phobos-LICENSE.txt.*") ""))))
+          (delete 'configure)
+          (add-after 'install 'install-druntime
+            (lambda args
+              (chdir "../druntime")
+              (apply (assoc-ref %standard-phases 'install) args)
+              (chdir "..")))
+          (add-after 'install-druntime 'install-includes
+            (lambda _
+              ;; Normalize the include files prefix to include/dmd.
+              (let ((include-dir (string-append #$output "/include/dmd")))
+                (mkdir-p include-dir)
+                (rename-file (string-append #$output "/src/phobos")
+                             (string-append include-dir))
+                (copy-recursively "druntime/import" include-dir))
+              (delete-file-recursively (string-append #$output "/src"))))
+          (add-after 'install-druntime 'install-dmd
+            (assoc-ref %standard-phases 'install))
+          (add-after 'install-license-files 'refine-install-layout
+            (lambda _
+              (let* ((docdir (string-append #$output "/share/doc/"
+                                            (strip-store-file-name #$output)))
+                     ;; The dmd binary gets installed to
+                     ;; e.g. /linux/bin64/dmd.
+                     (dmd (car (find-files #$output "^dmd$")))
+                     (dmd.conf (car (find-files #$output "^dmd.conf$")))
+                     (os-dir (dirname (dirname dmd))))
+                ;; Move samples from root to the doc directory.
+                (rename-file (string-append #$output "/samples")
+                             (string-append docdir "/samples"))
+                ;; Remove duplicate license file.
+                (delete-file (string-append #$output
+                                            "/dmd-boostlicense.txt"))
+                ;; Move dmd binary and dmd.conf.
+                (install-file dmd (string-append #$output "/bin"))
+                (install-file dmd.conf (string-append #$output "/etc"))
+                (delete-file-recursively os-dir))))
+          (add-after 'refine-install-layout 'patch-dmd.conf
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* (search-input-file outputs "etc/dmd.conf")
+                (("lib(32|64)")
+                 "lib")
+                (("\\.\\./src/(phobos|druntime/import)")
+                 "include/dmd")))))))
+    (native-inputs (list gdmd which))
+    (home-page "https://github.com/dlang/dmd")
+    (synopsis "Reference D Programming Language compiler")
+    (description "@acronym{DMD, Digital Mars D compiler} is the reference
+compiler for the D programming language.")
+    ;; As reported by upstream:
+    ;; https://wiki.dlang.org/Compilers#Comparison
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (license license:boost1.0)))
+
+;;; Second bootstrap of DMD, built using dmd-bootstrap, with its shared
+;;; libraries preserved.
+(define-public dmd
+  (package
+    (inherit dmd-bootstrap)
+    (arguments
+     (substitute-keyword-arguments
+         (strip-keyword-arguments
+          '(#:tests?)                   ;reinstate tests
+          (package-arguments dmd-bootstrap))
+       ((#:disallowed-references  _ ''())
+        (list dmd-bootstrap))
+       ((#:modules _ ''())
+        '((guix build gnu-build-system)
+          (guix build utils)
+          (srfi srfi-1)))               ;for fold
+       ((#:make-flags flags ''())
+        #~(fold delete #$flags '("DFLAGS=-L--allow-multiple-definition"
+                                 "HOST_DMD=gdmd"
+                                 "SHARED=0")))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'patch-dmd.conf 'rewrite-references-to-bootstrap
+              ;; DMD keeps references to include files used to build a
+              ;; binary.  Rewrite those of dmd-bootstrap to itself, to reduce
+              ;; its closure size.
+              (lambda* (#:key native-inputs inputs outputs
+                        #:allow-other-keys)
+                (let ((dmd (search-input-file outputs "bin/dmd"))
+                      (dmd-bootstrap (dirname
+                                      (dirname
+                                       (search-input-file
+                                        (or native-inputs inputs)
+                                        "bin/dmd")))))
+                  ;; XXX: Use sed, as replace-store-references wouldn't
+                  ;; replace the references, while substitute* throws an
+                  ;; error.
+                  (invoke "sed" "-i"
+                          (format #f "s,~a,~a,g" dmd-bootstrap #$output)
+                          dmd))))))))
+    (native-inputs (modify-inputs (package-native-inputs dmd-bootstrap)
+                     (replace "gdmd" dmd-bootstrap)))))
 
 (define-public dub
   (package
@@ -453,3 +620,35 @@ needed.")
     (synopsis "D binding and OO wrapper of GTK+")
     (description "This package provides bindings to GTK+ for D.")
     (license license:lgpl2.1)))
+
+(define-public d-demangler
+  (package
+    (name "d-demangler")
+    (version "0.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lievenhey/d_demangler")
+                    (commit (string-append "version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13lbbxlaa1mffjs57xchl1g6kyr5lxi0z5x7snyvym0knslxwx2g"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           "d_demangle")
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'install
+                     (lambda _
+                       (install-file "libd_demangle.so"
+                                     (string-append #$output "/lib")))))))
+    (native-inputs (list dmd))
+    (home-page "https://github.com/lievenhey/d_demangler")
+    (synopsis "Utility to demangle D symbols")
+    (description "@command{d_demangle} is a small utility that can be used to
+demangle D symbols.  A shared library is also provided.")
+    (license license:gpl3+)))

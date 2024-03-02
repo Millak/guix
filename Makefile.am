@@ -140,6 +140,7 @@ MODULES =					\
   guix/platforms/arm.scm                        \
   guix/platforms/avr.scm                        \
   guix/platforms/mips.scm                       \
+  guix/platforms/or1k.scm                       \
   guix/platforms/powerpc.scm                    \
   guix/platforms/riscv.scm                      \
   guix/platforms/x86.scm                        \
@@ -453,9 +454,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/4.19-arm64.conf	\
   gnu/packages/aux-files/linux-libre/4.19-i686.conf	\
   gnu/packages/aux-files/linux-libre/4.19-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/4.14-arm.conf	\
-  gnu/packages/aux-files/linux-libre/4.14-i686.conf	\
-  gnu/packages/aux-files/linux-libre/4.14-x86_64.conf	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sitecustomize.py	\

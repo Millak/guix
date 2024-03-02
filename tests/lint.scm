@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
@@ -1358,7 +1358,8 @@
          ;; https://archive.softwareheritage.org/api/1/content/
          (content  "{ \"checksums\": {}, \"data_url\": \"xyz\",
                       \"length\": 42 }"))
-    (with-http-server `((200 ,content))
+    (with-http-server `((404 "")                  ;extid
+                        (200 ,content))
       (parameterize ((%swh-base-url (%local-url)))
         (check-archival (dummy-package "x" (source origin)))))))
 
@@ -1378,7 +1379,8 @@
                          \"type\": \"file\",
                          \"name\": \"README\"
                          \"length\": 42 } ]"))
-    (with-http-server `((404 "")                  ;lookup-content
+    (with-http-server `((404 "")                  ;lookup-directory-by-nar-hash
+                        (404 "")                  ;lookup-content
                         (200 ,disarchive)         ;Disarchive database lookup
                         (200 ,directory))         ;lookup-directory
       (mock ((guix download) %disarchive-mirrors (list (%local-url)))
@@ -1397,7 +1399,8 @@
                       \"save_request_date\": \"2014-11-17T22:09:38+01:00\",
                       \"save_request_status\": \"accepted\",
                       \"save_task_status\": \"scheduled\" }")
-         (warnings (with-http-server `((404 "No revision.") ;lookup-revision
+         (warnings (with-http-server `((404 "No extid.") ;lookup-directory-by-nar-hash
+                                       (404 "No revision.") ;lookup-revision
                                        (404 "No origin.")   ;lookup-origin
                                        (200 ,save))         ;save-origin
                      (parameterize ((%swh-base-url (%local-url)))
@@ -1415,7 +1418,27 @@
          ;; https://archive.softwareheritage.org/api/1/revision/
          (revision "{ \"author\": {}, \"parents\": [],
                       \"date\": \"2014-11-17T22:09:38+01:00\" }"))
-    (with-http-server `((200 ,revision))
+    (with-http-server `((404 "No directory.")     ;lookup-directory-by-nar-hash
+                        (200 ,revision))
+      (parameterize ((%swh-base-url (%local-url)))
+        (check-archival (dummy-package "x" (source origin)))))))
+
+(test-equal "archival: nar-sha256 extid available"
+  '()
+  (let* ((origin   (origin
+                     (method git-fetch)
+                     (uri (git-reference
+                           (url "http://example.org/foo.git")
+                           (commit "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")))
+                     (sha256 (make-bytevector 32))))
+         ;; https://archive.softwareheritage.org/api/1/extid/doc/
+         (extid   "{ \"extid_type\": \"nar-sha256\",
+                     \"extid\": \"1234\",
+                     \"extid_version\": 0,
+                     \"target\": \"swh:1:dir:cabba93\",
+                     \"target_url\": \"boo\"
+                   }"))
+    (with-http-server `((200 ,extid))
       (parameterize ((%swh-base-url (%local-url)))
         (check-archival (dummy-package "x" (source origin)))))))
 

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,10 +19,12 @@
 (define-module (gnu packages sugar)
   #:use-module (gnu packages)
   #:use-module (gnu packages abiword)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -35,6 +37,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages time)
@@ -53,7 +56,7 @@
 (define-public sugar
   (package
     (name "sugar")
-    (version "0.120")
+    (version "0.121")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -62,7 +65,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0imhaj49n7ain33kmrqk19rzlfr50m84fbc011vgg1010ddp3vdw"))))
+                "1s31sz1j7x82vynd233k7jqqp881bpz7486r78wfz2i84f2n4n06"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -79,7 +82,10 @@
             (lambda _
               (substitute* "autogen.sh"
                 (("^\"\\$srcdir/configure" m)
-                 (string-append "#" m)))))
+                 (string-append "#" m)))
+              ;; This .po file does not exist
+              (substitute* "po/LINGUAS"
+                (("^ig") ""))))
           (add-after 'unpack 'fix-references
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "bin/sugar.in"
@@ -106,12 +112,6 @@
                  (dirname
                   (search-input-file inputs
                                      "/share/mobile-broadband-provider-info/serviceproviders.xml"))))
-              ;; XXX: spawn_command_line_sync is not used correctly here, so
-              ;; we need to patch invocations.
-              (substitute* '("extensions/cpsection/aboutcomputer/model.py"
-                             "src/jarabe/model/brightness.py")
-                (("spawn_command_line_sync\\(cmd\\)")
-                 "spawn_command_line_sync(cmd, 0)"))
               (substitute* "extensions/cpsection/aboutcomputer/model.py"
                 (("ethtool")
                  (search-input-file inputs "/sbin/ethtool")))
@@ -120,15 +120,11 @@
                  (string-append "'"
                                 (search-input-file inputs "/bin/locale")
                                 "'")))
-              ;; XXX: The brightness component crashes, so we disable it here.
-              (substitute* "src/jarabe/main.py"
-                (("brightness.get_instance\\(\\)") ""))
-              ;; TODO: these locations should be set to places that exist on
-              ;; Guix System.
-              #;
+              ;; This is a global location on Guix System.  Ideally we would
+              ;; have a search path here.
               (substitute* "extensions/cpsection/background/model.py"
                 (("\\('/usr', 'share', 'backgrounds'\\)")
-                 "('TODO')"))
+                 "('/run', 'current-system', 'profile', 'share', 'backgrounds')"))
               (substitute* "src/jarabe/view/viewhelp.py"
                 (("/usr/share/sugar/activities/")
                  "/run/current-system/profile/share/sugar/activities/"))))
@@ -161,7 +157,7 @@
            gstreamer
            gtk+
            gtksourceview-3
-           libsoup-minimal-2
+           libsoup-minimal
            libwnck
            libxklavier
            network-manager
@@ -175,7 +171,7 @@
            telepathy-salut              ;for XMPP neighborhood
            ;; This is for the UPowerGlib namespace
            upower
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (native-inputs
      (list autoconf automake
            gettext-minimal
@@ -195,7 +191,7 @@ used every school day by children in more than forty countries.")
 (define-public sugar-artwork
   (package
     (name "sugar-artwork")
-    (version "0.120")
+    (version "0.121")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -204,7 +200,7 @@ used every school day by children in more than forty countries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mjydyx7kbk429s3kswfb8x7g5smjwnai924avwxab1kjsjjksm9"))))
+                "00m3dmwswfy4whc2hs51lqckz1z1f2jnw94jhxgw40b17w00pzwj"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -219,7 +215,7 @@ used every school day by children in more than forty countries.")
                 (string-append "#" m))))))))
     (inputs (list cairo gtk+))
     (native-inputs
-     (list autoconf automake
+     (list autoconf-2.71 automake
            icon-naming-utils
            libtool
            pkg-config
@@ -236,7 +232,7 @@ activities and other Sugar components.")
 (define-public sugar-datastore
   (package
     (name "sugar-datastore")
-    (version "0.120")
+    (version "0.121")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -245,7 +241,7 @@ activities and other Sugar components.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wf33w6dm26i8a1zpb40339fj3l9vxjznagls9bc845nld318sqc"))))
+                "01mp0vyg9d6ig29p484prqlgqpa7a3pai8ki37dyk682gr0fhljb"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -293,7 +289,8 @@ activities and other Sugar components.")
            python-pygobject
            python-xapian-bindings))
     (native-inputs
-     (list autoconf automake
+     (list autoconf-2.71
+           automake
            libtool
            pkg-config))
     (home-page "https://www.sugarlabs.org/")
@@ -305,7 +302,7 @@ and metadata, and the journal with querying and full text search.")
 (define-public sugar-toolkit-gtk3
   (package
     (name "sugar-toolkit-gtk3")
-    (version "0.120")
+    (version "0.121")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -314,7 +311,7 @@ and metadata, and the journal with querying and full text search.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wqanc38zplyiq1vxda4bj1n0xd78zqlwml6lzklsrbz923llykz"))))
+                "0x80jqx0z89jxfy2dvn4l35qbyvq3c2hg9jq4i0llq1qgkc4034b"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -368,9 +365,10 @@ and metadata, and the journal with querying and full text search.")
            python-six
 
            telepathy-glib
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (native-inputs
-     (list autoconf automake
+     (list autoconf-2.71
+           automake
            gettext-minimal
            glib
            (list glib "bin")
@@ -386,11 +384,11 @@ the Sugar Toolkit.")
 
 
 (define-public sugar-block-party-activity
-  (let ((commit "a49e68ec00e647af712d8e284622722f2f78b6bf")
+  (let ((commit "26a58f14254d6ae38b7bfa3cb2fc63291eefcc97")
         (revision "1"))
     (package
       (name "sugar-block-party-activity")
-      (version (git-version "11" revision commit))
+      (version (git-version "12" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -399,7 +397,7 @@ the Sugar Toolkit.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0hy82c0gn1hr34arhnh9k6mx2789ki85fkgvga4sw6gwh31278pl"))))
+                  "0zinqhwmvyvk1zvs28dr71p68vb6widn4v3zp35zlzj4ayyn5rvx"))))
       (build-system python-build-system)
       (arguments
        (list
@@ -430,7 +428,7 @@ a Tetris-like game.")
 (define-public sugar-browse-activity
   (package
     (name "sugar-browse-activity")
-    (version "207")
+    (version "208")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -439,7 +437,7 @@ a Tetris-like game.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01p1gfdw9fhn92didc9sq23n6a3krs6findbbmicijz91kx8kfb2"))))
+                "1lxwkwz7bz8vd0jgsgvlwdm6gkrmzcmwlyqvp12j2jk5mpr4fp44"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -468,11 +466,11 @@ a Tetris-like game.")
            gobject-introspection
            gtk+
            (librsvg-for-system)
-           libsoup-minimal-2
+           libsoup-minimal
            python-pygobject
            sugar-toolkit-gtk3
            telepathy-glib
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (inputs
      (list (list glib "bin")))
     (native-inputs
@@ -484,6 +482,58 @@ a Tetris-like game.")
                    license:lgpl2.0+
                    license:gpl2+
                    license:gpl3+))))
+
+(define-public sugar-chat-activity
+  ;; The last release was in 2019 and since then commits have been published
+  ;; that include build fixes and translation updates.
+  (let ((commit "a6a14b99576619639fd82fd265c4af096bcf52dc")
+        (revision "1"))
+    (package
+      (name "sugar-chat-activity")
+      (version (git-version "86" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/chat")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gp1ljazm119hqzwz0rkr6k588ngd68manndm808pj5vgbv7qsdq"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gdk-pixbuf
+             gobject-introspection
+             gtk+
+             gstreamer
+             gst-plugins-base
+             python-pygobject
+             sugar-toolkit-gtk3
+             telepathy-glib))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/chat.html")
+      (synopsis "Sugar activity to chat")
+      (description "Chat is an activity used to exchange messages with friends
+or classmates.")
+      (license license:gpl2+))))
 
 (define-public sugar-help-activity
   (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
@@ -528,8 +578,8 @@ to provide users with easy access to documentation and manuals.")
       (license license:gpl3+))))
 
 (define-public sugar-jukebox-activity
-  (let ((commit "e11f40c94c1c6302d3e36ddf4dc8101732ffb9d9")
-        (revision "1"))
+  (let ((commit "44ad1da717904a7c7d93a08985b94468a9b7ab7a")
+        (revision "2"))
     (package
       (name "sugar-jukebox-activity")
       (version (git-version "36" revision commit))
@@ -541,7 +591,7 @@ to provide users with easy access to documentation and manuals.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0gm1cj4vrwwdriyshd27w6vc0palwpg9pnnab5axinrnkzczyk1v"))))
+                  "1c8g4h52jnwzk5vlkrkm8j0p5dbrjqd8hv3bdz5rp39w9in3skzk"))))
       (build-system python-build-system)
       (arguments
        (list
@@ -640,7 +690,7 @@ looking for why an activity or Sugar is not working properly.")
 (define-public sugar-maze-activity
   (package
     (name "sugar-maze-activity")
-    (version "31")
+    (version "32")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -649,7 +699,7 @@ looking for why an activity or Sugar is not working properly.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ai2ws3mqkxi13chy0hidd1gxiv97862r9lg8qgxb7qkxqyh6afr"))))
+                "0506mwxy3agyxlilb5v3pn29pg45lzaxm8rhj9azm58irs3wdmnq"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -678,6 +728,67 @@ looking for why an activity or Sugar is not working properly.")
     (description "Try to make your way through an increasingly difficult path,
 or you can also play with a friend!")
     (license license:gpl3+)))
+
+(define-public sugar-physics-activity
+  (let ((commit "cfd17b82b783f1ce4952ccdef6a8ddbe3d8f3e46")
+        (revision "1"))
+    (package
+      (name "sugar-physics-activity")
+      (version (git-version "35" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/physics")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0yzq4cbgcngf1ayi4bsn04l3mz6pnayd6db9bv0v9xfrpjmffvyk"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'inject-load-path
+              (lambda _
+                (substitute* "activity.py"
+                  (("^import os")
+                   (string-append "\
+import sys, os
+for directory in \"" (getenv "GUIX_PYTHONPATH") "\".split(\":\"):
+    try:
+        sys.path.index(directory)
+    except ValueError:
+        sys.path.insert(1, directory)
+")))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             gdk-pixbuf))
+      (inputs
+       (list python-pybox2d
+             python-pygame
+             sugar-toolkit-gtk3
+             gettext-minimal))
+      (home-page "https://github.com/sugarlabs/physics")
+      (synopsis "Physical world simulator and playground")
+      (description "Physics is a physical world simulator and playground---you
+can add squares, circles, triangles, or draw your own shapes, and see them
+come to life with forces (think gravity, Newton!), friction (scrrrrape), and
+inertia (ahh, slow down!).")
+      (license license:gpl3+))))
 
 (define-public sugar-read-activity
   (let ((commit "25f69e41a4fa69d93c73c0c9367b4777a014b1cd")
@@ -716,7 +827,7 @@ or you can also play with a friend!")
        (list evince
              gtk+
              sugar-toolkit-gtk3
-             webkitgtk-with-libsoup2))
+             webkitgtk-for-gtk3))
       (inputs
        (list gettext-minimal))
       (home-page "https://help.sugarlabs.org/read.html")
@@ -772,6 +883,92 @@ controls.")
       (description "Terminal is a full-screen text mode program that provides
 a Command-Line Interface (CLI) to the system.")
       (license (list license:gpl2+ license:gpl3+)))))
+
+(define-public sugar-turtleart-activity
+  (let ((commit "a4340adea18efbdb987eca6477fa71d5c924811f")
+        (revision "1"))
+    (package
+      (name "sugar-turtleart-activity")
+      (version (git-version "202" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/turtleart-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11agqyahjhxb7bakzix63lazcbin0jfiypqx0sm2i85bsl30fp7y"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (add-after 'unpack 'patch-locations
+              (lambda _
+                (substitute* "setup.py"
+                  (("'/usr/share/applications")
+                   "'share/applications"))))
+            (add-after 'unpack 'patch-tool-references
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* '("TurtleArtActivity.py"
+                               "TurtleArt/turtleblocks.py")
+                  (("glib-compile-schemas")
+                   (search-input-file inputs "/bin/glib-compile-schemas")))
+                (substitute* '("plugins/turtle_blocks_extras/turtle_blocks_extras.py"
+                               "pysamples/speak.py"
+                               "TurtleArt/tacollaboration.py")
+                  (("'espeak")
+                   (string-append "'" (search-input-file inputs "/bin/espeak"))))
+                (substitute* '("pysamples/csound.py"
+                               "plugins/turtle_blocks_extras/turtle_blocks_extras.py")
+                  (("'csound '")
+                   (string-append "'" (search-input-file inputs "/bin/csound")
+                                  " '")))
+                (substitute* '("plugins/turtle_blocks_extras/turtle_blocks_extras.py"
+                               "pysamples/speak.py"
+                               "TurtleArt/tacollaboration.py")
+                  (("\\| aplay")
+                   (string-append "| "
+                                  (search-input-file inputs "/bin/aplay"))))
+                (substitute* "pysamples/sinewave.py"
+                  (("'speaker-test")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/speaker-test"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gstreamer
+             gtk+
+             telepathy-glib
+             webkitgtk-for-gtk3))
+      (inputs
+       (list alsa-utils
+             csound
+             espeak
+             (list glib "bin")
+             gettext-minimal
+             sugar-toolkit-gtk3))
+      (home-page "https://help.sugarlabs.org/en/turtleart.html")
+      (synopsis "Block-based Logo programming environment")
+      (description "Turtle Art, also known as Turtle Blocks, is an activity
+with a Logo-inspired graphical “turtle” that draws colorful art based on
+snap-together visual programming elements.  Its “low floor” provides an easy
+entry point for beginners.  It also has “high ceiling” programming, graphics,
+mathematics, and Computer Science features which will challenge the more
+adventurous student.")
+      (license license:expat))))
 
 (define-public sugar-typing-turtle-activity
   (package

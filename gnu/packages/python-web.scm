@@ -39,7 +39,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2020, 2022 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2022, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -102,6 +102,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
@@ -127,6 +128,92 @@
   #:use-module (gnu packages xml)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (srfi srfi-1))
+
+(define-public python-huggingface-hub
+  (package
+    (name "python-huggingface-hub")
+    (version "0.20.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/huggingface/huggingface_hub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00indl9labvqvm4m0y5jbzl68cgj8i60a6qy498gpnjj2pqk4l6v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; We don't have sentence_transformers...
+      '(list "--ignore=contrib/sentence_transformers/test_sentence_transformers.py"
+             ;; ...nor do we have InquirerPy...
+             "--ignore=tests/test_command_delete_cache.py"
+             ;; ...or timm...
+             "--ignore=contrib/timm/test_timm.py"
+             ;; ...or spacy_huggingface_hub
+             "--ignore=contrib/spacy/test_spacy.py"
+             ;; These all require internet access
+             "--ignore=tests/test_cache_no_symlinks.py"
+             "--ignore=tests/test_cache_layout.py"
+             "--ignore=tests/test_commit_scheduler.py"
+             "--ignore=tests/test_file_download.py"
+             "--ignore=tests/test_hf_api.py"
+             "--ignore=tests/test_hf_file_system.py"
+             "--ignore=tests/test_inference_api.py"
+             "--ignore=tests/test_inference_async_client.py"
+             "--ignore=tests/test_inference_client.py"
+             "--ignore=tests/test_login_utils.py"
+             "--ignore=tests/test_offline_utils.py"
+             "--ignore=tests/test_repocard.py"
+             "--ignore=tests/test_repository.py"
+             "--ignore=tests/test_snapshot_download.py"
+             "--ignore=tests/test_utils_cache.py"
+             "--ignore=tests/test_utils_git_credentials.py"
+             "--ignore=tests/test_utils_http.py"
+             "--ignore=tests/test_utils_pagination.py"
+             "--ignore=tests/test_webhooks_server.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           ;; Some tests need to write to HOME.
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-filelock
+           python-fsspec
+           python-packaging
+           python-pyyaml
+           python-requests
+           python-tqdm
+           python-typing-extensions))
+    (native-inputs
+     (list python-aiohttp
+           python-fastapi
+           python-jedi
+           python-jinja2
+           python-mypy
+           python-numpy
+           python-pillow
+           python-pydantic
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-env
+           python-pytest-rerunfailures
+           python-pytest-vcr
+           python-pytest-xdist
+           python-types-requests
+           python-types-toml
+           python-types-urllib3
+           python-typing-extensions
+           python-urllib3))
+    (home-page "https://github.com/huggingface/huggingface_hub")
+    (synopsis "Client library for accessing the huggingface.co hub")
+    (description
+     "This package provides a client library to download and publish models,
+datasets and other repos on the @url{huggingface.co} hub.")
+    (license license:asl2.0)))
 
 (define-public python-lazr-restfulclient
   (package
@@ -1194,28 +1281,30 @@ other HTTP libraries.")
 (define-public httpie
   (package
     (name "httpie")
-    (version "3.2.1")
+    (version "3.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "httpie" version))
        (sha256
         (base32
-         "1v736y2h7lcyrnxs9y5sf4xwzgll7pc2s6r3ny929mm8lcn07h69"))))
+         "140w4mr0w7scpf4j5qm4h475vbwrgxzkdwyygwcmql1r1cgngywb"))))
     (build-system python-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run them.
      '(#:tests? #f))
     (propagated-inputs
-     (list python-colorama
+     (list python-charset-normalizer
+           python-colorama
+           python-defusedxml
+           python-importlib-metadata
+           python-multidict
+           python-pip
            python-pygments
            python-requests
            python-requests-toolbelt
-           python-pysocks
-           python-charset-normalizer
-           python-defusedxml
            python-rich
-           python-multidict))
+           python-setuptools))
     (home-page "https://httpie.io")
     (synopsis "cURL-like tool for humans")
     (description
@@ -1230,25 +1319,22 @@ HTTP servers, RESTful APIs, and web services.")
 (define-public parfive
   (package
     (name "parfive")
-    (version "2.0.1")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "parfive" version))
               (sha256
                (base32
-                "19dcbb6g56l5s3ih0bhs3p4acgc0gf4zdzpj4w87m69li2nhmgpx"))))
-    (build-system python-build-system)
+                "0pf8rzfwxpkn84xzb4v8m1fy3k7kjlh8f9ln4y5xqlnbqpwi30lh"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'disable-test-requiring-network
-                          (lambda _
-                            (substitute* "parfive/tests/test_downloader.py"
-                              (("def test_ftp")
-                               "def __off_test_ftp"))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "pytest" "-vvv" "parfive")))))))
+     (list
+      ;; Disable tests requiring network access.
+      #:test-flags
+      #~(list "-k" (string-append
+                    "not test_ftp"
+                    " and not test_ftp_pasv_command"
+                    " and not test_ftp_http"))))
     (propagated-inputs (list python-aiofiles python-aioftp python-aiohttp
                              python-tqdm))
     (native-inputs (list python-pytest
@@ -1354,32 +1440,17 @@ Encryption} (JOSE) Web Standards.")
 (define-public python-pyscss
   (package
     (name "python-pyscss")
-    (version "1.3.7")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/Kronuz/pyScss")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0701hziiiw67blafgpmjhzspmrss8mfvif7fw0rs8fikddwwc9g6"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "scss/types.py"
-                   (("from collections import Iterable")
-                    "from collections.abc import Iterable"))))))
-    (build-system python-build-system)
-    (arguments
-     ;; XXX: error in test collection, possible incompatibility with Pytest 6.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "scss")))))))
+        (base32 "1vinddg8sbh3v9n1r1wmvjx6ydk8xp7scbvhb3csl4y9xz7vhk6g"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov))
     (inputs
@@ -3475,20 +3546,14 @@ adapter for use with the Requests library.")
 (define-public python-aioftp
   (package
     (name "python-aioftp")
-    (version "0.21.4")
+    (version "0.22.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aioftp" version))
               (sha256
                (base32
-                "1f8vql2j2b3ykqyh5bxzsp8x5f2if2c1ya232ld3hz3cc7a2dfr8"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vvv")))))))
+                "0w621mg956m9rn7v39jpwi4gpnpl90pprwl29cp640dahqqv38ms"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-async-timeout python-pytest
                          python-pytest-asyncio python-pytest-cov
                          python-trustme))
@@ -5271,13 +5336,13 @@ with oauthlib.")
 (define-public whoogle-search
   (package
     (name "whoogle-search")
-    (version "0.8.3")
+    (version "0.8.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "whoogle-search" version))
               (sha256
                (base32
-                "09b9k97jflajvrs0npyz994rj8xkk400s98jw63b6vpsgw9q9nk4"))))
+                "0hsy4l98nzj6i1lf63wvqd0yharkaz44zsxh863ymy47rxnwimz7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5293,6 +5358,7 @@ with oauthlib.")
            python-dotenv
            python-requests
            python-stem
+           python-validators
            python-waitress))
     (home-page "https://github.com/benbusby/whoogle-search")
     (synopsis "Self-hosted, ad-free, privacy-respecting metasearch engine")
@@ -6984,6 +7050,71 @@ interpreter written in pure Python.")
 Encoding for HTTP.")
     (license license:expat)))
 
+(define-public python-cloud-init
+  (package
+    (name "python-cloud-init")
+    (version "23.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/canonical/cloud-init")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0przjj2j1ws6b7sbgqxnffsarbbwl00lhq3bn7yiksp8kg8np1m1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; This requires usermod
+        "--ignore=tests/unittests/distros/test_create_users.py"
+        ;; This writes to /var
+        "--ignore=tests/unittests/net/test_dhcp.py"
+        "-k"
+        (string-append
+         ;; This test messes with PATH, so it cannot find mkdir
+         "not test_path_env_gets_set_from_main"
+         ;; These all fail because /bin/sh doesn't exist.  We cannot patch
+         ;; this because the generated scripts must use /bin/sh as they are
+         ;; supposed to be run on minimal systems.
+         " and not test_handler_creates_and_runs_bootcmd_script_with_instance_id"
+         " and not test_handler_runs_bootcmd_script_with_error"
+         " and not test_subp_combined_stderr_stdout"
+         " and not test_handle_part"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-references
+           (lambda _
+             (substitute* "tests/unittests/cmd/test_clean.py"
+               (("#!/bin/sh") (string-append "#!" (which "sh")))))))))
+    (propagated-inputs
+     (list python-configobj
+           python-jinja2
+           python-jsonpatch
+           python-jsonschema
+           python-netifaces
+           python-oauthlib
+           python-pyserial
+           python-pyyaml
+           python-responses))
+    (native-inputs
+     (list procps ;for ps when running tests
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-passlib))
+    (home-page "https://github.com/canonical/cloud-init")
+    (synopsis "Cloud instance initialization tools")
+    (description
+     "Cloud-init is the multi-distribution method for cross-platform cloud
+instance initialization.  It is supported across all major public cloud
+providers, provisioning systems for private cloud infrastructure, and
+bare-metal installations.")
+    ;; Either license can be chosen
+    (license (list license:asl2.0 license:gpl3))))
+
 (define-public python-cloudscraper
   (package
     (name "python-cloudscraper")
@@ -8659,6 +8790,71 @@ starlette.")
 Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
 pattern.")
     (license license:expat)))
+
+(define-public python-fastapi-pagination-minimal
+  (package
+    (name "python-fastapi-pagination-minimal")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/uriyyo/fastapi-pagination")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkcphjk1qy680v1hkmqbs4p7srvx020wy39b97anrn9dyyi5ah6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests depend on python-cassandra,
+     ;; which is not yet packaged in Guix.
+     `(#:tests? #f))
+    (native-inputs
+     (list poetry))
+    ;; These are the only required dependencies,
+    ;; please add all optional dependencies to the
+    ;; full python-fastapi-pagination below.
+    (propagated-inputs (list python-fastapi
+                             python-pydantic))
+    (home-page "https://github.com/uriyyo/fastapi-pagination")
+    (synopsis "FastAPI pagination library")
+    (description "@code{fastapi-pagination} is a Python library designed to
+simplify pagination in FastAPI applications.  It provides a set of utility
+functions and data models to help you paginate your database queries and
+return paginated responses to your clients.")
+    (license license:expat)))
+
+(define-public python-fastapi-pagination
+  (package
+    (inherit python-fastapi-pagination-minimal)
+    (name "python-fastapi-pagination")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs
+                     python-fastapi-pagination-minimal)
+       (prepend python-asyncpg
+                python-databases
+                python-django
+                python-fastapi
+                python-pydantic
+                python-sqlalchemy
+                (package
+                  (inherit python-tortoise-orm)
+                  (arguments
+                   (substitute-keyword-arguments (package-arguments
+                                                  python-tortoise-orm)
+                     ((#:phases phases '%standard-phases)
+                      `(modify-phases ,phases
+                        (delete 'sanity-check)))))
+                  (propagated-inputs
+                   (modify-inputs (package-propagated-inputs python-tortoise-orm)
+                     (replace "python-aiosqlite" python-aiosqlite)))))))
+    (description
+     (string-append (package-description python-fastapi-pagination-minimal)
+                    "
+
+This package, as opposed to @code{python-fastapi-pagination-minimal}, depends on
+all available optional dependencies supported by mainline
+@code{fastapi-pagination}."))))
 
 (define-public python-pyactiveresource
   (package

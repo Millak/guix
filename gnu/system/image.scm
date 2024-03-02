@@ -72,6 +72,7 @@
   #:export (root-offset
             root-label
             image-without-os
+            operating-system-for-image
 
             esp-partition
             esp32-partition

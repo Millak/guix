@@ -371,7 +371,7 @@ more.")
                        (string-append "-Dprefix=" out)
                        (string-append "-Dman1dir=" out "/share/man/man1")
                        (string-append "-Dman3dir=" out "/share/man/man3")
-                       "-de" "-Dcc=gcc"
+                       "-de" "-Dcc=gcc -std=c90"
                        "-Uinstallusrbinperl"
                        "-Dinstallstyle=lib/perl5"
                        "-Duseshrplib"
@@ -404,8 +404,7 @@ more.")
                (for-each (lambda (dso)
                            (chmod dso #o755))
                          (find-files lib "\\.so$"))))))))
-    (native-inputs
-     (list gcc-5))))
+    (native-inputs '())))
 
 (define-public perl-algorithm-c3
   (package

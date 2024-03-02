@@ -7,20 +7,21 @@
 # Nicolas Goaziou <weblate@nicolasgoaziou.fr>, 2021.
 # Aurelien Coussat <acoussat@mail.fr>, 2022.
 # grimst <grimaitres@gmail.com>, 2023.
+# Robin CHARRON <robin.c1906@hotmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix-packages 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2023-03-23 15:20+0000\n"
-"Last-Translator: grimst <grimaitres@gmail.com>\n"
+"PO-Revision-Date: 2024-01-08 16:37+0000\n"
+"Last-Translator: Robin CHARRON <robin.c1906@hotmail.com>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/packages/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 5.3.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu/packages/abiword.scm:124
@@ -75,8 +76,9 @@ msgstr ""
 "langues européennes."
 
 #: gnu/packages/audio.scm:205
+#, fuzzy
 msgid "Embedded Audio Acceleration"
-msgstr ""
+msgstr "Accélération Audio Embarquée"
 
 #: gnu/packages/audio.scm:206
 msgid ""
@@ -234,8 +236,9 @@ msgstr ""
 "fichiers General MIDI."
 
 #: gnu/packages/audio.scm:526 gnu/packages/audio.scm:545
+#, fuzzy
 msgid "Adaptive Multi Rate Codec"
-msgstr ""
+msgstr "Codec multi-débit adaptatif"
 
 #: gnu/packages/audio.scm:527
 msgid ""
@@ -287,12 +290,14 @@ msgstr ""
 "et la production de fichiers MIDI à partir d'audio en direct."
 
 #: gnu/packages/audio.scm:664
+#, fuzzy
 msgid "Audio processing program with an interactive mode"
-msgstr ""
+msgstr "Programme de traitement audio avec un mode interactif"
 
 #: gnu/packages/audio.scm:666
+#, fuzzy
 msgid "dsp is an audio processing program with an interactive mode."
-msgstr ""
+msgstr "dsp est un programme de traitement audio avec un mode interactif."
 
 #: gnu/packages/audio.scm:713
 msgid "C++ library of functions for DSP and Music Informatics purposes"

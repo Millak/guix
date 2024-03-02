@@ -77,6 +77,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
@@ -112,7 +113,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "2.6.0")
+    (version "2.6.2")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -123,7 +124,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19wmzpbc23515ab4v4pw792x68y7bgsqhd2pmlqiq6bp6jxfrykg"))))
+        (base32 "05zcs0avyjn1dlxxsrc47ld3iddls22g1bc4mk0g8ldxvcwra05g"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -742,14 +743,14 @@ preloading.")
 (define-public chafa
   (package
     (name "chafa")
-    (version "1.12.5")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hpjansson.org/chafa/releases/chafa-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1wjp75l0qbikbdbvj8nlhl1gsakhx3309k0mdww6n2jh5bar0m0g"))))
+                "1170g2qkcj2amsfl7sn81r42lwb2hy4z15xxhy0lrkayig15a3k7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

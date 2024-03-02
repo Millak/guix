@@ -1,0 +1,35 @@
+From 9990160268fafb71751d4f3a9ad724df70cb9451 Mon Sep 17 00:00:00 2001
+From: Bas Couwenberg <sebastic@xs4all.nl>
+Date: Fri, 1 Dec 2023 10:35:46 +0100
+Subject: [PATCH] Fix test failure on i386.
+
+---
+https://github.com/OSGeo/libgeotiff/pull/107
+
+ test/testlistgeo | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/test/testlistgeo b/test/testlistgeo
+index 48e92eb..ceec2e6 100755
+--- a/test/testlistgeo
++++ b/test/testlistgeo
+@@ -218,6 +218,9 @@ echo "" >>${OUT}
+ sed "s/ETRS89-extended/ETRS89/g" < ${OUT} > ${OUT}.tmp
+ mv ${OUT}.tmp ${OUT}
+ 
++sed "s/ProjCenterLongGeoKey: 46.437229 ( 46d26'14.02\"E)/ProjCenterLongGeoKey: 46.437229 ( 46d26'14.03\"E)/" < ${OUT} > ${OUT}.tmp
++mv ${OUT}.tmp ${OUT}
++
+ sed "s/ETRS89-extended/ETRS89/g" < ${TEST_CLI_DIR}/testlistgeo_out.dist > testlistgeo_out.dist.normalized
+ 
+ sed "s/GCS: 4053\/Unspecified datum based upon the International 1924 Authalic Sphere/GCS: 10346\/NSIDC Authalic Sphere/g" < ${OUT} > ${OUT}.tmp
+@@ -230,6 +233,9 @@ mv testlistgeo_out.dist.normalized.tmp testlistgeo_out.dist.normalized
+ sed "s/Datum: 6053\/Not specified (based on International 1924 Authalic Sphere)/Datum: 1360\/NSIDC International 1924 Authalic Sphere/g" < testlistgeo_out.dist.normalized > testlistgeo_out.dist.normalized.tmp
+ mv testlistgeo_out.dist.normalized.tmp testlistgeo_out.dist.normalized
+ 
++sed "s/ProjCenterLongGeoKey: 46.437229 ( 46d26'14.02\"E)/ProjCenterLongGeoKey: 46.437229 ( 46d26'14.03\"E)/" < testlistgeo_out.dist.normalized > testlistgeo_out.dist.normalized.tmp
++mv testlistgeo_out.dist.normalized.tmp testlistgeo_out.dist.normalized
++
+ # do 'diff' with distribution results
+ # after cleaning for avoid spurios result due 
+ # to different build dir

@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Danny Milosavljevic <dannym@scratchpost.org>
@@ -680,6 +680,102 @@ interactive environment for the functional language Haskell.")
      "The Glasgow Haskell Compiler (GHC) is a state-of-the-art compiler and
 interactive environment for the functional language Haskell.")
     (license license:bsd-3)))
+
+(define-public ghc-7.0
+  (package
+    (inherit ghc-6.10)
+    (name "ghc")
+    (version "7.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://downloads.haskell.org/~ghc/"
+                           version "/" name "-" version "-src.tar.bz2"))
+       (sha256
+        (base32
+         "1vfhdvf9nls4pn1vy48ndy2s81klp1my6ch9dkg2373csvcpi6qs"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "utils/ghc-pwd/dist-boot")))))
+    (arguments
+     (list
+      #:system "i686-linux"
+      #:test-target "test"
+      #:tests? #false           ;not yet
+      #:parallel-build? #false  ;fails when building libraries/*
+      ;; Don't pass --build=<triplet>, because the configure script
+      ;; auto-detects slightly different triplets for --host and --target and
+      ;; then complains that they don't match.
+      #:build #f
+      #:validate-runpath? #f    ; libraries can't find each other.
+      #:configure-flags
+      #~(list
+         (string-append "--with-gmp-libraries="
+                        (assoc-ref %build-inputs "gmp") "/lib")
+         (string-append "--with-gmp-includes="
+                        (assoc-ref %build-inputs "gmp") "/include"))
+      #:make-flags
+      #~(list (string-append "CONFIG_SHELL=" (assoc-ref %build-inputs "bash")
+                             "/bin/bash"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash (which "bash")))
+                ;; Use our libffi package
+                (substitute* "rts/ghc.mk"
+                  (("-I../libffi/build/include")
+                   (string-append "-I" #$(this-package-input "libffi") "/include"))
+                  (("-L../libffi/build/include")
+                   (string-append "-L" #$(this-package-input "libffi") "/lib"))
+                  (("-DDEBUG") ""))
+                (substitute* '("Makefile"
+                               "distrib/Makefile")
+                  (("SUBDIRS = gmp libffi")
+                   "SUBDIRS = gmp")
+                  (("\\$\\(MAKE\\) -C libffi.*") ""))
+                (substitute* "compiler/ghc.cabal.in"
+                  (("../libffi/build/include")
+                   (string-append #$(this-package-input "libffi") "/include")))
+
+                ;; Do not use libbfd, because it complicates the build and
+                ;; requires more patching.  Disable all debug and profiling
+                ;; builds.
+                (substitute* "mk/config.mk.in"
+                  (("GhcRTSWays \\+= debug") "")
+                  (("thr thr_debug thr_l") "thr thr_l")
+                  (("dyn debug_dyn") "dyn")
+                  (("thr_dyn thr_debug_dyn") "thr_dyn")
+                  (("GhcLibWays += p") "GhcLibWays +="))
+
+                ;; Replace /bin/sh.
+                (substitute* '("configure"
+                               "distrib/configure.ac")
+                  (("`/bin/sh") (string-append "`" bash))
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash))
+                  (("#! /bin/sh") (string-append "#! " bash)))
+                (substitute* '("mk/config.mk.in")
+                  (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
+                (substitute* "aclocal.m4"
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
+                (substitute* "utils/ghc-pkg/ghc.mk"
+                  (("#!/bin/sh") (string-append "#!" bash)))
+                (substitute* '("libraries/unix/cbits/execvpe.c"
+                               "libraries/Cabal/Distribution/Simple/Hugs.hs"
+                               "libraries/Cabal/Distribution/Simple/Program/Script.hs"
+                               "libraries/process/System/Process/Internals.hs")
+                  (("/bin/sh") bash)
+                  (("\"sh\"") (string-append "\"" bash "\"")))))))))
+    (native-search-paths (list (search-path-specification
+                                (variable "GHC_PACKAGE_PATH")
+                                (files (list
+                                        (string-append "lib/ghc-" version)))
+                                (file-pattern ".*\\.conf\\.d$")
+                                (file-type 'directory))))
+    (inputs
+     (list gmp libffi ncurses perl))
+    (native-inputs
+     (list perl ghc-6.10))))
 
 (define ghc-bootstrap-x86_64-7.8.4
   (origin

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mckinley Olsen <mck.olsen@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,8 +76,10 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dlang)
@@ -90,6 +93,8 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libcanberra)
@@ -155,7 +160,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
 (define-public tilda
   (package
     (name "tilda")
-    (version "1.5.4")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -164,7 +169,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
              (commit (string-append "tilda-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q2i9ny8sh7zjzgvkx8vcvk593wcvchjc4xq4nrlqdd377r7cg5q"))))
+        (base32 "1ad5jlyg9izm2rid115dv70af6j5i96p91i685c0h9vlrn5sviqs"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -172,7 +177,7 @@ less to gain, as only the helper process is running with privileges (e.g.,
                     (lambda _
                       (for-each make-file-writable
                                 (find-files "po" ".")) #t)))))
-    (native-inputs (list autoconf automake gettext-minimal pkg-config))
+    (native-inputs (list autoconf-2.71 automake gettext-minimal pkg-config))
     (inputs (list libconfuse vte))
     (synopsis "GTK+-based drop-down terminal")
     (description
@@ -183,29 +188,6 @@ is similar to the built-in consoles in some applications.  Tilda is highly
 configurable through a graphical wizard.")
     (home-page "https://github.com/lanoxx/tilda")
     (license license:gpl2+)))
-
-(define-public tilda-dbus
-  (package
-    (inherit tilda)
-    (name "tilda")
-    (version "1.6-alpha")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lanoxx/tilda")
-             (commit "51a980a55ad6d750daa21d43a66d44577dad277b")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1pdarmlxkap9v689s88b89l5hi4vspsrrysh7pbm9rhdjmzk5m2c"))))
-    (synopsis "GTK+-based drop-down terminal with experimental D-Bus support")
-    (description
-     "Tilda is a terminal emulator similar to normal terminals like
-gnome-terminal (GNOME) or Konsole (KDE), with the difference that it drops down
-from the edge of a screen when a certain configurable hotkey is pressed.  This
-is similar to the built-in consoles in some applications.  Tilda is highly
-configurable through a graphical wizard.  This version enables D-Bus support
-which is necessary for using Tilda on Wayland.")))
 
 (define-public termite
   (package
@@ -1530,10 +1512,11 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.3")
+    (version "0.13.1")
     (source
      (origin
-       ;; XXX: The crate at "crates.io" has limited contents.  In particular,
+       ;; XXX: The crate at "crates.io" contains only the alacritty subproject
+       ;; of alacritty and thus has limited contents.  In particular,
        ;; it does not contain "extra" directory with completions, icon, etc.
        (method git-fetch)
        (uri (git-reference
@@ -1541,43 +1524,58 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jbyxnza38c22k7ri8apzn03q91l06isj8la9xca7cz06kn0hha9"))))
+        (base32 "1y5xc9ryn9r0adygq53vrbpb8lazkmcqw38q978pbf0i57nwczrn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f     ; virtual manifest
+     `(#:install-source? #f
+       #:cargo-test-flags
+       '("--release" "--"
+         ;; Completions generated with a different minor version of clap?
+         "--skip=cli::tests::completions")
        #:cargo-inputs
-       (("rust-alacritty-config" ,rust-alacritty-config-0.1)
-        ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
-        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.19)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-cocoa" ,rust-cocoa-0.24)
-        ("rust-copypasta" ,rust-copypasta-0.8)
-        ("rust-crossfont" ,rust-crossfont-0.5)
-        ("rust-dirs" ,rust-dirs-4)
-        ("rust-embed-resource" ,rust-embed-resource-1)
-        ("rust-fnv" ,rust-fnv-1)
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-cocoa" ,rust-cocoa-0.25)
+        ("rust-copypasta" ,rust-copypasta-0.10)
+        ("rust-crossfont" ,rust-crossfont-0.7)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-embed-resource" ,rust-embed-resource-2)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
-        ("rust-glutin" ,rust-glutin-0.30)
+        ("rust-glutin" ,rust-glutin-0.31)
+        ("rust-home" ,rust-home-0.5)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-notify" ,rust-notify-5)
+        ("rust-miow" ,rust-miow-0.6)
+        ("rust-notify" ,rust-notify-6)
         ("rust-objc" ,rust-objc-0.2)
-        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-piper" ,rust-piper-0.2)
+        ("rust-polling" ,rust-polling-3)
         ("rust-png" ,rust-png-0.17)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
         ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-regex-automata" ,rust-regex-automata-0.4)
+        ("rust-rustix-openpty" ,rust-rustix-openpty-0.1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+        ("rust-signal-hook" ,rust-signal-hook-0.3)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-toml" ,rust-toml-0.8)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-wayland-client" ,rust-wayland-client-0.29)
-        ("rust-windows-sys" ,rust-windows-sys-0.36)
-        ("rust-winit" ,rust-winit-0.28)
-        ("rust-x11-dl" ,rust-x11-dl-2)
+        ("rust-vte" ,rust-vte-0.13)
+        ("rust-windows-sys" ,rust-windows-sys-0.48)
+        ("rust-winit" ,rust-winit-0.29)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
-       (("rust-clap-complete" ,rust-clap-complete-3))
+       (("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-toml" ,rust-toml-0.8))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-xdg-open
@@ -1602,7 +1600,9 @@ basic input/output.")
                 (search-input-file inputs (string-append "lib/" all)))
 
                ;; There are several libwayland libraries.
-               (("libwayland-.*\\.so" all)
+               (("libwayland\\.so" all)
+                (search-input-file inputs (string-append "lib/" all)))
+               (("libwayland-[[:alpha:]]*\\.so" all)
                 (search-input-file inputs (string-append "lib/" all)))
                (("libxkbcommon\\.so")
                 (search-input-file inputs "lib/libxkbcommon.so")))))
@@ -1614,21 +1614,30 @@ basic input/output.")
                     (share (string-append out "/share"))
                     (icons (string-append share "/icons/hicolor/scalable/apps"))
                     (tic   (search-input-file (or native-inputs inputs) "/bin/tic"))
-                    (man   (string-append share "/man/man1"))
+                    (man   (string-append share "/man"))
                     (alacritty-bin (car (find-files "target" "^alacritty$"))))
                ;; Install the executable.
                (install-file alacritty-bin bin)
                ;; Install man pages.
-               (mkdir-p man)
-               (copy-file "extra/alacritty.man"
-                          (string-append man "/alacritty.1"))
-               ;; Install example configuration.
-               (install-file "alacritty.yml"
-                             (string-append share "/doc/alacritty-"
-                                            ,(package-version this-package) "/example"))
+               (mkdir-p (string-append man "/man1"))
+               (mkdir-p (string-append man "/man5"))
+               (define (create-manpage manpage)
+                 (let ((mandir (string-append
+                                 "/man" (string-take-right manpage 1) "/")))
+                   (with-input-from-file (string-append manpage ".scd")
+                     (lambda _
+                       (with-output-to-file (string-append man mandir manpage)
+                         (lambda _ (invoke "scdoc")))))))
+               (with-directory-excursion "extra/man"
+                 (for-each create-manpage '("alacritty.1"
+                                            "alacritty-msg.1"
+                                            "alacritty.5"
+                                            "alacritty-bindings.5")))
                ;; Install desktop file.
                (install-file "extra/linux/Alacritty.desktop"
                              (string-append share "/applications"))
+               (install-file "extra/linux/org.alacritty.Alacritty.appdata.xml"
+                             (string-append share "/metainfo"))
                ;; Install icon.
                (mkdir-p icons)
                (copy-file "extra/logo/alacritty-term.svg"
@@ -1651,7 +1660,8 @@ basic input/output.")
     (native-inputs
      (list ncurses
            pkg-config
-           python))
+           python
+           scdoc))
     (inputs
      (list expat
            fontconfig
@@ -1726,3 +1736,30 @@ ephemeral serial ports.  It features automatic port detection, port enumeration,
 support for non-standard baud rates, the ability to wait for ports to appear,
 and the ability to read and write via stdin and stdout.")
     (license license:expat)))
+
+(define-public roxterm
+  (package
+    (name "roxterm")
+    (version "3.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/realh/roxterm.git")
+                     (commit version)))
+              (sha256
+               (base32
+                "19y4lxwj18pr231597rnyyk6f5hwvsajjv7w21wb5c62jjjyfrws"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ; No tests
+    (native-inputs
+     (list docbook-xsl docbook-xml (list glib "bin") libxml2 libxslt
+           pkg-config))
+    (inputs
+     (list dbus dbus-glib gtk+ pcre vte))
+    (synopsis "ROXTerm terminal emulator")
+    (description "This package provides a terminal emulator with hyperlink
+support.  It's based on VTE and aimed at power users.")
+    (home-page "https://realh.github.io/roxterm/")
+    ;; src/gresources.c is under LGPL 2.1+
+    (license (list license:gpl2+ license:lgpl2.1+))))

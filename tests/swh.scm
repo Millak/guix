@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,6 +18,7 @@
 
 (define-module (test-swh)
   #:use-module (guix swh)
+  #:use-module (guix base32)
   #:use-module (guix tests http)
   #:use-module (web response)
   #:use-module (srfi srfi-19)
@@ -55,6 +56,16 @@
        \"type\": \"regular\",
        \"length\": 456,
        \"dir_id\": 2 } ]")
+
+(define %external-id
+  "{ \"extid_type\": \"nar-sha256\",
+     \"extid\":
+\"0b56ba94c2b83b8f74e3772887c1109135802eb3e8962b628377987fe97e1e63\",
+     \"version\": 0,
+     \"target\": \"swh:1:dir:84a8b34591712c0a90bab0af604188bcd1fe3153\",
+     \"target_url\":
+\"https://archive.softwareheritage.org/swh:1:dir:84a8b34591712c0a90bab0af604188bcd1fe3153\"
+   }")
 
 (define-syntax-rule (with-json-result str exp ...)
   (with-http-server `((200 ,str))
@@ -97,6 +108,14 @@
            (list (directory-entry-name entry)
                  (directory-entry-length entry)))
          (lookup-directory "123"))))
+
+(test-equal "lookup-directory-by-nar-hash"
+  "swh:1:dir:84a8b34591712c0a90bab0af604188bcd1fe3153"
+  (with-json-result %external-id
+    (lookup-directory-by-nar-hash
+     (nix-base32-string->bytevector
+      "0qqygvlpz63phdi2p5p8ncp80dci230qfa3pwds8yfxqqaablmhb")
+     'sha256)))
 
 (test-equal "rate limit reached"
   3000000000

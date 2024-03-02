@@ -38,7 +38,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Zelphir Kaltstahl <zelphirkaltstahl@posteo.de>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021, 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2021, 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -824,16 +824,26 @@ tables.")
            #~(list "GUILE_AUTO_COMPILE=0")
            #:phases
            (if (target-x86-64?)
-             #~%standard-phases
-             #~(modify-phases %standard-phases
-                 (add-before 'check 'disable-some-tests
-                   (lambda _
-                     ;; This test can take more than an hour on some systems.
-                     (substitute* "tests/basic.scm"
-                       ((".*spawn-fiber loop-to-1e4.*") ""))
-                     ;; These tests can take more than an hour and/or segfault.
-                     (substitute* "Makefile"
-                       (("tests/speedup.scm") ""))))))))
+               #~%standard-phases
+               #~(modify-phases %standard-phases
+                   (add-before 'check 'disable-some-tests
+                     (lambda _
+                       ;; This test can take more than an hour on some systems.
+                       (substitute* "tests/basic.scm"
+                         ((".*spawn-fiber loop-to-1e4.*") ""))
+
+                       ;; These tests can take more than an hour and/or segfault.
+                       (substitute* "Makefile"
+                         (("tests/speedup.scm") ""))
+
+                       (when #$(target-aarch64?)
+                         ;; The tests below have issues on aarch64 systems.
+                         ;; They pass on an Apple M1 but take a very long time
+                         ;; on a Hetzner aarch64 VM.  Skip them.
+                         (substitute* "tests/basic.scm"
+                           ((".*spawn-fiber-chain 5000000.*") ""))
+                         (substitute* "tests/channels.scm"
+                           ((".*assert-run-fibers-terminates .*pingpong.*") "")))))))))
     (native-inputs
      (list texinfo pkg-config autoconf-2.71 automake libtool
            guile-3.0            ;for 'guild compile
@@ -1843,7 +1853,7 @@ library}.")
 (define-public guile-yamlpp
   (package
     (name "guile-yamlpp")
-    (version "0.2")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -1852,7 +1862,7 @@ library}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14mlqi7hw7pi9scwk1g432issnqcn185pd8na2plijxq55cy0iq7"))))
+        (base32 "0ik69y0vddg0myp0zdbkmklma0qkkrqzwlqwkij1zirklz6hl1ss"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list guile-3.0 yaml-cpp))
@@ -2012,6 +2022,48 @@ convenient interface to SQL databases.  This package implements the interface
 for MySQL.")
     (license license:gpl2+)))
 
+(define-public guile-lmdb
+  (let ((commit "438143ca9ba157faec6f4c2740092c31c733fbfe")
+        (revision "0"))
+    (package
+      (name "guile-lmdb")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/aartaka/guile-lmdb")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0p43c8ppbhzpi944in0z2jqr7acl8pm7s1x0p5f0idqda6n6f828"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "modules"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'substitute-lmdb-so
+              (lambda _
+                (let ((lmdb (string-append
+                             #$(this-package-input "lmdb") "/lib/liblmdb.so")))
+                  (substitute* "modules/lmdb/lmdb.scm"
+                    (("liblmdb.so") lmdb))))))))
+      (native-inputs (list guile-3.0))
+      (inputs (list guile-3.0 lmdb))
+      (home-page "https://github.com/aartaka/guile-lmdb")
+      (synopsis "Bindings for Lightning Memory-Mapped Database in Guile")
+      (description "This package provides a Scheme wrapper around liblmdb.so.
+Most names are the same as LMDB ones, except for prefix absence.
+Several conveniences are added on top:
+@itemize
+@item @code{call-with-env-and-txn} and @code{call-with-cursor} wrappers.
+@item @code{for-cursor} procedure for cursor iteration.
+@item @code{val} and @code{stat} types.
+@item Error signaling instead of integer return values.
+@end itemize")
+      (license license:gpl3+))))
+
 (define-public guile-config
   (package
     (name "guile-config")
@@ -2123,7 +2175,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2133,7 +2185,7 @@ provides tight coupling to Guix.")
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "1ipryn69ad4viqai9pnwhkqqpf9wgw0m2qxrwkfrpm1bfdyilw9w"))))
+         "1gkz19iz3ncf9ddr731lsaw12ca7ygj3dxziz54s9xpp5cw19r0v"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -2144,8 +2196,12 @@ provides tight coupling to Guix.")
            texinfo
            gettext-minimal ;Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
            help2man
-           pkg-config))
-    (inputs (list guile-3.0 which))
+           pkg-config
+           ;; needed when cross-compiling.
+           guile-3.0
+           guile-lib
+           guile-smc))
+    (inputs (list guile-3.0))
     (propagated-inputs (list guile-lib guile-smc guile-dsv))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
     (synopsis "Guile parser library for the iCalendar format")
@@ -2161,7 +2217,12 @@ The library is shipped with documentation in Info format and usage examples.")
   (package
     (inherit guile-ics)
     (name "guile2.2-ics")
-    (inputs (list guile-2.2 which))
+    (native-inputs
+     (modify-inputs (package-native-inputs guile-ics)
+       (replace "guile" guile-2.2)
+       (replace "guile-lib" guile2.2-lib)
+       (replace "guile-smc" guile2.2-smc)))
+    (inputs (list guile-2.2))
     (propagated-inputs (list guile2.2-lib guile2.2-dsv guile2.2-smc))))
 
 (define-public guile-imanifest
@@ -2886,14 +2947,14 @@ inspired by the SCSH regular expression system.")
 (define-public haunt
   (package
     (name "haunt")
-    (version "0.2.6")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/haunt/haunt-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1nwhwngx0gl2892vrvrzrxy5w6a5l08j1w0522kdh9a3v11qpwmw"))))
+                "0awrk4a2gfnk660m4kg9cy1w8z7bj454355w7rn0cjp5dg8bxflq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match) (ice-9 ftw)
@@ -3382,7 +3443,7 @@ from @code{tree-il}.")
 (define-public guile-hoot
   (package
     (name "guile-hoot")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://spritely.institute/files/releases"
@@ -3390,7 +3451,7 @@ from @code{tree-il}.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1byshh7092q2yzqwpi59j4xjsppvp1xqnqsv94yv541qfm0plnc2"))))
+                "1zgcp7xnx84gwdpxj0wga7xrcxcifp9fyp06b6d54gbxq4as8an1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"
@@ -4150,7 +4211,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4159,7 +4220,7 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0y65795s9bs69msqvdbq8h34n00bkfs5v1d44wz21nwdffvq6557"))))
+                "1ad03r84j17rwfxbxqb0qmf70ggqs01kjyman3x1581lm5dk1757"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5997,7 +6058,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
@@ -6006,7 +6067,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1ic4f65kbziszi5cz1b7ypl6acph6kdq5pc3wasa1jns3gkzfl6l"))))
+         "1w1xf60i6an4fs2kr0cv7w01h2fhz1i23zp9w7nbmr32zqm8m59z"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -6015,7 +6076,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
      (list pkg-config texinfo))
     (inputs (list guile-3.0))
     (propagated-inputs
-     (list guile-fibers guile-gcrypt))
+     (list guile-fibers guile-gcrypt guile-gnutls))
     (home-page "https://spritely.institute/goblins")
     (synopsis "Distributed programming environment for Guile")
     (description

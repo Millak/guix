@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014-2024 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -98,8 +98,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
-  #:autoload (json parser) (json->scm)
-  #:export (all-mozilla-locales))
+  #:autoload (json parser) (json->scm))
 
 (define-public mozjs
   (package
@@ -376,31 +375,6 @@ from collections.abc import MutableSequence"))))
      (list icu4c-69 readline zlib))))
 
 
-;;
-;; Needed for IceCat 115.
-;;
-(define icu4c-73-promise
-  (delay
-    (package
-      (inherit icu4c)
-      (version "73.1")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append
-                      "https://github.com/unicode-org/icu/releases/download/release-"
-                      (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                      "/icu4c-"
-                      (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                      "-src.tgz"))
-                (sha256
-                 (base32
-                  "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
-                (patches
-                 (cons
-                  (search-patch
-                   "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
-                  (origin-patches (package-source icu4c)))))))))
-
 ;;;
 ;;; Localization helper procedures.
 ;;;
@@ -548,9 +522,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.6.0")
+(define %icecat-base-version "115.8.0")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20231219000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20240220000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -570,12 +544,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0rmw486yhkb1is1j2fy51djl5p5qggf2fhp2hgzfdj4s2bjydmv6"))))
+              "1slmp2v1q3my81z8kiym9rpxw5d9n4sn07v7hv99517w7vr8d05g"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.6.0")
-         (gnuzilla-commit "6a76a10682b6e63f562e4b9f26f3ef12f88bd839")
+         (upstream-icecat-base-version "115.8.0")
+         (gnuzilla-commit "7e2ff1ad7e03d2bfe0b2daf3f25961b06cab8848")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -587,7 +561,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "15bvlz7c4d8mk10zc317rai91hd96wnchikcfdfxzl35zdnd315r"))))
+              "1lv3vfqv0zb634gnvzb37fs04rb1jlrd2n1k51yjsvdznpqfpi1y"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -758,7 +732,7 @@ variable defined below.  It requires guile-json to be installed."
            ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
            ffmpeg-5
            libvpx
-           (force icu4c-73-promise)
+           icu4c-73
            pixman
            pulseaudio
            mesa

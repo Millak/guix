@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
@@ -21,6 +21,7 @@
 ;;; Copyright © 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,6 +79,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-43)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 string-fun)
   #:use-module (json)
   #:re-export (static-networking-service
                static-networking-service-type)
@@ -171,6 +173,8 @@
             network-manager-configuration-vpn-plugins
             network-manager-service-type
 
+            connman-general-configuration
+            connman-general-configuration?
             connman-configuration
             connman-configuration?
             connman-configuration-connman
@@ -266,6 +270,14 @@
 ;;;
 ;;; Code:
 
+(define %unroutable-ipv4
+  ;; Unroutable address, as per <https://www.rfc-editor.org/rfc/rfc5737>.
+  "203.0.113.1")
+
+(define %unroutable-ipv6
+  ;; Unroutable address, as per <https://www.rfc-editor.org/rfc/rfc6666>.
+  "0100::")
+
 (define facebook-host-aliases
   ;; This is the list of known Facebook hosts to be added to /etc/hosts if you
   ;; are to block it.
@@ -278,7 +290,8 @@
     (append-map (lambda (name)
                   (map (lambda (addr)
                          (host addr name))
-                       (list "127.0.0.1" "::1"))) domains)))
+                       (list %unroutable-ipv4 %unroutable-ipv6)))
+                domains)))
 
 (define-deprecated %facebook-host-aliases
   block-facebook-hosts-service-type
@@ -1326,6 +1339,241 @@ wireless networking."))))
 ;;; Connman
 ;;;
 
+(define (connman-general-configuration-field-name field-name)
+  (let* ((str->camel (lambda (s)
+                       (string-concatenate
+                        (map string-capitalize (string-split s #\-)))))
+         (str (if (symbol? field-name)
+                  (str->camel (symbol->string field-name))
+                  field-name)))
+    (cond
+     ((string-suffix? "?" str) (connman-general-configuration-field-name
+                                (string-drop-right str 1)))
+     ((string-contains str "RegulatoryDomain") (connman-general-configuration-field-name
+                                                (string-replace-substring str "RegulatoryDomain" "Regdom")))
+     ((string-contains str "Url") (connman-general-configuration-field-name
+                                   (string-replace-substring str "Url" "URL")))
+     ((string-contains str "Ip") (connman-general-configuration-field-name
+                                  (string-replace-substring str "Ip" "IP")))
+     ((string-contains str "6To4") (connman-general-configuration-field-name
+                                    (string-replace-substring str "6To4" "6to4")))
+     (#t str))))
+
+(define (connman-general-configuration-serialize-string field-name value)
+  (let ((param (connman-general-configuration-field-name field-name)))
+    #~(string-append #$param " = " #$value "\n")))
+
+(define (connman-general-configuration-serialize-number field-name value)
+  (connman-general-configuration-serialize-string
+   field-name (number->string value)))
+
+(define (connman-general-configuration-serialize-list field-name value)
+  (connman-general-configuration-serialize-string
+   field-name (string-join value ",")))
+
+(define (connman-general-configuration-serialize-boolean field-name value)
+  (connman-general-configuration-serialize-string
+   field-name (if value "true" "false")))
+
+(define-maybe boolean (prefix connman-general-configuration-))
+(define-maybe number (prefix connman-general-configuration-))
+(define-maybe string (prefix connman-general-configuration-))
+(define-maybe list (prefix connman-general-configuration-))
+
+(define-configuration connman-general-configuration
+  (input-request-timeout
+   maybe-number
+   "Set input request timeout.  Default is 120 seconds.  The request for inputs
+like passphrase will timeout after certain amount of time.  Use this setting to
+increase the value in case of different user interface designs.")
+  (browser-launch-timeout
+   maybe-number
+   "Set browser launch timeout.  Default is 300 seconds.  The request for
+launching a browser for portal pages will timeout after certain  amount  of
+time.  Use this setting to increase the value in case of different user
+interface designs.")
+  (background-scanning?
+   maybe-boolean
+   "Enable background scanning.  Default is true.  If wifi is disconnected, the
+background scanning will follow a simple back off mechanism from 3s up to 5
+minutes.  Then, it will stay in 5 minutes unless user specifically asks for
+scanning through a D-Bus call.  If so, the mechanism will start again from
+3s.  This feature activates also the background scanning while being connected,
+which is required for roaming on wifi.  When @code{background-scanning?} is false,
+ConnMan will not perform any scan regardless of wifi is connected or not,
+unless it is requested by the user through a D-Bus call.")
+  (use-gateways-as-timeservers?
+   maybe-boolean
+   "Assume that service gateways also function as timeservers.  Default is false.")
+  (fallback-timeservers
+   maybe-list
+   "List of Fallback timeservers.  These timeservers are used for NTP sync
+when there are no timeservers set by the user or by the service, and when
+@code{use-gateways-as-timeservers?} is @code{#f}.  These can contain a mixed
+combination of fully qualified domain names, IPv4 and IPv6 addresses.")
+  (fallback-nameservers
+   maybe-list
+   "List of fallback nameservers appended to the list of nameservers given
+by the service.  The nameserver entries must be in numeric format,
+host names are ignored.")
+  (default-auto-connect-technologies
+   maybe-list
+   "List of technologies that are marked autoconnectable by default.  The
+default value for this entry when empty is @code{\"ethernet\"}, @code{\"wifi\"},
+@code{\"cellular\"}.  Services that are automatically connected must have been
+set up and saved to storage beforehand.")
+  (default-favourite-technologies
+   maybe-list
+   "List of technologies that are marked favorite by default.  The default
+value for this entry when empty is @code{\"ethernet\"}.  Connects to services
+from this technology even if not setup and saved to storage.")
+  (always-connected-technologies
+   maybe-list
+   "List of technologies which are always connected regardless of
+preferred-technologies setting (@code{auto-connect?} @code{#t}).  The default
+value is empty and this feature is disabled unless explicitly enabled.")
+  (preferred-technologies
+   maybe-list
+   "List of preferred technologies from the most preferred one to the least
+preferred one.  Services of the listed technology type will be tried one by
+one in the order given, until one of them gets connected or they are all
+tried.  A service of a preferred technology type in state 'ready' will get
+the default route when compared to another preferred type further down the
+list with state 'ready' or with a non-preferred type; a service of a
+preferred technology type in state 'online' will get the default route when
+compared to either a non-preferred type or a preferred type further down
+in the list.")
+  (network-interface-blacklist
+   maybe-list
+   "List of blacklisted network interfaces.  Found interfaces will be
+compared to the list and will not be handled by ConnMan, if their first
+characters match any of the list entries.  Default value is @code{\"vmnet\"},
+@code{\"vboxnet\"}, @code{\"virbr\"}, @code{\"ifb\"}.")
+  (allow-hostname-updates?
+   maybe-boolean
+   "Allow ConnMan to change the system hostname.  This can happen for
+example if we receive DHCP hostname option.  Default value is @code{#t}.")
+  (allow-domainname-updates?
+   maybe-boolean
+   "Allow connman to change the system domainname.  This can happen for
+example if we receive DHCP domainname option.  Default value is @code{#t}.")
+  (single-connected-technology?
+   maybe-boolean
+   "Keep only a single connected technology at any time.  When a new
+service is connected by the user or a better one is found according to
+preferred-technologies, the new service is kept connected  and all the
+other previously connected services are disconnected.  With this setting
+it does not matter whether the previously connected services are
+in 'online' or 'ready' states, the newly connected service is the only
+one that will be kept connected.  A service connected by the user will
+be used until going out of network coverage.  With this setting enabled
+applications will notice more network breaks than normal.  Note this
+options can't be used with VPNs.  Default value is @code{#f}.")
+  (tethering-technologies
+   maybe-list
+   "List of technologies that are allowed to enable tethering.  The
+default value is @code{\"wifi\"}, @code{\"bluetooth\"},
+@code{\"gadget\"}.  Only those technologies listed here are used for
+tethering.  If one wants to tether ethernet, then add @code{\"ethernet\"}
+in the list.  Note that if ethernet tethering is enabled, then a DHCP
+server is started on all ethernet interfaces.  Tethered ethernet should
+never be connected to corporate or home network as it will disrupt normal
+operation of these networks.  Due to this ethernet is not tethered by
+default.  Do not activate ethernet tethering unless you really know
+what you are doing.")
+  (persistent-tethering-mode?
+   maybe-boolean
+   "Restore earlier tethering status when returning from offline mode,
+re-enabling a technology, and after restarts and reboots.  Default
+value is @code{#f}.")
+  (enable-6to4?
+   maybe-boolean
+   "Automatically enable anycast 6to4 if possible.  This is not
+recommended, as the use of 6to4 will generally lead to a severe
+degradation of connection quality.  See RFC6343.  Default value
+is @code{#f} (as recommended by RFC6343 section 4.1).")
+  (vendor-class-id
+   maybe-string
+   "Set DHCP option 60 (Vendor Class ID) to the given string.  This
+option can be used by DHCP servers to identify specific clients
+without having to rely on MAC address ranges, etc.")
+  (enable-online-check?
+   maybe-boolean
+   "Enable or disable use of HTTP GET as an online status check.  When
+a service is in a READY state, and is selected as default, ConnMan will
+issue an HTTP GET request to verify that end-to-end connectivity is
+successful.  Only then the service will be transitioned to ONLINE
+state.  If this setting is false, the default service will remain
+in READY state.  Default value is @code{#t}.")
+  (online-check-ipv4-url
+   maybe-string
+   "IPv4 URL used during the online status check.  Please refer to
+the README for more detailed  information.  Default value is
+@url{http://ipv4.connman.net/online/status.html}.")
+  (online-check-ipv6-url
+   maybe-string
+   "IPv6 URL used during the online status check.  Please refer to
+the README for more detailed  information.  Default value is
+@url{http://ipv6.connman.net/online/status.html}.")
+  (online-check-initial-interval
+   maybe-number
+   "Range of intervals between two online check requests.  Please
+refer to the README for more detailed information.  Default value
+is @samp{1}.")
+  (online-check-max-interval
+   maybe-number
+   "Range of intervals between two online check requests.  Please
+refer to the README for more detailed information.  Default value
+is @samp{1}.")
+  (enable-online-to-ready-transition?
+   maybe-boolean
+   "WARNING: This is an experimental feature.  In addition to
+@code{enable-online-check} setting, enable or disable use of HTTP GET
+to detect the loss of end-to-end connectivity.  If this setting is
+@code{#f}, when the default service transitions to ONLINE state, the
+HTTP GET request is no more called until next cycle, initiated by a
+transition of the default service to DISCONNECT state.  If this
+setting is @code{#t}, the HTTP GET request keeps being called to
+guarantee that end-to-end connectivity is still successful.  If not,
+the default service will transition to READY state, enabling another
+service to become the default one, in replacement.  Default value
+is @code{#f}.")
+  (auto-connect-roaming-services?
+   maybe-boolean
+   "Automatically connect roaming services.  This is not recommended
+unless you know you won't have any billing problem.  Default value
+is @code{#f}.")
+  (address-conflict-detection?
+   maybe-boolean
+   "Enable or disable the implementation of IPv4 address conflict
+detection according to RFC5227.  ConnMan will send probe ARP packets
+to see if an IPv4 address is already in use before assigning the
+address to an interface.  If an address conflict occurs for a
+statically configured address, an IPv4LL address will be chosen
+instead (according to RFC3927).  If an address conflict occurs for
+an address offered via DHCP, ConnMan sends a DHCP DECLINE once
+and for the second conflict resorts to finding an IPv4LL
+address.  Default value is @code{#f}.")
+  (localtime
+   maybe-string
+   "Path to localtime file.  Defaults to @file{/etc/localtime}.")
+  (regulatory-domain-follows-timezone?
+   maybe-boolean
+   "Enable regulatory domain to be changed along timezone changes.
+With this option set to true each time the timezone changes the first
+present ISO3166 country code is read from
+@file{/usr/share/zoneinfo/zone1970.tab} and set as regulatory domain
+value.  Default value is @code{#f}.")
+  (resolv-conf
+   maybe-string
+   "Path to resolv.conf file.  If the file does not exist, but
+intermediate directories exist, it will be created.  If this option
+is not set, it tries to write into @file{/var/run/connman/resolv.conf}
+if it fails (@file{/var/run/connman} does not exist or is not
+writeable).  If you do not want to update resolv.conf, you can
+set @file{/dev/null}.")
+  (prefix connman-general-configuration-))
+
 (define-record-type* <connman-configuration>
   connman-configuration make-connman-configuration
   connman-configuration?
@@ -1337,7 +1585,9 @@ wireless networking."))))
                 (default #f))
   (iwd?         connman-configuration-iwd?
                 (default #f)
-                (sanitize warn-iwd?-field-deprecation)))
+                (sanitize warn-iwd?-field-deprecation))
+  (general-configuration connman-configuration-general-configuration
+                         (default (connman-general-configuration))))
 
 (define (connman-activation config)
   (let ((disable-vpn? (connman-configuration-disable-vpn? config)))
@@ -1350,10 +1600,17 @@ wireless networking."))))
 
 (define (connman-shepherd-service config)
   (match-record config <connman-configuration> (connman shepherd-requirement
-                                                disable-vpn? iwd?)
+                                                disable-vpn? iwd?
+                                                general-configuration)
     (let ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
                     (and shepherd-requirement
-                         (memq 'iwd shepherd-requirement)))))
+                         (memq 'iwd shepherd-requirement))))
+          (config (mixed-text-file
+                   "main.conf"
+                   "[General]\n"
+                   (serialize-configuration
+                    general-configuration
+                    connman-general-configuration-fields))))
       (list (shepherd-service
              (documentation "Run Connman")
              (provision '(connman networking))
@@ -1365,6 +1622,7 @@ wireless networking."))))
              (start #~(make-forkexec-constructor
                        (list (string-append #$connman
                                             "/sbin/connmand")
+                             (string-append "--config=" #$config)
                              "--nodaemon"
                              "--nodnsproxy"
                              #$@(if disable-vpn? '("--noplugin=vpn") '())

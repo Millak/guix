@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
@@ -1098,7 +1098,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "7.0.10")
+    (version "7.0.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1106,7 +1106,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0rmlkgzgvpd70jzspyrrb2f618fimw52qrhpsp777flmpyh91wly"))
+                "1qn7w6pb1n5gx73z1zqbv140chh4307y8764z7xkdvric9i48qj4"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1206,7 +1206,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lc7d6hn8ya8m51kjnf59v41pbp03l5ncxir75s21pb92l26xgnv"))))
+                "10iwp35xywdz15a83vialzfd46rjw6mlz174dxawm2rw4ws2n7j4"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1240,7 +1240,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nlgmxf9z1vf4g350dfkxql1dawgmw275wqxkgszsfxmhdfpmi9v"))))
+                "057zmhf4h3p3p4y6jqxch9cj1wqf129k6kmvx2gshb9lgda0kjr8"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1269,7 +1269,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1az6fzh1lma71mj12bc4bblnmzjayrxhkb8w9rjvlhvvgv33cdmy"))))
+                "1r9v8v41n0yrgwsqaksskmdgb9vyw1sb92xh81bwrv2ag3p5vdg7"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1286,7 +1286,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xzyi4mgyifwc6dppdzh6jq294mkj0a71cwkqw2ymz1kfbksw626"))))
+                "0lcy1av7ixg1f7arflk50jllpc1749sfvf3h62hkxsz97wkr97xj"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -2681,7 +2681,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.30.0")
+    (version "0.31.0")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2689,7 +2689,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1fbws80glrakd08xzhifna831yk0bd8b0cizhfcjkg4km2nyx65c"))
+                "1cidv2373lwxy26kbzg4slaqvn2gpq67mvijgp0rydfx6mm6a89i"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
@@ -3272,6 +3272,8 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
                   (guix build utils))
       #:configure-flags
       #~(list "--disable-static"
+              (string-append "--with-vimdir=" #$output
+                             "/share/vim/vimfiles/pack/guix/start/poke")
               (string-append "--with-lispdir="
                              (emacs:elpa-directory #$output)))))
     (home-page "https://www.gnu.org/software/poke/#documentation")

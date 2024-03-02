@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,8 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages python-crypto)
@@ -45,7 +48,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.27.1")
+    (version "1.27.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -53,7 +56,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "0d1qlzh07a9h2wx2fxm2fdask2sm750pqwk7jx62x2hcwmb08ysw"))))
+                "0g418jyqqik8ds8qcrlnmm2bhwwpbrfgd82fg2jyip4zw1aicqia"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
@@ -397,29 +400,6 @@ processes.")
       (home-page "https://github.com/golang/groupcache")
       (license asl2.0))))
 
-(define-public go-github-com-golang-snappy
-  (package
-    (name "go-github-com-golang-snappy")
-    (version "0.0.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/golang/snappy")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "004cw699yz3pdpawhjhpa0y94c4w479nw1rf39zj6h6027kpwv2j"))
-              (patches (search-patches "go-github-com-golang-snappy-32bit-test.patch"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/golang/snappy"))
-    (synopsis "Snappy compression format in the Go programming language")
-    (description "This package provides a Go implementation of the Snappy
-compression format.")
-    (home-page "https://github.com/golang/snappy")
-    (license bsd-3)))
-
 (define-public go-github-com-jackpal-gateway
   (package
     (name "go-github-com-jackpal-gateway")
@@ -517,59 +497,6 @@ this can be used to read GeoLite2 and GeoIP2 databases, @code{geoip2} provides a
 higher-level API for doing so.")
     (home-page "https://github.com/oschwald/maxminddb-golang")
     (license isc)))
-
-(define-public go-github-com-stathat-go
-  (let ((commit "74669b9f388d9d788c97399a0824adbfee78400e")
-        (revision "0"))
-    (package
-      (name "go-github-com-stathat-go")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/stathat/go")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zzlsl24dyr202qkr2pay22m6d0gb7ssms77wgdx0r0clgm7dihw"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/stathat/go"))
-      (synopsis "Post statistics to StatHat")
-      (description "This is a Go package for posting to a StatHat account.")
-      (home-page "https://github.com/stathat/go")
-      (license expat))))
-
-(define-public go-github-com-rcrowley-go-metrics
-  (let ((commit "cac0b30c2563378d434b5af411844adff8e32960")
-        (revision "2"))
-    (package
-      (name "go-github-com-rcrowley-go-metrics")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/rcrowley/go-metrics")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1hfxffnpaw49pr3wrkbzq3pnv3nyzsvk5dxndv0yz70xlrbg8a04"))))
-      (build-system go-build-system)
-      (arguments
-       ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
-       ;; and s390x. See: https://github.com/rcrowley/go-metrics/issues/249
-       `(#:tests? ,(not (string-prefix? "aarch64" (or (%current-target-system)
-                                                      (%current-system))))
-         #:import-path "github.com/rcrowley/go-metrics"))
-      (propagated-inputs
-       (list go-github-com-stathat-go))
-      (synopsis "Go port of Coda Hale's Metrics library")
-      (description "This package provides a Go implementation of Coda Hale's
-Metrics library.")
-      (home-page "https://github.com/rcrowley/go-metrics")
-      (license bsd-2))))
 
 (define-public go-github-com-sasha-s-go-deadlock
   (package
@@ -805,36 +732,6 @@ bounds.")
       (home-page "https://github.com/beorn7/perks")
       (license expat))))
 
-(define-public go-github-com-prometheus-client-model
-  (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
-        (revision "2"))
-    (package
-      (name "go-github-com-prometheus-client-model")
-      (version (git-version "0.0.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/prometheus/client_model")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0zdmk6rbbx39cvfz0r59v2jg5sg9yd02b4pds5n5llgvivi99550"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/prometheus/client_model"
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
-      (propagated-inputs
-       (list go-github-com-golang-protobuf-proto))
-      (synopsis "Data model artifacts for Prometheus")
-      (description "This package provides data model artifacts for Prometheus.")
-      (home-page "https://github.com/prometheus/client_model")
-      (license asl2.0))))
-
 (define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil
   (let ((commit "c12348ce28de40eed0136aa2b644d0ee0650e56c")
         (revision "0"))
@@ -1006,34 +903,3 @@ virtual connections from a single physical connection.")
 and RFC 5389).")
       (home-page "https://github.com/ccding/go-stun")
       (license asl2.0))))
-
-(define-public go-github-com-cespare-xxhash
-  (package
-    (name "go-github-com-cespare-xxhash")
-    (version "2.1.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/cespare/xxhash")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-       #:import-path "github.com/cespare/xxhash"
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs #:allow-other-keys #:rest args)
-               (unless
-                 ;; The tests fail when run with gccgo.
-                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (synopsis "Go implementation of xxHash")
-    (description "This package provides of Go implementation of the 64-bit
-xxHash algorithm (XXH64).")
-    (home-page "https://github.com/cespare/xxhash/")
-    (license expat)))

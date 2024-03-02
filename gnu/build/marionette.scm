@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
@@ -223,29 +223,49 @@ FILE has not shown up after TIMEOUT seconds, raise an error."
 (define* (wait-for-tcp-port port marionette
                             #:key
                             (timeout 20)
+                            (peek? #f)
                             (address `(make-socket-address AF_INET
                                                            INADDR_LOOPBACK
                                                            ,port)))
   "Wait for up to TIMEOUT seconds for PORT to accept connections in
 MARIONETTE.  ADDRESS must be an expression that returns a socket address,
-typically a call to 'make-socket-address'.  Raise an error on failure."
+typically a call to 'make-socket-address'.  When PEEK? is true, attempt to
+read a byte from the socket upon connection; retry if that gives the
+end-of-file object.
+
+Raise an error on failure."
   ;; Note: The 'connect' loop has to run within the guest because, when we
   ;; forward ports to the host, connecting to the host never raises
   ;; ECONNREFUSED.
   (match (marionette-eval
-          `(let* ((address ,address)
-                  (sock (socket (sockaddr:fam address) SOCK_STREAM 0)))
-             (let loop ((i 0))
+          `(let* ((address ,address))
+             (define (open-socket)
+               (socket (sockaddr:fam address) SOCK_STREAM 0))
+
+             (let loop ((sock (open-socket))
+                        (i 0))
                (catch 'system-error
                  (lambda ()
                    (connect sock address)
+                   (when ,peek?
+                     (let ((byte ((@ (ice-9 binary-ports) lookahead-u8)
+                                  sock)))
+                       (when (eof-object? byte)
+                         (close-port sock)
+                         (throw 'system-error
+                                "wait-for-tcp-port" "~A"
+                                (list (strerror ECONNRESET))
+                                (list ECONNRESET)))))
                    (close-port sock)
                    'success)
                  (lambda args
                    (if (< i ,timeout)
                        (begin
                          (sleep 1)
-                         (loop (+ 1 i)))
+                         (loop (if (port-closed? sock)
+                                   (open-socket)
+                                   sock)
+                               (+ 1 i)))
                        (list 'failure address))))))
           marionette)
     ('success #t)

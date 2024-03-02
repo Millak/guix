@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022, 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
@@ -1709,7 +1709,7 @@ misuse of libraries outside of the store.")))
 (define-public lldb
   (package
     (name "lldb")
-    (version (package-version llvm-15))
+    (version (package-version llvm-17))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
@@ -1723,8 +1723,8 @@ misuse of libraries outside of the store.")))
     (native-inputs
      (list pkg-config swig))
     (inputs
-     (list clang-15
-           llvm-15
+     (list clang-17
+           llvm-17
            ;; Optional (but recommended) inputs.
            ncurses
            libedit

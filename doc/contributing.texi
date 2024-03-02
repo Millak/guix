@@ -2111,9 +2111,15 @@ they are ready to become a committer.  Commit access should not be
 thought of as a ``badge of honor'' but rather as a responsibility a
 contributor is willing to take to help the project.  It is expected from
 all contributors, and even more so from committers, to help build
-consensus and make decisions based on consensus.  To learn what
-consensus decision making means and understand its finer details, you
-are encouraged to read
+consensus and make decisions based on consensus.  By using consensus, we
+are committed to finding solutions that everyone can live with.  It
+implies that no decision is made against significant concerns and these
+concerns are actively resolved with proposals that work for everyone.  A
+contributor (which may or may not have commit access) wishing to block a
+proposal bears a special responsibility for finding alternatives,
+proposing ideas/code or explain the rationale for the status quo to
+resolve the deadlock.  To learn what consensus decision making means and
+understand its finer details, you are encouraged to read
 @url{https://www.seedsforchange.org.uk/consensus}.
 
 The following sections explain how to get commit access, how to be ready
@@ -2328,7 +2334,7 @@ Perhaps the biggest action you can do to help GNU Guix grow as a project
 is to review the work contributed by others.  You do not need to be a
 committer to do so; applying, reading the source, building, linting and
 running other people's series and sharing your comments about your
-experience will give some confidence to committers.  Basically, you gmust
+experience will give some confidence to committers.  Basically, you must
 ensure the check list found in the @ref{Submitting Patches} section has
 been correctly followed.  A reviewed patch series should give the best
 chances for the proposed change to be merged faster, so if a change you

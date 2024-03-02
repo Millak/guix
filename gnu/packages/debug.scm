@@ -50,6 +50,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -59,6 +60,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages perl)
@@ -458,6 +460,59 @@ server and embedded PowerPC, and S390 guests.")
     (license license:gpl2)
     ;; Several tests fail on MIPS.
     (supported-systems (delete "mips64el-linux" %supported-systems))))))
+
+(define-public aflplusplus
+  (package
+    (inherit american-fuzzy-lop)
+    (name "aflplusplus")
+    (version "4.09c")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/AFLplusplus/AFLplusplus")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12bplpd8cifla6m9l130fd22ggzkhd1w5s1aifw1idpy3njhj129"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments american-fuzzy-lop)
+       ((#:make-flags _ ''())
+        #~(list (string-append "PREFIX=" #$output)
+                (string-append "DOC_PATH=" #$output "/share/doc/"
+                               #$(package-name this-package) "-"
+                               #$(package-version this-package))
+                (string-append "CC=" #$(cc-for-target))))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            ;; For GCC plugins.
+            (add-after 'unpack 'patch-gcc-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/afl-cc.c"
+                  (("alt_cc = \"gcc\";")
+                   (format #f "alt_cc = \"~a\";"
+                           (search-input-file inputs "bin/gcc")))
+                  (("alt_cxx = \"g\\+\\+\";")
+                   (format #f "alt_cxx = \"~a\";"
+                           (search-input-file inputs "bin/g++"))))))))))
+    ;; According to the Dockerfile, GCC 12 is producing compile errors for some
+    ;; targets, so explicitly use GCC 11 here.
+    (inputs (list gcc-11 gmp python qemu))
+    (native-inputs (list gcc-11))
+    (home-page "https://aflplus.plus/")
+    (description
+     "AFLplusplus is a security-oriented fuzzer that employs a novel type of
+compile-time instrumentation and genetic algorithms to automatically discover
+clean, interesting test cases that trigger new internal states in the targeted
+binary.  This substantially improves the functional coverage for the fuzzed
+code.  The compact synthesized corpora produced by the tool are also useful for
+seeding other, more labor- or resource-intensive testing regimes down the road.
+It is a fork of American Fuzzy Lop fuzzer and features:
+@itemize
+@item A more recent qemu version.
+@item More algorithms like collision-free coverage, enhanced laf-intel &
+redqueen, AFLfast++ power schedules, MOpt mutators, unicorn_mode, etc.
+@end itemize")))
 
 (define-public stress-make
   (let ((commit "97815bed8060de33952475b3498767c91f59ffd9")

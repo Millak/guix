@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Adriano Peluso <catonano@gmail.com>
@@ -136,6 +136,7 @@
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
+;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -266,6 +267,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages wordnet)
   #:use-module (gnu packages photo)
+  #:use-module (gnu packages tor)
   #:use-module (gnu packages uml)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages ocaml)
@@ -366,6 +368,35 @@
        "This package allows using Ace jump to a candidate in Helm window.")
       (license license:gpl3+))))
 
+(define-public emacs-activities
+  (package
+    (name "emacs-activities")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://elpa.gnu.org/packages/activities-" version ".tar"))
+       (sha256
+        (base32 "0ng9sgajcpal881s3kavkmz0fc38f2h207hpqj62cf14z7bsk0zk"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-persist))
+    (home-page "https://github.com/alphapapa/activities.el")
+    (synopsis "Save/restore sets of windows, tabs/frames, and their buffers")
+    (description
+     "Inspired by Genera's and KDE's concepts of \"activities\", this library
+allows the user to select an \"activity\", the loading of which restores a
+window configuration into a @code{tab-bar} tab or frame, along with the
+buffers shown in each window.  Saving an activity saves the state for later
+restoration.  Switching away from an activity saves the last-used state for
+later switching back to, while still allowing the activity's initial or
+default state to be restored on demand.  Resuming an activity loads the
+last-used state, or the initial/default state when a universal argument is
+provided.  The implementation uses the bookmark system to save buffers
+states–that is, any major mode that supports the bookmark system is
+compatible.")
+    (license license:gpl3+)))
+
 (define-public emacs-bookmark-plus
   (package
     (name "emacs-bookmark-plus")
@@ -416,7 +447,7 @@ input via a small child-frame spawned at the position of the cursor.")
 (define-public emacs-arei
   (package
     (name "emacs-arei")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -426,7 +457,7 @@ input via a small child-frame spawned at the position of the cursor.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12vfv7l8krsfv7m03p41jakh4xrfm21w85kvghz0q5hq63w9l3f7"))))
+         "0qpri3ygb1fffi9mlipa7qmb6434aispbz1z3j14i7zrqassigm4"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
     (home-page "https://git.sr.ht/~abcdw/emacs-arei")
@@ -484,7 +515,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-gptel
   (package
     (name "emacs-gptel")
-    (version "0.5.5")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -493,7 +524,7 @@ e.g. emacs-geiser-guile for Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vqs03plivb1dmal53j53y4r567ggx4781n2mqyjk6s6wfvyvn93"))))
+                "0wfqwp5rz77xzsxb56g4w9h047zb0y06ajcr724b5sjykbbznhzw"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -509,7 +540,7 @@ e.g. emacs-geiser-guile for Guile.")
               (emacs-substitute-variables "gptel.el"
                 ("gptel-use-curl" 't)))))))
     (inputs (list curl))
-    (propagated-inputs (list emacs-map))
+    (propagated-inputs (list emacs-compat emacs-map))
     (home-page "https://github.com/karthink/gptel")
     (synopsis "GPTel is a simple ChatGPT client for Emacs")
     (description
@@ -817,7 +848,7 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
 (define-public emacs-treebundel
   (package
     (name "emacs-treebundel")
-    (version "0.1.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -826,7 +857,7 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hk2xnjsr85in48h02xbzi8lsccp36li2bp9v9j0r8qn1bis2vv9"))))
+        (base32 "0fpmm3jb95lksamxqz9850x2vcmcvq6bx29sn0fci6ny4cvpnq5k"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
@@ -1028,14 +1059,14 @@ uploading PlatformIO projects.")
 (define-public emacs-hyperbole
   (package
     (name "emacs-hyperbole")
-    (version "8.0.0")
+    (version "9.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "hyperbole-" version ".tar"))
        (sha256
-        (base32 "171x7jad62xd0n3xgs32dksyhn5abxj1kna0qgm65mm0v73hrv8d"))))
+        (base32 "07kpyp3ggf4knakn18niy819l184apx4d9vbcwv57j8zyqgn4c3l"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons* "DEMO"
@@ -1370,6 +1401,54 @@ some utility functions, and commands using that infrastructure.")
        "Display information about a buffer's project (a \"project tag\") in
 its mode line.")
       (license license:gpl3+))))
+
+(define-public emacs-project-tab-groups
+  (let ((commit "2658405d5f3c539fbd9ccf95297a016a2c91816a")
+        (revision "1"))
+    (package
+      (name "emacs-project-tab-groups")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fritzgrabo/project-tab-groups.git")
+               (commit commit)))
+         (sha256
+          (base32 "1zg9kxyjz942ib9lii0in67hwqil2xlz78vjm1qqypw3zaivhh7p"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/fritzgrabo/project-tab-groups")
+      (synopsis "Support a \"one tab group per project\" workflow")
+      (description "This package provides a global minor mode that enhances the
+Emacs built-in @code{project.el} library to support keeping projects isolated
+in named tab groups.  This package automates the steps you’d otherwise need to
+do manually if you wanted to keep the buffers of a project neatly isolated in
+separate, named tab groups.")
+      (license license:gpl3+))))
+
+(define-public emacs-golden-ratio
+  (let ((commit "375c9f287dfad68829582c1e0a67d0c18119dab9")
+        (revision "0"))
+    (package
+      (name "emacs-golden-ratio")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/roman/golden-ratio.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a635a3h6jx0clgwmhwc48i14y3xy5q29y37lp2sjnbxx1hlmkli"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/roman/golden-ratio.el")
+      (synopsis "Automatic resizing of Emacs windows to the golden ratio")
+      (description "This package provides an Emacs mode for automatically
+resizing the window that has main focus to be more convenient for editing,
+while the ones that are not being actively edited will be reduced to a smaller
+size.")
+      (license license:expat))))
 
 (define-public emacs-git-modes
   (package
@@ -2017,19 +2096,18 @@ theme but now takes more inspiration from the Nano theme.")
     (license license:gpl3+)))
 
 (define-public emacs-adwaita-dark-theme
-  ;; Version 1.1.1 isn't tagged upstream.
   (package
     (name "emacs-adwaita-dark-theme")
-    (version "1.1.1")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/jessieh/adwaita-dark-theme")
-                    (commit "057c39313341907b35c68d2179226886a0c276fd")))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g7hyg2hfvn24gaw4lca4g8lw10q2wg9nfrgl7pfdggz202m027c"))))
+                "10hm8anw78n37pl9rz3dnjphrnsxf3fy00d008gayn70jfjl1433"))))
     (build-system emacs-build-system)
     (home-page "https://gitlab.com/jessieh/adwaita-dark-theme")
     (synopsis "Adwaita-inspired dark color scheme for Emacs")
@@ -2542,10 +2620,32 @@ programs.")
 supports type hints, definition-jumping, completion, and more.")
     (license license:gpl3+)))
 
+(define-public emacs-flexoki-themes
+  (let ((commit "1b871e57e989d58a793cbfef7b4996a6bd47ba9f")) ;version bump
+    (package
+      (name "emacs-flexoki-themes")
+      (version "0.20")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/crmsnbleyd/flexoki-emacs-theme")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0npl45h1l8jhrd5dcaaql5in4pj7c3wxnqsp8di668pz2s4i9pfh"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/crmsnbleyd/flexoki-emacs-theme")
+      (synopsis "Inky colour scheme for prose and code")
+      (description
+       "Flexoki themes is a pair of light and dark themes for GNU Emacs based
+on the Flexoki colour scheme by Steph Ango.")
+      (license license:gpl3+))))
+
 (define-public emacs-flycheck
   (package
     (name "emacs-flycheck")
-    (version "32")
+    (version "34.1")
     (source
      (origin
        (method git-fetch)
@@ -2553,7 +2653,7 @@ supports type hints, definition-jumping, completion, and more.")
              (url "https://github.com/flycheck/flycheck/")
              (commit version)))
        (sha256
-        (base32 "0dx6wqxz1yfp4shas4yn6abqc8bz21ks3glcyzznm3xspjdaq21s"))
+        (base32 "1rhsrbbg3y50qc4drbdgwa1z0hw7w84blgr0xl6zi9mqnjnak495"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
@@ -3367,14 +3467,14 @@ podcasts) in Emacs.")
 (define emacs-emms-print-metadata
   (package
     (name "emacs-emms-print-metadata")
-    (version "17")
+    (version "18")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "emms-" version ".tar"))
        (sha256
-        (base32 "103gqlmda24izhb5xrh14k0bwhijr98vnlnmdr9a9xxfla9n5xw0"))))
+        (base32 "1jslk37kx7yzvwy4hq1a6b71kp4a3bgfzzp8bpplv7z6vcmwrmgq"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3926,6 +4026,30 @@ customizability and asynchronous upgrading.")
 listing type errors via Flycheck, as well as REPL support for Carp.")
       (license license:asl2.0))))
 
+(define-public emacs-coterm
+  (package
+    (name "emacs-coterm")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/coterm-"
+                           version ".tar"))
+       (sha256
+        (base32 "0ikfm1acdsckflv1hcy9lmssyac2099x2yybhvb6vkghcgy99p00"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://repo.or.cz/emacs-coterm.git")
+    (synopsis "Terminal emulation for comint")
+    (description
+     "This package provides terminal emulation for comint.  If the global
+@code{coterm-mode} is enabled, proper terminal emulation will be supported for
+all newly spawned comint processes.  This allows you to use more complex
+console programs such as @code{less} and @code{mpv} and full-screen TUI
+programs such as @code{vi}, @code{top}, @code{htop} or even @code{emacs
+-nw}.")
+    (license license:gpl3+)))
+
 (define-public emacs-counsel-bbdb
   (package
     (name "emacs-counsel-bbdb")
@@ -4240,14 +4364,14 @@ as a library for other Emacs packages.")
 (define-public emacs-auctex
   (package
     (name "emacs-auctex")
-    (version "13.2.3")
+    (version "14.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "auctex-" version ".tar"))
        (sha256
-        (base32 "1590g2yd8q88xgxc449fxbxwgrbjh2cbcalcs7jk50lhzy3y8mc8"))))
+        (base32 "1xk29nk3r7ilxk2vag3diacamqvlws7mbjk5a0iivz5y6fy7hmjc"))))
     (build-system emacs-build-system)
     ;; We use 'emacs' because AUCTeX requires dbus at compile time
     ;; ('emacs-minimal' does not provide dbus).
@@ -4601,7 +4725,7 @@ of bibliographic references.")
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -4610,7 +4734,7 @@ of bibliographic references.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c900hl01vf43r6vikjy2glrac1cl2z54rahs5kb4q77cz0z1zxf"))))
+        (base32 "0l6hpsw2srmad0mhp6x46d5dsg678lvgz5l3glp1845hkg8a0pgi"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -4695,7 +4819,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "1.1")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -4704,7 +4828,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nx08i11s0z9kk711r7wp8sgj00n8hjk5gx0rqr9awrl9fmw1kp2"))))
+        (base32 "1zz5sah8zdkvmbh2kdn4v5vf3sb09krdrxhzyzcg63zjya2z8prz"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -4794,52 +4918,61 @@ that the binary uses instead of the actual binary contents.")
 
 (define-public emacs-org-fc
   (package
-      (name "emacs-org-fc")
-      (version "0.3.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.sr.ht/~l3kn/org-fc")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "17cdn4sdyb9fs9w725l155lb74inzdn86m8y62m6hn4dgb5l4spm"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:include #~(cons* "\\.awk$" "\\.org$" %default-include)
-        #:exclude #~(cons "^tests/" %default-exclude)
-        #:tests? #t
-        #:test-command #~(list "emacs" "--batch"
-                               "-L" "."
-                               "-L" "tests/"
-                               "-l" "tests/org-fc-filter-test.el"
-                               "-l" "tests/org-fc-indexer-test.el"
-                               "-l" "tests/org-fc-review-data-test.el"
-                               "-f" "ert-run-tests-batch-and-exit")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'qualify-paths
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((find (search-input-file inputs "/bin/find"))
-                      (gawk (search-input-file inputs "/bin/gawk"))
-                      (xargs (search-input-file inputs "/bin/xargs")))
-                  (substitute* "org-fc-awk.el"
-                    (("\"find ") (string-append "\"" find " "))
-                    (("\"gawk ") (string-append "\"" gawk " "))
-                    (("\"xargs ") (string-append "\"" xargs " ")))))))))
-      (inputs (list findutils gawk))
-      (propagated-inputs (list emacs-hydra))
-      (home-page "https://www.leonrische.me/fc/index.html")
-      (synopsis "Spaced repetition system for Emacs Org mode")
-      (description
-       "Org-fc is a spaced-repetition system for Emacs' Org mode.
+    (name "emacs-org-fc")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~l3kn/org-fc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0911lr5qlk7p1fg8ady5x39ai08yws70z6yg2w1qgc8zadyqp0w4"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons* "\\.awk$" "\\.org$" %default-include)
+      #:exclude #~(cons "^tests/" %default-exclude)
+      #:tests? #t
+      #:test-command #~(list "emacs" "--batch"
+                             "-L" "."
+                             "-L" "tests/"
+                             "-l" "tests/org-fc-card-test.el"
+                             "-l" "tests/org-fc-filter-test.el"
+                             "-l" "tests/org-fc-indexer-test.el"
+                             "-l" "tests/org-fc-review-data-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'qualify-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((find (search-input-file inputs "/bin/find"))
+                    (gawk (search-input-file inputs "/bin/gawk"))
+                    (xargs (search-input-file inputs "/bin/xargs")))
+                (substitute* "org-fc-awk.el"
+                  (("\"find ") (string-append "\"" find " "))
+                  (("\"gawk ") (string-append "\"" gawk " "))
+                  (("\"xargs ") (string-append "\"" xargs " "))))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* (find-files "tests/" "\\.el$")
+                (("\\(ert-deftest org-fc-test-card-rate-(normal|double) .*" all)
+                 (string-append all "(skip-unless nil)\n"))
+                (("\\(ert-deftest org-fc-test-review-data-update .*" all)
+                 (string-append all "(skip-unless nil)\n"))))))))
+    (native-inputs (list emacs-el-mock))
+    (inputs (list findutils gawk))
+    (propagated-inputs (list emacs-hydra))
+    (home-page "https://www.leonrische.me/fc/index.html")
+    (synopsis "Spaced repetition system for Emacs Org mode")
+    (description
+     "Org-fc is a spaced-repetition system for Emacs' Org mode.
 It allows you to mark headlines in a file as flashcards, turning pieces of
 knowledge you want to learn into a question-answer test.  These cards are
 reviewed at regular interval.  After each review, the next review interval is
 calculated based on how well you remembered the contents of the card.")
-      (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public emacs-font-lock+
   (let ((commit "aa1c82d05c9222b09099a0ccd7468e955497940c")
@@ -5260,14 +5393,14 @@ mode buffers.")
 (define-public emacs-mmm-mode
   (package
     (name "emacs-mmm-mode")
-    (version "0.5.10")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "mmm-mode-" version ".tar"))
        (sha256
-        (base32 "1ny9gm87qah4qy0iphw2nlhz2pfc87hzzsv58lrxl18gr69qhndi"))))
+        (base32 "07pda4bvvcmdwkwh8dnfqgvhkdni2wjgps1094kn1j5c9j254741"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/purcell/mmm-mode")
     (synopsis "Allow multiple major modes in an Emacs buffer")
@@ -5405,14 +5538,14 @@ the previous session
 (define-public emacs-pabbrev
   (package
     (name "emacs-pabbrev")
-    (version "4.2.2")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "pabbrev-" version ".tar"))
        (sha256
-        (base32 "0iydz8yz866krxv1qv32k88w4464xpymh0wxgrxv6nvniwvhvd0s"))))
+        (base32 "0a54ld80s0r9zrc2kd861p4ii3jzqhxykzcnvi64fhxxg3x2aggx"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/pabbrev.html")
     (synopsis "Predictive abbreviation expansion")
@@ -5501,7 +5634,7 @@ and stored in memory.")
 (define-public emacs-saveplace-pdf-view
   (package
     (name "emacs-saveplace-pdf-view")
-    (version "1.0.4")
+    (version "1.0.6")
     (source
      (origin
        (method git-fetch)
@@ -5510,7 +5643,7 @@ and stored in memory.")
              (commit (string-append "saveplace-pdf-view-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i03qb6qc2agp9s5s7l08f1wl8anqndh6xshg1c3w357vd1whv7i"))))
+        (base32 "00cqk1qvmdw07vmmyxc843m2qgx1n9ivwzp73r27v4jxx1i38vx2"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/nicolaisingh/saveplace-pdf-view")
     (synopsis "Save place in pdf-view buffers for Emacs")
@@ -6630,26 +6763,28 @@ and code formatting.")
     (license license:gpl3+)))
 
 (define-public emacs-el-mock
-  (package
-    (name "emacs-el-mock")
-    (version "1.25.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rejeep/el-mock.el")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13mv1rhgkwiww2wh5w926jz7idppp492wir1vdl245c5x50dh4f7"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/rejeep/el-mock.el")
-    (synopsis "Tiny mock and stub framework in Emacs Lisp")
-    (description
-     "Emacs Lisp Mock is a library for mocking and stubbing using readable
+  (let ((commit "6cfbc9de8f1927295dca6864907fe4156bd71910")
+        (revision "1"))
+    (package
+      (name "emacs-el-mock")
+      (version (git-version "1.25.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rejeep/el-mock.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09c3a1771v6kliwj0bn953pxxyjlk6q9kp31cxcr0nraik7d0mhk"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/rejeep/el-mock.el")
+      (synopsis "Tiny mock and stub framework in Emacs Lisp")
+      (description
+       "Emacs Lisp Mock is a library for mocking and stubbing using readable
 syntax.  Most commonly Emacs Lisp Mock is used in conjunction with Emacs Lisp
 Expectations, but it can be used in other contexts.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-ecukes
   (package
@@ -8669,7 +8804,7 @@ files which are intended to be packages.")
 (define-public emacs-elisp-demos
   (package
     (name "emacs-elisp-demos")
-    (version "2020.02.19")
+    (version "2024.01.16")
     (source
      (origin
        (method git-fetch)
@@ -8679,12 +8814,13 @@ files which are intended to be packages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mckgaz92v3y2vlkggx9kd51fd1mahylw39c42l51dyv8wscm7sc"))))
+         "1pgg5z3z2pf0vps86lrkxfr36v4c24mpgvj551gixdlrm2s55p0l"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include '("\\.el$" "\\.org$")
-       #:tests? #t
-       #:test-command '("make" "test")))
+     (list
+      #:include #~(cons* "\\.org$" %default-include)
+      #:tests? #t
+      #:test-command #~(list "make" "test")))
     (home-page "https://github.com/xuchunyang/elisp-demos/")
     (synopsis "Enhance @code{*Help*} buffers with additional examples")
     (description
@@ -8925,14 +9061,14 @@ by a query, so both a link can refer to several mails.")
 (define-public emacs-debbugs
   (package
     (name "emacs-debbugs")
-    (version "0.37")
+    (version "0.40")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                            version ".tar"))
        (sha256
-        (base32 "0xj0sv5d3y88fsbm7yhm0v59mzj1srxayng1hr418v89ky43rxpr"))))
+        (base32 "0yfl9gd23xnfk3iwiq26brd7fg9ikhd201lw4awng0rdh0fddxwd"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.wsdl$" "\\.info$")))
     (propagated-inputs
@@ -9138,6 +9274,40 @@ tupfiles, such as rule definitions, user-defined variables, macros, flags, bin
 variables, and so on.  The mode also allows you to execute Tup commands.")
     (license license:gpl3+)))
 
+(define-public emacs-combobulate
+  (let ((commit "c7e4670a3047c0b58dff3746577a5c8e5832cfba")
+        (revision "1"))
+    (package
+      (name "emacs-combobulate")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mickeynp/combobulate")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "063w2sm0c7xhg3ml31xp870azb0sv7z689lnbnjnbl3rfdy4kg50"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list tree-sitter-javascript
+             tree-sitter-python
+             tree-sitter-typescript))
+      (native-inputs
+       (list python-minimal))
+      (home-page "https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter")
+      (synopsis "Structured editing and navigation in Emacs with tree-sitter")
+      (description
+       "Combobulate is a package that adds structured editing and movement to
+a wide range of programming languages.  Unlike most programming major modes
+that use error-prone imperative code and regular expressions to determine
+what's what in your code, Combobulate uses Emacs 29's tree-sitter library.
+Tree-sitter maintains a concrete syntax tree of your code; it gives
+Combobulate absolute clarity of all aspects of your code, enabling more
+correct movement and editing than you would otherwise have.")
+      (license license:gpl3+))))
+
 (define-public emacs-compat
   (package
     (name "emacs-compat")
@@ -9178,6 +9348,20 @@ commands and user options are usually not implemented here.")
        (sha256
         (base32 "0j2qrnx2w2al4f2n37b89q0pkabh5ccv00gsknvgaylhy0za5gq9"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons* "icons/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'move-doc 'install-doc-images
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((images (find-files "./images/small/" ".*\\.png$")))
+                (for-each
+                 (lambda (image)
+                   (install-file
+                    image
+                    (string-append #$output "/share/info/images/small")))
+                 images)))))))
     (home-page "https://company-mode.github.io/")
     (synopsis "Modular text completion framework")
     (description
@@ -10709,7 +10893,7 @@ sgml/html integration, and indentation (working with sgml).")
 (define-public emacs-jinx
   (package
     (name "emacs-jinx")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -10719,7 +10903,7 @@ sgml/html integration, and indentation (working with sgml).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08ajkhpds3m8dk1m2h84vcn6pg5w6hbq55xyd50593kb012a2pmz"))))
+        (base32 "04avl356y0m0i1mqmzzz0245fxflj7i8ssicnvf4wmpjc0qdr694"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -10935,8 +11119,8 @@ when the cursor enters a fragment and disappear when it leaves.")
 
 (define-public emacs-org-dailies
   ;; No tags or versions.
-  (let ((commit "64477d5c5cd92df72ba1375eeb149889d42371d7")
-        (revision "0"))
+  (let ((commit "58e58d4968ddb70312160def1c7c3c00382ef655")
+        (revision "1"))
     (package
       (name "emacs-org-dailies")
       (version (git-version "0" revision commit))
@@ -10948,9 +11132,8 @@ when the cursor enters a fragment and disappear when it leaves.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1lxm2xr743c2a5wj82qpprcdfsspcw33ijyq5wfbhcv2kngm4yql"))))
+          (base32 "15xhpxkg2cn2fwaql99gnqcdl012g29lxn9fqb6s282mhr9yan7c"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-dash))
       (home-page "https://git.sr.ht/~ngraves/org-dailies")
       (synopsis "Bare-bones daily journaling with Emacs")
       (description
@@ -11911,7 +12094,7 @@ style, or as multiple word prefixes.")
 (define-public emacs-consult
   (package
     (name "emacs-consult")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -11919,7 +12102,7 @@ style, or as multiple word prefixes.")
              (url "https://github.com/minad/consult")
              (commit version)))
        (sha256
-        (base32 "11fgjgny10falyjs0dlb8cvvfqpvc538mskq4j60j68v36nnkb23"))
+        (base32 "1466f6j9bxw9mh0ad9yv2qfkhzlz1ysgch53nlkvbry4llhdhj43"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -13449,7 +13632,7 @@ Clojure projects from templates.")
 (define-public emacs-clj-refactor
   (package
     (name "emacs-clj-refactor")
-    (version "3.11.2")
+    (version "3.11.3")
     (source
      (origin
        (method git-fetch)
@@ -13458,7 +13641,7 @@ Clojure projects from templates.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y8xphmmd2ciwnrr7lbiwq0v5c7chq60wssxng9mw0fiz2i3ix22"))))
+        (base32 "17c9lrykbfp0ab7lmi4jh34q6ir7i46acn313xw5342d2q5ql6sk"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-cider
@@ -13930,7 +14113,7 @@ mode with the package emacs-julia-mode.")
 (define-public emacs-julia-snail
   (package
     (name "emacs-julia-snail")
-    (version "1.2.3")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13939,7 +14122,7 @@ mode with the package emacs-julia-mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07dj788hdfskn2k400q2fcfh18w7gflfrc5zqg8bqflhv755m30k"))))
+                "0h5lwc2hsk4rc82idhf9qj9553v7x76wmy9x2z1h60pdd93ilcyr"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -14034,7 +14217,7 @@ an Emacs buffer.")
 (define-public emacs-nodejs-repl
   (package
     (name "emacs-nodejs-repl")
-    (version "0.2.4")
+    (version "0.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14043,36 +14226,33 @@ an Emacs buffer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a5mmg3cmdi73giblp07ksl06xzl9nb2m3f96ny4r3rv0ar3v1bx"))))
+                "06in0nnynrj6ciwbch4x8s65n6d750ikarvrdcjypi0cb0vscwsk"))))
     (build-system emacs-build-system)
     (inputs
      (list node-lts))
     (native-inputs
      (list emacs-ert-expectations))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-shell
-           ;; Setting the SHELL environment variable is required for the tests
-           ;; to find sh.
-           (lambda _
-             (setenv "SHELL" (which "sh"))
-             #t))
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((node (assoc-ref inputs "node")))
-               ;; Specify the absolute file names of the various
-               ;; programs so that everything works out-of-the-box.
-               (make-file-writable "nodejs-repl.el")
-               (emacs-substitute-variables
-                   "nodejs-repl.el"
-                 ("nodejs-repl-command"
-                  (string-append node "/bin/node")))))))
-       #:tests? #t
-       #:test-command '("emacs" "-Q" "--batch"
-                        "-L" "."
-                        "-l" "test/test.el"
-                        "-f" "ert-run-tests-batch-and-exit")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-shell
+            ;; Setting the SHELL environment variable is required for the tests
+            ;; to find sh.
+            (lambda _
+              (setenv "SHELL" (which "sh"))))
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((node (search-input-file inputs "/bin/node")))
+                ;; Specify the absolute file names of the various
+                ;; programs so that everything works out-of-the-box.
+                (emacs-substitute-variables "nodejs-repl.el"
+                  ("nodejs-repl-command" node))))))
+      #:tests? #t
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-L" "."
+                             "-l" "test/test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/abicky/nodejs-repl.el")
     (synopsis "Node.js REPL inside Emacs")
     (description
@@ -14200,7 +14380,7 @@ in Emacs.")
 (define-public emacs-edit-indirect
   (package
     (name "emacs-edit-indirect")
-    (version "0.1.10")
+    (version "0.1.13")
     (source
      (origin
        (method git-fetch)
@@ -14209,7 +14389,7 @@ in Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13v0fvzh3nv3bm4c3ld7pknw2g76cjkx81hsrmbrd1irlv4s4b00"))))
+        (base32 "1qjnhhf8c00hnn0b8icq71l73fa1blxfx9q0ahnvpd32wh6i0bql"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/Fanael/edit-indirect")
     (synopsis "Edit regions in separate buffers")
@@ -15008,7 +15188,7 @@ generated by Org mode (or Markdown mode) is left untouched.")
 (define-public emacs-visual-fill-column
   (package
     (name "emacs-visual-fill-column")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method git-fetch)
@@ -15017,7 +15197,7 @@ generated by Org mode (or Markdown mode) is left untouched.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0006x7vbwrx4w3b51aajzds0qaw3zb3b2wmj0c3j0anlrmyb37yz"))))
+        (base32 "0mw61gc70bi64kypnag9xl3y9sd2y7mb8d2q97aq74jx7hq6cm8j"))))
     (build-system emacs-build-system)
     (home-page "https://codeberg.org/joostkremers/visual-fill-column")
     (synopsis "Fill-column for visual-line-mode")
@@ -15325,7 +15505,7 @@ ack, ag, helm and pt.")
 (define-public emacs-helm
   (package
     (name "emacs-helm")
-    (version "3.9.6")
+    (version "3.9.7")
     (source
      (origin
        (method git-fetch)
@@ -15334,7 +15514,7 @@ ack, ag, helm and pt.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01b2608gsly557927wdkp71mbakk7h23icjnxq097r12zra4agc7"))))
+        (base32 "0f7vwrvxg83gril2y5qm4469nzhy51dg49zn643pni6cmhz7r9mx"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async emacs-popup))
@@ -15542,11 +15722,11 @@ Makefile targets.")
       (license license:gpl3+))))
 
 (define-public emacs-helm-make
-  (let ((commit "feae8df22bc4b20705ea08ac9adfc2b43bb348d0")
-        (revision "1"))
+  (let ((commit "ebd71e85046d59b37f6a96535e01993b6962c559")
+        (revision "0"))
     (package
       (name "emacs-helm-make")
-      (version (string-append "0.1.0-" revision "." (string-take commit 7)))
+      (version (git-version "0.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15556,10 +15736,10 @@ Makefile targets.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1y2v77mmd1bfkkz51cnk1l0dg3lvvxc39wlamnm7wjns66dbvlam"))))
+           "14jvhhw4chl94dgfwbyy7yirwchvcz5zrsgr9w6qy4z0fhqba41a"))))
       (build-system emacs-build-system)
       (propagated-inputs
-       (list emacs-helm emacs-projectile))
+       (list emacs-helm emacs-ivy emacs-projectile))
       (home-page "https://github.com/abo-abo/helm-make")
       (synopsis "Select a Makefile target with helm")
       (description "@code{helm-make} or @code{helm-make-projectile} will give
@@ -15621,7 +15801,7 @@ implementation.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.12.0")
+    (version "1.13.1")
     (source
      (origin
        (method git-fetch)
@@ -15630,7 +15810,7 @@ implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11bibkbv3x0z4ilxra3p91nh8klgg3mg3h4f63pxnnp8fjhqpsph"))))
+        (base32 "0aswxqhdhxm2hx8cvpa47siah1d8n7kswdj1p7nplzqzzqzcy34h"))))
     (build-system emacs-build-system)
     (arguments
      '(#:include (cons* "^lein\\.sh$" "^clojure\\.sh$" %default-include)
@@ -16174,7 +16354,7 @@ being deleted, changed, yanked, or pasted when using evil commands")
 (define-public emacs-goggles
   (package
     (name "emacs-goggles")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -16183,7 +16363,7 @@ being deleted, changed, yanked, or pasted when using evil commands")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0crll7r1qzpipimrahbfgk31f6rys58gzsbiwi65l0gqw49699sx"))))
+        (base32 "1fczxygg1blfmlwswck49rllww77rc7qn91wqw1kvjwfz31sk8z4"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/goggles")
     (synopsis "Pulse modified region")
@@ -16642,14 +16822,14 @@ to be a more complete implementation.")
 (define-public emacs-orgalist
   (package
     (name "emacs-orgalist")
-    (version "1.13")
+    (version "1.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "orgalist-" version ".el"))
+                           "orgalist-" version ".tar"))
        (sha256
-        (base32 "1wkxc5kcy1g4lx6pd78pa8znncjyl9zyhsvz7wpp56qmhq4hlav3"))))
+        (base32 "08gx8aqi7ph75vhhss2xl1lfypzy8a3zmj7w8flcrvz1nk0z738s"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/orgalist.html")
     (synopsis "Manage Org-like lists in non-Org buffers")
@@ -16705,7 +16885,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.6.14")
+    (version "9.6.19")
     (source
      (origin
        (method git-fetch)
@@ -16714,7 +16894,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g59nfx8gqzkqidqvyvh83yd7mahjm9khhr1ccwqj3r4phwpciqx"))))
+        (base32 "0yxicr9z6drsaybp8jl0jmslcqbz0np4gzzkr70j8pq3x9y69i7z"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -17285,7 +17465,7 @@ provides functions to convert hash tables from and to alists and plists.")
 (define-public emacs-log4e
   (package
     (name "emacs-log4e")
-    (version "0.3.3")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -17294,7 +17474,7 @@ provides functions to convert hash tables from and to alists and plists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dbnks76v05allzkhx9zmyqpn6sk5376n8k2rbpnaw6gmz1ib2fv"))))
+        (base32 "1x08dz18zhifkhrwdbh57izzidaf6vy1vb865f4xrqs6blgfiwj4"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -17669,6 +17849,28 @@ a (typically) noncontiguous set of text.")
 Additionally it can display the number of unread emails in the mode line.")
       (license license:gpl3+))))
 
+(define-public emacs-mu4e-column-faces
+  (package
+    (name "emacs-mu4e-column-faces")
+    (version "20221213.2206")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Alexander-Miller/mu4e-column-faces.git")
+             (commit "1bbb646ea07deb1bd2daa4c6eb36e0f65aac40b0")))
+       (sha256
+        (base32 "12cb37lj8j1fd5kp3gbnzgknb57j5l8xgrnhb60ysff66m1mbrr7"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list mu))
+    (home-page "https://github.com/Alexander-Miller/mu4e-column-faces")
+    (synopsis "Faces for individual mu4e columns")
+    (description
+     "This package provides a minor mode for individual column faces in mu4e's
+mail overview.")
+    (license license:gpl3+)))
+
 (define-public emacs-mu4e-jump-to-list
   (let ((commit "358bba003543b49ffa266e503e54aebd0ebe614b")
         (revision "1"))
@@ -17796,7 +17998,7 @@ been adapted to also work with mu4e.")
 (define-public emacs-tempel
   (package
     (name "emacs-tempel")
-    (version "1.0")
+    (version "1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17805,7 +18007,7 @@ been adapted to also work with mu4e.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f1z5p6vbbjsh7cn7hqhv4c6h4awczpf14sbwpzsnwqsxsfjdh34"))))
+                "004jwmfj7ymdaml8rdzn8fhki8x8n4d0ziq52wn4nqm5y8n90pz5"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
@@ -17840,39 +18042,40 @@ the Emacs TempEl package.")
       (license license:gpl3+))))
 
 (define-public emacs-yasnippet
-  (package
-    (name "emacs-yasnippet")
-    (version "0.14.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/joaotavora/yasnippet")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0via9dzw8m5lzymg1h78xkwjssh39zr3g6ccyamlf1rjzjsyxknv"))
-       (patches
-        (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"
-                        "emacs-yasnippet-fix-tests.patch"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #t
-       #:test-command '("emacs" "--batch"
-                        "-l" "yasnippet-tests.el"
-                        "-f" "ert-run-tests-batch-and-exit")
-       #:phases
-       (modify-phases %standard-phases
-         ;; Set HOME, otherwise test-rebindings fails.
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
-    (home-page "https://github.com/joaotavora/yasnippet")
-    (synopsis "Yet another snippet extension for Emacs")
-    (description "YASnippet is a template system for Emacs.  It allows you to
+  ;; The latest release is more than 5 years old, has test problems.
+  (let ((revision "0")
+        (commit "297546f0853a6a51f5b05e954d0c6aea8caa5ec2"))
+    (package
+      (name "emacs-yasnippet")
+      (version (git-version "0.14.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/joaotavora/yasnippet")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b1fdigwjshfim6zyzkn2wa6k8xd4qlafrf7zgj5bsx6alrzac8v"))
+         (patches
+          (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:tests? #t
+         #:test-command '("emacs" "--batch"
+                          "-l" "yasnippet-tests.el"
+                          "-f" "ert-run-tests-batch-and-exit")
+         #:phases
+         (modify-phases %standard-phases
+           ;; Set HOME, otherwise test-rebindings fails.
+           (add-before 'check 'set-home
+             (lambda _
+               (setenv "HOME" (getcwd)))))))
+      (home-page "https://github.com/joaotavora/yasnippet")
+      (synopsis "Yet another snippet extension for Emacs")
+      (description "YASnippet is a template system for Emacs.  It allows you to
 type an abbreviation and automatically expand it into function templates.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-yasnippet-snippets
   (package
@@ -18287,15 +18490,16 @@ highlights quasi-quoted expressions.")
 (define-public emacspeak
   (package
     (name "emacspeak")
-    (version "53.0")
+    (version "59.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/tvraman/emacspeak/releases/download/"
-             version "/emacspeak-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tvraman/emacspeak")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0lasj4ggsh93ingf46n16wxfx5zzxvr1igikbmdqlz3i99j331gs"))))
+        (base32 "010c8hy8nmffaqn1h8n8hmyxvn7gx6ygx4pxgdfp1vl8bb1bz54y"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -18725,7 +18929,7 @@ configuration of Chinese fonts.")
 (define-public emacs-boon
   (package
     (name "emacs-boon")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -18734,7 +18938,7 @@ configuration of Chinese fonts.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18il2licf8pgfcrpx2bk55gpf8f537kb9cxqz83jldkhiyry74il"))))
+        (base32 "0jmmxav45sbch9prdxipd04rdmyh5ca1r9lpdlj61b5c4vlm4282"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-expand-region emacs-multiple-cursors
@@ -19069,6 +19273,27 @@ methods from a given list.")
     (description "Cyrillic input method for dvorak layout.")
     (license license:gpl3+)))
 
+(define-public emacs-mini-echo
+  (let ((commit "f25a2f543b3e9fa5043ef37c81c17fc15aceb534")
+        (revision "1"))
+    (package
+      (name "emacs-mini-echo")
+      (version (git-version "0.7.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/liuyinz/mini-echo.el.git")
+               (commit commit)))
+         (sha256
+          (base32 "1nbwwf087v1mp5vbmasxqnmbrsgzgm87yd5ajq1hnfxd412w3vhx"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/liuyinz/mini-echo.el")
+      (synopsis "Echo buffer status in minibuffer window")
+      (description "This package lets you show buffer status in the echo area,
+so you can get rid of the mode-line.")
+      (license license:gpl3+))))
+
 (define-public emacs-mini-frame
   (let ((commit "60838f3cab438dcbda8eaa15ab3e5d1af88910e9")
         (revision "0"))
@@ -19222,7 +19447,7 @@ code derived from Kelvin H's Org page.")
 (define-public emacs-meow
   (package
     (name "emacs-meow")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method git-fetch)
@@ -19231,7 +19456,7 @@ code derived from Kelvin H's Org page.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xd9v2ac44kxkbd1va70v7mfccmpnchgl7ipnhikq9y8jha02brr"))))
+        (base32 "0xv6wg4lyi5bv68h5hk5hfxdwxa2g3ybxd8z0l420az4rnhr6zhq"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/meow-edit/meow")
     (synopsis "Yet another modal editing on Emacs")
@@ -19672,7 +19897,7 @@ Emacs.")
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
-    (version "1.16")
+    (version "1.17")
     (source
      (origin
        (method url-fetch)
@@ -19680,11 +19905,11 @@ Emacs.")
                            ".tar"))
        (sha256
         (base32
-         "0zi2r8fp7acqlx8s4k2m9dc8w29bwsxyvfa6cnd1366nm3rlfybn"))))
+         "1can988d7qdn0dj4wg8adjz1s9j5yin8bcp7ylhq1pr327d5flky"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-external-completion
-           emacs-eldoc
+     (list emacs-eldoc
+           emacs-external-completion
            emacs-jsonrpc
            emacs-project
            emacs-seq
@@ -20574,7 +20799,7 @@ multiplexer.")
 (define-public emacs-plz
   (package
     (name "emacs-plz")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -20583,7 +20808,7 @@ multiplexer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x2yhkdagwdqzjkaq54l095m3zvn49dg8y47wg27qdb5m2cjnswr"))))
+        (base32 "0bbc8jr6xivzc7r701lnxmhcs7v56av780avyycaz1hpcmggl726"))))
     (build-system emacs-build-system)
     (inputs (list curl))
     (arguments
@@ -20605,7 +20830,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
 (define-public emacs-ement
   (package
     (name "emacs-ement")
-    (version "0.13")
+    (version "0.14")
     (source
      (origin
        (method git-fetch)
@@ -20614,7 +20839,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bcsg8mp1z35q6k7zwm7p2ka8gvs9kkazmyjcsk9siqz4mlarv7s"))))
+        (base32 "0nfkxcwkyyy181y6wv64b69rq3spbb3lq634bk6j824aws7ha5rk"))))
     (build-system emacs-build-system)
     (arguments
      (list #:emacs emacs))              ;need libxml support
@@ -21145,7 +21370,7 @@ groups.")
 (define-public emacs-taxy-magit-section
   (package
     (name "emacs-taxy-magit-section")
-    (version "0.12.2")
+    (version "0.13")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -21153,7 +21378,7 @@ groups.")
                     ".tar"))
               (sha256
                (base32
-                "1pf83zz5ibhqqlqgcxig0dsl1rnkk5r6v16s5ngvbc37q40vkwn1"))))
+                "1712hbcna0ph9chaq28a6fanv4sccdiphd5z0hg34ig3g6pslgn9"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-magit emacs-taxy))
     (home-page "https://github.com/alphapapa/taxy.el")
@@ -21548,14 +21773,14 @@ let users kill or mark things easily.")
 (define-public emacs-csv-mode
   (package
     (name "emacs-csv-mode")
-    (version "1.22")
+    (version "1.23")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "csv-mode-" version ".tar"))
        (sha256
-        (base32 "1f9pny1hkhdfmkmfpsk6ayjmb9p5hdpxpnmcprf51nfbvmi7ssig"))))
+        (base32 "0bdx56bn5aw0xjqgqhx2ccrrns3si04zy9ya755jz7n1djqn3mcz"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/csv-mode.html")
     (synopsis "Major mode for editing comma/char separated values")
@@ -21788,7 +22013,7 @@ Features:
 (define-public emacs-evil-matchit
   (package
     (name "emacs-evil-matchit")
-    (version "3.0.2")
+    (version "3.0.4")
     (source
      (origin
        (method git-fetch)
@@ -21797,7 +22022,7 @@ Features:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0igz4kcfb01f9h49n5x9p1idzap54nkw62i1xrql1zlj54s8rv6b"))))
+        (base32 "1m5y5n38w0ijzx2kl9d0nnw70ykx2prmnvv4ip9siad71k7wpwjg"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-evil))
@@ -22641,7 +22866,7 @@ match and total match information in the mode-line in various search modes.")
 (define-public emacs-pg
   (package
     (name "emacs-pg")
-    (version "0.24")
+    (version "0.28")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/emarsden/pg-el")
@@ -22649,7 +22874,7 @@ match and total match information in the mode-line in various search modes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0228yig42g3x79gj1yakgmsj119v0agzvyn888nq6qgcd04i1w0d"))))
+                "00sdvlb9ybyzncjijibw81mf3lhw5p40v7086cg18xvpa2qvzdfz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emarsden/pg-el")
     (synopsis "Emacs Lisp interface for PostgreSQL")
@@ -22986,29 +23211,25 @@ outline-mode), so there is no such thing like an outshine mode, only
     (license license:gpl3+)))
 
 (define-public emacs-frecency
-  (let ((commit "31ef9ff4af1a4fed3dcc24ea74037feea8795c87")
-        (version "0.1-pre")
-        (revision "1"))
-    (package
-      (name "emacs-frecency")
-      (version (git-version version revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/alphapapa/frecency.el")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "051aihjdg3x22svaxhwylpi8i6s2x9j8syvsj1jgilgjjdy15l6j"))
-                (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-a emacs-dash))
-      (home-page "https://github.com/alphapapa/frecency.el")
-      (synopsis "Sort items by frequency and recency of access")
-      (description "This package provides a way of sorting items via
+  (package
+    (name "emacs-frecency")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alphapapa/frecency.el")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1n1ghl3jr4wmzc4f5xhkx5mfg3vfqs0kjzbra6k5drcnyh2iixkc"))
+              (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-a emacs-dash))
+    (home-page "https://github.com/alphapapa/frecency.el")
+    (synopsis "Sort items by frequency and recency of access")
+    (description "This package provides a way of sorting items via
 a heuristic based on frequency and recency.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-org-recent-headings
   (let ((commit "97418d581ea030f0718794e50b005e9bae44582e")
@@ -23274,7 +23495,7 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.8.1")
+    (version "1.8.2")
     (source
      (origin
        (method git-fetch)
@@ -23283,7 +23504,7 @@ according to a parsing expression grammar.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "058f2k2qhwbyr7a759wig9x6v6n2rl7zshqjbp4jnhnkcqkr70g5"))))
+        (base32 "108px7lnf39ngvb8rcqb9qh2amcbs1h22dbwd1q7js2np2nd132y"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -23363,7 +23584,7 @@ interactive commands and functions, such as @code{completing-read}.")
 (define-public emacs-org-ql
   (package
     (name "emacs-org-ql")
-    (version "0.8")
+    (version "0.8.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -23371,7 +23592,7 @@ interactive commands and functions, such as @code{completing-read}.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0l403n75xyjf14pbk7hfdzajv393mk5m0xp9csv8dl805rgzrdkr"))
+                "07r9bx0bh7wyj5pbkhnrn8amzz3ynri94cxcxgcn1r3ypdhk6y85"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -23489,7 +23710,7 @@ files to be expanded upon opening them.")
 (define-public emacs-ebib
   (package
     (name "emacs-ebib")
-    (version "2.40.3")
+    (version "2.40.4")
     (source
      (origin
        (method git-fetch)
@@ -23498,7 +23719,7 @@ files to be expanded upon opening them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07pyb76impqpczx6hl6amfs4hfnszfwydp27az46dkqc17hy0fgy"))))
+        (base32 "0b60k4yqmnim9hx25dhyvn6g646mq10pym8k6h176jr06br8kc2y"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-biblio emacs-compat emacs-ivy emacs-parsebib))
@@ -23558,6 +23779,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:emacs emacs-no-x
       #:tests? #true
       #:test-command #~(list "emacs" "--batch" "-L" "."
                              "-l" "test/citar-test.el"
@@ -23567,10 +23789,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
       #:phases #~(modify-phases %standard-phases
                    (add-before 'build 'set-home
                      (lambda _
-                       (setenv "HOME" "/tmp")))
-                   ;; XXX: The following phase reports bogus errors. Suppress
-                   ;; it for now.
-                   (delete 'validate-compiled-autoloads))))
+                       (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list emacs-auctex
                              emacs-citeproc-el
                              emacs-embark
@@ -24365,14 +24584,14 @@ or expressions with SVG rounded box labels that are fully customizable.")
 (define-public emacs-kind-icon
   (package
     (name "emacs-kind-icon")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/kind-icon-"
                            version ".tar"))
        (sha256
-        (base32 "0ri5k2bgr9cf0qsdznsil70b4zs4z00fs4k35c3dj7kxx9nlncfi"))))
+        (base32 "1jpc4izbi5ajqqrvvfp5yqfmljaw2mq06ym36d4p2cxkz95vcmi7"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-svg-lib))
     (home-page "https://github.com/jdtsmith/kind-icon")
@@ -24501,7 +24720,7 @@ expansions for debugging with Edebug as normal.")
 (define-public emacs-parent-mode
   (package
     (name "emacs-parent-mode")
-    (version "2.3")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -24510,12 +24729,20 @@ expansions for debugging with Edebug as normal.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i5bc7lyyrx6swqlrp9l5x72yzwi53qn6ldrfs99gh08b3yvsnni"))))
+        (base32 "1ki22rkbyglr3wppjph6gy23lcx2nwj9w0ff9h3ryd197j4yvvgi"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "emacs" "--batch"
+                             "-l" "parent-mode-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/Fanael/parent-mode")
     (synopsis "Get major mode's parent modes")
-    (description "Get major mode's parent modes")
-    (license license:gpl3+)))
+    (description
+     "This package provides a function to list all current major mode's parent
+modes.")
+    (license license:bsd-2)))
 
 (define-public emacs-lacarte
   (let ((commit "79afc5d2406dae5aabc1c12089e8e2e1990abd85")
@@ -24994,7 +25221,7 @@ powerful Org contents.")
 (define-public emacs-org-re-reveal
   (package
     (name "emacs-org-re-reveal")
-    (version "3.25.0")
+    (version "3.25.1")
     (source
      (origin
        (method git-fetch)
@@ -25003,7 +25230,7 @@ powerful Org contents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13q45c2a4y6pkaiixf931j4rq6sfpklxx854xwadik4a3mm06ipi"))))
+        (base32 "0ayiaqci969d8q3nc0aq0a9djl84lckj2sc5nndbb1bvvhz49xq1"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-htmlize emacs-org))
@@ -26504,29 +26731,31 @@ autosuggestions with:
     (license license:gpl3+)))
 
 (define-public emacs-desktop-environment
-  (package
-    (name "emacs-desktop-environment")
-    (version "0.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DamienCassou/desktop-environment")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "03rl1z860jmirjrrg0xsjx0bqk73k043c8bz6049zhndh7pidri7"))))
-    (build-system emacs-build-system)
-    (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
-    (synopsis "Control your GNU/Linux desktop environment from Emacs")
-    (description
-     "This package helps you control your GNU/Linux desktop from Emacs.
+  (let ((commit "bc1153aa619b12456304cca642424a0d8d2eb416")
+        (revision "0"))
+    (package
+      (name "emacs-desktop-environment")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DamienCassou/desktop-environment")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0bslgm9rz7whk0ll21028dsl22wbd289cdc95qj8hhlk8m4hlp2h"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
+      (synopsis "Control your GNU/Linux desktop environment from Emacs")
+      (description
+       "This package helps you control your GNU/Linux desktop from Emacs.
 With @code{desktop-environment}, you can control the brightness and volume as
 well as take screenshots and lock your screen.  The package depends on the
 availability of shell commands to do the hard work for us.  These commands can
 be changed by customizing the appropriate variables.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-caldav
   (let ((commit "754989ae500b3f576bdb94fe2ef3059f12eaf7d7")) ;version bump
@@ -28186,7 +28415,7 @@ buffers – other modes on the TODO list).
 (define-public emacs-magit-todos
   (package
     (name "emacs-magit-todos")
-    (version "1.7")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -28196,7 +28425,7 @@ buffers – other modes on the TODO list).
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zjlf3bhz0a7r9sa5ic22vwr2w1zxbfk9z545pdd1fvp00c2kzd0"))))
+         "1y5l36ig0q5dqgijw916zgaz68kphg7k6kxs560vrfwkfn0cy59d"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async
@@ -28244,7 +28473,7 @@ files) are provided.")
 (define-public emacs-hackernews
   (package
     (name "emacs-hackernews")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -28254,7 +28483,7 @@ files) are provided.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17lkjcka6ydd6khhz5jbjlybfpx05153z0d8s1rxaxcwl7z2y6cf"))))
+         "100aa0vs1gjwpkfdc7avwv5v3sicj2npqfr1y3dsib3pimp21l6w"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/clarete/hackernews.el")
     (synopsis "Hacker News client for Emacs")
@@ -28448,7 +28677,7 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.0.7")
+    (version "2.1.2")
     (source
      (origin
        (method git-fetch)
@@ -28457,7 +28686,7 @@ and comments.")
              (commit version)))
        (sha256
         (base32
-         "05w33431dfr1ldcg3yq01qvz0alpv8q88r0dsb278qbwszw9cfz6"))
+         "0c2iq6rb179zh9qbw7prxsjbiz77j060pj75s82wbbz5xjavzgp5"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -28471,8 +28700,15 @@ and comments.")
                  (search-input-file inputs "/bin/yt-dlp")))
               (emacs-substitute-variables "yeetube-mpv.el"
                 ("yeetube-mpv-path"
-                 (search-input-file inputs "/bin/mpv"))))))))
-    (inputs (list mpv yt-dlp))
+                 (search-input-file inputs "/bin/mpv"))
+                ("yeetube-mpv-torsocks"
+                 (search-input-file inputs "/bin/torsocks")))))
+          (add-after 'unpack 'relax-check
+            (lambda _
+              (substitute* "yeetube-mpv.el"
+                (("\\(yeetube-mpv-check\\)") "")))))))
+    (inputs (list mpv torsocks yt-dlp))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://thanosapollo.com/blog/yeetube/")
     (synopsis "Youtube and Invidious front-end for Emacs")
     (description
@@ -30014,7 +30250,7 @@ interface to attach and interact with the processes.")
 (define-public emacs-dtrt-indent
   (package
     (name "emacs-dtrt-indent")
-    (version "1.15")
+    (version "1.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30023,7 +30259,7 @@ interface to attach and interact with the processes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vddrpplc7887gcfg7d52fv1nxv6sgn3w310gr06c6nfk3lwas9y"))))
+                "0mjdqzl5mbasix8awav2qp9367waycmbcjy07s53nhv2xpqam9la"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/jscheid/dtrt-indent")
     (synopsis "Minor mode that guesses the indentation offset")
@@ -32480,14 +32716,14 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-tramp
   (package
     (name "emacs-tramp")
-    (version "2.6.2.0")
+    (version "2.6.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "tramp-" version ".tar"))
        (sha256
-        (base32 "06wpaqjr3qw1424k9rh5i28yxrkzh1z5dczpgp7mpv823l2x8ip3"))))
+        (base32 "145riknpdvw7rvpz20m766yci3w012f241mw38pbbb9cb8pn2rbf"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -32502,8 +32738,6 @@ well as an option for visually flashing evaluated s-expressions.")
               (emacs-substitute-variables "tramp.el"
                 ("tramp-encoding-shell"
                  (search-input-file inputs "/bin/sh"))))))))
-    (inputs
-     (list bash))
     (home-page "https://savannah.gnu.org/projects/tramp")
     (synopsis "Remote file editing package for Emacs")
     (description
@@ -32905,17 +33139,19 @@ programming in Emacs Lisp easy and fun.")
 (define-public emacs-excorporate
   (package
     (name "emacs-excorporate")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "excorporate-" version ".tar"))
        (sha256
-        (base32 "06ilfkrlx6ca0qfqq3w1w07kdwak556i1wgf1875py2d5xkg4r90"))))
+        (base32 "11w53idm7m20jhmwnj9wiqiv6fzydjrgy2s3mp36barlj3xq0l0z"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-fsm emacs-soap-client emacs-url-http-ntlm
+     (list emacs-fsm
+           emacs-soap-client
+           emacs-url-http-ntlm
            emacs-url-http-oauth))
     (home-page "https://elpa.gnu.org/packages/excorporate.html")
     (synopsis "Exchange integration")
@@ -33159,7 +33395,7 @@ it forcibly
 (define-public emacs-elpher
   (package
     (name "emacs-elpher")
-    (version "3.5.0")
+    (version "3.5.1")
     (source
      (origin
        (method git-fetch)
@@ -33168,7 +33404,7 @@ it forcibly
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cxzv9nx5vshf45r7msaqnq8h7xwi4kd8pb3na3dljlrhwvgdrk6"))))
+        (base32 "1qiqjkbqjv6gw4lyf697jsb081sy2r46i3q6gdssfrhsjjmb8jag"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -33414,6 +33650,50 @@ With org-reveal, you can create beautiful presentations with 3D effects from
 simple but powerful Org contents.")
       (license license:gpl3+))))
 
+(define-public emacs-ox-tufte
+  (package
+    (name "emacs-ox-tufte")
+    (version "4.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ox-tufte/ox-tufte")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15jfwrdawj8flgyfqhsfhdlnam6n5gzw5minnixwxyp69q5vxnpw"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons "^src/" %default-include)
+      #:tests? #t
+      ;; <https://github.com/emacs-eldev/eldev/issues/99#issuecomment-1912637609>
+      #:test-command #~(list "eldev" "-X" "-dtTC" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-eldev
+            (lambda _
+              (setenv "HOME"
+                      (string-append (getcwd) "/.eldev"))
+              (with-output-to-file "Eldev-local"
+                (lambda _
+                  (format #t "~s"
+                          '(dolist (d (split-string (getenv
+                                                     "EMACSLOADPATH")
+                                                    ":" t))
+                                   (ignore-errors
+                                    (eldev-use-local-dependency d)))))))))))
+    (native-inputs (list emacs-buttercup emacs-eldev))
+    (propagated-inputs (list emacs-org))
+    (home-page "https://github.com/ox-tufte/ox-tufte")
+    (synopsis "Tufte HTML Org mode export backend")
+    (description
+     "This is an export backend for Org mode that exports buffers to HTML that
+is compatible with Tufte
+CSS (@url{https://edwardtufte.github.io/tufte-css/}).")
+    (license license:gpl3+)))
+
 (define-public emacs-ox-rss
   ;; XXX: Upstream provides no version nor tags whatsoever.
   (let ((commit "83dc898fa5493925b01716e5dd495d5e07c3d41a")
@@ -33488,7 +33768,7 @@ time.")
 (define-public emacs-mastodon
   (package
     (name "emacs-mastodon")
-    (version "1.0.13")
+    (version "1.0.14")
     (source
      (origin
        (method git-fetch)
@@ -33497,7 +33777,7 @@ time.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "143wmg9jhdi79y1gdi0y9xxpp8vyn7qbhvaysq1sf7g1h0jskxc2"))))
+        (base32 "151190hcafm0r8pi053lm7akjli3m55q676sa3i3fy9c0pc4bhz8"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -33521,15 +33801,16 @@ federated microblogging social network.")
 (define-public emacs-ebdb
   (package
     (name "emacs-ebdb")
-    (version "0.8.20")
+    (version "0.8.22")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "ebdb-" version ".tar"))
        (sha256
-        (base32 "1kcygkfw7r3ixbb2dgsf3rl2662xls24992y2j1w32fdh9gqk03s"))))
+        (base32 "12sydb2lm571096gpb8r0jpg19wiqpl52rcnrhkvzlhzxgg18pg5"))))
     (build-system emacs-build-system)
+    (inputs (list emacs-org-roam))
     (home-page "https://github.com/girzel/ebdb")
     (synopsis "EIEIO port of BBDB, Emacs's contact-management package")
     (description
@@ -34427,11 +34708,11 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
     (license license:gpl3+)))
 
 (define-public emacs-telega-server
-  (let ((commit "304705fa007c3dae3c5d0c6dc66641ae783f0081")
+  (let ((commit "d1cf1ffe289a18f366b7f3b64f827f0d0755947a")
         (revision "0"))
     (package
       (name "emacs-telega-server")
-      (version (git-version "0.8.230" revision commit))
+      (version (git-version "0.8.250" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -34439,7 +34720,7 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "02yxjaxpf2f6pjg3ixw7jvx56x6lfh30mnsmiz1p2yi64kyllaan"))
+          (base32 "0s1w4zb252d70n05dbsv2rnlfsg53paklafqxasl566nnzbi0d2q"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-path-placeholder.patch"
@@ -34550,7 +34831,7 @@ contributed packages to Telega.")))
 (define-public emacs-doom-modeline
   (package
     (name "emacs-doom-modeline")
-    (version "4.0.1")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -34558,7 +34839,7 @@ contributed packages to Telega.")))
              (url "https://github.com/seagle0128/doom-modeline")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0pwfmj01cqij84dig5qj86n7f4cva5mdjqahr0061byrlv9xrpzb"))
+        (base32 "0l7yyn8yxyxbsjbs52bp9wh66wdj828scb1gjbi6pk1hrx5x8g9v"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -35871,14 +36152,14 @@ detected language.")
 (define-public emacs-persist
   (package
     (name "emacs-persist")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "persist-" version ".tar"))
        (sha256
-        (base32 "090n4479zs82by7a3vb551gyjvv8lpfcylk43ywr2lfyssc9xiq0"))))
+        (base32 "0n68dshbbyrs713989bllmm1vypch8766hc8b4y989nmyclixjwp"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/persist.html")
     (synopsis "Persist variables between Emacs sessions")
@@ -36430,6 +36711,45 @@ opening Org Ref's @code{cite:} links.")
     (description "This package generates files and folders from Emacs
 org-mode templates.")
     (license license:gpl3+)))
+
+(define-public emacs-org-glossary
+  (let ((commit "1b9b7fd3d1e6c214c34463e568daaba6df00ec27")
+        (revision "0"))
+    (package
+      (name "emacs-org-glossary")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.tecosaur.net/tec/org-glossary")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09mg8aqxamnxx8kpdyk074wf2wkm4rx62z7q66azw70hjr1ggwa3"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'makeinfo
+              (lambda _
+                (invoke "emacs"
+                        "--batch"
+                        "--eval=(require 'ox-texinfo)"
+                        "--eval=(find-file \"org-glossary.org\")"
+                        "--eval=(org-texinfo-export-to-info)")
+                (install-file "org-glossary.info"
+                              (string-append #$output "/share/info")))))))
+      (native-inputs (list texinfo))
+      (home-page "https://git.tecosaur.net/tec/org-glossary")
+      (synopsis "Interact with glossary-like structures in Org documents")
+      (description
+       "Org Glossary defines a flexible model for working with glossary-like
+constructs (glossaries, acronyms, indices, etc.) within Org documents, with
+support for in-buffer highlighting of defined terms and high-quality exports
+across all Org export back-ends.")
+      (license license:gpl3+))))
 
 (define-public emacs-uml-mode
   ;; Package has no release.  Version is extracted from "Version:" keyword in
@@ -37661,7 +37981,7 @@ and preferred services can easily be configured.")
 (define-public emacs-vertico
   (package
     (name "emacs-vertico")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -37670,7 +37990,7 @@ and preferred services can easily be configured.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "088x0xqmhicdg44xprhimay0v9hcy12g15c7lk5kvhylxmkbg8wb"))))
+        (base32 "03m5v4r6n10ydmr1lks0d91dlirxlsh82l0qlac8qqfz09g0p76a"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -38369,7 +38689,7 @@ Fennel code within Emacs.")
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
-   (version "0.10")
+   (version "1.1")
    (source
      (origin
        (method git-fetch)
@@ -38377,7 +38697,7 @@ Fennel code within Emacs.")
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "0fpc6pf1chjs9bb4m9hzacny3cdxvnpvwsf0vrbbz3vy9sf1a30c"))
+        (base32 "1nanv3rnrjldr2gd55hn2w8j4zcm6b9jq1qica3m7iyq187ygbdg"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (propagated-inputs (list emacs-compat))
@@ -38483,7 +38803,7 @@ hacker.")
 (define-public emacs-osm
   (package
     (name "emacs-osm")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -38492,7 +38812,7 @@ hacker.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mmq83ill1vzx1x07vxjn53di2cskid2gmj5qqa6694s1xzpywf4"))))
+                "1dr0415xr7a2h4y4zpjkh0hrrcfw4sa55y8y98131h2n5fzhd5sx"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -38811,27 +39131,25 @@ into the current buffer.")
      "This package provides notification functions for Org Agenda.")))
 
 (define-public emacs-flymake-mypy
-  (let ((commit "d79e158f9ed3065ab692cd0d4048aac985c4fecd")
-        (revision "0"))
-    (package
-      (name "emacs-flymake-mypy")
-      (version "0.3.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/com4/flymake-mypy")
-                      (commit version)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zaa2kljsmm13layqmb7dwd7l2x3a5ymzzmzjjhykc67kbyjvvkk"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/com4/flymake-mypy")
-      (synopsis "Flymake checker for mypy")
-      (description
-"This package provides Flymake support for Python static type checking
+  (package
+    (name "emacs-flymake-mypy")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/com4/flymake-mypy")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w9bx0ay7jshwflndmf0ix5ghglw57isp2903x3jiv79lkd28xhg"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/com4/flymake-mypy")
+    (synopsis "Flymake checker for mypy")
+    (description
+     "This package provides Flymake support for Python static type checking
 using mypy.")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public emacs-mpv
   ;; No release since Dec 28, 2021.
@@ -38896,8 +39214,8 @@ latest Emacs.")
 
 (define-public emacs-flim-lb
   ;; No release since Nov 28, 2007.
-  (let ((commit "80b8121f05a5a0d7fcfe3e54085467a646dd2028")
-        (revision "137"))
+  (let ((commit "abdd2315006eb31476249223569808adb1c0f7b2")
+        (revision "142"))
     (package
       (name "emacs-flim-lb")
       (version (git-version "1.14.9" revision commit))
@@ -38909,7 +39227,7 @@ latest Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "02shd2mp9ywncn0wxgrijn0i8fa69kfx1y6nh5jjd64dyiczmskk"))))
+                  "1s21y0djlyiwmc1kz3dx19mdiq472ib07gdrw353imw5vmx3mp7d"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-apel-lb emacs-oauth2))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
@@ -38923,8 +39241,8 @@ Emacs.")
 
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
-  (let ((commit "d15603b8eb791f2057b48071c262996ad7767505")
-        (revision "247"))
+  (let ((commit "9063a4485b148a767ea924f0e7cc78d3524ba256")
+        (revision "248"))
     (package
       (name "emacs-semi-epg")
       (version (git-version "1.14.6" revision commit))
@@ -38936,7 +39254,7 @@ Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0cxrzgxflwgz9wsim84vrliwvkf53v242di4dvn2dfh65gccwqjx"))))
+                  "18km8jdxjcqnh378xxd7ivvvcxzrif8zpq9zgki9i7f0q8lsx677"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-flim-lb))
       (inputs (list emacs-bbdb-vcard))
@@ -38950,8 +39268,8 @@ EasyPG and latest Emacs.")
 
 (define-public emacs-wanderlust
   ;; No release since Jan 15, 2010.
-  (let ((commit "3e8cf26abd9c5c8e4fc611032e259ca930665641")
-        (revision "803"))
+  (let ((commit "9fd2c65e8d690625f35035a71e73f51f740dbe04")
+        (revision "818"))
     (package
       (name "emacs-wanderlust")
       (version (git-version "2.15.9" revision commit))
@@ -38972,7 +39290,7 @@ EasyPG and latest Emacs.")
                            (("package-user-dir") "NONE"))))
                 (sha256
                  (base32
-                  "0k9r3j7pcnvnnj0km8ggjdrf2nfgn1mfq7r7267bk3r3x92cvqh9"))))
+                  "034zrl54ql3ddaj5vl62bjzf2a5hvrq5gd9kynmyp0skgk8i6dr2"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
@@ -39085,7 +39403,7 @@ navigate through it.")
   ;; There is no proper release.
   ;; The base version is extracted from the README.org.
   (let ((revision "0")
-        (commit  "0b78f4e33b994612fcb305b3cf6d3b1e3b62cea7"))
+        (commit "eafc9828f54dddd594887bb28a7249cf1584230c"))
     (package
       (name "emacs-project-x")
       (version (git-version "0.1.6" revision commit))
@@ -39098,7 +39416,7 @@ navigate through it.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1xxzxxm0jila5s9sfay6ywj2j8pyz4wwcrycvnrrzh0vxcsgzf9s"))))
+          (base32 "141zym1libs14bpqv27ln8f6csxgy67pgcn1l3f44p15g1rc8mhr"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/karthink/project-x")
       (synopsis "Enhancement to Emacs built-in Project library")
@@ -39152,7 +39470,7 @@ in Emacs.")
 (define-public emacs-vertico-posframe
   (package
     (name "emacs-vertico-posframe")
-    (version "0.7.6")
+    (version "0.7.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -39160,7 +39478,7 @@ in Emacs.")
                     ".tar"))
               (sha256
                (base32
-                "15d7j37rmmg021mciwibcfmdwjn2694ljlh4sj03m1j4gj7igfqd"))))
+                "0xqbbqkzd2v7kqgmiwlx9pmpck2mpfwxmvy66i7dpzysvargi70q"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-posframe emacs-vertico))
     (home-page "https://github.com/tumashu/vertico-posframe")
@@ -39288,6 +39606,26 @@ entities.")
 specified in RFC 6238.  It supports reading secrets in HEX and multiple base32
 variations, including non-standard base32 encodings.")
        (license license:gpl3+))))
+
+(define-public emacs-back-button
+  (package
+    (name "emacs-back-button")
+    (version "0.6.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/rolandwalker/back-button.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hmn3jlsqgpc602lbcs9wzw0hgr5qpjdcxi2hjlc1cp27ilyscnf"))))
+    (build-system emacs-build-system)
+    (synopsis "Visual navigation through mark rings in Emacs")
+    (description "This package provides a way for the user to navigate
+through mark rings (in both directions, and globally or locally).")
+    (home-page "https://www.emacswiki.org/emacs/BackButton")
+    (license license:bsd-2)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

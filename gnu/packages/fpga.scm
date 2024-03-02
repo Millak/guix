@@ -425,7 +425,7 @@ a hardware description and verification language.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.9.2")
+    (version "1.11.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -434,7 +434,7 @@ a hardware description and verification language.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0zifyn7fr4k73ga6iwvsbsl6gi5106vlv5mkmqs0svi0sqx847f4"))))
+                "0rh6xwzr1drgwa04gx6w4r968yxlvfkvzg92950akf7wyxf331k7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:out-of-source? #t
@@ -457,7 +457,8 @@ a hardware description and verification language.")
     (inputs
      (list elfutils
            llvm-9
-           libffi))
+           libffi
+           `(,zstd "lib")))
     (synopsis "VHDL compiler and simulator")
     (description "This package provides a VHDL compiler and simulator.")
     (home-page "https://www.nickg.me.uk/nvc/")

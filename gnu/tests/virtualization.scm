@@ -33,6 +33,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services dbus)
   #:use-module (gnu services networking)
+  #:use-module (gnu services ssh)
   #:use-module (gnu services virtualization)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages virtualization)
@@ -42,7 +43,8 @@
   #:use-module (guix modules)
   #:export (%test-libvirt
             %test-qemu-guest-agent
-            %test-childhurd))
+            %test-childhurd
+            %test-build-vm))
 
 
 ;;;
@@ -241,6 +243,36 @@
                                  (password ""))   ;empty password
                                 %base-user-accounts))))))))
 
+(define* (run-command-over-ssh command
+                               #:key (port 10022) (user "test"))
+  "Return a program that runs COMMAND over SSH and prints the result on standard
+output."
+  (define run
+    (with-extensions (list guile-ssh)
+      #~(begin
+          (use-modules (ssh session)
+                       (ssh auth)
+                       (ssh popen)
+                       (ice-9 match)
+                       (ice-9 textual-ports))
+
+          (let ((session (make-session #:user #$user
+                                       #:port #$port
+                                       #:host "localhost"
+                                       #:timeout 120
+                                       #:log-verbosity 'rare)))
+            (match (connect! session)
+              ('ok
+               (userauth-password! session "")
+               (display
+                (get-string-all
+                 (open-remote-input-pipe* session #$@command))))
+              (status
+               (error "could not connect to guest over SSH"
+                      session status)))))))
+
+  (program-file "run-command-over-ssh" run))
+
 (define (run-childhurd-test)
   (define (import-module? module)
     ;; This module is optional and depends on Guile-Gcrypt, do skip it.
@@ -260,36 +292,6 @@
     (virtual-machine
      (operating-system os)
      (memory-size (* 1024 3))))
-
-  (define (run-command-over-ssh . command)
-    ;; Program that runs COMMAND over SSH and prints the result on standard
-    ;; output.
-    (let ()
-      (define run
-        (with-extensions (list guile-ssh)
-          #~(begin
-              (use-modules (ssh session)
-                           (ssh auth)
-                           (ssh popen)
-                           (ice-9 match)
-                           (ice-9 textual-ports))
-
-              (let ((session (make-session #:user "test"
-                                           #:port 10022
-                                           #:host "localhost"
-                                           #:timeout 120
-                                           #:log-verbosity 'rare)))
-                (match (connect! session)
-                  ('ok
-                   (userauth-password! session "")
-                   (display
-                    (get-string-all
-                     (open-remote-input-pipe* session #$@command))))
-                  (status
-                   (error "could not connect to childhurd over SSH"
-                          session status)))))))
-
-      (program-file "run-command-over-ssh" run)))
 
   (define test
     (with-imported-modules '((gnu build marionette))
@@ -356,21 +358,24 @@
             ;; 'uname' command.
             (marionette-eval
              '(begin
-                (use-modules (ice-9 popen))
+                (use-modules (ice-9 popen)
+                             (ice-9 textual-ports))
 
                 (get-string-all
-                 (open-input-pipe #$(run-command-over-ssh "uname" "-on"))))
+                 (open-input-pipe #$(run-command-over-ssh '("uname" "-on")))))
              marionette))
 
           (test-assert "guix-daemon up and running"
             (let ((drv (marionette-eval
                         '(begin
-                           (use-modules (ice-9 popen))
+                           (use-modules (ice-9 popen)
+                                        (ice-9 textual-ports))
 
                            (get-string-all
                             (open-input-pipe
-                             #$(run-command-over-ssh "guix" "build" "coreutils"
-                                                     "--no-grafts" "-d"))))
+                             #$(run-command-over-ssh
+                                '("guix" "build" "coreutils"
+                                  "--no-grafts" "-d")))))
                         marionette)))
               ;; We cannot compare the .drv with (raw-derivation-file
               ;; coreutils) on the host: they may differ due to fixed-output
@@ -416,3 +421,102 @@
     "Connect to the GNU/Hurd virtual machine service, aka. a childhurd, making
 sure that the childhurd boots and runs its SSH server.")
    (value (run-childhurd-test))))
+
+
+;;;
+;;; Virtual build machine.
+;;;
+
+(define %build-vm-os
+  (simple-operating-system
+   (service virtual-build-machine-service-type
+            (virtual-build-machine
+             (cpu-count 1)
+             (memory-size (* 1 1024))))))
+
+(define (run-build-vm-test)
+  (define (import-module? module)
+    ;; This module is optional and depends on Guile-Gcrypt, do skip it.
+    (and (guix-module-name? module)
+         (not (equal? module '(guix store deduplication)))))
+
+  (define os
+    (marionette-operating-system
+     %build-vm-os
+     #:imported-modules (source-module-closure
+                         '((gnu services herd)
+                           (gnu build install))
+                         #:select? import-module?)))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (memory-size (* 1024 3))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (srfi srfi-64)
+                       (ice-9 match))
+
+          (define marionette
+            ;; Emulate as much as the host CPU supports so that, possibly, KVM
+            ;; is available inside as well ("nested KVM"), provided
+            ;; /sys/module/kvm_intel/parameters/nested (or similar) allows it.
+            (make-marionette (list #$vm "-cpu" "max")))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "build-vm")
+
+          (test-assert "service running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd)
+                             (ice-9 match))
+
+                (start-service 'build-vm))
+             marionette))
+
+          (test-assert "guest SSH up and running"
+            ;; Note: Pass #:peek? #t because due to the way QEMU port
+            ;; forwarding works, connecting to 11022 always works even if the
+            ;; 'sshd' service hasn't been started yet in the guest.
+            (wait-for-tcp-port 11022 marionette
+                               #:peek? #t))
+
+          (test-assert "copy-on-write store"
+            ;; Set up a writable store.  The root partition is already an
+            ;; overlayfs, which is not suitable as the bottom part of this
+            ;; additional overlayfs; thus, create a tmpfs for the backing
+            ;; store.
+            ;; TODO: Remove this when <virtual-machine> creates a writable
+            ;; store.
+            (marionette-eval
+             '(begin
+                (use-modules (gnu build install)
+                             (guix build syscalls))
+
+                (mkdir "/run/writable-store")
+                (mount "none" "/run/writable-store" "tmpfs")
+                (mount-cow-store "/run/writable-store" "/backing-store")
+                (system* "df" "-hT"))
+             marionette))
+
+          (test-equal "offloading"
+            0
+            (marionette-eval
+             '(and (file-exists? "/etc/guix/machines.scm")
+                   (system* "guix" "offload" "test"))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "build-vm-test" test))
+
+(define %test-build-vm
+  (system-test
+   (name "build-vm")
+   (description
+    "Offload to a virtual build machine over SSH.")
+   (value (run-build-vm-test))))

@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -93,7 +93,9 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphics)
@@ -1100,6 +1102,43 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-scenic
+  (let ((commit "cedf8490a634da550cea2c831544e5f7f14467d2")
+        (revision "1"))
+    (package
+      (name "r-scenic")
+      (version (git-version "1.3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aertslab/SCENIC")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17ai0q260hdqbvm1km1s5dw93pgz4f546ycfii57jyy9m9jka7r0"))))
+      (properties `((upstream-name . "SCENIC")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-aucell
+                               r-data-table
+                               r-dynamictreecut
+                               r-genie3
+                               r-ggrepel
+                               r-mixtools
+                               r-nmf
+                               r-rcistarget
+                               r-rtsne))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/aertslab/SCENIC")
+      (synopsis
+       "SCENIC (Single Cell rEgulatory Network Inference and Clustering)")
+      (description "SCENIC (Single-cell regulatory network inference and
+clustering) is an R package to infer Gene Regulatory Networks and cell types
+from single-cell RNA-seq data.")
+      ;; As of commit cedf8490a634da550cea2c831544e5f7f14467d2 the license is
+      ;; GPLv3.
+      (license license:gpl3))))
+
 (define-public r-singlet
   (let ((commit "765a6c45081807a1522f0e8983e2417822a36f36")
         (revision "1"))
@@ -1469,6 +1508,39 @@ cpp.find_library('hdf5_cpp', dirs : '~a'), "
     (description
      "Blasr is a genomic sequence aligner for processing PacBio long reads.")
     (license license:bsd-3)))
+
+(define-public randfold
+  (package
+    (name "randfold")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://bioinformatics.psb.ugent.be/"
+                           "supplementary_data/erbon/nov2003/downloads/"
+                           "randfold-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0gqixl4ncaibrxmn25d6lm2hrw4ml2fj13nrc9q1kilsxdfi91mj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests provided
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "randfold"
+                            (string-append #$output "/bin")))))))
+    (inputs (list eddylab-squid))
+    (home-page
+     "http://bioinformatics.psb.ugent.be/supplementary_data/erbon/nov2003/")
+    (synopsis "Minimum free energy of folding randomization test software")
+    (description "randfold computes the probability that, for a given
+sequence, the @dfn{Minimum Free Energy} (MFE) of the secondary structure is
+different from MFE computed with random sequences.")
+    (license license:gpl2)))
 
 (define-public ribotaper
   (package
@@ -2112,6 +2184,45 @@ matplotlib Axes objects, making them easy to style and incorporate into
 multi-panel figures.")
     (license license:expat)))
 
+(define-public python-magic-impute
+  (package
+    (name "python-magic-impute")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KrishnaswamyLab/MAGIC")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1yjs16vg87lcg9g16bnblg1v9sk73j6dm229lkcz0bfjlzxjhv8w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "python"))))))
+    (propagated-inputs
+     (list python-future
+           python-graphtools
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-tasklogger))
+    (home-page "https://github.com/KrishnaswamyLab/MAGIC")
+    (synopsis "Markov affinity-based graph imputation of cells")
+    (description "MAGIC is an interactive tool to impute missing values in
+single-cell sequencing data and to restore the structure of the data.  It also
+provides data pre-processing functionality such as dimensionality reduction
+and gene expression visualization.")
+    (license license:gpl2+)))
+
 (define-public python-parabam
   (package
     (name "python-parabam")
@@ -2134,6 +2245,38 @@ multi-panel figures.")
 parallel.  It uses Python's native multiprocessing framework to apply a user
 defined rule on an input file.")
     (license license:gpl3)))
+
+(define-public python-pdbfixer
+  (package
+    (name "python-pdbfixer")
+    (version "1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openmm/pdbfixer")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zjhb19q5dclkwvzh8n29p31n1vzkhlmmzwqllimi89jsis1cx35"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests fail because they require internet access.
+             (string-append "not test_build_and_simulate.py"
+                            " and not test_cli.py"
+                            " and not test_mutate.py"))))
+    (propagated-inputs (list openmm python-numpy))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/openmm/pdbfixer")
+    (synopsis "Application for fixing problems in Protein Data Bank")
+    (description
+     "PDBFixer is designed to rectify issues in Protein Data Bank files.
+Its intuitive interface simplifies the process of resolving problems
+encountered in PDB files prior to simulation tasks.")
+    (license license:expat)))
 
 (define-public python-peaks2utr
   (package
@@ -2381,6 +2524,70 @@ Python.")
     ;; pybedtools/include/gzstream.cpp and pybedtools/include/gzstream.h are
     ;; licensed lgpl2.1+
     (license (list license:expat license:lgpl2.1+))))
+
+(define-public python-ega-download-client
+  (package
+    (name "python-ega-download-client")
+    (version "5.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/EGA-archive/ega-download-client")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k9rfq2yyvfxs5sq9lsm8krp9ddx4s18hv85ikf3b37zv24kpwjk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; These tests fail because they require internet access.
+        "--ignore=tests/functional/test_download.py"
+        "--ignore=tests/functional/test_htsget.py"
+        "-k"
+        (string-append "not test_error_5xx"
+                       " and not test_error_too_many_requests"
+                       ;; Something's wrong here.  On some powerful machines
+                       ;; (but not on my laptop) these fail, and tests like
+                       ;; test_file_is_saved_into_an_existing_directory_which_was_specified_by_the_user
+                       ;; take a *very* long time to complete.
+                       ;;
+                       ;; It looks like "dataset_in_fire.download" takes an
+                       ;; unusually long time on those machines.  We disable
+                       ;; tests that fail under these conditions.
+                       " and not test_download_file"
+                       " and not test_output_file_is_removed_if_md5_was_invalid"
+                       " and not test_post_stats_if_download_succeeded"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("==") ">=")))))))
+    (propagated-inputs (list python-htsget python-psutil python-requests
+                             python-tqdm python-urllib3))
+    (native-inputs (list python-coverage python-pytest python-pyfakefs
+                         python-responses python-mock))
+    (home-page "https://github.com/EGA-archive/ega-download-client")
+    (synopsis "EGA download client")
+    (description "PyEGA3 is a tool for viewing and downloading files from
+authorized EGA datasets.  It uses the EGA data API and has several key
+features:
+
+@itemize
+@item Files are transferred over secure https connections and received
+  unencrypted, so no need for decryption after download.
+@item Downloads resume from where they left off in the event that the
+  connection is interrupted.
+@item Supports file segmenting and parallelized download of segments,
+  improving overall performance.
+@item After download completes, file integrity is verified using checksums.
+@item Implements the GA4GH-compliant htsget protocol for download of genomic
+  ranges for data files with accompanying index files.
+@end itemize\n")
+    (license license:asl2.0)))
 
 (define-public python-scdamandtools
   (package
@@ -3549,14 +3756,14 @@ gapped, local, and paired-end alignment modes.")
 (define-public bowtie1
   (package
     (name "bowtie1")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/bowtie-bio/bowtie/"
                                   version "/bowtie-" version "-src.zip"))
               (sha256
                (base32
-                "11dbihdnrizc6qhx9xsw77w3q5ssx642alaqzvhxx32ak9glvq04"))
+                "0q87nhgj9wrnbazcpvqp4594hmyh1isi3s9b2wlghvl4afm1fdg2"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "Makefile"
@@ -3565,16 +3772,22 @@ gapped, local, and paired-end alignment modes.")
                   (("-DBUILD_TIME=.*") "-DBUILD_TIME=\"\\\"0\\\"\"")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
+     `(#:tests? #f                      ; Tests need various perl modules
+       #:test-target "simple-test"
        #:make-flags
-       ,#~(list "CC=gcc" "all"
-                (string-append "prefix=" #$output))
+       ,#~(append #$(if (not (target-x86?))
+                        #~'("POPCNT_CAPABILITY=0")
+                        #~'())
+                  (list (string-append "CC=" #$(cc-for-target))
+                        (string-append "CXX=" #$(cxx-for-target))
+                        "all"
+                        (string-append "prefix=" #$output)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
     (inputs
-     (list python-wrapper tbb-2020 zlib))
-    (supported-systems '("x86_64-linux"))
+     (list python-wrapper tbb zlib))
+    (supported-systems %64bit-supported-systems)
     (home-page "https://bowtie-bio.sourceforge.net/index.shtml")
     (synopsis "Fast aligner for short nucleotide sequence reads")
     (description
@@ -3898,39 +4111,7 @@ omics data.")
     (license license:bsd-3)))
 
 (define-public python-pyega3
-  (package
-    (name "python-pyega3")
-    (version "3.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyega3" version))
-              (sha256
-               (base32
-                "1k736in8g27rarx65ym9xk50x53zjg75h37bb8ljynxv04rypx2q"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; The tests require network access.
-    (native-inputs
-     (list python-psutil python-htsget))
-    (propagated-inputs
-     (list python-requests python-tqdm python-urllib3 python-responses))
-    (home-page "https://github.com/EGA-archive/ega-download-client")
-    (synopsis "Python client for EGA")
-    (description "This package is a python-based tool for viewing and
-downloading files from authorized EGA datasets.  It uses the EGA data API and
-has several key features:
-@itemize
-@item Files are transferred over secure https connections and received
-  unencrypted, so no need for decryption after download.
-@item Downloads resume from where they left off in the event that the
-  connection is interrupted.
-@item Supports file segmenting and parallelized download of segments,
-  improving overall performance.
-@item After download completes, file integrity is verified using checksums.
-@item Implements the GA4GH-compliant htsget protocol for download of genomic
-  ranges for data files with accompanying index files.
-@end itemize\n")
-    (license license:asl2.0)))
+  (deprecated-package "python-pyega3" python-ega-download-client))
 
 (define-public python-pysam
   (package
@@ -4652,6 +4833,64 @@ meso, or continuum scale.")
 files.")
     (license license:expat)))
 
+(define-public lsgkm
+  (package
+    (name "lsgkm")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Dongwon-Lee/lsgkm.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0b3m94kndvimdfjaf1q2yhmsn7lm5s9v81c5xgfjcp6ig7mh3sa5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags '(list "-C" "src")
+      #:tests? #false                   ;there are no executable tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (for-each (lambda (file)
+                            (install-file file bin))
+                          '("src/gkmtrain"
+                            "src/gkmpredict"))))))))
+    (home-page "https://github.com/Dongwon-Lee/lsgkm")
+    (synopsis "Predict regulatory DNA elements in large-scale data")
+    (description "gkm-SVM, a sequence-based method for predicting regulatory
+DNA elements, is a useful tool for studying gene regulatory mechanisms.
+LS-GKM is an effort to improve the method.  It offers much better scalability
+and provides further advanced gapped k-mer based kernel functions.  As a
+result, LS-GKM achieves considerably higher accuracy than the original
+gkm-SVM.")
+    (license license:gpl3+)))
+
+(define-public python-fcsparser
+  (package
+    (name "python-fcsparser")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fcsparser" version))
+       (sha256
+        (base32 "1skk1k8phq9sj4ar0cnq8px89y3kcyh5zrbl6anz9wcdcyzkc16z"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-pandas))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/eyurtsev/fcsparser")
+    (synopsis "Package for reading raw fcs files")
+    (description
+     "This package provides a Python package for reading raw fcs files")
+    (license license:expat)))
+
 (define-public python-pybigwig
   (package
     (name "python-pybigwig")
@@ -4686,40 +4925,127 @@ files.")
 accessing bigWig files.")
     (license license:expat)))
 
+(define-public python-pyfasta
+  ;; The release on pypi does not contain the test data files.
+  (let ((commit "c2f0611c5311f1b1466f2d56560447898b4a8b03")
+        (revision "1"))
+    (package
+      (name "python-pyfasta")
+      (version (git-version "0.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/brentp/pyfasta")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0a189id3fbv88gssyk6adbmz2ll1mqpmyw8vxmx3fi955gvaq9j7"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'python3.10-compat
+             (lambda _
+               (substitute* "pyfasta/__init__.py"
+                 (("from fasta import")
+                  "from pyfasta.fasta import")
+                 (("from records import")
+                  "from pyfasta.records import")
+                 (("from split_fasta import")
+                  "from pyfasta.split_fasta import")
+                 (("in f.iteritems")
+                  "in f.items"))
+               (substitute* "pyfasta/fasta.py"
+                 (("from collections import Mapping")
+                  "from collections.abc import Mapping")
+                 (("from records import")
+                  "from pyfasta.records import"))
+               (substitute* "pyfasta/records.py"
+                 (("cPickle") "pickle")
+                 (("\\(int, long\\)")
+                  "(int, int)")
+                 ;; XXX: it's not clear if this is really correct.
+                 (("buffer\\(self\\)")
+                  "memoryview(bytes(str(self), encoding='utf-8'))")
+                 (("sys.maxint") "sys.maxsize"))
+               (substitute* "pyfasta/split_fasta.py"
+                 (("from cStringIO import")
+                  "from io import")
+                 (("in lens.iteritems") "in lens.items"))
+               (substitute* "tests/test_all.py"
+                 (("f.keys\\(\\)\\) == \\['a-extra'")
+                  "list(f.keys())) == ['a-extra'")
+                 (("f.iterkeys\\(\\)") "iter(f.keys())")
+                 (("tests/data/" m)
+                  (string-append (getcwd) "/" m))))))))
+      (propagated-inputs (list python-numpy))
+      (native-inputs (list python-nose))
+      (home-page "https://github.com/brentp/pyfasta/")
+      (synopsis "Pythonic access to fasta sequence files")
+      (description
+       "This library provides fast, memory-efficient, pythonic (and
+command-line) access to fasta sequence files.  It stores a flattened version
+of a fasta sequence file without spaces or headers and uses either a
+@code{mmap} in numpy binary format or @code{fseek}/@code{fread} so the
+sequence data is never read into memory.  It saves a pickle (@code{.gdx}) of
+the start and stop (for @code{fseek}/@code{mmap}) locations of each header in
+the fasta file for internal use.
+
+Note that this package has been deprecated in favor of @code{pyfaidx}.")
+      (license license:expat))))
+
 (define-public python-schema-salad
   (package
     (name "python-schema-salad")
-    (version "8.2.20211116214159")
+    (version "8.5.20240102191335")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "schema-salad" version))
         (sha256
          (base32
-          "005dh2y45x92zl8sf2sqjmfvcqr4hrz8dfckgkckv87003v7lwqc"))))
+          "035202p696i3jylb8b3nm9qcxsqby15hhqn1dl4nrz73a17p0ckx"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'skip-failing-tests
-           (lambda _
-             ;; Skip tests that require network access.
-             (substitute* "schema_salad/tests/test_cwl11.py"
-               (("^def test_(secondaryFiles|outputBinding)" all)
-                (string-append "@pytest.mark.skip(reason="
-                               "\"test requires network access\")\n"
-                               all))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; Set exact version.
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (string-append "version=\"" #$version "\"")))))
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              ;; Skip tests that require network access.
+              (let ((skip-test
+                     (lambda (test-pattern)
+                       (string-append "@pytest.mark.skip(reason="
+                                      "\"test requires network access\")\n"
+                                      test-pattern))))
+                (substitute* "schema_salad/tests/test_cg.py"
+                  (("^def test_(load(_by_yaml_metaschema|_metaschema|_cwlschema|)|include|idmap|idmap2)\\(" all)
+                   (skip-test all)))
+                (substitute* "schema_salad/tests/test_cwl11.py"
+                  (("^def test_(secondaryFiles|outputBinding|yaml_tab_error)\\(" all)
+                   (skip-test all)))
+                (substitute* "schema_salad/tests/test_examples.py"
+                  (("^def test_bad_schemas\\(" all)
+                   (skip-test all)))))))))
     (propagated-inputs
      (list python-cachecontrol
-           python-lockfile
-           python-mistune
+           python-importlib-resources
+           python-mistune-next
+           python-mypy-extensions
            python-rdflib
-           python-rdflib-jsonld
            python-requests
-           python-ruamel.yaml
-           python-typing-extensions))
+           python-ruamel.yaml))
     (native-inputs
-     (list python-black python-pytest python-pytest-runner))
+     (list python-black python-pytest python-pytest-runner python-pytest-xdist))
     (home-page "https://github.com/common-workflow-language/schema_salad")
     (synopsis "Schema Annotations for Linked Avro Data (SALAD)")
     (description
@@ -4811,10 +5137,104 @@ resources for bioinformatics.")
 doublets in single-cell RNA-seq data.")
     (license license:expat)))
 
+(define-public python-cwlformat
+  (package
+    (name "python-cwlformat")
+    (version "2022.02.18")
+    (source
+     ;; The PyPI tarball is missing Readme.md. Readme.md is required for the
+     ;; build.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rabix/cwl-format")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0agkz2w86k91rc9m5vx5hsqi5nm6fcmzkng6j99hjapz0r9233ql"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-importlib-resources
+           python-ruamel.yaml))
+    (home-page "https://github.com/rabix/cwl-format")
+    (synopsis "Prettifier for CWL code")
+    (description "@code{python-cwlformat} is a specification and a reference
+implementation for a very opinionated @acronym{CWL, Common Workflow Language}
+code formatter.  It outputs CWL in a standardized YAML format.")
+    (license license:asl2.0)))
+
+(define-public python-cwl-upgrader
+  (package
+    (name "python-cwl-upgrader")
+    (version "1.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cwl-upgrader" version))
+       (sha256
+        (base32
+         "12j6z8nvwnzjjyypz59hwj5hmrcri2r6aknw52n9dbj6lbzbdd2p"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-ruamel.yaml
+           python-schema-salad))
+    (home-page "https://github.com/common-workflow-language/cwl-upgrader")
+    (synopsis "CWL document upgrader")
+    (description "@code{python-cwl-upgrader} is a standalone upgrader for
+@acronym{CWL, Common Workflow Language} documents from version draft-3, v1.0,
+and v1.1 to v1.2.")
+    (license license:asl2.0)))
+
+(define-public python-cwl-utils
+  (package
+    (name "python-cwl-utils")
+    (version "0.32")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cwl-utils" version))
+       (sha256
+        (base32
+         "06wkw8d8cqm3hnz8xwnysz874gwaym36c358cr7frw5iglhvsj98"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-append "not test_graph_split"
+                             " and not test_load_document_with_remote_uri"
+                             " and not test_remote_packing"
+                             " and not test_remote_packing_github_soft_links"
+                             " and not test_value_from_two_concatenated_expressions"))))
+    (inputs
+     (list node))
+    (native-inputs
+     (list python-mypy-extensions
+           python-pytest
+           python-pytest-mock
+           python-pytest-runner))
+    (propagated-inputs
+     (list python-cwl-upgrader
+           python-cwlformat
+           python-packaging
+           python-rdflib
+           python-requests
+           python-ruamel.yaml
+           python-schema-salad))
+    (home-page "https://github.com/common-workflow-language/cwl-utils")
+    (synopsis "Python utilities for CWL")
+    (description "@code{python-cwl-utils} provides python utilities and
+autogenerated classes for loading and parsing CWL v1.0, CWL v1.1, and CWL v1.2
+documents.")
+    (license license:asl2.0)))
+
 (define-public cwltool
   (package
     (name "cwltool")
-    (version "3.1.20220119140128")
+    (version "3.1.20240112164112")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4823,56 +5243,51 @@ doublets in single-cell RNA-seq data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jmrm0qrqgka79avc1kq63fgh20gx6g07fc8p3iih4k85vhdyl3f"))))
+                "1fpc5kqgpbn48g5vlvy64p297x2wm3gfz8casgpk15ap593wwh33"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-version-restrictions
-           (lambda _
-             (substitute* "setup.py"
-               (("== 1.5.1") ">=1.5.1")))) ; prov
-         (add-after 'unpack 'dont-use-git
-           (lambda _
-             (substitute* "gittaggers.py"
-               (("self.git_timestamp_tag\\(\\)")
-                (string-append "time.strftime('.%Y%m%d%H%M%S', time.gmtime(int("
-                               (string-drop ,version 4) ")))")))))
-         (add-after 'unpack 'modify-tests
-           (lambda _
-             ;; Tries to connect to the internet.
-             (delete-file "tests/test_content_type.py")
-             (delete-file "tests/test_udocker.py")
-             (delete-file "tests/test_http_input.py")
-             (substitute* "tests/test_load_tool.py"
-               (("def test_load_graph_fragment_from_packed")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_load_graph_fragment_from_packed")))
-             (substitute* "tests/test_examples.py"
-               (("def test_env_filtering")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_env_filtering")))
-             ;; Tries to use cwl-runners.
-             (substitute* "tests/test_examples.py"
-               (("def test_v1_0_arg_empty_prefix_separate_false")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_v1_0_arg_empty_prefix_separate_false")))
-
-             (substitute* '("cwltool/schemas/v1.1/tests/env-tool1.cwl"
-                            "cwltool/schemas/v1.1/tests/env-tool2.cwl"
-                            "cwltool/schemas/v1.1/tests/imported-hint.cwl"
-                            "tests/subgraph/env-tool2.cwl"
-                            "tests/subgraph/env-tool2_req.cwl"
-                            "tests/subgraph/env-wf2_subwf-packed.cwl"
-                            "tests/subgraph/env-tool2_no_env.cwl")
-               (("\"/bin/sh\"") (string-append "\"" (which "sh") "\"")))
-             ;; Pytest doesn't know what to do with "-n auto"
-             (substitute* "tox.ini"
-               (("-n auto") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-version-restrictions
+            (lambda _
+              (substitute* "setup.py"
+                (("== 1.5.1") "> 1.5.1")))) ; prov
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; Set exact version.
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (string-append "version=\"" #$version "\"")))))
+          (add-after 'unpack 'modify-tests
+            (lambda _
+              ;; Tries to connect to the internet.
+              (delete-file "tests/test_content_type.py")
+              (delete-file "tests/test_udocker.py")
+              (delete-file "tests/test_http_input.py")
+              (substitute* "tests/test_load_tool.py"
+                (("def test_load_graph_fragment_from_packed")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_load_graph_fragment_from_packed")))
+              (substitute* "tests/test_examples.py"
+                (("def test_env_filtering")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_env_filtering")))
+              ;; Tries to use cwl-runners.
+              (substitute* "tests/test_examples.py"
+                (("def test_v1_0_arg_empty_prefix_separate_false")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_v1_0_arg_empty_prefix_separate_false")))
+              (substitute* '("tests/subgraph/env-tool2.cwl"
+                             "tests/subgraph/env-tool2_req.cwl"
+                             "tests/subgraph/env-wf2_subwf-packed.cwl"
+                             "tests/subgraph/env-tool2_no_env.cwl")
+                (("\"/bin/sh\"") (string-append "\"" (which "sh") "\""))))))))
     (inputs
      (list python-argcomplete
            python-bagit
            python-coloredlogs
+           python-cwl-utils
            python-mypy-extensions
            python-prov
            python-pydot
@@ -4882,6 +5297,7 @@ doublets in single-cell RNA-seq data.")
            python-ruamel.yaml
            python-schema-salad
            python-shellescape
+           python-spython
            python-typing-extensions
            ;; Not listed as needed but still necessary:
            node))
@@ -4892,7 +5308,8 @@ doublets in single-cell RNA-seq data.")
            python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-pytest-runner))
+           python-pytest-runner
+           python-pytest-xdist))
     (home-page
      "https://github.com/common-workflow-language/common-workflow-language")
     (synopsis "Common Workflow Language reference implementation")
@@ -5431,6 +5848,35 @@ quantitative phenotypes.")
     ;; linking with the GNU Scientific Library (GSL) the effective
     ;; license is the GPL.
     (license license:gpl3+)))
+
+(define-public eddylab-squid
+  (package
+    (name "eddylab-squid")
+    (version "1.9g")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://eddylab.org/software/squid/squid-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "19ywv1h581a84yyjnp64gwww99vhgbxi8v4rl37xp92ag7l44brh"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-perl-search-path
+           (lambda _
+             ;; Work around "dotless @INC" build failure.
+             (setenv "PERL5LIB"
+                     (string-append (getcwd) "/Testsuite:"
+                                    (getenv "PERL5LIB"))))))))
+    (inputs (list perl))
+    (home-page "http://eddylab.org/software.html")
+    (synopsis "C function library for sequence analysis")
+    (description "SQUID is Sean Eddy's personal library of C functions
+and utility programs for sequence analysis.")
+    (license license:gpl2)))
 
 (define-public edirect
   (package
@@ -6074,6 +6520,43 @@ is sometimes more productive to preprocess the files before mapping the
 sequences to the genome---manipulating the sequences to produce better mapping
 results.  The FASTX-Toolkit tools perform some of these preprocessing tasks.")
     (license license:agpl3+)))
+
+(define-public flash
+  (package
+    (name "flash")
+    (version "1.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/flashpage/FLASH-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1b1ns9ghbcxy92xwa2a53ikqacvnyhvca0zfv0s7986xzvvscp38"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No configure script
+          (delete 'configure)
+          ;; No install target
+          (replace 'install
+            (lambda _
+              (install-file "flash"
+                            (string-append #$output "/bin")))))))
+    (inputs (list zlib))
+    (home-page "http://ccb.jhu.edu/software/FLASH/")
+    (synopsis "Merge paired-end nucleotide reads from NGS experiments")
+    (description "FLASH (Fast Length Adjustment of SHort reads) is a tool to
+merge paired-end reads from next-generation sequencing experiments.  FLASH is
+designed to merge pairs of reads when the original DNA fragments are shorter
+than twice the length of reads.  The resulting longer reads can significantly
+improve genome assemblies.  They can also improve transcriptome assembly when
+FLASH is used to merge RNA-seq data.")
+    (license license:gpl3+)))
 
 (define-public flexbar
   (package
@@ -7367,6 +7850,49 @@ to measure the reproducibility of findings identified from replicate
 experiments and provide highly stable thresholds based on reproducibility.")
     (license license:gpl2+)))
 
+(define-public isolator
+  (let ((commit "24bafc0a102dce213bfc2b5b9744136ceadaba03")
+        (revision "1"))
+    (package
+      (name "isolator")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dcjones/isolator.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "12mbcfqhiggcjvzizf2ff7b05z31i47njcyzcivpw5j74pfbr3dv"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no check target
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'fix-std
+             (lambda _
+               (substitute* '("src/summarize.cpp"
+                              "src/shredder.cpp")
+                 (("isnan") "std::isnan")
+                 (("isinf") "std::isinf")))))))
+      (inputs
+       (list boost hdf5 zlib))
+      (home-page "https://github.com/dcjones/isolator")
+      (synopsis "Tools for the analysis of RNA-Seq experiments")
+      (description "Isolator analyzes RNA-Seq experiments.  Isolator has a
+particular focus on producing stable, consistent estimates.  It implements a
+full hierarchical Bayesian model of an entire RNA-Seq experiment.  It saves
+all the samples generated by the sampler, which can be processed to compute
+posterior probabilities for arbitrarily complex questions, far beyond the
+confines of pairwise tests.  It aggressively corrects for technical effects,
+such as random priming bias, GC-bias, 3' bias, and fragmentation effects.
+Compared to other MCMC approaches, it is exceedingly efficient, though
+generally slower than modern maximum likelihood approaches.")
+      (license license:expat))))
+
 (define-public jellyfish
   (package
     (name "jellyfish")
@@ -7840,6 +8366,45 @@ probabilistic distances of genome abundance and tetranucleotide frequency.")
     (license (license:non-copyleft "file://license.txt"
                                    "See license.txt in the distribution."))))
 
+(define-public metal
+  (package
+    (name "metal")
+    (version "2011-03-25")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://csg.sph.umich.edu/abecasis/Metal/"
+                           "download/generic-metal-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1bk00hc0xagmq0mabmbb8bykl75qd4kfyirba869h4x6hmn4a0f3"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "INSTALLDIR=" #$output "/bin") "all")
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'configure
+           (lambda _
+             (substitute* "Makefile"
+               (("^CFLAGS=") "CFLAGS=-std=c++11 ")))))))
+    (inputs (list zlib `(,zlib "static")))
+    (home-page "http://csg.sph.umich.edu/abecasis/Metal/")
+    (synopsis "Facilitate meta-analysis of large datasets")
+    (description "METAL is a tool for meta-analysis genomewide association
+scans.  METAL can combine either test statistics and standard errors or
+p-values across studies (taking sample size and direction of effect into
+account).  METAL analysis is a convenient alternative to a direct analysis of
+merged data from multiple studies.  It is especially appropriate when data
+from the individual studies cannot be analyzed together because of differences
+in ethnicity, phenotype distribution, gender or constraints in sharing of
+individual level data imposed.  Meta-analysis results in little or no loss of
+efficiency compared to analysis of a combined dataset including data from all
+individual studies.")
+    (license license:bsd-3)))
+
 (define-public minced
   (package
     (name "minced")
@@ -7931,6 +8496,41 @@ assembled metagenomic sequence.")
 program for nucleotide and protein sequences.")
     ;; License information found in 'muscle -h' and usage.cpp.
     (license license:public-domain)))
+
+(define-public music
+  (let ((commit "b1caecdb164b1ab80acccb9463abe2526a56f69f")
+        (revision "1"))
+    (package
+      (name "music")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/gersteinlab/MUSIC.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0arj300h8cpbya7y98g066xsxcg2a65h3y0qs250rlj072f1b4ia"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no "check" target
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            ;; There is no "install" target.
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (install-file "bin/MUSIC" bin)))))))
+      (home-page "https://github.com/gersteinlab/MUSIC/")
+      (synopsis "Multiscale enrichment calling for ChIP-Seq datasets")
+      (description
+       "MUSIC is an algorithm for identification of enriched regions at
+multiple scales in the read depth signals from ChIP-Seq experiments.")
+      ;; See https://github.com/gersteinlab/MUSIC/issues/6
+      (license license:gpl2+))))
 
 (define-public newick-utils
   ;; There are no recent releases so we package from git.
@@ -11146,11 +11746,11 @@ single-cell data.")
       (license license:gpl3))))
 
 (define-public r-archr
-  (let ((commit "92ab814f86be0cea75c661f9827a9549c2cf47f5")
+  (let ((commit "c61b0645d1482f80dcc24e25fbd915128c1b2500")
         (revision "1"))
     (package
       (name "r-archr")
-      (version (git-version "1.0.1" revision commit))
+      (version (git-version "1.0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -11159,7 +11759,7 @@ single-cell data.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1m1vp3kkpvd0fcviv5vb3gcbm3w91ih6gm9ivg48swnbqny44kqb"))))
+          (base32 "0sgdfd8iwgj8cssj2zr3gmshg8nv54q6dd8asjf99i39qkni7p9i"))))
       (properties `((upstream-name . "ArchR")))
       (build-system r-build-system)
       (propagated-inputs
@@ -21320,7 +21920,7 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
 (define-public ccwl
   (package
     (name "ccwl")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
@@ -21328,7 +21928,7 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "1ar8rfz3zrksgygrv67zv77y8gfvvz54zcs546jn6j28y20basla"))))
+         "0za710mcn9di1njli3dk3660n3836ip8b4msb8f958498va95y7j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ; to prevent guild warnings
@@ -21339,6 +21939,12 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
                            ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
+         (add-after 'patch-source-shebangs 'patch-more-source-shebangs
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "scripts/ccwl"
+               (("^exec guile")
+                (string-append "exec "
+                               (search-input-file inputs "/bin/guile"))))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))

@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -165,52 +165,49 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
     (license license:gpl2+)))
 
 (define-public tigervnc-client
-  ;; xorg-server 21 support was merged 2 weeks after the last (1.12.0) release.
-  (let ((revision "0")
-        (commit "b484c229853a08c7f254a4c6efbaf3c9e85b5074"))
-    (package
-      (name "tigervnc-client")
-      (version (git-version "1.12.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/TigerVNC/tigervnc")
-               (commit commit)))
-         (sha256
-          (base32 "125dnn05ps7vfsxlxmzm05w99lhm8hk8j4hpxl1mlzb5j0hp1061"))
-         (file-name (git-file-name name version))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:tests? #f                 ; Tests that do exists are not automated.
-                  #:phases (modify-phases %standard-phases
-                             (replace 'install
-                               (lambda* (#:key outputs #:allow-other-keys)
-                                 (with-directory-excursion "vncviewer"
-                                   (invoke "make" "install")))))))
-      (native-inputs
-       (list autoconf gettext-minimal automake))
-      (inputs
-       (list zlib
-             gnutls
-             libjpeg-turbo
-             fltk
-             linux-pam
-             libx11
-             libxext
-             libxtst
-             libxrandr
-             libxdamage
-             pixman))
-      (home-page "https://tigervnc.org/")
-      (synopsis "High-performance, platform-neutral
+  (package
+    (name "tigervnc-client")
+    (version "1.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TigerVNC/tigervnc")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1ymyay51sig9cs74ggb1vnyy7dzddkqa0ijjxvhb2v9v9y920ab1"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f                   ; Tests that do exists are not automated.
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (with-directory-excursion "vncviewer"
+                        (invoke "make" "install")))))))
+    (native-inputs
+     (list autoconf gettext-minimal automake))
+    (inputs
+     (list zlib
+           gnutls
+           libjpeg-turbo
+           fltk
+           linux-pam
+           libx11
+           libxext
+           libxtst
+           libxrandr
+           libxdamage
+           pixman))
+    (home-page "https://tigervnc.org/")
+    (synopsis "High-performance, platform-neutral
 implementation of VNC (client)")
-      (description "TigerVNC is a client/server implementation of VNC (Virtual
+    (description "TigerVNC is a client/server implementation of VNC (Virtual
 Network Computing).  It provides enough performance to run even 3D and video
 applications.  It also provides extensions for advanced authentication methods
 and TLS encryption.  This package installs only the VNC client, the
 application which is needed to connect to VNC servers.")
-      (license license:gpl2))))
+    (license license:gpl2)))
 
 (define %tigervnc-client-source (package-source tigervnc-client))
 

@@ -46,7 +46,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021, 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
@@ -107,6 +107,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gperf)
@@ -188,6 +189,39 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
+
+(define-public duckdb
+  (package
+    (name "duckdb")
+    (version "0.9.2")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/duckdb/duckdb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0dbsxyiz7c8sxflbfj87qv0b2s69zk802vsk5h00ra8w8fcbqlj0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; There is no git checkout from which to read the version tag.
+            (substitute* "CMakeLists.txt"
+              (("set\\(DUCKDB_VERSION \"[^\"]*\"")
+               (string-append "set(DUCKDB_VERSION \"v" #$version "-dev0\"")))))))
+    (build-system cmake-build-system)
+    (home-page "https://duckdb.org")
+    (synopsis "In-process SQL OLAP database management system")
+    (description "CLI and C/C++ source libraries for DuckDB, a relational
+(table-oriented) @acronym{DBMS, Database Management System} that supports
+@acronym{SQL, Structured Query Language}, contains a columnar-vectorized query
+execution engine, and provides transactional @acronym{ACID, Atomicity
+Consistency Isolation and Durability} guarantees via bulk-optimized
+@acronym{MVCC, Multi-Version Concurrency Control}.  Data can be stored in
+persistent, single-file databases with support for secondary indexes.")
+    (license license:expat)))
 
 (define-public ephemeralpg
   (package
@@ -1445,6 +1479,56 @@ time-series data.  It is engineered up from PostgreSQL and packaged as a
 PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
     (license license:asl2.0)))
+
+(define-public pgvector
+  (package
+    (name "pgvector")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pgvector/pgvector")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19zcjrlmyj7gfbn8prh014yq50iy4dg97pirsm7idxsr829vwyc5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Do not use -march=native
+      #:make-flags
+      '(list "OPTFLAGS=")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((extension (string-append #$output "/share/extension"))
+                    (lib (string-append #$output "/lib"))
+                    (headers (string-append #$output "/include/server/extension/vector")))
+                (for-each mkdir-p (list extension lib headers))
+                (install-file "vector.so" lib)
+                (chmod (string-append lib "/vector.so") #o755)
+                (install-file "vector.control" extension)
+                (for-each (lambda (file)
+                            (install-file file extension))
+                          (find-files "sql" "\\.sql$"))
+                (install-file "src/vector.h" headers)))))))
+    (inputs (list postgresql))
+    (home-page "https://github.com/pgvector/pgvector")
+    (synopsis "Vector similarity search for Postgres")
+    (description
+     "This package provides a vector similarity search extension for Postgres.
+Store your vectors with the rest of your data.  It supports:
+
+@itemize
+@item exact and approximate nearest neighbor search;
+@item L2 distance, inner product, and cosine distance;
+@item any language with a Postgres client.
+@end itemize
+")
+    (license (license:x11-style "file://COPYRIGHT"))))
 
 (define-public pgloader
   (package
@@ -3348,6 +3432,10 @@ etc., and an SQL engine for performing simple SQL queries.")
     (arguments
      '(#:tests? #f      ; Tests try to use a running mongodb server.
        #:import-path "gopkg.in/mgo.v2"))
+    (propagated-inputs
+     (list go-gopkg.in-tomb.v2))
+    (inputs
+     (list cyrus-sasl))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/mgo.v2")
@@ -3792,7 +3880,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.42.0.1")
+    (version "3.45.1.0")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3802,11 +3890,11 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "0dr7zymn45x2793cilr709rnwn9g1c4n4vzln57y2lhj7420ykic"))))
+         "1vfrzb414pbh5k0cgcqkp039jvla2galapn4a551zgh8xi70bnrp"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.42 required.
+     (list unzip))
+    (inputs (list sqlite-next))         ;SQLite 3.45.1 required.
     (arguments
      (list
       #:phases
@@ -4423,7 +4511,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "14.0.0")
+    (version "14.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4433,7 +4521,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08x01jcibmx03g9p0sjikp3dyynw6is6gyn0m3cy1gwkpkwk2ad2"))))
+         "1idw58vs8r6g6xy2qkhccgc79hwx4r5rr4bhd6ilxx56fwq9hkn2"))))
     (build-system cmake-build-system)
     (arguments
      (list

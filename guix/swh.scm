@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -78,6 +78,14 @@
             lookup-revision
             lookup-origin-revision
 
+            external-id?
+            external-id-value
+            external-id-type
+            external-id-version
+            external-id-target
+            lookup-external-id
+            lookup-directory-by-nar-hash
+
             content?
             content-checksums
             content-data-url
@@ -115,6 +123,7 @@
             commit-id?
 
             swh-download-directory
+            swh-download-directory-by-nar-hash
             swh-download))
 
 ;;; Commentary:
@@ -382,6 +391,15 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (permissions   directory-entry-permissions "perms")
   (target-url    directory-entry-target-url "target_url"))
 
+;; <https://archive.softwareheritage.org/api/1/extid/doc/>
+(define-json-mapping <external-id> make-external-id external-id?
+  json->external-id
+  (value         external-id-value "extid")
+  (type          external-id-type "extid_type")
+  (version       external-id-version "extid_version")
+  (target        external-id-target)
+  (target-url    external-id-target-url "target_url"))
+
 ;; <https://archive.softwareheritage.org/api/1/origin/save/>
 (define-json-mapping <save-reply> make-save-reply save-reply?
   json->save-reply
@@ -428,13 +446,31 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   json->revision)
 
 (define-query (lookup-directory id)
-  "Return the directory with the given ID."
+  "Return the list of entries of the directory with the given ID."
   (path "/api/1/directory" id)
   json->directory-entries)
 
 (define (json->directory-entries port)
   (map json->directory-entry
        (vector->list (json->scm port))))
+
+(define (lookup-external-id type id)
+  "Return the external ID record for ID, a bytevector, of the given TYPE
+(currently one of: \"bzr-nodeid\", \"hg-nodeid\", \"nar-sha256\",
+\"checksum-sha512\")."
+  (call (swh-url "/api/1/extid" type
+                 (string-append "hex:" (bytevector->base16-string id)))
+        json->external-id))
+
+(define* (lookup-directory-by-nar-hash hash #:optional (algorithm 'sha256))
+  "Return the SWHID of a directory---i.e., prefixed by \"swh:1:dir\"---for the
+directory that with the given HASH (a bytevector), assuming nar serialization
+and use of ALGORITHM."
+  ;; example:
+  ;; https://archive.softwareheritage.org/api/1/extid/nar-sha256/base64url:0jD6Z4TLMm5g1CviuNNuVNP31KWyoT_oevfr8TQwc3Y/
+  (and=> (lookup-external-id (string-append "nar-" (symbol->string algorithm))
+                             hash)
+         external-id-target))
 
 (define (origin-visits origin)
   "Return the list of visits of ORIGIN, a record as returned by
@@ -583,6 +619,41 @@ directory identifier is deprecated."
         json->vault-reply
         http-post*))
 
+(define* (http-get/follow url
+                          #:key
+                          (verify-certificate? (%verify-swh-certificate?)))
+  "Like 'http-get' but follow redirects (HTTP 30x).  On success, return two
+values: an input port to read the response body and its 'Content-Length'.  On
+failure return #f and #f."
+  (define uri
+    (if (string? url) (string->uri url) url))
+
+  (let loop ((uri uri))
+    (define (resolve-uri-reference target)
+      (if (and (uri-scheme target) (uri-host target))
+          target
+          (build-uri (uri-scheme uri) #:host (uri-host uri)
+                     #:port (uri-port uri)
+                     #:path (uri-path target))))
+
+    (let*-values (((response port)
+                   (http-get* uri #:streaming? #t
+                              #:verify-certificate? verify-certificate?))
+                  ((code)
+                   (response-code response)))
+      (case code
+        ((200)
+         (values port (response-content-length response)))
+        ((301                                     ; moved permanently
+          302                                     ; found (redirection)
+          303                                     ; see other
+          307                                     ; temporary redirection
+          308)                                    ; permanent redirection
+         (close-port port)
+         (loop (resolve-uri-reference (response-location response))))
+        (else
+         (values #f #f))))))
+
 (define* (vault-fetch id
                       #:optional kind
                       #:key
@@ -604,16 +675,11 @@ for a tarball containing a bare Git repository corresponding to a revision."
        (match (vault-reply-status reply)
          ('done
           ;; Fetch the bundle.
-          (let-values (((response port)
-                        (http-get* (swh-url (vault-reply-fetch-url reply))
-                                   #:streaming? #t
-                                   #:verify-certificate?
-                                   (%verify-swh-certificate?))))
-            (if (= (response-code response) 200)
-                port
-                (begin                            ;shouldn't happen
-                  (close-port port)
-                  #f))))
+          (let-values (((port length)
+                        (http-get/follow (swh-url (vault-reply-fetch-url reply))
+                                         #:verify-certificate?
+                                         (%verify-swh-certificate?))))
+            port))
          ('failed
           ;; Upon failure, we're supposed to try again.
           (format log-port "SWH vault: failure: ~a~%"
@@ -740,3 +806,26 @@ wait until it becomes available, which could take several minutes."
              "SWH: revision ~s originating from ~a could not be found~%"
              reference url)
      #f)))
+
+(define* (swh-download-directory-by-nar-hash hash algorithm output
+                                             #:key
+                                             (log-port (current-error-port)))
+  "Download from Software Heritage the directory with the given nar HASH for
+ALGORITHM (a symbol such as 'sha256), and unpack it in OUTPUT.  Return #t on
+success and #f on failure.
+
+This procedure uses the \"vault\", which contains \"cooked\" directories in
+the form of tarballs.  If the requested directory is not cooked yet, it will
+wait until it becomes available, which could take several minutes."
+  (match (lookup-directory-by-nar-hash hash algorithm)
+    (#f
+     (format log-port
+             "SWH: directory with nar-~a hash ~a not found~%"
+             algorithm (bytevector->base16-string hash))
+     #f)
+    (swhid
+     (format log-port "SWH: found directory with nar-~a hash ~a at '~a'~%"
+             algorithm (bytevector->base16-string hash) swhid)
+     (swh-download-archive swhid output
+                           #:archive-type 'flat   ;SWHID denotes a directory
+                           #:log-port log-port))))

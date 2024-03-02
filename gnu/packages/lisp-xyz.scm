@@ -41,6 +41,8 @@
 ;;; Copyright © 2023 ykonai <mail@ykonai.net>
 ;;; Copyright © 2023 Gabriel Hondet <gabriel.hondet@cominety.net>
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
+;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,6 +89,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -1071,7 +1074,7 @@ options, e.g., by looking up an external key/value store
 (define-public sbcl-command-line-args
   (package
     (name "sbcl-command-line-args")
-    (version "0.0.0")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1080,12 +1083,13 @@ options, e.g., by looking up an external key/value store
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-command-line-args" version))
        (sha256
-        (base32 "01p52zxr1b49c15ichlc3zadd1mrmwxzria53j949ayl2j6k8w1b"))))
+        (base32 "140xnz2v0v3hfg3dp2fhidw8ns6lxd3a5knm07wqdp48ksg119wy"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("whereiseveryone.command-line-args")))
     (inputs
      (list sbcl-alexandria
+           sbcl-charje.documentation
            sbcl-cl-str
            sbcl-serapeum
            sbcl-trivia))
@@ -3483,7 +3487,7 @@ also be supported.")
 (define-public sbcl-ironclad
   (package
     (name "sbcl-ironclad")
-    (version "0.59")
+    (version "0.60")
     (source
      (origin
        (method git-fetch)
@@ -3491,7 +3495,7 @@ also be supported.")
              (url "https://github.com/sharplispers/ironclad/")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "02abwy59v9hfdl2ya4h6l2hc1xrnvqlxzg9vlk87wmi92azpa8v9"))
+        (base32 "122ldxiddkscb3li5wjrppr7vyn77znyjfgs8pbflrskzyxlabdd"))
        (file-name (git-file-name "cl-ironclad" version))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
@@ -10528,6 +10532,37 @@ for more information.")
 (define-public ecl-documentation-utils-extensions
   (sbcl-package->ecl-package sbcl-documentation-utils-extensions))
 
+(define-public sbcl-charje.documentation
+  (package
+    (name "sbcl-charje.documentation")
+    (version "0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~charje/documentation")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "149r9qdz5dyxsamhf5miaa9njr7kn7nc0ic448k133rs3nnwagqc"))
+       (file-name (git-file-name "cl-charje.documentation" version))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria))
+    (home-page "https://git.sr.ht/~charje/documentation")
+    (synopsis "Docstring parsing library for Common Lisp")
+    (description "Charje.documentation can used to parse Common Lisp
+docstrings the charje way, or it can be used to create custom docstring
+parsers.  Docstring parsers are composed using mixin classes and
+initialization methods.")
+    (license license:agpl3+)))
+
+(define-public cl-charje.documentation
+  (sbcl-package->cl-source-package sbcl-charje.documentation))
+
+(define-public ecl-charje.documentation
+  (sbcl-package->ecl-package sbcl-charje.documentation))
+
 (define-public sbcl-staple
   (let ((commit "0ee8e25fe6fe8fa83b2a6c93d4febd468c3eaa4e")
         (revision "1"))
@@ -10675,8 +10710,8 @@ functions for arrays and vectors.  Originally from Plump.")
   (sbcl-package->ecl-package sbcl-array-utils))
 
 (define-public sbcl-lass
-  (let ((commit "a7a4452f6a670b8fb01a73d3007030d16bd1ec2c")
-        (revision "0"))
+  (let ((commit "1f2418dbf2d8d6f5892171057616b2ca9d6e5008")
+        (revision "1"))
     (package
       (name "sbcl-lass")
       (version (git-version "0.6.0" revision commit))
@@ -10689,7 +10724,7 @@ functions for arrays and vectors.  Originally from Plump.")
            (commit commit)))
          (file-name (git-file-name "cl-lass" version))
          (sha256
-          (base32 "06wds1qzj8s862pmmza1427n7gdpplqplxqnxyqkrr0hgxdl4xbf"))))
+          (base32 "1wax2kykc9ff0sk2linp9v8fcsm5ay6idpq365vivady9fh504r5"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-base64 sbcl-trivial-indent sbcl-trivial-mimes))
@@ -11516,6 +11551,42 @@ may contain sets, maps may be keyed by sets, etc.")
     (arguments
      ;; Tests fails on ECL with "The function FSET::MAKE-CHAR is undefined".
      '(#:tests? #f))))
+
+(define-public sbcl-modf
+  (let ((commit "dea93fe62c6bf7f66f32f52ac0c555aedbf7abad")
+        (revision "0"))
+    (package
+      (name "sbcl-modf")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/smithzvk/modf")
+               (commit commit)))
+         (file-name (git-file-name "cl-modf" version))
+         (sha256
+          (base32
+           "1aap7ldy7lv942khp026pgndgdzfkkqa9xcq1ykinrmflrgdazay"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-iterate))
+      (native-inputs
+       (list sbcl-stefil))
+      (home-page "https://github.com/smithzvk/modf")
+      (synopsis "SETF like macro for functional programming in Common Lisp")
+      (description "This library simplifies functional programming in Common
+Lisp by making it easier to make new data structures with specified changes in
+place.")
+      (license license:bsd-3))))
+
+(define-public cl-modf
+  (sbcl-package->cl-source-package sbcl-modf))
+
+(define-public ecl-modf
+  (sbcl-package->ecl-package sbcl-modf))
 
 (define-public sbcl-cl-cont
   (let ((commit "fc1fa7e6eb64894fdca13e688e6015fad5290d2a")
@@ -15411,71 +15482,71 @@ functions.")
   (sbcl-package->ecl-package sbcl-cl-dejavu))
 
 (define-public sbcl-mcclim
-  (let ((commit "ece91cf035e2ccb1c6eb0bb867ae2bc45f627982")
-        (revision "3"))
-    (package
-      (name "sbcl-mcclim")
-      (version (git-version "0.9.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/McCLIM/McCLIM")
-               (commit commit)))
-         (file-name (git-file-name "cl-mcclim" version))
-         (sha256
-          (base32 "0prn4f0nz604ykcg8004f1vndgjm7181wrlblq6mhasphca28c2k"))))
-      (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-fiveam pkg-config))
-      (inputs
-       (list fontconfig
-             freetype
-             harfbuzz
-             sbcl-alexandria
-             sbcl-babel
-             sbcl-bordeaux-threads
-             sbcl-cffi
-             sbcl-cl-base64
-             sbcl-cl-dejavu
-             sbcl-cl-freetype2
-             sbcl-cl-pdf
-             sbcl-cl-unicode
-             sbcl-cl-vectors
-             sbcl-cl-who
-             sbcl-closer-mop
-             sbcl-clx
-             sbcl-flexi-streams
-             sbcl-flexichain
-             sbcl-log4cl
-             sbcl-opticl
-             sbcl-slime-swank
-             sbcl-spatial-trees
-             sbcl-trivial-features
-             sbcl-trivial-garbage
-             sbcl-trivial-gray-streams
-             sbcl-zpb-ttf))
-      (arguments
-       '(#:asd-systems '("mcclim"
-                         "clim-examples"
-                         ;; clim-debugger is required by cleavir.
-                         "clim-debugger")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "Extensions/fontconfig/src/functions.lisp"
-                 (("libfontconfig\\.so")
-                  (search-input-file inputs "/lib/libfontconfig.so")))
-               (substitute* "Extensions/harfbuzz/src/functions.lisp"
-                 (("libharfbuzz\\.so")
-                  (search-input-file inputs "/lib/libharfbuzz.so"))))))))
-      (home-page "https://mcclim.common-lisp.dev/")
-      (synopsis "Common Lisp GUI toolkit")
-      (description
-       "McCLIM is an implementation of the @emph{Common Lisp Interface Manager
+  (package
+    (name "sbcl-mcclim")
+    (version "0.9.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/McCLIM/McCLIM")
+             (commit (string-append version "-yule"))))
+       (file-name (git-file-name "cl-mcclim" version))
+       (sha256
+        (base32 "0gbi61jnnsz6fvhv18mf57jkq46bvcd0355vqdcnrni7xyi10sk8"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-fiveam pkg-config))
+    (inputs
+     (list fontconfig
+           freetype
+           harfbuzz
+           sbcl-alexandria
+           sbcl-babel
+           sbcl-bordeaux-threads
+           sbcl-cffi
+           sbcl-cl-base64
+           sbcl-cl-dejavu
+           sbcl-cl-freetype2
+           sbcl-cl-pdf
+           sbcl-cl-unicode
+           sbcl-cl-vectors
+           sbcl-cl-who
+           sbcl-closer-mop
+           sbcl-cluffer
+           sbcl-clx
+           sbcl-flexi-streams
+           sbcl-flexichain
+           sbcl-log4cl
+           sbcl-lorem-ipsum
+           sbcl-opticl
+           sbcl-slime-swank
+           sbcl-spatial-trees
+           sbcl-trivial-features
+           sbcl-trivial-garbage
+           sbcl-trivial-gray-streams
+           sbcl-zpb-ttf))
+    (arguments
+     '(#:asd-systems '("mcclim"
+                       "clim-examples"
+                       ;; clim-debugger is required by cleavir.
+                       "clim-debugger")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "Extensions/fontconfig/src/functions.lisp"
+               (("libfontconfig\\.so")
+                (search-input-file inputs "/lib/libfontconfig.so")))
+             (substitute* "Extensions/harfbuzz/src/functions.lisp"
+               (("libharfbuzz\\.so")
+                (search-input-file inputs "/lib/libharfbuzz.so"))))))))
+    (home-page "https://mcclim.common-lisp.dev/")
+    (synopsis "Common Lisp GUI toolkit")
+    (description
+     "McCLIM is an implementation of the @emph{Common Lisp Interface Manager
 specification}, a toolkit for writing GUIs in Common Lisp.")
-      (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public cl-mcclim
   (sbcl-package->cl-source-package sbcl-mcclim))
@@ -17025,11 +17096,11 @@ latitude/longitude and MGRS.")
   (sbcl-package->ecl-package sbcl-mgrs))
 
 (define-public sbcl-maidenhead
-  (let ((commit "202671f39a4c90c18016123685705533d43ccde6")
+  (let ((commit "4b9c38e4845dda56ae7fb0355c5260c9ade0ac12")
         (revision "1"))
     (package
       (name "sbcl-maidenhead")
-      (version (git-version "1.0" revision commit))
+      (version (git-version "1.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -17038,7 +17109,7 @@ latitude/longitude and MGRS.")
                (commit commit)))
          (file-name (git-file-name "cl-maidenhead" version))
          (sha256
-          (base32 "0bkw31jibx4sh2086jgsw4rvaz3i1dmycbwp203rjj78x7wz9743"))))
+          (base32 "10pcx2ngyj6lkfbg1b58lzcm02xl1a3smnad5lvvw30pbalwcq46"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
@@ -20540,6 +20611,312 @@ most modern systems and compilers.")
 (define-public cl-3d-quaternions
   (sbcl-package->cl-source-package sbcl-3d-quaternions))
 
+(define-public sbcl-interface
+  (let ((commit "6d8bd74214053debcbc0b174d65ea73c271c1563")
+        (revision "0"))
+    (package
+      (name "sbcl-interface")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/interface")
+               (commit commit)))
+         (file-name (git-file-name "cl-interface" version))
+         (sha256
+          (base32 "0h1bckhyig2znl6nrd3agjzz7knrm2kyh2vfyk7j60kzki9rpzxy"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-alexandria sbcl-global-vars))
+      (synopsis "System for defining interfaces")
+      (description
+       "This library contains an implementation of interfaces and
+implementations.  They're sometimes called protocols in other
+languages.  Broadly speaking, an @emph{interface} is some collection of
+function @emph{prototypes} that a valid implementation must implement.")
+      (home-page "https://github.com/stylewarning/interface")
+      (license license:bsd-3))))
+
+(define-public ecl-interface
+  (sbcl-package->ecl-package sbcl-interface))
+
+(define-public cl-interface
+  (sbcl-package->cl-source-package sbcl-interface))
+
+(define-public sbcl-cl-syslog
+  (let ((commit "d5d46f777f0735938e6f650cf17d814b88b70305")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-syslog")
+      (version (git-version "0.2.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmaul/cl-syslog")
+               (commit commit)))
+         (file-name (git-file-name "cl-syslog" version))
+         (sha256
+          (base32 "1qcz55jiqwk91b01hsahxnha884f6zf2883j2m51sqph0mvj69mh"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cffi
+             sbcl-global-vars
+             sbcl-local-time
+             sbcl-split-sequence
+             sbcl-usocket))
+      (arguments
+       (list #:tests? #f))
+      (synopsis "Common Lisp interface to local and remote Syslog facilities")
+      (description "@code{cl-syslog} is a Common Lisp library that provides
+access to the syslog logging facility.")
+      (home-page "https://cl-syslog.common-lisp.dev/")
+      (license license:bsd-3))))
+
+(define-public ecl-cl-syslog
+  (sbcl-package->ecl-package sbcl-cl-syslog))
+
+(define-public cl-syslog
+  (sbcl-package->cl-source-package sbcl-cl-syslog))
+
+(define-public sbcl-alexa
+  (package
+    (name "sbcl-alexa")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quil-lang/alexa")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-alexa" version))
+       (sha256
+        (base32 "1y9jyz9gfmd02h492kf7v3mmpbhc0yfh4ka2rzd1vczq6fl8qgqv"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiasco))
+    (inputs (list sbcl-alexandria sbcl-cl-ppcre))
+    (synopsis "Lexical Analyzer Generator for Common Lisp")
+    (description
+     "ALEXA is a tool similar to lex or flex for generating lexical analyzers.
+Unlike tools like lex, however, ALEXA defines a domain-specific language
+within your Lisp program, so you don't need to invoke a separate tool.")
+    (home-page "https://github.com/quil-lang/alexa")
+    (license license:bsd-3)))
+
+(define-public ecl-alexa
+  (sbcl-package->ecl-package sbcl-alexa))
+
+(define-public cl-alexa
+  (sbcl-package->cl-source-package sbcl-alexa))
+
+(define-public sbcl-metering
+  (let ((commit "62dbaa5e8d29d2f213b881d740114941c2c3d1be")
+        (revision "0"))
+    (package
+      (name "sbcl-metering")
+      (version (git-version "3.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/dkochmanski/metering")
+               (commit commit)))
+         (file-name (git-file-name "cl-metering" version))
+         (sha256
+          (base32 "0jx3ypk8m815yp7208xkcxkvila847mvna25a2p22ihnj0ms9rn1"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (synopsis "Common Lisp code profiling tool")
+      (description
+       "The Metering System is a portable Common Lisp code profiling tool.
+It gathers timing and consing statistics for specified functions while
+a program is running.")
+      (home-page "https://gitlab.common-lisp.net/dkochmanski/metering")
+      (license license:public-domain))))
+
+(define-public ecl-metering
+  (sbcl-package->ecl-package sbcl-metering))
+
+(define-public cl-metering
+  (sbcl-package->cl-source-package sbcl-metering))
+
+(define-public sbcl-cl-grnm
+  (let ((commit "778a312e9eb3d3de7541457b516ea3d9055a15aa")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-grnm")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/quil-lang/cl-grnm")
+               (commit commit)))
+         (file-name (git-file-name "cl-grnm" version))
+         (sha256
+          (base32 "1hb5n37n3x2ylrghcqsia2g9a6f5wg24l659jiz4ncpi5bsv4m3s"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Common Lisp implementation of (grid restrained) Nelder-Mead")
+      (description
+       "These common lisp sources contain two variants of the Nelder-Mead
+algorithm.  The original algorithm and a provably convergent, reliable variant
+by A. Bürmen et al, called the
+@acronym{GRNMA, Grid Restrained Nelder Mead Algorithm}.")
+      (home-page "https://github.com/quil-lang/cl-grnm")
+      (license license:expat))))
+
+(define-public ecl-cl-grnm
+  (sbcl-package->ecl-package sbcl-cl-grnm))
+
+(define-public cl-grnm
+  (sbcl-package->cl-source-package sbcl-cl-grnm))
+
+(define-public sbcl-priority-queue
+  (let ((commit "011b8d52ef7ba7f8e6bc26608eedef222b38aaa8")
+        (revision "0"))
+    (package
+      (name "sbcl-priority-queue")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dsorokin/priority-queue")
+               (commit commit)))
+         (file-name (git-file-name "cl-priority-queue" version))
+         (sha256
+          (base32 "0y5a1fid8xzzl58hfdj64n8mrzq0kr06a0lnmdjpgi0czc3x0jcy"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Priority queue for Common Lisp")
+      (description "This package provides a priority queue implemented with
+an array-based heap.")
+      (home-page "https://github.com/dsorokin/priority-queue")
+      (license license:expat))))
+
+(define-public ecl-priority-queue
+  (sbcl-package->ecl-package sbcl-priority-queue))
+
+(define-public cl-priority-queue
+  (sbcl-package->cl-source-package sbcl-priority-queue))
+
+(define-public sbcl-cl-messagepack
+  (let ((commit "8ff2060ed20677feef8ac01558690df0aeac30b6")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-messagepack")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mbrezu/cl-messagepack")
+               (commit commit)))
+         (file-name (git-file-name "cl-messagepack" version))
+         (sha256
+          (base32 "1hjd1q18lz46k46afz94ljflp76mfr30d6z4jrsgd26y2lc4gchc"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-cl-json sbcl-fiveam))
+      (inputs (list sbcl-babel sbcl-closer-mop sbcl-flexi-streams))
+      (synopsis "Common Lisp implementation of MessagePack")
+      (description
+       "This is a Common Lisp implementation of the MessagePack
+(@url{http://msgpack.org/}) serialization/deserialization format,
+implemented according to
+@url{http://wiki.msgpack.org/display/MSGPACK/Format+specification}.")
+      (home-page "https://github.com/mbrezu/cl-messagepack")
+      (license license:bsd-2))))
+
+(define-public ecl-cl-messagepack
+  (sbcl-package->ecl-package sbcl-cl-messagepack))
+
+(define-public cl-messagepack
+  (sbcl-package->cl-source-package sbcl-cl-messagepack))
+
+(define-public sbcl-cl-permutation
+  (let ((commit "20c10e9ca56452d2fafc3ec0984dcdf78b4f4b19")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-permutation")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/cl-permutation")
+               (commit commit)))
+         (file-name (git-file-name "cl-permutation" version))
+         (sha256
+          (base32 "0i932g0k50y24hxizni6zfya4kcw77yk3b0llivm9g50s7fxj9dk"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiasco))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-fft
+             sbcl-cl-algebraic-data-type
+             sbcl-cl-cont
+             sbcl-closer-mop
+             sbcl-iterate
+             sbcl-priority-queue))
+      (synopsis "Permutations and permutation groups in Common Lisp")
+      (description
+       "This is a Commin Lisp library for operating on permutations and
+permutation groups.")
+      (home-page "https://github.com/stylewarning/cl-permutation")
+      (license license:bsd-3))))
+
+(define-public ecl-cl-permutation
+  (sbcl-package->ecl-package sbcl-cl-permutation))
+
+(define-public cl-permutation
+  (sbcl-package->cl-source-package sbcl-cl-permutation))
+
+(define-public sbcl-magicl
+  (package
+    (name "sbcl-magicl")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quil-lang/magicl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-magicl" version))
+       (sha256
+        (base32 "0x9p55qin399jhr5md88nij8fv78b64xjhww7ys364pkjnx8ak9v"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list gfortran sbcl-fiasco))
+    (inputs
+     (list lapack
+           sbcl-alexandria
+           sbcl-abstract-classes
+           sbcl-cffi
+           sbcl-interface
+           sbcl-policy-cond
+           sbcl-static-vectors
+           sbcl-trivial-garbage))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/extensions/blas/load-libs.lisp"
+                (("libblas.so")
+                 (search-input-file inputs "/lib/libblas.so")))
+              (substitute* "src/extensions/lapack/load-libs.lisp"
+                (("liblapack.so")
+                 (search-input-file inputs "/lib/liblapack.so"))))))))
+    (synopsis "Matrix Algebra proGrams In Common Lisp")
+    (description
+     "This package provides matrix algebra functions for Common Lisp.")
+    (home-page "https://github.com/quil-lang/magicl")
+    (license license:bsd-3)))
+
+(define-public cl-magicl
+  (sbcl-package->cl-source-package sbcl-magicl))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
@@ -21536,8 +21913,8 @@ Common Lisp.")
   (sbcl-package->cl-source-package sbcl-metacopy))
 
 (define-public sbcl-legit
-  (let ((commit "5f8a2d4c4f5fb8e53340eeef600433ee20e03fbe")
-        (revision "2"))
+  (let ((commit "9c677b9b798803d37ab6f5e0e0705441872f7230")
+        (revision "3"))
     (package
       (name "sbcl-legit")
       (version (git-version "1.0.0" revision commit))
@@ -21547,9 +21924,9 @@ Common Lisp.")
          (uri (git-reference
                (url "https://github.com/Shinmera/legit")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-legit" version))
          (sha256
-          (base32 "0crr7ya7dg15di7glk3w9sgf6j8dmny347gynmxxrdvjj9pa906m"))))
+          (base32 "0jy021ywrbnkgbgb63ip6j7kr40m4wz2pz1v5ybn6xkkn6dyprsz"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases

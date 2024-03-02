@@ -106,7 +106,7 @@ WSD and eSCL.")
 (define-public sane-backends-minimal
   (package
     (name "sane-backends-minimal")
-    (version "1.0.32")
+    (version "1.2.1")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -114,7 +114,7 @@ WSD and eSCL.")
                    (commit version)))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "13jlqdp7n7z2n78v6idl3ri5idk7ddk9j8wrmh73lba8l9y8xnsi"))
+              (base32 "1dyipgfn8b8g38iqipy9y1p32p8xyf5sllh4dzhpx54schc4j3hm"))
              (modules '((guix build utils)))
              (snippet
               ;; Generated HTML files and udev rules normally embed a

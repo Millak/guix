@@ -119,8 +119,11 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
-  #:use-module (gnu packages crates-gtk)
+  #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-gtk)
+  #:use-module (gnu packages crates-tls)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
@@ -143,7 +146,10 @@
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -1638,7 +1644,7 @@ for efficient socket-like bidirectional reliable communication channels.")
 (define-public wabt
   (package
     (name "wabt")
-    (version "1.0.32")
+    (version "1.0.34")
     (source
      (origin
        (method git-fetch)
@@ -1648,13 +1654,15 @@ for efficient socket-like bidirectional reliable communication channels.")
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m124r8v9c0hxiaa4iy7ch4ng8msnirbc2vb702gbdjhvgzyrcwh"))
+        (base32 "1vxvc34b7a7lkrmzdb5cjv0b54vhiyr33sy0i2ps5jrmg5rqqmia"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "third_party/gtest/"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; Tests on non-x86_64 architectures are not well supported upstream.
+      #:tests? (target-x86-64?)
       #:test-target "run-tests"
       #:configure-flags '(list "-DUSE_SYSTEM_GTEST=ON")
       #:phases
@@ -5196,6 +5204,69 @@ little effort, and the program to do so is often shorter and simpler than
 you'd expect.")
     (license (list license:expat license:cc-by3.0))))
 
+(define-public go-github-com-mikefarah-yq-v4
+  (package
+    (name "go-github-com-mikefarah-yq-v4")
+    (version "4.34.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mikefarah/yq")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y5i0p4fiq0kad9xqihhyclhd9d3l2r5yligdkvsdc90hlqjmql3"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/mikefarah/yq/v4"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'remove-binary
+                 (lambda _
+                   (delete-file-recursively
+                    (string-append #$output "/bin")))))))
+    (propagated-inputs
+     (list go-github-com-a8m-envsubst
+           go-github-com-alecthomas-participle-v2
+           go-github-com-dimchansky-utfbom
+           go-github-com-elliotchance-orderedmap
+           go-github-com-fatih-color
+           go-github-com-goccy-go-json
+           go-github-com-goccy-yaml
+           go-github-com-jinzhu-copier
+           go-github-com-magiconair-properties
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-spf13-cobra
+           go-golang-org-x-net
+           go-golang-org-x-text
+           go-gopkg-in-op-go-logging-v1
+           go-gopkg-in-yaml-v3))
+    (home-page "https://mikefarah.gitbook.io/yq/")
+    (synopsis
+     "Command-line YAML, JSON, XML, CSV, TOML and properties processor")
+    (description
+     "This package provides @code{yq}, a command-line YAML, JSON and XML
+processor.  It uses @code{jq}-like syntax but works with YAML files as well as
+JSON, XML, properties, CSV and TSV.")
+    (license license:expat)))
+
+(define-public yq
+  (package
+    (inherit go-github-com-mikefarah-yq-v4)
+    (name "yq")
+    (arguments
+     (list #:install-source? #f
+           #:import-path "github.com/mikefarah/yq/v4"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'rename-binary
+                 (lambda _
+                   (rename-file (string-append #$output "/bin/v4")
+                                (string-append #$output "/bin/yq")))))))
+    (propagated-inputs '())
+    (inputs (package-propagated-inputs go-github-com-mikefarah-yq-v4))))
+
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
@@ -6490,7 +6561,7 @@ functions of Tidy.")
              ;; Make sure 'hiawatha' finds 'mbedtls'.
              (let* ((out (assoc-ref outputs "out"))
                     (sbin (string-append out "/sbin"))
-                    (mbed (assoc-ref inputs "mbedtls-apache")))
+                    (mbed (assoc-ref inputs "mbedtls")))
                (wrap-program (string-append sbin "/hiawatha")
                  `("PATH" ":" prefix (,mbed)))))))))
     (inputs
@@ -8163,7 +8234,7 @@ compressed JSON header blocks.
 (define-public nghttp3
   (package
     (name "nghttp3")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -8172,12 +8243,10 @@ compressed JSON header blocks.
                            "nghttp3-" version ".tar.gz"))
        (sha256
         (base32
-         "1fzvadnwb03jlm180313gg5m4fg09qdcc67fwcfrv9zs22anaa55"))))
+         "0xfa3nbpv3d514ssjpxvizqmss8z330w9p0bp045w4qsyr1vkj8c"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config
-           ;; Required by tests.
-           cunit))
+     (list pkg-config))
     (arguments
      (list
       #:configure-flags
@@ -8638,7 +8707,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "2.0")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8646,7 +8715,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "17cg07md6zac0j6ivawysy41jbk3a1ql3q794q1y0k01x8z23q5n"))))
+                "1riihzgshfk6907r4g69lrlvabiznwi5d7njk7y6km0695lf62g0"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"

@@ -52,7 +52,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
-;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -233,6 +233,13 @@
                  (string-append "	"
                                 #$(cc-for-target) " -o")))
               (chdir "src")))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/alsa-scarlett-gui")
+                ;; For GtkFileChooserDialog.
+                `("GSETTINGS_SCHEMA_DIR" =
+                  (,(string-append #$(this-package-input "gtk")
+                                   "/share/glib-2.0/schemas"))))))
           (delete 'configure))))
     (inputs
      (list alsa-lib glib gtk))
@@ -1673,15 +1680,7 @@ typographic detail of symbols on the page.")
        (sha256
         (base32
          "0wma9vzn42h1rhbzh2dwjsrzjhsi1yqdgn6wx1dfk78vaki6prd8"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" ".")
-               #t))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list lilypond
            python-black
@@ -1691,7 +1690,8 @@ typographic detail of symbols on the page.")
            python-mypy
            python-pytest
            python-pytest-cov
-           python-pytest-helpers-namespace))
+           python-pytest-helpers-namespace
+           python-sphinx-autodoc-typehints))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
@@ -1715,15 +1715,7 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
        (sha256
         (base32
          "05hr2lr6myzi493k8vc19cqzraxxnbdwlckwbnras19l5g5ns38x"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "tests")
-               #t))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list lilypond
            python-black
@@ -1733,7 +1725,8 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
            python-mypy
            python-pytest
            python-pytest-cov
-           python-pytest-helpers-namespace))
+           python-pytest-helpers-namespace
+           python-sphinx-autodoc-typehints))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
@@ -3821,7 +3814,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.10")
+    (version "2.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3829,7 +3822,7 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "0f9rvif9m83jhal9n9x8kks17c0cgcipi1hjqmki7a296lz175ss"))))
+                "0ppq2n9jf8c8r8p9dkpcyipd2psr9hg0zbd5hcdsicili25336j4"))))
     (build-system python-build-system)
     (arguments
      (list

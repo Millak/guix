@@ -168,6 +168,8 @@ string is ~a.~%")
        (format #t (G_ "  commit: ~a~%") (channel-commit channel)))
       ('channels
        (pretty-print `(list ,(channel->code channel))))
+      ('channels-sans-intro
+       (pretty-print `(list ,(channel->code channel #:include-introduction? #f))))
       ('json
        (display (channel->json channel))
        (newline))

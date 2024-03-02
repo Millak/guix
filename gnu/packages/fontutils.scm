@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -1911,6 +1913,7 @@ maintain the Noto Fonts project.")
      (list check pkg-config scdoc))
     (propagated-inputs
      (list ;; Required by fcft.pc.
+           utf8proc
            fontconfig
            freetype
            harfbuzz

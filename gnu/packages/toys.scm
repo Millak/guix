@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -365,7 +367,7 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
 (define-public xsnow
   (package
     (name "xsnow")
-    (version "3.4.2")
+    (version "3.7.7")
     (source
      (origin
        (method url-fetch)
@@ -373,7 +375,7 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
              "https://www.ratrabbit.nl/downloads/xsnow/xsnow-"
              version ".tar.gz"))
        (sha256
-        (base32 "17pxc955jgkjan8ax0lw3b3sibw7aikc7p9qbxsp0w7g7jkxf666"))))
+        (base32 "1wiwlqbc6lfcq69hln8mxsms327sjbdpv0mmkfi9j2xrcgmw41bs"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -386,15 +388,88 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
                 (string-append prefix "bin")))
              #t)))))
     (inputs
-     (list gtk+ libx11 libxpm libxt libxml2))
+     (list gsl libx11 libxpm libxt libxml2))
     (native-inputs
      (list pkg-config))
+    (propagated-inputs
+     (list gdk-pixbuf gtk+))
     (home-page "https://www.ratrabbit.nl/ratrabbit/xsnow/index.html")
     (synopsis "Let it snow on the desktop")
     (description "@code{Xsnow} animates snowfall and Santa with reindeer on
 the desktop background.  Additional customizable effects include wind, stars
 and various scenery elements.")
     (license license:gpl3+)))
+
+(define-public xpenguins
+  (package
+    (name "xpenguins")
+    (version "3.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://ratrabbit.nl/downloads/xpenguins/xpenguins-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "03qwc7gf21d2ixkrxxwwgayj6f5fv1kg4b7ggx90j5269il63adm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-install-path
+            (lambda _
+              ;; Install program to bin/ instead of games/.
+              (substitute* "src/Makefile.in"
+                (("(gamesdir = \\$\\(exec_prefix\\)/)games" _ prefix)
+                 (string-append prefix "bin"))))))))
+    (inputs
+     (list gtk+ libx11 libxml2 libxpm libxt))
+    (native-inputs
+     (list pkg-config))
+    (home-page
+     "https://www.ratrabbit.nl/ratrabbit/software/xpenguins/index.html")
+    (synopsis "Let penguins take over your desktop!")
+    (description "Xpenguins is a vintage application showing penguins running,
+flying and falling on the desktop, using windows as run paths.")
+    (license license:gpl2+)))
+
+(define-public xfishtank
+  (package
+    (name "xfishtank")
+    (version "3.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.ratrabbit.nl/downloads/xfishtank/xfishtank-"
+             version "~pre1.tar.gz"))
+       ;; Version has ~pre1 in it.  Guix store does not allow tilde in file
+       ;; names.  Save it in the Store using a hyphen.
+       (file-name (string-append name "-" version "-pre1.tar.gz"))
+       (sha256
+        (base32 "16i9diawkmar6dhx5xn0mflr2h585gamab6137hvxzgaczx55lwp"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-install-path
+            (lambda _
+              ;; Install program to bin/ instead of games/.
+              (substitute* "src/Makefile.in"
+                (("(gamesdir = \\$\\(exec_prefix\\)/)games" _ prefix)
+                 (string-append prefix "bin"))))))))
+    (inputs
+     (list gtk+ libx11 libxml2 libxpm libxt))
+    (native-inputs
+     (list pkg-config))
+    (home-page
+     "https://www.ratrabbit.nl/ratrabbit/software/xfishtank/index.html")
+    (synopsis "Let fish swim over your desktop!")
+    (description "Xfishtank is a vintage application that uses the X11
+protocol.  It shows fishes swimming over the desktop.")
+    (license (list license:expat license:gpl3+))))
 
 (define-public nyancat
   (package

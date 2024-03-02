@@ -36,8 +36,9 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -122,7 +123,7 @@
 (define-public converseen
   (package
     (name "converseen")
-    (version "0.11.0.0")
+    (version "0.12.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -131,7 +132,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1imc0dbbrs96yv3mp6bs7whd14zvgdw7hmv87bz8lp7d739s74z4"))
+                "0gjg2ma8v8pwldny4j2ag92g5zrv5cz511mq44qr7akjsddq6q6p"))
               (patches
                (search-patches "converseen-hide-updates-checks.patch"
                                ;; Remove links to sites relying on non-free
@@ -141,6 +142,7 @@
     (arguments
      (list
       #:tests? #false                   ;no tests
+      #:configure-flags #~(list "-DUSE_QT6=yes")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-translations-location
@@ -153,9 +155,9 @@
                                 #$output
                                 "/share/converseen/loc\")"))))))))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (inputs
-     (list imagemagick qtbase-5))
+     (list imagemagick qtbase))
     (home-page "https://converseen.fasterland.net/")
     (synopsis "Batch image converter and resizer")
     (description
@@ -751,7 +753,7 @@ collection of tools for doing simple manipulations of TIFF images.")
 (define-public leptonica
   (package
     (name "leptonica")
-    (version "1.83.1")
+    (version "1.84.1")
     (source
      (origin
        (method git-fetch)
@@ -760,7 +762,7 @@ collection of tools for doing simple manipulations of TIFF images.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j7qf9flb48q0aymf0yx9rypy3bs6hfjcln08zmy8qn2qcjzrmvi"))))
+        (base32 "0b4ikf1p2ll4310n4dg5lg0b79wys71fb6nj22i7pz17wjdma0j8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gnuplot ;needed for test suite
@@ -778,6 +780,9 @@ collection of tools for doing simple manipulations of TIFF images.")
            zlib))
     (arguments
      (list
+      ;; Parallel tests cause some tests to fail randomly.
+      ;; Same thing observed on Debian.
+      #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-reg-wrapper
@@ -2815,3 +2820,38 @@ Graphics (PNGs), intended as an easy-to-use replacement for @code{libpng}.")
    (license license:bsd-2)
    ;; Supports SSE on x86-64 and NEON on AArch64.
    (properties '((tunable? . #t)))))
+
+(define-public libsixel
+  (package
+    (name "libsixel")
+    (version "1.10.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libsixel/libsixel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nny4295ipy4ajcxmmh04c796hcds0y7z7rv3qd17mj70y8j0r2d"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:build-type "release"
+      #:configure-flags #~(list "--buildtype=plain"
+                                "-Dtests=enabled"
+                                "-Dlibcurl=disabled"
+                                "-Dgdk-pixbuf2=enabled")))
+    (native-inputs (list pkg-config))
+    (inputs (list gdk-pixbuf libjpeg-turbo libpng python))
+    (home-page "https://github.com/libsixel/libsixel")
+    (synopsis
+     "Encoder and decoder implementation for DEC SIXEL graphics")
+    (description
+     "LibSIXEL is a an encoder/decoder implementation for DEC SIXEL graphics,
+and some converter programs.  SIXEL is one of image formats for printer and
+terminal imaging introduced by @acronym{DEC, Digital Equipment Corp.}.  Its
+data scheme is represented as a terminal-friendly escape sequence.  So if you
+want to view a SIXEL image file, all you have to do is @command{cat} it to
+your terminal.")
+    (license license:expat)))

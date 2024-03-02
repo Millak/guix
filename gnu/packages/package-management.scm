@@ -23,6 +23,7 @@
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -411,11 +412,12 @@ $(prefix)/etc/openrc\n")))
                                (ssh    (assoc-ref inputs "guile-ssh"))
                                (gnutls (assoc-ref inputs "guile-gnutls"))
                                (disarchive (assoc-ref inputs "disarchive"))
+                               (bzip2 (assoc-ref inputs "guile-bzip2"))
                                (lzma (assoc-ref inputs "guile-lzma"))
                                (locales (assoc-ref inputs "glibc-utf8-locales"))
                                (deps   (list gcrypt json sqlite gnutls git
                                              bs ssh zlib lzlib zstd guile-lib
-                                             disarchive lzma))
+                                             disarchive bzip2 lzma))
                                (deps*  (if avahi (cons avahi deps) deps))
                                (effective
                                 (read-line
@@ -520,6 +522,7 @@ $(prefix)/etc/openrc\n")))
          ("bootstrap/xz" ,(bootstrap-executable "xz" (%current-system)))
 
          ("disarchive" ,disarchive)               ;for 'guix perform-download'
+         ("guile-bzip2" ,guile-bzip2)             ;for Disarchive
          ("guile-lzma" ,guile-lzma)               ;for Disarchive
 
          ("git-minimal" ,git-minimal)             ;for 'guix perform-download'
@@ -1249,7 +1252,7 @@ extracting, creating, and converting between formats.")
            python-pyyaml
            python-requests
            python-responses
-           python-ruamel.yaml
+           python-ruamel.yaml-0.16
            python-tqdm
            ;; XXX: This is dragged in by libarchive and is needed at runtime.
            zstd))
@@ -1510,8 +1513,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "dc04b747048638a753bd044646306fcdd33c241a")
-        (revision "95"))
+  (let ((commit "9f1545b15269523eac109b54e1a62f4c0cda837e")
+        (revision "97"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1522,7 +1525,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0dx1kky305gb6725fybcrsyf99sjggiziq9zi0rh862i206b2if4"))
+                  "1h35jjpvl7lipbys8q7ivx13cffkya6n0jpc91ckag3z2vb09iwp"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

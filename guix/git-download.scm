@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -165,6 +165,8 @@ respective documentation."
 
             (git-fetch-with-fallback (getenv "git url") (getenv "git commit")
                                      #$output
+                                     #:hash #$hash
+                                     #:hash-algorithm '#$hash-algo
                                      #:lfs? lfs?
                                      #:recursive? recursive?
                                      #:git-command "git")))))

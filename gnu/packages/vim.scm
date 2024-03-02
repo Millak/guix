@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2023, 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,7 +86,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.2001")
+    (version "9.1.0059")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -95,7 +95,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1y0xfvndnyfv677gn4mkq0jf5k15mm1dngl96l9j90sp4lbqrszx"))))
+               "146zhwhagdsbsh3h7f8h7izbzrwh3hgry4cx2lalq9s275qy3hzb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -1053,7 +1053,7 @@ a nested nvim process.")
 (define-public vim-asyncrun
   (package
     (name "vim-asyncrun")
-    (version "2.8.6")
+    (version "2.12.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1062,7 +1062,7 @@ a nested nvim process.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11zcw0sll6qg6ha0rr6n1cw5v73azvf7ycwn9lgiwa5cj7rrqjf4"))))
+                "0hyz3bgbwmg85534ab71w2sr6fj94mz498ayn9bvhn4g7y6c951n"))))
     (build-system vim-build-system)
     (arguments
      (list
@@ -1074,30 +1074,43 @@ NeoVim) to enable you to run shell commands in background and read output in the
 quickfix window in realtime.")
     (license license:expat)))
 
-(define-public vim-dispatch
+(define-public neovim-asyncrun
   (package
-    (name "vim-dispatch")
-    (version "1.8")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/tpope/vim-dispatch")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1m8b5mn2zqlphzs6xfwykwmghf6p0wabrhpjmh7vav35jgcxc4wl"))))
-    (build-system vim-build-system)
-    (arguments
-     (list #:plugin-name "dispatch"))
-    (home-page "https://github.com/tpope/vim-dispatch")
-    (synopsis "Asynchronous build and test dispatcher")
-    (description "Leverage the power of Vim's compiler plugins without being
+    (inherit vim-asyncrun)
+    (name "neovim-asyncrun")))
+
+(define-public vim-dispatch
+  ;; Last release was in June 2019.
+  (let ((commit "4c695bc052cad2ae6b980aebbe48d046466e27ae")
+        (revision "1"))
+    (package
+      (name "vim-dispatch")
+      (version (git-version "1.8" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/tpope/vim-dispatch")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "13c63n7gylny2s84k05cpl4cjn070d3qk6yagxny23yanz29hc15"))))
+      (build-system vim-build-system)
+      (arguments
+       (list #:plugin-name "dispatch"))
+      (home-page "https://github.com/tpope/vim-dispatch")
+      (synopsis "Asynchronous build and test dispatcher")
+      (description "Leverage the power of Vim's compiler plugins without being
 bound by synchronicity.  Kick off builds and test suites using one of several
 asynchronous adapters (including tmux, screen, and a headless mode), and when
 the job completes, errors will be loaded and parsed automatically.")
-    (license license:vim)))
+      (license license:vim))))
+
+(define-public neovim-dispatch
+  (package
+    (inherit vim-dispatch)
+    (name "neovim-dispatch")))
 
 (define-public vim-gemini-vim
   ;; No releases have been tagged.

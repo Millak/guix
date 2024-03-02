@@ -203,14 +203,14 @@ designs.")
 (define-public clojure-tools
   (package
     (name "clojure-tools")
-    (version "1.11.1.1165")
+    (version "1.11.1.1200")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.clojure.org/install/clojure-tools-"
                            version
                            ".tar.gz"))
-       (sha256 (base32 "1lg97waqfcgzr3dz5426fbc4kqcsavpbqil2iyjm1dw3zrfa8ysi"))
+       (sha256 (base32 "075naxfiddi6jqr6rqiywwy91r188n5m8yfqcxddmds2vm5rrpnv"))
        ;; Remove AOT compiled JAR.  The other JAR only contains uncompiled
        ;; Clojure source code.
        (snippet

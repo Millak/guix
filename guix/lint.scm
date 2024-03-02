@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1658,24 +1658,31 @@ try again later")
     (or (not (request-rate-limit-reached? url method))
         (throw skip-key #t)))
 
+  (define (lookup-by-nar-hash hash)
+    (lookup-directory-by-nar-hash (content-hash-value hash)
+                                  (content-hash-algorithm hash)))
+
   (parameterize ((%allow-request? skip-when-limit-reached))
     (catch #t
       (lambda ()
         (match (package-source package)
           (#f                                     ;no source
            '())
-          ((and (? origin?)
+          ((and (? origin? origin)
                 (= origin-uri (? git-reference? reference)))
            (define url
              (git-reference-url reference))
            (define commit
              (git-reference-commit reference))
+           (define hash
+             (origin-hash origin))
 
-           (match (if (commit-id? commit)
-                      (or (lookup-revision commit)
-                          (lookup-origin-revision url commit))
-                      (lookup-origin-revision url commit))
-             ((? revision? revision)
+           (match (or (lookup-by-nar-hash hash)
+                      (if (commit-id? commit)
+                          (or (lookup-revision commit)
+                              (lookup-origin-revision url commit))
+                          (lookup-origin-revision url commit)))
+             ((or (? string?) (? revision?))
               '())
              (#f
               ;; Revision is missing from the archive, attempt to save it.
@@ -1704,9 +1711,10 @@ try again later")
            (if (and=> (origin-hash origin)          ;XXX: for ungoogled-chromium
                       content-hash-value)           ;& icecat
                (let ((hash (origin-hash origin)))
-                 (match (lookup-content (content-hash-value hash)
-                                        (symbol->string
-                                         (content-hash-algorithm hash)))
+                 (match (or (lookup-by-nar-hash hash)
+                            (lookup-content (content-hash-value hash)
+                                            (symbol->string
+                                             (content-hash-algorithm hash))))
                    (#f
                     ;; If SWH doesn't have HASH as is, it may be because it's
                     ;; a hand-crafted tarball.  In that case, check whether

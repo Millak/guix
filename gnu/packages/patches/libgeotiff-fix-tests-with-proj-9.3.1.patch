@@ -1,0 +1,40 @@
+From 4f90e57fa1cac7afdd57e5f649775cb24aa15612 Mon Sep 17 00:00:00 2001
+From: Bas Couwenberg <sebastic@xs4all.nl>
+Date: Fri, 1 Dec 2023 08:23:20 +0100
+Subject: [PATCH] Fix test failure with PROJ 9.3.1.
+
+Closes: #104
+---
+https://github.com/OSGeo/libgeotiff/pull/105
+
+ test/testlistgeo | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/test/testlistgeo b/test/testlistgeo
+index 48e92eb..4331cc3 100755
+--- a/test/testlistgeo
++++ b/test/testlistgeo
+@@ -218,6 +218,11 @@ echo "" >>${OUT}
+ sed "s/ETRS89-extended/ETRS89/g" < ${OUT} > ${OUT}.tmp
+ mv ${OUT}.tmp ${OUT}
+ 
++sed "s/Projection = 15914 (BLM zone 14N (US survey .*))/Projection = 15914 (BLM zone 14N)/g" < ${OUT} > ${OUT}.tmp
++mv ${OUT}.tmp ${OUT}
++sed "s/Projection = 6753 (Oregon Columbia River West zone (.*))/Projection = 6753 (Oregon Columbia River West zone)/" < ${OUT} > ${OUT}.tmp
++mv ${OUT}.tmp ${OUT}
++
+ sed "s/ETRS89-extended/ETRS89/g" < ${TEST_CLI_DIR}/testlistgeo_out.dist > testlistgeo_out.dist.normalized
+ 
+ sed "s/GCS: 4053\/Unspecified datum based upon the International 1924 Authalic Sphere/GCS: 10346\/NSIDC Authalic Sphere/g" < ${OUT} > ${OUT}.tmp
+@@ -230,6 +235,11 @@ mv testlistgeo_out.dist.normalized.tmp testlistgeo_out.dist.normalized
+ sed "s/Datum: 6053\/Not specified (based on International 1924 Authalic Sphere)/Datum: 1360\/NSIDC International 1924 Authalic Sphere/g" < testlistgeo_out.dist.normalized > testlistgeo_out.dist.normalized.tmp
+ mv testlistgeo_out.dist.normalized.tmp testlistgeo_out.dist.normalized
+ 
++sed "s/Projection = 15914 (BLM zone 14N (US survey .*))/Projection = 15914 (BLM zone 14N)/" < testlistgeo_out.dist.normalized > testlistgeo_out.dist.normalized.tmp
++mv testlistgeo_out.dist.normalized.tmp testlistgeo_out.dist.normalized
++sed "s/Projection = 6753 (Oregon Columbia River West zone (.*))/Projection = 6753 (Oregon Columbia River West zone)/" < testlistgeo_out.dist.normalized > testlistgeo_out.dist.normalized.tmp
++mv testlistgeo_out.dist.normalized.tmp testlistgeo_out.dist.normalized
++
+ # do 'diff' with distribution results
+ # after cleaning for avoid spurios result due 
+ # to different build dir

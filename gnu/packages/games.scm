@@ -37,7 +37,7 @@
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2019, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
@@ -60,7 +60,7 @@
 ;;; Copyright © 2021 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021 David Pflug <david@pflug.io>
+;;; Copyright © 2021, 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Noisytoot <ron@noisytoot.org>
@@ -72,7 +72,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022, 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -80,6 +80,7 @@
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Vagrant Cascadian <vagrant@debian.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,6 +150,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
@@ -6230,6 +6232,106 @@ application that locks the keyboard and mouse and instead displays bright
 colors, pictures, and sounds.")
     (license license:gpl3+)))
 
+(define-public moonlight-qt
+  (package
+    (name "moonlight-qt")
+    (version "5.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/moonlight-stream/moonlight-qt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g1y736vw36lmh2bjymsf4b4ypr76x9lqz7frzpj7sn0vb9y5315"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* _
+              (symlink (string-append
+                        #$(this-package-input "sdl2-gamecontrollerdb")
+                        "/share/sdl2/gamecontrollerdb.txt")
+                       "app/SDL_GameControllerDB/gamecontrollerdb.txt")
+              ;; Unbundle libraries.
+              (substitute* "moonlight-qt.pro"
+                (("    moonlight-common-c.*\n") "")
+                (("    qmdnsengine.*\n") "")
+                (("    h264bitstream.*\n") "")
+                (("    app \\\\") "    app")
+                (("app.depends") "INCLUDEPATH +="))
+              (invoke "qmake" (string-append "PREFIX=" #$output)))))))
+    (native-inputs (list pkg-config qttools-5))
+    (inputs (list ffmpeg
+                  h264bitstream
+                  libva
+                  libvdpau
+                  moonlight-common
+                  openssl
+                  opus
+                  qmdnsengine
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtsvg-5
+                  sdl2
+                  sdl2-ttf
+                  sdl2-gamecontrollerdb))
+    (synopsis "GameStream client")
+    (description
+     "Moonlight is an implementation of NVIDIA's GameStream, as used by the
+NVIDIA Shield.")
+    (home-page "https://moonlight-stream.org")
+    (license license:gpl3+)))
+
+(define-public moonlight-common
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight
+  (let ((commit "5de4a5b85a28d8d639482a1a105c3a06eb67a2fd")
+        (revision "1"))
+    (package
+      (name "moonlight-common")
+      (version (git-version "5.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/moonlight-stream/moonlight-common-c")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "05jm0vhyb6pizd8yj89rp6ak7bf5j9w06rrmbxh8jccxwqjgll92"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'use-system-enet-package
+                            (lambda _
+                              (substitute* "CMakeLists.txt"
+                                (("add_subdirectory\\(enet\\)")
+                                 ""))))
+                          (replace 'install
+                            (lambda* (#:key outputs source #:allow-other-keys)
+                              (let* ((include (string-append #$output
+                                                             "/include"))
+                                     (lib (string-append #$output "/lib")))
+                                (mkdir-p include)
+                                (mkdir-p lib)
+                                (install-file (string-append source
+                                               "/src/Limelight.h") include)
+                                (install-file "libmoonlight-common-c.so" lib)))))))
+      (native-inputs (list pkg-config))
+      (inputs (list enet-moonlight openssl qtbase-5))
+      (synopsis "GameStream protocol core implementation")
+      (description
+       "This package provides the GameStream core code for the protocol.")
+      (home-page "https://github.com/moonlight-stream/moonlight-common-c")
+      (license license:gpl3+))))
+
 (define-public mrrescue
   (package
     (name "mrrescue")
@@ -7099,27 +7201,26 @@ monsters in a quest to find the mystifyingly fabulous Orb of Zot.")
     (version "1.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://bitbucket.org/osslugaru/lugaru/downloads/"
-                                  "lugaru-" version ".tar.xz"))
+              (uri (string-append "https://github.com/osslugaru/lugaru/releases"
+                                  "/download/" version
+                                  "/lugaru-" version ".tar.xz"))
               (sha256
-               (base32
-                "15zgcshy22q51rm72zi6y9z7qlgnz5iw3gczjdlir4bqmxy4gspk"))))
+               (base32 "15zgcshy22q51rm72zi6y9z7qlgnz5iw3gczjdlir4bqmxy4gspk"))
+              (patches
+               (search-patches "lugaru-fix-sound.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DSYSTEM_INSTALL=ON")
-       ;; no test target
-       #:tests? #f))
-    (native-inputs
-     (list pkg-config))
+     (list #:configure-flags #~(list "-DSYSTEM_INSTALL=ON")
+           #:tests? #f))                ;no test suite
+    (native-inputs (list pkg-config))
     (inputs
-     `(("sdl2" ,sdl2)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("openal" ,openal)
-       ("vorbis" ,libvorbis)
-       ("zlib" ,zlib)))
+     (list glu
+           libjpeg-turbo
+           libpng
+           libvorbis
+           openal
+           sdl2
+           zlib))
     (home-page "https://osslugaru.gitlab.io")
     (synopsis "Cross-platform third-person action game")
     (description "Lugaru is a third-person action game.  The main character,
@@ -7128,7 +7229,7 @@ In his quest to find those responsible for slaughtering his village, he uncovers
 a far-reaching conspiracy involving the corrupt leaders of the rabbit republic
 and the starving wolves from a nearby den.  Turner takes it upon himself to
 fight against their plot and save his fellow rabbits from slavery.")
-    (license (list license:gpl2+ ; code
+    (license (list license:gpl2+        ; code
                    ;; assets:
                    license:cc-by-sa3.0
                    license:cc-by-sa4.0))))
@@ -7169,6 +7270,7 @@ fight against their plot and save his fellow rabbits from slavery.")
     (synopsis "Data files for 0ad")
     (description "0ad-data provides the data files required by the game 0ad.")
     (home-page "https://play0ad.com")
+    (properties '((hidden? . #t)))
     (license (list (license:fsdg-compatible
                     "http://tavmjong.free.fr/FONTS/ArevCopyright.txt"
                     "Similar to the license of the Bitstream Vera fonts.")
@@ -7996,26 +8098,49 @@ Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom.")
 (define-public odamex
   (package
     (name "odamex")
-    (version "0.9.5")
+    (version "10.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "mirror://sourceforge/odamex/Odamex/" version "/"
-             "odamex-src-" version ".tar.bz2"))
+             "odamex-src-" version ".tar.xz"))
        (sha256
-        (base32 "1x0c9vnwn336inkfamh4na8xjyfjmzfxfn49j4snqymkypjqw6jq"))))
+        (base32 "1isrmki18471yry48mmm7lxzp1kiqma9cc7fx38cvpm2mpgfyvzk"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; XXX: Unbundle more, they are not replaced by the ones provided
+           ;; in inputs: fltk, jsoncpp, miniupnp, protobuf.
+           ;;
+           ;; Remove some bundled libraries.
+           (with-directory-excursion "libraries"
+             (for-each delete-file-recursively
+                       '("curl" "libpng" "portmidi" "zlib")))))))
     (build-system cmake-build-system)
-    (arguments `(#:tests? #f))          ; no tests
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:configure-flags
+      #~(list "-DBUILD_CLIENT=1"
+              "-DBUILD_MASTER=1"
+              "-DBUILD_SERVER=1"
+              "-DUSE_INTERNAL_LIBS=0"
+              "-DUSE_INTERNAL_MINIUPNP=0")))
     (native-inputs
-     (list deutex))
+     (list deutex pkg-config))
     (inputs
-     `(("sdl" ,sdl2)
-       ("sdl-mixer" ,sdl2-mixer)
-       ("zlib" ,zlib)
-       ("libpng" ,libpng)
-       ("curl" ,curl)
-       ("alsa-lib" ,alsa-lib)))
+     (list alsa-lib
+           curl
+           fltk
+           jsoncpp
+           libpng
+           miniupnpc
+           portmidi
+           protobuf
+           sdl2
+           sdl2-mixer
+           zlib))
     (home-page "https://odamex.net/")
     (synopsis "Multiplayer Doom port")
     (description "Odamex is a modification of the Doom engine that
@@ -11223,7 +11348,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "1.0.5")
+    (version "1.0.11")
     (source
      (origin
        (method git-fetch)
@@ -11232,7 +11357,7 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v7dxzb5cfjb55jydd8f61zzlvxq9mrgdy51hq19b06dmrx1dnc7"))))
+        (base32 "1i1a4dynlb5kl55rmfmib2jha1b2igw5jyiiyla1fxgkbkjnbf27"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -11254,7 +11379,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.3.2")
+    (version "1.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11263,7 +11388,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x1bzd89h0j4xci91d2v5aj5vgkx6vm12iml805wkia4hy1jp4ff"))
+                "039d9dvb2i4y1fj6q5py34r17fwb5jqxkjcg7j57asjk4w9b7i8b"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments

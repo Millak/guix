@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
@@ -133,25 +133,26 @@ greatest common divisor operations.")
 (define-public cm
   (package
    (name "cm")
-   (version "0.4.2")
+   (version "0.4.3")
    (source (origin
             (method url-fetch)
             (uri (string-append
-                  "http://www.multiprecision.org/downloads/cm-"
+                  "https://www.multiprecision.org/downloads/cm-"
                   version ".tar.gz"))
             (sha256
              (base32
-              "1c6m00wiw3rs5f0lq6c80rdr3dzklsvh69l8w3s7bj2r6yha6qbw"))))
+              "01dha0hl0daappjiydpk4ngl9nxkxli6a48jp6d7v85yjjykac5j"))))
    (build-system gnu-build-system)
    (propagated-inputs
-     (list mpfrcx zlib)) ; Header files included from cm_common.h.
+     (list mpfrcx zlib)) ; Header files included from lib/cm.h.
    (inputs
-     (list pari-gp))
+     (list flint pari-gp))
    (synopsis "CM constructions for elliptic curves")
    (description
     "The CM software implements the construction of ring class fields of
 imaginary quadratic number fields and of elliptic curves with complex
-multiplication via floating point approximations.  It consists of libraries
+multiplication via floating point approximations, and the elliptic curve
+primality proving algorithm (ECPP).  It consists of libraries
 that can be called from within a C program and of executable command
 line applications.")
    (license license:gpl3+)
@@ -295,6 +296,34 @@ GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
    (license license:gpl2)
    (home-page "https://pari.math.u-bordeaux.fr/")))
 
+(define-public paritwine
+  (package
+    (name "paritwine")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.multiprecision.org/downloads/" name
+                    "-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "15m5jxmhx5zivk1k9wxpmzs8kqva3kvgxizdrkrmmp1qycn85n23"))))
+    (build-system gnu-build-system)
+    (propagated-inputs (list pari-gp
+                             gmp
+                             mpfr
+                             mpc
+                             cmh
+                             flint)) ; referenced in src/paritwine.h
+    (synopsis "Glue library between PARI/GP and other mathematics libraries")
+    (description
+     "PariTwine is a glue library between the system for computer algebra
+and number theory PARI/GP and a number of other mathematics libraries,
+currently GMP, GNU MPFR, GNU MPC, FLINT and CMH.")
+    (license license:gpl2+)
+    (home-page "https://www.multiprecision.org/paritwine/index.html")))
+
 (define-public cmh
   (package
     (name "cmh")
@@ -417,41 +446,20 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "2.9.0")
+   (version "3.0.1")
    (source
     (origin
       (method url-fetch)
-      (uri (string-append "http://flintlib.org/flint-" version ".tar.gz"))
+      (uri (string-append "https://flintlib.org/flint-" version ".tar.gz"))
       (sha256
-       (base32 "0sp79ixaawjzna79afrlwlx9hg55jxil03f1wq435j9k23ar1h1g"))))
+       (base32 "1d4lawfvmjd4n7rp4z9xkwwjjbrjhkmxnxw1xf0ki1isa001lcbv"))))
    (build-system gnu-build-system)
    (inputs
     (list ntl))
    (propagated-inputs
     (list gmp mpfr)) ; header files from both are included by flint/arith.h
    (arguments
-    `(#:parallel-tests? #f              ; seems to be necessary on arm
-      #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'newer-c++
-           (lambda _
-             (substitute* "configure"
-               (("-ansi") ""))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gmp (assoc-ref inputs "gmp"))
-                   (mpfr (assoc-ref inputs "mpfr"))
-                   (ntl (assoc-ref inputs "ntl")))
-               ;; Do not pass "--enable-fast-install", which makes the
-               ;; homebrew configure process fail.
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       (string-append "--with-gmp=" gmp)
-                       (string-append "--with-mpfr=" mpfr)
-                       (string-append "--with-ntl=" ntl))
-               #t))))))
+    `(#:parallel-tests? #f))            ; seems to be necessary on arm
    (synopsis "Fast library for number theory")
    (description
     "FLINT is a C library for number theory.  It supports arithmetic
@@ -470,52 +478,12 @@ fast arithmetic.")
     '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
 
 (define-public arb
-  (package
-    (name "arb")
-    (version "2.23.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fredrik-johansson/arb")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1m9vskyf857gbm0cbh3z8c8m6cqkqa765wb9hqmsv7yzfmklzpvn"))))
-    (build-system gnu-build-system)
-    (propagated-inputs
-     (list flint))               ; flint.h is included by arf.h
-    (inputs
-     (list gmp mpfr))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (flint (assoc-ref inputs "flint"))
-                   (gmp (assoc-ref inputs "gmp"))
-                   (mpfr (assoc-ref inputs "mpfr")))
-               ;; Do not pass "--enable-fast-install", which makes the
-               ;; homebrew configure process fail.
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       (string-append "--with-flint=" flint)
-                       (string-append "--with-gmp=" gmp)
-                       (string-append "--with-mpfr=" mpfr))))))))
-    (home-page "https://arblib.org")
-    (synopsis "Arbitrary precision floating-point ball arithmetic")
-    (description
-     "Arb is a C library for arbitrary-precision floating-point ball
-arithmetic.  It supports efficient high-precision computation with
-polynomials, power series, matrices and special functions over the
-real and complex numbers, with automatic, rigorous error control.")
-    (license license:lgpl2.1+)))
+  (deprecated-package "arb" flint))
 
 (define-public python-flint
   (package
     (name "python-flint")
-    (version "0.3.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -524,15 +492,14 @@ real and complex numbers, with automatic, rigorous error control.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v0anazbj1cfi68nl2j6dbd31kgkc1563xmr0zk5xk3xj78569pw"))
-              (patches (search-patches "python-flint-includes.patch"))))
+                "10370kqik6q6vdqrqv3gbznsyaxbgqb3rbrff4alpw0sqr5s07c7"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-cython))
+     (list python-cython-3))
     (propagated-inputs
      (list python-numpy))
     (inputs
-     (list arb flint))
+     (list flint))
     (synopsis "Python module wrapping ARB and FLINT")
     (description
      "Python-flint is a Python extension module wrapping FLINT
@@ -592,12 +559,12 @@ matrices, and polynomials over the integers and over finite fields.")
 (define-public singular
   (package
    (name "singular")
-   (version "4.2.1")
+   (version "4.3.2p10")
    (source
     (origin
       (method url-fetch)
       (uri
-       (string-append "http://www.mathematik.uni-kl.de/ftp/pub/Math/"
+       (string-append "https://www.singular.uni-kl.de/ftp/pub/Math/"
                       "Singular/SOURCES/"
                       (string-join
                        (string-split
@@ -607,7 +574,7 @@ matrices, and polynomials over the integers and over finite fields.")
                         #\.) "-")
                       "/singular-" version ".tar.gz"))
              (sha256 (base32
-                      "13gy1gdng8zijwlr1fn5sixw53z0zf9czzlg0vh1dcc59zw6v998"))))
+                      "1a2j2pkp73rb1xdd5623gkk1snwd85yimssnz86y0m79zvyckhi8"))))
    (build-system gnu-build-system)
    (native-inputs
     (list doxygen graphviz perl))

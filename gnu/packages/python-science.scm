@@ -3,13 +3,13 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -22,7 +22,7 @@
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,9 +47,11 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages chemistry)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages image)
@@ -84,13 +86,13 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.11.4")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1amfxpnni0cagwjpb0i1kdgnh4sh484ryn4gfkgbjcspgy7bg8lh"))))
+        (base32 "18rn15wg3lp58z204fbjjhy0h79c53yg3c4qqs9h3liniamspxab"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -135,7 +137,22 @@
                         (copy-recursively "build/html" html)))
                     (format #t "sphinx-build not found, skipping~%"))))))))
     (propagated-inputs
-     (list python-numpy python-matplotlib python-pyparsing python-pythran))
+     (append
+       (if (supported-package? python-jupytext)  ; Depends on pandoc.
+           (list python-jupytext)
+           '())
+       (list python-matplotlib
+             python-mpmath
+             python-mypy
+             python-numpy
+             python-numpydoc
+             python-pydata-sphinx-theme
+             python-pydevtool
+             python-pythran
+             python-rich-click
+             python-sphinx
+             python-threadpoolctl
+             python-typing-extensions)))
     (inputs (list openblas pybind11-2.10))
     (native-inputs
      (list gfortran
@@ -147,11 +164,14 @@
            python-click
            python-cython-0.29.35
            python-doit
+           python-hypothesis
            python-pooch
+           python-pycodestyle
            python-pydevtool
            python-pytest
-           python-pytest-xdist
-           python-threadpoolctl))
+           python-pytest-cov
+           python-pytest-timeout
+           python-pytest-xdist))
     (home-page "https://scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
@@ -213,7 +233,7 @@ genetic variation data.")
 (define-public python-scikit-fem
   (package
     (name "python-scikit-fem")
-    (version "8.1.0")
+    (version "9.0.1")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -222,13 +242,14 @@ genetic variation data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zpn0wpsvls5nkrav5a43z77yg9nc09dpyy9ri0dpmpm2ndh2mhs"))))
+                "1r1c88rbaa7vjfnljbzx8paf36yzpy33bragl99ykn6i2srmjrd4"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; Examples below require python-autograd and python-pyamg.
-     (list #:test-flags #~(list "-k" "not TestEx32 and not TestEx45")))
     (propagated-inputs (list python-meshio python-numpy python-scipy))
-    (native-inputs (list python-pytest))
+    (native-inputs
+     (list python-autograd
+           python-pyamg
+           python-pytest
+           python-shapely))
     (home-page "https://scikit-fem.readthedocs.io/en/latest/")
     (synopsis "Library for performing finite element assembly")
     (description
@@ -318,6 +339,27 @@ logic, also known as grey logic.")
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
 
+(define-public python-scikit-opt
+  (package
+    (name "python-scikit-opt")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit-opt" version))
+       (sha256
+        (base32 "0ycqizgsj7q57asc1bphzhf1fx9zqn0vx5rli7q541bas64hfqiy"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/guofei9987/scikit-opt")
+    (synopsis "Swarm intelligence algorithms in Python")
+    (description
+     "Scikit-opt (or sko) is a Python module implementing @dfn{swarm
+intelligence} algorithms: genetic algorithm, particle swarm optimization,
+simulated annealing, ant colony algorithm, immune algorithm, artificial fish
+swarm algorithm.")
+    (license license:expat)))
+
 (define-public python-scikit-optimize
   (package
     (name "python-scikit-optimize")
@@ -375,11 +417,6 @@ implements several methods for sequential model-based optimization.
     (build-system pyproject-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("pandas>=1.5.2")
-                         "pandas"))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
@@ -397,31 +434,68 @@ of regular expressions from text data and automatic test generation.")
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "3.23.5")
+    (version "4.0.10")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "trimesh" version))
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/mikedh/trimesh")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "08967axlnmfv98n05dhrkynyrmcc814hl8184gzzmcy4rjg6dzdx"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy))
+        (base32 "0ry04qaw0pb3hkxv4gmna87jwk97aqangd21wbr2dr4xshmkbyyb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; XXX: When more optional modules are available review
+                    ;; disabled tests once again.
+                    ;;
+                    ;; Disable tests requiring optional, not packed modules.
+                    "not test_material_round"
+                    " and not test_bezier_example"
+                    " and not test_discrete"
+                    " and not test_dxf"
+                    " and not test_layer"
+                    " and not test_multi_nodupe"
+                    " and not test_obj_roundtrip"
+                    " and not test_roundtrip"
+                    " and not test_scene"
+                    " and not test_slice_onplane"
+                    " and not test_svg"
+                    " and not test_svg"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            (lambda _
+              (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
+                (("\\$MESH_PRE")
+                 "'$MESH_PRE'")))))))
     (native-inputs
      (list python-coveralls
            python-pyinstrument
            python-pytest
            python-pytest-cov))
-    (arguments
-     `(;; TODO: Get tests to work.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _
-             (substitute* "trimesh/resources/templates/blender_boolean.py.tmpl"
-               (("\\$MESH_PRE")
-                "'$MESH_PRE'")))))))
+    (propagated-inputs
+     (list python-chardet
+           python-colorlog
+           python-httpx
+           python-jsonschema
+           python-lxml
+           python-networkx
+           python-numpy
+           python-pillow
+           ;; python-pycollada   ; not packed yet, optional
+           ;; python-pyglet      ; not packed yet, optional
+           python-requests
+           python-rtree
+           python-scipy
+           python-setuptools
+           python-shapely
+           ;; python-svg-path   ; not packed yet, optional
+           python-sympy
+           python-xxhash))
     (home-page "https://github.com/mikedh/trimesh")
     (synopsis "Python library for loading and using triangular meshes")
     (description
@@ -456,6 +530,73 @@ library.")
 volume computations for simple domains like regular polygons, disks,
 spheres, cubes, etc.")
     (license license:gpl3+)))
+
+(define-public python-pyamg
+  (package
+    (name "python-pyamg")
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyamg" version))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Delete autogenerated files, regenerate in a phase.
+               #~(begin
+                   (for-each
+                    (lambda (file)
+                      (delete-file (string-append "pyamg/amg_core/" file)))
+                    '("air_bind.cpp"
+                      "evolution_strength_bind.cpp"
+                      "graph_bind.cpp"
+                      "krylov_bind.cpp"
+                      "linalg_bind.cpp"
+                      "relaxation_bind.cpp"
+                      "ruge_stuben_bind.cpp"
+                      "smoothed_aggregation_bind.cpp"
+                      "tests/bind_examples_bind.cpp"))))
+              (sha256
+               (base32
+                "0l3dliwynxyjvbgpmi2k8jqvkkw6fc00c8w69h6swhrkfh0ql12z"))))
+    (arguments
+     (list
+      #:test-flags
+      ;; Test installed package in order to find C++ modules.
+      #~(list "--pyargs" "pyamg.tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Regenerate the autogenerated files.
+          (add-after 'unpack 'amg-core-bind-them
+            (lambda _
+              ;; bindthem.py heavily depends on location to produce *_bind.cpp
+              ;; file, make it available in tests as well.
+              (copy-file "pyamg/amg_core/bindthem.py"
+                         "pyamg/amg_core/tests/bindthem.py")
+              (with-directory-excursion "pyamg/amg_core"
+                (substitute* "bindthem.py"
+                  (("/usr/bin/env python3") (which "python3")))
+                (invoke "sh" "generate.sh"))
+              (with-directory-excursion "pyamg/amg_core/tests"
+                (invoke "python" "bindthem.py" "bind_examples.h")))))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list pybind11
+           python-cppheaderparser
+           python-pytest
+           python-pyyaml
+           python-setuptools-scm))
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/pyamg/pyamg")
+    (synopsis "Algebraic Multigrid Solvers in Python")
+    (description "PyAMG is a Python library of Algebraic Multigrid
+(AMG) solvers. It features implementations of:
+@itemize
+@item Ruge-Stuben (RS) or Classical AMG
+@item AMG based on Smoothed Aggregation (SA)
+@item Adaptive Smoothed Aggregation (αSA)
+@item Compatible Relaxation (CR)
+@item Krylov methods such as CG, GMRES, FGMRES, BiCGStab, MINRES, etc.
+@end itemize")
+    (license license:expat)))
 
 (define-public python-tspex
   (package
@@ -646,6 +787,42 @@ a convention of suggesting best recommended practices for using
 @code{python-pandas}.")
     (license license:bsd-3)))
 
+(define-public python-pandarallel
+  (package
+    (name "python-pandarallel")
+    (version "1.6.5")
+    (source
+     (origin
+       (method git-fetch)        ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/nalepae/pandarallel/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r2wlxlwp4wia0vm15k4cp421mwa20k4k5g2ml01inprj8bl1p0p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-n" (number->string (parallel-job-count)))))
+    (propagated-inputs
+     (list python-dill
+           python-pandas
+           python-psutil))
+    (native-inputs
+     (list python-mkdocs-material
+           python-numpy
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist))
+    (home-page "https://nalepae.github.io/pandarallel/")
+    (synopsis "Tool to parallelize Pandas operations across CPUs")
+    (description
+     "@code{pandarallel} allows any Pandas user to take advantage of their
+multi-core computer, while Pandas uses only one core.  @code{pandarallel} also
+offers nice progress bars (available on Notebook and terminal) to get an rough
+idea of the remaining amount of computation to be done.")
+    (license license:bsd-3)))
+
 (define-public python-pandera
   (package
     (name "python-pandera")
@@ -724,6 +901,62 @@ production-critical data pipelines or reproducible research settings.  With
 @end itemize")
     (license license:expat)))
 
+(define-public python-pyjanitor
+  (package
+    (name "python-pyjanitor")
+    (version "0.26.0")
+    (source
+     (origin
+       ;; The build requires the mkdocs directory for the description in
+       ;; setup.py. This is not included in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyjanitor-devs/pyjanitor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f8xbl1k9l2z56bapp7v6bd3016zrk48igcaz6hb553r6yfl7vfx"))))
+    (build-system pyproject-build-system)
+    ;; Pyjanitor has an extensive test suite. For quick debugging, the tests
+    ;; marked turtle can be skipped using "-m" "not turtle".
+    (arguments
+     (list
+      #:test-flags '(list
+                     "-n" (number->string (parallel-job-count))
+                     ;; Tries to connect to the internet.
+                     "-k" "not test_is_connected"
+                     ;; PySpark has not been packaged yet.
+                     "--ignore=tests/spark/functions/test_clean_names_spark.py"
+                     "--ignore=tests/spark/functions/test_update_where_spark.py")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-env-ci
+                     (lambda _
+                       ;; Some tests are skipped if the JANITOR_CI_MACHINE
+                       ;; variable is not set.
+                       (setenv "JANITOR_CI_MACHINE" "1"))))))
+    (propagated-inputs (list python-multipledispatch
+                             python-natsort
+                             python-pandas-flavor
+                             python-scipy
+                             ;; Optional imports.
+                             python-biopython ;biology submodule
+                             python-unyt)) ;engineering submodule
+    (native-inputs (list python-pytest
+                         python-pytest-xdist
+                         ;; Optional imports. We do not propagate them due to
+                         ;; their size.
+                         python-numba ;speedup of joins
+                         rdkit)) ;chemistry submodule
+    (home-page "https://github.com/pyjanitor-devs/pyjanitor")
+    (synopsis "Tools for cleaning and transforming pandas DataFrames")
+    (description
+     "@code{pyjanitor} provides a set of data cleaning routines for
+@code{pandas} DataFrames.  These routines extend the method chaining API
+defined by @code{pandas} for a subset of its methods.  Originally, this
+package was a port of the R package by the same name and it is inspired by the
+ease-of-use and expressiveness of the @code{dplyr} package.")
+    (license license:expat)))
+
 (define-public python-pythran
   (package
     (name "python-pythran")
@@ -784,34 +1017,16 @@ Python module with the same interface, but (hopefully) faster.")
 (define-public python-pyts
   (package
     (name "python-pyts")
-    (version "0.12.0")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyts" version))
               (sha256
                (base32
-                "1cb5jwp8g52a3hxay6mxbfzk16ly6yj6rphq8cwbwk1k2jdf11dg"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v"
-                       ;; XXX: This test fails for unknown reasons
-                       ;; Expected:
-                       ;;  (40, 9086)
-                       ;; Got:
-                       ;; (40, 9088)
-                       "-k"
-                       "not pyts.multivariate.transformation.weasel_muse.WEASELMUSE")))))))
+                "00pdzfkl0b4vhfdm8zas7b904jm2hhivdwv3wcmpik7l2p1yr85c"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-joblib
-           python-matplotlib
-           python-numba
-           python-numpy
+     (list python-joblib python-numba python-numpy
            python-scikit-learn
            python-scipy))
     (native-inputs
@@ -1010,7 +1225,7 @@ and visualization with these data structures.")
 (define-public python-xarray-einstats
   (package
     (name "python-xarray-einstats")
-    (version "0.5.1")
+    (version "0.7.0")
     (source (origin
               (method git-fetch) ; no tests in PyPI
               (uri (git-reference
@@ -1019,7 +1234,7 @@ and visualization with these data structures.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gg7p2lq7zxic64nbr6a8ynizs8rjzb29fnqib7hw3lmp13wsfm0"))))
+                "14c424swpdginaz4pm3nmkizxy34x19q6xq3d4spx9s9031f6n3a"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-einops python-flit-core python-numba
                          python-pytest))
@@ -1188,6 +1403,34 @@ automated with the minimum of fuss and the least effort.")
      "This is a Python package to compute statistical test and add statistical
 annotations on an existing boxplots and barplots generated by seaborn.")
     (license license:expat)))
+
+(define-public python-unyt
+  (package
+    (name "python-unyt")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "unyt" version))
+       (sha256
+        (base32 "00900bw24rxgcgwgxp9xlx0l5im96r1n5hn0r3mxvbdgc3lyyq48"))))
+    (build-system pyproject-build-system)
+    ;; Astropy is an optional import, but we do not include it as it creates a
+    ;; module cycle: astronomy->python-science->astronomy.
+    (propagated-inputs (list python-h5py        ; optional import
+                             python-matplotlib  ; optional import
+                             python-numpy
+                             python-sympy))
+    ;; Pint is optional, but we do not propagate it due to its size.
+    (native-inputs (list python-pint python-pytest))
+    (home-page "https://unyt.readthedocs.io")
+    (synopsis "Library for working with data that has physical units")
+    (description
+     "@code{unyt} is a Python library working with data that has physical
+units.  It defines the @code{unyt.array.unyt_array} and
+@code{unyt.array.unyt_quantity} classess (subclasses of NumPy’s ndarray class)
+for handling arrays and scalars with units,respectively")
+    (license license:bsd-3)))
 
 (define-public python-upsetplot
   (package
@@ -1931,16 +2174,11 @@ to do spectral analysis in Python.")
        (uri (pypi-uri "traittypes" version))
        (sha256
         (base32 "1mlv93irdrgxrhnhq3ksi9585d55bpi4mv9dha4p8gkkjiia4vxy"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This one test fails because it doesn't raise an expected
-               ;; exception.
-               (invoke "pytest" "-vv" "-k" "not test_bad_values")))))))
+     (list
+      ;; This one test fails because it doesn't raise an expected exception.
+      #:test-flags #~(list "-k" "not test_bad_values")))
     (propagated-inputs (list python-traitlets))
     (native-inputs
      (list python-numpy
@@ -2089,7 +2327,7 @@ functions, convolutions, artificial neural networks etc.")
 (define-public python-pydicom
   (package
     (name "python-pydicom")
-    (version "2.3.0")
+    (version "2.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2098,41 +2336,36 @@ functions, convolutions, artificial neural networks etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18l26s53yf5j9yh2zwq83n74qq4f2iq0cfblamsw4y9k35l1c108"))))
-    (build-system python-build-system)
+                "0ksyyc1hbhyqy289a2frn84ss29fb7czirx3dkxx56f4ia33b4c8"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (chdir "pydicom/tests")
-               (invoke "python3" "-m" "pytest" "-k" ;skip tests using web data
-                       (string-append
-                        "not test_jpeg_ls_pixel_data.py"
-                        " and not test_gdcm_pixel_data.py"
-                        " and not test_pillow_pixel_data.py"
-                        " and not test_rle_pixel_data.py"
-                        " and not Test_JPEG_LS_Lossless_transfer_syntax"
-                        " and not test_numpy_pixel_data.py"
-                        " and not test_data_manager.py"
-                        " and not test_handler_util.py"
-                        " and not test_overlay_np.py"
-                        " and not test_encoders_pydicom.py"
-                        " and not test_encaps.py"
-                        " and not test_reading_ds_with_known_tags_with_UN_VR"
-                        " and not TestDatasetOverlayArray"
-                        " and not TestReader"
-                        " and not test_filewriter.py"))))))))
+      #:test-flags
+      ;; Skip tests that require networking.
+      #~(list "-k" (string-append
+                    "not test_jpeg_ls_pixel_data.py"
+                    " and not test_gdcm_pixel_data.py"
+                    " and not test_pillow_pixel_data.py"
+                    " and not test_rle_pixel_data.py"
+                    " and not Test_JPEG_LS_Lossless_transfer_syntax"
+                    " and not test_numpy_pixel_data.py"
+                    " and not test_data_manager.py"
+                    " and not test_handler_util.py"
+                    " and not test_overlay_np.py"
+                    " and not test_encoders_pydicom.py"
+                    " and not test_encaps.py"
+                    " and not test_reading_ds_with_known_tags_with_UN_VR"
+                    " and not TestDatasetOverlayArray"
+                    " and not TestReader"
+                    " and not test_filewriter.py"))))
     (native-inputs (list python-pytest))
     (inputs (list gdcm libjpeg-turbo))
     (propagated-inputs (list python-numpy python-pillow))
     (home-page "https://github.com/pydicom/pydicom")
     (synopsis "Python library for reading and writing DICOM data")
     (description "@code{python-pydicom} is a Python library for reading and
-writing DICOM medical imaging data.  It lets developers read, modify and write
-DICOM data in a pythonic way.")
+writing DICOM medical imaging data.  It can read, modify and write DICOM
+data.")
     (license license:expat)))
 
 (define-public python-deepdish
@@ -2343,6 +2576,70 @@ fractional factorial methods.")
      "A LEMS simulator written in Python which can be used to run
 NeuroML2 models.")
     (license license:lgpl3)))
+
+(define-public python-pynetdicom
+  (package
+    (name "python-pynetdicom")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pynetdicom" version))
+              (sha256
+               (base32
+                "0farmgviaarb3f4xn751card3v0lza57vwgl5azxxq65p7li44i3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests takes about 10-15min to complete.
+      ;; Skip tests that require networking.
+      #~(list "-k" (string-append
+                    " not TestFindSCP"
+                    " and not TestQRGetServiceClass"
+                    " and not TestQRMoveServiceClass"
+                    " and not TestStoreSCP"
+                    " and not test_ae.py"
+                    " and not test_echoscp.py"
+                    " and not test_qrscp_echo.py"
+                    " and not test_storescp.py"
+                    " and not test_pr_level_patient"
+                    " and not test_pr_level_series"
+                    " and not test_scp_cancelled"))))
+    (native-inputs (list python-pyfakefs python-pytest))
+    (propagated-inputs (list python-pydicom python-sqlalchemy))
+    (home-page "https://github.com/pydicom/pynetdicom")
+    (synopsis "Python implementation of the DICOM networking protocol")
+    (description
+     "@code{pynetdicom} is a Python package that implements the DICOM
+networking protocol.  It allows the easy creation of DICOM
+@acronym{SCUs,Service Class Users} and @acronym{SCPs,Service Class
+Providers}.")
+    (license license:expat)))
+
+(define-public python-pynrrd
+  (package
+    (name "python-pynrrd")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mhe/pynrrd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09gdyi4kbi3512ydgqxkgr4j7b9a95qh83fk2n9s41bns4id9xj7"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-nptyping python-numpy python-typing-extensions))
+    (home-page "https://github.com/mhe/pynrrd")
+    (synopsis "Python module for reading and writing NRRD files")
+    (description
+     "@code{pynrrd} is a Python module for reading and writing @acronym{NRRD,
+Nearly Raw Raster Data} files (format designed to support scientific
+visualization and image processing involving N-dimensional raster data) into
+and from numpy arrays.")
+    (license license:expat)))
 
 (define-public python-libneuroml
   (package

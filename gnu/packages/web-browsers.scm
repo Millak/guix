@@ -70,6 +70,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnome-xyz)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -589,7 +590,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "3.11.0")
+    (version "3.11.3")
     (source
      (origin
        (method git-fetch)
@@ -598,7 +599,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "0hzkpk8kshw7afz3pryi99xz2vg3v676day0mgji3hvaazfan39p"))
+         "0vp3w9a3zzn9kbq48a4b1nylrn1i4ibwxpl377yq04ggqkd6fi9a"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -610,14 +611,9 @@ driven and does not detract you from your daily work.")
        (modify-phases %standard-phases
          (delete 'configure)
          (add-before 'build 'fix-common-lisp-cache-folder
-           (lambda _
-             (setenv "HOME" "/tmp")
-             #t))
+           (lambda _ (setenv "HOME" "/tmp")))
          (add-before 'check 'configure-tests
-           (lambda _
-             (setenv "NYXT_TESTS_NO_NETWORK" "1")
-             (setenv "NYXT_TESTS_ERROR_ON_FAIL" "1")
-             #t))
+           (lambda _ (setenv "NYXT_TESTS_NO_NETWORK" "1") #t))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((bin (string-append (assoc-ref outputs "out") "/bin/nyxt"))
@@ -639,8 +635,7 @@ driven and does not detract you from your daily work.")
                    (,(string-append glib-networking "/lib/gio/modules")))
                  `("GI_TYPELIB_PATH" prefix (,gi-path))
                  `("LD_LIBRARY_PATH" ":" prefix (,path))
-                 `("XDG_DATA_DIRS" ":" prefix (,xdg-path)))
-               #t))))))
+                 `("XDG_DATA_DIRS" ":" prefix (,xdg-path)))))))))
     (native-inputs (list cl-lisp-unit2 sbcl))
     (inputs (list sbcl-alexandria
                   sbcl-bordeaux-threads
@@ -665,14 +660,12 @@ driven and does not detract you from your daily work.")
                   sbcl-dissect
                   sbcl-enchant
                   sbcl-flexi-streams
-                  sbcl-fset
                   sbcl-history-tree
                   sbcl-iolib
                   sbcl-lass
                   sbcl-local-time
                   sbcl-log4cl
                   sbcl-lparallel
-                  sbcl-mk-string-metrics
                   sbcl-montezuma
                   sbcl-moptilities
                   sbcl-named-readtables
@@ -710,9 +703,15 @@ driven and does not detract you from your daily work.")
                   gtk+                  ; For the main loop
                   webkitgtk-for-gtk3    ; Required when we use its typelib
                   gobject-introspection
-                  pkg-config))
+                  pkg-config
+                  ;; Useful for video playback
+                  gst-libav
+                  gst-plugins-bad
+                  gst-plugins-base
+                  gst-plugins-good
+                  gst-plugins-ugly))
     (synopsis "Extensible web-browser in Common Lisp")
-    (home-page "https://nyxt.atlas.engineer")
+    (home-page "https://nyxt-browser.com/")
     (description "Nyxt is a keyboard-oriented, extensible web-browser designed
 for power users.  The application has familiar Emacs and VI key-bindings and
 is fully configurable and extensible in Common Lisp.")

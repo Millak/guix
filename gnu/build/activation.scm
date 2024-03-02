@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -408,6 +409,7 @@ improvement."
 
   (format #t "making '~a' the current system...~%" system)
 
+  (mkdir-p "/run")
   ;; Atomically make SYSTEM current.
   (let ((new (string-append %current-system ".new")))
     (symlink system new)

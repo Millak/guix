@@ -529,7 +529,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.6.2")
+    (version "4.6.3")
     (source
      (origin
        (method git-fetch)
@@ -538,7 +538,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wps17iv4gj7y751fibvcxk51v09wyniv6xm2yx429dj7z8rfmzs"))))
+        (base32 "01d393v0v4c9rp909l3ddif984pp1z6sym74yc0kgxqq2kplj5g1"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DTESTING=ON")
@@ -547,7 +547,7 @@ desktops.")
      (list qttools-5))
     (inputs
      (list boost
-           libtorrent-rasterbar-1.2
+           libtorrent-rasterbar
            openssl
            python-wrapper
            qtsvg-5

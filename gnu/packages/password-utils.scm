@@ -24,7 +24,7 @@
 ;;; Copyright © 2018, 2019, 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2019,2022 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,6 +92,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages kerberos)
@@ -851,7 +854,7 @@ key URIs using the standard otpauth:// scheme.")
 (define-public qtpass
   (package
     (name "qtpass")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -860,65 +863,37 @@ key URIs using the standard otpauth:// scheme.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0748hjvhjrybi33ci3c8hcr74k9pdrf5jv8npf9hrsrmdyy1kr9x"))))
-    (build-system gnu-build-system)
+        (base32 "10ixahm4ap0l1rrz4cyswblm22ns9z1baf5lv3dn23wprfdcp8m0"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                            (guix build qt-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; lupdate/lrelease need to find qmake.
-               (setenv "QMAKE" "qmake")
-               ;; qmake needs to find lrelease/lupdate.
-               (invoke "qmake"
-                       "QMAKE_LRELEASE=lrelease"
-                       "QMAKE_LUPDATE=lupdate"
-                       (string-append "PREFIX=" out)))))
-         (add-after 'configure 'reset-resource-timestamps
-           ;; Reset timestamps on localization files for a reproducible build.
-           (lambda _
-             (with-directory-excursion "localization"
-               (for-each (lambda (file)
-                           (let* ((base (basename file ".qm"))
-                                  (src (string-append base ".ts"))
-                                  (st (stat src)))
-                             (set-file-time file st)))
-                         (find-files "." ".*\\.qm")))
-             #t))
-         (add-after 'install 'install-auxilliary
-           ;; Install man-page, icon and .desktop file.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (applications (string-append out "/share/applications"))
-                    (icons (string-append out "/share/icons/hicolor/scalable/apps"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "qtpass.desktop" applications)
-               (install-file "artwork/icon.svg" icons)
-               (rename-file (string-append icons "/icon.svg")
-                            (string-append icons "/qtpass-icon.svg"))
-               (install-file "qtpass.1" man)
-               #t)))
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "qtpass" #:output out #:inputs inputs))
-             #t))
-         (add-before 'check 'check-setup
-           ;; Make Qt render "offscreen", required for tests.
-           (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "qmake"
+                      "QMAKE_LRELEASE=lrelease"
+                      "QMAKE_LUPDATE=lupdate"
+                      (string-append "PREFIX=" #$output))))
+          (add-before 'check 'pre-check
+            ;; Fontconfig needs a writable cache.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-after 'install 'install-auxilliary
+            ;; Install man-page, icon and .desktop file.
+            (lambda _
+              (let ((applications (string-append #$output "/share/applications"))
+                    (icons (string-append #$output "/share/icons/hicolor/scalable/apps"))
+                    (man (string-append #$output "/share/man/man1")))
+                (install-file "qtpass.desktop" applications)
+                (install-file "artwork/icon.svg" icons)
+                (rename-file (string-append icons "/icon.svg")
+                             (string-append icons "/qtpass-icon.svg"))
+                (install-file "qtpass.1" man)))))))
     (native-inputs
      (list qttools-5))
     (inputs
-     (list qtbase-5 qtsvg-5))
+     (list qtsvg-5))
     (home-page "https://qtpass.org")
     (synopsis "GUI for password manager password-store")
     (description
@@ -1486,20 +1461,19 @@ HTTP.")
 (define-public bruteforce-luks
   (package
     (name "bruteforce-luks")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/glv2/bruteforce-luks/releases/download/"
-                           version
-                           "/bruteforce-luks-"
-                           version
-                           ".tar.lz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/bruteforce-luks")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yawrlbbklhmvwr99wm7li3r0d5kxvpkwf33a12rji7z0ya5p340"))))
+        (base32 "1fhvm7ykqv2anny6zavd4iwh6gq5rp1r27p3zhn78sd3y34xhkmp"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list lzip))
+     (list autoconf automake))
     (inputs
      (list cryptsetup))
     (synopsis "LUKS encrypted volume cracker")
@@ -1508,6 +1482,32 @@ HTTP.")
 exhaustive mode to try every password given a charset or in dictionary mode to
 try every password contained in a file.")
     (home-page "https://github.com/glv2/bruteforce-luks")
+    (license license:gpl3+)))
+
+(define-public bruteforce-salted-openssl
+  (package
+    (name "bruteforce-salted-openssl")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/bruteforce-salted-openssl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00w1szj04jb63rh7sq1spc50013jgmz2nwm8k552i9ir8h4phw45"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake))
+    (inputs
+     (list openssl))
+    (synopsis "Bruteforce cracker for openssl encrypted files")
+    (description
+     "This is a cracker for openssl encrypted files.  It can be used either in
+exhaustive mode to try every password given a charset or in dictionary mode to
+try every password contained in a file.")
+    (home-page "https://github.com/glv2/bruteforce-salted-openssl")
     (license license:gpl3+)))
 
 (define-public makepasswd
@@ -1587,6 +1587,37 @@ are not using it.  It uses the same GPG key to encrypt passwords and tomb,
 therefore you don't need to manage more key or secret.  Moreover, you can ask
 pass-tomb to automatically close your store after a given time.")
     (license license:gpl3+)))
+
+(define-public pass-coffin
+  (package
+    (name "pass-coffin")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ayushnix/pass-coffin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1486ikwsdjsj74qf949vk47r8mfp2mbbdc3scs8786nnnkhzc89n"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests
+      #:make-flags #~(list (string-append "PREFIX="
+                                          #$output)
+                           (string-append "BASHCOMPDIR="
+                                          #$output "/etc/bash_completion.d"))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs (list password-store tar))
+    (home-page "https://github.com/ayushnix/pass-coffin")
+    (synopsis "Pass extension to keep the tree of passwords encrypted")
+    (description
+     "Pass-coffin is a pass extension that hides the password store
+data inside a GPG encrypted file, which we'll call a coffin.")
+    (license license:gpl3)))
 
 (define-public xkcdpass
   (package

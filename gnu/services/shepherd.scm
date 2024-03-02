@@ -55,6 +55,8 @@
             shepherd-service-canonical-name
             shepherd-service-requirement
             shepherd-service-one-shot?
+            shepherd-service-respawn-limit
+            shepherd-service-respawn-delay
             shepherd-service-respawn?
             shepherd-service-start
             shepherd-service-stop
@@ -211,6 +213,10 @@ DEFAULT is given, use it as the service's default value."
                  (default #f))
   (respawn?      shepherd-service-respawn?             ;Boolean
                  (default #t))
+  (respawn-limit shepherd-service-respawn-limit
+                 (default #f))
+  (respawn-delay shepherd-service-respawn-delay
+                 (default #f))
   (start         shepherd-service-start)               ;g-expression (procedure)
   (stop          shepherd-service-stop                 ;g-expression (procedure)
                  (default #~(const #f)))
@@ -309,6 +315,14 @@ stored."
                        #:one-shot? '#$(shepherd-service-one-shot? service)
 
                        #:respawn? '#$(shepherd-service-respawn? service)
+                       #$@(if (shepherd-service-respawn-limit service)
+                              `(#:respawn-limit
+                                ,(shepherd-service-respawn-limit service))
+                              '())
+                       #$@(if (shepherd-service-respawn-delay service)
+                              `(#:respawn-delay
+                                ,(shepherd-service-respawn-delay service))
+                              '())
                        #:start #$(shepherd-service-start service)
                        #:stop #$(shepherd-service-stop service)
                        #:actions

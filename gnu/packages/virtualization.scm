@@ -31,6 +31,7 @@
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,6 +124,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages selinux)
@@ -143,6 +145,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -1623,98 +1626,93 @@ virtualization library.")
                 "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))))
     (build-system python-build-system)
     (arguments
-     `(#:use-setuptools? #f          ; uses custom distutils 'install' command
-       #:tests? #f                      ; TODO The tests currently fail
-                                        ; RuntimeError: Loop condition wasn't
-                                        ; met
-       #:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((ice-9 match)
-                  (srfi srfi-26)
-                  (guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-setup
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "virtinst/buildconfig.py"
-               (("/usr") (assoc-ref outputs "out")))
-             #t))
-         (add-after 'unpack 'fix-default-uri
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Xen is not available for now - so only patch qemu.
-             (substitute* "virtManager/createconn.py"
-               (("/usr(/bin/qemu-system-[a-zA-Z0-9_-]+)" _ suffix)
-                (search-input-file inputs suffix)))
-             #t))
-         (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((bin       (string-append (assoc-ref outputs "out") "/bin"))
-                    (bin-files (find-files bin ".*"))
-                    (paths     (map (match-lambda
-                                      ((output . directory)
-                                       (let* ((girepodir (string-append
-                                                          directory
-                                                          "/lib/girepository-1.0")))
-                                         (if (file-exists? girepodir)
-                                             girepodir #f))))
-                                    inputs)))
-               (for-each (lambda (file)
-                           (format #t "wrapping ~a\n" file)
-                           (wrap-program file
-                             `("GI_TYPELIB_PATH" ":" prefix
-                               ,(filter identity paths))))
-                         bin-files))
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               (setenv "XDG_CACHE_HOME" "/tmp")
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1")
-               ;; Dogtail requires that Assistive Technology support be enabled
-               (setenv "GTK_MODULES" "gail:atk-bridge")
-               (invoke "dbus-run-session" "--" "pytest" "--uitests"))
-             #t))
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'wrap 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+     (list #:use-setuptools? #f      ; uses custom distutils 'install' command
+           #:tests? #f               ; TODO: The tests currently fail
+                                     ; RuntimeError: Loop condition wasn't met
+           #:imported-modules
+           `((guix build glib-or-gtk-build-system)
+             ,@%python-build-system-modules)
+           #:modules
+           '((ice-9 match)
+             (srfi srfi-26)
+             (guix build python-build-system)
+             ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+             (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-setup
+                 (lambda _
+                   (substitute* "virtinst/buildconfig.py"
+                     (("/usr") #$output))))
+               (add-after 'unpack 'fix-default-uri
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Xen is not available for now - so only patch qemu.
+                   (substitute* "virtManager/createconn.py"
+                     (("/usr(/bin/qemu-system-\\*)" _ suffix)
+                      (string-append #$(this-package-input "qemu") suffix)))))
+               (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let* ((bin       (string-append #$output "/bin"))
+                          (bin-files (find-files bin ".*"))
+                          (paths     (map (match-lambda
+                                            ((output . directory)
+                                             (let* ((girepodir (string-append
+                                                                directory
+                                                                "/lib/girepository-1.0")))
+                                               (if (file-exists? girepodir)
+                                                   girepodir #f))))
+                                          inputs)))
+                     (for-each (lambda (file)
+                                 (format #t "wrapping ~a\n" file)
+                                 (wrap-program file
+                                   `("GI_TYPELIB_PATH" ":" prefix
+                                     ,(filter identity paths))))
+                               bin-files))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" "/tmp")
+                     (setenv "XDG_CACHE_HOME" "/tmp")
+                     (system "Xvfb :1 &")
+                     (setenv "DISPLAY" ":1")
+                     ;; Dogtail requires that Assistive Technology support be enabled
+                     (setenv "GTK_MODULES" "gail:atk-bridge")
+                     (invoke "dbus-run-session" "--" "pytest" "--uitests"))))
+               (add-after 'install 'glib-or-gtk-compile-schemas
+                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+               (add-after 'wrap 'glib-or-gtk-wrap
+                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (inputs
      (list dconf
            gtk+
            gtk-vnc
            gtksourceview-4
+           libosinfo
            libvirt
            libvirt-glib
-           libosinfo
-           vte
            python-libvirt
-           python-requests
+           python-libxml2
            python-pycairo
            python-pygobject
-           python-libxml2
-           spice-gtk))
-    ;; virt-manager searches for qemu-img or kvm-img in the PATH.
-    (propagated-inputs
-     (list qemu))
+           python-requests
+           qemu
+           spice-gtk
+           vte))
     (native-inputs
-     `(("glib" ,glib "bin")             ; glib-compile-schemas
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+" ,gtk+ "bin")             ; gtk-update-icon-cache
-       ("perl" ,perl)                   ; pod2man
-       ("intltool" ,intltool)
-       ("rst2man" ,python-docutils)
-       ;; The following are required for running the tests
-       ;; ("python-pytest" ,python-pytest)
-       ;; ("python-dogtail" ,python-dogtail)
-       ;; ("xvfb" ,xorg-server-for-tests)
-       ;; ("dbus" ,dbus)
-       ;; ("at-spi2-core" ,at-spi2-core)
-       ;; ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ))
+     (list `(,glib "bin")               ; glib-compile-schemas
+           gobject-introspection
+           `(,gtk+ "bin")               ; gtk-update-icon-cache
+           intltool
+           perl                         ; pod2man
+           python-docutils              ; rst2man
+           ;; The following are required for running the tests
+           ;; at-spi2-core
+           ;; dbus
+           ;; gsettings-desktop-schemas
+           ;; python-dogtail
+           ;; python-pytest
+           ;; xorg-server-for-tests        ; xvfb
+           ))
     (home-page "https://virt-manager.org/")
     (synopsis "Manage virtual machines")
     (description
@@ -2154,7 +2152,7 @@ main monitor/GPU.")
 (define-public runc
   (package
     (name "runc")
-    (version "1.1.9")
+    (version "1.1.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2163,7 +2161,7 @@ main monitor/GPU.")
               (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1hhxqwg0mblrgv2aim3scfd9xg13l6i22j124sdma5sf2fzgx5bn"))))
+                "1mx4iik1gx1am3d2s4ljhrirwjzf4ikn8frba5hdhy74012y7na7"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/opencontainers/runc"
@@ -2315,6 +2313,59 @@ the image.
 
 @end enumerate")
     (license license:asl2.0)))
+
+(define-public ruby-vagrant-spec-helper-basic
+  (package
+    (name "ruby-vagrant-spec-helper-basic")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant-spec-helper-basic" version))
+              (sha256
+               (base32
+                "1qhxxc07dhrma1s1x2g9sma7xxgwzs20s6v5pv9jrpz6bl4b527n"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f))  ;; has not tests
+    (synopsis "Helper for vagrant-spec")
+    (description "This package is an internal helper for vagrant-spec.  Don't
+use it.")
+    (home-page "https://github.com/hashicorp/vagrant-spec")
+    (license license:mpl2.0)))
+
+(define-public ruby-vagrant-spec
+  (package
+    (name "ruby-vagrant-spec")
+    (version "0.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "vagrant_spec" version))
+              (sha256
+               (base32
+                "1bkzz3mj7kzsv6k0ii8w31cgkpiqw3wvmvv2c6rknsavqqnagb4g"))))
+    (build-system ruby-build-system)
+    ;; (native-inputs (list ruby-rubocop ruby-vagrant-spec-helper-basic))
+    (propagated-inputs (list ruby-coveralls ruby-serverspec ruby-dep))
+    (arguments
+     (list
+      #:tests? #f  ;; tests require vagrant
+      ;; target 'test' includes 'cops' and running some ansible-playbook
+      #:test-target "unit"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                (("Bundler::GemHelper") "require 'bundler'\nBundler::GemHelper"))))
+          (add-before 'check 'prepare-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (synopsis "Specification and tests for Vagrant")
+    (description "@code{vagrant-spec} is a both a specification of how Vagrant
+and its various components should behave as well as a library of testing
+helpers that let you write your own unit and acceptance tests for Vagrant.")
+    (home-page "https://github.com/hashicorp/vagrant-spec")
+    (license license:mpl2.0)))
 
 (define-public python-vagrant
   (package

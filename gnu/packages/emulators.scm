@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
@@ -351,7 +351,7 @@ console.")
              libxi
              libxrandr
              lzo
-             mbedtls-apache
+             mbedtls-lts
              mesa
              miniupnpc
              openal
@@ -791,7 +791,7 @@ and Game Boy Color games.")
 (define-public sameboy
   (package
     (name "sameboy")
-    (version "0.15.8")
+    (version "0.16.2")
     (source
      (origin
        (method git-fetch)
@@ -800,7 +800,7 @@ and Game Boy Color games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11qz5lamwxgvlh4dc95xd4m8hrypjj3bvha51zg9l454hxlvw4j8"))))
+        (base32 "1ckx5dm57h7ncvfqqqb2mdl5dcmhkardcn78zv965h6w1yxg0ii8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list rgbds pkg-config))
@@ -1433,7 +1433,7 @@ as RetroArch.")
 (define-public retroarch
   (package
     (name "retroarch")
-    (version "1.16.0.3")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -1442,7 +1442,7 @@ as RetroArch.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nvvd78hx1s73nif7g02pqms29b9v072mxnld0vmsh78236qngq5"))))
+        (base32 "1mf511wh7kpj29vv7rgngamvmfs151n8j4dls7jbqasdj5hik3zi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1490,7 +1490,7 @@ as RetroArch.")
            libxml2
            libxrandr
            libxv
-           mbedtls-apache
+           mbedtls-lts
            mesa
            openal
            openssl

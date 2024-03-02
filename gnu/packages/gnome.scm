@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@openmailbox.org>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2020, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -238,6 +238,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (ice-9 match)
@@ -3397,7 +3398,7 @@ compiles to GTKBuilder XML.")
            python-pycairo
            python-pygobject
            python-lxml
-           webkitgtk
+           webkitgtk-for-gtk3
            webkitgtk))
     (native-inputs
      (list `(,glib "bin")
@@ -3593,12 +3594,12 @@ for dealing with different structured file formats.")
               ;; In lieu of #:make-flags
               (setenv "CC" #$(cc-for-target))
               (setenv "PKG_CONFIG" #$(pkg-config-for-target))
-              (when #$(%current-target-system)
-                (setenv "RUST_TARGET"
-                        (string-replace
-                          #$(%current-target-system)
-                          "-unknown-linux-gnu"
-                          (string-index #$(%current-target-system) #\-))))
+              #$@(if (%current-target-system)
+                     #~((setenv "RUST_TARGET"
+                                #$(platform-rust-target
+                                    (lookup-platform-by-target
+                                      (%current-target-system)))))
+                     #~())
               ;; Something about the build environment resists building
               ;; successfully with the '--locked' flag.
               (substitute* '("Makefile.am" "Makefile.in")
@@ -7911,7 +7912,17 @@ to display dialog boxes from the commandline and shell scripts.")
               ;; let's disable them as well.
               ;; See <https://gitlab.gnome.org/GNOME/mutter/-/issues/2125>
               (substitute* "src/tests/clutter/conform/meson.build"
-                (("'timeline.*',") ""))))
+                (("'timeline.*',") ""))
+
+              ;; On i686-linux this test fails with a dbus error.  This seems
+              ;; to be fine in later versions, so this workaround can probably
+              ;; be removed soon.
+              #$@(if (string=? "i686-linux" (or (%current-target-system)
+                                                (%current-system)))
+                     #~((substitute* "src/tests/wayland-unit-tests.c"
+                          (("g_test_add_func \\(\"/wayland/toplevel/activation\",") "")
+                          (("^                   toplevel_activation\\);") "")))
+                     #~())))
           (replace 'check
             (lambda* (#:key tests? test-options parallel-tests?
                       #:allow-other-keys)

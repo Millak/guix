@@ -67,6 +67,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -912,7 +913,7 @@ but can also be used independently as a logging bot.")
      (list argon2
            gnutls
            libmaxminddb
-           mbedtls-apache
+           mbedtls-lts
            (list mariadb "dev")
            openldap
            openssl

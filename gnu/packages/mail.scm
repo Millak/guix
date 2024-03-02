@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
@@ -27,12 +27,12 @@
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -108,7 +108,9 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
@@ -193,7 +195,6 @@
   #:use-module (guix packages)
   #:use-module (guix svn-download)
   #:use-module (guix utils)
-  #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -246,15 +247,15 @@ mail client.")
     (name "anubis")
     ;; This 4.2.90 alpha release adds support for Guile 3 and has fixes for
     ;; other issues.
-    (version "4.2.90")
+    (version "4.3")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://alpha.gnu.org/gnu/anubis/anubis-"
+       (uri (string-append "mirror://gnu/anubis/anubis-"
              version ".tar.gz"))
        (sha256
         (base32
-         "0dvm6acl32dv8bixx9z50gzwfp6kj4kxnn1j3dcwjlp7sasjp41s"))))
+         "0b5ghaccy09l6fv0bg4my3yrxbw807wpwk14xvjih8j6ghrz62pz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list automake autoconf gettext-minimal m4))                     ;for the test suite
@@ -279,14 +280,14 @@ example, modify the message headers or body, or encrypt or sign the message.")
 (define-public mailutils
   (package
     (name "mailutils")
-    (version "3.16")
+    (version "3.17")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/mailutils/mailutils-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1h02l0zilxsak1sxpm15vhfaahd8rwvcksc88cc7c0wc626ia784"))
+               "1sc45gpvnrcf7b627n8cxsp379kk2s3x68c2z19gwrkmqg7bljgs"))
              (patches
               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
@@ -1379,17 +1380,14 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.37")
+    (version "0.38.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1xl64xh0ijfkx265lcj9cqv1wkzha8gsn9jn4fw4xgvqigr6sxhf"))
-       (patches
-        ;; Output for some tests varies slightly in Emacs 29.
-        (search-patches "notmuch-emacs-test-output.patch"))))
+        (base32 "0zll3s39s065pl9228xpklkjklllkyb3bf1szh0fw0rbfkjfp0jj"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1446,6 +1444,7 @@ ing, and tagging large collections of email messages.")
     (arguments
      (list
       #:exclude #~(cons* "make-deps.el" "rstdoc.el" %default-exclude)
+      #:include #~(cons* "notmuch-logo.svg" %default-include)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -4111,80 +4110,78 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "2453a5a6686c035854e4d523b8faa8c47405bd76")
-        (revision "3"))
-    (package
-      (name "mumi")
-      (version (git-version "0.0.5" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix/mumi.git/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0dq87qn77c6qganhck048qxq5ghj3fh2v604f87hwv530lxifabr"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:modules '((guix build gnu-build-system)
-                    ((guix build guile-build-system)
-                     #:select (target-guile-effective-version))
-                    (guix build utils))
-        #:imported-modules `((guix build guile-build-system)
-                             ,@%gnu-build-system-modules)
+  (package
+    (name "mumi")
+    (version "0.0.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/guix/mumi.git/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1z556pxsz0zx95gd5b4hwkmwcvf3jyz7njkb3zwbhrwnpgygnbyl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  ((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  (guix build utils))
+      #:imported-modules `((guix build guile-build-system)
+                           ,@%gnu-build-system-modules)
 
-        #:configure-flags '(list "--localstatedir=/var")
+      #:configure-flags '(list "--localstatedir=/var")
 
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'install-picocss
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((pico (dirname (search-input-file inputs "/scss/pico.scss"))))
-                  (mkdir-p "assets/pico/scss")
-                  (copy-recursively pico "assets/pico/scss"))))
-            (add-after 'install 'wrap-executable
-              (lambda _
-                (let* ((bin (string-append #$output "/bin"))
-                       (version (target-guile-effective-version))
-                       (scm (string-append #$output "/share/guile/site/" version))
-                       (go  (string-append #$output "/lib/guile/" version
-                                           "/site-ccache")))
-                  (wrap-program (string-append bin "/mumi")
-                    `("GUILE_LOAD_PATH" ":" prefix
-                      (,scm ,(getenv "GUILE_LOAD_PATH")))
-                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                      (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
-      (inputs
-       (list bash-minimal
-             guile-email
-             guile-fibers
-             guile-gcrypt
-             guile-gnutls
-             guile-json-4
-             guile-kolam
-             guile-redis
-             guile-syntax-highlight
-             guile-webutils
-             guile-xapian
-             guile-3.0
-             mailutils))
-      (native-inputs
-       (list autoconf automake pkg-config sassc
-             (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/picocss/pico.git")
-                     (commit "3052db4bd3439e236479dc0f98069f7d3b559486")))
-               (file-name (git-file-name "pico" "1.5.6"))
-               (sha256
-                (base32
-                 "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
-      (home-page "https://git.savannah.gnu.org/cgit/guix/mumi.git/")
-      (synopsis "Debbugs web interface")
-      (description "Mumi is a Debbugs web interface.")
-      (license license:agpl3+))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-picocss
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pico (dirname (search-input-file inputs "/scss/pico.scss"))))
+                (mkdir-p "assets/pico/scss")
+                (copy-recursively pico "assets/pico/scss"))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (version (target-guile-effective-version))
+                     (scm (string-append #$output "/share/guile/site/" version))
+                     (go  (string-append #$output "/lib/guile/" version
+                                         "/site-ccache")))
+                (wrap-program (string-append bin "/mumi")
+                  `("GUILE_LOAD_PATH" ":" prefix
+                    (,scm ,(getenv "GUILE_LOAD_PATH")))
+                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                    (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
+    (inputs
+     (list bash-minimal
+           guile-email
+           guile-fibers
+           guile-gcrypt
+           guile-gnutls
+           guile-json-4
+           guile-kolam
+           guile-redis
+           guile-syntax-highlight
+           guile-webutils
+           guile-xapian
+           guile-3.0
+           mailutils))
+    (native-inputs
+     (list autoconf automake pkg-config sassc
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/picocss/pico.git")
+                   (commit "3052db4bd3439e236479dc0f98069f7d3b559486")))
+             (file-name (git-file-name "pico" "1.5.6"))
+             (sha256
+              (base32
+               "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
+    (home-page "https://git.savannah.gnu.org/cgit/guix/mumi.git/")
+    (synopsis "Debbugs web interface")
+    (description "Mumi is a Debbugs web interface.")
+    (license license:agpl3+)))
 
 (define-public ytnef
   (package
@@ -4226,7 +4223,15 @@ related tools to process winmail.dat files.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))))
+          (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))
+         (snippet
+          #~(begin (use-modules (guix build utils))
+                   ;; Don't try to redefine loff_t.
+                   (substitute* "utils.c"
+                     (("typedef off_t loff_t;")
+                      (string-append "#ifdef __APPLE__\n"
+                                     "typedef off_t loff_t;\n"
+                                     "#endif\n")))))))
       (build-system gnu-build-system)
       (inputs
        (list libgit2))
@@ -4624,6 +4629,37 @@ score.")
     (description "This package provides a tool to extract, recover and
 undelete email messages from Outlook Express .dbx files.")
     (license license:gpl3+)))
+
+(define-public libdbx
+  (package
+    (name "libdbx")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/ol2mbox/LibDBX/v"
+                                  version "/libdbx_"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0fs4268qcy99nhl8345sv257b002530y77idkf6z9i7qxmqghq4w"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (for-each (lambda (file)
+                          (install-file file
+                                        (string-append #$output "/bin")))
+                        (list "readdbx" "readoe")))))))
+    (home-page "http://sourceforge.net/projects/ol2mbox/")
+    (synopsis "Tools for conversion of Outlook Express files to mailbox format")
+    (description "This package provides tools for the conversion of Outlook
+Express data files to standard mailbox format.")
+    (license license:gpl2+)))
 
 (define-public libpst
   (package

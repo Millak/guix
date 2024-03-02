@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -589,7 +589,7 @@ your colleagues, or to generate pre-rendered animations.")
 (define-public gemmi
   (package
     (name "gemmi")
-    (version "0.5.7")
+    (version "0.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -598,7 +598,7 @@ your colleagues, or to generate pre-rendered animations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00km5q726bslrw7xbfwb3f3mrsk19qbimfnl3hvr4wi1y3z8i18a"))
+                "0wciqqswc4p4v4kglfv36gnvyyimqn4lnywdzd0pgrjn443i860y"))
               (patches
                (search-patches "gemmi-fix-sajson-types.patch"
                                "gemmi-fix-pegtl-usage.patch"))
@@ -625,7 +625,7 @@ your colleagues, or to generate pre-rendered animations.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-includes
             (lambda _
-              (substitute* (list "include/gemmi/sprintf.hpp"
+              (substitute* (list "src/sprintf.cpp"
                                  "include/gemmi/dirwalk.hpp"
                                  "include/gemmi/cif.hpp"
                                  "include/gemmi/json.hpp"
@@ -708,7 +708,12 @@ It can be used for working with
       #~(list "--enable-check"
               "--enable-parser-generator"
               "CXXFLAGS=-std=c++17"
-              "--enable-doxygen")
+              "--enable-doxygen"
+              ;; Some tests rely on replacing malloc with a wrapper which
+              ;; fails in a controlled way, but this does not work if the call
+              ;; is replaced. This was fixed upstream, remove once there is a
+              ;; new release.
+              "CFLAGS=-fno-builtin-malloc")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-libc++-linking
@@ -722,7 +727,7 @@ It can be used for working with
                 (("libfreesasa\\.a") "libfreesasa.la")
                 (("freesasa_LDADD \\+= libfreesasa\\.la" prev)
                  (string-append prev "\nlibfreesasa_la_LIBADD"
-                                " = -ljson-c ${libxml2_LIBS}\n"))
+                                " = -ljson-c -lgemmi_cpp ${libxml2_LIBS}\n"))
                 (("_a_SOURCES") "_la_SOURCES"))
               (substitute* "configure.ac"
                 (("AC_PROG_INSTALL" inst)
@@ -765,7 +770,7 @@ of the algorithms, the calculations give identical results.")
 (define-public maeparser
   (package
     (name "maeparser")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -774,7 +779,7 @@ of the algorithms, the calculations give identical results.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yv4y5hn49fhylziigsg922bb244lb57p69r7vg9q899zd3l5b7l"))))
+                "0mr5glg4br04ql5grby8yqni9fqq1l1cc75wyc159a1b9lwr7q7r"))))
     (build-system cmake-build-system)
     (inputs (list boost zlib))
     (home-page "https://github.com/schrodinger/maeparser")
@@ -785,7 +790,7 @@ of the algorithms, the calculations give identical results.")
 (define-public coordgenlibs
   (package
     (name "coordgenlibs")
-    (version "3.0.1")
+    (version "3.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -794,7 +799,7 @@ of the algorithms, the calculations give identical results.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d09x3v38i9y184bml020bq7xizdrdwng38qmdxlplzfhqkjdidv"))))
+                "1wjaxwaihjy9xm5ys23f5abl50zcar1h9pww5ajdkgygsqy0bavi"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -812,7 +817,7 @@ emphasis on quality rather than speed.")
 (define-public yaehmop
   (package
     (name "yaehmop")
-    (version "2022.09.1")
+    (version "2023.03.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -821,7 +826,7 @@ emphasis on quality rather than speed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x0d75m1hgdb411fiv7c5bwq1n4y0swrll0gigh8v5c73kjxrja0"))
+                "18xnxqn8i7vswy3iffapfh9q2iimpnd23ps45hn4xxbs6dqgzprb"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -917,90 +922,67 @@ calculations and analyzing the results.")
 (define-public avalon-toolkit
   (package
     (name "avalon-toolkit")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/avalontoolkit/"
-             "AvalonToolkit_" (substring version 0 3) "/AvalonToolkit_"
-             version ".source.tar"))
-       (sha256
-        (base32
-         "0rnnyy6axs2da7aa4q6l30ldavbk49v6l22llj1adn74h1i67bpv"))
-       (modules '((guix build utils) (ice-9 ftw)))
-       (snippet
-        #~(begin
-            (delete-file-recursively "../SourceDistribution/java")))))
+    (version "2.0.5a")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rohdebe1/ava-formake")
+                    (commit (string-append "AvalonToolkit_" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mfg40y5xc17sm59zdfc5sk22n9zm5zk0z1aw47chvl6hp465szk"))
+              (patches
+               (search-patches "avalon-toolkit-rdkit-fixes.patch"))
+              (modules '((guix build utils) (ice-9 ftw)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "src/main/java")
+                   (delete-file-recursively "src/test/target")))))
     (build-system gnu-build-system)
     (arguments
      (list
-      ;; There are no intended tests
+      ;; There is only one test, which is missing a file
       #:tests? #f
       #:phases
-      #~(let ((programs '("canonizer" "matchtest" "sketch" "smi2mol" "struchk")))
-          (modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _ (chdir "common")))
-            (delete 'configure)
-            (add-before 'build 'dont-free-static-memory
-              (lambda _
-                (substitute* "reaccsio.c"
-                  (("MyFree\\(.*tempdir\\)" m)
-                   (string-append "/* freeing memory from getenv is bad */"
-                                  "// " m)))))
-            ;; The makefile has incorrect compiler flags and is missing some
-            ;; object files, so we build it ourselves.
-            (replace 'build
-              (lambda _
-                (for-each
-                 (lambda (part)
-                   (format #t "Compiling ~a.c ~~> ~a.o~%" part part)
-                   (invoke #$(cc-for-target) "-c" "-fPIC" "-O2"
-                           (string-append part ".c")
-                           "-o" (string-append part ".o")))
-                 (list "aacheck" "casutils" "denormal" "depictutil"
-                       "didepict" "fixcharges" "forio" "geometry"
-                       "graph" "hashcode" "layout" "local" "pattern"
-                       "perceive" "reaccsio" "rtutils" "set" "shortcut"
-                       "sketch" "ssmatch" "stereo" "symbol_lists"
-                       "symboltable" "utilities"))
-                (display "Building libavalontoolkit.so\n")
-                (apply invoke "gcc" "-fPIC" "-shared" "-lm"
-                       "-o" "libavalontoolkit.so" "canonizer.c" "smi2mol.c"
-                       "struchk.c" "patclean.c" (find-files "." "\\.o$"))
-                ;; patclean is not built here as there is an undeclared
-                ;; variable in main().
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (mkdir "build")
+              (mkdir-p "target/executables")
+              (mkdir-p "target/libraries")
+              (invoke "make" "programs" "-j"
+                      (if parallel-build?
+                          (number->string (parallel-job-count))
+                          "1"))))
+          (replace 'install
+            (lambda _
+              ;; Executables
+              (let ((programs '("canonizer" "matchtest" "smi2mol" "struchk")))
                 (for-each
                  (lambda (program)
-                   (display (string-append "Building " program "\n"))
-                   (invoke "gcc" "-L." "-lavalontoolkit" "-lm" "-O2"
-                           (string-append "-Wl,-rpath=" #$output "/lib")
-                           "-DMAIN" (string-append program ".c") "-o" program))
-                 programs)))
-            (replace 'install
-              (lambda _
-                ;; Executables
-                (for-each
-                 (lambda (program)
-                   (install-file program (string-append #$output "/bin")))
-                 programs)
-                (for-each
-                 (lambda (name)
-                   (symlink (string-append #$output "/bin/smi2mol")
-                            (string-append #$output "/bin/" name)))
-                 '("mol2smi" "rdf2smi" "mol2tbl" "mol2sma" "smi2rdf"))
-                ;; Library
-                (install-file "libavalontoolkit.so"
-                              (string-append #$output "/lib"))
-                (for-each
-                 (lambda (file)
-                   (install-file file (string-append #$output
-                                                    "/include/avalontoolkit")))
-                 (find-files "." "\\.h$"))
-                (install-file "../license.txt"
-                              (string-append #$output "/share/doc/"
-                                             #$name "-" #$version "/"))))))))
+                   (install-file (string-append "target/executables/" program)
+                                 (string-append #$output "/bin")))
+                 programs))
+              (for-each
+               (lambda (name)
+                 (symlink (string-append #$output "/bin/smi2mol")
+                          (string-append #$output "/bin/" name)))
+               '("mol2smi" "rdf2smi" "mol2tbl" "mol2sma" "smi2rdf"))
+              ;; Library
+              (install-file "target/libraries/libavalon_tools.a"
+                            (string-append #$output "/lib"))
+              (install-file "target/libraries/libavalon4rdkit.a"
+                            (string-append #$output "/lib"))
+              (for-each
+               (lambda (file)
+                 (install-file file (string-append #$output
+                                                   "/include/avalontoolkit")))
+               (find-files "src/main/C/include" "\\.h$"))
+              (install-file "license.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version "/")))))))
     (home-page "https://sourceforge.net/projects/avalontoolkit/")
     (synopsis "Tools for SMILES and MOL files and for structure fingerprinting")
     (description "This package contains a library and programs for
@@ -1091,7 +1073,7 @@ other ring topology descriptions.")
 (define-public rdkit
   (package
     (name "rdkit")
-    (version "2022.03.5")
+    (version "2023.09.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1102,7 +1084,7 @@ other ring topology descriptions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19idgilabh04cbr1qj6zgrgsfjm248mmfz6fsr0smrd68d0xnml9"))
+                "1lgcgijlzzwpfxndsdlx13npdfk7hcii11zg25cvpmzhbpn6vyn8"))
               (patches
                (search-patches "rdkit-unbundle-external-dependencies.patch"))
               (modules '((guix build utils)))
@@ -1201,7 +1183,10 @@ other ring topology descriptions.")
                             "substructLibraryTest" "pyFeatures"
                             "pythonTestDirML" "pythonTestDirChem"
                             ;; Catching Python exception fails
-                            "pyRanker") "|")
+                            "pyRanker"
+                            ;; Flaky test depending on floating point rounding
+                            "testConrec"
+                            ) "|")
                          ")")))))))))
     (inputs
      (list avalon-toolkit
@@ -1218,7 +1203,7 @@ other ring topology descriptions.")
     (native-inputs
      (list bison
            boost
-           catch2
+           catch2-3
            eigen
            flex
            freesasa
@@ -1232,4 +1217,8 @@ other ring topology descriptions.")
     (description "RDKit is a C++ and Python library for cheminformatics, which
 includes (among other things) the analysis and modification of molecules in 2D
 and 3D and descriptor generation for machine learning.")
+    ;; For 32 bit systems, there is a bug in Boost.Python:
+    ;; https://github.com/boostorg/python/issues/312. Additionally, several
+    ;; other test fail.
+    (supported-systems %64bit-supported-systems)
     (license license:bsd-3)))

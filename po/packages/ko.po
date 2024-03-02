@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the GNU guix package.
 # simmon <simmon@nplob.com>, 2021, 2022.
 # Kim InSoo <simmon@nplob.com>, 2022.
-# 김인수 <simmon@nplob.com>, 2022.
+# 김인수 <simmon@nplob.com>, 2022, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2022-11-25 07:19+0000\n"
+"PO-Revision-Date: 2024-02-07 15:36+0000\n"
 "Last-Translator: 김인수 <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/guix/packages/ko/>\n"
 "Language: ko\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 5.3.1\n"
 
 #: gnu/packages/abiword.scm:124
 msgid "Word processing program"
@@ -3837,7 +3837,7 @@ msgstr ""
 
 #: gnu/packages/databases.scm:1953
 msgid "Database independent interface for Perl"
-msgstr "펄을 위한 데이타베이스 독립 연결장치."
+msgstr "펄을 위한 데이타베이스 독립 연결장치"
 
 #: gnu/packages/databases.scm:1954
 msgid "This package provides a database interface for Perl."
@@ -4953,10 +4953,8 @@ msgid "This package provides a frontend to GDB, the GNU debugger."
 msgstr "이와 같은 꾸러미는 GNU 디버거 GDB에 대한 프론트엔드를 제공합니다."
 
 #: gnu/packages/debug.scm:886
-#, fuzzy
-#| msgid "Console front-end to the GNU debugger"
 msgid "Graphical front-end for GDB and other debuggers"
-msgstr "GNU 디버거에 대한 콘솔 프론트-엔드"
+msgstr "GDB 및 다른 디버거를 위한 그래픽 프론트-엔드"
 
 #: gnu/packages/debug.scm:887
 msgid ""
@@ -34825,10 +34823,8 @@ msgid "rofi frontend for buku bookmarks manager"
 msgstr ""
 
 #: gnu/packages/web.scm:7979
-#, fuzzy
-#| msgid "This package provides a frontend to GDB, the GNU debugger."
 msgid "This package provides a rofi frontend for the buku bookmark manager."
-msgstr "이와 같은 꾸러미는 GNU 디버거 GDB에 대한 프론트엔드를 제공합니다."
+msgstr "이와 같은 꾸러미는 buku 즐겨찾기 관리자를 위한 rofi 프론트엔드를 제공합니다."
 
 #: gnu/packages/web.scm:8007
 msgid "Anonymize IP addresses in log files"

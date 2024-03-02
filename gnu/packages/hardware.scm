@@ -703,7 +703,7 @@ battery state, controlling LEDs, and setting the inactive time.")
     (arguments
      `(#:tests? #f)) ;; Tests require Google's gtest and gmock
     (inputs
-     (list mbedtls-apache))
+     (list mbedtls-lts))
     (synopsis "C++ library to control Philips Hue lights")
     (description "Hueplusplus is a library for controlling Philips Hue lights.
 Features:
@@ -1112,7 +1112,7 @@ technology, such as head mounted displays with built in head tracking.")
            hueplusplus
            nlohmann-json
            libusb
-           mbedtls-apache
+           mbedtls-lts
            qtbase-5))
     (native-inputs
      (list pkg-config

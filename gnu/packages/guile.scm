@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Taylan Kammer <taylan.kammer@gmail.com>
 ;;; Copyright © 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
+;;; Copyright © 2021, 2024 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -457,7 +457,7 @@ without requiring the source code to be rewritten.")
 (define-public guile-next
   (let ((version "3.0.9")
         (revision "0")
-        (commit "d8df317bafcdd9fcfebb636433c4871f2fab28b2"))
+        (commit "fb1f5e28b1a575247fd16184b1c83b8838b09716"))
     (package
       (inherit guile-3.0)
       (name "guile-next")
@@ -471,7 +471,7 @@ without requiring the source code to be rewritten.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0g294vnc5xkaq5vqh9hkh793mybkr17yqwh0fc46alnwxgpgjy5n"))))
+                  "1lcc6sz0f3x253pr4a0fggsfkaxmxxw63cspfm2mjis6h82g6jxm"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
@@ -488,7 +488,10 @@ without requiring the source code to be rewritten.")
                       (display #$version port)))))
               (add-before 'check 'skip-failing-tests
                 (lambda _
-                  (delete-file "test-suite/tests/version.test")))))))
+                  (delete-file "test-suite/tests/version.test")))
+              #$@(if (target-hurd?)
+                     #~((delete 'patch-posix-spawn-usage))
+                     #~())))))
       (native-inputs
        (modify-inputs (package-native-inputs guile-3.0)
          (prepend autoconf
@@ -827,7 +830,7 @@ type system, elevating types to first-class status.")
 (define-public guile-git
   (package
     (name "guile-git")
-    (version "0.5.2")
+    (version "0.6.0")
     (home-page "https://gitlab.com/guile-git/guile-git.git")
     (source (origin
               (method git-fetch)
@@ -837,9 +840,7 @@ type system, elevating types to first-class status.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11a51acibwi2hpaygmrpn6nwbr4lqalc87ihrgj3mhz6swbsk9n7"))
-              (patches (search-patches
-                        "guile-git-adjust-for-libgit2-1.2.0.patch"))))
+                "0a3765chjas1dmkl0qc75y6l3hsss6n2awi82jkwzjyfslrlcrgq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")       ; to prevent guild warnings
@@ -868,9 +869,7 @@ type system, elevating types to first-class status.")
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
-     ;; libgit2@1.4.3 ‘fixed’ a git CVE it never shared, breaking Guix.  Use
-     ;; 1.3 for now; see <https://issues.guix.gnu.org/55399> for alternatives.
-     (list guile-3.0 libgit2-1.3))
+     (list guile-3.0 libgit2-1.7))
     (propagated-inputs
      (list guile-bytestructures))
     (synopsis "Guile bindings for libgit2")
@@ -992,6 +991,28 @@ compression library.")
     (home-page "https://ngyro.com/software/guile-lzma.html")
     (synopsis "Guile bindings for liblzma (XZ)")
     (description "Guile-LZMA is a Guile wrapper for the liblzma (XZ)
+library.  It exposes an interface similar to other Guile compression
+libraries, like Guile-zlib.")
+    (license license:gpl3+)))
+
+(define-public guile-bzip2
+  (package
+    (name "guile-bzip2")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://files.ngyro.com/guile-bzip2/guile-bzip2-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1qnxk5fzg8m9ik1ckhjvi22kkhd810mrg8jzxiizhk920b69wbdh"))))
+    (build-system gnu-build-system)
+    (native-inputs (list guile-3.0 guile-bytestructures pkg-config))
+    (inputs (list guile-3.0 bzip2))
+    (propagated-inputs (list guile-bytestructures))
+    (home-page "https://ngyro.com/software/guile-bzip2.html")
+    (synopsis "Guile bindings for libbzip2")
+    (description "Guile-bzip2 is a Guile wrapper for the libbzip2
 library.  It exposes an interface similar to other Guile compression
 libraries, like Guile-zlib.")
     (license license:gpl3+)))

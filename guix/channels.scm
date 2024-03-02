@@ -34,7 +34,6 @@
   #:use-module (guix packages)
   #:use-module (guix progress)
   #:use-module (guix derivations)
-  #:use-module (guix combinators)
   #:use-module (guix diagnostics)
   #:use-module (guix sets)
   #:use-module (guix store)
@@ -510,16 +509,6 @@ CURRENT-CHANNELS is the list of currently used channels.  It is compared
 against the newly-fetched instances of CHANNELS, and VALIDATE-PULL is called
 for each channel update and can choose to emit warnings or raise an error,
 depending on the policy it implements."
-  ;; Only process channels that are unique, or that are more specific than a
-  ;; previous channel specification.
-  (define (ignore? channel others)
-    (member channel others
-            (lambda (a b)
-              (and (eq? (channel-name a) (channel-name b))
-                   (or (channel-commit b)
-                       (not (or (channel-commit a)
-                                (channel-commit b))))))))
-
   (define (current-commit name)
     ;; Return the current commit for channel NAME.
     (any (lambda (channel)
@@ -527,60 +516,77 @@ depending on the policy it implements."
                 (channel-commit channel)))
          current-channels))
 
+  (define instance-name
+    (compose channel-name channel-instance-channel))
+
+  (define (same-named? channel)
+    (let ((name (channel-name channel)))
+      (lambda (candidate)
+        (eq? (channel-name candidate) name))))
+
+  (define (more-specific? a b)
+    ;; A is more specific than B if it specifies a commit.
+    (and (channel-commit a)
+         (not (channel-commit b))))
+
   (let loop ((channels channels)
-             (previous-channels '()))
-    ;; Accumulate a list of instances.  A list of processed channels is also
-    ;; accumulated to decide on duplicate channel specifications.
-    (define-values (resulting-channels instances)
-      (fold2 (lambda (channel previous-channels instances)
-               (if (ignore? channel previous-channels)
-                   (values previous-channels instances)
-                   (begin
-                     (format (current-error-port)
-                             (G_ "Updating channel '~a' from Git repository at '~a'...~%")
-                             (channel-name channel)
-                             (channel-url channel))
-                     (let* ((current (current-commit (channel-name channel)))
-                            (instance
-                             (latest-channel-instance store channel
-                                                      #:authenticate?
-                                                      authenticate?
-                                                      #:validate-pull
-                                                      validate-pull
-                                                      #:starting-commit
-                                                      current)))
-                       (when authenticate?
-                         ;; CHANNEL is authenticated so we can trust the
-                         ;; primary URL advertised in its metadata and warn
-                         ;; about possibly stale mirrors.
-                         (let ((primary-url (channel-instance-primary-url
-                                             instance)))
-                           (unless (or (not primary-url)
-                                       (channel-commit channel)
-                                       (string=? primary-url (channel-url channel)))
-                             (warning (G_ "pulled channel '~a' from a mirror \
+             (previous-channels '())
+             (instances '()))
+    (match channels
+      (()
+       (reverse instances))
+      ((channel . rest)
+       (let ((previous (find (same-named? channel) previous-channels)))
+         ;; If there's already an instance for CHANNEL, keep the most specific
+         ;; one.
+         (if (and previous
+                  (not (more-specific? channel previous)))
+             (loop rest previous-channels instances)
+             (begin
+               (format (current-error-port)
+                       (G_ "Updating channel '~a' from Git repository at '~a'...~%")
+                       (channel-name channel)
+                       (channel-url channel))
+               (let* ((current (current-commit (channel-name channel)))
+                      (instance
+                       (latest-channel-instance store channel
+                                                #:authenticate?
+                                                authenticate?
+                                                #:validate-pull
+                                                validate-pull
+                                                #:starting-commit
+                                                current)))
+                 (when authenticate?
+                   ;; CHANNEL is authenticated so we can trust the
+                   ;; primary URL advertised in its metadata and warn
+                   ;; about possibly stale mirrors.
+                   (let ((primary-url (channel-instance-primary-url
+                                       instance)))
+                     (unless (or (not primary-url)
+                                 (channel-commit channel)
+                                 (string=? primary-url (channel-url channel)))
+                       (warning (G_ "pulled channel '~a' from a mirror \
 of ~a, which might be stale~%")
-                                      (channel-name channel)
-                                      primary-url))))
+                                (channel-name channel)
+                                primary-url))))
 
-                       (let-values (((new-instances new-channels)
-                                     (loop (channel-instance-dependencies instance)
-                                           previous-channels)))
-                         (values (append (cons channel new-channels)
-                                         previous-channels)
-                                 (append (cons instance new-instances)
-                                         instances)))))))
-             previous-channels
-             '()                                  ;instances
-             channels))
-
-    (let ((instance-name (compose channel-name channel-instance-channel)))
-      ;; Remove all earlier channel specifications if they are followed by a
-      ;; more specific one.
-      (values (delete-duplicates instances
-                                 (lambda (a b)
-                                   (eq? (instance-name a) (instance-name b))))
-              resulting-channels))))
+                 ;; Perform a breadth-first traversal with the idea that the
+                 ;; user-provided channels may be more specific than what
+                 ;; '.guix-channel' specifies, and so it is on those instances
+                 ;; that 'channel-instance-dependencies' should be called.
+                 (loop (append rest
+                               (channel-instance-dependencies instance))
+                       (cons channel
+                             (if previous
+                                 (delq previous previous-channels)
+                                 previous-channels))
+                       (cons instance
+                             (if previous
+                                 (remove (lambda (instance)
+                                           (eq? (instance-name instance)
+                                                (channel-name channel)))
+                                         instances)
+                                 instances)))))))))))
 
 (define* (checkout->channel-instance checkout
                                      #:key commit

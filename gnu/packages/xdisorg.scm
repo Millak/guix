@@ -327,7 +327,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.16")
+    (version "0.6.19")
     (source
      (origin
        (method git-fetch)
@@ -336,7 +336,7 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3i9blcw5i793m1rxf5dqp773hssdpifrz820psr90x982vvmib"))))
+        (base32 "19lqwzp9d471zkhk36d42jr0ywz9gqmksfqczlbafd80jlqnkg4k"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -359,7 +359,7 @@ used to further tweak the behaviour of the different profiles.")
            wayland
            wayland-protocols))
     (native-inputs
-     (list doxygen pkg-config))
+     (list doxygen pkg-config scdoc))
     (home-page "https://github.com/Cloudef/bemenu")
     (synopsis "Dynamic menu library and client program inspired by dmenu")
     (description
@@ -372,7 +372,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
 (define-public copyq
 (package
   (name "copyq")
-  (version "7.0.0")
+  (version "7.1.0")
   (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -381,7 +381,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0h8jz7v5xvpq23dh1sr600q5jlrfzm6wsnp7sln8hbgsn96n8kas"))))
+              "1f39mh9qv1fa2vbwjigi1raz1pym2pz733j6b77r4588l8aaj2b8"))))
   (build-system cmake-build-system)
   (arguments
    (list
@@ -1488,7 +1488,7 @@ Wacom tablet applet.")
 (define-public xf86-input-wacom
   (package
     (name "xf86-input-wacom")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -1497,7 +1497,7 @@ Wacom tablet applet.")
              "xf86-input-wacom-" version "/"
              "xf86-input-wacom-" version ".tar.bz2"))
        (sha256
-        (base32 "04ks577ag2yir7kssv8zhig4rx9xqj2wifmlrcmy4k9lgw379di3"))))
+        (base32 "0pb8f8fvwm7vy5p3h8nc7x7fb68kpdkscz0j79xzsaxwn8435hhk"))))
     (arguments
      (list #:configure-flags
            #~(list (string-append "--with-sdkdir=" #$output "/include/xorg")
