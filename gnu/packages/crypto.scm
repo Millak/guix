@@ -1653,24 +1653,16 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
     (version "4.4.36")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/besser82/libxcrypt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri
+        (string-append
+         "https://github.com/besser82/libxcrypt/releases/download/v" version
+         "/libxcrypt-" version ".tar.xz"))
        (sha256
-        (base32 "1yhpjjjv38y14nrj15bkndq824v42plndgi3k8mmc04grj1fbnjf"))))
+        (base32 "0hw9zphnbzgys5k7ja37iqmwmlyn0y417qr6xqmdw08axv5g9qg5"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf
-           automake
-           libtool
-           perl
-           pkg-config
-           ;; Do not run tests needing python, since Python < 3.13 needs it
-           ;; for its crypt module
-           #;python-3
-           #;python-passlib))
+     (list perl))
     (synopsis
      "Extended crypt library for descrypt, md5crypt, bcrypt, and others")
     (description
