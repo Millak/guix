@@ -768,6 +768,30 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-hashicorp-errwrap
+  (package
+    (name "go-github-com-hashicorp-errwrap")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/errwrap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p5wdz8p7dmwphmb33gwhy3iwci5k9wkfqmmfa6ay1lz0cqjwp7a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/errwrap"))
+    (home-page "https://github.com/hashicorp/errwrap")
+    (synopsis "Wrapping and querying errors for Golang")
+    (description
+     "@code{errwrap} is a package for Go that formalizes the pattern of
+wrapping errors and checking if an error contains another error.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hhrutter-tiff
   (package
     (name "go-github-com-hhrutter-tiff")
