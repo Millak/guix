@@ -1233,7 +1233,7 @@ enabled.")
 (define-public fennel
   (package
     (name "fennel")
-    (version "1.3.1")
+    (version "1.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1242,7 +1242,7 @@ enabled.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12zm3rd0vvkqazv1cv5bhwk6igsj18im2qakqw7cf4a20rc9wpmx"))))
+                "1h1i87jx889n1wczw5jvqmkx0jmlrq83pjspyd9v27j360d9fcik"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "PREFIX="
