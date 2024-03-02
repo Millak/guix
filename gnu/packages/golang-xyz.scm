@@ -537,6 +537,31 @@ its C API.")))
     (description "Go bindings to systemd for (de)serialization and comparison
 of unit files.")))
 
+(define-public go-github-com-cskr-pubsub
+  (package
+    (name "go-github-com-cskr-pubsub")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cskr/pubsub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18kqfdzkfs7z8266a5q5wldwkcvnhc7yw09b9vr8r0s7svy8d5s6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #t ; Tests require network interface access
+      #:go go-1.18
+      #:import-path "github.com/cskr/pubsub"))
+    (home-page "https://github.com/cskr/pubsub")
+    (synopsis "Simple pubsub package for go")
+    (description
+     "Package @code{pubsub} implements a simple multi-topic pub-sub library.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
     (name "go-github-com-cyberdelia-go-metrics-graphite")
