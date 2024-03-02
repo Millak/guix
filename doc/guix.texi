@@ -17295,7 +17295,7 @@ as.  This means that if you choose to use @command{guix system reconfigure} in
 root's login shell, you'll need to @command{guix pull} separately.
 @end quotation
 
-That's it!  If you're getting starting with Guix entirely,
+That's it!  If you're getting started with Guix entirely,
 @pxref{Getting Started}.  The next sections dive in more detail into the
 crux of the matter: system configuration.
 
