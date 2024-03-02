@@ -1625,6 +1625,13 @@ upload files over HTTP.")))
 the client and server, it can allow clients to resume a disconnected session,
 and prevent message loss.")))
 
+(define-public prosody-vcard-muc
+  (package
+    (inherit (prosody-module "mod_vcard_muc"))
+    (synopsis "Support for MUC vCards and avatars")
+    (description "This module adds the ability to set vCard for MUC rooms. One
+of the most common use cases is to define avatars for MUC rooms.")))
+
 (define-public libtoxcore
   (let ((revision "2")
         (commit "bf69b54f64003d160d759068f4816b2d9b2e1e21"))
