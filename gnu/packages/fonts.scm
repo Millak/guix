@@ -59,6 +59,7 @@
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 chris <chris@bumblehead.com>
 ;;; Copyright © 2023, 2024 Luis Felipe López Acevedo <sirgazil@zoho.com>
+;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2679,6 +2680,61 @@ This package provides only TrueType files (TTF).
 It comes in seven weights and Roman, Italic and Oblique styles.")
    (home-page "https://rubjo.github.io/victor-mono/")
    (license license:expat)))
+
+(define-public font-dongle
+  (let ((commit "f7127c4d2450e1cad20254ec692591347e2fc260")
+        (revision "1"))
+    (package
+      (name "font-dongle")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/yangheeryu/Dongle")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gwrjv468bqfa3nxh01vprk7rp24cnhk3zlkrv5mzqcbcdf96nqp"))))
+      (build-system font-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'build
+             (lambda _
+               (begin
+                 (chdir "sources")
+                 (invoke "unzip" "Dongle.zip")
+                 (chdir "..")
+                 (invoke "python3" "build.py")))))))
+      (native-inputs
+       (list python
+             python-glyphslib
+             python-fonttools
+             python-ufolib2
+             python-ufo2ft
+             zip))
+      (synopsis
+       "Rounded sans-serif typeface, supporting Hangeul and Latin glyphs")
+      (description
+       "Dongle(동글) is a rounded sans-serif typeface for display.  It is a
+modular Hangeul with the de-square frame, creating a playful and rhythmic
+movement.  The name, Dongle comes from a Korean onomatopoeia, meaning 'rounded
+or curved shape (with adorable impression)’.
+
+Dongle was originally designed as a 'Jamo (consonant and vowel in Hangeul)
+typing module' for the author's student project.  Later it revised into
+‘syllabic module’ to be released to the public.  As the character size varies
+according to the syllable structure, Dongle typeface is much smaller compared
+to other square frame Korean typefaces.  Therefore, it is better to adjust the
+font size visually to your liking, rather than relying on the point size of
+the editing program.
+
+It is designed especially for Hangeul typography, but it also includes Latin
+alphabet as a part of KS X 1001.  This typeface has a light, regular, and bold
+weight.")
+      (home-page "https://github.com/yangheeryu/Dongle")
+      (license license:silofl1.1))))
 
 (define-public font-meera-inimai
   (package

@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -293,7 +294,7 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.89")
+    (version "2.90")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -301,7 +302,7 @@ prompt the user with the option to go with insecure DNS only.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "02dnxfnman38armn3sw56w80f9wb2vgm3qgm15crs2yg8q1j7g82"))))
+                "1r09l537vi867hlpv6vl7nvqhscvq1kf04m896bfrgrpv2dk0l4f"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -336,23 +337,23 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.38")
+    (version "9.19.21")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ftp.isc.org/isc/bind9/" version
                            "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "03y52iyc2g63lkk9x2vaizpr0jv27g1z6mcxnjw8m8l4kaflrx4d"))
-       (patches
-        (search-patches "bind-re-add-attr-constructor-priority.patch"))))
+        (base32 "133f1aq8acaz9z03cl0gcrj4pq0hqm6c3sm4hz67d37phndsjs1b"))))
     (build-system gnu-build-system)
     (outputs `("out" "utils"))
     (inputs
      ;; It would be nice to add GeoIP and gssapi once there are packages.
      (list libcap
+           liburcu
            libuv
            libxml2
+           `(,nghttp2 "lib")
            openssl
            p11-kit
            python
@@ -635,14 +636,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.17.1")
+    (version "1.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1x55f5aqlzynpy24ryf1rsmdy8m8iyi19n7k03k889g1rk78ah7f"))))
+        (base32 "1ad34jxprygjp7g84q1bgmvcc114f2mgyhfwk9rs0inq7mpmf7dw"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -844,7 +845,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.3.2")
+    (version "3.3.4")
     (source
      (origin
        (method git-fetch)
@@ -853,7 +854,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17zdpk6wf0cf90dp4cls35si8ywjsqjrmgssw2gmb1y0zfyp19vq"))
+        (base32 "0w7drq0pj94d43qn9wmzxab34mjhxj9x84rixbswc270ywh6d9pr"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -983,14 +984,14 @@ synthesis, and on-the-fly re-configuration.")
 (define-public knot-resolver
   (package
     (name "knot-resolver")
-    (version "5.5.3")
+    (version "5.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://secure.nic.cz/files/knot-resolver/"
                                   "knot-resolver-" version ".tar.xz"))
               (sha256
                (base32
-                "0bgdbx66dsfik3sdqi4g2imddalqc1p41n444xk7s8vxig35g3x3"))))
+                "18n3jh17d22xmzpg8syw2dm85vv7jchdc4hzk5x78lqxqqav856s"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments

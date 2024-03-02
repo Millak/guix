@@ -368,6 +368,35 @@
        "This package allows using Ace jump to a candidate in Helm window.")
       (license license:gpl3+))))
 
+(define-public emacs-activities
+  (package
+    (name "emacs-activities")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://elpa.gnu.org/packages/activities-" version ".tar"))
+       (sha256
+        (base32 "0ng9sgajcpal881s3kavkmz0fc38f2h207hpqj62cf14z7bsk0zk"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-persist))
+    (home-page "https://github.com/alphapapa/activities.el")
+    (synopsis "Save/restore sets of windows, tabs/frames, and their buffers")
+    (description
+     "Inspired by Genera's and KDE's concepts of \"activities\", this library
+allows the user to select an \"activity\", the loading of which restores a
+window configuration into a @code{tab-bar} tab or frame, along with the
+buffers shown in each window.  Saving an activity saves the state for later
+restoration.  Switching away from an activity saves the last-used state for
+later switching back to, while still allowing the activity's initial or
+default state to be restored on demand.  Resuming an activity loads the
+last-used state, or the initial/default state when a universal argument is
+provided.  The implementation uses the bookmark system to save buffers
+states–that is, any major mode that supports the bookmark system is
+compatible.")
+    (license license:gpl3+)))
+
 (define-public emacs-bookmark-plus
   (package
     (name "emacs-bookmark-plus")
@@ -1376,6 +1405,30 @@ some utility functions, and commands using that infrastructure.")
       (description
        "Display information about a buffer's project (a \"project tag\") in
 its mode line.")
+      (license license:gpl3+))))
+
+(define-public emacs-project-tab-groups
+  (let ((commit "2658405d5f3c539fbd9ccf95297a016a2c91816a")
+        (revision "1"))
+    (package
+      (name "emacs-project-tab-groups")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fritzgrabo/project-tab-groups.git")
+               (commit commit)))
+         (sha256
+          (base32 "1zg9kxyjz942ib9lii0in67hwqil2xlz78vjm1qqypw3zaivhh7p"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/fritzgrabo/project-tab-groups")
+      (synopsis "Support a \"one tab group per project\" workflow")
+      (description "This package provides a global minor mode that enhances the
+Emacs built-in @code{project.el} library to support keeping projects isolated
+in named tab groups.  This package automates the steps you’d otherwise need to
+do manually if you wanted to keep the buffers of a project neatly isolated in
+separate, named tab groups.")
       (license license:gpl3+))))
 
 (define-public emacs-golden-ratio
@@ -9223,6 +9276,40 @@ build jobs.")
 tupfiles, such as rule definitions, user-defined variables, macros, flags, bin
 variables, and so on.  The mode also allows you to execute Tup commands.")
     (license license:gpl3+)))
+
+(define-public emacs-combobulate
+  (let ((commit "c7e4670a3047c0b58dff3746577a5c8e5832cfba")
+        (revision "1"))
+    (package
+      (name "emacs-combobulate")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mickeynp/combobulate")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "063w2sm0c7xhg3ml31xp870azb0sv7z689lnbnjnbl3rfdy4kg50"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list tree-sitter-javascript
+             tree-sitter-python
+             tree-sitter-typescript))
+      (native-inputs
+       (list python-minimal))
+      (home-page "https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter")
+      (synopsis "Structured editing and navigation in Emacs with tree-sitter")
+      (description
+       "Combobulate is a package that adds structured editing and movement to
+a wide range of programming languages.  Unlike most programming major modes
+that use error-prone imperative code and regular expressions to determine
+what's what in your code, Combobulate uses Emacs 29's tree-sitter library.
+Tree-sitter maintains a concrete syntax tree of your code; it gives
+Combobulate absolute clarity of all aspects of your code, enabling more
+correct movement and editing than you would otherwise have.")
+      (license license:gpl3+))))
 
 (define-public emacs-compat
   (package
@@ -34620,11 +34707,11 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
     (license license:gpl3+)))
 
 (define-public emacs-telega-server
-  (let ((commit "e8d9459ef725ed8fb60479b5fccadae1e4eac87a")
+  (let ((commit "d1cf1ffe289a18f366b7f3b64f827f0d0755947a")
         (revision "0"))
     (package
       (name "emacs-telega-server")
-      (version (git-version "0.8.240" revision commit))
+      (version (git-version "0.8.250" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -34632,7 +34719,7 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "18f6i2w0iial2wi60vkqck30c0m4p2nj0bzd2x9p4il27dwv5hwq"))
+          (base32 "0s1w4zb252d70n05dbsv2rnlfsg53paklafqxasl566nnzbi0d2q"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-path-placeholder.patch"
@@ -39315,7 +39402,7 @@ navigate through it.")
   ;; There is no proper release.
   ;; The base version is extracted from the README.org.
   (let ((revision "0")
-        (commit  "0b78f4e33b994612fcb305b3cf6d3b1e3b62cea7"))
+        (commit "eafc9828f54dddd594887bb28a7249cf1584230c"))
     (package
       (name "emacs-project-x")
       (version (git-version "0.1.6" revision commit))
@@ -39328,7 +39415,7 @@ navigate through it.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1xxzxxm0jila5s9sfay6ywj2j8pyz4wwcrycvnrrzh0vxcsgzf9s"))))
+          (base32 "141zym1libs14bpqv27ln8f6csxgy67pgcn1l3f44p15g1rc8mhr"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/karthink/project-x")
       (synopsis "Enhancement to Emacs built-in Project library")

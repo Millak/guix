@@ -4,7 +4,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -380,6 +380,8 @@ and workspaces that can be used in the compiler environment of your choice.")
                         (string-append "-DCMAKE_DOC_DIR=share/doc/cmake-"
                                        #$(version-major+minor (package-version
                                                                cmake-minimal)))
+                        (string-append "-DCMake_INSTALL_VIMFILES_DIR=" #$output
+                                       "/share/vim/vimfiles/pack/guix/start/cmake")
                         "-DCMAKE_INFO_DIR=share/info"
                         "-DCMAKE_MAN_DIR=share/man")
                   #$flags))

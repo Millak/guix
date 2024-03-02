@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -800,14 +800,19 @@ model to base your own plug-in on, here it is.")
                   ;; The 'elements_curlhttpsrc' test sometimes times out.
                   ((".*'elements/curlhttpsrc\\.c'.*") "")
 
+                  ;; TODO: Figure out why this test fails on riscv64-linux.
+                  #$@(if (target-riscv64?)
+                         `((("'elements/viewfinderbin\\.c'\\].*],")
+                            "'elements/viewfinderbin.c'], true, ],"))
+                         '())
+
                   ;; This test is flaky on at least some architectures.
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
-                  #$@(if (target-riscv64?)
-                       `((("'elements/camerabin\\.c'\\].*],")
-                          "'elements/camerabin.c'], true, ],")
-                         (("'elements/viewfinderbin\\.c'\\].*],")
-                          "'elements/viewfinderbin.c'], true, ],"))
-                       '())
+                  #$@(if (member (%current-system)
+                                 '("aarch64-linux" "riscv64-linux"))
+                         `((("'elements/camerabin\\.c'\\].*],")
+                            "'elements/camerabin.c'], true, ],"))
+                         '())
 
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
                   ((".*elements/dtls\\.c.*") ""))

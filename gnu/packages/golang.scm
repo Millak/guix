@@ -2238,7 +2238,7 @@ TrueType font files in your system's user and system font directories.")
 (define-public go-github-com-signintech-gopdf
   (package
     (name "go-github-com-signintech-gopdf")
-    (version "0.18.0")
+    (version "0.22.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2247,10 +2247,16 @@ TrueType font files in your system's user and system font directories.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jf8a896qh871mdr1i7f0fdpqki5pkk1sp6p5dq404zqxpd7lq5l"))))
+                "1h6cslvid5v8fiymydj4irrzi8f91knsx8rgbzp2b8favclhwxxg"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/signintech/gopdf"))
+     (list
+      #:import-path "github.com/signintech/gopdf"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-examples
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/examples")))))))
     (propagated-inputs (list go-github-com-pkg-errors
                              go-github-com-phpdave11-gofpdi))
     (home-page "https://github.com/signintech/gopdf")

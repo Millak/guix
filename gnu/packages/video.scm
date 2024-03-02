@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -915,7 +915,7 @@ television and DVD.  It is also known as AC-3.")
 (define-public libaom
   (package
     (name "libaom")
-    (version "3.5.0")
+    (version "3.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -924,10 +924,10 @@ television and DVD.  It is also known as AC-3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0arn8a88jz4mj69n8cs4qmrdjwhbvzsqgnx20wr9mq01b06kqich"))))
+                "04zfgvzi4h4ybvjc4zfpfsmldz8w6vasjlrry7j4p6g3g7wk64r7"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list perl pkg-config python)) ; to detect the version
+     (list perl pkg-config python))     ; to detect the version
     (arguments
      `(#:tests? #f                      ; downloads many video clips
        #:configure-flags
@@ -5575,7 +5575,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
       (origin
         (method git-fetch)
@@ -5584,9 +5584,12 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0jkvb5as7danpalzlwd0w1dc9i2vijvmf39z0j6fwqvialsgnnj5"))))
+         (base32 "17r6qdijdnqfciqa0ia2y4gyhaav6y5gc4d9xj4dg9h7xnpyxc3k"))))
     (build-system meson-build-system)
-    (native-inputs (list nasm))
+    (native-inputs
+     (if (target-x86?)
+         (list nasm)
+         '()))
     (home-page "https://code.videolan.org/videolan/dav1d")
     (synopsis "AV1 decoder")
     (description "dav1d is a new AV1 cross-platform decoder, and focused on
@@ -5851,84 +5854,76 @@ result in several formats:
 (define-public rav1e
   (package
     (name "rav1e")
-    (version "0.6.6")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rav1e" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h9fhmamb7mh3cv86y1qja9qb7r6w2jv3p8ydngvsyjy59lq7hqn"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                   (string-append "\"^" version)))))))
+        (base32 "1sawva6nmj2fvynydbcirr3nb7wjyg0id2hz2771qnv6ly0cx1yd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-aom-sys" ,rust-aom-sys-0.3)
-        ("rust-arbitrary" ,rust-arbitrary-0.4)
+        ("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-arg-enum-proc-macro" ,rust-arg-enum-proc-macro-0.3)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-av-metrics" ,rust-av-metrics-0.9)
         ("rust-av1-grain" ,rust-av1-grain-0.2)
         ("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bitstream-io" ,rust-bitstream-io-1)
-        ("rust-built" ,rust-built-0.5)
+        ("rust-bitstream-io" ,rust-bitstream-io-2)
+        ("rust-built" ,rust-built-0.7)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-lex" ,rust-clap-lex-0.3)
         ("rust-console" ,rust-console-0.15)
         ("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-dav1d-sys" ,rust-dav1d-sys-0.7)
         ("rust-fern" ,rust-fern-0.6)
         ("rust-image" ,rust-image-0.24)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
-        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools" ,rust-itertools-0.12)
         ("rust-ivf" ,rust-ivf-0.1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-libfuzzer-sys" ,rust-libfuzzer-sys-0.3)
+        ("rust-libdav1d-sys" ,rust-libdav1d-sys-0.6)
+        ("rust-libfuzzer-sys" ,rust-libfuzzer-sys-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-maybe-rayon" ,rust-maybe-rayon-0.1)
         ("rust-nasm-rs" ,rust-nasm-rs-0.2)
         ("rust-new-debug-unreachable" ,rust-new-debug-unreachable-1)
         ("rust-nom" ,rust-nom-7)
         ("rust-noop-proc-macro" ,rust-noop-proc-macro-0.3)
-        ("rust-num-derive" ,rust-num-derive-0.3)
+        ("rust-num-derive" ,rust-num-derive-0.4)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-paste" ,rust-paste-1)
+        ("rust-profiling" ,rust-profiling-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
-        ("rust-rust-hawktracer" ,rust-rust-hawktracer-0.7)
-        ("rust-rustc-version" ,rust-rustc-version-0.4)
         ("rust-scan-fmt" ,rust-scan-fmt-0.2)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-big-array" ,rust-serde-big-array-0.4)
+        ("rust-serde-big-array" ,rust-serde-big-array-0.5)
         ("rust-signal-hook" ,rust-signal-hook-0.3)
         ("rust-simd-helpers" ,rust-simd-helpers-0.1)
         ("rust-system-deps" ,rust-system-deps-6)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-toml" ,rust-toml-0.5)
+        ("rust-toml" ,rust-toml-0.8)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-chrome" ,rust-tracing-chrome-0.7)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-v-frame" ,rust-v-frame-0.3)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-winnow" ,rust-winnow-0.4)
         ("rust-y4m" ,rust-y4m-0.8))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
         ("rust-nom" ,rust-nom-7)
-        ("rust-predicates" ,rust-predicates-2)
-        ("rust-predicates-core" ,rust-predicates-core-1)
-        ("rust-predicates-tree" ,rust-predicates-tree-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
         ("rust-semver" ,rust-semver-1))
@@ -5942,9 +5937,12 @@ result in several formats:
                        "--library-type" "cdylib"
                        (string-append "--prefix=" out))))))))
     (native-inputs
-     (list nasm pkg-config rust-cargo-c))
+     (append (if (target-x86?)
+                 (list nasm)
+                 '())
+             (list pkg-config rust-cargo-c)))
     (inputs
-     (list libgit2 zlib))
+     (list libgit2-1.7 zlib))
     (home-page "https://github.com/xiph/rav1e/")
     (synopsis "Fast and safe AV1 encoder")
     (description "@code{rav1e} is an AV1 video encoder.  It is designed to

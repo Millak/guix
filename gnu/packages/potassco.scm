@@ -32,6 +32,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages graphviz)
@@ -42,12 +43,13 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages re2c)
   #:use-module (gnu packages sphinx))
 
 (define-public libpotassco
   ;; No public release, update together with clasp
-  (let ((revision "1")
-        (commit "2f9fb7ca2c202f1b47643aa414054f2f4f9c1821"))
+  (let ((revision "2")
+        (commit "69b677f026c53d5a0a794db17691a1eb8bce8c6b"))
     (package
       (name "libpotassco")
       (version (git-version "0.0" revision commit))
@@ -65,7 +67,7 @@
                        (("\"catch.hpp\"") "<catch/catch.hpp>"))))
                 (sha256
                  (base32
-                  "1c32f9gqclf7qx07lpx8wd720vfhkjqhzc6nyy8mjmgwpmb3iyyn"))))
+                  "1c69njg30dha1zy6j17gghjg3lgambz0pipxkgxadmrkvsb20z2k"))))
       (arguments
        `(#:configure-flags '("-DLIB_POTASSCO_BUILD_TESTS=on"
                              "-DLIB_POTASSCO_INSTALL_LIB=on"
@@ -103,7 +105,7 @@ between aspif and smodels format or to a human-readable text format.")
 (define-public clasp
   (package
     (name "clasp")
-    (version "3.3.9")
+    (version "3.3.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -112,7 +114,7 @@ between aspif and smodels format or to a human-readable text format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "163ps9zq7xppqy9hj5qnw6z5lcjnm4xf5fwjsavpia5ynm3hngcw"))))
+                "0qap7rar8a5mkqz28n2hnvr4cfv5x0rh4zs3wdp919dw4d034chr"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCLASP_BUILD_TESTS=on"
@@ -146,7 +148,7 @@ satisfiability checking (SAT).")
 (define-public clingo
   (package
     (name "clingo")
-    (version "5.6.2")
+    (version "5.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -157,10 +159,11 @@ satisfiability checking (SAT).")
               (snippet
                #~(begin
                    (delete-file-recursively "clasp")
+                   (delete-file-recursively "libgringo/gen")
                    (delete-file-recursively "third_party")))
               (sha256
                (base32
-                "19s59ndcm2yj0kxlikfxnx2bmp6b7n31wq1zvwc7hyk37rqarwys"))))
+                "1mxl3gwx55sf2ifcb92mfy989c50yqpnq0d0r2mxdqr0riy40hjb"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -184,6 +187,7 @@ satisfiability checking (SAT).")
                   "find_package(mpark_variant)\n"
                   "find_package(tsl-sparse-map)\n"
                   "find_package(tsl-ordered-map)\n"
+                  "find_package(wide-integer)\n"
                   "find_package(Catch2 3 REQUIRED)")))
               (substitute* "libclingo/CMakeLists.txt"
                 (("\"cmake/Clingo\"") "\"cmake/clingo\"")
@@ -191,7 +195,8 @@ satisfiability checking (SAT).")
                 (("ClingoConfigVersion\\.cmake")
                  "clingo-config-version.cmake"))
               (substitute* "libgringo/CMakeLists.txt"
-                (("mpark::variant") "mpark_variant"))
+                (("mpark::variant") "mpark_variant")
+                (("math::wide_integer") "wide-integer::wide-integer"))
               (substitute* "cmake/ClingoConfig.cmake.in"
                 (("find_package\\(Clasp") "find_package(clasp"))
               (rename-file "cmake/ClingoConfig.cmake.in"
@@ -212,12 +217,14 @@ satisfiability checking (SAT).")
                                 "propagator" "propgator-sequence-mining"
                                 "symbol" "visitor"))))))))))
     (inputs (list catch2-3 clasp libpotassco))
-    (native-inputs (list mpark-variant
+    (native-inputs (list bison re2c
+                         mpark-variant
                          pkg-config
                          tl-optional
                          tsl-hopscotch-map
                          tsl-ordered-map
-                         tsl-sparse-map))
+                         tsl-sparse-map
+                         wide-integer))
     (home-page "https://potassco.org/")
     (synopsis "Grounder and solver for logic programs")
     (description "Clingo computes answer sets for a given logic program.")
@@ -226,7 +233,7 @@ satisfiability checking (SAT).")
 (define-public clingo-dl
   (package
     (name "clingo-dl")
-    (version "1.4.0")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -234,7 +241,7 @@ satisfiability checking (SAT).")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0dncwj63vdm6958vb7355d5j9mdr7hm037j4z82yz6l77jg3sipw"))))
+               (base32 "0vf51pgwgiac801gr6w5pnxb6wa0kacz09ncrcn25w5siz17g4si"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f        ; no tests
                      #:configure-flags #~`("-DPYCLINGODL_ENABLE=off")))
@@ -357,6 +364,9 @@ Lua code.")))
      (substitute-keyword-arguments (package-arguments clingo)
        ((#:configure-flags flags #~'())
         #~(cons* "-DCLINGO_BUILD_WITH_PYTHON=pip"
+                 (string-append "-DCMAKE_MODULE_PATH="
+                                #$(this-package-native-input "python-scikit-build")
+                                "/lib/cmake/modules")
                  "-DCLINGO_USE_LIB=yes"
                  #$flags))
        ((#:imported-modules _ '())
@@ -401,7 +411,11 @@ Python code.")))
     (version (package-version clingo-dl))
     (arguments
      (list
-      #:configure-flags #~'("-DPYCLINGODL_ENABLE=pip")
+      #:configure-flags
+      #~(list "-DPYCLINGODL_ENABLE=pip"
+              (string-append "-DCMAKE_MODULE_PATH="
+                             #$(this-package-native-input "python-scikit-build")
+                             "/lib/cmake/modules"))
       #:tests? #f
       #:imported-modules  `(,@%cmake-build-system-modules
                             (guix build python-build-system))
@@ -423,6 +437,8 @@ Python code.")))
     (inputs (modify-inputs (package-inputs clingo-dl)
               (prepend python-wrapper)))
     (propagated-inputs (list python-clingo python-cffi))
+    (native-inputs (modify-inputs (package-native-inputs clingo-dl)
+                     (prepend python-scikit-build)))
     (synopsis "Python bindings for clingo-dl")
     (description "This package allows users to add the clingo-dl propagator
 as a theory to clingo from Python code.  It also supports running clingo-dl
@@ -431,7 +447,7 @@ directly from the python command line.")))
 (define-public python-clorm
   (package
     (name "python-clorm")
-    (version "1.4.1")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -440,7 +456,7 @@ directly from the python command line.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jx99y71mrgdicn1da5dwz5nzgvvpabrikff783sg4shbv2cf0b5"))))
+                "1wbxniq60ph7bdaypcaahym7jxmlnm2zhrfmrgrk441i1iaida24"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -466,7 +482,7 @@ into Python programs easier.")
 (define-public python-plingo
   (package
     (name "python-plingo")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -475,7 +491,7 @@ into Python programs easier.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mp0pdjzwpl7bpba20iwszx9x49gsyl2rhrp7w7xpwjqdjrp23r8"))))
+                "0bdz755c6isp29layvzsw9c4kr12x7b5d8ip37ay3cl4dlq4bid3"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -504,17 +520,16 @@ the most probable model as well as finding all models and their probabilities.")
 (define-public python-telingo
   (package
     (name "python-telingo")
-    (version "2.1.1")
+    (version "2.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/potassco/telingo")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "python-telingo-fix-comparison.patch"))
               (sha256
                (base32
-                "0g3khxfdzc2hc7dkiyyqhb399h6h21m5wkp6wy8w71n0m32fiy53"))))
+                "1q6hlh4b5hsa4n5agvmfa9rhsxfd2g6kpl4b9kfccwbmf6dh51k6"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-clingo))
     (home-page "https://potassco.org/")

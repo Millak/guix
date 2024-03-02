@@ -279,16 +279,18 @@ use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
     (name "c2ffi")
     ;; As per the c2ffi README: the first three elements are encoding the
     ;; required Clang/LLVM version, and the last one is the c2ffi revision.
-    (version "12.0.0.0")
+    (version "16.0.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rpav/c2ffi")
-             (commit (string-append "v" version))))
+             ;; Upstream is not tagging releases consistently.
+             ;; (commit (string-append "v" version))
+             (commit "097cbe61ca02dc79ea60859aa056975131a9d985")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qq8dfismd20d9kfxpfvwz07v9mfvd0y7p5r3c92mk2pm4xnmzfy"))
+        (base32 "1mqhw4838chl495gaj9z0731ahkmqb4f3wlc1qalk82fdsaniyd5"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* "CMakeLists.txt"
@@ -309,9 +311,9 @@ LLVMOption LLVMBitReader LLVMProfileData")))))
              (when tests?
                (invoke "./bin/c2ffi" "--help")))))))
     (native-inputs
-     (list clang-12)) ; CMakeLists.txt invokes `clang -print-resource-dir`
+     (list clang-16)) ; CMakeLists.txt invokes `clang -print-resource-dir`
     (inputs
-     (list clang-12)) ; Compiled with gcc, but links against libclang-cpp.so
+     (list clang-16)) ; Compiled with gcc, but links against libclang-cpp.so
     (home-page "https://github.com/rpav/c2ffi")
     (synopsis "Clang-based FFI wrapper generator")
     (description
@@ -1065,10 +1067,9 @@ and make @code{cpplint} usable in wider contexts.")
           (base32 "09xnf8hmld1fk8j33zwlz1qcxnjdx1ncbg62csic9va4m1wc2v1d"))))
    (build-system cmake-build-system)
    (arguments
-      ;; No tests.
-    `(#:tests? #f
-      ;; Build the shared library instead of a static one.
-      #:configure-flags `("-DBUILD_SHARED_LIBS=1")))
+    (list #:tests? #f     ; No tests.
+          #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                    "-DREPROC++=ON")))
    (native-inputs
     (list pkg-config))
    (synopsis "Process IO library")
@@ -2702,6 +2703,37 @@ also includes a C library that checks casting, multiplication, division,
 addition and subtraction for all combinations of signed and unsigned 32-bit and
 64-bit integers.")
     (license license:expat)))
+
+(define-public wide-integer
+  (let ((commit "22b8428746248e682d5276f8e8b7fb52af73ea47")
+        (revision "1314"))              ; commit count
+   (package
+    (name "wide-integer")
+    (version (git-version "0" revision commit))
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/ckormanyos/wide-integer")
+                   (commit commit)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "0bhjnbdcphv5kddddh8kpwjpjix23m12vmfsz0r6wjc5d27md33z"))
+             (modules '((guix build utils)))
+             (snippet #~(substitute* "CMakeLists.txt"
+                          (("WideIntegerTargets") "wide-integer-targets")
+                          (("WideIntegerConfig") "wide-integer-config")
+                          (("WideInteger") "wide-integer")))))
+    (build-system cmake-build-system)
+    (native-inputs (list boost))
+    (home-page "https://github.com/ckormanyos/wide-integer")
+    (synopsis "C++ template for arbitrary-precision integers")
+    (description "This package implements a generic template for extended
+width signed and unsigned integral types.  Up to 63 limbs of any built-in
+integer type are supported, and can be used to build powers of two like
+int128_t, uint256_t, but also somewhat esoteric types such as int24_t,
+uint80_t, or uint1536_t.  The provided types can be used in much the same
+way as basic integer types.")
+    (license license:boost1.0))))
 
 (define-public wdl
   ;; No tag is available.

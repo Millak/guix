@@ -35,7 +35,7 @@
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022-2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1495,6 +1495,44 @@ matrix decomposition, sparse principal components analysis, and sparse
 canonical correlation analysis.")
     (license license:gpl2+)))
 
+(define-public r-rpresto
+  (package
+    (name "r-rpresto")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RPresto" version))
+       (sha256
+        (base32 "1q8c3h328iwscnayxj8qc71s2hkqdqwnpf38kn3zz3ks66qzjf8c"))))
+    (properties `((upstream-name . "RPresto")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bit64
+           r-dbi
+           r-dbplyr
+           r-dplyr
+           r-httr
+           r-jsonlite
+           r-lifecycle
+           r-lubridate
+           r-openssl
+           r-progress
+           r-purrr
+           r-rlang
+           r-stringi
+           r-tibble
+           r-vctrs))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/prestodb/RPresto")
+    (synopsis "DBI connector to Presto")
+    (description
+     "This package implements a DBI compliant interface to
+@url{https://prestodb.io/, Presto}, a distributed SQL query engine for running
+interactive analytic queries against data sources of all sizes ranging from
+gigabytes to petabytes.")
+    (license license:bsd-3)))
+
 (define-public r-prettydoc
   (package
     (name "r-prettydoc")
@@ -2672,13 +2710,13 @@ respecting the grammar of its graphics paradigm.")
 (define-public r-ggside
   (package
     (name "r-ggside")
-    (version "0.2.3")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggside" version))
               (sha256
                (base32
-                "0qj564rqxw8fn5h00wwmkvk6p3x60r64gpvxw9yrb5lvcykgsj8q"))))
+                "0mx6j9wi54inklmyydcqm0ahbx0b6c6y4sfh2awqsbgwigc3056p"))))
     (properties `((upstream-name . "ggside")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2729,14 +2767,14 @@ organisms via the @code{g:Profiler} toolkit.")
 (define-public r-gprofiler2
   (package
     (name "r-gprofiler2")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gprofiler2" version))
        (sha256
         (base32
-         "1zbfvpb4qqj6vipz0ps4pyy14h6rc4jaqfa8q4zrbhi5vvw9805r"))))
+         "1klmg0zj5kr663dzgfzpy1yn161znmjcjq8pl3rahjh2lwaahbmh"))))
     (properties `((upstream-name . "gprofiler2")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3935,13 +3973,13 @@ scraping tasks, inspired by libraries like @code{BeautifulSoup}.")
 (define-public r-secretbase
   (package
     (name "r-secretbase")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "secretbase" version))
        (sha256
-        (base32 "1z0ddzdimma8rgd47fn5mma09d5c7vrl5b7gdlvfk8l047yihyb6"))))
+        (base32 "1wgbk16by9w933cff5ybb2sa0ndgj3sv9ahr2r1843vgqiyvx2xi"))))
     (properties `((upstream-name . "secretbase")))
     (build-system r-build-system)
     (home-page "https://shikokuchuo.net/secretbase/")
@@ -6833,14 +6871,14 @@ on (non-orthogonal) variable vectors in scatterplots and biplots.")
 (define-public r-shape
   (package
     (name "r-shape")
-    (version "1.4.6")
+    (version "1.4.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shape" version))
        (sha256
         (base32
-         "0yqbrrx2ywmfl99s6d1n6jblc63k1mxbiqyv8y0kq8jws1g3w45r"))))
+         "1912znpk85j8c01s4m2f7x8rcqwski8b5n7g70cczmkzk47vvya3"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/shape")
     (synopsis "Functions for plotting graphical shapes")
@@ -6925,13 +6963,13 @@ graphics packages that comes with the base installation.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.17.1")
+    (version "1.17.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "0vb6nxhms66p90lh8ky693k7hchi5fbxxf8lnjcj4vhc0c5ijxns"))))
+                "0xsi3yc08gg9h5zh9h9r2d2ixv36f6wblmkcv51h9nfmawjyd8f8"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13370,14 +13408,14 @@ those searches and pull data into their R sessions.")
 (define-public r-renv
   (package
     (name "r-renv")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "renv" version))
        (sha256
         (base32
-         "1d2y1yks34dg862zcxx03dak1h2gikis6mabmws2srja2hr18nlq"))))
+         "0jfrkxslx1bw4b2akkp12bgvpfc58dh2vrm91hgb1xa5xydai7j6"))))
     (properties `((upstream-name . "renv")))
     (build-system r-build-system)
     (native-inputs
@@ -14177,14 +14215,14 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.6.4")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "1mhkb2k9l0fp7xxhx69h1cxyh8gnlpwr5rjiw25s7rp1czwmyjk5"))))
+         "1lzpabpdrwx3331b9qn43376r25bzgph1j9gbxzqjhzr1h871cpb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-openssl r-r6 r-ragg r-uuid r-xml2 r-zip))
@@ -14502,13 +14540,13 @@ tidyverse workflow.")
 (define-public r-nodbi
   (package
     (name "r-nodbi")
-    (version "0.10.1")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "nodbi" version))
               (sha256
                (base32
-                "180zydrq9wr53y0nd5v1z86f00v49m4xlam91ykc6jy4s7xvamz1"))))
+                "1pznlnln0p55qqwy22h9m79ddf3wgnx3vaxx2q39wvgqwj0kk1b0"))))
     (properties `((upstream-name . "nodbi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -14519,6 +14557,7 @@ tidyverse workflow.")
            r-stringi
            r-uuid
            r-v8))
+    (native-inputs (list r-knitr))
     (home-page "https://docs.ropensci.org/nodbi/")
     (synopsis "NoSQL database connector")
     (description
@@ -15542,14 +15581,14 @@ Models\" (Hastie and Tibshirani, 1990).")
 (define-public r-superlearner
   (package
     (name "r-superlearner")
-    (version "2.0-28.1")
+    (version "2.0-29")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SuperLearner" version))
        (sha256
         (base32
-         "19kb4shfhj5aigjm1ljmlvr0jmgcbd6yl4gl3wfddy0nk2wi2bvm"))))
+         "0g1baz8jakgfwdh5bd9hrg1nm4ljpnxiiy5pmf00d27ld7wh6sr3"))))
     (properties `((upstream-name . "SuperLearner")))
     (build-system r-build-system)
     (propagated-inputs
@@ -15807,13 +15846,13 @@ Processing of very large files is supported.")
 (define-public r-mosaic
   (package
     (name "r-mosaic")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mosaic" version))
        (sha256
-        (base32 "1dydqawljv5l9lmhdrhmr7wh3q1c2mnc61gc99jr0jbb1bmls327"))))
+        (base32 "0l7h3zg5izr5xxqy1sngz6fzbwdffzljnjmfbshzzbl4x80f5lwl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
@@ -17310,14 +17349,14 @@ effects models and Bayesian models.")
 (define-public r-ggeffects
   (package
     (name "r-ggeffects")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggeffects" version))
        (sha256
         (base32
-         "1r9mbfcanwh2f617fgxnz3gijgpcjxvwzvpd7z8dg30rcm3ajb5r"))))
+         "0yczz34rn4sikwzqpm3w47zwm201mv4mljrcgpb50is06g3l7azk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-insight))
@@ -18078,14 +18117,14 @@ using C++ code and of the OpenMP API.")
 (define-public r-afex
   (package
     (name "r-afex")
-    (version "1.3-0")
+    (version "1.3-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "afex" version))
        (sha256
         (base32
-         "0cqr3vv4aapg8ckhrkwqhs5qvzl8zla147fvhd5wb2020yhpdqpq"))))
+         "1a1ilqn5xz7kkiwwaqi911b1cf9zc78l9my0fvjq3l73hrzgnr2a"))))
     (build-system r-build-system)
     ;; This is needed for the vignette builder
     (arguments
@@ -25561,14 +25600,14 @@ colored by the number of neighboring points.  This is useful to visualize the
 (define-public r-arrow
   (package
     (name "r-arrow")
-    (version "14.0.0.2")
+    (version "14.0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arrow" version))
        (sha256
         (base32
-         "1dwap9lap0hac0bhi8ajz06n9ccjdyfr5s153k1lxfgicqnsaf3i"))))
+         "1l1ninmq6mbqm7cckcy0qw4f20fkrixrykcqkh24bszg514r9af5"))))
     (properties `((upstream-name . "arrow")))
     (build-system r-build-system)
     (inputs
@@ -25849,13 +25888,13 @@ code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
 (define-public r-sccore
   (package
     (name "r-sccore")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sccore" version))
        (sha256
-        (base32 "11l7xl1ylzmda4i2p1b08a43pvciin2i2sas2n3cj1gmamflkji3"))))
+        (base32 "12jljngm0v75zp0zka1zdrn6pvxvqy7qpakr7vzazvq1vvjd5qlg"))))
     (properties `((upstream-name . "sccore")))
     (build-system r-build-system)
     (propagated-inputs
@@ -32612,19 +32651,19 @@ recommendations for developers.")
 (define-public r-loo
   (package
     (name "r-loo")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "loo" version))
        (sha256
-        (base32 "040jk0zmpljq3ayd87bjy5vwwfy49im6kylp6z4wnqisypyn1nk6"))))
+        (base32 "0dnbbflglm7b29vr11rfrawnys9s3rl4h00h6xh9smjyalqz6r3n"))))
     (properties `((upstream-name . "loo")))
     (build-system r-build-system)
     (inputs
      (list pandoc))
     (propagated-inputs
-     (list r-checkmate r-matrixstats))
+     (list r-checkmate r-matrixstats r-posterior))
     (native-inputs
      (list r-knitr))
     (home-page "https://mc-stan.org/loo/")
@@ -34296,14 +34335,14 @@ Kemeny distance and correlation coefficient.")
 (define-public r-fastshap
   (package
     (name "r-fastshap")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastshap" version))
        (sha256
         (base32
-         "112hc585aryzc5pgvr3qaa7arlx2h2sj9jlq9xha3nncyzqkh7c6"))))
+         "1j6bnkv4q8n85xlvzm5p6p4yg8wdp6an6skbvdif5g9c376hzqb2"))))
     (properties `((upstream-name . "fastshap")))
     (build-system r-build-system)
     (propagated-inputs
@@ -35940,14 +35979,14 @@ prediction of kriging models.")
 (define-public r-dials
   (package
     (name "r-dials")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dials" version))
        (sha256
         (base32
-         "1zj8f47jzgaydp3cff96w0kx1gm208vyq3f77p3g59nc01r0wri4"))))
+         "0xrvvz4pkzmjsizjqfcvpn6f1cl9yp56lyc2iw8vcvwa18gb6szf"))))
     (properties `((upstream-name . "dials")))
     (build-system r-build-system)
     (propagated-inputs
@@ -38619,14 +38658,14 @@ to read the latter.")
 (define-public r-readtext
   (package
     (name "r-readtext")
-    (version "0.90")
+    (version "0.91")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "readtext" version))
         (sha256
           (base32
-            "01hscqmjb3fz4iqqgi0l2s1z48a53a25jnsxb0cdd631c97alqrh"))))
+            "0bzaq0vx6c83i4xf7p9zwka7h7jbv1qfy6w4v3kljx30hl048dpn"))))
     (properties `((upstream-name . "readtext")))
     (build-system r-build-system)
     (propagated-inputs
@@ -38682,14 +38721,14 @@ and formatted text files with additional meta-data, such including @code{.csv},
 (define-public r-lwgeom
   (package
     (name "r-lwgeom")
-    (version "0.2-13")
+    (version "0.2-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lwgeom" version))
        (sha256
         (base32
-         "0rqw2nhac832b9v2hdz6wwc51iykh86x5qrq0azlibr9q242i0ph"))))
+         "174jpsri9xpr9zb5hvzqhbhnajqw3aa38ajy1skl7ky8vgvnrnr6"))))
     (properties `((upstream-name . "lwgeom")))
     (build-system r-build-system)
     (inputs
@@ -38787,14 +38826,14 @@ supply the workflow to create thematic maps.  This package also facilitates
 (define-public r-rtweet
   (package
     (name "r-rtweet")
-    (version "1.2.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rtweet" version))
        (sha256
         (base32
-         "18ynravc5vz7ywm1n7ww48gx06dndcishl6lq8nqajxsjwiphq3r"))))
+         "1w41a1a5mgg06gvs468vrg9pax2nrnkiqhwllxmkk0i7s15gvi42"))))
     (properties `((upstream-name . "rtweet")))
     (build-system r-build-system)
     (propagated-inputs

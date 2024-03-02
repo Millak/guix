@@ -39,7 +39,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2020, 2022 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2022, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -1319,25 +1319,22 @@ HTTP servers, RESTful APIs, and web services.")
 (define-public parfive
   (package
     (name "parfive")
-    (version "2.0.1")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "parfive" version))
               (sha256
                (base32
-                "19dcbb6g56l5s3ih0bhs3p4acgc0gf4zdzpj4w87m69li2nhmgpx"))))
-    (build-system python-build-system)
+                "0pf8rzfwxpkn84xzb4v8m1fy3k7kjlh8f9ln4y5xqlnbqpwi30lh"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'disable-test-requiring-network
-                          (lambda _
-                            (substitute* "parfive/tests/test_downloader.py"
-                              (("def test_ftp")
-                               "def __off_test_ftp"))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "pytest" "-vvv" "parfive")))))))
+     (list
+      ;; Disable tests requiring network access.
+      #:test-flags
+      #~(list "-k" (string-append
+                    "not test_ftp"
+                    " and not test_ftp_pasv_command"
+                    " and not test_ftp_http"))))
     (propagated-inputs (list python-aiofiles python-aioftp python-aiohttp
                              python-tqdm))
     (native-inputs (list python-pytest
@@ -3549,20 +3546,14 @@ adapter for use with the Requests library.")
 (define-public python-aioftp
   (package
     (name "python-aioftp")
-    (version "0.21.4")
+    (version "0.22.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aioftp" version))
               (sha256
                (base32
-                "1f8vql2j2b3ykqyh5bxzsp8x5f2if2c1ya232ld3hz3cc7a2dfr8"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vvv")))))))
+                "0w621mg956m9rn7v39jpwi4gpnpl90pprwl29cp640dahqqv38ms"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-async-timeout python-pytest
                          python-pytest-asyncio python-pytest-cov
                          python-trustme))
@@ -8799,6 +8790,71 @@ starlette.")
 Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
 pattern.")
     (license license:expat)))
+
+(define-public python-fastapi-pagination-minimal
+  (package
+    (name "python-fastapi-pagination-minimal")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/uriyyo/fastapi-pagination")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkcphjk1qy680v1hkmqbs4p7srvx020wy39b97anrn9dyyi5ah6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests depend on python-cassandra,
+     ;; which is not yet packaged in Guix.
+     `(#:tests? #f))
+    (native-inputs
+     (list poetry))
+    ;; These are the only required dependencies,
+    ;; please add all optional dependencies to the
+    ;; full python-fastapi-pagination below.
+    (propagated-inputs (list python-fastapi
+                             python-pydantic))
+    (home-page "https://github.com/uriyyo/fastapi-pagination")
+    (synopsis "FastAPI pagination library")
+    (description "@code{fastapi-pagination} is a Python library designed to
+simplify pagination in FastAPI applications.  It provides a set of utility
+functions and data models to help you paginate your database queries and
+return paginated responses to your clients.")
+    (license license:expat)))
+
+(define-public python-fastapi-pagination
+  (package
+    (inherit python-fastapi-pagination-minimal)
+    (name "python-fastapi-pagination")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs
+                     python-fastapi-pagination-minimal)
+       (prepend python-asyncpg
+                python-databases
+                python-django
+                python-fastapi
+                python-pydantic
+                python-sqlalchemy
+                (package
+                  (inherit python-tortoise-orm)
+                  (arguments
+                   (substitute-keyword-arguments (package-arguments
+                                                  python-tortoise-orm)
+                     ((#:phases phases '%standard-phases)
+                      `(modify-phases ,phases
+                        (delete 'sanity-check)))))
+                  (propagated-inputs
+                   (modify-inputs (package-propagated-inputs python-tortoise-orm)
+                     (replace "python-aiosqlite" python-aiosqlite)))))))
+    (description
+     (string-append (package-description python-fastapi-pagination-minimal)
+                    "
+
+This package, as opposed to @code{python-fastapi-pagination-minimal}, depends on
+all available optional dependencies supported by mainline
+@code{fastapi-pagination}."))))
 
 (define-public python-pyactiveresource
   (package

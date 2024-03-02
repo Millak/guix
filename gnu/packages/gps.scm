@@ -48,6 +48,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages xml))
 
@@ -140,7 +141,7 @@ between two other data points.")
 (define-public gama
   (package
     (name "gama")
-    (version "2.28")
+    (version "2.29")
     (source
       (origin
         (method url-fetch)
@@ -148,7 +149,7 @@ between two other data points.")
                             version ".tar.gz"))
         (sha256
          (base32
-          "06kblr43yxkn5y77nigwy42r81cmi5pxz3kp50z271vvj3h3zisx"))
+          "04dlh1pdaiq059ssrxa4yn24iqgjrzy2mq7s9n1pgrzlzz3a63y0"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -157,7 +158,7 @@ between two other data points.")
     (build-system gnu-build-system)
     (arguments '(#:parallel-tests? #f)) ; race condition
     (native-inputs
-     (list libxml2))
+     (list libxml2 yaml-cpp))
     (inputs
      (list expat sqlite))
     (home-page "https://www.gnu.org/software/gama/")

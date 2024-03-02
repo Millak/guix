@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
@@ -133,25 +133,26 @@ greatest common divisor operations.")
 (define-public cm
   (package
    (name "cm")
-   (version "0.4.2")
+   (version "0.4.3")
    (source (origin
             (method url-fetch)
             (uri (string-append
-                  "http://www.multiprecision.org/downloads/cm-"
+                  "https://www.multiprecision.org/downloads/cm-"
                   version ".tar.gz"))
             (sha256
              (base32
-              "1c6m00wiw3rs5f0lq6c80rdr3dzklsvh69l8w3s7bj2r6yha6qbw"))))
+              "01dha0hl0daappjiydpk4ngl9nxkxli6a48jp6d7v85yjjykac5j"))))
    (build-system gnu-build-system)
    (propagated-inputs
-     (list mpfrcx zlib)) ; Header files included from cm_common.h.
+     (list mpfrcx zlib)) ; Header files included from lib/cm.h.
    (inputs
-     (list pari-gp))
+     (list flint pari-gp))
    (synopsis "CM constructions for elliptic curves")
    (description
     "The CM software implements the construction of ring class fields of
 imaginary quadratic number fields and of elliptic curves with complex
-multiplication via floating point approximations.  It consists of libraries
+multiplication via floating point approximations, and the elliptic curve
+primality proving algorithm (ECPP).  It consists of libraries
 that can be called from within a C program and of executable command
 line applications.")
    (license license:gpl3+)
@@ -294,6 +295,34 @@ PARI is also available as a C library to allow for faster computations.
 GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
    (license license:gpl2)
    (home-page "https://pari.math.u-bordeaux.fr/")))
+
+(define-public paritwine
+  (package
+    (name "paritwine")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.multiprecision.org/downloads/" name
+                    "-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "15m5jxmhx5zivk1k9wxpmzs8kqva3kvgxizdrkrmmp1qycn85n23"))))
+    (build-system gnu-build-system)
+    (propagated-inputs (list pari-gp
+                             gmp
+                             mpfr
+                             mpc
+                             cmh
+                             flint)) ; referenced in src/paritwine.h
+    (synopsis "Glue library between PARI/GP and other mathematics libraries")
+    (description
+     "PariTwine is a glue library between the system for computer algebra
+and number theory PARI/GP and a number of other mathematics libraries,
+currently GMP, GNU MPFR, GNU MPC, FLINT and CMH.")
+    (license license:gpl2+)
+    (home-page "https://www.multiprecision.org/paritwine/index.html")))
 
 (define-public cmh
   (package

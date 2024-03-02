@@ -24,7 +24,7 @@
 ;;; Copyright © 2018, 2019, 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2019,2022 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1460,20 +1461,19 @@ HTTP.")
 (define-public bruteforce-luks
   (package
     (name "bruteforce-luks")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/glv2/bruteforce-luks/releases/download/"
-                           version
-                           "/bruteforce-luks-"
-                           version
-                           ".tar.lz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/bruteforce-luks")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yawrlbbklhmvwr99wm7li3r0d5kxvpkwf33a12rji7z0ya5p340"))))
+        (base32 "1fhvm7ykqv2anny6zavd4iwh6gq5rp1r27p3zhn78sd3y34xhkmp"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list lzip))
+     (list autoconf automake))
     (inputs
      (list cryptsetup))
     (synopsis "LUKS encrypted volume cracker")
@@ -1482,6 +1482,32 @@ HTTP.")
 exhaustive mode to try every password given a charset or in dictionary mode to
 try every password contained in a file.")
     (home-page "https://github.com/glv2/bruteforce-luks")
+    (license license:gpl3+)))
+
+(define-public bruteforce-salted-openssl
+  (package
+    (name "bruteforce-salted-openssl")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/bruteforce-salted-openssl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00w1szj04jb63rh7sq1spc50013jgmz2nwm8k552i9ir8h4phw45"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake))
+    (inputs
+     (list openssl))
+    (synopsis "Bruteforce cracker for openssl encrypted files")
+    (description
+     "This is a cracker for openssl encrypted files.  It can be used either in
+exhaustive mode to try every password given a charset or in dictionary mode to
+try every password contained in a file.")
+    (home-page "https://github.com/glv2/bruteforce-salted-openssl")
     (license license:gpl3+)))
 
 (define-public makepasswd
@@ -1561,6 +1587,37 @@ are not using it.  It uses the same GPG key to encrypt passwords and tomb,
 therefore you don't need to manage more key or secret.  Moreover, you can ask
 pass-tomb to automatically close your store after a given time.")
     (license license:gpl3+)))
+
+(define-public pass-coffin
+  (package
+    (name "pass-coffin")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ayushnix/pass-coffin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1486ikwsdjsj74qf949vk47r8mfp2mbbdc3scs8786nnnkhzc89n"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests
+      #:make-flags #~(list (string-append "PREFIX="
+                                          #$output)
+                           (string-append "BASHCOMPDIR="
+                                          #$output "/etc/bash_completion.d"))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs (list password-store tar))
+    (home-page "https://github.com/ayushnix/pass-coffin")
+    (synopsis "Pass extension to keep the tree of passwords encrypted")
+    (description
+     "Pass-coffin is a pass extension that hides the password store
+data inside a GPG encrypted file, which we'll call a coffin.")
+    (license license:gpl3)))
 
 (define-public xkcdpass
   (package

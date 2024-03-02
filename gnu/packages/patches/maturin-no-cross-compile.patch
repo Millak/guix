@@ -2,27 +2,27 @@ Remove dependencies on xwin and zig.  We're not offering cross-compilation
 options using these crates.
 
 diff --git a/Cargo.toml b/Cargo.toml
-index 6cbdca3..22ea5ef 100644
+index 6704e46..ff126a9 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -76,16 +76,6 @@ version = "0.1.4"
+@@ -83,16 +83,6 @@ version = "0.1.16"
  [dependencies.cargo-options]
- version = "0.6.0"
+ version = "0.7.2"
  
 -[dependencies.cargo-xwin]
--version = "0.14.3"
+-version = "0.16.2"
 -optional = true
 -default-features = false
 -
 -[dependencies.cargo-zigbuild]
--version = "0.16.10"
+-version = "0.18.0"
 -optional = true
 -default-features = false
 -
  [dependencies.cargo_metadata]
- version = "0.15.3"
+ version = "0.18.0"
  
-@@ -310,8 +300,6 @@ version = "4.3.0"
+@@ -321,8 +311,6 @@ version = "5.0.0"
  [features]
  cli-completion = ["dep:clap_complete_command"]
  cross-compile = [
@@ -31,7 +31,7 @@ index 6cbdca3..22ea5ef 100644
  ]
  default = [
      "full",
-@@ -330,7 +318,6 @@ log = ["tracing-subscriber"]
+@@ -341,7 +329,6 @@ log = ["tracing-subscriber"]
  native-tls = [
      "dep:native-tls",
      "ureq?/native-tls",
@@ -39,7 +39,7 @@ index 6cbdca3..22ea5ef 100644
      "dep:rustls-pemfile",
  ]
  password-storage = [
-@@ -340,7 +327,6 @@ password-storage = [
+@@ -351,7 +338,6 @@ password-storage = [
  rustls = [
      "dep:rustls",
      "ureq?/tls",
@@ -47,7 +47,7 @@ index 6cbdca3..22ea5ef 100644
      "dep:rustls-pemfile",
  ]
  scaffolding = [
-@@ -358,5 +344,3 @@ upload = [
+@@ -369,5 +355,3 @@ upload = [
      "wild",
      "dep:dirs",
  ]

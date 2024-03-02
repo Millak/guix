@@ -1480,6 +1480,56 @@ PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
     (license license:asl2.0)))
 
+(define-public pgvector
+  (package
+    (name "pgvector")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pgvector/pgvector")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19zcjrlmyj7gfbn8prh014yq50iy4dg97pirsm7idxsr829vwyc5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Do not use -march=native
+      #:make-flags
+      '(list "OPTFLAGS=")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((extension (string-append #$output "/share/extension"))
+                    (lib (string-append #$output "/lib"))
+                    (headers (string-append #$output "/include/server/extension/vector")))
+                (for-each mkdir-p (list extension lib headers))
+                (install-file "vector.so" lib)
+                (chmod (string-append lib "/vector.so") #o755)
+                (install-file "vector.control" extension)
+                (for-each (lambda (file)
+                            (install-file file extension))
+                          (find-files "sql" "\\.sql$"))
+                (install-file "src/vector.h" headers)))))))
+    (inputs (list postgresql))
+    (home-page "https://github.com/pgvector/pgvector")
+    (synopsis "Vector similarity search for Postgres")
+    (description
+     "This package provides a vector similarity search extension for Postgres.
+Store your vectors with the rest of your data.  It supports:
+
+@itemize
+@item exact and approximate nearest neighbor search;
+@item L2 distance, inner product, and cosine distance;
+@item any language with a Postgres client.
+@end itemize
+")
+    (license (license:x11-style "file://COPYRIGHT"))))
+
 (define-public pgloader
   (package
     (name "pgloader")
@@ -4461,7 +4511,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "14.0.0")
+    (version "14.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4471,7 +4521,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08x01jcibmx03g9p0sjikp3dyynw6is6gyn0m3cy1gwkpkwk2ad2"))))
+         "1idw58vs8r6g6xy2qkhccgc79hwx4r5rr4bhd6ilxx56fwq9hkn2"))))
     (build-system cmake-build-system)
     (arguments
      (list

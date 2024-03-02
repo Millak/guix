@@ -942,7 +942,7 @@ generation.")
 (define-public googlebenchmark
   (package
     (name "googlebenchmark")
-    (version "1.8.2")
+    (version "1.8.3")
     (home-page "https://github.com/google/benchmark")
     (source (origin
               (method git-fetch)
@@ -951,7 +951,7 @@ generation.")
               (file-name (git-file-name "google-benchmark" version))
               (sha256
                (base32
-                "1p72bw7xcd88d8268fmmzji59408f552fbiv37jmsixml5dmq9wv"))))
+                "1hf8xrdd9k57kw3mpdi68a78fd96vzdqv3179v2yy5dxx336ffw3"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
@@ -965,6 +965,29 @@ generation.")
      "The googlebenchmark C++ library support the benchmarking of functions,
 similar to unit tests.")
     (license license:asl2.0)))
+
+(define-public greatest
+  (package
+   (name "greatest")
+   (version "1.5.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/silentbicycle/greatest")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "11rajkb5m7mlzi3i3v0i27k6rrjw3x8a7bl6fkc29igzpwfbxndy"))))
+   (build-system copy-build-system)
+   (arguments (list #:install-plan
+                    #~'(("greatest.h" "include/"))))
+   (home-page "https://github.com/silentbicycle/greatest")
+   (synopsis "Single-header test system")
+   (description "Greatest is a single-header test system for C, including
+macros for defining tests, grouping them into suites, and providing a test
+runner.  It is quite unopinionated with most of its features being optional.")
+   (license license:isc)))
 
 (define-public cpputest
   (package
@@ -3103,6 +3126,36 @@ retried.")
     (description "PyHamcrest is a framework for writing matcher objects,
 allowing you to declaratively define \"match\" rules.")
     (license license:bsd-3)))
+
+(define-public theft
+  (package
+   (name "theft")
+   (version "0.4.5")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/silentbicycle/theft")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1n2mkawfl2bpd4pwy3mdzxwlqjjvb5bdrr2x2gldlyqdwbk7qjhd"))
+            (snippet #~(begin
+                         (delete-file "vendor/greatest.h")))))
+   (build-system gnu-build-system)
+   (arguments (list #:make-flags #~(list "VENDOR="
+                                         (string-append "CC=" #$(cc-for-target))
+                                         (string-append "PREFIX=" #$output))
+                    #:test-target "test"
+                    #:phases
+                    #~(modify-phases %standard-phases
+                        (delete 'bootstrap)
+                        (delete 'configure))))
+   (native-inputs (list greatest))
+   (home-page "https://github.com/silentbicycle/theft")
+   (synopsis "Property-based testing for C")
+   (description "Theft is a library for property-based testing.")
+   (license license:isc)))
 
 (define-public unittest-cpp
   (package

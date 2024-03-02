@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015-2023 Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -83,6 +83,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -96,6 +97,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cook)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
@@ -874,10 +876,10 @@ which has been extracted into a standalone library for compatibility with
 other git-like projects such as @code{libgit2}.")
       (license license:lgpl2.1+))))
 
-(define-public libgit2
+(define-public libgit2-1.5
   (package
     (name "libgit2")
-    (version "1.5.1")
+    (version "1.5.2")
     (source (origin
               ;; Since v1.1.1, release artifacts are no longer offered (see:
               ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
@@ -888,7 +890,7 @@ other git-like projects such as @code{libgit2}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04ypzpicpgq1wh6anwcmjjyh2b854lvjhxq0hq2hbsx7kb14qc1b"))
+                "0v9jdaxmqrzbs9v5vhh2xf5xv9h29q8qqn8vmns279ljx1zav5yd"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -911,8 +913,10 @@ other git-like projects such as @code{libgit2}.")
                    '()))
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-arm32?)
+         ,@(if (or (target-arm32?) (target-hurd?))
              ;; Some tests are flaky on armhf.
+             ;; On GNU/Hurd, the 'diff/workdir' test in libgit2 1.7.1 fails
+             ;; while comparing st.st_size to zero.
              '((add-before 'check 'pre-check
                  (lambda _
                    (setenv "GITTEST_FLAKY_STAT" "true"))))
@@ -940,10 +944,14 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
+(define-public libgit2
+  ;; Default version of libgit2.
+  libgit2-1.5)
+
 (define-public libgit2-1.7
   (package
     (inherit libgit2)
-    (version "1.7.1")
+    (version "1.7.2")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -953,7 +961,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "1wq6a91k97gbsyafla39yvn1lnr559hqc41ksz1qxv7flf5kyvfx"))
+                "0i95jwrwx4svh5l4dpa5r4a99f813hlm7nzzkbqzmnw4pkyxhlvx"))
               ;; We need to use the bundled xdiff until an option is given
               ;; to use the one from git.
               (modules '((guix build utils)))
@@ -985,7 +993,7 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2-1.4
   (package
     (inherit libgit2)
-    (version "1.4.5")
+    (version "1.4.6")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -995,7 +1003,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0q754ipc6skagszi93lcy6qr09ibavivm2q5i5fhpdblvlnv2p7x"))))))
+                "0iv7h2fdnlv5vj4dx09w71xbj004hidbpsbgv02gbvlpvsz3jpcf"))))))
 
 (define-public libgit2-1.3
   (package
@@ -2914,16 +2922,20 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.12.3")
+    (version "0.13.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "b4" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/utils/b4/b4.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qpa0ahw1d86mdgs09ykq5pd0lm8083ds6j0knalw757yh31akmn"))))
-    (build-system python-build-system)
+        (base32
+         "1dijszinn00r6d0lxii3jz36h2c23zavbgz1m8finp5v6kaiafcg"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f                  ;no tests
+     (list #:tests? (not (%current-target-system)) ;git path hardcoded.
            #:phases
            #~(modify-phases %standard-phases
                ;; XXX: dnspython attempts to read /etc/resolv.conf when loading
@@ -2938,9 +2950,14 @@ email header.")
                       (string-append
                        "['" (search-input-file inputs "bin/git") "'"))))))))
     (inputs
-     (list git-minimal python-dkimpy python-dnspython python-requests))
-    (propagated-inputs
-     (list patatt))
+     (list git-filter-repo
+           git-minimal
+           patatt
+           python-dkimpy
+           python-dnspython
+           python-requests))
+    (native-inputs
+     (list python-pytest))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
     (synopsis "Tool for working with patches in public-inbox archives")
     (description

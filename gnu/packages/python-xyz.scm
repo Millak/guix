@@ -14,7 +14,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2019, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2017, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -29,7 +29,7 @@
 ;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016–2018, 2021–2023 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2018, 2021–2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -181,6 +181,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
@@ -579,7 +580,13 @@ workspaces.
        (method url-fetch)
        (uri (pypi-uri "databind.core" version))
        (sha256
-        (base32 "130hr19kbzizx9n2q7cwfzfk20ii3cqmqjrzb16psnafll303k2d"))))
+        (base32 "130hr19kbzizx9n2q7cwfzfk20ii3cqmqjrzb16psnafll303k2d"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; The problem with python-typing-extensions >= 4.7 is only
+                 ;; with python-3.7.
+                 (substitute* "pyproject.toml"
+                   ((",<4.7.*") "\"\n"))))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -624,7 +631,13 @@ Python dataclasses.")
        (method url-fetch)
        (uri (pypi-uri "databind.json" version))
        (sha256
-        (base32 "1lm864d7arfq0pw64hyc83bwn1z94wjg7a22q1xf0qkjynqs70gg"))))
+        (base32 "1lm864d7arfq0pw64hyc83bwn1z94wjg7a22q1xf0qkjynqs70gg"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; The problem with python-typing-extensions >= 4.7 is only
+                 ;; with python-3.7.
+                 (substitute* "pyproject.toml"
+                   ((",<4.7.*") "\"\n"))))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1103,19 +1116,29 @@ during long operations.")
 (define-public python-lunr
   (package
     (name "python-lunr")
-    (version "0.6.0")
+    (version "0.7.0.post1")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "lunr" version))
        (sha256
-        (base32 "106akalywfmnypzkdrhgz4n4740a8xayspybsw59kq06vz8i2qrc"))))
-    (build-system python-build-system)
+        (base32 "1njb23lw619ppidqdzygdrscna4z15n9xjc4cc7yxiskkgsriz00"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" "not TestLanguageSupport"
+             "--ignore-glob=tests/acceptance_tests/*")))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-coverage
+           python-hatch-fancy-pypi-readme
+           python-hatchling
+           python-pytest
+           python-pytest-timeout
+           python-tox))
     (propagated-inputs
-     (list python-nltk-3.4))
+     (list python-importlib-metadata python-typing-extensions))
     (home-page
      "https://github.com/yeraydiazdiaz/lunr.py")
     (synopsis "Full-text search library")
@@ -2560,13 +2583,13 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
 (define-public python-h5netcdf
   (package
     (name "python-h5netcdf")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "h5netcdf" version))
        (sha256
-        (base32 "0mmzfr6k55zqxxpb64gvdqisak8s1zb2r04yzkmp0wzd7dbknb4k"))))
+        (base32 "1kw3cf01kziwxmb84x0cy6vbpsmqjm0k1dm34i6b4d7bv8kw0wd1"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-netcdf4
@@ -5147,14 +5170,14 @@ interfaces.")
 (define-public python-click
   (package
     (name "python-click")
-    (version "8.1.3")
+    (version "8.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "click" version))
        (sha256
         (base32
-         "13kvp8visj5xh9d43brnda6q0kc1s40flxa5cw0p0a9hzf5dr0kn"))))
+         "1pm6khdv88h764scik67jki98xbyj367h591j8hpwy4y8nnm766a"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -6230,6 +6253,30 @@ important tasks for becoming a daemon process:
 @end enumerate")
     ;; Only setup.py is gpl3+, everything else is apache 2.0 licensed.
     (license (list license:asl2.0 license:gpl3+))))
+
+(define-public python-annotated-types
+  (package
+    (name "python-annotated-types")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "annotated_types" version))
+       (sha256
+        (base32 "0paaz0i4xqk335ji5w887i2bhgm2krnzr6by4sfgsgz50zl3jcsn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs (list python-typing-extensions))
+    (home-page "https://github.com/annotated-types/annotated-types")
+    (synopsis "Reusable constraint types to use with typing.Annotated")
+    (description "This package provides metadata objects which can be used to
+represent common constraints such as upper and lower bounds on scalar values and
+collection sizes, a Predicate marker for runtime checks, and descriptions of how
+we intend these metadata to be interpreted.  In some cases, we also note
+alternative representations which do not require this package.")
+    (license license:expat)))
 
 (define-public python-anytree
   (package
@@ -7387,6 +7434,101 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
     (description
      "Pydantic enforces type hints at runtime, and provides user friendly
 errors when data is invalid.")
+    (license license:expat)))
+
+(define-public python-pydantic-2
+  (package
+    (inherit python-pydantic)
+    (name "python-pydantic")
+    (version "2.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydantic" version))
+       (sha256
+        (base32 "0yiz75zp93x6x2czm772cz5pzn00i703irncjwb99c1m4p35gvxk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+       #:test-flags #~(list "--ignore=tests/test_docs.py"   ; no pytest_examples
+                            ;; need python-email-validator >= 2.0.0
+                            "-k not test_fastapi_startup_perf")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'check 'pre-check
+             (lambda _
+               ;; Remove the addopts from pyproject.toml, it breaks the 'check phase.
+               (substitute* "pyproject.toml"
+                 (("'--benchmark") "#'--benchmark")))))))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-fancy-pypi-readme
+           python-cloudpickle
+           python-dirty-equals
+           python-faker
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-annotated-types
+           python-pydantic-core
+           python-typing-extensions))))
+
+(define-public python-pydantic-core
+  (package
+    (name "python-pydantic-core")
+    (version "2.14.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydantic_core" version))
+       (sha256
+        (base32 "0j79pd6ixapsiwsigsxzmvbrpmdr7f7c4l9sl7xl6a1pjp9w3l0z"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'prepare-python-module 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install)))
+      #:cargo-inputs
+      `(("rust-ahash" ,rust-ahash-0.8)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-enum-dispatch" ,rust-enum-dispatch-0.3)
+        ("rust-idna" ,rust-idna-0.4)
+        ("rust-jiter" ,rust-jiter-0.0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+        ("rust-pyo3" ,rust-pyo3-0.20)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.20)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-strum" ,rust-strum-0.25)
+        ("rust-strum-macros" ,rust-strum-macros-0.25)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-speedate" ,rust-speedate-0.13)
+        ("rust-url" ,rust-url-2)
+        ("rust-uuid" ,rust-uuid-1)
+        ("rust-version-check" ,rust-version-check-0.9))
+      #:cargo-development-inputs
+      `(("rust-pyo3" ,rust-pyo3-0.20))
+      #:install-source? #false))
+    (native-inputs
+     (list maturin python-wrapper))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/pydantic/pydantic-core")
+    (synopsis "Core validation logic for pydantic")
+    (description "This package provides the core functionality for pydantic
+validation and serialization.")
     (license license:expat)))
 
 (define-public python-pydantic-cli
@@ -17898,17 +18040,17 @@ that deprecated code is eventually removed.")
 (define-public python-jmespath
   (package
    (name "python-jmespath")
-   (version "1.0.0")
+   (version "1.0.1")
    (source
     (origin
      (method url-fetch)
      (uri (pypi-uri "jmespath" version))
      (sha256
       (base32
-       "0pmzfi230zfgiq2rz896kbb9f7mp0lnrjdl6x1npvxfixn0f5454"))))
+       "1gpdc1f0q5c9scmbw1l9g40jjfk3pxwg91ayvn7xbvvddlh1n9lh"))))
    (build-system python-build-system)
    (native-inputs
-    (list python-nose))
+    (list python-pytest))
    (synopsis "JSON Matching Expressions")
    (description "JMESPath (pronounced “james path”) is a Python library that
 allows one to declaratively specify how to extract elements from a JSON
@@ -21730,20 +21872,6 @@ JSON) codec.")
      for classification, tokenization, stemming, tagging, parsing, and semantic
      reasoning, wrappers for natural language processing libraries.")
     (license license:asl2.0)))
-
-;; Versions >=3.5 breaks backward-compatibility,
-;; so we keep version 3.4.x around for a while.
-(define-public python-nltk-3.4
-  (package
-    (inherit python-nltk)
-    (version "3.4.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "nltk" version ".zip"))
-       (sha256
-        (base32 "153x2clrnigs74jdgnn3qmljdjj4gprmvpdvh49i18ls4m8mbm5y"))))
-    (propagated-inputs (list python-six))))
 
 (define-public python-pymongo
   (package
@@ -31996,7 +32124,18 @@ and frame grabber interface.")
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
                               "and not test_generator_cleanup "
-                              "and not test_generator_selection "))))))))
+                              "and not test_generator_selection "
+                              ;; … and there's more of them
+                              "and not test_cxx_compiler "
+                              "and not test_fortran_compiler ")))))
+          (add-after 'install 'install-cmake
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((lib (string-append (assoc-ref outputs "out")
+                                        "/lib/cmake/modules")))
+                (mkdir-p lib)
+                (with-directory-excursion "skbuild/resources/cmake"
+                   (for-each (lambda (file) (install-file file lib))
+                             (find-files "." "\\.cmake")))))))))
     (native-inputs
      (list cmake-minimal
            gfortran

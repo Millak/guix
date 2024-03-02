@@ -1676,7 +1676,7 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.9.2")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1685,7 +1685,7 @@ based on the Osmium library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "198qcgl42pb8lk1bn41ncp8hc9gcg9k2p0ny42vak019w5l6jcj7"))
+                "135vqahlcrhwa3b9hfgbiqkzbbsjd4i79fp41cd0rp4zarcpi47p"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled libraries.
@@ -1693,20 +1693,21 @@ based on the Osmium library.")
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;tests fail because we need to setup a database
-           #:configure-flags #~(list "-DUSE_PROJ_LIB=4" ;use API version 4
+           #:configure-flags #~(list "-DUSE_PROJ_LIB=6" ;use API version 6
                                      "-DWITH_LUAJIT=ON"
                                      "-DEXTERNAL_LIBOSMIUM=ON"
                                      "-DEXTERNAL_PROTOZERO=ON"
                                      "-DEXTERNAL_FMT=ON")))
     (inputs (list boost
                   bzip2
+                  cli11
                   expat
                   fmt-8
                   libosmium
                   luajit
                   nlohmann-json
                   postgresql
-                  proj-7
+                  proj
                   protozero
                   zlib))
     (native-inputs (list pandoc python python-argparse-manpage))

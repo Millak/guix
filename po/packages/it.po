@@ -4,20 +4,21 @@
 # Nicolo Balzarotti <nicolo@nixo.xyz>, 2021.
 # Nathan <nathan95@live.it>, 2021.
 # Fernandez Alonso Alberto Mario <albialonso7@icloud.com>, 2022.
+# Marco Rimoldi <marco.rimoldi@pm.me>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2022-10-16 13:19+0000\n"
-"Last-Translator: Fernandez Alonso Alberto Mario <albialonso7@icloud.com>\n"
+"PO-Revision-Date: 2024-02-29 13:39+0000\n"
+"Last-Translator: Marco Rimoldi <marco.rimoldi@pm.me>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/guix/packages/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 5.4\n"
 
 #: gnu/packages/abiword.scm:124
 msgid "Word processing program"
@@ -33,9 +34,9 @@ msgid ""
 "becoming a state of the art word processor, with lots of features useful for\n"
 "your daily work, personal needs, or for just some good old typing fun."
 msgstr ""
-"AbiWord è un programma di elaborazione testi.  È rapidamente\n"
+"AbiWord è un programma di elaborazione testi.  Sta rapidamente\n"
 "diventando un elaboratore di testi all'avanguardia, con tantissime funzionalità utili per\n"
-"il tuo lavoro quotidiano, le tue esigenze personali o solo per un po 'di buon vecchio divertimento di digitazione."
+"il tuo lavoro quotidiano, le tue esigenze personali o anche solo per divertirti con la cara vecchia tastiera."
 
 #: gnu/packages/aspell.scm:90
 msgid "Spell checker"
@@ -48,8 +49,7 @@ msgid ""
 "documents written in the UTF-8 encoding and its ability to use multiple\n"
 "dictionaries, including personal ones."
 msgstr ""
-"Aspell è un correttore ortografico che può essere utilizzato sia come libreria o  come\n"
-"un programma autonomo.  Le caratteristiche degne di nota di Aspell includono il suo pieno supporto di\n"
+"Aspell è un correttore ortografico che può essere utilizzato sia come libreria che  come programma autonomo.  Le caratteristiche degne di nota di Aspell includono il suo pieno supporto di\n"
 "documenti scritti nella codifica UTF-8 e la sua capacità di utilizzare più\n"
 "dizionari, compresi quelli personali."
 

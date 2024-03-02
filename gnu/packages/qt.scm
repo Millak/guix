@@ -1906,6 +1906,10 @@ compositor libraries.")))
            qtbase
            vulkan-headers
            wayland))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "QT_PLUGIN_PATH")
+            (files '("lib/qt6/plugins")))))
     (synopsis "Qt Wayland module")
     (description "The Qt Wayland module provides the QtWayland client and
 compositor libraries.")

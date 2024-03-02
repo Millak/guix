@@ -1286,7 +1286,7 @@ in the terminal or with an external viewer.")
 (define-public giza
   (package
     (name "giza")
-    (version "1.3.2")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1294,7 +1294,7 @@ in the terminal or with an external viewer.")
              (url "https://github.com/danieljprice/giza")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1clklh3nzgwrwg80h3k5x65gdymbvcc84c44nql7m4bv9b8rqfsq"))
+        (base32 "17h8hkhcqlvgryyp5n206fbqpals2vbnjy4f6f1zwj9jiblgi5mj"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
@@ -3488,8 +3488,20 @@ September 2004}")
                           '("configure.log" "make.log" "gmake.log"
                             "test.log" "error.log" "RDict.db"
                             "PETScBuildInternal.cmake"
+                            "configure-hash"
                             ;; Once installed, should uninstall with Guix
                             "uninstall.py")))))
+          (add-after 'clean-install 'clear-reference-to-compiler
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Do not retain a reference to GCC and other build only inputs.
+              (let ((out (assoc-ref outputs "out")))
+              (substitute* (string-append out "/lib/petsc/conf/petscvariables")
+                (("([[:graph:]]+)/bin/gcc") "gcc")
+                (("([[:graph:]]+)/bin/g\\+\\+") "g++")
+                (("([[:graph:]]+)/bin/make") "make")
+                (("([[:graph:]]+)/bin/diff") "diff")
+                (("([[:graph:]]+)/bin/sed") "sed")
+                (("([[:graph:]]+)/bin/gfortran") "gfortran")))))
           (add-after 'install 'move-examples
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))

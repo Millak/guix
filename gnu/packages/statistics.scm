@@ -115,7 +115,7 @@
 (define-public pspp
   (package
     (name "pspp")
-    (version "1.4.1")
+    (version "2.0.0")
     (source
      (origin
       (method url-fetch)
@@ -123,11 +123,16 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "0lqrash677b09zxdlxp89z6k02y4i23mbqg83956dwl69wc53dan"))))
+        "1pyqlab9kw65wxc8pilcwb64l18w37xxdg3r6n287c7mda4cpxm8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-test-suite
+		 (lambda _
+		   (substitute* "tests/output/tex.at"
+		     (("AT_CHECK\\(\\[LC_ALL=C.UTF-8 pspp")
+		      "AT_CHECK([LC_ALL=en_US.UTF-8 pspp"))))
                (add-before 'check 'prepare-tests
                  ;; Prevent irrelevant errors that cause test output mismatches:
                  ;; ‘Fontconfig error: No writable cache directories’
@@ -149,7 +154,7 @@
            `(,glib "bin") ;for glib-genmarshal
            perl
            pkg-config
-           python-2 ;for tests
+           python-3 ;for tests
            texinfo))
     (home-page "https://www.gnu.org/software/pspp/")
     (synopsis "Statistical analysis")
@@ -509,14 +514,14 @@ available, greatly increasing its breadth and scope.")
 (define-public r-boot
   (package
     (name "r-boot")
-    (version "1.3-29")
+    (version "1.3-30")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "boot" version))
        (sha256
         (base32
-         "1zgvy7n01qyxk52yhk43d7z7c36nr54z98vqwmjdlmhx4zyj0s7f"))))
+         "15zysf5manfsap7x0zvjzgdvs9whv137iasjydp1php6sqmxc2am"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/boot")
     (synopsis "Bootstrap functions for R")
@@ -1259,13 +1264,13 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.4.4")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "0iiywrzv8j0npasvzgkxwhw0zqisf4xmpx06jl0lsq1ybl3fqxid"))))
+        (base32 "1qlh231dwsa7j0pzlw6xdm68d7r0v64916p66bg9lh1dw3a1ryh7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -1297,13 +1302,13 @@ aesthetic attributes.")
 (define-public r-ggdendro
   (package
     (name "r-ggdendro")
-    (version "0.1.23")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggdendro" version))
               (sha256
                (base32
-                "1f4fz9llmbpb8gh90aid7dvriadx16xdhsl7832yw4pyqj4fjcrs"))))
+                "0sdayyzvhkbli0ha68mc0f7cgp36njv9ign37d63l21hvd6w6h0r"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-mass))
@@ -1323,14 +1328,14 @@ agnes cluster diagrams.")
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.3.5")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "155qa55wr9vf2j2j4qjqqlkdaqlvvlvsm2wmysnhli47bfh6vd4c"))))
+         "1d1sidm2qi1nrp1hhf010xji66aj8sn833fv4a39gli2c560p4i6"))))
     (build-system r-build-system)
     (native-inputs
      (list pkg-config))
@@ -4989,14 +4994,14 @@ conversion of R objects to LaTeX code, and recoding variables.")
 (define-public r-runit
   (package
     (name "r-runit")
-    (version "0.4.32")
+    (version "0.4.33")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RUnit" version))
        (sha256
         (base32
-         "1wc1gwb7yw7phf8b0gkig6c23klya3ax11c6i4s0f049k42r78r3"))))
+         "0pybwvd57vf71vvlxdrynw5n6s5gnbqnwvq0qpd395ggqypwb95j"))))
     (properties `((upstream-name . "RUnit")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/RUnit")
@@ -5614,14 +5619,14 @@ models, generalized linear models and model-based clustering.")
 (define-public r-mclust
   (package
     (name "r-mclust")
-    (version "6.0.1")
+    (version "6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mclust" version))
        (sha256
         (base32
-         "0zsk89r2l73zi1dy0195k84n4dqdp97yisll5kg16amxs5pxx4hf"))))
+         "0mchdxkc3y0v6dw8fzjnlqd6f3zrafm3xf1c53s6ps529b66kx2x"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))

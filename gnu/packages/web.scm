@@ -119,8 +119,11 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
-  #:use-module (gnu packages crates-gtk)
+  #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-gtk)
+  #:use-module (gnu packages crates-tls)
+  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
@@ -8704,7 +8707,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "2.0")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8712,7 +8715,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "17cg07md6zac0j6ivawysy41jbk3a1ql3q794q1y0k01x8z23q5n"))))
+                "1riihzgshfk6907r4g69lrlvabiznwi5d7njk7y6km0695lf62g0"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"

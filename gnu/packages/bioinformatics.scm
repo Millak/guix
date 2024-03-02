@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -3756,14 +3756,14 @@ gapped, local, and paired-end alignment modes.")
 (define-public bowtie1
   (package
     (name "bowtie1")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/bowtie-bio/bowtie/"
                                   version "/bowtie-" version "-src.zip"))
               (sha256
                (base32
-                "11dbihdnrizc6qhx9xsw77w3q5ssx642alaqzvhxx32ak9glvq04"))
+                "0q87nhgj9wrnbazcpvqp4594hmyh1isi3s9b2wlghvl4afm1fdg2"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "Makefile"
@@ -3772,16 +3772,22 @@ gapped, local, and paired-end alignment modes.")
                   (("-DBUILD_TIME=.*") "-DBUILD_TIME=\"\\\"0\\\"\"")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
+     `(#:tests? #f                      ; Tests need various perl modules
+       #:test-target "simple-test"
        #:make-flags
-       ,#~(list "CC=gcc" "all"
-                (string-append "prefix=" #$output))
+       ,#~(append #$(if (not (target-x86?))
+                        #~'("POPCNT_CAPABILITY=0")
+                        #~'())
+                  (list (string-append "CC=" #$(cc-for-target))
+                        (string-append "CXX=" #$(cxx-for-target))
+                        "all"
+                        (string-append "prefix=" #$output)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
     (inputs
-     (list python-wrapper tbb-2020 zlib))
-    (supported-systems '("x86_64-linux"))
+     (list python-wrapper tbb zlib))
+    (supported-systems %64bit-supported-systems)
     (home-page "https://bowtie-bio.sourceforge.net/index.shtml")
     (synopsis "Fast aligner for short nucleotide sequence reads")
     (description
