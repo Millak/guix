@@ -136,7 +136,14 @@ If native code is not supported, compile to bytecode instead."
   (emacs-batch-eval
     `(let ((byte-compile-debug t)       ; for proper exit status
            (byte+native-compile (native-comp-available-p))
-           (files (directory-files-recursively ,dir "\\.el$")))
+           (files (directory-files-recursively ,dir "\\.el$"))
+           (write-bytecode
+            (and (native-comp-available-p)
+                 (progn
+                  (require 'comp)
+                  (if (fboundp 'comp-write-bytecode-file)
+                      'comp-write-bytecode-file
+                      'comp--write-bytecode-file)))))
        (mapc
         (lambda (file)
           (let (byte-to-native-output-buffer-file
@@ -152,7 +159,7 @@ If native code is not supported, compile to bytecode instead."
                 (byte-compile-file file))
             ;; After native compilation, write the bytecode file.
             (unless (null byte-to-native-output-buffer-file)
-              (comp-write-bytecode-file nil))))
+              (funcall write-bytecode nil))))
        files))
     #:dynamic? #t))
 
