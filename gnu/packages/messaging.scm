@@ -1617,7 +1617,7 @@ protocols.")
     (description "This module implements XEP-0363: it allows clients to
 upload files over HTTP.")))
 
-(define-public prosody-smack
+(define-public prosody-smacks
   (package
     (inherit (prosody-module "mod_smacks"))
     (synopsis "XEP-0198: Reliability and fast reconnects for XMPP")
