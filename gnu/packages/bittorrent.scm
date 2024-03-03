@@ -583,7 +583,7 @@ features.")
   (package
     (inherit qbittorrent)
     (name "qbittorrent-enhanced")
-    (version "4.6.1.10")
+    (version "4.6.3.10")
     (source
      (origin
        (method git-fetch)
@@ -593,7 +593,7 @@ features.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "101a9n2vk9d6b4vc3schkmpc56l0i0i60fcjh8hwadc6amc2ymvy"))))
+         "09b8237h0gn6y3s0a7qg247hsdra5f5kg6xhirnhhfvjd8k6qviv"))))
     (home-page "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
     (description
      "qBittorrent Enhanced is a bittorrent client based on qBittorrent with
