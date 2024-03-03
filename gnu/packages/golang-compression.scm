@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,30 @@ the @code{c2go} tool at
     (synopsis "Snappy compression format in the Go programming language")
     (description "This package provides a Go implementation of the Snappy
 compression format.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-hhrutter-lzw
+  (package
+    (name "go-github-com-hhrutter-lzw")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hhrutter/lzw")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n13qhf8ih08jzm10wprdvjy56ylmy6fhakyqrddm6nszf397wch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hhrutter/lzw"))
+    (home-page "https://github.com/hhrutter/lzw")
+    (synopsis "Extended version of @code{compress/lzw}")
+    (description
+     "This package provides an enhanced version of the @code{compress/lzw}
+library included in the stdlib, and supports GIF, TIFF and PDF.")
     (license license:bsd-3)))
 
 (define-public go-github-com-klauspost-compress
