@@ -742,6 +742,36 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-hhrutter-tiff
+  (package
+    (name "go-github-com-hhrutter-tiff")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hhrutter/tiff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09fzgvxwkd34izbfd26ln8vdbhc4j9gxpar3s7h9h125psrjvg0k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hhrutter/tiff"))
+    (propagated-inputs (list go-golang-org-x-image go-github-com-hhrutter-lzw))
+    (home-page "https://github.com/hhrutter/tiff")
+    (synopsis "Extended version of @code{golang.org/x/image/tiff}")
+    (description "This package is an enhanced version of the
+@code{golang.org/x/image/tiff} library featuring:
+
+@itemize
+@item Read support for CCITT Group3/4 compressed images.
+@item Read/write support for LZW compressed images.
+@item Read/write support for the CMYK color model.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-jinzhu-copier
   (package
     (name "go-github-com-jinzhu-copier")
