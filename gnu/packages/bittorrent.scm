@@ -574,7 +574,7 @@ features.")
           #~(cons "-DGUI=OFF" #$configure-flags))))
       (inputs
        (modify-inputs (package-inputs base)
-         (delete "qtsvg-5"))))))
+         (delete "qtsvg"))))))
 
 (define-public qbittorrent-nox
   (deprecated-package "qbittorrent-nox" qbittorrent-no-x))
