@@ -2426,14 +2426,14 @@ their MIME type.
 (define-public uchardet
   (package
     (name "uchardet")
-    (version "0.0.7")
+    (version "0.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://www.freedesktop.org/software/"
                             name "/releases/" name "-" version ".tar.xz"))
         (sha256
-          (base32 "1ca51sryhryqz82v4d0graaiqqq5w2f33a9gj83b910xmq499irz"))))
+          (base32 "1w659aiphbnczpry771diakrzg9a8aqpn2abcxx1870aq37n0yp9"))))
     (build-system cmake-build-system)
     (home-page "https://www.freedesktop.org/wiki/Software/uchardet/")
     (synopsis "Encoding detector library")
