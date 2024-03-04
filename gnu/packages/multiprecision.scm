@@ -530,22 +530,3 @@ the box without configuration.")
                   (("arch") "uname -m"))
                 #t))))
         ((#:test-target _) "test_standalone")))))
-
-(define-public libtommath-1.0
-  (package
-    (inherit libtommath-1.1)
-    (version "1.0.1")
-    (outputs '("out"))
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/libtom/libtommath/releases/"
-                            "download/v" version "/ltm-" version ".tar.xz"))
-        (sha256
-         (base32
-          "0sbccdwbkfc680id2fi0x067j23biqcjqilwkk7y9339knrjy0s7"))))
-    (arguments
-      (substitute-keyword-arguments (package-arguments libtommath-1.1)
-        ((#:phases phases)
-         `(modify-phases ,phases
-            (delete 'install-static-library)))))))
