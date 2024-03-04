@@ -296,14 +296,17 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
   "Return a matching psABI micro-architecture, allowing optimizations for x86_64
 CPUs for compilers which don't allow for more focused optimizing."
   ;; Matching gcc-architectures isn't an easy task, with the rule-of-thumb being
-  ;; 'Haswell and higher' qualify for x86_64-v3.
+  ;; AVX512F+ for x86_64-v4, AVX+ for x86_64-v3.
   ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
   (match gcc-architecture
     ((or "graniterapids-d" "graniterapids" "tigerlake" "sapphirerapids"
-         "cooperlake" "icelake-server" "icelake-client" "cannonlake" "knm" "knl"
-         "skylake-avx512" "pantherlake" "clearwaterforest" "arrowlake-s"
-         "sierraforest" "alderlake" "skylake" "broadwell" "haswell"
-         "znver4" "znver3" "znver2" "znver1" "bdver4")
+         "cooperlake" "icelake-server" "icelake-client" "cannonlake" "knm"
+         "knl" "skylake-avx512"
+         "znver4")
+     "x86_64-v4")
+    ((or "pantherlake" "clearwaterforest" "arrowlake-s" "sierraforest"
+         "alderlake" "skylake" "broadwell" "haswell"
+         "znver3" "znver2" "znver1" "bdver4")
      "x86_64-v3")
     ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
          "nehalem" "bonnell" "core2"
