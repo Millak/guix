@@ -22343,6 +22343,23 @@ blocking data structures.")
     (description "This package provides block and poll on event_listener.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-event-listener-strategy-0.1
+  (package
+    (inherit rust-event-listener-strategy-0.4)
+    (name "rust-event-listener-strategy")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "event-listener-strategy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z99km9lwya36bxhvrz4rsl3nhqhhlnnx7a2gdz4nzpa6177pj8m"))))
+    (arguments
+     `(#:cargo-inputs (("rust-event-listener" ,rust-event-listener-3)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs (("rust-futures-lite" ,rust-futures-lite-1))))))
+
 (define-public rust-executable-path-1
   (package
     (name "rust-executable-path")
