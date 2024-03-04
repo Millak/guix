@@ -2092,6 +2092,26 @@ transfer coding.")
      "This package provides QUIC transport implementation based on Quinn.")
     (license license:expat)))
 
+(define-public rust-h3-quinn-0.0.3
+  (package
+    (inherit rust-h3-quinn-0.0.4)
+    (name "rust-h3-quinn")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3-quinn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kf6bqmm751gwj24dqgb2rrwq8ibhv7z5v7ix4pfiwz4ccbiljid"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-h3" ,rust-h3-0.0.2)
+                       ("rust-quinn" ,rust-quinn-0.10)
+                       ("rust-quinn-proto" ,rust-quinn-proto-0.10)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7))))))
+
 (define-public rust-headers-0.3
   (package
     (name "rust-headers")
