@@ -2045,6 +2045,27 @@ transfer coding.")
     (description "This package provides an async HTTP/3 implementation.")
     (license license:expat)))
 
+(define-public rust-h3-0.0.2
+  (package
+    (inherit rust-h3-0.0.3)
+    (name "rust-h3")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17nbmkz6xs848257xv7gdhrnhyhagfb0dbqla82zv1nixr1wmrkd"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-fastrand" ,rust-fastrand-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1))))))
+
 (define-public rust-h3-quinn-0.0.4
   (package
     (name "rust-h3-quinn")
