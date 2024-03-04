@@ -24405,7 +24405,7 @@ mode.")
 (define-public emacs-crux
   (package
     (name "emacs-crux")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -24415,7 +24415,7 @@ mode.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1h28chpyq61k72qh749r5kqq1y70wx3xw9c3zyfzmy750wlw6nyj"))))
+         "00n4k09x3slchs81xw1q0rcb78ncb5k2lvsigb9j7s3kxbj6bvvy"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/bbatsov/crux")
     (synopsis "Collection of useful functions for Emacs")
