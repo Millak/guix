@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -128,18 +128,21 @@ corresponds to CPU, a record as returned by 'current-cpu'."
 
        (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
                 (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
-                (if-flags ("avx" "raoint" => "grandridge")
-                          ("avx" "amx_fp16" => "graniterapids")
+                (if-flags ("avx512f" "amx_complex" => "graniterapids-d")
+                          ("avx512f" "amx_fp16" => "graniterapids")
+                          ("avx512f" "avx512vp2intersect" => "tigerlake")
+                          ("avx512f" "tsxldtrk" => "sapphirerapids")
+                          ("avx512f" "avx512bf16" => "cooperlake")
+                          ("avx512f" "wbnoinvd" => "icelake-server")
+                          ("avx512f" "avx512bitalg" => "icelake-client")
+                          ("avx512f" "avx512vbmi" => "cannonlake")
+                          ("avx512f" "avx5124vnniw" => "knm")
+                          ("avx512f" "avx512er" => "knl")
+                          ("avx512f" => "skylake-avx512")
+                          ("avx" "prefetchi" => "pantherlake")
+                          ("avx" "user_msr" => "clearwaterforest")
+                          ("avx" "sm3" => "arrowlake-s")
                           ("avx" "avxvnniint8" => "sierraforest")
-                          ("avx" "avx512vp2intersect" => "tigerlake")
-                          ("avx" "tsxldtrk" => "sapphirerapids")
-                          ("avx" "avx512bf16" => "cooperlake")
-                          ("avx" "wbnoinvd" => "icelake-server")
-                          ("avx" "avx512bitalg" => "icelake-client")
-                          ("avx" "avx512vbmi" => "cannonlake")
-                          ("avx" "avx5124vnniw" => "knm")
-                          ("avx" "avx512er" => "knl")
-                          ("avx" "avx512f" => "skylake-avx512")
                           ("avx" "serialize" => "alderlake")
                           ("avx" "clflushopt" => "skylake")
                           ("avx" "adx" => "broadwell")
@@ -189,6 +192,10 @@ corresponds to CPU, a record as returned by 'current-cpu'."
            (if (and (= 7 (cpu-family cpu))
                     (= #x3b (cpu-model cpu)))
              "lujiazui"
+             (cpu->micro-architecture-level cpu))
+           (if (and (= 7 (cpu-family cpu))
+                    (>= #x5b (cpu-model cpu)))
+             "yongfeng"
              (cpu->micro-architecture-level cpu))
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
@@ -292,16 +299,16 @@ CPUs for compilers which don't allow for more focused optimizing."
   ;; 'Haswell and higher' qualify for x86_64-v3.
   ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
   (match gcc-architecture
-    ((or "grandridge" "graniterapids" "sierraforest" "tigerlake"
-         "sapphirerapids" "cooperlake" "icelake-server" "icelake-client"
-         "cannonlake" "knm" "knl" "skylake-avx512" "alderlake" "skylake"
-         "broadwell" "haswell"
+    ((or "graniterapids-d" "graniterapids" "tigerlake" "sapphirerapids"
+         "cooperlake" "icelake-server" "icelake-client" "cannonlake" "knm" "knl"
+         "skylake-avx512" "pantherlake" "clearwaterforest" "arrowlake-s"
+         "sierraforest" "alderlake" "skylake" "broadwell" "haswell"
          "znver4" "znver3" "znver2" "znver1" "bdver4")
      "x86_64-v3")
     ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
          "nehalem" "bonnell" "core2"
          "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
          "amdfam10"
-         "lujiazui" "x86-64")
+         "lujiazui" "yongfeng" "x86-64")
      "x86_64-v1")
     (_ gcc-architecture)))
