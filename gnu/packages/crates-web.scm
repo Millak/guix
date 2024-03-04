@@ -2264,6 +2264,49 @@ transfer coding.")
 DNS protocol library for all Hickory DNS projects.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hickory-recursor-0.24
+  (package
+    (name "rust-hickory-recursor")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-recursor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "146ifrml22hjydrw16qgfw32kv3v9wvvl4dqh45pg6fymxvw8xgi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-recursion" ,rust-async-recursion-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-enum-as-inner" ,rust-enum-as-inner-0.6)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
+                       ("rust-lru-cache" ,rust-lru-cache-0.1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://hickory-dns.org/")
+    (synopsis
+     "Hickory DNS Recursor is a DNS recursive resolver with DNSSEC support")
+    (description
+     "*WARNING* This library is experimental
+
+Hickory DNS Recursor is a safe and secure DNS recursive resolver with DNSSEC
+support.  Hickory DNS is based on the Tokio and Futures libraries, which means
+it should be easily integrated into other software that also use those
+libraries.  This library can be used as in the server and binary for
+performing recursive lookups.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hickory-resolver-0.24
   (package
     (name "rust-hickory-resolver")
