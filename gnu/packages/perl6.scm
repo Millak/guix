@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
@@ -23,6 +23,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system rakudo)
   #:use-module (gnu packages bdw-gc)
@@ -56,7 +57,7 @@
            (delete-file-recursively "3rdparty/msinttypes")))))
     (build-system perl-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-build
            (lambda _
@@ -67,7 +68,10 @@
              (let ((out (assoc-ref outputs "out"))
                    (pkg-config (assoc-ref inputs "pkg-config")))
                (setenv "CFLAGS" "-fcommon")
-               (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
+               (setenv "LDFLAGS"
+                       ,@(if (target-ppc32?)
+                           `((string-append "-Wl,-rpath=" out "/lib" " -latomic"))
+                           `((string-append "-Wl,-rpath=" out "/lib"))))
                (invoke "perl" "Configure.pl"
                        "--prefix" out
                        "--pkgconfig" (string-append pkg-config "/bin/pkg-config")
