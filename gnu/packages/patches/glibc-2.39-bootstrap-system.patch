@@ -1,0 +1,69 @@
+We want to allow builds in chroots that lack /bin/sh.  Thus, system(3)
+and popen(3) need to be tweaked to use the right shell.  For the bootstrap
+glibc, we just use whatever `sh' can be found in $PATH.  The final glibc
+instead uses the hard-coded absolute file name of `bash'.
+
+In addition, status should be initialized to 0 and not -1.
+
+Adapted to glibc-2.39.
+
+diff --git a/libio/iopopen.c b/libio/iopopen.c
+index ebc381ed7c..e0d3ed1bc3 100644
+--- a/libio/iopopen.c
++++ b/libio/iopopen.c
+@@ -85,8 +85,8 @@ spawn_process (posix_spawn_file_actions_t *fa, FILE *fp, const char *command,
+ 	return false;
+     }
+ 
+-  err = __posix_spawn (&((_IO_proc_file *) fp)->pid, _PATH_BSHELL, fa, 0,
++  err = __posix_spawnp (&((_IO_proc_file *) fp)->pid, "sh", fa, 0,
+ 		       (char *const[]){ (char*) "sh", (char*) "-c", (char*) "--",
+ 		       (char *) command, NULL }, __environ);
+   if (err != 0)
+     return err;
+diff --git a/sysdeps/posix/system.c b/sysdeps/posix/system.c
+index a03f478fc7..94da6facf3 100644
+--- a/sysdeps/posix/system.c
++++ b/sysdeps/posix/system.c
+@@ -101,7 +101,7 @@ cancel_handler (void *arg)
+ static int
+ do_system (const char *line)
+ {
+-  int status = -1;
++  int status = 0;
+   int ret;
+   pid_t pid;
+   struct sigaction sa;
+@@ -145,7 +145,7 @@ do_system (const char *line)
+   __posix_spawnattr_setflags (&spawn_attr,
+ 			      POSIX_SPAWN_SETSIGDEF | POSIX_SPAWN_SETSIGMASK);
+ 
+-  ret = __posix_spawn (&pid, SHELL_PATH, 0, &spawn_attr,
++  ret = __posix_spawnp (&pid, SHELL_NAME, 0, &spawn_attr,
+ 		       (char *const[]){ (char *) SHELL_NAME,
+ 					(char *) "-c",
+ 					(char *) line, NULL },
+
+--- a/include/spawn.h
++++ b/include/spawn.h
+@@ -5,6 +5,9 @@
+ __typeof (posix_spawn) __posix_spawn;
+ libc_hidden_proto (__posix_spawn)
+
++__typeof (posix_spawnp) __posix_spawnp;
++libc_hidden_proto (__posix_spawnp)
++
+ __typeof (posix_spawn_file_actions_addclose)
+   __posix_spawn_file_actions_addclose attribute_hidden;
+
+--- a/posix/spawnp.c
++++ b/posix/spawnp.c
+@@ -31,6 +31,7 @@ __posix_spawnp (pid_t *pid, const char *file,
+                   SPAWN_XFLAGS_USE_PATH);
+ }
+ versioned_symbol (libc, __posix_spawnp, posix_spawnp, GLIBC_2_15);
++libc_hidden_def (__posix_spawnp)
+
+
+ #if SHLIB_COMPAT (libc, GLIBC_2_2, GLIBC_2_15)
+
