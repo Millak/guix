@@ -2264,6 +2264,70 @@ transfer coding.")
 DNS protocol library for all Hickory DNS projects.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hickory-resolver-0.24
+  (package
+    (name "rust-hickory-resolver")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-resolver" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s3486qczv9gaw8dap06c0bwb2bpqm23a0ihj169hsjf2qhz1f1m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests" "--"
+         ;; Some tests require network access.
+         "--skip=async_resolver::tests::test_domain_search"
+         "--skip=async_resolver::tests::test_fqdn"
+         "--skip=async_resolver::tests::test_idna"
+         "--skip=async_resolver::tests::test_large_ndots"
+         "--skip=async_resolver::tests::test_lookup_cloudflare"
+         "--skip=async_resolver::tests::test_lookup_google"
+         "--skip=async_resolver::tests::test_lookup_quad9"
+         "--skip=async_resolver::tests::test_ndots"
+         "--skip=async_resolver::tests::test_search_list"
+         "--skip=hosts::tests::test_read_hosts_conf"
+         "--skip=name_server::name_server::tests::test_name_server"
+         "--skip=name_server::name_server_pool::tests::test_multi_use_conns"
+         "--skip=resolver::tests::test_lookup"
+         "--skip=system_conf::unix::tests::test_read_resolv_conf")
+         #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-ipconfig" ,rust-ipconfig-0.3)
+                       ("rust-lru-cache" ,rust-lru-cache-0.1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-resolv-conf" ,rust-resolv-conf-0.7)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://hickory-dns.org/")
+    (synopsis
+     "Hickory DNS Resolver library built on top of tokio's @code{async-io}")
+    (description
+     "Hickory DNS Resolver is a safe and secure DNS library.  The Resolver is
+intended to be a high-level library for any DNS record resolution, see
+@code{Resolver} and @code{AsyncResolver} for supported resolution types.  The
+@code{Client} can be used for other queries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-http-1
   (package
     (name "rust-http")
