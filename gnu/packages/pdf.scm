@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -1052,7 +1052,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1061,7 +1061,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1svmdj43z1shm3wnkrdrq1h6rba843mp4x4d8jmxsx7kwiiz9l78"))))
+        (base32 "1rj9kz21r59cswfpczp5dcmvchbbmybv661iyycaiii2z5gh0h7i"))))
     (build-system cmake-build-system)
     (arguments
      (list
