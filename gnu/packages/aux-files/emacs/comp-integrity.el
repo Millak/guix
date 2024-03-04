@@ -125,5 +125,6 @@
 (expect-native emacs-version)
 (expect-native define-widget)
 (expect-native window-right)
-(expect-native x-dnd-init-frame)
-(expect-native x-handle-no-bitmap-icon)
+(expect-native x-dnd-init-frame x-dnd)
+(and (boundp 'x-handle-no-bitmap-icon)
+     (expect-native x-handle-no-bitmap-icon))
