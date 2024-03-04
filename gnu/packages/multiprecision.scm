@@ -505,28 +505,3 @@ integer library written entirely in C.  It's designed to provide an API that is
 simple to work with that provides fairly efficient routines that build out of
 the box without configuration.")
     (license unlicense)))
-
-(define-public libtommath-1.1
-  (package
-    (inherit libtommath)
-    (version "1.1.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/libtom/libtommath/releases/"
-                            "download/v" version "/ltm-" version ".tar.xz"))
-        (sha256
-         (base32
-          "1bbyagqzfdbg37k1n08nsqzdf44z8zsnjjinqbsyj7rxg246qilh"))
-        (patches (search-patches "libtommath-fix-linkage.patch"))))
-    (arguments
-      (substitute-keyword-arguments (package-arguments libtommath)
-        ((#:phases phases)
-         `(modify-phases ,phases
-            (add-after 'unpack 'patch-coreutils-call
-              (lambda _
-                ;; Don't pull in coreutils.
-                (substitute* "makefile_include.mk"
-                  (("arch") "uname -m"))
-                #t))))
-        ((#:test-target _) "test_standalone")))))
