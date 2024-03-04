@@ -99,6 +99,40 @@
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg))
 
+(define-public aardvark-dns
+  (package
+    (name "aardvark-dns")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aardvark-dns" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ldqv9v3v9a1m2kka660d5v15y2zasy5z7m4fh5hif74r089cx6x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-async-broadcast" ,rust-async-broadcast-0.6)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-client" ,rust-hickory-client-0.24)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-hickory-server" ,rust-hickory-server-0.24)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-resolv-conf" ,rust-resolv-conf-0.7)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-syslog" ,rust-syslog-6)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/containers/aardvark-dns")
+    (synopsis "Container-focused DNS server")
+    (description "This package provides a container-focused DNS server.")
+    (license license:asl2.0)))
+
 (define-public agate
   (package
     (name "agate")
