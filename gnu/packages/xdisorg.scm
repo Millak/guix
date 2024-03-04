@@ -107,6 +107,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -1223,7 +1224,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                              "/lib/X11/app-defaults"))
       #:tests? #f))                     ;no such thing as a test suite
     (inputs
-     (list libx11 libxext libxt linux-pam))
+     (list libx11 libxcrypt libxext libxt linux-pam))
     (home-page "https://sillycycle.com/xlockmore.html")
     (synopsis "Screen locker for the X Window System")
     (description
