@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,7 +48,8 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix gexp))
 
 (define-public libogg
   (package
@@ -115,7 +117,7 @@ polyphonic) audio and music at fixed and variable bitrates from 16 to
              (patches (search-patches "libtheora-config-guess.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     (list #:configure-flags #~'("--disable-static")))
     (inputs (list libvorbis))
     ;; The .pc files refer to libogg.
     (propagated-inputs (list libogg))
