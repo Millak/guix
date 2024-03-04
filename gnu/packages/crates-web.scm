@@ -2419,6 +2419,84 @@ intended to be a high-level library for any DNS record resolution, see
 @code{Client} can be used for other queries.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hickory-server-0.24
+  (package
+    (name "rust-hickory-server")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-server" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dbwsrmxgf9nxkn3cp5fpjw96wywrzihbirjax25dd6wqidv9fsg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=store::file::authority::tests::test_load_zone"
+         "--skip=basic::file::test_a_lookup"
+         "--skip=basic::file::test_aname"
+         "--skip=basic::file::test_aname_a_lookup"
+         "--skip=basic::file::test_aname_chain"
+         "--skip=basic::file::test_cname"
+         "--skip=basic::file::test_cname_alias"
+         "--skip=basic::file::test_cname_chain"
+         "--skip=basic::file::test_dots_in_name"
+         "--skip=basic::file::test_invalid_lookup"
+         "--skip=basic::file::test_mx"
+         "--skip=basic::file::test_mx_to_null"
+         "--skip=basic::file::test_ns"
+         "--skip=basic::file::test_ns_lookup"
+         "--skip=basic::file::test_soa"
+         "--skip=basic::file::test_srv"
+         "--skip=basic::file::test_update_errors"
+         "--skip=basic::file::test_wildcard"
+         "--skip=basic::file::test_wildcard_chain"
+         "--skip=test_all_lines_are_loaded"
+         "--skip=test_implicit_in_class"
+         "--skip=test_ttl_wilcard")
+       #:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-basic-toml" ,rust-basic-toml-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-enum-as-inner" ,rust-enum-as-inner-0.6)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-h2" ,rust-h2-0.3)
+                       ("rust-h3" ,rust-h3-0.0.2)
+                       ("rust-h3-quinn" ,rust-h3-quinn-0.0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-hickory-recursor" ,rust-hickory-recursor-0.24)
+                       ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-rusqlite" ,rust-rusqlite-0.29)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://hickory-dns.org/")
+    (synopsis "Hickory DNS Server is a DNS server with DNSSEC support")
+    (description
+     "Hickory DNS Server is a safe and secure DNS server with DNSSEC support.
+Eventually this could be a replacement for BIND9.  The DNSSEC support allows
+for live signing of all records, in it does not currently support records
+signed offline.  The server supports dynamic DNS with SIG0 authenticated
+requests.  Hickory DNS is based on the Tokio and Futures libraries, which
+means it should be easily integrated into other software that also use those
+libraries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-http-1
   (package
     (name "rust-http")
