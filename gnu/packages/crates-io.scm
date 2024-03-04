@@ -3909,8 +3909,36 @@ capacity and random or least recently used (LRU) replacement.")
 Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-async-broadcast-0.6
+  (package
+    (name "rust-async-broadcast")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-broadcast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d1xk2pr5khk1radkbaf7pp7pbjkb18m43n2rgkfsfxk177pak9k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-event-listener" ,rust-event-listener-3)
+        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.1)
+        ("rust-futures-core" ,rust-futures-core-0.3))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-easy-parallel" ,rust-easy-parallel-3)
+                                   ("rust-futures-lite" ,rust-futures-lite-1)
+                                   ("rust-futures-util" ,rust-futures-util-0.3))))
+    (home-page "https://github.com/smol-rs/async-broadcast")
+    (synopsis "Async broadcast channels")
+    (description "This package provides async broadcast channels in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-broadcast-0.5
   (package
+    (inherit rust-async-broadcast-0.6)
     (name "rust-async-broadcast")
     (version "0.5.1")
     (source (origin
@@ -3920,7 +3948,6 @@ Rust.")
               (sha256
                (base32
                 "0avdqbci1qdlfc4glc3wqrb0wi5ffc7bqv2q1wg14syayvdwqj3w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-event-listener" ,rust-event-listener-2)
@@ -3930,11 +3957,7 @@ Rust.")
         ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-easy-parallel" ,rust-easy-parallel-3)
         ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-futures-util" ,rust-futures-util-0.3))))
-    (home-page "https://github.com/smol-rs/async-broadcast")
-    (synopsis "Async broadcast channels")
-    (description "This package provides async broadcast channels in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-futures-util" ,rust-futures-util-0.3))))))
 
 (define-public rust-async-channel-2
   (package
