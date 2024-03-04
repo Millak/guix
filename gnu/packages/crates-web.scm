@@ -2199,6 +2199,54 @@ transfer coding.")
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-http" ,rust-http-0.1))))))
 
+(define-public rust-hickory-client-0.24
+  (package
+    (name "rust-hickory-client")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-client" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bj6g69h86d7mbclrwaj7cgl1plr6pvllv8qn69xmpgh9h90hgkz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests" "--"
+         ;; Some tests require network access.
+         "--skip=client::async_client::tests::async_client")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-radix-trie" ,rust-radix-trie-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs
+     (list openssl pkg-config))
+    (home-page "https://hickory-dns.org/")
+    (synopsis "Client library for Hickory DNS, with DNSSEC support")
+    (description
+     "Hickory DNS is a safe and secure DNS library.  This is the Client
+library with DNSSEC support.  DNSSEC with NSEC validation for negative
+records, is complete.  The client supports dynamic DNS with SIG0 authenticated
+requests, implementing easy to use high level funtions.  Hickory DNS is based
+on the Tokio and Futures libraries, which means it should be easily integrated
+into other software that also use those libraries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hickory-proto-0.24
   (package
     (name "rust-hickory-proto")
