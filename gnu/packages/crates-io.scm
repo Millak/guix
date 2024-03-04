@@ -41,6 +41,7 @@
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11722,6 +11723,34 @@ stream of tokens.")
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-3)
         ("rust-snapbox" ,rust-snapbox-0.2))))))
+
+(define-public rust-clap-verbosity-flag-2
+  (package
+    (name "rust-clap-verbosity-flag")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-verbosity-flag" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15f419hg1xskf7pwzk5n27cpn05n0ccbd6sbji906ymi47576zxm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-log" ,rust-tracing-log-0.2)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/clap-rs/clap-verbosity-flag")
+    (synopsis "Easily add a `--verbose` flag to CLIs using Clap")
+    (description
+     "This package provides a way to add a `--verbose` flag to CLIs using
+Clap.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-clearscreen-1
   (package
