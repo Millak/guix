@@ -27124,15 +27124,15 @@ codecs for use in data storage and communication applications.")
 (define-public python-zarr
   (package
     (name "python-zarr")
-    (version "2.13.3")
+    (version "2.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zarr" version))
        (sha256
         (base32
-         "135ls2q7zc98pk61a5cnh88j4hnnavcwasrswdjqyqvcc68b096v"))))
-    (build-system python-build-system)
+         "0qb2wj60i7v1c95k6m0pskx20ss6dxrj3ym0d7z4c98jfah3ljsn"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
