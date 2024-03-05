@@ -85,7 +85,7 @@ used in the Raspberry Pi")
     (supported-systems '("armhf-linux" "aarch64-linux"))
     (license license:gpl3)))
 
-(define raspi-gpio
+(define-public raspi-gpio
   (let ((commit "6d0769ac04760b6e9f33b4aa1f11c682237bf368")
         (revision "1"))
     (package
