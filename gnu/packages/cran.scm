@@ -9549,6 +9549,34 @@ imputations.")
     ;; Any of these two versions.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-transformr
+  (package
+    (name "r-transformr")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "transformr" version))
+       (sha256
+        (base32 "125y99wpgvp92qsg7934nzjqy6irjzaj21c0dcq7apqd2hqamfxw"))))
+    (properties `((upstream-name . "transformr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cpp11
+                             r-lpsolve
+                             r-rlang
+                             r-sf
+                             r-tweenr
+                             r-vctrs))
+    (home-page "https://github.com/thomasp85/transformr")
+    (synopsis "Polygon and path transformations")
+    (description
+     "In order to smoothly animate the transformation of polygons and paths,
+many aspects needs to be taken into account, such as differing number of
+control points, changing center of rotation, etc.  The transformr package
+provides an extensive framework for manipulating the shapes of polygons and
+paths and can be seen as the spatial brother to the tweenr package.")
+    (license license:expat)))
+
 (define-public r-truncnorm
   (package
     (name "r-truncnorm")
