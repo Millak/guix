@@ -7291,22 +7291,23 @@ normal model.")
 (define-public r-naniar
   (package
     (name "r-naniar")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "naniar" version))
               (sha256
                (base32
-                "1x4ljc6yji7312g6cg1shc85jqv5kaf2zlf5q7sdmqh3wryskvf2"))))
+                "0i3gijr1l7hbcp75cyj26pxmm493lnvasl8aba9vv4w8lz1lck59"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-dplyr
-           r-norm
            r-forcats
            r-ggplot2
            r-glue
+           r-lifecycle
            r-magrittr
+           r-norm
            r-purrr
            r-rlang
            r-tibble
