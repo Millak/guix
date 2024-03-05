@@ -669,13 +669,13 @@ for interactively selecting and running Pytest tests.")
 (define-public python-pytest-filter-subpackage
   (package
     (name "python-pytest-filter-subpackage")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-filter-subpackage" version))
        (sha256
-        (base32 "10hpl3f7g2bm29lakmp8492b7lr0dp90khfni12m4gl02xks7bhz"))))
+        (base32 "0mmgg2n8qk6s2kprycjl70lxcpm43dkapplmkf32i0ai6qdqyiiz"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
