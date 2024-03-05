@@ -16205,13 +16205,13 @@ for the reconstruction of gene regulatory networks.")
 (define-public r-partr2
   (package
     (name "r-partr2")
-    (version "0.9.1")
+    (version "0.9.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "partR2" version))
               (sha256
                (base32
-                "06ky0hhrq0mcsn9rwrzvwn0rrjj0l8rxs0hqp10668gdq5hjk8bn"))))
+                "09x8ykg90y4xq0sqm6zvx41sccgdbglmhpqm9sp3m74a87j4bjly"))))
     (properties `((upstream-name . "partR2")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
