@@ -6479,7 +6479,40 @@ result in several formats:
                (invoke "cargo" "cinstall" "--release"
                        ;; Only build the dynamic library.
                        "--library-type" "cdylib"
-                       (string-append "--prefix=" out))))))))
+                       (string-append "--prefix=" out)))))
+         (add-after 'install 'install-completions
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
+             (unless ,(%current-target-system)
+               (let* ((out (assoc-ref outputs "out"))
+                      (share (string-append out "/share"))
+                      (bash-completions-dir
+                        (string-append out "/etc/bash_completion.d"))
+                      (zsh-completions-dir
+                        (string-append share "/zsh/site-functions"))
+                      (fish-completions-dir
+                        (string-append share "/fish/vendor_completions.d"))
+                      (elvish-completions-dir
+                        (string-append share "/elvish/lib"))
+                      (rav1e (string-append out "/bin/rav1e"))
+                      (common-flags '("-" "-o" "-" "advanced" "--completion")))
+                 (mkdir-p bash-completions-dir)
+                 (with-output-to-file
+                   (string-append bash-completions-dir "/rav1e")
+                   (lambda _ (apply invoke rav1e (append common-flags '("bash")))))
+                 (mkdir-p zsh-completions-dir)
+                 ;; This one currently fails to build.
+                 ;(with-output-to-file
+                 ;  (string-append zsh-completions-dir "/_rav1e")
+                 ;  (lambda _ (apply invoke rav1e (append common-flags '("zsh")))))
+                 (mkdir-p fish-completions-dir)
+                 (with-output-to-file
+                   (string-append fish-completions-dir "/rav1e.fish")
+                   (lambda _ (apply invoke rav1e (append common-flags '("fish")))))
+                 (mkdir-p elvish-completions-dir)
+                 (with-output-to-file
+                   (string-append elvish-completions-dir "/rav1e")
+                   (lambda _
+                     (apply invoke rav1e (append common-flags '("elvish"))))))))))))
     (native-inputs
      (append (if (target-x86?)
                  (list nasm)
