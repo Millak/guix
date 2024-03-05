@@ -553,13 +553,18 @@ astropy related packages.")
        (uri (pypi-uri "pytest-arraydiff" version))
        (sha256
         (base32 "1pk7v96rkypx4ld59f6p8fh5bq371ka8g7bh4h7n4df91x2v2dr9"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; Tests require python-astropy, which itself requires this package.
-     ;; Disable tests to avoid the circular dependency problem.
-     '(#:tests? #f))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable tests requiring python-astropy, to break cycle.
+                    "not test_succeeds_func_fits_hdu"
+                    " and not test_fails"
+                    " and not test_generate"
+                    " and not test_default_format"))))
     (native-inputs
-     (list python-pytest python-setuptools-scm)) ; for sanity-check
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/astropy/pytest-arraydiff")
