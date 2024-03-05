@@ -418,6 +418,7 @@ empty list when the FIELD cannot be found."
         "none"
         "rtools"
         "unix"
+        "use_c17"
         "windows"
         "xcode"
         "xquartz"))
