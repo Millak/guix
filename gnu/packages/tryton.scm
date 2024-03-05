@@ -4389,6 +4389,20 @@ there can be a move with the remaining quantity.")
 mechanisms and introduces the concepts of order point.")
     (license license:gpl3+)))
 
+(define-public trytond-stock-supply-bootstrap
+  (hidden-package
+   (package/inherit trytond-stock-supply
+     (name "trytond-stock-supply-bootstrap")
+     (arguments
+      (list
+       #:tests? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'sanity-check))))
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs trytond-stock-supply)
+        (delete "trytond-purchase-request"))))))
+
 (define-public python-trytond-stock-supply
   (deprecated-package "python-trytond-stock-supply" trytond-stock-supply))
 
