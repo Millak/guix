@@ -27134,23 +27134,29 @@ codecs for use in data storage and communication applications.")
          "0qb2wj60i7v1c95k6m0pskx20ss6dxrj3ym0d7z4c98jfah3ljsn"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-service-tests
-           (lambda _
-             (setenv "ZARR_TEST_ABS" "0")
-             (setenv "ZARR_TEST_MONGO" "0")
-             (setenv "ZARR_TEST_REDIS" "0")
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv" "-k" "not lmdb")
-             #t)))))
+     (list
+      #:test-flags
+      #~(list "-n" "auto")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-service-tests
+            (lambda _
+              (setenv "ZARR_TEST_ABS" "0")
+              (setenv "ZARR_TEST_MONGO" "0")
+              (setenv "ZARR_TEST_REDIS" "0"))))))
     (propagated-inputs
-     (list python-asciitree python-fasteners python-numcodecs
+     (list python-asciitree
+           python-fasteners
+           python-numcodecs
            python-numpy))
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-fsspec
+           python-pytest
+           python-h5py
+           python-pytest-doctestplus
+           python-pytest-timeout
+           python-pytest-xdist
+           python-setuptools-scm))
     (home-page "https://github.com/zarr-developers/zarr-python")
     (synopsis "Chunked, compressed, N-dimensional arrays for Python")
     (description
