@@ -4509,6 +4509,31 @@ install an implementation package such as asdf-astropy.")
     (description "This package provides ASDF schemas for validating unit tags.")
     (license license:bsd-3)))
 
+(define-public python-asdf-zarr
+  (package
+    (name "python-asdf-zarr")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_zarr" version))
+       (sha256
+        (base32 "0ax7c9xarh6fi2yxm1z2p90mc3d57q23a7wc8av30xg8ririrl4s"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-asdf python-fsspec python-zarr))
+    (native-inputs
+     (list python-pytest python-semantic-version python-setuptools-scm))
+    (home-page "https://github.com/asdf-format/asdf-zarr")
+    (synopsis "Asdf extension to support Zarr arrays")
+    (description
+     "This package includes an extension for the Python library asdf to add
+support for reading and writing chunked
+@url{https://zarr.readthedocs.io/en/stable/,Zarr} arrays, a file storage
+format for chunked, compressed, N-dimensional arrays based on an open-source
+specification.")
+    (license license:bsd-3)))
+
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
