@@ -7995,14 +7995,14 @@ those for the gamma distribution in the @code{stats} package.")
 (define-public r-bdsmatrix
   (package
     (name "r-bdsmatrix")
-    (version "1.3-6")
+    (version "1.3-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bdsmatrix" version))
        (sha256
         (base32
-         "1g300x11rv56f826mbv7mbb67a5xz3dv74hpjc18jh3q8gap3j7r"))))
+         "08krrd7454ixqv4nq55hgf3djp1pz1vl3ndslsrh2pkdq1d5wl63"))))
     (properties `((upstream-name . "bdsmatrix")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/bdsmatrix/")
