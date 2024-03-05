@@ -7641,13 +7641,13 @@ provides an interactive R manager and worker environment.")
 (define-public r-rmumps
   (package
     (name "r-rmumps")
-    (version "5.2.1-27")
+    (version "5.2.1-28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rmumps" version))
        (sha256
-        (base32 "08zvmbhjgcrlgdhfn8ssajy8vnwcyaw90zgc0v1ncn95z310gpl3"))))
+        (base32 "1cq7zrq730lj1z5xirzk5fvvlvdq101ppg47n0z7c0v17rvs80n6"))))
     (properties `((upstream-name . "rmumps")))
     (build-system r-build-system)
     (inputs (list zlib))
