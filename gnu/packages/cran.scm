@@ -14021,21 +14021,21 @@ results to the user.")
 (define-public r-hdf5r
   (package
     (name "r-hdf5r")
-    (version "1.3.9")
+    (version "1.3.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hdf5r" version))
        (sha256
         (base32
-         "1av3pafbfff4wanw9s1iqgwkcdmc5f8c8h3z0byqll9i661kz3pg"))))
+         "0khj94z6ls6dnc6fpxwf1w93mk6f3z2p39mbihf0lz52jc36wjcj"))))
     (build-system r-build-system)
     (inputs
      (list hdf5 zlib))
     (propagated-inputs
      (list r-bit64 r-r6))
     (native-inputs
-     (list r-knitr))
+     (list pkg-config r-knitr))
     (home-page "https://hhoeflin.github.io/hdf5r")
     (synopsis "Interface to the HDF5 binary data format")
     (description
