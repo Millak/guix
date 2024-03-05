@@ -24619,14 +24619,14 @@ packages with Rcpp.")
 (define-public r-tweenr
   (package
     (name "r-tweenr")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tweenr" version))
        (sha256
         (base32
-         "1wqzcsxlz1isb1j0v5g6dgvd40q3q9qlahvgcgiq0j4d87nzvfv4"))))
+         "1glc7ks5yymcm4pi0fjpi1zh7m5d4cz7zy20pa3kfraxlh9fbazg"))))
     (build-system r-build-system)
     (arguments
      (list
