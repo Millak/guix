@@ -13709,14 +13709,14 @@ Sequence logos can easily be combined with other ggplot2 plots.")
 (define-public r-ggsci
   (package
     (name "r-ggsci")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggsci" version))
        (sha256
         (base32
-         "0ag1cj4ycl5xmll8mqmmikyvq94l8yx96pb8m2i853yp2rjk20c9"))))
+         "030rkjx64mlhy19d74p3blsi92nyjq9vbn33323dvm1rihb8avgi"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-scales))
