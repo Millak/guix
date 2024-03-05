@@ -546,13 +546,13 @@ astropy related packages.")
 (define-public python-pytest-arraydiff
   (package
     (name "python-pytest-arraydiff")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-arraydiff" version))
        (sha256
-        (base32 "1livzfbi7ag17hskd5845dh1kdir24f7jrbw8y2s1pyhzyz4jhbi"))))
+        (base32 "1pk7v96rkypx4ld59f6p8fh5bq371ka8g7bh4h7n4df91x2v2dr9"))))
     (build-system python-build-system)
     (arguments
      ;; Tests require python-astropy, which itself requires this package.
