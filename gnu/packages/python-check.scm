@@ -605,26 +605,29 @@ running the tests.")
 (define-public python-pytest-doctestplus
   (package
     (name "python-pytest-doctestplus")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-doctestplus" version))
        (sha256
-        (base32 "17ylfnrcvvp6sd13bfj40jl40paqmjsbywysszb3xqgdr86l8l7n"))))
+        (base32 "0cmrkgpib869kpy8h8hfkg20w16lakkmbkw8cxdywpmf5wx7dbf5"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
            #~(list "-k" (string-append
+                         ;; Tests requiring network access.
                          "not test_remote_data_url"
                          " and not test_remote_data_float_cmp"
                          " and not test_remote_data_ignore_whitespace"
                          " and not test_remote_data_ellipsis"
                          " and not test_remote_data_requires"
-                         " and not test_remote_data_ignore_warnings"))))
+                         " and not test_remote_data_ignore_warnings"
+                         ;; Requiring git available.
+                         " and not test_generate_diff_basic"))))
     (native-inputs
      (list python-numpy python-pytest python-setuptools-scm))
-    (home-page "https://github.com/astropy/pytest-doctestplus")
+    (home-page "https://github.com/scientific-python/pytest-doctestplus")
     (synopsis "Pytest plugin with advanced doctest features")
     (description
      "This package contains a plugin for the Pytest framework that provides
