@@ -240,20 +240,3 @@ concerned with representation of names for languages and language groups.")
      It includes a copy from Debian’s pkg-isocodes and makes the data accessible
      through a Python API.")
     (license license:lgpl2.1+)))
-
-(define-public python-pycountry-20.7.3
-  (hidden-package
-   (package
-     (inherit python-pycountry)
-     (name "python-pycountry")
-     (version "20.7.3")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/pycountry/pycountry")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1aqzbdqvy3pg0x33ay099vriazs28v6kw7fwc8ajg3avdcws2mgm"))))
-     (native-inputs (list python-pytest python-pytest-cov python-setuptools)))))
