@@ -32360,14 +32360,14 @@ Latent regression models and plausible value imputation are also supported.")
 (define-public r-erm
   (package
     (name "r-erm")
-    (version "1.0-4")
+    (version "1.0-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "eRm" version))
        (sha256
         (base32
-         "0rp2lxkwkh09zmv101rzk7x1v1pmscp71qpf8f4chxp3idg6rpid"))))
+         "0bkivhiy02pibdcvb9z0i0yvc3wz3v33n6slhkkik61gcw1idmf0"))))
     (properties `((upstream-name . "eRm")))
     (build-system r-build-system)
     (propagated-inputs
