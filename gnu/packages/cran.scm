@@ -39212,14 +39212,14 @@ complex functions.")
 (define-public r-gganimate
   (package
     (name "r-gganimate")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "gganimate" version))
         (sha256
           (base32
-            "1jabs9qr0319w508kdsk5nmzfhl6nzykpp1by7l639yfvrfqcbd1"))))
+            "016nky797h4093qrpynq5rr1p7h4chpv1hyngpcs2csr1064rjmz"))))
     (properties `((upstream-name . "gganimate")))
     (build-system r-build-system)
     (arguments
@@ -39234,13 +39234,17 @@ complex functions.")
       ;; For video output.
       (list ffmpeg))
     (propagated-inputs
-      (list r-ggplot2
+      (list r-cli
+            r-ggplot2
             r-glue
+            r-lifecycle
             r-progress
             r-rlang
             r-scales
             r-stringi
+            r-transformr
             r-tweenr
+            r-vctrs
             ;; For GIF/SVG output. gifski is faster, but depends on Rust.
             r-magick
             ;; For HTML output.
