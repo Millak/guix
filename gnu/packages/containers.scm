@@ -336,6 +336,50 @@ Layer-4 sockets.")
 configure network interfaces in Linux containers.")
     (license license:asl2.0)))
 
+(define-public gvisor-tap-vsock
+  (package
+    (name "gvisor-tap-vsock")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/containers/gvisor-tap-vsock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q1zism0c63k2aq6yhkjqc3b2zsm4lwn0bk39p2kl79h798wfyp4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags `(list ,(string-append "GIT_VERSION=v" version))
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'setenv
+            (lambda _
+              ;; For golang toolchain.
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'prune-tests
+            (lambda _
+              ;; Requires internet connection to fetch QEMU image.
+              (invoke "rm" "-r" "test")))
+          (replace 'install
+            (lambda _
+              (install-file "bin/gvproxy" (string-append #$output "/bin")))))))
+    (native-inputs (list go-1.20))
+    (home-page "https://github.com/containers/gvisor-tap-vsock")
+    (synopsis "Network stack for virtualization based on gVisor")
+    (description "This package provides a replacement for @code{libslirp} and
+@code{VPNKit}, written in pure Go.  It is based on the network stack of gVisor
+and brings a configurable DNS server and dynamic port forwarding.
+
+It can be used with QEMU, Hyperkit, Hyper-V and User-Mode Linux.
+
+The binary is called @command{gvproxy}.")
+    (license license:asl2.0)))
+
 ;; For podman to work, the user needs to run
 ;; `sudo mount -t cgroup2 none /sys/fs/cgroup`
 
