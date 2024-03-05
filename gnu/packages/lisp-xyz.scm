@@ -43,6 +43,7 @@
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
+;;; Copyright © 2024 Nik Gaffney <nik@fo.am>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25731,11 +25732,11 @@ Common Lisp.")
   (sbcl-package->ecl-package sbcl-cl-collider))
 
 (define-public sbcl-osc
-  (let ((commit "9f0a9d3da310a3a0f654f48af0203816f3f371ad")
+  (let ((commit "f647738ccc22925ed740a8ca9132fda76a05baeb")
         (revision "0"))
     (package
      (name "sbcl-osc")
-     (version (git-version "0.7" revision commit))
+     (version (git-version "0.9" revision commit))
      (source
        (origin
          (method git-fetch)
@@ -25744,16 +25745,18 @@ Common Lisp.")
                (commit commit)))
          (file-name (git-file-name "cl-osc" version))
          (sha256
-          (base32 "0gh29zcl9pmy3xlmwzpf9www2z06ah6b4jk06sj2cvxbc15nblqa"))))
+          (base32 "1x4cavspaxcr604g0hwak1ncy4m9cqq03ji4v56g2h1443n7h48a"))))
      (build-system asdf-build-system/sbcl)
-     (inputs (list sbcl-usocket))
+     (native-inputs (list sbcl-fiveam))
+     (inputs (list sbcl-ieee-floats))
      (synopsis "Implementation of the Open Sound Control protocol")
-     (description "This package provides a common lisp implementation
-of the Open Sound Control Protocol aka OSC.  The code should be close
-to the ansi standard, and does not rely on any external code/ffi/etc+
-to do the basic encoding and decoding of packets.")
+     (description "This is a lisp implementation of the Open Sound Control
+protocol (or more accurately “data transport specification” or
+“encoding”).  The code should be close to ANSI standard common lisp and
+provides self contained code for encoding and decoding of OSC data, messages,
+and bundles.")
      (home-page "https://github.com/zzkt/osc/")
-     (license (list license:gpl3 license:llgpl)))))
+     (license license:gpl3+))))
 
 (define-public cl-osc
   (sbcl-package->cl-source-package sbcl-osc))
