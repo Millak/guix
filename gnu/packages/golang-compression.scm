@@ -140,6 +140,29 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
     (description "@code{compress} provides various compression algorithms.")
     (license license:bsd-3)))
 
+(define-public go-github-com-nwaples-rardecode-v2
+  (package
+    (name "go-github-com-nwaples-rardecode-v2")
+    (version "2.0.0-beta.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nwaples/rardecode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1344mxfdgs5fps6mqxk6352arrfszi33kmq394rgmqpf4394f1y7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nwaples/rardecode"))
+    (home-page "https://github.com/nwaples/rardecode")
+    (synopsis "Reading RAR archives in Go")
+    (description
+     "This package provides a library for reading RAR archives with Golang.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-ulikunitz-xz
   (package
     (name "go-github-com-ulikunitz-xz")
