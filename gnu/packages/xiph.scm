@@ -367,6 +367,8 @@ is unmatched for interactive speech and music transmission over the Internet,
 but is also intended for storage and streaming applications.  It is
 standardized by the Internet Engineering Task Force (IETF) as RFC 6716 which
 incorporated technology from Skype's SILK codec and Xiph.Org's CELT codec.")
+    ;; This package shows a sizable speed increase when tuned.
+    (properties `((tunable? . #t)))
     (license license:bsd-3)
     (home-page "https://www.opus-codec.org")))
 
