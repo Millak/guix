@@ -1203,7 +1203,7 @@ image formats.")
 (define-public splash
   (package
     (name "splash")
-    (version "3.10.1")
+    (version "3.10.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1211,7 +1211,7 @@ image formats.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1cyg7my2lbpai81nfnlj0r7pvral3kjn31dcq2p4982d2xg0dj87"))
+                "077s9if7fmccvhsbp0dhvyqcil46vpbgdm1y6qn6h34r8lfqj9z6"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
