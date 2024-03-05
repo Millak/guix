@@ -333,7 +333,7 @@ convert HTML to Markdown.")
 (define-public cmark
   (package
     (name "cmark")
-    (version "0.30.3")
+    (version "0.31.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -342,7 +342,7 @@ convert HTML to Markdown.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07d30s5v893nb1m7qbam5c3x9b3d84m80kzlj7fmkwhgjrlz7d7z"))))
+                "0llj68l9rxdhral0zyv0bz6yzqsxgq8d3730082sl3kx78lsq5qq"))))
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "test"))
