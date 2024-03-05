@@ -100,6 +100,8 @@ a fully open, non-proprietary, patent-and-royalty-free, general-purpose
 compressed audio format for mid to high quality (8kHz-48.0kHz, 16+ bit,
 polyphonic) audio and music at fixed and variable bitrates from 16 to
 128 kbps/channel.")
+   ;; This package shows a sizable speed increase when tuned.
+   (properties `((tunable? . #t)))
    (license (license:non-copyleft "file://COPYING"
                                "See COPYING in the distribution."))
    (home-page "https://xiph.org/vorbis/")))
