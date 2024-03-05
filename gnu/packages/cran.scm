@@ -5823,14 +5823,14 @@ contained in the navigation bar.")
 (define-public r-spelling
   (package
     (name "r-spelling")
-    (version "2.2.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spelling" version))
        (sha256
         (base32
-         "0vr5mgw9grnsnzsc29al72p05z786hnd6b9c6wq0c0dabk5szm2g"))))
+         "0fxa0wpmmx7bal7xb4yy3134s2bskj98kwhqn25bqga3inzqdm6d"))))
     (properties `((upstream-name . "spelling")))
     (build-system r-build-system)
     (propagated-inputs
