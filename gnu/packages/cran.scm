@@ -14572,13 +14572,13 @@ tidyverse workflow.")
 (define-public r-nodbi
   (package
     (name "r-nodbi")
-    (version "0.10.2")
+    (version "0.10.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "nodbi" version))
               (sha256
                (base32
-                "1pznlnln0p55qqwy22h9m79ddf3wgnx3vaxx2q39wvgqwj0kk1b0"))))
+                "17ghgp6sabj4dlmx3cdn9rrhci7050a73cd17fymjksgvy1jbwf6"))))
     (properties `((upstream-name . "nodbi")))
     (build-system r-build-system)
     (propagated-inputs
