@@ -1135,6 +1135,31 @@ and stop units of work, which may receive @code{Close} signals from many clients
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-josharian-intern
+  (package
+    (name "go-github-com-josharian-intern")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/josharian/intern")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1za48ppvwd5vg8vv25ldmwz1biwpb3p6qhf8vazhsfdg9m07951c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/josharian/intern"))
+    (home-page "https://github.com/josharian/intern")
+    (synopsis "String interning for Go")
+    (description
+     "This library defines functions to perform string interning in Go,
+storing only one copy of each unique string in memory.  All functions may be
+called concurrently with themselves and each other.")
+    (license license:expat)))
+
 (define-public go-github-com-k0kubun-pp
   (package
     (name "go-github-com-k0kubun-pp")
