@@ -8461,17 +8461,22 @@ these progress updates.")
 (define-public r-lava
   (package
     (name "r-lava")
-    (version "1.7.3")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lava" version))
        (sha256
         (base32
-         "023av1mz4hr1lqv8cpbx0j1y3c7ljyns35rm838c618b6pqps22f"))))
+         "0zz8hzmqd4qa14y52c8gw9hr6gn0d7srffrddxrmhb01rbp9dfcd"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-future-apply r-numderiv r-progressr r-squarem r-survival))
+     (list r-cli
+           r-future-apply
+           r-numderiv
+           r-progressr
+           r-squarem
+           r-survival))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/kkholst/lava")
