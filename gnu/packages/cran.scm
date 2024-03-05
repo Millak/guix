@@ -1026,27 +1026,26 @@ axis breaks of a ggplot.")
 (define-public r-ggdist
   (package
     (name "r-ggdist")
-    (version "3.3.1")
+    (version "3.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggdist" version))
        (sha256
-        (base32 "0agr1l65s7vimdb88a7n3ahr6pp9ng5zf9mypdic26vhaaifh1b7"))))
+        (base32 "1wc3pqnf2r0324jm0vv1872smriv25h0lx0mni7qp93wrf8k0mpn"))))
     (properties `((upstream-name . "ggdist")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-distributional
-                             r-dplyr
                              r-ggplot2
                              r-glue
+                             r-gtable
                              r-numderiv
                              r-quadprog
                              r-rcpp
                              r-rlang
                              r-scales
                              r-tibble
-                             r-tidyselect
                              r-vctrs
                              r-withr))
     (native-inputs (list r-knitr))
