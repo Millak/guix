@@ -24829,28 +24829,27 @@ databases, including ENA, PDB or ChEMBL are also accessible.")
 (define-public r-ggraph
   (package
     (name "r-ggraph")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggraph" version))
        (sha256
         (base32
-         "07sw4h94dzbs44dcvvj80g8v8252k4iw8pkmzdrk4qagvhidnvv8"))))
+         "0zs02xyzvimk8hj1z465zxp1hlca3gfirdcwb3gqriwsmnfhg661"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-digest
+           r-cpp11
            r-dplyr
            r-ggforce
            r-ggplot2
            r-ggrepel
            r-graphlayouts
-           r-gtable
            r-igraph
            r-lifecycle
            r-mass
-           r-rcpp
+           r-memoise
            r-rlang
            r-scales
            r-tidygraph
