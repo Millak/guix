@@ -372,14 +372,14 @@
 (define-public emacs-activities
   (package
     (name "emacs-activities")
-    (version "0.5.1")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://elpa.gnu.org/packages/activities-" version ".tar"))
        (sha256
-        (base32 "0ng9sgajcpal881s3kavkmz0fc38f2h207hpqj62cf14z7bsk0zk"))))
+        (base32 "03dc2d9w40qp0qacv5vk49498qyb9y9n6ppd79jbglkpr0a60y21"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-persist))
     (home-page "https://github.com/alphapapa/activities.el")
