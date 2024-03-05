@@ -217,7 +217,9 @@ corresponds to CPU, a record as returned by 'current-cpu'."
           (#xd15
            "armv8-r")
           ((or #xd46 #xd47 #xd4d #xd48 #xd4e #xd49 #xd4f)
-           "armv9-a")))
+           "armv9-a")
+          ((or #xd80 #xd81)
+           "armv9.2-a")))
        ("0x42"
         "armv8.1-a")
        ("0x43"
@@ -248,8 +250,14 @@ corresponds to CPU, a record as returned by 'current-cpu'."
         "armv8-a")
        ("0x68"
         "armv8-a")
+       ("0x6d"
+        "armv9-a")
        ("0xC0"
-        "armv8.6-a")
+        (match (cpu-model cpu)
+          ((or #xac3 #xac4)
+           "armv8.6-a")
+          (#xac5
+           "armv8.7-a")))
        ("0xC00"
         "armv8-a")
        (_
