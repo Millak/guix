@@ -6220,26 +6220,20 @@ bookmarks using a declarative input in the form of a markdown file.")
 (define-public python-joblib
   (package
     (name "python-joblib")
-    (version "1.1.1")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "joblib" version))
               (sha256
                (base32
-                "0019p280s2k941mihl67l7y6amwx86639xp3zvpsg1lmyish67rh"))))
-    (build-system python-build-system)
+                "1cbjjzsh9hzaqr2cqja95673p7j88b8bd02hjpkq8xz147k6by4j"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "JOBLIB_MULTIPROCESSING" "0")
-               (invoke "pytest" "-v" "joblib"
-                       ;; We disable this test to avoid having to depend on ipython/jupyter
-                       "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))))))
-    (native-inputs
-     (list python-pytest))
+     (list
+      #:test-flags  ; disabled to avoid having to depend on ipython/jupyter
+      #~(list "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-psutil))
     (home-page "https://joblib.readthedocs.io/")
     (synopsis "Using Python functions as pipeline jobs")
     (description
