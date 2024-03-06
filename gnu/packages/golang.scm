@@ -3888,21 +3888,21 @@ GNU extensions} to the POSIX recommendations for command-line options.")
          "099n2g7fg6r8hqyszqw2axr775qyhyvwhsykvgw0f0s16ql48h5c"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/spf13/viper"))
+     (list
+      #:import-path "github.com/spf13/viper"))
     (propagated-inputs
-     `(("github.com/spf13/afero" ,go-github-com-spf13-afero)
-       ("github.com/spf13/cast" ,go-github-com-spf13-cast)
-       ("github.com/spf13/pflag" ,go-github-com-spf13-pflag)
-       ("github.com/spf13/jwalterweatherman" ,go-github-com-spf13-jwalterweatherman)
-       ("github.com/fsnotify/fsnotify" ,go-github-com-fsnotify-fsnotify)
-       ("github.com/hashicorp/hcl" ,go-github-com-hashicorp-hcl)
-       ("github.com/magiconair/properties" ,go-github-com-magiconair-properties)
-       ("github.com/mitchellh/mapstructure" ,go-github-com-mitchellh-mapstructure)
-       ("github.com/pelletier/go-toml" ,go-github-com-pelletier-go-toml)
-       ("github.com/subosito/gotenv" ,go-github-com-subosito-gotenv)
-
-       ("gopkg.in/ini.v1" ,go-gopkg-in-ini-v1)
-       ("gopkg.in/yaml.v2" ,go-gopkg-in-yaml-v2)))
+     (list go-github-com-fsnotify-fsnotify
+           go-github-com-hashicorp-hcl
+           go-github-com-magiconair-properties
+           go-github-com-mitchellh-mapstructure
+           go-github-com-pelletier-go-toml
+           go-github-com-spf13-afero
+           go-github-com-spf13-cast
+           go-github-com-spf13-jwalterweatherman
+           go-github-com-spf13-pflag
+           go-github-com-subosito-gotenv
+           go-gopkg-in-ini-v1
+           go-gopkg-in-yaml-v2))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/spf13/viper")
