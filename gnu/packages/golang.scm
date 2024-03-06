@@ -9606,8 +9606,9 @@ parser.")
     (home-page "https://github.com/VividCortex/ewma")
     (synopsis "Exponentially Weighted Moving Average algorithms for Go")
     (description
-     "This package implements algorithms for exponentially weighted moving
-averages.")
+     "This package implements algorithms for
+@url{https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average,exponentially
+weighted moving averages}.")
     (license license:expat)))
 
 (define-public go-github-com-rivo-uniseg
