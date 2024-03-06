@@ -1301,6 +1301,20 @@ CPU quota.")
 ;;; Executables:
 ;;;
 
+(define-public go-numcpus
+  (package
+    (inherit go-github-com-tklauser-numcpus)
+    (name "go-numcpus")
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/tklauser/numcpus/cmd/numcpus"
+      #:unpack-path "github.com/tklauser/numcpus"
+      #:install-source? #f))
+    (description
+     "This package provides a CLI build from the
+go-github-com-tklauser-numcpus source.")))
+
 (define-public go-pixelmatch
   (package
     (inherit go-github-com-orisano-pixelmatch)
