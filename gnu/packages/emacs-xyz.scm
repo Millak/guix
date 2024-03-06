@@ -34300,6 +34300,29 @@ users with red-green color deficiency.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
+(define-public emacs-plan9-theme
+  (let ((commit "c2da2fcb241e9800d931a1ff19ecd9fd84d30382")
+        (revision "0"))
+    (package
+      (name "emacs-plan9-theme")
+      (home-page "https://github.com/john2x/plan9-theme.el")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rjxbk9fljnjmg00vdqcyynzg591cgknyy2d92xsxsyg4d28dvwi"))))
+      (build-system emacs-build-system)
+      (synopsis "Light color theme for Emacs based on Plan 9")
+      (description
+       "@code{plan9} is an Emacs theme with light colors and a classic
+look which is inspired by the colors of Plan 9 from Bell Labs.")
+      (license license:gpl3+))))
+
 (define-public emacs-punpun-theme
   (let ((commit "7026684cd568cb691af3ced5de14c375fe6f5a1a")
         (revision "0"))
