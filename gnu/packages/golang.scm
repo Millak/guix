@@ -9319,36 +9319,6 @@ be used as both a binary and a library.")
     (native-inputs '())
     (inputs '())))
 
-(define-public go-go-uber-org-zap
-  (package
-    (name "go-go-uber-org-zap")
-    (version "1.24.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/uber-go/zap")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lzbbs87fvixzbyv4wpl3s70vm2m0jz2jgdvrviiksc2al451qgs"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "go.uber.org/zap"
-       #:tests? #f)) ; TODO: Fix tests
-    (native-inputs
-     (list go-github-com-stretchr-testify go-golang-org-x-lint
-           go-honnef-co-go-tools))
-    (propagated-inputs
-     (list go-github-com-pkg-errors go-go-uber-org-atomic
-           go-go-uber-org-multierr go-gopkg-in-yaml-v2))
-    (home-page "https://go.uber.org/zap")
-    (synopsis "Logging library for Go")
-    (description
-     "This package provides a library for fast, structured, leveled logging in
-Go.")
-    (license license:expat)))
-
 (define-public go-github-com-davecgh-go-xdr
   (package
     (name "go-github-com-davecgh-go-xdr")

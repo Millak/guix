@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
@@ -1493,6 +1494,39 @@ weighted moving averages}.")
     (description
      "This package automatically set GOMAXPROCS to match Linux container
 CPU quota.")
+    (license license:expat)))
+
+(define-public go-go-uber-org-zap
+  (package
+    (name "go-go-uber-org-zap")
+    (version "1.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/zap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lzbbs87fvixzbyv4wpl3s70vm2m0jz2jgdvrviiksc2al451qgs"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "go.uber.org/zap"
+       #:tests? #f)) ; TODO: Fix tests
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-golang-org-x-lint
+           go-honnef-co-go-tools))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-go-uber-org-atomic
+           go-go-uber-org-multierr
+           go-gopkg-in-yaml-v2))
+    (home-page "https://go.uber.org/zap")
+    (synopsis "Logging library for Go")
+    (description
+     "This package provides a library for fast, structured, leveled logging in
+Go.")
     (license license:expat)))
 
 (define-public go-gopkg-in-op-go-logging-v1
