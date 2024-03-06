@@ -9556,29 +9556,6 @@ programming language.")
 parser.")
     (license license:bsd-2)))
 
-(define-public go-github-com-vividcortex-ewma
-  (package
-    (name "go-github-com-vividcortex-ewma")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/VividCortex/ewma")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0whx516l9nm4n41spagb605ry7kfnz1qha96mcshnfjlahhnnylq"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "github.com/VividCortex/ewma"))
-    (home-page "https://github.com/VividCortex/ewma")
-    (synopsis "Exponentially Weighted Moving Average algorithms for Go")
-    (description
-     "This package implements algorithms for
-@url{https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average,exponentially
-weighted moving averages}.")
-    (license license:expat)))
-
 (define-public go-github-com-rivo-uniseg
   (package
     (name "go-github-com-rivo-uniseg")

@@ -3,7 +3,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
@@ -1366,6 +1366,29 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
      "This package provides both library functions and a command-line tool to
 query information regarding the number of CPUs available to the system.")
     (license license:asl2.0)))
+
+(define-public go-github-com-vividcortex-ewma
+  (package
+    (name "go-github-com-vividcortex-ewma")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/VividCortex/ewma")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0whx516l9nm4n41spagb605ry7kfnz1qha96mcshnfjlahhnnylq"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/VividCortex/ewma"))
+    (home-page "https://github.com/VividCortex/ewma")
+    (synopsis "Exponentially Weighted Moving Average algorithms for Go")
+    (description
+     "This package implements algorithms for
+@url{https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average,exponentially
+weighted moving averages}.")
+    (license license:expat)))
 
 (define-public go-go-uber-org-automaxprocs
   (package
