@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
@@ -10,6 +11,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
@@ -17,7 +19,6 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
@@ -791,6 +792,33 @@ Differentiation between text and binary files}.
     (description
      "@code{errwrap} is a package for Go that formalizes the pattern of
 wrapping errors and checking if an error contains another error.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-hcl
+  (package
+    (name "go-github-com-hashicorp-hcl")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/hcl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q6ml0qqs0yil76mpn4mdx4lp94id8vbv575qm60jzl1ijcl5i66"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/hcl"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew))
+    (synopsis "Go implementation of HashiCorp Configuration Language V1")
+    (description
+     "This package contains the main implementation of the @acronym{HCL,
+HashiCorp Configuration Language}.  HCL is designed to be a language for
+expressing configuration which is easy for both humans and machines to read.")
+    (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
 (define-public go-github-com-hashicorp-go-multierror
