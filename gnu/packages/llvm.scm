@@ -482,6 +482,11 @@ code analysis tools.")
 (define (clang-properties version)
   "Return package properties for Clang VERSION."
   `((compiler-cpu-architectures
+      ("powerpc64le"
+       ;; This list was obtained from clang/test/Misc/target-invalid-cpu-note.c
+       ;; and then trimmed down.
+       ,@(if (version>=? version "11.0")
+             '("power8" "power9" "power10" "powerpc64le")))
       ("x86_64"
        ;; This list was obtained from clang/test/Misc/target-invalid-cpu-note.c
        ,@(cond
