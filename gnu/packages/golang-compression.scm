@@ -140,9 +140,9 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
     (description "@code{compress} provides various compression algorithms.")
     (license license:bsd-3)))
 
-(define-public go-github.com-ulikunitz-xz
+(define-public go-github-com-ulikunitz-xz
   (package
-    (name "go-github.com-ulikunitz-xz")
+    (name "go-github-com-ulikunitz-xz")
     (version "0.5.8")
     (source
      (origin
