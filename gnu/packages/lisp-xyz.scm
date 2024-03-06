@@ -1221,6 +1221,43 @@ Features:
 (define-public ecl-coleslaw
   (sbcl-package->ecl-package sbcl-coleslaw))
 
+(define-public sbcl-cl-all
+  (let ((commit "4ce1ea9d9f33c0dd6212044e7952a0c854757ace")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-all")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/cl-all")
+               (commit commit)))
+         (file-name (git-file-name "cl-all" version))
+         (sha256
+          (base32 "0n4sjarj373zpxn78m32rmhxnsnr8qahdslrd9vrkkwjpzar2bwp"))))
+      (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'create-asdf-configuration 'build-program
+              (lambda* (#:key outputs #:allow-other-keys)
+                (build-program
+                 (string-append (assoc-ref outputs "bin") "/bin/cl-all")
+                 outputs
+                 #:entry-program '((cl-all:toplevel arguments))
+                 #:compress? #t))))))
+      (home-page "https://github.com/Shinmera/cl-all")
+      (synopsis "Evaluate Common Lisp expressions in multiple implementations")
+      (description "@samp{cl-all} is a library and script for evaluating Common
+Lisp expressions in multiple implementations.")
+      (license license:zlib))))
+
+(define-public cl-all
+  (sbcl-package->cl-source-package sbcl-cl-all))
+
 (define-public sbcl-tripod
   (let ((commit "b019a27cd7eb895870f84b0eb6c3edc5d7b05928")
         (revision "1"))
