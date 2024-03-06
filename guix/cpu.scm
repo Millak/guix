@@ -113,7 +113,7 @@
   "Return the architecture name, suitable for GCC's '-march' flag, that
 corresponds to CPU, a record as returned by 'current-cpu'."
   (match (cpu-architecture cpu)
-    ("x86_64"
+    ((or "x86_64" "i686")
      ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.cc.
      (letrec-syntax ((if-flags (syntax-rules (=>)
                                  ((_)
@@ -200,7 +200,9 @@ corresponds to CPU, a record as returned by 'current-cpu'."
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
-         "x86-64")))
+         (match (cpu-architecture cpu)
+           ("x86_64" "x86-64")
+           (_ "generic")))))
     ("aarch64"
      ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
      ;; What to do with big.LITTLE cores?
