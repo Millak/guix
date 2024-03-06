@@ -872,30 +872,30 @@ their component bytes.")
     (license license:mpl2.0)))
 
 (define-public go-github-com-hashicorp-go-version
-    (package
-      (name "go-github-com-hashicorp-go-version")
-      (version "1.6.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/hashicorp/go-version")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0fw6hwvjadpbfj10yk7f64ypw8lmv5s5ny3s4ria0nv6xam1wpai"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/hashicorp/go-version"))
-      (home-page "https://github.com/hashicorp/go-version")
-      (synopsis "Go library for parsing and verifying versions and version
+  (package
+    (name "go-github-com-hashicorp-go-version")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-version")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fw6hwvjadpbfj10yk7f64ypw8lmv5s5ny3s4ria0nv6xam1wpai"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/hashicorp/go-version"))
+    (home-page "https://github.com/hashicorp/go-version")
+    (synopsis "Go library for parsing and verifying versions and version
 constraints")
-      (description
-       "This package is a library for parsing versions and version
+    (description
+     "This package is a library for parsing versions and version
 constraints, and verifying versions against a set of constraints.  It can sort
 a collection of versions properly, handles prerelease/beta versions, can
 increment versions.")
-      (license license:mpl2.0)))
+    (license license:mpl2.0)))
 
 (define-public go-github-com-hhrutter-tiff
   (package
