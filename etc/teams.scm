@@ -724,6 +724,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "mhw@netris.org")
   mozilla)
 
+(define-member (person "Adam Faiz"
+                       "adam.faiz@disroot.org")
+  games)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
