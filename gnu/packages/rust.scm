@@ -49,6 +49,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages llvm-meta)
   #:use-module (gnu packages mingw)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -964,7 +965,9 @@ safety and thread safety guarantees.")
   (let ((base-rust rust-1.75))
     (package
       (inherit base-rust)
-      (properties (alist-delete 'hidden? (package-properties base-rust)))
+      (properties (append
+                    (alist-delete 'hidden? (package-properties base-rust))
+                    (clang-compiler-cpu-architectures "15")))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (source
        (origin
