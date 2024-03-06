@@ -129,7 +129,9 @@ Protocol.")
     (home-page "https://github.com/syncthing/syncthing")
     (properties
      '((release-monitoring-url . "https://syncthing.net/downloads/")
-       (upstream-name . "syncthing-source")))
+       (upstream-name . "syncthing-source")
+       ;; The hashing code greatly benefits from newer architecture support.
+       (tunable? . #t)))
     (license mpl2.0)))
 
 (define-public syncthing-gtk
