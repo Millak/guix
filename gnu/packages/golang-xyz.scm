@@ -820,6 +820,30 @@ the functions @code{As}, @code{Is}, and @code{Unwrap}.  This provides a
 standardized approach for introspecting on error values.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-syslog
+  (package
+    (name "go-github-com-hashicorp-go-syslog")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-syslog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09vccqggz212cg0jir6vv708d6mx0f9w5bxrcdah3h6chgmal6v1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-syslog"))
+    (home-page "https://github.com/hashicorp/go-syslog")
+    (synopsis "Golang syslog wrapper, cross-compile friendly")
+    (description
+     "This package is a very simple wrapper around log/syslog")
+    (license license:expat)))
+
 (define-public go-github-com-hhrutter-tiff
   (package
     (name "go-github-com-hhrutter-tiff")
