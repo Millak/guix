@@ -294,8 +294,8 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
              ("avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
               "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v3")
              ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v2")
-             (_ => "x86-64-v1")))
-         "x86-64-v1"))
+             (_ => "x86-64")))
+         "x86-64"))
     (architecture
      ;; TODO: More architectures
      architecture)))
@@ -321,5 +321,5 @@ CPUs for compilers which don't allow for more focused optimizing."
          "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
          "amdfam10"
          "lujiazui" "yongfeng" "x86-64")
-     "x86-64-v1")
+     "x86-64")
     (_ gcc-architecture)))

@@ -624,7 +624,7 @@ Go.  It also includes runtime support libraries for these languages.")
             "btver1" "btver2"                     ;AMD
 
             ;; psABI micro-architecture levels
-            "x86-64-v1" "x86-64-v2" "x86-64-v3" "x86-64-v4")))
+            "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4")))
 
 ;; Suitable '-march' values for GCC 12.
 (define %gcc-12-aarch64-micro-architectures
