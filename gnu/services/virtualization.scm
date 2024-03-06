@@ -1220,10 +1220,13 @@ authpriv.*;auth.info                    /var/log/secure
                        ;; pre-initialized /etc/guix/acl file in the VM.  Thus,
                        ;; clear 'authorize-key?' so that it's not overridden
                        ;; at activation time.
+                       ;; Since it's used for offloading, disable substitutes
+                       ;; (this avoids network issues).
                        (guix-service-type config =>
                                           (guix-configuration
                                            (inherit config)
-                                           (authorize-key? #f)))
+                                           (authorize-key? #f)
+                                           (use-substitutes? #f)))
                        (syslog-service-type config =>
                                             (syslog-configuration
                                              (config-file
