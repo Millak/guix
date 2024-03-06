@@ -33691,22 +33691,7 @@ simple but powerful Org contents.")
      (list
       #:include #~(cons "^src/" %default-include)
       #:tests? #t
-      ;; <https://github.com/emacs-eldev/eldev/issues/99#issuecomment-1912637609>
-      #:test-command #~(list "eldev" "-X" "-dtTC" "test")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'configure-eldev
-            (lambda _
-              (setenv "HOME"
-                      (string-append (getcwd) "/.eldev"))
-              (with-output-to-file "Eldev-local"
-                (lambda _
-                  (format #t "~s"
-                          '(dolist (d (split-string (getenv
-                                                     "EMACSLOADPATH")
-                                                    ":" t))
-                                   (ignore-errors
-                                    (eldev-use-local-dependency d)))))))))))
+      #:test-command #~(list "eldev" "--use-emacsloadpath" "-dtTC" "test")))
     (native-inputs (list emacs-buttercup emacs-eldev))
     (propagated-inputs (list emacs-org))
     (home-page "https://github.com/ox-tufte/ox-tufte")
