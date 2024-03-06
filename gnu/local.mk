@@ -306,6 +306,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/flashing-tools.scm		\
   %D%/packages/flex.scm				\
   %D%/packages/fltk.scm				\
+  %D%/packages/fluidplug.scm			\
   %D%/packages/fonts.scm			\
   %D%/packages/fontutils.scm			\
   %D%/packages/fpga.scm				\

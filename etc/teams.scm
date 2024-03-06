@@ -448,6 +448,7 @@ already exists.  Lookup team IDs among CURRENT-TEAMS."
         #:name "Audio team"
         #:description "Audio related packages."
         #:scope (list "gnu/packages/audio.scm"
+                      "gnu/packages/fluidplug.scm"
                       "gnu/packages/xiph.scm")))
 
 (define-team bootstrap
