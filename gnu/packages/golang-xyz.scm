@@ -6,6 +6,7 @@
 ;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
@@ -350,6 +351,35 @@ quantiles over an unbounded data stream within low memory and CPU bounds.")
      "This package is toml parser and encoder for Go.  The interface is
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
+
+(define-public go-github-com-cheggaaa-pb-v3
+  (package
+    (name "go-github-com-cheggaaa-pb-v3")
+    (version "3.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cheggaaa/pb/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/cheggaaa/pb/v3"
+       #:unpack-path "github.com/cheggaaa/pb"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-github-com-vividcortex-ewma))
+    (home-page "https://github.com/cheggaaa/pb/")
+    (synopsis "Console progress bar for Go")
+    (description
+     "This package is a Go library that draws progress bars on the terminal.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-coocood-freecache
   (package

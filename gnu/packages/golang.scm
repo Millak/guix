@@ -8754,38 +8754,6 @@ error messages.")
 inspired by the causal messaging system in the Pony programming language.")
       (license license:expat))))
 
-(define-public go-github-com-cheggaaa-pb-v3
-  (package
-    (name "go-github-com-cheggaaa-pb-v3")
-    (version "3.0.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cheggaaa/pb/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/cheggaaa/pb/v3"
-       #:unpack-path "github.com/cheggaaa/pb"))
-    (propagated-inputs
-     (list go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-colorable
-           go-github-com-fatih-color
-           go-github-com-vividcortex-ewma))
-    (home-page "https://github.com/cheggaaa/pb/")
-    (synopsis "Console progress bar for Go")
-    (description "This package is a Go library that draws progress bars on
-the terminal.")
-    (license license:bsd-3)))
-
-(define-public go-github-com-cheggaaa-pb
-  (deprecated-package "go-github-com-cheggaaa-pb" go-github-com-cheggaaa-pb-v3))
-
 (define-public go-github-com-gologme-log
   ;; this is the same as v1.2.0, only the LICENSE file changed
   (let ((commit "720ba0b3ccf0a91bc6018c9967a2479f93f56a55"))
