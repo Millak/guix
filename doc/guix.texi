@@ -111,7 +111,7 @@ Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
 Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
-Copyright @copyright{} 2023 Giacomo Leidi@*
+Copyright @copyright{} 2023-2024 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
@@ -44667,16 +44667,41 @@ directory, and some way of automatically deploy changes to their user home.
 @cindex Stow-like dot file management
 The @code{home-dotfiles-service-type} from @code{(gnu home services dotfiles)}
 is designed to ease the way into using Guix Home for this kind of users,
-allowing them to point the service to their dotfiles directory, which must
-follow the layout suggested by
-@uref{https://www.gnu.org/software/stow/, GNU Stow},
-and have their dotfiles automatically deployed to their user home, without
+allowing them to point the service to their dotfiles directory without
 migrating them to Guix native configurations.
 
-The dotfiles directory layout is expected to be structured as follows. Please
-keep in mind that it is advisable to keep your dotfiles directories under
+Please keep in mind that it is advisable to keep your dotfiles directories under
 version control, for example in the same repository where you'd track your
 Guix Home configuration.
+
+There are two supported dotfiles directory layouts, for now. The
+@code{'plain} layout, which is structured as follows:
+
+@example
+~$ tree -a ./dotfiles/
+dotfiles/
+├── .gitconfig
+├── .gnupg
+│   ├── gpg-agent.conf
+│   └── gpg.conf
+├── .guile
+├── .config
+│   ├── guix
+│   │   └── channels.scm
+│   └── nixpkgs
+│       └── config.nix
+├── .nix-channels
+├── .tmux.conf
+└── .vimrc
+@end example
+
+This tree structure is installed as is to the
+home directory upon @command{guix home reconfigure}.
+
+The @code{'stow} layout, which must
+follow the layout suggested by
+@uref{https://www.gnu.org/software/stow/, GNU Stow} presents an additional
+application specific directory layer, just like:
 
 @example
 ~$ tree -a ./dotfiles/
@@ -44707,8 +44732,10 @@ dotfiles/
 @end example
 
 For an informal specification please refer to the Stow manual
-(@pxref{Top,,, stow, Introduction}). A suitable configuration would then
-be:
+(@pxref{Top,,, stow, Introduction}). This tree structure is installed following
+GNU Stow's logic to the home directory upon @command{guix home reconfigure}.
+
+A suitable configuration with a @code{'plain} layout could be:
 
 @lisp
 (home-environment
@@ -44716,7 +44743,7 @@ be:
   (services
     (service home-dotfiles-service-type
              (home-dotfiles-configuration
-               (directories (list "./dotfiles"))))))
+               (directories '("./dotfiles"))))))
 @end lisp
 
 The expected home directory state would then be:
@@ -44743,31 +44770,46 @@ Return a service which is very similiar to @code{home-files-service-type}
 (and actually extends it), but designed to ease the way into using Guix
 Home for users that already track their dotfiles under some kind of version
 control.  This service allows users to point Guix Home to their dotfiles
-directory and have their files automatically deployed to their home directory
-just like Stow would, without migrating all of their dotfiles to Guix native
+directory and have their files automatically provisioned to their home
+directory, without migrating all of their dotfiles to Guix native
 configurations.
 @end defvar
+
+@c %start of fragment
 
 @deftp {Data Type} home-dotfiles-configuration
 Available @code{home-dotfiles-configuration} fields are:
 
 @table @asis
-@item @code{source-directory} (default: @code{(current-source-directory)})
-The path where dotfile directories are resolved. By default dotfile directories
-are resolved relative the source location where
+@item @code{source-directory} (default: @code{(current-source-directory)}) (type: string)
+The path where dotfile directories are resolved.  By default dotfile
+directories are resolved relative the source location where
 @code{home-dotfiles-configuration} appears.
 
-@item @code{directories} (type: list-of-strings)
-The list of dotfiles directories where @code{home-dotfiles-service-type} will
-look for application dotfiles.
+@item @code{layout} (default: @code{'plain}) (type: symbol)
+The intended layout of the specified @code{directory}.  It can be either
+@code{'stow} or @code{'plain}.
 
-@item @code{exclude} (default: @code{'(".*~" ".*\\.swp" "\\.git" "\\.gitignore")})
-The list of file patterns @code{home-dotfiles-service-type} will exclude while
-visiting each one of the @code{directories}.
+@item @code{directories} (default: @code{'()}) (type: list-of-strings)
+The list of dotfiles directories where @code{home-dotfiles-service-type}
+will look for application dotfiles.
+
+@item @code{packages} (type: maybe-list-of-strings)
+The names of a subset of the GNU Stow package layer directories.  When provided
+the @code{home-dotfiles-service-type} will only provision dotfiles from this
+subset of applications.  This field will be ignored if @code{layout} is set
+to @code{'plain}.
+
+@item @code{excluded} (default: @code{'(".*~" ".*\\.swp" "\\.git" "\\.gitignore")}) (type: list-of-strings)
+The list of file patterns @code{home-dotfiles-service-type} will exclude
+while visiting each one of the @code{directories}.
 
 @end table
 
 @end deftp
+
+
+@c %end of fragment
 
 @defvar home-xdg-configuration-files-service-type
 The service is very similar to @code{home-files-service-type} (and
