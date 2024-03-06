@@ -6891,6 +6891,8 @@ Java package that provides routines for various statistical distributions.")
                                     "ess-eval-line-test"
                                     "ess-eval-region-test"
                                     "ess-mock-remote-process"
+                                    "ess-r-eval-sink-freeze-test"
+                                    "ess-r-eval-ns-env-roxy-tracebug-test"
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
                                     "ess-set-working-directory-test"
