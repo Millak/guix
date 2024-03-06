@@ -7680,7 +7680,8 @@ assembly is to C programs.  The term ``derivation'' comes from the fact
 that build results @emph{derive} from them.
 
 This chapter describes all these APIs in turn, starting from high-level
-package definitions.
+package definitions.  @xref{Source Tree Structure}, for a more general
+overview of the source code.
 
 @menu
 * Package Modules::             Packages from the programmer's viewpoint.
