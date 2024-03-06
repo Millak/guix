@@ -14,6 +14,7 @@
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -843,6 +844,32 @@ standardized approach for introspecting on error values.")
     (description
      "This package is a very simple wrapper around log/syslog")
     (license license:expat)))
+
+(define-public go-github-com-hashicorp-go-uuid
+  (package
+    (name "go-github-com-hashicorp-go-uuid")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-uuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wd4maaq20alxwcvfhr52rzfnwwpmc2a698ihyr0vfns2sl7gkzk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-uuid"))
+    (home-page "https://github.com/hashicorp/go-uuid")
+    (synopsis "Generate UUID-format strings")
+    (description
+     "This package generates UUID-format strings using high quality bytes.
+It is not intended to be RFC compliant, merely to use a well-understood string
+representation of a 128-bit value.  It can also parse UUID-format strings into
+their component bytes.")
+    (license license:mpl2.0)))
 
 (define-public go-github-com-hhrutter-tiff
   (package

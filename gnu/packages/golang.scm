@@ -3500,31 +3500,6 @@ editor.")
  spec in Go.")
       (license license:bsd-3))))
 
-(define-public go-github-com-hashicorp-go-uuid
-  (package
-    (name "go-github-com-hashicorp-go-uuid")
-    (version "1.0.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/hashicorp/go-uuid")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0wd4maaq20alxwcvfhr52rzfnwwpmc2a698ihyr0vfns2sl7gkzk"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/hashicorp/go-uuid"))
-    (home-page "https://github.com/hashicorp/go-uuid")
-    (synopsis "Generate UUID-format strings")
-    (description
-     "This package generates UUID-format strings using high quality bytes.
-It is not intended to be RFC compliant, merely to use a well-understood string
-representation of a 128-bit value.  It can also parse UUID-format strings into
-their component bytes.")
-    (license license:mpl2.0)))
-
 (define-public go-github-com-hashicorp-go-version
   (let ((commit
          "03c5bf6be031b6dd45afec16b1cf94fc8938bc77")
