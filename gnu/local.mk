@@ -2012,6 +2012,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
   %D%/packages/patches/s7-flint-3.patch                      	\
   %D%/packages/patches/sajson-for-gemmi-numbers-as-strings.patch	\
+  %D%/packages/patches/sajson-build-with-gcc10.patch		\
   %D%/packages/patches/sbc-fix-build-non-x86.patch		\
   %D%/packages/patches/sbcl-aserve-add-HTML-5-elements.patch	\
   %D%/packages/patches/sbcl-aserve-fix-rfe12668.patch	\
