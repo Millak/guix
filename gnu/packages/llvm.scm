@@ -482,67 +482,67 @@ code analysis tools.")
 (define (clang-properties version)
   "Return package properties for Clang VERSION."
   `((compiler-cpu-architectures
-     ("x86_64"
-      ;; This list was obtained by running:
-      ;;
-      ;;   guix shell clang -- llc -march=x86-64 -mattr=help
-      ;;
-      ;; filtered from uninteresting entries such as "i686" and "pentium".
-      ,@(if (version>=? version "10.0")           ;TODO: refine
-            '("atom"
-              "barcelona"
-              "bdver1"
-              "bdver2"
-              "bdver3"
-              "bdver4"
-              "bonnell"
-              "broadwell"
-              "btver1"
-              "btver2"
-              "c3"
-              "c3-2"
-              "cannonlake"
-              "cascadelake"
-              "cooperlake"
-              "core-avx-i"
-              "core-avx2"
-              "core2"
-              "corei7"
-              "corei7-avx"
-              "generic"
-              "geode"
-              "goldmont"
-              "goldmont-plus"
-              "haswell"
-              "icelake-client"
-              "icelake-server"
-              "ivybridge"
-              "k8"
-              "k8-sse3"
-              "knl"
-              "knm"
-              "lakemont"
-              "nehalem"
-              "nocona"
-              "opteron"
-              "opteron-sse3"
-              "sandybridge"
-              "silvermont"
-              "skx"
-              "skylake"
-              "skylake-avx512"
-              "slm"
-              "tigerlake"
-              "tremont"
-              "westmere"
-              "x86-64"
-              "x86-64-v2"
-              "x86-64-v3"
-              "x86-64-v4"
-              "znver1"
-              "znver2"
-              "znver3")
-            '())))))
+      ("x86_64"
+       ;; This list was obtained from clang/test/Misc/target-invalid-cpu-note.c
+       ,@(cond
+           ((version>=? version "17.0")
+            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
+              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
+              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
+              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
+              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
+              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
+              "alderlake" "raptorlake" "meteorlake" "sierraforest" "grandridge"
+              "graniterapids" "graniterapids-d" "emeraldrapids" "knl" "knm" "k8"
+              "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
+              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
+              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4"
+              "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+           ((version>=? version "16.0")
+            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
+              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
+              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
+              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
+              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
+              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
+              "alderlake" "raptorlake" "meteorlake" "sierraforest" "grandridge"
+              "graniterapids" "emeraldrapids" "knl" "knm" "k8" "athlon64"
+              "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3" "opteron-sse3"
+              "amdfam10" "barcelona" "btver1" "btver2" "bdver1" "bdver2"
+              "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4" "x86-64"
+              "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+           ((version>=? version "15.0")
+            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
+              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
+              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
+              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
+              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
+              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
+              "alderlake" "knl" "knm" "k8" "athlon64" "athlon-fx" "opteron"
+              "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10" "barcelona"
+              "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4" "znver1"
+              "znver2" "znver3" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+           ((version>=? version "13.0")
+            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
+              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
+              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
+              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
+              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
+              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
+              "alderlake" "knl" "knm" "k8" "athlon64" "athlon-fx" "opteron"
+              "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10" "barcelona"
+              "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4" "znver1"
+              "znver2" "znver3" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+           ((version>=? version "9.0")
+            '("atom" "silvermont" "slm" "goldmont" "goldmont-plus" "tremont"
+              "nehalem" "corei7" "westmere" "sandybridge" "corei7-avx"
+              "ivybridge" "core-avx-i" "haswell" "core-avx2" "broadwell"
+              "skylake" "skylake-avx512" "skx" "cascadelake" "cooperlake"
+              "cannonlake" "icelake-client" "icelake-server" "knl" "knm" "k8"
+              "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
+              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
+              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "x86-64"))
+           (else '()))))))
 
 (define-public (make-clang-toolchain clang libomp)
   (package
