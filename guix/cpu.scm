@@ -200,7 +200,7 @@ corresponds to CPU, a record as returned by 'current-cpu'."
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
-         "x86_64")))
+         "x86-64")))
     ("aarch64"
      ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
      ;; What to do with big.LITTLE cores?
@@ -290,12 +290,12 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
              ;; v2: CMPXCHG16B, LAHF, SAHF, POPCNT, SSE3, SSE4.1, SSE4.2, SSSE3
              ("avx512f" "avx512bw" "abx512cd" "abx512dq" "avx512vl"
               "avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
-              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v4")
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v4")
              ("avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
-              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v3")
-             ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v2")
-             (_ => "x86_64-v1")))
-         "x86_64-v1"))
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v3")
+             ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v2")
+             (_ => "x86-64-v1")))
+         "x86-64-v1"))
     (architecture
      ;; TODO: More architectures
      architecture)))
@@ -304,22 +304,22 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
   "Return a matching psABI micro-architecture, allowing optimizations for x86_64
 CPUs for compilers which don't allow for more focused optimizing."
   ;; Matching gcc-architectures isn't an easy task, with the rule-of-thumb being
-  ;; AVX512F+ for x86_64-v4, AVX+ for x86_64-v3.
+  ;; AVX512F+ for x86-64-v4, AVX+ for x86-64-v3.
   ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
   (match gcc-architecture
     ((or "graniterapids-d" "graniterapids" "tigerlake" "sapphirerapids"
          "cooperlake" "icelake-server" "icelake-client" "cannonlake" "knm"
          "knl" "skylake-avx512"
          "znver4")
-     "x86_64-v4")
+     "x86-64-v4")
     ((or "pantherlake" "clearwaterforest" "arrowlake-s" "sierraforest"
          "alderlake" "skylake" "broadwell" "haswell"
          "znver3" "znver2" "znver1" "bdver4")
-     "x86_64-v3")
+     "x86-64-v3")
     ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
          "nehalem" "bonnell" "core2"
          "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
          "amdfam10"
          "lujiazui" "yongfeng" "x86-64")
-     "x86_64-v1")
+     "x86-64-v1")
     (_ gcc-architecture)))

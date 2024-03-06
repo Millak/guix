@@ -870,7 +870,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures))))))
 
 (define %go-1.18-x86_64-micro-architectures
-  (list "x86_64-v1" "x86_64-v2" "x86_64-v3" "x86_64-v4"))
+  (list "x86-64-v1" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
 
 (define-public go-1.18
   (package
