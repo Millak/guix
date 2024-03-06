@@ -1139,6 +1139,34 @@ sensors).")
     (home-page "https://github.com/shirou/gopsutil")
     (license license:bsd-3)))
 
+(define-public go-github-com-shirou-gopsutil-v3
+  (package
+    (inherit go-github-com-shirou-gopsutil)
+    (name "go-github-com-shirou-gopsutil-v3")
+    (version "3.24.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shirou/gopsutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xlfcx6giqaxdah2m02q2i8ynwlzar953wr8wqx1j3004xdgaivd"))))
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/shirou/gopsutil"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               ;; host_test.go tries to access files such as
+               ;; /var/run/utmp that do not exist in the build
+               ;; environment.
+               (string-append "src/" import-path "/host/host_test.go")))))))))
+
 (define-public go-github-com-skip2-go-qrcode
   (package
     (name "go-github-com-skip2-go-qrcode")
