@@ -37075,11 +37075,11 @@ goal of enhancing interoperability between Seurat and Scanpy.")
       (license license:gpl3))))
 
 (define-public r-seuratdata
-  (let ((commit "b59556b24d7d6728a5744c9c715dd5f7f32ed7a5")
+  (let ((commit "4dc08e022f51c324bc7bf785b1b5771d2742701d")
         (revision "1"))
     (package
       (name "r-seuratdata")
-      (version (git-version "0.2.1" revision commit))
+      (version (git-version "0.2.2.9001" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -37088,7 +37088,7 @@ goal of enhancing interoperability between Seurat and Scanpy.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1xfdmdmgn4r0z6w4cxa98ic6xk8i6qz054r215dvqbjs1vydsbf9"))))
+          (base32 "1wac1jqh42nbaikkd8v3apr1lwqcn1ppprfkwqfnqs6mvavgqavp"))))
       (properties `((upstream-name . "SeuratData")))
       (build-system r-build-system)
       (arguments
@@ -37098,8 +37098,7 @@ goal of enhancing interoperability between Seurat and Scanpy.")
            ;; the included list of packages.
            (add-after 'unpack 'set-HOME
              (lambda _ (setenv "HOME" "/tmp"))))))
-      (propagated-inputs
-       (list r-cli r-crayon r-rappdirs))
+      (propagated-inputs (list r-cli r-crayon r-rappdirs r-seurat r-seuratobject))
       (home-page "https://github.com/satijalab/seurat-data")
       (synopsis "Install and manage Seurat datasets")
       (description
