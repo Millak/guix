@@ -3,7 +3,7 @@
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
@@ -4893,9 +4893,40 @@ their web site.")
                 "1p5i8wsi8q5fpq63i7n7ri1w1lnh4gpn17f88vhkbh14aah5wxj1"))))
     (properties '(("upstream-name" . "python-lambda-4dn")))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pip-install
+            (lambda _
+              (substitute* "aws_lambda/aws_lambda.py"
+                ;; This package uses pip to install Python packages, wrap them
+                ;; up, and push them to AWS Lambda.  We need to reset
+                ;; GUIX_PYTHONPATH to avoid introducing package conflicts that
+                ;; would cause pip to fail.
+                (("(subprocess.call\\(\\[sys.executable.*'--no-cache-dir'\\])\\)" _ m)
+                 (string-append m ", env={\"GUIX_PYTHONPATH\":\""
+                                #$(this-package-input "python")
+                                "/lib/python"
+                                #$(version-major+minor
+                                   (package-version (this-package-input "python")))
+                                "/site-packages/\"})"))
+                ;; Zipfile uses the mtime of the temporary directory to build
+                ;; a zip file.  But the temp directory has a timestamp of 0,
+                ;; and zipfile refuses to build a zip archive dated before
+                ;; 1980.  So we reset the mtime of all temp files before they
+                ;; are added to the zip archive.
+                (("^( +)arcname = os.path.join" line indent)
+                 (string-append indent
+                                "os.utime(os.path.join(root, file), (315619200, 315619200))\n"
+                                line))))))))
+    (inputs (list python))
     (propagated-inputs
-     (list python-boto3 python-botocore python-docutils
-           python-six))
+     (list python-boto3
+           python-botocore
+           python-docutils
+           python-six
+           python-virtualenv))
     (home-page "https://github.com/4dn-dcic/python-lambda")
     (synopsis
      "Toolkit for developing and deploying Python code in AWS Lambda")
