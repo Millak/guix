@@ -241,10 +241,13 @@ written in Go.")
        (snippet '(for-each delete-file-recursively
                            ;; TODO: unbundle the rest as well
                            '("vendor/github.com/alecthomas"
-                             ;; "vendor/github.com/blang"
+                             "vendor/github.com/benbjohnson/clock"
+                             "vendor/github.com/beorn7/perks"
+                             "vendor/github.com/blang"
                              "vendor/github.com/cespare"
-                             ;; TODO: Go files not found
-                             ;; "vendor/github.com/cheggaaa"
+                             ;; TODO: kubo depends on v1.0.29 which is way too
+                             ;; hard to back port.
+                             ; "vendor/github.com/cheggaaa/pb"
                              "vendor/github.com/davecgh"
                              "vendor/github.com/dustin"
                              "vendor/github.com/flynn"
@@ -261,8 +264,6 @@ written in Go.")
                              ;; "vendor/github.com/ipld"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/klauspost"
-                             ;; TODO: Go files not found
-                             ;; "vendor/github.com/lucas-clemente"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
                              "vendor/github.com/minio"
@@ -306,11 +307,10 @@ written in Go.")
                                   #~(string-append #$output "/bin/ipfs"))
                             "commands" "completion" "bash")))))))))
     (inputs (list go-github-com-alecthomas-units
-                  ;; TODO: needs to be updated first
-                  ;; go-github-com-blang-semver
+                  go-github-com-benbjohnson-clock
+                  go-github-com-blang-semver-v4
                   go-github-com-cespare-xxhash
                   go-github-com-cheekybits-genny
-                  go-github-com-cheggaaa-pb-v3
                   go-github-com-davecgh-go-spew
                   go-github-com-dustin-go-humanize
                   go-github-com-flynn-noise
