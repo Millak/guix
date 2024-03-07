@@ -40,6 +40,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages time)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -548,6 +549,30 @@ datetime type.")
     (description
      "This package contains a library for parsing ISO 8601 datetime strings.")
     (license bsd-3)))
+
+(define-public rdate
+  (let ((commit "91d84610e3695e90a884e2953908e95a856a9b74")
+        (revision "1"))
+    (package
+      (name "rdate")
+      (version (git-version "1.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/njh/rdate")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "002ryjq8gj1ml5la4v6dr3bh1zw5kxwy65rpziq8d2ccccarhv59"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake))
+      (synopsis "Get date and time based on RFC 868")
+      (description
+       "@code{rdate} connects to an RFC 868 time server over a TCP/IP network,
+printing the returned time and/or setting the system clock.")
+      (home-page "https://www.aelius.com/njh/rdate/")
+      (license gpl2+))))
 
 (define-public datefudge
   (package
