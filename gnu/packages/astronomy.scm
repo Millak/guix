@@ -709,13 +709,13 @@ series in Python.")
 (define-public python-ginga
   (package
     (name "python-ginga")
-    (version "4.1.1")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ginga" version))
        (sha256
-        (base32 "0w60w9d2yqhbmggp0dljj5a0sk07gywifjq8nzw3y2v47vzgwqb6"))))
+        (base32 "1kydi6qqsscgsa55fa2za35vr5j8xjn09lfbnb5ajr8yxdgm4n3y"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list ;;python-exifread  ; optional, not packed yet in Guix
