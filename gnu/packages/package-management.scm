@@ -120,6 +120,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages version-control)
   #:autoload   (guix build-system channel) (channel-build-system)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
@@ -741,6 +742,23 @@ overridden by setting the 'current-guix-package' parameter."
 the Icon Theme Specification.  They can be used by applications querying the
 GTK icon cache for instance.")
     (license license:cc-by-sa4.0)))
+
+(define-public guix-backgrounds
+  (package
+    (name "guix-backgrounds")
+    (version "0.1")
+    (source %artwork-repository)
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("backgrounds" "share/backgrounds/guix" #:exclude ("README")))))
+    (home-page "https://www.gnu.org/software/guix/")
+    (synopsis "Background images for GNU Guix")
+    (description "The SVG files in this directory are intended to be used as
+backgrounds for different components of the GNU system like login managers and
+desktop environments.  The backgrounds are available in different aspect ratios
+which are indicated in the file name.")
+    (license (list license:public-domain license:cc-by-sa4.0))))
 
 (define-public guix-modules
   (package
