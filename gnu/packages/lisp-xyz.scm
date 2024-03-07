@@ -17876,8 +17876,8 @@ compression/decompression using bindings to the libzstd C library.")
   (sbcl-package->ecl-package sbcl-zstd))
 
 (define-public sbcl-agnostic-lizard
-  (let ((commit "fe3a73719f05901c8819f8995a3ebae738257952")
-        (revision "1"))
+  (let ((commit "fe1a1d7d80c8b56163754e0e5b3653fd750ad298")
+        (revision "2"))
     (package
       (name "sbcl-agnostic-lizard")
       (version (git-version "0.0.0" revision commit))
@@ -17887,9 +17887,9 @@ compression/decompression using bindings to the libzstd C library.")
          (uri (git-reference
                (url "https://gitlab.common-lisp.net/mraskin/agnostic-lizard")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-agnostic-lizard" version))
          (sha256
-          (base32 "0ax78y8w4zlp5dcwyhz2nq7j3shi49qn31dkfg8lv2jlg7mkwh2d"))))
+          (base32 "0amzshh6v3mp24j0h2cinv4zvdlg4kih04md5biakwhnmcw4j4pr"))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Almost correct portable code walker for Common Lisp")
       (description
