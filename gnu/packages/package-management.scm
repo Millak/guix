@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -682,15 +682,12 @@ overridden by setting the 'current-guix-package' parameter."
 
 (define-public guix-icons
   (package
-    (inherit guix)
     (name "guix-icons")
     (version "0.1")
     (source %artwork-repository)
     (build-system trivial-build-system)
     (native-inputs
      (list imagemagick))
-    (inputs
-     '())
     (arguments
      `(#:modules ((guix build utils)
                   (gnu build svg))
@@ -738,10 +735,12 @@ overridden by setting the 'current-guix-package' parameter."
                                #:width size
                                #:height size)))
                  sizes))))))
+    (home-page "https://www.gnu.org/software/guix/")
     (synopsis "GNU Guix icons")
     (description "This package contains GNU Guix icons organized according to
 the Icon Theme Specification.  They can be used by applications querying the
-GTK icon cache for instance.")))
+GTK icon cache for instance.")
+    (license license:cc-by-sa4.0)))
 
 (define-public guix-modules
   (package
