@@ -532,7 +532,7 @@ that is safe to use for user space.  It also includes
                           "LDFLAGS=-L . -lpcre")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack-core 'patch-HOST
+         (add-after 'unpack 'patch-HOST
            (lambda _
              ;; gettid duplicates otherwise.
              (substitute* "src/procattr.c"
