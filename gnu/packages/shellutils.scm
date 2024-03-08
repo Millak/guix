@@ -55,6 +55,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -482,6 +483,55 @@ FreeDesktop.org trash can used by GNOME, KDE, XFCE, and other common desktop
 environments.  It can move files to the trash, and remove or list files that
 are already there.")
     (license license:gpl2+)))
+
+(define-public tran
+  ;; There is no new release yet, but there are some changes in master brunch,
+  ;; see <https://github.com/kilobyte/tran/issues/4>.
+  (let ((commit "039df9529d5dfb8283edfb3c8b3cc16c01f0bfce")
+        (revision "0"))
+    (package
+      (name "tran")
+      ;; The latest upstream version seems to be "v5".
+      (version (git-version "5.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kilobyte/tran")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32 "1kzr3lfhi5f8wpwjzrzlwkxjv9rasdr9ndjdns9kd16vsh0gl2rd"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure) ;no configure provided
+            (add-after 'unpack 'patch
+              (lambda _
+                (substitute* "tran"
+                  (("my \\$DATA=\"data\"")
+                   (format #f "my $DATA=\"~a/share/tran/data\"" #$output)))))
+            (replace 'build
+              (lambda _
+                (invoke "make")))
+            (delete 'strip)
+            (replace 'install
+              (lambda _
+                (install-file "tran" (string-append #$output "/bin/"))
+                (install-file "tran.1" (string-append
+                                        #$output "/share/man/man1/"))
+                (copy-recursively "data" (string-append
+                                          #$output "/share/tran/data/")))))))
+      (inputs (list perl))
+      (home-page "https://github.com/kilobyte/tran")
+      (synopsis "Transcription between character scripts")
+      (description
+       "This tool can transliterate/transcribe text both ways between the
+Latin script and other languages.")
+      (license license:expat))))
 
 (define-public direnv
   (package
