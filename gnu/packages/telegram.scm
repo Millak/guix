@@ -4,6 +4,7 @@
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -613,47 +614,50 @@ formerly a part of telegram-cli, but now being maintained separately.")
           (base32 "0cf5s7ygslb5klg1qv9qdc3hivhspmvh3zkacyyhd2yyikb5p0f9"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; No target
+       (list
+        #:tests? #f                    ; No target
          #:imported-modules
-         ((guix build copy-build-system)
-          ,@%gnu-build-system-modules)
+         `((guix build copy-build-system)
+           ,@%gnu-build-system-modules)
          #:modules
-         (((guix build copy-build-system)
-           #:prefix copy:)
-          (guix build gnu-build-system)
-          (guix build utils))
+         '(((guix build copy-build-system)
+            #:prefix copy:)
+           (guix build gnu-build-system)
+           (guix build utils))
          #:configure-flags
-         (list
-          ;; Use gcrypt instead of openssl.
-          "--disable-openssl"
-          ;; Enable extended queries system.
-          "--enable-extf"
-          ;; Include libevent-based net and timers.
-          "--enable-libevent")
+         '(list
+           ;; Use gcrypt instead of openssl.
+           "--disable-openssl"
+           ;; Enable extended queries system.
+           "--enable-extf"
+           ;; Include libevent-based net and timers.
+           "--enable-libevent")
          #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'trigger-bootstrap
-             (lambda _
-               (delete-file "configure")
-               #t))
-           (add-after 'trigger-bootstrap 'patch-tl-parser
-             (lambda _
-               (delete-file "Makefile.tl-parser")
-               (substitute* "Makefile.in"
-                 (("include \\$\\{srcdir\\}/Makefile\\.tl-parser")
-                  "")
-                 (("\\$\\{EXE\\}/tl-parser")
-                  "tl-parser"))
-               #t))
-           (replace 'install
-             (lambda args
-               (apply (assoc-ref copy:%standard-phases 'install)
-                      #:install-plan
-                      '(("bin" "bin")
-                        ("." "include/tgl"
-                         #:include-regexp ("\\.h$"))
-                        ("libs" "lib/tgl"))
-                      args))))))
+         '(modify-phases %standard-phases
+            (add-after 'unpack 'trigger-bootstrap
+              (lambda _
+                (delete-file "configure")))
+            (add-after 'trigger-bootstrap 'patch-tl-parser
+              (lambda _
+                (delete-file "Makefile.tl-parser")
+                (substitute* "Makefile.in"
+                  (("include \\$\\{srcdir\\}/Makefile\\.tl-parser")
+                   "")
+                  (("\\$\\{EXE\\}/tl-parser")
+                   "tl-parser"))))
+            (add-after 'unpack 'remove-Werror
+              (lambda _
+                (substitute* "Makefile.in"
+                  (("-Werror") ""))))
+            (replace 'install
+              (lambda args
+                (apply (assoc-ref copy:%standard-phases 'install)
+                       #:install-plan
+                       '(("bin" "bin")
+                         ("." "include/tgl"
+                          #:include-regexp ("\\.h$"))
+                         ("libs" "lib/tgl"))
+                       args))))))
       (native-inputs
        (list autoconf automake libtool pkg-config))
       (inputs
