@@ -549,9 +549,12 @@ output), and Binutils.")
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"
-                 "clang-runtime-14-glibc-2.36-compat.patch"))
-    ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
-    ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
+                 "clang-runtime-14-glibc-2.36-compat.patch"
+                 "clang-14-remove-crypt-interceptors.patch"))
+    ("15.0.7" . ("clang-15.0-libc-search-path.patch"
+                 "clang-16-remove-crypt-interceptors.patch"))
+    ("16.0.6" . ("clang-16.0-libc-search-path.patch"
+                 "clang-16-remove-crypt-interceptors.patch"))
     ("17.0.6" . ("clang-17.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))
     ("18.1.8" . ("clang-18.0-libc-search-path.patch"
@@ -814,7 +817,8 @@ Library.")
   (clang-runtime-from-llvm
    llvm-13
    "1z2xr9nn4mgc3hn9ark2k5y4wznpk47xppkp63bcbagr6589acvv"
-   '("clang-runtime-13-glibc-2.36-compat.patch")))
+   '("clang-runtime-13-glibc-2.36-compat.patch"
+     "clang-13-remove-crypt-interceptors.patch")))
 
 (define-public clang-13
   (clang-from-llvm llvm-13 clang-runtime-13
