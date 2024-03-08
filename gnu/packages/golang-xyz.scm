@@ -1035,6 +1035,34 @@ increment versions.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-jbenet-goprocess
+  (package
+    (name "go-github-com-jbenet-goprocess")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/goprocess")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z4a5skx9kh2c727pc6zz0vhf9v8acd320s7z0f1kwy3y1nbdhjk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/goprocess"))
+    (native-inputs
+     (list go-github-com-jbenet-go-cienv))
+    (home-page "https://github.com/jbenet/goprocess")
+    (synopsis "Manage process life cycles in Go")
+    (description
+     "@code{goprocess} introduces a way to manage process lifecycles in
+Go.  It is much like @code{go.net/context} (it actually uses a Context), but it is
+more like a Context-WaitGroup hybrid.  @code{goprocess} is about being able to start
+and stop units of work, which may receive @code{Close} signals from many clients.")
+    (license license:expat)))
+
 (define-public go-github-com-jinzhu-copier
   (package
     (name "go-github-com-jinzhu-copier")
