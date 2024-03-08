@@ -3515,7 +3515,8 @@ September 2004}")
 data structures and routines for the scalable (parallel) solution of
 scientific applications modeled by partial differential equations.")
     (license (license:non-copyleft
-              "https://www.mcs.anl.gov/petsc/documentation/copyright.html"))))
+              "https://www.mcs.anl.gov/petsc/documentation/copyright.html"))
+    (properties '((tunable? . #t)))))
 
 (define-public petsc-complex
   (package
