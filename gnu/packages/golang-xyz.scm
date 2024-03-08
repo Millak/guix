@@ -1810,6 +1810,34 @@ query information regarding the number of CPUs available to the system.")
 weighted moving averages}.")
     (license license:expat)))
 
+(define-public go-github-com-whyrusleeping-go-sysinfo
+  (package
+    (name "go-github-com-whyrusleeping-go-sysinfo")
+    (version "0.0.0-20190219211824-4a357d4b90b1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/go-sysinfo")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s6yjp9incc579wbbga33vq0hcanv8j2xh9l90ya0r4fihz39jiq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/go-sysinfo"))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize))
+    (home-page "https://github.com/whyrusleeping/go-sysinfo")
+    (synopsis "Package to extract system information")
+    ;; There is not much information provided by the project, see
+    ;; <https://github.com/whyrusleeping/go-sysinfo/issues>.
+    (description
+     "This packages provides a basic system stats like @code{DiskUsage} and
+@code{MemoryInfo}.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-automaxprocs
   (package
     (name "go-go-uber-org-automaxprocs")
