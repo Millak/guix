@@ -85,7 +85,8 @@
          (patches
           ;; Install pkg-config files
           ;; https://github.com/HowardHinnant/date/pull/538
-          (search-patches "date-output-pkg-config-files.patch"))))
+          (search-patches "date-ignore-zonenow.patch"
+                          "date-output-pkg-config-files.patch"))))
       (inputs (list tzdata))
       (build-system cmake-build-system)
       (arguments
