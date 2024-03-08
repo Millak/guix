@@ -665,7 +665,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
-  games localization lxqt xfce)
+  games localization lxqt qt xfce)
 
 (define-member (person "Vagrant Cascadian"
                        "vagrant@debian.org")
