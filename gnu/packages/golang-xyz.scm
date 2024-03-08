@@ -1035,6 +1035,32 @@ increment versions.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-jbenet-go-random
+  (package
+    (name "go-github-com-jbenet-go-random")
+    (version "0.0.0-20190219211222-123a90aedc0c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-random")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kgx19m8p76rmin8s8y6j1padciv1dx37qzy7jkh9bw49ai3haw3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-random"))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize))
+    (home-page "https://github.com/jbenet/go-random")
+    (synopsis "Go library and a program that outputs randomness")
+    (description
+     "This is a Unix utility that outputs randomness.  It is a thin
+wrapper around @code{crypto/rand}.")
+    (license license:expat)))
+
 (define-public go-github-com-jbenet-go-temp-err-catcher
   (package
     (name "go-github-com-jbenet-go-temp-err-catcher")
