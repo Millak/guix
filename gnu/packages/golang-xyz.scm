@@ -1035,6 +1035,29 @@ increment versions.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-jbenet-go-temp-err-catcher
+  (package
+    (name "go-github-com-jbenet-go-temp-err-catcher")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-temp-err-catcher")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n482jhh6jwq43jj21xkq8grqzx78hjh7f44p0q3n01zp1dsh97r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-temp-err-catcher"))
+    (home-page "https://github.com/jbenet/go-temp-err-catcher")
+    (synopsis "Error handling helper library")
+    (description "Package @code{temperrcatcher} provides a @code{TempErrCatcher}
+object, which implements simple error-retrying functionality.")
+    (license license:expat)))
+
 (define-public go-github-com-jbenet-goprocess
   (package
     (name "go-github-com-jbenet-goprocess")
