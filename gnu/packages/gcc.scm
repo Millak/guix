@@ -508,6 +508,7 @@ Go.  It also includes runtime support libraries for these languages.")
                                        "gcc-5.5.0-libstdc++-xmlcatalog.patch"
                                        "gcc-13.2.0-libstdc++-docbook-xsl-uri.patch"
                                        "gcc-13.2.0-libstdc++-info-install-fix.patch"
+                                       "gcc-7-libsanitizer-fsconfig-command.patch"
                                        "gcc-6-libsanitizer-mode-size.patch"
                                        "gcc-fix-texi2pod.patch"
                                        "gcc-5-hurd.patch"
@@ -532,6 +533,7 @@ Go.  It also includes runtime support libraries for these languages.")
                (base32
                 "0i89fksfp6wr1xg9l8296aslcymv2idn60ip31wr9s4pwin7kwby"))
               (patches (search-patches "gcc-strmov-store-file-names.patch"
+                                       "gcc-7-libsanitizer-fsconfig-command.patch"
                                        "gcc-6-libsanitizer-mode-size.patch"
                                        "gcc-6-source-date-epoch-1.patch"
                                        "gcc-6-source-date-epoch-2.patch"
