@@ -1058,9 +1058,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-11.0-libc-search-path.patch	\
   %D%/packages/patches/clang-12.0-libc-search-path.patch	\
   %D%/packages/patches/clang-13.0-libc-search-path.patch	\
+  %D%/packages/patches/clang-13-remove-crypt-interceptors.patch	\
   %D%/packages/patches/clang-14.0-libc-search-path.patch	\
+  %D%/packages/patches/clang-14-remove-crypt-interceptors.patch	\
   %D%/packages/patches/clang-15.0-libc-search-path.patch	\
   %D%/packages/patches/clang-16.0-libc-search-path.patch	\
+  %D%/packages/patches/clang-16-remove-crypt-interceptors.patch	\
   %D%/packages/patches/clang-17.0-libc-search-path.patch	\
   %D%/packages/patches/clang-17.0-link-dsymutil-latomic.patch	\
   %D%/packages/patches/clang-18.0-libc-search-path.patch	\
