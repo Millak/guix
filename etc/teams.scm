@@ -549,8 +549,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
   (team 'lxqt
         #:name "LXQt team"
         #:description "LXQt desktop environment."
-        #:scope (list "gnu/packages/lxqt.scm"
-                      "gnu/packages/qt.scm")))
+        #:scope (list "gnu/packages/lxqt.scm")))
 
 (define-team audio
   (team 'audio
