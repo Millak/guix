@@ -1,0 +1,13 @@
+Ignore the new zonenow.tab file introduced in tzdata 2023d.
+
+diff -u a/src/tz.cpp b/src/tz.cpp
+--- a/src/tz.cpp	2024-03-08 11:14:14.822488065 +0100
++++ b/src/tz.cpp	2024-03-08 11:47:12.105268426 +0100
+@@ -2667,6 +2667,7 @@
+                 strcmp(d->d_name, "right")        == 0      ||
+                 strcmp(d->d_name, "+VERSION")     == 0      ||
+                 strcmp(d->d_name, "zone.tab")     == 0      ||
++                strcmp(d->d_name, "zonenow.tab")  == 0      ||
+                 strcmp(d->d_name, "zone1970.tab") == 0      ||
+                 strcmp(d->d_name, "tzdata.zi")    == 0      ||
+                 strcmp(d->d_name, "leapseconds")  == 0      ||
