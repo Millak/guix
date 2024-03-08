@@ -98,6 +98,45 @@
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-alexliesenfeld-health
+  (package
+    (name "go-github-com-alexliesenfeld-health")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alexliesenfeld/health")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fchlvxwidsscskwq07vhxfwcn5wbigbizi51619l8gg09mr158q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alexliesenfeld/health"
+      #:phases #~(modify-phases %standard-phases
+                   ;; Examples requires additional dependencies and comes with
+                   ;; their own go.mod, consider to pack it as separate
+                   ;; package if required.
+                   (add-after 'unpack 'remove-examples
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/examples")))))))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/alexliesenfeld/health")
+    (synopsis "Simple and flexible health check library for Go")
+    (description
+     "This library provides a @code{http.Handler} that acts as a health
+endpoint.  It can be used by cloud infrastructure or other services to
+determine the availability of an application.
+
+Rather than simply returning a response with HTTP status code 200, this
+library allows building health checks that test the availability of all
+required dependencies.  The HTTP response contains the aggregated health
+result and details about the health status of each component.")
+    (license license:expat)))
+
 (define-public go-github-com-andybalholm-cascadia
   (package
     (name "go-github-com-andybalholm-cascadia")
