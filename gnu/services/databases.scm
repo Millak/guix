@@ -235,20 +235,7 @@ host	all	all	::1/128 	md5"))
          (use-modules (guix build utils)
                       (ice-9 match))
 
-         (let ((user (getpwnam "postgres"))
-               (initdb (string-append
-                        #$(final-postgresql postgresql
-                                            extension-packages)
-                        "/bin/initdb"))
-               (initdb-args
-                (append
-                 (if #$locale
-                     (list (string-append "--locale=" #$locale))
-                     '()))))
-           ;; Create db state directory.
-           (mkdir-p #$data-directory)
-           (chown #$data-directory (passwd:uid user) (passwd:gid user))
-
+         (let ((user (getpwnam "postgres")))
            ;; Create the socket directory.
            (let ((socket-directory
                   #$(postgresql-config-file-socket-directory config-file)))
@@ -261,25 +248,40 @@ host	all	all	::1/128 	md5"))
              (mkdir-p #$log-directory)
              (chown #$log-directory (passwd:uid user) (passwd:gid user)))
 
-           ;; Drop privileges and init state directory in a new
-           ;; process.  Wait for it to finish before proceeding.
-           (match (primitive-fork)
-             (0
-              ;; Exit with a non-zero status code if an exception is thrown.
-              (dynamic-wind
-                (const #t)
-                (lambda ()
-                  (setgid (passwd:gid user))
-                  (setuid (passwd:uid user))
-                  (primitive-exit
-                   (apply system*
-                          initdb
-                          "-D"
-                          #$data-directory
-                          initdb-args)))
-                (lambda ()
-                  (primitive-exit 1))))
-             (pid (waitpid pid))))))))
+           (unless (file-exists? #$data-directory)
+             (let ((initdb (string-append
+                            #$(final-postgresql postgresql
+                                                extension-packages)
+                            "/bin/initdb"))
+                   (initdb-args
+                    (append
+                     (if #$locale
+                         (list (string-append "--locale=" #$locale))
+                         '()))))
+               ;; Create db state directory.
+               (mkdir-p #$data-directory)
+               (chown #$data-directory (passwd:uid user) (passwd:gid user))
+
+               ;; Drop privileges and init state directory in a new
+               ;; process.  Wait for it to finish before proceeding.
+               (match (primitive-fork)
+                 (0
+                  ;; Exit with a non-zero status code if an exception is
+                  ;; thrown.
+                  (dynamic-wind
+                      (const #t)
+                      (lambda ()
+                        (setgid (passwd:gid user))
+                        (setuid (passwd:uid user))
+                        (primitive-exit
+                         (apply system*
+                                initdb
+                                "-D"
+                                #$data-directory
+                                initdb-args)))
+                      (lambda ()
+                        (primitive-exit 1))))
+                 (pid (waitpid pid))))))))))
 
 (define postgresql-shepherd-service
   (match-lambda
