@@ -140,6 +140,33 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
     (description "@code{compress} provides various compression algorithms.")
     (license license:bsd-3)))
 
+(define-public go-github-com-klauspost-pgzip
+  (package
+    (name "go-github-com-klauspost-pgzip")
+    (version "1.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/klauspost/pgzip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j29wr6nd9ncdbkjphyziv0h8p5s2mj222cgcfqxmzjnfn7623d8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/klauspost/pgzip"))
+    (propagated-inputs (list go-github-com-klauspost-compress))
+    (home-page "https://github.com/klauspost/pgzip")
+    (synopsis "Parallel (de)compression of gzip files in Go")
+    (description
+     "This package implements parallel gzip compression and decompression in
+Golang and is fully compatible with @code{compress/gzip} from the standard
+library.  This is beneficial for large amounts of data, say more than 1MB at a
+time, as otherwise the internal gzip library will likely be faster.")
+    (license (list license:bsd-3 license:expat))))
+
 (define-public go-github-com-nwaples-rardecode-v2
   (package
     (name "go-github-com-nwaples-rardecode-v2")
