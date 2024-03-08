@@ -3265,7 +3265,7 @@ for wayland conceptually based on the X11 window manager
                             (string-append (assoc-ref (or native-inputs inputs)
                                                       "hwdata")
                                            "/share/hwdata/pnp.ids"))))))))
-      (native-inputs (list `(,hwdata "pnp") python))
+      (native-inputs (list hwdata python))
       (synopsis "EDID and DisplayID library")
       (description
        "This package provides a library to read @acronym{EDID, Extended
