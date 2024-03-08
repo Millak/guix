@@ -1843,42 +1843,43 @@ rebase.")
 
 (define-public rust-cbindgen rust-cbindgen-0.26)
 
-;; This is the unversioned package of the latest version of bindgen.
-(define-public rust-bindgen
+(define-public rust-bindgen-cli
   (package
-    (name "rust-bindgen")
+    (name "rust-bindgen-cli")
     (version "0.69.4")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "bindgen" version))
+       (uri (crate-uri "bindgen-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18194611hn3k1dkxlha7a52sr8vmfhl9blc54xhj08cahd8wh3d0"))))
+        (base32 "00dfny07m4xfnqbfn7yr7cqwilj6935lbyg5d39yxjfj8jglfcax"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.9)
-                       ("rust-bitflags" ,rust-bitflags-2)
-                       ("rust-cexpr" ,rust-cexpr-0.6)
-                       ("rust-clang-sys" ,rust-clang-sys-1)
-                       ("rust-itertools" ,rust-itertools-0.10)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-lazycell" ,rust-lazycell-1)
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-prettyplease" ,rust-prettyplease-0.2)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-rustc-hash" ,rust-rustc-hash-1)
-                       ("rust-shlex" ,rust-shlex-1)
-                       ("rust-syn" ,rust-syn-2)
-                       ("rust-which" ,rust-which-4))))
-    (inputs (list clang))
+                       ("rust-shlex" ,rust-shlex-1))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
+                    (bindgen (string-append bin "/bindgen"))
+                    (llvm-dir (string-append
+                                (assoc-ref inputs "clang") "/lib")))
+               (install-file "target/release/bindgen" bin)
+               (wrap-program bindgen
+                 `("LIBCLANG_PATH" = (,llvm-dir)))))))))
+    (inputs (list bash-minimal clang))
     (home-page "https://rust-lang.github.io/rust-bindgen/")
     (synopsis "Generate Rust FFI bindings to C and C++ libraries")
     (description "This package can be used to automatically generate Rust FFI
-bindings to C and C++ libraries.")
+bindings to C and C++ libraries.  This package provides the @command{bindgen}
+command.")
     (license license:bsd-3)))
 
 (define-public sniffglue
