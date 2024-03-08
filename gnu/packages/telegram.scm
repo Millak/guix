@@ -687,25 +687,29 @@ formerly a part of telegram-cli, but now being maintained separately.")
           (base32 "0c1w7jgska71jjbvg1y09v52549pwa4zkdjly18yxywn7gayd2p6"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; No target
-         #:imported-modules
-         ((guix build copy-build-system)
+       (list
+        #:tests? #f                     ; No target
+        #:imported-modules
+        `((guix build copy-build-system)
           ,@%gnu-build-system-modules)
-         #:modules
-         (((guix build copy-build-system)
+        #:modules
+        '(((guix build copy-build-system)
            #:prefix copy:)
           (guix build gnu-build-system)
           (guix build utils))
-         #:configure-flags
-         (list
+        #:configure-flags
+        '(list
           ;; Use gcrypt instead of openssl.
           "--disable-openssl")
-         #:phases
-         (modify-phases %standard-phases
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'remove-Werror
+             (lambda _
+               (substitute* "Makefile.in"
+                 (("-Werror") "-fcommon"))))
            (add-after 'unpack 'trigger-bootstrap
              (lambda _
-               (delete-file "configure")
-               #t))
+               (delete-file "configure")))
            (add-after 'trigger-bootstrap 'patch-tgl-and-tlparser
              (lambda* (#:key inputs #:allow-other-keys)
                (for-each delete-file
@@ -725,8 +729,7 @@ formerly a part of telegram-cli, but now being maintained separately.")
                                  "/include/tgl/auto"))
                  (("LIB=libs")
                   (string-append "LIB=" (assoc-ref inputs "tgl")
-                                 "/lib/tgl")))
-               #t))
+                                 "/lib/tgl")))))
            (replace 'install
              (lambda args
                (apply (assoc-ref copy:%standard-phases 'install)
