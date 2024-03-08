@@ -193,16 +193,16 @@ time, as otherwise the internal gzip library will likely be faster.")
 (define-public go-github-com-ulikunitz-xz
   (package
     (name "go-github-com-ulikunitz-xz")
-    (version "0.5.8")
+    (version "0.5.11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ulikunitz/xz.git")
              (commit (string-append "v" version))))
-       (file-name (string-append name "-" version "-checkout"))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1xnsymi5fmmm734bi4c6z57p5cvnyxlpi29yxs4v21w5k763aypd"))))
+        (base32 "1hbs3x7s7d5ch6ipaqi265w0fwpijs0j19xdbhbjjsyr4khxbqd0"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/ulikunitz/xz"))
