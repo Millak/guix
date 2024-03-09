@@ -4337,13 +4337,13 @@ up-front for extensibility.")
 (define python-asdf-transform-schemas
   (package
     (name "python-asdf-transform-schemas")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_transform_schemas" version))
        (sha256
-        (base32 "1jlls8mirwarf8d67gaix39d8zcx1rx8fmr9qdzrbyrmxqzxqzyy"))))
+        (base32 "0as6dcf9dmxjh24gwdmqwbbrk56fhgsmzwi7af4llwvm4mw4rkw2"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Dependency cycle with python-asdf
