@@ -1246,6 +1246,7 @@ for and start applications.")
            xfconf
            xfdesktop
            xfwm4
+           xfwm4-themes
            xkill
            ;; Panel plugins.
            xfce4-battery-plugin
