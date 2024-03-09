@@ -1930,7 +1930,7 @@ bad pixel tracking throughout the reduction process.")
     (version "1.2.6")
     (source
      (origin
-       (method git-fetch)   ; no tests in pypi archive
+       (method git-fetch)               ; no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/MAVENSDC/cdflib")
              (commit version)))
@@ -1939,10 +1939,7 @@ bad pixel tracking throughout the reduction process.")
         (base32 "1wxr35sqsdqzf85xyjh1v8hmwwiyv4cn0lr7q8l1kkngfywq5l2r"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Disable shaky test.
-     ;; See https://github.com/MAVENSDC/cdflib/issues/234
-     (list #:test-flags #~(list "-k" "not test_compute_cdfepoch16")
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'set-env-version
                  (lambda _
