@@ -41,6 +41,7 @@
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3909,8 +3910,36 @@ capacity and random or least recently used (LRU) replacement.")
 Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-async-broadcast-0.6
+  (package
+    (name "rust-async-broadcast")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-broadcast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d1xk2pr5khk1radkbaf7pp7pbjkb18m43n2rgkfsfxk177pak9k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-event-listener" ,rust-event-listener-3)
+        ("rust-event-listener-strategy" ,rust-event-listener-strategy-0.1)
+        ("rust-futures-core" ,rust-futures-core-0.3))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-easy-parallel" ,rust-easy-parallel-3)
+                                   ("rust-futures-lite" ,rust-futures-lite-1)
+                                   ("rust-futures-util" ,rust-futures-util-0.3))))
+    (home-page "https://github.com/smol-rs/async-broadcast")
+    (synopsis "Async broadcast channels")
+    (description "This package provides async broadcast channels in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-broadcast-0.5
   (package
+    (inherit rust-async-broadcast-0.6)
     (name "rust-async-broadcast")
     (version "0.5.1")
     (source (origin
@@ -3920,7 +3949,6 @@ Rust.")
               (sha256
                (base32
                 "0avdqbci1qdlfc4glc3wqrb0wi5ffc7bqv2q1wg14syayvdwqj3w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-event-listener" ,rust-event-listener-2)
@@ -3930,11 +3958,7 @@ Rust.")
         ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-easy-parallel" ,rust-easy-parallel-3)
         ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-futures-util" ,rust-futures-util-0.3))))
-    (home-page "https://github.com/smol-rs/async-broadcast")
-    (synopsis "Async broadcast channels")
-    (description "This package provides async broadcast channels in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-futures-util" ,rust-futures-util-0.3))))))
 
 (define-public rust-async-channel-2
   (package
@@ -11699,6 +11723,34 @@ stream of tokens.")
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-3)
         ("rust-snapbox" ,rust-snapbox-0.2))))))
+
+(define-public rust-clap-verbosity-flag-2
+  (package
+    (name "rust-clap-verbosity-flag")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-verbosity-flag" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15f419hg1xskf7pwzk5n27cpn05n0ccbd6sbji906ymi47576zxm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-log" ,rust-tracing-log-0.2)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/clap-rs/clap-verbosity-flag")
+    (synopsis "Easily add a `--verbose` flag to CLIs using Clap")
+    (description
+     "This package provides a way to add a `--verbose` flag to CLIs using
+Clap.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-clearscreen-1
   (package
@@ -22342,6 +22394,23 @@ blocking data structures.")
     (synopsis "Block or poll on event_listener")
     (description "This package provides block and poll on event_listener.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-event-listener-strategy-0.1
+  (package
+    (inherit rust-event-listener-strategy-0.4)
+    (name "rust-event-listener-strategy")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "event-listener-strategy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z99km9lwya36bxhvrz4rsl3nhqhhlnnx7a2gdz4nzpa6177pj8m"))))
+    (arguments
+     `(#:cargo-inputs (("rust-event-listener" ,rust-event-listener-3)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs (("rust-futures-lite" ,rust-futures-lite-1))))))
 
 (define-public rust-executable-path-1
   (package

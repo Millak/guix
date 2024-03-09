@@ -2045,6 +2045,27 @@ transfer coding.")
     (description "This package provides an async HTTP/3 implementation.")
     (license license:expat)))
 
+(define-public rust-h3-0.0.2
+  (package
+    (inherit rust-h3-0.0.3)
+    (name "rust-h3")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17nbmkz6xs848257xv7gdhrnhyhagfb0dbqla82zv1nixr1wmrkd"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-fastrand" ,rust-fastrand-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1))))))
+
 (define-public rust-h3-quinn-0.0.4
   (package
     (name "rust-h3-quinn")
@@ -2070,6 +2091,26 @@ transfer coding.")
     (description
      "This package provides QUIC transport implementation based on Quinn.")
     (license license:expat)))
+
+(define-public rust-h3-quinn-0.0.3
+  (package
+    (inherit rust-h3-quinn-0.0.4)
+    (name "rust-h3-quinn")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3-quinn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kf6bqmm751gwj24dqgb2rrwq8ibhv7z5v7ix4pfiwz4ccbiljid"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-h3" ,rust-h3-0.0.2)
+                       ("rust-quinn" ,rust-quinn-0.10)
+                       ("rust-quinn-proto" ,rust-quinn-proto-0.10)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7))))))
 
 (define-public rust-headers-0.3
   (package
@@ -2157,6 +2198,304 @@ transfer coding.")
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-http" ,rust-http-0.1))))))
+
+(define-public rust-hickory-client-0.24
+  (package
+    (name "rust-hickory-client")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-client" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bj6g69h86d7mbclrwaj7cgl1plr6pvllv8qn69xmpgh9h90hgkz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests" "--"
+         ;; Some tests require network access.
+         "--skip=client::async_client::tests::async_client")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-radix-trie" ,rust-radix-trie-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs
+     (list openssl pkg-config))
+    (home-page "https://hickory-dns.org/")
+    (synopsis "Client library for Hickory DNS, with DNSSEC support")
+    (description
+     "Hickory DNS is a safe and secure DNS library.  This is the Client
+library with DNSSEC support.  DNSSEC with NSEC validation for negative
+records, is complete.  The client supports dynamic DNS with SIG0 authenticated
+requests, implementing easy to use high level funtions.  Hickory DNS is based
+on the Tokio and Futures libraries, which means it should be easily integrated
+into other software that also use those libraries.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hickory-proto-0.24
+  (package
+    (name "rust-hickory-proto")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-proto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kxvdzmwwi1d6wsp9bcs91ipmwxcyhpwbvz3an9h0q28ryy6y6h9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-enum-as-inner" ,rust-enum-as-inner-0.6)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-h2" ,rust-h2-0.3)
+                       ("rust-h3" ,rust-h3-0.0.2)
+                       ("rust-h3-quinn" ,rust-h3-quinn-0.0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-idna" ,rust-idna-0.4)
+                       ("rust-ipnet" ,rust-ipnet-2)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-quinn" ,rust-quinn-0.10)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-ring" ,rust-ring-0.16)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tinyvec" ,rust-tinyvec-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs
+     (list openssl pkg-config))
+    (home-page "https://hickory-dns.org/")
+    (synopsis
+     "Foundational DNS protocol library for all Hickory DNS projects")
+    (description
+     "Hickory DNS is a safe and secure DNS library.  This is the foundational
+DNS protocol library for all Hickory DNS projects.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hickory-recursor-0.24
+  (package
+    (name "rust-hickory-recursor")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-recursor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "146ifrml22hjydrw16qgfw32kv3v9wvvl4dqh45pg6fymxvw8xgi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-recursion" ,rust-async-recursion-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-enum-as-inner" ,rust-enum-as-inner-0.6)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
+                       ("rust-lru-cache" ,rust-lru-cache-0.1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://hickory-dns.org/")
+    (synopsis
+     "Hickory DNS Recursor is a DNS recursive resolver with DNSSEC support")
+    (description
+     "*WARNING* This library is experimental
+
+Hickory DNS Recursor is a safe and secure DNS recursive resolver with DNSSEC
+support.  Hickory DNS is based on the Tokio and Futures libraries, which means
+it should be easily integrated into other software that also use those
+libraries.  This library can be used as in the server and binary for
+performing recursive lookups.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hickory-resolver-0.24
+  (package
+    (name "rust-hickory-resolver")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-resolver" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s3486qczv9gaw8dap06c0bwb2bpqm23a0ihj169hsjf2qhz1f1m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests" "--"
+         ;; Some tests require network access.
+         "--skip=async_resolver::tests::test_domain_search"
+         "--skip=async_resolver::tests::test_fqdn"
+         "--skip=async_resolver::tests::test_idna"
+         "--skip=async_resolver::tests::test_large_ndots"
+         "--skip=async_resolver::tests::test_lookup_cloudflare"
+         "--skip=async_resolver::tests::test_lookup_google"
+         "--skip=async_resolver::tests::test_lookup_quad9"
+         "--skip=async_resolver::tests::test_ndots"
+         "--skip=async_resolver::tests::test_search_list"
+         "--skip=hosts::tests::test_read_hosts_conf"
+         "--skip=name_server::name_server::tests::test_name_server"
+         "--skip=name_server::name_server_pool::tests::test_multi_use_conns"
+         "--skip=resolver::tests::test_lookup"
+         "--skip=system_conf::unix::tests::test_read_resolv_conf")
+         #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-ipconfig" ,rust-ipconfig-0.3)
+                       ("rust-lru-cache" ,rust-lru-cache-0.1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-resolv-conf" ,rust-resolv-conf-0.7)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://hickory-dns.org/")
+    (synopsis
+     "Hickory DNS Resolver library built on top of tokio's @code{async-io}")
+    (description
+     "Hickory DNS Resolver is a safe and secure DNS library.  The Resolver is
+intended to be a high-level library for any DNS record resolution, see
+@code{Resolver} and @code{AsyncResolver} for supported resolution types.  The
+@code{Client} can be used for other queries.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hickory-server-0.24
+  (package
+    (name "rust-hickory-server")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hickory-server" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dbwsrmxgf9nxkn3cp5fpjw96wywrzihbirjax25dd6wqidv9fsg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=store::file::authority::tests::test_load_zone"
+         "--skip=basic::file::test_a_lookup"
+         "--skip=basic::file::test_aname"
+         "--skip=basic::file::test_aname_a_lookup"
+         "--skip=basic::file::test_aname_chain"
+         "--skip=basic::file::test_cname"
+         "--skip=basic::file::test_cname_alias"
+         "--skip=basic::file::test_cname_chain"
+         "--skip=basic::file::test_dots_in_name"
+         "--skip=basic::file::test_invalid_lookup"
+         "--skip=basic::file::test_mx"
+         "--skip=basic::file::test_mx_to_null"
+         "--skip=basic::file::test_ns"
+         "--skip=basic::file::test_ns_lookup"
+         "--skip=basic::file::test_soa"
+         "--skip=basic::file::test_srv"
+         "--skip=basic::file::test_update_errors"
+         "--skip=basic::file::test_wildcard"
+         "--skip=basic::file::test_wildcard_chain"
+         "--skip=test_all_lines_are_loaded"
+         "--skip=test_implicit_in_class"
+         "--skip=test_ttl_wilcard")
+       #:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-basic-toml" ,rust-basic-toml-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-enum-as-inner" ,rust-enum-as-inner-0.6)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-h2" ,rust-h2-0.3)
+                       ("rust-h3" ,rust-h3-0.0.2)
+                       ("rust-h3-quinn" ,rust-h3-quinn-0.0.3)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-hickory-recursor" ,rust-hickory-recursor-0.24)
+                       ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-rusqlite" ,rust-rusqlite-0.29)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://hickory-dns.org/")
+    (synopsis "Hickory DNS Server is a DNS server with DNSSEC support")
+    (description
+     "Hickory DNS Server is a safe and secure DNS server with DNSSEC support.
+Eventually this could be a replacement for BIND9.  The DNSSEC support allows
+for live signing of all records, in it does not currently support records
+signed offline.  The server supports dynamic DNS with SIG0 authenticated
+requests.  Hickory DNS is based on the Tokio and Futures libraries, which
+means it should be easily integrated into other software that also use those
+libraries.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-http-1
   (package

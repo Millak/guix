@@ -1407,6 +1407,26 @@
                        (check-archival (dummy-package "x" (source origin)))))))
     (warning-contains? "scheduled" warnings)))
 
+(test-assert "archival: missing svn revision"
+  (let* ((origin   (origin
+                     (method svn-fetch)
+                     (uri (svn-reference
+                           (url "http://example.org/svn/foo")
+                           (revision "1234")))
+                     (sha256 (make-bytevector 32))))
+         ;; https://archive.softwareheritage.org/api/1/origin/save/
+         (save     "{ \"origin_url\": \"http://example.org/svn/foo\",
+                      \"save_request_date\": \"2014-11-17T22:09:38+01:00\",
+                      \"save_request_status\": \"accepted\",
+                      \"save_task_status\": \"scheduled\" }")
+         (warnings (with-http-server `((404 "No extid.") ;lookup-directory-by-nar-hash
+                                       (404 "No revision.") ;lookup-revision
+                                       (404 "No origin.")   ;lookup-origin
+                                       (200 ,save))         ;save-origin
+                     (parameterize ((%swh-base-url (%local-url)))
+                       (check-archival (dummy-package "x" (source origin)))))))
+    (warning-contains? "scheduled" warnings)))
+
 (test-equal "archival: revision available"
   '()
   (let* ((origin   (origin

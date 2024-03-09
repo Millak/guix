@@ -147,6 +147,7 @@
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
+;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25956,6 +25957,43 @@ cases, generating additional test cases, testing for your code, and
 submitting it.")
     (license license:expat)))
 
+(define-public python-mpv-jsonipc
+  (package
+    (name "python-mpv-jsonipc")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-mpv-jsonipc" version))
+       (sha256
+        (base32 "0ymdwrx544a6gn6wm9dixpgzbfrbpxvcj5ys7m41cgb4lvpvx691"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/iwalton3/python-mpv-jsonipc")
+    (synopsis "Python API to control MPV using JSON IPC")
+    (description "Python MPV JSONIPC implements an interface similar to
+python-mpv, but it uses the JSON IPC protocol instead of the C API.")
+    (license license:asl2.0)))
+
+(define-public python-jellyfin-apiclient
+  (package
+    (name "python-jellyfin-apiclient")
+    (version "1.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jellyfin-apiclient-python" version))
+       (sha256
+        (base32 "0r67cp9nizvn3cbslgi30zpd3mw4a6zal0ygik3jv5lni1xdkk5w"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-certifi python-requests python-urllib3
+                             python-websocket-client))
+    (home-page "https://github.com/jellyfin/jellyfin-apiclient-python")
+    (synopsis "Python API client for Jellyfin")
+    (description "The Jellyfin ApiClient Python package makes it possible
+to use the Jellyfin API from Python.  It was extracted from the Jellyfin
+Kodi plugin.")
+    (license license:gpl3+)))
+
 (define-public python-parso
   (package
     (name "python-parso")
@@ -31884,6 +31922,41 @@ handling those variations.")
     (description "QDarkStyle is the most complete dark stylesheet for Python and
 Qt applications.")
     (license license:expat)))
+
+(define-public python-pystray
+  (package
+    (name "python-pystray")
+    (version "0.19.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moses-palmer/pystray")
+             (commit "1907f8681d6d421517c63d94f425f9cdd74d0034")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vj6c8s7rbc7xc4bi5brx5629ls1ri9prcw9290v85hagilmp609"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; The test suite requires user interaction, there are no automated
+      ;; tests.
+      #:tests? #false
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'sanity-check 'use-dummy-backend
+                     (lambda _
+                       ;; Without setting this, pystray tries to connect to
+                       ;; X11 on import.
+                       (setenv "PYSTRAY_BACKEND" "dummy"))))))
+    (native-inputs (list python-sphinx))
+    (propagated-inputs (list python-pillow python-six python-xlib))
+    (home-page "https://github.com/moses-palmer/pystray")
+    (synopsis "Create a system tray icon")
+    (description "This library allows you to create a system tray icon.
+It makes it possible to specify an icon, a title and a callback for when
+the icon is activated.  The icon and title can be changed after the icon
+has been created, and the visibility of the icon can be toggled.")
+    (license license:lgpl3+)))
 
 (define-public python-bitstring
   (package

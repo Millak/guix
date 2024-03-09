@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2019, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;;
@@ -73,6 +73,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define modules
     (delete '(guix config)
             (source-module-closure '((guix build cvs)
+                                     (guix build download)
                                      (guix build download-nar)))))
   (define build
     (with-imported-modules modules
@@ -80,20 +81,29 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                              guile-lzlib)
         #~(begin
             (use-modules (guix build cvs)
+                         ((guix build download)
+                          #:select (download-method-enabled?))
                          (guix build download-nar))
 
-            (or (cvs-fetch '#$(cvs-reference-root-directory ref)
-                           '#$(cvs-reference-module ref)
-                           '#$(cvs-reference-revision ref)
-                           #$output
-                           #:cvs-command (string-append #+cvs "/bin/cvs"))
-                (download-nar #$output))))))
+            (or (and (download-method-enabled? 'upstream)
+                     (cvs-fetch '#$(cvs-reference-root-directory ref)
+                                '#$(cvs-reference-module ref)
+                                '#$(cvs-reference-revision ref)
+                                #$output
+                                #:cvs-command
+                                #+(file-append cvs "/bin/cvs")))
+                (and (download-method-enabled? 'nar)
+                     (download-nar #$output)))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "cvs-checkout") build
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
+                      #:env-vars (match (getenv "GUIX_DOWNLOAD_METHODS")
+                                   (#f '())
+                                   (value
+                                    `(("GUIX_DOWNLOAD_METHODS" . ,value))))
                       #:system system
                       #:hash-algo hash-algo
                       #:hash hash

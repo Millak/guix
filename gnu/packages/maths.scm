@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
 ;;; Copyright © 2018, 2021, 2024 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2019, 2021-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -426,13 +426,13 @@ programming language.")
 (define-public units
   (package
    (name "units")
-   (version "2.22")
+   (version "2.23")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/units/units-" version
                                 ".tar.gz"))
             (sha256 (base32
-                     "0j2q2a9sgldqwcifsnb7qagsmp8fvj91vfh6v4k7gzi1fwhf24sx"))))
+                     "0w3kl58y7fq9paaq8ayn5gwylc4n8jbk6lf42kkcj9ar4i8v8myr"))))
    (build-system gnu-build-system)
    (inputs
     `(("readline" ,readline)
@@ -8736,7 +8736,7 @@ management via the GIMPS project's Primenet server.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.8.6")
+    (version "2.8.8")
     (source
      (origin
        (method url-fetch)
@@ -8744,7 +8744,7 @@ management via the GIMPS project's Primenet server.")
              "https://pallini.di.uniroma1.it/"
              "nauty" (string-join (string-split version #\.) "_") ".tar.gz"))
        (sha256
-        (base32 "1yp6wpz2drq0viww8px1vl4pw919nq3xgxrmrrdhycx8bhi9ikpj"))))
+        (base32 "1ki9z60qcyx3va68hp7iv6451n5d86v1xmhc850b4sqah5b2378m"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments

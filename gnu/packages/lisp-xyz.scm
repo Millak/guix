@@ -43,6 +43,7 @@
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
+;;; Copyright © 2024 Nik Gaffney <nik@fo.am>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1220,6 +1221,43 @@ Features:
 
 (define-public ecl-coleslaw
   (sbcl-package->ecl-package sbcl-coleslaw))
+
+(define-public sbcl-cl-all
+  (let ((commit "4ce1ea9d9f33c0dd6212044e7952a0c854757ace")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-all")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/cl-all")
+               (commit commit)))
+         (file-name (git-file-name "cl-all" version))
+         (sha256
+          (base32 "0n4sjarj373zpxn78m32rmhxnsnr8qahdslrd9vrkkwjpzar2bwp"))))
+      (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'create-asdf-configuration 'build-program
+              (lambda* (#:key outputs #:allow-other-keys)
+                (build-program
+                 (string-append (assoc-ref outputs "bin") "/bin/cl-all")
+                 outputs
+                 #:entry-program '((cl-all:toplevel arguments))
+                 #:compress? #t))))))
+      (home-page "https://github.com/Shinmera/cl-all")
+      (synopsis "Evaluate Common Lisp expressions in multiple implementations")
+      (description "@samp{cl-all} is a library and script for evaluating Common
+Lisp expressions in multiple implementations.")
+      (license license:zlib))))
+
+(define-public cl-all
+  (sbcl-package->cl-source-package sbcl-cl-all))
 
 (define-public sbcl-tripod
   (let ((commit "b019a27cd7eb895870f84b0eb6c3edc5d7b05928")
@@ -17839,8 +17877,8 @@ compression/decompression using bindings to the libzstd C library.")
   (sbcl-package->ecl-package sbcl-zstd))
 
 (define-public sbcl-agnostic-lizard
-  (let ((commit "fe3a73719f05901c8819f8995a3ebae738257952")
-        (revision "1"))
+  (let ((commit "fe1a1d7d80c8b56163754e0e5b3653fd750ad298")
+        (revision "2"))
     (package
       (name "sbcl-agnostic-lizard")
       (version (git-version "0.0.0" revision commit))
@@ -17850,9 +17888,9 @@ compression/decompression using bindings to the libzstd C library.")
          (uri (git-reference
                (url "https://gitlab.common-lisp.net/mraskin/agnostic-lizard")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-agnostic-lizard" version))
          (sha256
-          (base32 "0ax78y8w4zlp5dcwyhz2nq7j3shi49qn31dkfg8lv2jlg7mkwh2d"))))
+          (base32 "0amzshh6v3mp24j0h2cinv4zvdlg4kih04md5biakwhnmcw4j4pr"))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Almost correct portable code walker for Common Lisp")
       (description
@@ -25694,11 +25732,11 @@ Common Lisp.")
   (sbcl-package->ecl-package sbcl-cl-collider))
 
 (define-public sbcl-osc
-  (let ((commit "9f0a9d3da310a3a0f654f48af0203816f3f371ad")
+  (let ((commit "f647738ccc22925ed740a8ca9132fda76a05baeb")
         (revision "0"))
     (package
      (name "sbcl-osc")
-     (version (git-version "0.7" revision commit))
+     (version (git-version "0.9" revision commit))
      (source
        (origin
          (method git-fetch)
@@ -25707,16 +25745,18 @@ Common Lisp.")
                (commit commit)))
          (file-name (git-file-name "cl-osc" version))
          (sha256
-          (base32 "0gh29zcl9pmy3xlmwzpf9www2z06ah6b4jk06sj2cvxbc15nblqa"))))
+          (base32 "1x4cavspaxcr604g0hwak1ncy4m9cqq03ji4v56g2h1443n7h48a"))))
      (build-system asdf-build-system/sbcl)
-     (inputs (list sbcl-usocket))
+     (native-inputs (list sbcl-fiveam))
+     (inputs (list sbcl-ieee-floats))
      (synopsis "Implementation of the Open Sound Control protocol")
-     (description "This package provides a common lisp implementation
-of the Open Sound Control Protocol aka OSC.  The code should be close
-to the ansi standard, and does not rely on any external code/ffi/etc+
-to do the basic encoding and decoding of packets.")
+     (description "This is a lisp implementation of the Open Sound Control
+protocol (or more accurately “data transport specification” or
+“encoding”).  The code should be close to ANSI standard common lisp and
+provides self contained code for encoding and decoding of OSC data, messages,
+and bundles.")
      (home-page "https://github.com/zzkt/osc/")
-     (license (list license:gpl3 license:llgpl)))))
+     (license license:gpl3+))))
 
 (define-public cl-osc
   (sbcl-package->cl-source-package sbcl-osc))

@@ -7,7 +7,7 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,12 +30,14 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages check)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
@@ -44,6 +46,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sphinx))
 
 (define-public python-multivolumefile
@@ -72,6 +75,81 @@
 file-object abstraction, making it possible to use multiple files as if they
 were a single file.")
     (license license:lgpl2.1+)))
+
+(define-public python-cramjam
+  (package
+    (name "python-cramjam")
+    (version "2.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cramjam" version))
+       (sha256
+        (base32 "1b69qlr0q7q3spa7zy55xc1dr5pjgsdavxx8ijhv2j60xqjbg7sp"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system)
+                   #:prefix py:)
+                  (guix build utils))
+      #:phases #~(modify-phases %standard-phases
+                   ;; We use Maturin to build the project.
+                   (replace 'build
+                     (assoc-ref py:%standard-phases
+                                'build))
+                   ;; Before being able to run Python tests, we need to
+                   ;; install the module and add it to PYTHONPATH.
+                   (delete 'install)
+                   (add-after 'build 'install
+                     (assoc-ref py:%standard-phases
+                                'install))
+                   (add-after 'install 'add-install-to-pythonpath
+                     (assoc-ref py:%standard-phases
+                                'add-install-to-pythonpath))
+                   ;; Finally run the tests. Only Python tests are provided.
+                   (replace 'check
+                     (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                       (when tests?
+                         ;; Without the CI variable, tests are run in "local"
+                         ;; mode, which sets a deadline for hypothesis.  For a
+                         ;; deterministic build, we need to set CI.
+                         (setenv "CI" "1")
+                         (invoke "pytest" "-vv" "tests")))))
+      #:cargo-inputs `(("rust-brotli" ,rust-brotli-3)
+                       ("rust-bzip2" ,rust-bzip2-0.4)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-lz4" ,rust-lz4-1)
+                       ("rust-pyo3" ,rust-pyo3-0.18)
+                       ("rust-snap" ,rust-snap-1)
+                       ("rust-zstd" ,rust-zstd-0.11))
+      #:install-source? #f))
+    (native-inputs (list maturin
+                         python-pytest
+                         python-pytest-xdist
+                         python-numpy
+                         python-hypothesis
+                         python-wrapper))
+    (home-page "https://github.com/milesgranger/cramjam")
+    (synopsis "Python bindings to compression algorithms in Rust")
+    (description
+     "This package provides thin Python bindings to compression and
+decomporession algorithms implemented in Rust.  This allows for using
+algorithms such as Snappy without additional system dependencies.  The
+following algorithms are available:
+
+@itemize
+@item Snappy
+@item Brotli
+@item Bzip2
+@item LZ4
+@item Gzip
+@item Deflate
+@item Zstd
+@end itemize")
+    (license license:expat)))
 
 (define-public python-pybcj
   (package

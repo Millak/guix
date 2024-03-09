@@ -54,6 +54,7 @@
             visit-snapshot-url
             visit-status
             visit-number
+            visit-type
             visit-snapshot
 
             snapshot?
@@ -312,6 +313,7 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (url visit-url "origin_visit_url")
   (snapshot-url visit-snapshot-url "snapshot_url" string*) ;string | #f
   (status visit-status "status" string->symbol)   ;'full | 'partial | 'ongoing
+  (type   visit-type "type" string->symbol)       ;'git | 'git-checkout | ...
   (number visit-number "visit"))
 
 ;; <https://archive.softwareheritage.org/api/1/snapshot/4334c3ed4bb208604ed780d8687fe523837f1bd1/>
@@ -472,10 +474,11 @@ and use of ALGORITHM."
                              hash)
          external-id-target))
 
-(define (origin-visits origin)
-  "Return the list of visits of ORIGIN, a record as returned by
-'lookup-origin'."
-  (call (swh-url (origin-visits-url origin))
+(define* (origin-visits origin #:optional (max 10))
+  "Return the list of the up to MAX latest visits of ORIGIN, a record as
+returned by 'lookup-origin'."
+  (call (string-append (swh-url (origin-visits-url origin))
+                       "?per_page=" (number->string max))
         (lambda (port)
           (map json->visit (vector->list (json->scm port))))))
 
@@ -513,14 +516,20 @@ could not be found."
           (_ #f)))))
 
 (define (branch-target branch)
-  "Return the target of BRANCH, either a <revision> or a <release>."
+  "Return the target of BRANCH: a <revision>, a <release>, or the SWHID of a
+directory."
   (match (branch-target-type branch)
     ('release
      (call (swh-url (branch-target-url branch))
            json->release))
     ('revision
      (call (swh-url (branch-target-url branch))
-           json->revision))))
+           json->revision))
+    ((or 'directory 'alias)
+     (match (string-tokenize (branch-target-url branch)
+                             (char-set-complement (char-set #\/)))
+       ((_ ... "directory" id)
+        (string-append "swh:1:dir:" id))))))
 
 (define (lookup-origin-revision url tag)
   "Return a <revision> corresponding to the given TAG for the repository
@@ -534,31 +543,31 @@ URL could not be found."
   (match (lookup-origin url)
     (#f #f)
     (origin
-      (match (filter (lambda (visit)
-                       ;; Return #f if (visit-snapshot VISIT) would return #f.
-                       (and (visit-snapshot-url visit)
-                            (eq? 'full (visit-status visit))))
-                     (origin-visits origin))
-        ((visit . _)
-         (let ((snapshot (visit-snapshot visit)))
-           (match (and=> (find (lambda (branch)
-                                 (or
-                                  ;; Git specific.
-                                  (string=? (string-append "refs/tags/" tag)
-                                            (branch-name branch))
-                                  ;; Hg specific.
-                                  (string=? tag
-                                            (branch-name branch))))
-                               (snapshot-branches snapshot))
-                         branch-target)
-             ((? release? release)
-              (release-target release))
-             ((? revision? revision)
-              revision)
-             (#f                                  ;tag not found
-              #f))))
-        (()
-         #f)))))
+      (any (lambda (visit)
+             (and (visit-snapshot-url visit)
+                  (eq? 'full (visit-status visit))
+                  (let ((snapshot (visit-snapshot visit)))
+                    (match (and=> (find (lambda (branch)
+                                          (or
+                                           ;; Git specific.
+                                           (string=? (string-append "refs/tags/" tag)
+                                                     (branch-name branch))
+                                           ;; Hg specific.
+                                           (string=? tag
+                                                     (branch-name branch))))
+                                        (snapshot-branches snapshot))
+                                  branch-target)
+                      ((? release? release)
+                       (release-target release))
+                      ((? revision? revision)
+                       revision)
+                      (_
+                       ;; Either the branch points to a directory rather than
+                       ;; a revision (this is the case for visits of type
+                       ;; 'git-checkout, 'hg-checkout, 'tarball-directory,
+                       ;; etc.), or TAG was not found.
+                       #f)))))
+           (origin-visits origin 30)))))
 
 (define (release-target release)
   "Return the revision that is the target of RELEASE."

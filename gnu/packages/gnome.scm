@@ -5602,6 +5602,9 @@ file.")
                                 "-Dlocalstatedir=/var"
                                 "-Dman=false"
                                 "-Dsystemd=false") ;no systemd
+      ;; Apparently the tests are known to fail on big-endian systems.
+      #:tests? (not (or (%current-target-system)
+                        (not (target-little-endian?))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-problematic-tests

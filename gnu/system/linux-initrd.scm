@@ -132,15 +132,27 @@ MODULES and taken from LINUX."
         #~(begin
             (use-modules (gnu build linux-modules)
                          (guix build utils)
+                         (rnrs io ports)
                          (srfi srfi-1)
                          (srfi srfi-26))
 
             (define module-dir
               (string-append #$linux "/lib/modules"))
 
+            (define builtin-modules
+              (call-with-input-file
+                  (first (find-files module-dir "modules.builtin$"))
+                (lambda (port)
+                  (map file-name->module-name
+                       (string-tokenize
+                        (get-string-all port))))))
+
+            (define modules-to-lookup
+              (lset-difference string=? '#$modules builtin-modules))
+
             (define modules
               (let* ((lookup  (cut find-module-file module-dir <>))
-                     (modules (map lookup '#$modules)))
+                     (modules (map lookup modules-to-lookup)))
                 (append modules
                         (recursive-module-dependencies
                          modules

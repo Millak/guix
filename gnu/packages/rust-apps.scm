@@ -30,6 +30,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +72,7 @@
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages emacs)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages haskell-xyz)
@@ -98,6 +100,40 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg))
+
+(define-public aardvark-dns
+  (package
+    (name "aardvark-dns")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aardvark-dns" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ldqv9v3v9a1m2kka660d5v15y2zasy5z7m4fh5hif74r089cx6x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-async-broadcast" ,rust-async-broadcast-0.6)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-client" ,rust-hickory-client-0.24)
+                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
+                       ("rust-hickory-server" ,rust-hickory-server-0.24)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.27)
+                       ("rust-resolv-conf" ,rust-resolv-conf-0.7)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-syslog" ,rust-syslog-6)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/containers/aardvark-dns")
+    (synopsis "Container-focused DNS server")
+    (description "This package provides a container-focused DNS server.")
+    (license license:asl2.0)))
 
 (define-public agate
   (package
@@ -467,6 +503,43 @@ Features include:
 @item fast, written in Rust.
 @end enumerate\n")
     (license license:gpl3)))
+
+(define-public emacs-lsp-booster
+  (package
+    (name "emacs-lsp-booster")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blahgeek/emacs-lsp-booster")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xx32ms3mpi1clxf74mx7nanj0iw9qkmhi0a53fx8fkz0jw2fq8f"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-verbosity-flag" ,rust-clap-verbosity-flag-2)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-env-logger" ,rust-env-logger-0.10))
+      #:cargo-development-inputs `(("rust-emacs" ,rust-emacs-0.18)
+                                   ("rust-tempfile" ,rust-tempfile-3))
+      #:install-source? #f))
+    (native-inputs (list emacs))    ; Not emacs-minimal
+    (home-page "https://github.com/blahgeek/emacs-lsp-booster")
+    (synopsis "Emacs LSP performance booster")
+    (description
+     "@code{emacs-lsp-booster} improves the performance of @code{lsp-mode} and
+@code{eglot} Emacs packages using a wrapper executable.  See the home-page for
+configuration instructions.")
+    (license license:expat)))
 
 (define-public eza
   (package

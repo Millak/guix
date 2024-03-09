@@ -137,6 +137,7 @@
 ;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -371,14 +372,14 @@
 (define-public emacs-activities
   (package
     (name "emacs-activities")
-    (version "0.5.1")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://elpa.gnu.org/packages/activities-" version ".tar"))
        (sha256
-        (base32 "0ng9sgajcpal881s3kavkmz0fc38f2h207hpqj62cf14z7bsk0zk"))))
+        (base32 "03dc2d9w40qp0qacv5vk49498qyb9y9n6ppd79jbglkpr0a60y21"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-persist))
     (home-page "https://github.com/alphapapa/activities.el")
@@ -23494,7 +23495,7 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.8.2")
+    (version "1.9")
     (source
      (origin
        (method git-fetch)
@@ -23503,7 +23504,7 @@ according to a parsing expression grammar.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "108px7lnf39ngvb8rcqb9qh2amcbs1h22dbwd1q7js2np2nd132y"))))
+        (base32 "0mhp3m4d5na844nnv107j706552h0q6xs93jkp4rmqiig73kq17w"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -23839,6 +23840,29 @@ Citar note support:
 @item ability to query note citations by reference
 @item ``live'' updating of Citar UI for presence of notes
 @end itemize")
+    (license license:gpl3+)))
+
+(define-public emacs-citar-denote
+  (package
+    (name "emacs-citar-denote")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pprevos/citar-denote")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g476awbrdws7k7smk1qasz15df20zilx3wqbi3wj0i1q2dbsi8z"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-citar emacs-denote))
+    (home-page "https://github.com/pprevos/citar-denote")
+    (synopsis "Emacs package to create and retrieve bibliography notes with
+Citar and Denote")
+    (description
+     "@code{citar-denote} is a minor-mode integrating the Emacs Citar and
+Denote packages to enable create managing bibliographic notes and citations.")
     (license license:gpl3+)))
 
 (define-public emacs-helm-bibtex
@@ -33667,22 +33691,7 @@ simple but powerful Org contents.")
      (list
       #:include #~(cons "^src/" %default-include)
       #:tests? #t
-      ;; <https://github.com/emacs-eldev/eldev/issues/99#issuecomment-1912637609>
-      #:test-command #~(list "eldev" "-X" "-dtTC" "test")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'configure-eldev
-            (lambda _
-              (setenv "HOME"
-                      (string-append (getcwd) "/.eldev"))
-              (with-output-to-file "Eldev-local"
-                (lambda _
-                  (format #t "~s"
-                          '(dolist (d (split-string (getenv
-                                                     "EMACSLOADPATH")
-                                                    ":" t))
-                                   (ignore-errors
-                                    (eldev-use-local-dependency d)))))))))))
+      #:test-command #~(list "eldev" "--use-emacsloadpath" "-dtTC" "test")))
     (native-inputs (list emacs-buttercup emacs-eldev))
     (propagated-inputs (list emacs-org))
     (home-page "https://github.com/ox-tufte/ox-tufte")

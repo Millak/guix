@@ -104,7 +104,7 @@ Import the latest package named PACKAGE-NAME from an ELPA repository.\n"))
                                       #:repo (assoc-ref opts 'repo)))
          ((or #f '())
           (leave (G_ "failed to download meta-data for package '~a'~%") package-name))
-         (('package etc ...) `(package ,etc))
+         (('package etc ...) `(package ,@etc))
          ((? list? sexps) (map
                            (match-lambda
                              ((and ('package ('name name) . rest) pkg)

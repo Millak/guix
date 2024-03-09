@@ -40,14 +40,14 @@
 (define-public mc
   (package
     (name "mc")
-    (version "4.8.30")
+    (version "4.8.31")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://ftp.osuosl.org/pub/midnightcommander/mc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "1py7jm620lsas7rcv5j69608gdshmp25d9gx958hr5sb2jr3rg2y"))))
+       (base32 "06mbnhxd2k29jah4wp1ciicw1gb51a5d3af43zivhxbncvw1q694"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -68,7 +68,6 @@
                   (list "lib/utilunix.c"
                         "src/filemanager/ext.c"
                         "src/usermenu.c"
-                        "src/vfs/fish/fish.c"
                         ;; This file hard-codes other shells, but they're never
                         ;; tried after mc's first choice (bash) is found.
                         "lib/shell.c")

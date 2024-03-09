@@ -37,6 +37,7 @@ revision identifier.  Return #t on success, else throw an exception."
   (invoke bzr-command "-Ossl.cert_reqs=none" "checkout"
           "--lightweight" "-r" revision url directory)
   (with-directory-excursion directory
-    (delete-file-recursively ".bzr")))
+    (delete-file-recursively ".bzr"))
+  #t)
 
 ;;; bzr.scm ends here

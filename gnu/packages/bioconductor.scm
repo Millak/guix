@@ -6198,20 +6198,21 @@ mapping.")
 (define-public r-nebulosa
   (package
     (name "r-nebulosa")
-    (version "1.12.0")
+    (version "1.12.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Nebulosa" version))
               (sha256
                (base32
-                "0kzkdwxrhl7plbcbqr58gnadhhbhx2811ian0s4kds14y4mxl26c"))))
+                "11wn6l27cshhb1djsgqaqr8d33j4bipy0w0gafp3fkvg7mnpnhps"))))
     (properties `((upstream-name . "Nebulosa")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2
+                             r-ggrastr
                              r-ks
                              r-matrix
                              r-patchwork
-                             r-seurat
+                             r-seuratobject
                              r-singlecellexperiment
                              r-summarizedexperiment))
     (native-inputs (list r-knitr))
@@ -7211,13 +7212,13 @@ self-defined annotation graphics.")
 (define-public r-conos
   (package
     (name "r-conos")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "conos" version))
        (sha256
-        (base32 "01d2knwyf0g2pvqq3dy5vhf0i7mc5f7rzg3a7cbglsw3l9irsixv"))))
+        (base32 "0p66gb308w2zfsppm0k1vsvgr33kzzhql0vh7l39vlsgayi00skk"))))
     (properties `((upstream-name . "conos")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13866,14 +13867,14 @@ data.")
 (define-public r-ggtree
   (package
     (name "r-ggtree")
-    (version "3.10.0")
+    (version "3.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggtree" version))
        (sha256
         (base32
-         "12w2l1q0c5aznd5fls04wvgsmjidqhr1kkqj4gajz1abj9f49cqf"))))
+         "1p475vh567q4szb8hy2qk72pvqh5rlbyqfjcdd0i83fa2y4bi31d"))))
     (properties `((upstream-name . "ggtree")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18395,14 +18396,14 @@ manipulation of flow cytometry data.")
 (define-public r-ggcyto
   (package
     (name "r-ggcyto")
-    (version "1.30.0")
+    (version "1.30.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggcyto" version))
        (sha256
         (base32
-         "13zc5952drl187fl07v1nh6gv0g6ba11vxpxl4ghvavnknvi5phd"))))
+         "0ig23b6apyp35rxxiqd5nw46yjm2784njlafsgw98akhl8ck0g7n"))))
     (properties `((upstream-name . "ggcyto")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21299,13 +21300,13 @@ routines.")
 (define-public r-s4arrays
   (package
     (name "r-s4arrays")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Arrays" version))
               (sha256
                (base32
-                "0x420l98f6b10r3qrdjq5ijs2p0msdcg6d6aghr3yvj1f9g06h8y"))))
+                "1z6kcgjb5fzslr02vmsvchbilrhwpgh1ghk1zmlq0h0lyzncaapd"))))
     (properties `((upstream-name . "S4Arrays")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23015,13 +23016,13 @@ segmented data for individual and multiple arrays.")
 (define-public r-snprelate
   (package
     (name "r-snprelate")
-    (version "1.36.0")
+    (version "1.36.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SNPRelate" version))
               (sha256
                (base32
-                "0jw9ziz0a472mnnvmqwas5w646xfgx8dn1bdpwz8c99m663d8ayp"))))
+                "0d15r7qwwrr6m9saikx4x6hj56kb3p2w3v1awkgm3wfqfgdf1pin"))))
     (properties `((upstream-name . "SNPRelate")))
     (build-system r-build-system)
     (propagated-inputs (list r-gdsfmt))

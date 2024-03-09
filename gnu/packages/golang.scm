@@ -870,7 +870,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures))))))
 
 (define %go-1.18-x86_64-micro-architectures
-  (list "x86_64-v1" "x86_64-v2" "x86_64-v3" "x86_64-v4"))
+  ;; GOAMD defaults to 'v1' so we match the default elsewhere.
+  (list "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
 
 (define-public go-1.18
   (package
@@ -3304,64 +3305,6 @@ command-line parsers.")
     (home-page "https://github.com/tj/docopt")
     (license license:expat)))
 
-(define-public go-github-com-hashicorp-hcl
-  (package
-    (name "go-github-com-hashicorp-hcl")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hashicorp/hcl")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0q6ml0qqs0yil76mpn4mdx4lp94id8vbv575qm60jzl1ijcl5i66"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/hashicorp/hcl"))
-    (native-inputs
-     (list go-github-com-davecgh-go-spew))
-    (synopsis "Go implementation of HashiCorp Configuration Language V1")
-    (description
-     "This package contains the main implementation of the @acronym{HCL,
-HashiCorp Configuration Language}.  HCL is designed to be a language for
-expressing configuration which is easy for both humans and machines to read.")
-    (home-page "https://github.com/hashicorp/hcl")
-    (license license:mpl2.0)))
-
-(define-public go-github-com-hashicorp-hcl-v2
-  (package
-    (name "go-github-com-hashicorp-hcl-v2")
-    (version "2.11.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hashicorp/hcl")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0f9flmmkj7fr1337fc56cqy73faq87ix375hnz3id4wc023przv1"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/hashicorp/hcl/v2"))
-    (native-inputs
-     (list go-github-com-davecgh-go-spew))
-    (inputs
-     (list go-github-com-agext-levenshtein go-github-com-mitchellh-go-wordwrap
-           go-github-com-zclconf-go-cty
-           go-github-com-apparentlymart-go-textseg-v13))
-    (synopsis "Go implementation of HashiCorp Configuration Language V2")
-    (description
-     "This package contains the main implementation of the @acronym{HCL,
-HashiCorp Configuration Language}.  HCL is designed to be a language for
-expressing configuration which is easy for both humans and machines to read.")
-    (home-page "https://github.com/hashicorp/hcl")
-    (license license:mpl2.0)))
-
 (define-public govulncheck
   (package
     (name "govulncheck")
@@ -3499,61 +3442,6 @@ editor.")
       (description "This package contains a client implementation for OAuth 2.0
  spec in Go.")
       (license license:bsd-3))))
-
-(define-public go-github-com-hashicorp-go-uuid
-  (package
-    (name "go-github-com-hashicorp-go-uuid")
-    (version "1.0.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/hashicorp/go-uuid")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0wd4maaq20alxwcvfhr52rzfnwwpmc2a698ihyr0vfns2sl7gkzk"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/hashicorp/go-uuid"))
-    (home-page "https://github.com/hashicorp/go-uuid")
-    (synopsis "Generate UUID-format strings")
-    (description
-     "This package generates UUID-format strings using high quality bytes.
-It is not intended to be RFC compliant, merely to use a well-understood string
-representation of a 128-bit value.  It can also parse UUID-format strings into
-their component bytes.")
-    (license license:mpl2.0)))
-
-(define-public go-github-com-hashicorp-go-version
-  (let ((commit
-         "03c5bf6be031b6dd45afec16b1cf94fc8938bc77")
-        (revision "0"))
-    (package
-      (name "go-github-com-hashicorp-go-version")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/hashicorp/go-version")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0sjq57gpfznaqdrbyb2p0bn90g9h661cvr0jrk6ngags4pbw14ik"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/hashicorp/go-version"))
-      (home-page
-       "https://github.com/hashicorp/go-version")
-      (synopsis "Go library for parsing and verifying versions and version
-constraints")
-      (description "This package is a library for parsing versions and version
-constraints, and verifying versions against a set of constraints.  It can sort
-a collection of versions properly, handles prerelease/beta versions, can
-increment versions.")
-      (license license:mpl2.0))))
 
 (define-public go-github-com-jpillora-backoff
   (let ((commit
@@ -3781,8 +3669,7 @@ containers.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/spf13/afero"))
-    (propagated-inputs
-     `(("golang.org/x/text" ,go-golang-org-x-text)))
+    (propagated-inputs (list go-github-com-pkg-sftp go-golang-org-x-text))
     (home-page "https://github.com/spf13/afero")
     (synopsis "File system abstraction for Go")
     (description
@@ -3914,21 +3801,21 @@ GNU extensions} to the POSIX recommendations for command-line options.")
          "099n2g7fg6r8hqyszqw2axr775qyhyvwhsykvgw0f0s16ql48h5c"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/spf13/viper"))
+     (list
+      #:import-path "github.com/spf13/viper"))
     (propagated-inputs
-     `(("github.com/spf13/afero" ,go-github-com-spf13-afero)
-       ("github.com/spf13/cast" ,go-github-com-spf13-cast)
-       ("github.com/spf13/pflag" ,go-github-com-spf13-pflag)
-       ("github.com/spf13/jwalterweatherman" ,go-github-com-spf13-jwalterweatherman)
-       ("github.com/fsnotify/fsnotify" ,go-github-com-fsnotify-fsnotify)
-       ("github.com/hashicorp/hcl" ,go-github-com-hashicorp-hcl)
-       ("github.com/magiconair/properties" ,go-github-com-magiconair-properties)
-       ("github.com/mitchellh/mapstructure" ,go-github-com-mitchellh-mapstructure)
-       ("github.com/pelletier/go-toml" ,go-github-com-pelletier-go-toml)
-       ("github.com/subosito/gotenv" ,go-github-com-subosito-gotenv)
-
-       ("gopkg.in/ini.v1" ,go-gopkg-in-ini-v1)
-       ("gopkg.in/yaml.v2" ,go-gopkg-in-yaml-v2)))
+     (list go-github-com-fsnotify-fsnotify
+           go-github-com-hashicorp-hcl
+           go-github-com-magiconair-properties
+           go-github-com-mitchellh-mapstructure
+           go-github-com-pelletier-go-toml
+           go-github-com-spf13-afero
+           go-github-com-spf13-cast
+           go-github-com-spf13-jwalterweatherman
+           go-github-com-spf13-pflag
+           go-github-com-subosito-gotenv
+           go-gopkg-in-ini-v1
+           go-gopkg-in-yaml-v2))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/spf13/viper")
@@ -6336,31 +6223,6 @@ and aid debugging.")
     (description "This package provides a cron library for Go.  It implements
 a cron spec parser and job runner.")
     (license license:expat)))
-
-(define-public go-github-com-shirou-gopsutil
-  (let ((commit "47ef3260b6bf6ead847e7c8fc4101b33c365e399")
-        (revision "0"))
-    (package
-      (name "go-github-com-shirou-gopsutil")
-      (version (git-version "v2.19.7" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/shirou/gopsutil")
-                       (commit commit))) ; XXX
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0x1g4r32q4201nr2b754xnrrndmwsrhfr7zg37spya86qrmijnws"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/shirou/gopsutil"))
-      (synopsis "Process and system monitoring in Go")
-      (description "This package provides a library for retrieving information
-on running processes and system utilization (CPU, memory, disks, network,
-sensors).")
-      (home-page "https://github.com/shirou/gopsutil")
-      (license license:bsd-3))))
 
 (define-public go-github-com-danwakefield-fnmatch
   (let ((commit "cbb64ac3d964b81592e64f957ad53df015803288")
@@ -8779,42 +8641,6 @@ error messages.")
 inspired by the causal messaging system in the Pony programming language.")
       (license license:expat))))
 
-(define-public go-github-com-cheggaaa-pb-v3
-  (package
-    (name "go-github-com-cheggaaa-pb-v3")
-    (version "3.0.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cheggaaa/pb/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/cheggaaa/pb/v3"
-       ;; XXX: it does have tests but I'm not sure how to run them.
-       ;; go-build-system is looking in the wrong directory.
-       #:tests? #f))
-    (propagated-inputs
-     (list go-golang-org-x-sys
-           go-github-com-rivo-uniseg
-           go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-colorable
-           go-github-com-fatih-color
-           go-github-com-vividcortex-ewma))
-    (home-page "https://github.com/cheggaaa/pb/")
-    (synopsis "Console progress bar for Go")
-    (description "This package is a Go library that draws progress bars on
-the terminal.")
-    (license license:bsd-3)))
-
-(define-public go-github-com-cheggaaa-pb
-  (deprecated-package "go-github-com-cheggaaa-pb" go-github-com-cheggaaa-pb-v3))
-
 (define-public go-github-com-gologme-log
   ;; this is the same as v1.2.0, only the LICENSE file changed
   (let ((commit "720ba0b3ccf0a91bc6018c9967a2479f93f56a55"))
@@ -8842,28 +8668,6 @@ log package.  All the functionality of the built-in package still exists and
 is unchanged.  This package contains a series of small enhancements and
 additions.")
       (license license:bsd-3))))
-
-(define-public go-github-com-hashicorp-go-syslog
-  (package
-    (name "go-github-com-hashicorp-go-syslog")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hashicorp/go-syslog")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "09vccqggz212cg0jir6vv708d6mx0f9w5bxrcdah3h6chgmal6v1"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/hashicorp/go-syslog"))
-    (home-page "https://github.com/hashicorp/go-syslog")
-    (synopsis "Golang syslog wrapper, cross-compile friendly")
-    (description "This package is a very simple wrapper around log/syslog")
-    (license license:expat)))
 
 (define-public go-golang-zx2c4-com-wireguard
   (package
@@ -9381,36 +9185,6 @@ be used as both a binary and a library.")
     (native-inputs '())
     (inputs '())))
 
-(define-public go-go-uber-org-zap
-  (package
-    (name "go-go-uber-org-zap")
-    (version "1.16.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/uber-go/zap")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05ix5wg1r8pgi7fb6084lg4x7mrkvzkh1nxa7zj337w5b9xj0myr"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "go.uber.org/zap"
-       #:tests? #f)) ; TODO: Fix tests
-    (native-inputs
-     (list go-github-com-stretchr-testify go-golang-org-x-lint
-           go-honnef-co-go-tools))
-    (propagated-inputs
-     (list go-github-com-pkg-errors go-go-uber-org-atomic
-           go-go-uber-org-multierr go-gopkg-in-yaml-v2))
-    (home-page "https://go.uber.org/zap")
-    (synopsis "Logging library for Go")
-    (description
-     "This package provides a library for fast, structured, leveled logging in
-Go.")
-    (license license:expat)))
-
 (define-public go-github-com-davecgh-go-xdr
   (package
     (name "go-github-com-davecgh-go-xdr")
@@ -9616,28 +9390,6 @@ programming language.")
     (description "This package is a simple Golang implementation of tag
 parser.")
     (license license:bsd-2)))
-
-(define-public go-github-com-vividcortex-ewma
-  (package
-    (name "go-github-com-vividcortex-ewma")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/VividCortex/ewma")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0whx516l9nm4n41spagb605ry7kfnz1qha96mcshnfjlahhnnylq"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "github.com/vividcortex/ewma"))
-    (home-page "https://github.com/VividCortex/ewma")
-    (synopsis "Exponentially Weighted Moving Average algorithms for Go")
-    (description
-     "This package implements algorithms for exponentially weighted moving
-averages.")
-    (license license:expat)))
 
 (define-public go-github-com-rivo-uniseg
   (package

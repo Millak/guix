@@ -455,7 +455,7 @@ number generators, public key cryptography and a plethora of other routines.")
 (define-public libtommath
   (package
     (name "libtommath")
-    (version "1.2.0")
+    (version "1.2.1")
     (outputs '("out" "static"))
     (source
       (origin
@@ -464,8 +464,7 @@ number generators, public key cryptography and a plethora of other routines.")
                             "download/v" version "/ltm-" version ".tar.xz"))
         (sha256
          (base32
-          "1c8q1qy88cjhdjlk3g24mra94h34c1ldvkjz0n2988c0yvn5xixp"))
-        (patches (search-patches "libtommath-integer-overflow.patch"))))
+          "07qdxnmp5bhfw5za6mr2l2w0vb7494v9zs9h5vp6y9vlngbjaq4q"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -476,13 +475,11 @@ number generators, public key cryptography and a plethora of other routines.")
              ;; We want the shared library by default so force it to be the
              ;; default makefile target.
              (delete-file "makefile")
-             (symlink "makefile.shared" "makefile")
-             #t))
+             (symlink "makefile.shared" "makefile")))
          (add-after 'install 'remove-static-library
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libtommath.a"))
-             #t))
+                                         "/lib/libtommath.a"))))
          (replace 'check
            (lambda* (#:key tests? test-target make-flags #:allow-other-keys)
              (when tests?
@@ -504,48 +501,6 @@ number generators, public key cryptography and a plethora of other routines.")
 integer library written entirely in C.  It's designed to provide an API that is
 simple to work with that provides fairly efficient routines that build out of
 the box without configuration.")
+    (properties `((upstream-name . "ltm")
+                  (lint-hidden-cve . ("CVE-2023-36328"))))
     (license unlicense)))
-
-(define-public libtommath-1.1
-  (package
-    (inherit libtommath)
-    (version "1.1.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/libtom/libtommath/releases/"
-                            "download/v" version "/ltm-" version ".tar.xz"))
-        (sha256
-         (base32
-          "1bbyagqzfdbg37k1n08nsqzdf44z8zsnjjinqbsyj7rxg246qilh"))
-        (patches (search-patches "libtommath-fix-linkage.patch"))))
-    (arguments
-      (substitute-keyword-arguments (package-arguments libtommath)
-        ((#:phases phases)
-         `(modify-phases ,phases
-            (add-after 'unpack 'patch-coreutils-call
-              (lambda _
-                ;; Don't pull in coreutils.
-                (substitute* "makefile_include.mk"
-                  (("arch") "uname -m"))
-                #t))))
-        ((#:test-target _) "test_standalone")))))
-
-(define-public libtommath-1.0
-  (package
-    (inherit libtommath-1.1)
-    (version "1.0.1")
-    (outputs '("out"))
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/libtom/libtommath/releases/"
-                            "download/v" version "/ltm-" version ".tar.xz"))
-        (sha256
-         (base32
-          "0sbccdwbkfc680id2fi0x067j23biqcjqilwkk7y9339knrjy0s7"))))
-    (arguments
-      (substitute-keyword-arguments (package-arguments libtommath-1.1)
-        ((#:phases phases)
-         `(modify-phases ,phases
-            (delete 'install-static-library)))))))

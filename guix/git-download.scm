@@ -29,8 +29,8 @@
   #:use-module (guix packages)
   #:use-module (guix modules)
   #:use-module ((guix derivations) #:select (raw-derivation))
+  #:autoload   (guix download) (%download-methods)
   #:autoload   (guix build-system gnu) (standard-packages)
-  #:autoload   (guix download) (%download-fallback-test)
   #:autoload   (git bindings)   (libgit2-init!)
   #:autoload   (git repository) (repository-open
                                  repository-close!
@@ -180,11 +180,7 @@ respective documentation."
                       ;; downloads.
                       #:script-name "git-download"
                       #:env-vars
-                      `(("git url" . ,(match (%download-fallback-test)
-                                        ('content-addressed-mirrors
-                                         "https://example.org/does-not-exist")
-                                        (_
-                                         (git-reference-url ref))))
+                      `(("git url" . ,(git-reference-url ref))
                         ("git commit" . ,(git-reference-commit ref))
                         ("git recursive?" . ,(object->string
                                               (git-reference-recursive? ref)))
@@ -246,14 +242,14 @@ download by itself using its own dependencies."
                   #:recursive? #t
                   #:env-vars
                   `(("url" . ,(object->string
-                               (match (%download-fallback-test)
-                                 ('content-addressed-mirrors
-                                  "https://example.org/does-not-exist")
-                                 (_
-                                  (git-reference-url ref)))))
+                               (git-reference-url ref)))
                     ("commit" . ,(git-reference-commit ref))
                     ("recursive?" . ,(object->string
-                                      (git-reference-recursive? ref))))
+                                      (git-reference-recursive? ref)))
+                    ,@(if (%download-methods)
+                          `(("download-methods"
+                             . ,(object->string (%download-methods))))
+                          '()))
                   #:leaked-env-vars '("http_proxy" "https_proxy"
                                       "LC_ALL" "LC_MESSAGES" "LANG"
                                       "COLUMNS")
