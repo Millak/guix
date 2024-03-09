@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1463,7 +1464,10 @@ XEv.")
         (base32 "0bpix92vzip9vlhzihj3k8h9flrlna231x3y8ah7p4965l177yjd"))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config wayland libxkbcommon))
+     (list pkg-config
+           ;; for wayland-scanner
+           wayland))
+    (inputs (list wayland libxkbcommon))
     (synopsis "Xdotool type for Wayland")
     (description "Wtype lets you simulate keyboard input and mouse activity,
 move and resize windows, etc.")
