@@ -2171,7 +2171,18 @@ plugin for Adobe After Effects.")
                 "1bkx2sc5hyldarc7w76ymv7dlcna3ib9r2kp67jdqcf856bnrx36"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
+       ((#:tests? _ #f) #f)           ; TODO: Enable the tests
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-qmake
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Adjust the default location of the 'qmake' command known to
+                ;; the 'lprodump' command, which would otherwise look for it
+                ;; in its own bindir.
+                (substitute* "src/linguist/lprodump/main.cpp"
+                  (("app.applicationDirPath\\() \\+ QLatin1String\\(\"/qmake\")")
+                   (format #f "QLatin1String(~s)"
+                           (search-input-file inputs "bin/qmake"))))))))))
     (native-inputs (list perl qtdeclarative-5 vulkan-headers))
     (inputs (list mesa qtbase-5))
     (synopsis "Qt Tools and Designer modules")
