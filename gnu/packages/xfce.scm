@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2014, 2015, 2024 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Florian Paul Schmidt <mista.tapas@gmx.net>
@@ -948,6 +948,26 @@ menu.")
      "Window manager for Xfce, it handles the placement of windows
 on the screen.")
     (license gpl2+)))
+
+(define-public xfwm4-themes
+  (package
+    (name "xfwm4-themes")
+    (version "4.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.xfce.org/src/art/xfwm4-themes/"
+                           (version-major+minor version) "/"
+                           "xfwm4-themes-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0xfmdykav4rf6gdxbd6fhmrfrvbdc1yjihz7r7lba0wp1vqda51j"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.xfce.org/")
+    (synopsis "Themes for the Xfce window manager")
+    (description "This package provides a set of additional themes for the Xfce
+window manager.")
+    (license gpl3+)))
 
 (define-public xfdesktop
   (package
