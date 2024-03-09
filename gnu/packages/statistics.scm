@@ -223,7 +223,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.3.2")
+    (version "4.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -231,7 +231,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0aj51j34q2b28y28xvlf0dwdj8vpnhjwpvqf7xm05s7fq857dxdk"))))
+                "0c03abq3kqg6d2yhrijy9j3fsl77har3k7pffwwbz19v74qi51c0"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1328,14 +1328,14 @@ agnes cluster diagrams.")
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "1d1sidm2qi1nrp1hhf010xji66aj8sn833fv4a39gli2c560p4i6"))))
+         "155ky9fdi023b5fjk1gh3607xlgm3hymq232fq03ip2aaywc74nj"))))
     (build-system r-build-system)
     (native-inputs
      (list pkg-config))
@@ -1994,14 +1994,14 @@ side.")
 (define-public r-locfit
   (package
     (name "r-locfit")
-    (version "1.5-9.8")
+    (version "1.5-9.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "locfit" version))
        (sha256
         (base32
-         "1qqxw69p42l4szr2fl73bdydpcbxn68iyxyyjy7qy3p56bxrn2hd"))))
+         "1m7ji1ykvffqvs9ly1pzadiwhwxcyv4xivziikmahp0w0sv45lck"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
@@ -2033,13 +2033,13 @@ times.")
 (define-public r-data-table
   (package
     (name "r-data-table")
-    (version "1.15.0")
+    (version "1.15.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "data.table" version))
               (sha256
                (base32
-                "0qhh4ii10b6rbimhh83160gsax82gbrm3hqbqqddkzknpifxpdrr"))))
+                "04pfcm3pyl997rpyj5zdmbhi4ndaai81vfgv4whjp8rhqzjk7i6j"))))
     (properties `((upstream-name . "data.table")))
     (build-system r-build-system)
     (inputs
@@ -3179,13 +3179,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "0.12.8.0.0")
+    (version "0.12.8.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "0pkn4334dh4k6hqfx4xln2nfvajyxdbfnfddajb8875il0f7kp0x"))))
+                "0ax4812dm33c67ckd902qabis3dgqmpkchk4s30bshnfv4fxx1z2"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5861,13 +5861,13 @@ groupings.")
 (define-public r-vgam
   (package
     (name "r-vgam")
-    (version "1.1-9")
+    (version "1.1-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "VGAM" version))
        (sha256
-        (base32 "1l5gn6495k8vqp2b4hj4g5ani7j4cli2p7n8fwkw7bmc42q13m6l"))))
+        (base32 "04yy5rxid3fwn42sak9rjbxd1h4d7iigiznpbrvwxl06b1xficyb"))))
     (properties `((upstream-name . "VGAM")))
     (build-system r-build-system)
     (native-inputs
@@ -5928,14 +5928,14 @@ based on an interface to Fortran implementations by M. J. D. Powell.")
 (define-public r-rcppeigen
   (package
     (name "r-rcppeigen")
-    (version "0.3.3.9.4")
+    (version "0.3.4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppEigen" version))
        (sha256
         (base32
-         "1faz1phvg7g14bchi88vizn5mfhgiwmsjg7jzkyf1yjg0f6vpsj1"))))
+         "0djiyimgka7g3kfakb6mfaq7cxna9kn6kgib59x9p7qj24ha1m18"))))
     (properties `((upstream-name . "RcppEigen")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6891,6 +6891,8 @@ Java package that provides routines for various statistical distributions.")
                                     "ess-eval-line-test"
                                     "ess-eval-region-test"
                                     "ess-mock-remote-process"
+                                    "ess-r-eval-sink-freeze-test"
+                                    "ess-r-eval-ns-env-roxy-tracebug-test"
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
                                     "ess-set-working-directory-test"
@@ -7291,22 +7293,23 @@ normal model.")
 (define-public r-naniar
   (package
     (name "r-naniar")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "naniar" version))
               (sha256
                (base32
-                "1x4ljc6yji7312g6cg1shc85jqv5kaf2zlf5q7sdmqh3wryskvf2"))))
+                "0i3gijr1l7hbcp75cyj26pxmm493lnvasl8aba9vv4w8lz1lck59"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-dplyr
-           r-norm
            r-forcats
            r-ggplot2
            r-glue
+           r-lifecycle
            r-magrittr
+           r-norm
            r-purrr
            r-rlang
            r-tibble
@@ -7355,14 +7358,14 @@ Michael Lim & Trevor Hastie (2015)")
 (define-public r-datasaurus
   (package
     (name "r-datasaurus")
-    (version "0.1.6")
+    (version "0.1.8")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "datasauRus" version))
         (sha256
           (base32
-            "0vgylf3bab0xcfg08xwvfq9yhxy6w0fxi7wp4kkxfyjb0pw15qxk"))))
+            "08yx87k4kl3i9g3m1j9532whvs4l0l3v5gwj8sk7qlb3m3wajakr"))))
     (properties `((upstream-name . "datasauRus")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))

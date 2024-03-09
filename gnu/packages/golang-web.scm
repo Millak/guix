@@ -1216,6 +1216,34 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pkg-sftp
+  (package
+    (name "go-github-com-pkg-sftp")
+    (version "1.13.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/sftp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n35lzfrnrffjqy34ny6gxs27kq81s67ply6q8s1g19mhfzm6my7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pkg/sftp"))
+    (propagated-inputs (list go-golang-org-x-crypto go-github-com-kr-fs))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/pkg/sftp")
+    (synopsis "SFTP implementation for Go")
+    (description
+     "This package provides an @acronym{SFTP, SSH File Transfer Protocol}
+implementation, as described in
+@url{https://filezilla-project.org/specs/draft-ietf-secsh-filexfer-02.txt},
+for Go.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-pquerna-cachecontrol
   (package
     (name "go-github-com-pquerna-cachecontrol")
@@ -1393,6 +1421,38 @@ an interface to implement any other minifier.")
       (description "This package is a Go library to talk HTTP over Unix domain
 sockets.")
       (license license:expat))))
+
+(define-public go-github-com-ugorji-go-codec
+  (package
+    (name "go-github-com-ugorji-go-codec")
+    (version "1.2.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ugorji/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11j0sd7kli2bh2npfr2znnvdjsk118rs8khqzfdp6pb5jm0l20ib"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ugorji/go/codec"
+      #:unpack-path "github.com/ugorji/go"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-benchmarks
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively (string-append "src/"
+                                                               import-path
+                                                               "/bench")))))))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/ugorji/go")
+    (synopsis "Codec and encoding library for various serialization formats")
+    (description
+     "This package provides a high performance and feature rich codec and
+encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
+    (license license:expat)))
 
 (define-public go-github-com-valyala-fasthttp
   (package

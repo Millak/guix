@@ -227,7 +227,7 @@ written in Go.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.19.0")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -235,7 +235,7 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0k0mw44fq6306pmfp6v4wawgigry9plnl2ij8i5f46606j55c31w"))
+        (base32 "0p8iaa56lnac1lxnbzp4fbjqzps50z5yqs34szcp53xjq8rmjzjd"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively

@@ -38,6 +38,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages documentation)
@@ -175,7 +176,7 @@ of a larger interface.")
 (define-public babl
   (package
     (name "babl")
-    (version "0.1.96")
+    (version "0.1.108")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://download.gimp.org/pub/babl/"
@@ -189,12 +190,11 @@ of a larger interface.")
                                         "/babl-" version ".tar.xz")))
               (sha256
                (base32
-                "1xj5hlmm834lb84rpjlfxbqnm5piswgzhjas4h8z90x9b7j3yrrk"))))
+                "0x8lxvnhfpssj84x47y3y06vsvhd5afb9jknw38c8ymbxafzxpi6"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (list "-Denable-gir=false"
-             "-Dwith-docs=false")))
+       (list "-Dwith-docs=false")))
     (native-inputs
      (list gobject-introspection pkg-config vala))
     (propagated-inputs
@@ -215,7 +215,7 @@ provided, as well as a framework to add new color models and data types.")
 (define-public gegl
   (package
     (name "gegl")
-    (version "0.4.42")
+    (version "0.4.48")
     (source
      (origin
        (method url-fetch)
@@ -229,12 +229,10 @@ provided, as well as a framework to add new color models and data types.")
                                  (version-major+minor version)
                                  "/gegl-" version ".tar.xz")))
        (sha256
-        (base32 "0bg0vlmj4n9x1291b9fsjqxsal192zlg48pa57f6xid6p863ma5b"))))
+        (base32 "0iw2wag3sls7va4c3dmczisbs9na4ml0rppnk1ymv0789gcjd321"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-Dintrospection=false")
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'extend-test-time-outs
            (lambda _
@@ -288,7 +286,7 @@ buffers.")
 (define-public gimp
   (package
     (name "gimp")
-    (version "2.10.32")
+    (version "2.10.36")
     (source
      (origin
        (method url-fetch)
@@ -296,7 +294,7 @@ buffers.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.bz2"))
        (sha256
-        (base32 "09csp2d8bzf012n7hvbbwngwr9phv3rnip768qdwqpdgah2wf59z"))))
+        (base32 "1cnvgkni2q4psv8syyl5yd9kk84fv5g3imd2kgm3mnsbkb3c6frx"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ; 9 MiB of gtk-doc HTML
@@ -369,6 +367,52 @@ retouching, composition and authoring.  It supports all common image formats
 as well as specialized ones.  It features a highly customizable interface
 that is extensible via a plugin system.")
     (license license:gpl3+))) ; some files are lgplv3
+
+(define-public gimp-next
+  (package
+    (inherit gimp)
+    (name "gimp-next")
+    (version "2.99.18")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.gimp.org/pub/gimp/v"
+                           (version-major+minor version)
+                           "/gimp-" version ".tar.xz"))
+       (sha256
+        (base32 "0vnvdl7x88njyyxkbgdbhz6jwz1qasrxh0fpwk6x1m609alvf6wc"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:modules `((ice-9 popen)
+                       (ice-9 rdelim)
+                       (guix build meson-build-system)
+                       (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-gcc-reference
+                 ;; Avoid reference to GCC.
+                 (lambda _
+                   (let* ((port (open-input-pipe "gcc -v 2>&1 | tail -n 1"))
+                          (cc-version (read-line port)))
+                     (close-pipe port)
+                     (substitute* "app/gimp-version.c"
+                       (("CC_VERSION") (string-append "\"" cc-version "\""))))))
+               (add-after 'install 'move-doc
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out"))
+                         (doc (assoc-ref outputs "doc")))
+                     (mkdir-p (string-append doc "/share"))
+                     (rename-file (string-append out "/share/doc")
+                                  (string-append doc "/share/doc"))))))))
+    (inputs (modify-inputs (package-inputs gimp)
+              (replace "gtk+" gtk+)
+              (prepend libxmu libxt)
+              (prepend python gjs)
+              (prepend libxslt)))
+    (native-inputs (modify-inputs (package-native-inputs gimp)
+                     (prepend appstream-glib
+                              gi-docgen
+                              libarchive)))))
 
 (define-public gimp-fourier
   (package

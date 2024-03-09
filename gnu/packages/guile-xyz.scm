@@ -2895,7 +2895,7 @@ See http://minikanren.org/ for more on miniKanren generally.")
 (define-public guile-irregex
   (package
     (name "guile-irregex")
-    (version "0.9.6")
+    (version "0.9.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2903,25 +2903,46 @@ See http://minikanren.org/ for more on miniKanren generally.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1ia3m7dp3lcxa048q0gqbiwwsyvn99baw6xkhb4bhhzn4k7bwyqq"))))
+                "026kzl96pmwbjqdc7kh8rdh8ng813sjvdsik0dag5acza20sjm19"))))
     (build-system guile-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'move-files-around
-                    (lambda _
-                      ;; Move the relevant source files to src/ and create the
-                      ;; rx/ directory to match the expected module hierarchy.
-                      (mkdir-p "src/rx/source")
-                      (rename-file "irregex-guile.scm"
-                                   "src/rx/irregex.scm")
-                      (rename-file "irregex.scm"
-                                   "src/rx/source/irregex.scm")
-                      ;; Not really reachable via guile's packaging system,
-                      ;; but nice to have around.
-                      (rename-file "irregex-utils.scm"
-                                   "src/rx/source/irregex-utils.scm")
-                      #t)))
-       #:source-directory "src"))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-files-around
+            (lambda _
+              ;; Copy the relevant source files to src/ and create the
+              ;; rx/ directory to match the expected module hierarchy.
+              (mkdir-p "src/rx/source")
+              (copy-file "irregex-guile.scm"
+                         "src/rx/irregex.scm")
+              (copy-file "irregex.scm"
+                         "src/rx/source/irregex.scm")
+
+              (mkdir-p "src/rx/irregex")
+              (copy-file "irregex-utils-guile.scm"
+                         "src/rx/irregex/utils.scm")
+              (copy-file "irregex-utils.scm"
+                         "src/rx/source/irregex-utils.scm")))
+          (add-after 'build 'check
+            (lambda _
+              (for-each (lambda (f)
+                          (invoke "guile" "--no-auto-compile" "-L" "." "-s" f))
+                        (find-files "tests" "^guile-.*\\.scm"))))
+          (add-after 'install 'check-installed
+            (lambda _
+              (define-values (scm go) (target-guile-scm+go #$output))
+              (for-each
+               (lambda (f)
+                 (substitute* f
+                   (("\\(load-from-path \"irregex\"\\)")
+                    "(use-modules (rx irregex))")
+                   (("\\(load-from-path \"irregex-utils\"\\)")
+                    "(use-modules (rx irregex utils))"))
+                 (invoke "guile" "-L" scm "-C" go "-L" "tests" f))
+               (delete "tests/guile-cset.scm" ; Tests non-exported API
+                       (find-files "tests" "^guile-.*\\.scm"))))))
+      #:source-directory "src"))
     (native-inputs
      (list guile-3.0))
     (home-page "https://synthcode.com/scheme/irregex")
@@ -2936,6 +2957,27 @@ inspired by the SCSH regular expression system.")
   (package
     (inherit guile-irregex)
     (name "guile2.0-irregex")
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-irregex)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; For some reason guile 2.0 cannot load foo.scm using
+            ;; (load-from-path "foo").  So create symlinks to work around it.
+            (add-before 'check 'create-symlinks
+              (lambda _
+                (use-modules (ice-9 regex))
+                (for-each
+                 (lambda (f)
+                   (symlink (regexp-substitute #f (string-match "/([^/]+)$" f)
+                                               1 ".scm")
+                            f))
+                 '("tests/guile/test-support"
+                   "tests/test-cset"
+                   "tests/test-irregex"
+                   "tests/test-irregex-from-gauche"
+                   "tests/test-irregex-pcre"
+                   "tests/test-irregex-scsh"
+                   "tests/test-irregex-utf8"))))))))
     (native-inputs (list guile-2.0))))
 
 (define-public guile2.2-irregex

@@ -162,6 +162,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages music)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
@@ -2750,6 +2751,78 @@ options of MPlayer, SMPlayer adds other interesting features like the
 possibility to play Youtube videos, download subtitles, remember
 the last played position, etc.")
     (license license:gpl2+)))
+
+(define-public jellyfin-mpv-shim
+  (package
+    (name "jellyfin-mpv-shim")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jellyfin-mpv-shim" version))
+       (sha256
+        (base32 "1cy2sfv84k5nw8bqy4aa7v0hdawp7gk5s7wq850xizqk0sz7cipp"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; There is no test suite, but the code is ill-behaved and tries
+      ;; to open network connections at module import time, which makes
+      ;; `python setup.py test' fail.
+      #:tests? #f
+      #:phases
+        #~(modify-phases %standard-phases
+           ;; sanity-check loads console_scripts endpoints, which launches
+           ;; the program, which makes the build hang. Disable it.
+           (delete 'sanity-check)
+           (add-after 'unpack 'disable-updates
+             (lambda _
+               (substitute* "jellyfin_mpv_shim/conf.py"
+                 (("check_updates: bool = True")
+                   "check_updates: bool = False")
+                 (("notify_updates: bool = True")
+                   "notify_updates: bool = False"))))
+           (add-after 'install 'install-desktop-file
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (apps (string-append out "/share/applications"))
+                      (desktop-base "jellyfin_mpv_shim/integration/")
+                      (package-id
+                       "com.github.iwalton3.jellyfin-mpv-shim"))
+                 (for-each (lambda (size)
+                             (install-file (format #f
+                                                   "~ajellyfin-~a.png"
+                                                   desktop-base size) apps))
+                           '(256 128 64 48 32 16))
+                 (install-file (string-append desktop-base package-id
+                                              ".appdata.xml") apps)
+                 (install-file (string-append desktop-base package-id
+                                              ".desktop") apps)))))))
+    (inputs (list `(,python "tk")
+                  python-jellyfin-apiclient
+                  python-jinja2
+                  python-mpv
+                  python-mpv-jsonipc
+                  python-pypresence
+                  python-pystray
+                  python-requests))
+    (home-page "https://github.com/jellyfin/jellyfin-mpv-shim")
+    (synopsis "Cast media from Jellyfin Mobile and Web apps to MPV")
+    (description "Jellyfin MPV Shim is a cross-platform cast client for
+Jellyfin.  It has support for various media files without transcoding.")
+    (license (list
+              ;; jellyfin-mpv-shim
+              license:gpl3
+
+              ;; jellyfin-mpv-shim, and Anime4K, FSRCNNX, NVIDIA Image
+              ;; Scaling, AMD FidelityFX Super Resolution, AMD
+              ;; FidelityFX Contrast Adaptive Sharpening shaders.
+              license:expat
+
+              ;; Static Grain shader.
+              license:public-domain
+
+              ;; KrigBilatera, SSimDownscaler, and NNEDI3 shaders.
+              license:lgpl3+))))
 
 (define-public gallery-dl
   (package

@@ -63,6 +63,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
@@ -790,7 +791,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
 (define-public gnuradio
   (package
     (name "gnuradio")
-    (version "3.10.3.0")
+    (version "3.10.8.0")
     (source
      (origin
        (method git-fetch)
@@ -799,7 +800,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xdhb2blzajxpi0f2ch23hh6bzdwz5q7syi3bmiqzdjlj2yjfzd4"))))
+        (base32 "11p08qrbfh5dz6l5n4c2g8c2gv1qq8aiydq91ryzfzgp49r0j6p0"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen

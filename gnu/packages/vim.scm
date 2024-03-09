@@ -86,7 +86,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.0059")
+    (version "9.1.0146")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -95,7 +95,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "146zhwhagdsbsh3h7f8h7izbzrwh3hgry4cx2lalq9s275qy3hzb"))))
+               "05lz8ai39p9ypk22n7qc7g21868m08pl12sn4028jshx5nxwy2zn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -116,7 +116,8 @@
                (("/bin/sh") (which "sh")))
              (substitute* "src/testdir/test_autocmd.vim"
                (("/bin/kill") (which "kill")))
-             (substitute* "src/if_cscope.c"
+             (substitute* '("runtime/syntax/sh.vim"
+                            "src/if_cscope.c")
                (("/bin/sh") (search-input-file inputs "/bin/sh")))))
          (add-before 'check 'set-environment-variables
            (lambda* (#:key inputs #:allow-other-keys)

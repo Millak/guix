@@ -22484,7 +22484,7 @@ useful for bioinformatic analysis.")
        #:tests? #false)) ;require network access
     (propagated-inputs
      (list go-gopkg-in-check-v1
-           go-github.com-ulikunitz-xz
+           go-github-com-ulikunitz-xz
            go-github-com-kortschak-utter))
     (synopsis "HTS CRAM module for biogo")
     (description "This package provides tools for handling CRAM files.")))

@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -84,6 +85,30 @@ the @code{c2go} tool at
 compression format.")
     (license license:bsd-3)))
 
+(define-public go-github-com-hhrutter-lzw
+  (package
+    (name "go-github-com-hhrutter-lzw")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hhrutter/lzw")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n13qhf8ih08jzm10wprdvjy56ylmy6fhakyqrddm6nszf397wch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hhrutter/lzw"))
+    (home-page "https://github.com/hhrutter/lzw")
+    (synopsis "Extended version of @code{compress/lzw}")
+    (description
+     "This package provides an enhanced version of the @code{compress/lzw}
+library included in the stdlib, and supports GIF, TIFF and PDF.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-klauspost-compress
   (package
     (name "go-github-com-klauspost-compress")
@@ -115,9 +140,32 @@ compression format.")
     (description "@code{compress} provides various compression algorithms.")
     (license license:bsd-3)))
 
-(define-public go-github.com-ulikunitz-xz
+(define-public go-github-com-nwaples-rardecode-v2
   (package
-    (name "go-github.com-ulikunitz-xz")
+    (name "go-github-com-nwaples-rardecode-v2")
+    (version "2.0.0-beta.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nwaples/rardecode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1344mxfdgs5fps6mqxk6352arrfszi33kmq394rgmqpf4394f1y7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nwaples/rardecode"))
+    (home-page "https://github.com/nwaples/rardecode")
+    (synopsis "Reading RAR archives in Go")
+    (description
+     "This package provides a library for reading RAR archives with Golang.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-ulikunitz-xz
+  (package
+    (name "go-github-com-ulikunitz-xz")
     (version "0.5.8")
     (source
      (origin

@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -618,12 +619,12 @@ Go.  It also includes runtime support libraries for these languages.")
 (define %gcc-11-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 11.
   (append %gcc-10-x86_64-micro-architectures
-          '("sapphirerapids" "alterlake" "rocketlake" ;Intel
+          '("sapphirerapids" "alderlake" "rocketlake" ;Intel
 
             "btver1" "btver2"                     ;AMD
 
             ;; psABI micro-architecture levels
-            "x86-64-v1" "x86-64-v2" "x86-64-v3" "x86-64-v4")))
+            "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4")))
 
 ;; Suitable '-march' values for GCC 12.
 (define %gcc-12-aarch64-micro-architectures
@@ -672,6 +673,7 @@ It also includes runtime support libraries for these languages.")
      `((compiler-cpu-architectures
         ("aarch64" ,@%gcc-7.5-aarch64-micro-architectures)
         ("armhf" ,@%gcc-7.5-armhf-micro-architectures)
+        ("i686" ,@%gcc-7.5-x86_64-micro-architectures)
         ("x86_64" ,@%gcc-7.5-x86_64-micro-architectures))
        ,@(package-properties gcc-6)))))
 
@@ -728,6 +730,7 @@ It also includes runtime support libraries for these languages.")
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-10-aarch64-micro-architectures)
        ("armhf" ,@%gcc-10-armhf-micro-architectures)
+       ("i686" ,@%gcc-10-x86_64-micro-architectures)
        ("x86_64" ,@%gcc-10-x86_64-micro-architectures))
       ,@(package-properties gcc-8)))))
 
@@ -763,6 +766,7 @@ It also includes runtime support libraries for these languages.")
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-11-aarch64-micro-architectures)
        ("armhf" ,@%gcc-11-armhf-micro-architectures)
+       ("i686" ,@%gcc-11-x86_64-micro-architectures)
        ("x86_64" ,@%gcc-11-x86_64-micro-architectures))
       ,@(package-properties gcc-8)))))
 
@@ -785,6 +789,7 @@ It also includes runtime support libraries for these languages.")
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-12-aarch64-micro-architectures)
        ("armhf" ,@%gcc-12-armhf-micro-architectures)
+       ("i686" ,@%gcc-12-x86_64-micro-architectures)
        ("x86_64" ,@%gcc-12-x86_64-micro-architectures))
       ,@(package-properties gcc-11)))))
 
@@ -807,6 +812,7 @@ It also includes runtime support libraries for these languages.")
      `((compiler-cpu-architectures
         ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
         ("armhf" ,@%gcc-13-armhf-micro-architectures)
+        ("i686" ,@%gcc-13-x86_64-micro-architectures)
         ("x86_64" ,@%gcc-13-x86_64-micro-architectures))
        ,@(package-properties gcc-11)))))
 

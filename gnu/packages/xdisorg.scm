@@ -2032,7 +2032,7 @@ by name.")
     (package
       (inherit rofi)
       (name "rofi-wayland")
-      (version "1.7.5+wayland2")
+      (version "1.7.5+wayland3")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://github.com/lbonn/rofi"
@@ -2040,7 +2040,7 @@ by name.")
                                     "/rofi-" version ".tar.xz"))
                 (sha256
                  (base32
-                  "0l6rf8qwvawyh938pinl9fkwzjnq72xpa9a7lwk9jrr5lkk3h8yj"))))
+                  "11xiksh3m7yf3270kqf1jranlfh9q6rr8i99jvx4ak4azn4pwhpw"))))
       (build-system meson-build-system)
       (inputs
        (modify-inputs (package-inputs base)

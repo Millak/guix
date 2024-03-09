@@ -1,20 +1,26 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +50,8 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
-  #:use-module (gnu packages golang-crypto))
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages linux))
 
 ;;; Commentary:
 ;;;
@@ -348,6 +355,35 @@ quantiles over an unbounded data stream within low memory and CPU bounds.")
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
+(define-public go-github-com-cheggaaa-pb-v3
+  (package
+    (name "go-github-com-cheggaaa-pb-v3")
+    (version "3.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cheggaaa/pb/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/cheggaaa/pb/v3"
+       #:unpack-path "github.com/cheggaaa/pb"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-github-com-vividcortex-ewma))
+    (home-page "https://github.com/cheggaaa/pb/")
+    (synopsis "Console progress bar for Go")
+    (description
+     "This package is a Go library that draws progress bars on the terminal.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-coocood-freecache
   (package
     (name "go-github-com-coocood-freecache")
@@ -503,6 +539,31 @@ its C API.")))
     (description "Go bindings to systemd for (de)serialization and comparison
 of unit files.")))
 
+(define-public go-github-com-cskr-pubsub
+  (package
+    (name "go-github-com-cskr-pubsub")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cskr/pubsub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18kqfdzkfs7z8266a5q5wldwkcvnhc7yw09b9vr8r0s7svy8d5s6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #t ; Tests require network interface access
+      #:go go-1.18
+      #:import-path "github.com/cskr/pubsub"))
+    (home-page "https://github.com/cskr/pubsub")
+    (synopsis "Simple pubsub package for go")
+    (description
+     "Package @code{pubsub} implements a simple multi-topic pub-sub library.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
     (name "go-github-com-cyberdelia-go-metrics-graphite")
@@ -528,6 +589,29 @@ of unit files.")))
 @url{https://github.com/rcrowley/go-metrics,go-metrics} library which posts
 metrics to Graphite.")
     (license license:bsd-2)))
+
+(define-public go-github-com-dave-jennifer
+  (package
+    (name "go-github-com-dave-jennifer")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dave/jennifer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01sgafbds8n5zs61qf057whn06yj6avz30xgxk6pllf22528558m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/dave/jennifer"))
+    (home-page "https://github.com/dave/jennifer")
+    (synopsis "Code generator for Go")
+    (description "This package provides functionality to generate Go code.")
+    (license license:expat)))
 
 (define-public go-github-com-dimchansky-utfbom
   (package
@@ -686,6 +770,223 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-hashicorp-errwrap
+  (package
+    (name "go-github-com-hashicorp-errwrap")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/errwrap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p5wdz8p7dmwphmb33gwhy3iwci5k9wkfqmmfa6ay1lz0cqjwp7a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/errwrap"))
+    (home-page "https://github.com/hashicorp/errwrap")
+    (synopsis "Wrapping and querying errors for Golang")
+    (description
+     "@code{errwrap} is a package for Go that formalizes the pattern of
+wrapping errors and checking if an error contains another error.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-hcl
+  (package
+    (name "go-github-com-hashicorp-hcl")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/hcl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q6ml0qqs0yil76mpn4mdx4lp94id8vbv575qm60jzl1ijcl5i66"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/hcl"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew))
+    (synopsis "Go implementation of HashiCorp Configuration Language V1")
+    (description
+     "This package contains the main implementation of the @acronym{HCL,
+HashiCorp Configuration Language}.  HCL is designed to be a language for
+expressing configuration which is easy for both humans and machines to read.")
+    (home-page "https://github.com/hashicorp/hcl")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-hcl-v2
+  (package
+    (name "go-github-com-hashicorp-hcl-v2")
+    (version "2.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/hcl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f9flmmkj7fr1337fc56cqy73faq87ix375hnz3id4wc023przv1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/hcl/v2"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew))
+    (inputs
+     (list go-github-com-agext-levenshtein
+           go-github-com-apparentlymart-go-textseg-v13
+           go-github-com-mitchellh-go-wordwrap
+           go-github-com-zclconf-go-cty))
+    (synopsis "Go implementation of HashiCorp Configuration Language V2")
+    (description
+     "This package contains the main implementation of the @acronym{HCL,
+HashiCorp Configuration Language}.  HCL is designed to be a language for
+expressing configuration which is easy for both humans and machines to read.")
+    (home-page "https://github.com/hashicorp/hcl")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-go-multierror
+  (package
+    (name "go-github-com-hashicorp-go-multierror")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-multierror")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l4s41skdpifndn9s8y6s9vzgghdzg4z8z0lld9qjr28888wzp00"))))
+    (build-system go-build-system)
+    (inputs (list go-github-com-hashicorp-errwrap))
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-multierror"))
+    (home-page "https://github.com/hashicorp/go-multierror")
+    (synopsis "Representing a errors list as a single error for Golang")
+    (description
+     "@code{go-multierror} is Golang module providing a mechanism for
+representing a list of @code{error} values as a single @code{error}.  It is
+fully compatible with the standard @code{errors} package, including
+the functions @code{As}, @code{Is}, and @code{Unwrap}.  This provides a
+standardized approach for introspecting on error values.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-go-syslog
+  (package
+    (name "go-github-com-hashicorp-go-syslog")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-syslog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09vccqggz212cg0jir6vv708d6mx0f9w5bxrcdah3h6chgmal6v1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-syslog"))
+    (home-page "https://github.com/hashicorp/go-syslog")
+    (synopsis "Golang syslog wrapper, cross-compile friendly")
+    (description
+     "This package is a very simple wrapper around log/syslog")
+    (license license:expat)))
+
+(define-public go-github-com-hashicorp-go-uuid
+  (package
+    (name "go-github-com-hashicorp-go-uuid")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-uuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wd4maaq20alxwcvfhr52rzfnwwpmc2a698ihyr0vfns2sl7gkzk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-uuid"))
+    (home-page "https://github.com/hashicorp/go-uuid")
+    (synopsis "Generate UUID-format strings")
+    (description
+     "This package generates UUID-format strings using high quality bytes.
+It is not intended to be RFC compliant, merely to use a well-understood string
+representation of a 128-bit value.  It can also parse UUID-format strings into
+their component bytes.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-go-version
+  (package
+    (name "go-github-com-hashicorp-go-version")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-version")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fw6hwvjadpbfj10yk7f64ypw8lmv5s5ny3s4ria0nv6xam1wpai"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/hashicorp/go-version"))
+    (home-page "https://github.com/hashicorp/go-version")
+    (synopsis "Go library for parsing and verifying versions and version
+constraints")
+    (description
+     "This package is a library for parsing versions and version
+constraints, and verifying versions against a set of constraints.  It can sort
+a collection of versions properly, handles prerelease/beta versions, can
+increment versions.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hhrutter-tiff
+  (package
+    (name "go-github-com-hhrutter-tiff")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hhrutter/tiff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09fzgvxwkd34izbfd26ln8vdbhc4j9gxpar3s7h9h125psrjvg0k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hhrutter/tiff"))
+    (propagated-inputs (list go-golang-org-x-image go-github-com-hhrutter-lzw))
+    (home-page "https://github.com/hhrutter/tiff")
+    (synopsis "Extended version of @code{golang.org/x/image/tiff}")
+    (description "This package is an enhanced version of the
+@code{golang.org/x/image/tiff} library featuring:
+
+@itemize
+@item Read support for CCITT Group3/4 compressed images.
+@item Read/write support for LZW compressed images.
+@item Read/write support for the CMYK color model.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-jinzhu-copier
   (package
     (name "go-github-com-jinzhu-copier")
@@ -707,6 +1008,33 @@ Differentiation between text and binary files}.
     (description
      "This package provides a library, which supports copying value from one
 struct to another.")
+    (license license:expat)))
+
+(define-public go-github-com-k0kubun-pp
+  (package
+    (name "go-github-com-k0kubun-pp")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/k0kubun/pp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vpp5n3kdazk4s1ljhwbrhz3kilzvdvx5hya922bg0q9vnjqqvvc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/k0kubun/pp"))
+    (propagated-inputs (list go-github-com-mattn-go-colorable
+                             go-golang-org-x-text))
+    (home-page "https://github.com/k0kubun/pp")
+    (synopsis "Colored pretty-printer for Go")
+    (description
+     "This package provides a pretty-printer for Go.  The functions defined by
+@code{pp} follow an API similar to @code{fmt} and its configuration can be
+customized globally.")
     (license license:expat)))
 
 (define-public go-github-com-matryer-try
@@ -1092,6 +1420,78 @@ Metrics library.")
       (home-page "https://github.com/rcrowley/go-metrics")
       (license license:bsd-2))))
 
+(define-public go-github-com-shirou-gopsutil
+  (package
+    (name "go-github-com-shirou-gopsutil")
+    (version "2.21.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shirou/gopsutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gpb10xkdwfimn1sp4jhrvzz4p3zgmdb78q8v23nap3yi6v4bff5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/shirou/gopsutil"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-v3
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       ;; We remove the separately included v3 module.
+                       (delete-file-recursively (string-append "src/"
+                                                               import-path
+                                                               "/v3"))))
+                   (add-before 'check 'remove-failing-tests
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        ;; host_test.go tries to access files such as
+                        ;; /var/run/utmp that do not exist in the build
+                        ;; environment.
+                        (string-append "src/" import-path "/host/host_test.go")))))))
+    (propagated-inputs
+     (list go-github-com-tklauser-go-sysconf go-golang-org-x-sys))
+    (native-inputs
+     (list go-github-com-stretchr-testify procps))
+    (synopsis "Process and system monitoring in Go")
+    (description
+     "This package provides a library for retrieving information
+on running processes and system utilization (CPU, memory, disks, network,
+sensors).")
+    (home-page "https://github.com/shirou/gopsutil")
+    (license license:bsd-3)))
+
+(define-public go-github-com-shirou-gopsutil-v3
+  (package
+    (inherit go-github-com-shirou-gopsutil)
+    (name "go-github-com-shirou-gopsutil-v3")
+    (version "3.24.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shirou/gopsutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xlfcx6giqaxdah2m02q2i8ynwlzar953wr8wqx1j3004xdgaivd"))))
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/shirou/gopsutil"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               ;; host_test.go tries to access files such as
+               ;; /var/run/utmp that do not exist in the build
+               ;; environment.
+               (string-append "src/" import-path "/host/host_test.go")))))))))
+
 (define-public go-github-com-skip2-go-qrcode
   (package
     (name "go-github-com-skip2-go-qrcode")
@@ -1189,6 +1589,102 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
       (home-page "https://github.com/stathat/go")
       (license license:expat))))
 
+(define-public go-github-com-tklauser-go-sysconf
+  (package
+    (name "go-github-com-tklauser-go-sysconf")
+    (version "0.3.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tklauser/go-sysconf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07vkimncnmh89706s49599h2w9gwa6jyrv70f8ifw90nsh766km9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/tklauser/go-sysconf"
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'remove-failing-tests
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        ;; sysconf_test.go (among others) tries to read the
+                        ;; number of online CPUs using /proc/stat and
+                        ;; /sys/devices/system/cpu/online. These files are not
+                        ;; accessible in the test environment.
+                        (string-append "src/" import-path
+                                       "/cgotest/sysconf_test.go")))))))
+    (propagated-inputs (list go-golang-org-x-sys
+                             go-github-com-tklauser-numcpus))
+    (home-page "https://github.com/tklauser/go-sysconf")
+    (synopsis "Go implementation of @code{sysconf}")
+    (description
+     "This package implements @code{sysconf} and provides the associated
+@code{SC_*} constants to query system configuration values at run time.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-tklauser-numcpus
+  (package
+    (name "go-github-com-tklauser-numcpus")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tklauser/numcpus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xcwk42zr6q72zvkqdd9nbyhvq11rmwm2164mr2rvbb9z7alkff8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/tklauser/numcpus"
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'remove-failing-tests
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (with-directory-excursion (string-append "src/"
+                                                                import-path)
+                         (for-each delete-file-recursively
+                                   ;; These tests try to access
+                                   ;; /sys/devices/system/cpu, which is not
+                                   ;; available in the test environment.
+                                   '("numcpus_test.go" "numcpus_linux_test.go"))))))))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/tklauser/numcpus")
+    (synopsis "Provides information about the number of CPUs in the system")
+    (description
+     "This package provides both library functions and a command-line tool to
+query information regarding the number of CPUs available to the system.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-vividcortex-ewma
+  (package
+    (name "go-github-com-vividcortex-ewma")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/VividCortex/ewma")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0whx516l9nm4n41spagb605ry7kfnz1qha96mcshnfjlahhnnylq"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/VividCortex/ewma"))
+    (home-page "https://github.com/VividCortex/ewma")
+    (synopsis "Exponentially Weighted Moving Average algorithms for Go")
+    (description
+     "This package implements algorithms for
+@url{https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average,exponentially
+weighted moving averages}.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-automaxprocs
   (package
     (name "go-go-uber-org-automaxprocs")
@@ -1214,6 +1710,39 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
 CPU quota.")
     (license license:expat)))
 
+(define-public go-go-uber-org-zap
+  (package
+    (name "go-go-uber-org-zap")
+    (version "1.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/zap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lzbbs87fvixzbyv4wpl3s70vm2m0jz2jgdvrviiksc2al451qgs"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "go.uber.org/zap"
+       #:tests? #f)) ; TODO: Fix tests
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-golang-org-x-lint
+           go-honnef-co-go-tools))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-go-uber-org-atomic
+           go-go-uber-org-multierr
+           go-gopkg-in-yaml-v2))
+    (home-page "https://go.uber.org/zap")
+    (synopsis "Logging library for Go")
+    (description
+     "This package provides a library for fast, structured, leveled logging in
+Go.")
+    (license license:expat)))
+
 (define-public go-gopkg-in-op-go-logging-v1
   (package
     (inherit go-github-com-op-go-logging)
@@ -1226,6 +1755,20 @@ CPU quota.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public go-numcpus
+  (package
+    (inherit go-github-com-tklauser-numcpus)
+    (name "go-numcpus")
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/tklauser/numcpus/cmd/numcpus"
+      #:unpack-path "github.com/tklauser/numcpus"
+      #:install-source? #f))
+    (description
+     "This package provides a CLI build from the
+go-github-com-tklauser-numcpus source.")))
 
 (define-public go-pixelmatch
   (package

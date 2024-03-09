@@ -1762,7 +1762,7 @@ modules for building a Wayland compositor.")
 (define-public sway
   (package
     (name "sway")
-    (version "1.8.1")
+    (version "1.9")
     (source
      (origin
        (method git-fetch)
@@ -1771,27 +1771,23 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y7brfrsjnm9gksijgnr6zxqiqvn06mdiwsk5j87ggmxazxd66av"))))
+        (base32 "1n36vgpi4bg2gkiq4fam4khly1z9bjinmjclzq5vfx0z8h7a5bzz"))))
     (build-system meson-build-system)
     (arguments
-     `(;; elogind is propagated by wlroots -> libseat
-       ;; and would otherwise shadow basu.
-       #:configure-flags '("-Dsd-bus-provider=basu")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'hardcode-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Hardcode path to swaybg.
-             (substitute* "sway/config.c"
-               (("strdup..swaybg..")
-                (string-append "strdup(\"" (assoc-ref inputs "swaybg")
-                               "/bin/swaybg\")")))
-             ;; Hardcode path to scdoc.
-             (substitute* "meson.build"
-               (("scdoc.get_pkgconfig_variable..scdoc..")
-                (string-append "'" (assoc-ref inputs "scdoc")
-                               "/bin/scdoc'")))
-             #t)))))
+     (list
+      ;; elogind is propagated by wlroots -> libseat
+      ;; and would otherwise shadow basu.
+      #:configure-flags
+      #~'("-Dsd-bus-provider=basu")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'hardcode-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hardcode path to swaybg.
+              (substitute* "sway/config.c"
+                (("strdup..swaybg..")
+                 (format #f "strdup(\"~a\")"
+                         (search-input-file inputs "bin/swaybg")))))))))
     (inputs (list basu
                   cairo
                   gdk-pixbuf
@@ -1803,7 +1799,7 @@ modules for building a Wayland compositor.")
                   pcre2
                   swaybg
                   wayland
-                  wlroots-0.16))
+                  wlroots))
     (native-inputs
      (cons* linux-pam mesa pkg-config scdoc wayland-protocols
             (if (%current-target-system)

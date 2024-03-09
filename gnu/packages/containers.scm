@@ -248,6 +248,46 @@ containers or various tools.")
 network namespaces.")
     (license license:gpl2+)))
 
+(define-public passt
+  (package
+    (name "passt")
+    (version "2023_12_30.f091893")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://passt.top/passt/snapshot/passt-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "1nyd4h93qlxn1r01ffijpsd7r7ny62phki5j58in8gz021jj4f3d"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "RLIMIT_STACK_VAL=1024"   ; ¯\_ (ツ)_/¯
+              (string-append "VERSION=" #$version)
+              (string-append "prefix=" #$output))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://passt.top")
+    (synopsis "Plug A Simple Socket Transport")
+    (description
+     "passt implements a thin layer between guest and host, that only
+implements what's strictly needed to pretend processes are running locally.
+The TCP adaptation doesn't keep per-connection packet buffers, and reflects
+observed sending windows and acknowledgements between the two sides.  This TCP
+adaptation is needed as passt runs without the CAP_NET_RAW capability: it
+can't create raw IP sockets on the pod, and therefore needs to map packets at
+Layer-2 to Layer-4 sockets offered by the host kernel.
+
+Also provides pasta, which similarly to slirp4netns, provides networking to
+containers by creating a tap interface available to processes in the
+namespace, and mapping network traffic outside the namespace using native
+Layer-4 sockets.")
+    (license (list license:gpl2+ license:bsd-3))))
+
 (define-public cni-plugins
   (package
     (name "cni-plugins")
@@ -302,7 +342,7 @@ configure network interfaces in Linux containers.")
 (define-public podman
   (package
     (name "podman")
-    (version "4.4.1")
+    (version "4.9.3")
     (source
      (origin
        (method git-fetch)
@@ -313,8 +353,11 @@ configure network interfaces in Linux containers.")
        ;; FIXME: Btrfs libraries not detected by these scripts.
        (snippet '(substitute* "Makefile"
                    ((".*hack/btrfs.*") "")))
+       (patches
+        (search-patches
+         "podman-program-lookup.patch"))
        (sha256
-        (base32 "0qbr6rbyig3c2hvdvmd94jjkg820hpdz6j7dgyv62dl6wfwvj5jj"))
+        (base32 "17g7n09ndxhpjr39s9qwxdcv08wavjj0g5nmnrvrkz2wgdqigl1x"))
        (file-name (git-file-name name version))))
 
     (build-system gnu-build-system)
@@ -341,10 +384,11 @@ configure network interfaces in Linux containers.")
                 (invoke "make" "remotesystem"))))
           (add-after 'unpack 'fix-hardcoded-paths
             (lambda _
-              (substitute* (find-files "libpod" "\\.go")
-                (("exec.LookPath[(][\"]slirp4netns[\"][)]")
-                 (string-append "exec.LookPath(\""
-                                (which "slirp4netns") "\")")))
+              (substitute* "vendor/github.com/containers/common/pkg/config/config.go"
+                (("@SLIRP4NETNS_DIR@")
+                 (string-append #$slirp4netns "/bin"))
+                (("@PASST_DIR@")
+                 (string-append #$passt "/bin")))
               (substitute* "hack/install_catatonit.sh"
                 (("CATATONIT_PATH=\"[^\"]+\"")
                  (string-append "CATATONIT_PATH=" (which "true"))))
@@ -374,11 +418,12 @@ configure network interfaces in Linux containers.")
            libassuan
            libseccomp
            libselinux
+           passt
            slirp4netns))
     (native-inputs
      (list bats
            git
-           go-1.19
+           go-1.21
            ; strace ; XXX debug
            pkg-config
            python))
@@ -387,7 +432,10 @@ configure network interfaces in Linux containers.")
     (description
      "Podman (the POD MANager) is a tool for managing containers and images,
 volumes mounted into those containers, and pods made from groups of
-containers.")
+containers.
+
+The @code{machine} subcommand is not supported due to gvproxy not being
+packaged.")
     (license license:asl2.0)))
 
 (define-public buildah

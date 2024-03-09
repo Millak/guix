@@ -3,10 +3,10 @@
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2015-2020, 2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
@@ -4893,9 +4893,40 @@ their web site.")
                 "1p5i8wsi8q5fpq63i7n7ri1w1lnh4gpn17f88vhkbh14aah5wxj1"))))
     (properties '(("upstream-name" . "python-lambda-4dn")))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pip-install
+            (lambda _
+              (substitute* "aws_lambda/aws_lambda.py"
+                ;; This package uses pip to install Python packages, wrap them
+                ;; up, and push them to AWS Lambda.  We need to reset
+                ;; GUIX_PYTHONPATH to avoid introducing package conflicts that
+                ;; would cause pip to fail.
+                (("(subprocess.call\\(\\[sys.executable.*'--no-cache-dir'\\])\\)" _ m)
+                 (string-append m ", env={\"GUIX_PYTHONPATH\":\""
+                                #$(this-package-input "python")
+                                "/lib/python"
+                                #$(version-major+minor
+                                   (package-version (this-package-input "python")))
+                                "/site-packages/\"})"))
+                ;; Zipfile uses the mtime of the temporary directory to build
+                ;; a zip file.  But the temp directory has a timestamp of 0,
+                ;; and zipfile refuses to build a zip archive dated before
+                ;; 1980.  So we reset the mtime of all temp files before they
+                ;; are added to the zip archive.
+                (("^( +)arcname = os.path.join" line indent)
+                 (string-append indent
+                                "os.utime(os.path.join(root, file), (315619200, 315619200))\n"
+                                line))))))))
+    (inputs (list python))
     (propagated-inputs
-     (list python-boto3 python-botocore python-docutils
-           python-six))
+     (list python-boto3
+           python-botocore
+           python-docutils
+           python-six
+           python-virtualenv))
     (home-page "https://github.com/4dn-dcic/python-lambda")
     (synopsis
      "Toolkit for developing and deploying Python code in AWS Lambda")
@@ -4967,8 +4998,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "e13febc81706fbfb7f073bc4e9ce73fbc80d5180")
-        (revision "44"))
+  (let ((commit "5f80856ad1587aea38ee4e7b54db558cdb43f6b7")
+        (revision "45"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4980,7 +5011,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0pk86b44zg2yn73sxlcd9pqbz8xwprwzaib2npnq80y3yzc6qc22"))))
+                  "18m002d9pkh0qn4xn4n6lijl541m9z7c3lbapl7m6zi41p3dywww"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -5428,7 +5459,7 @@ tools they trust (e.g. wget).")
 (define netsurf-buildsystem
   (package
     (name "netsurf-buildsystem")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
@@ -5436,7 +5467,7 @@ tools they trust (e.g. wget).")
                            "buildsystem-" version ".tar.gz"))
        (sha256
         (base32
-         "0alsmaig9ln8dgllb3z63gq90fiz75jz0ic71fi0k0k898qix14k"))))
+         "0yadmrpgvl9r08b56qiy5f77jracc7g9n4krn727fip4d7akjgix"))))
     (build-system gnu-build-system)
     (inputs `(("perl" ,perl)))
     (arguments
@@ -5467,7 +5498,7 @@ libraries.")
 (define-public libparserutils
   (package
     (name "libparserutils")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
@@ -5475,7 +5506,7 @@ libraries.")
                            name "-" version "-src.tar.gz"))
        (sha256
         (base32
-         "1n2794y2l0c8nv8z2pxwfnbn882987ifmxjv60zdxkhcndhswarj"))))
+         "0ffi5q1jlcdl66nk3cax0mnzvhrjvvjvlx0rfasjfygi333xazii"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem pkg-config perl))                 ;for test harness
@@ -5490,7 +5521,7 @@ C.  It is developed as part of the NetSurf project.")
 (define-public hubbub
   (package
     (name "hubbub")
-    (version "0.3.7")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
@@ -5498,15 +5529,14 @@ C.  It is developed as part of the NetSurf project.")
                            "libhubbub-" version "-src.tar.gz"))
        (sha256
         (base32
-         "1dimfyblmym98qa1b80c5jslv2zk8r44xbdrgrsrw1n9wr9y4yly"))
-       (patches (search-patches
-         "hubbub-sort-entities.patch"
-         "hubbub-maybe-uninitialized.patch"))))
+         "19fm5h8arnsgxd4w5vr9s2fcb422acciffar3la0b36lygsydhca"))
+       (patches (search-patches "hubbub-sort-entities.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem
            pkg-config
            doxygen
+           gperf
            json-c-0.12 ; check whether json-c-0.12 can be removed
            perl))
     (propagated-inputs
@@ -5674,7 +5704,7 @@ developed as part of the Netsurf project.")
 (define-public libcss
   (package
     (name "libcss")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
@@ -5682,13 +5712,8 @@ developed as part of the Netsurf project.")
                            "libcss-" version "-src.tar.gz"))
        (sha256
         (base32
-         "1p66sdiiqm7w4jkq23hsf08khsnmq93hshh9f9m8sbirjdpf3p6j"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; This can be removed with the next release.
-           (substitute* "src/select/computed.c"
-             (("css_unit unit;") "css_unit unit = CSS_UNIT_PX;"))))))
+         "0khmf5bdpkc09fpsgwzi23sihpadvyr02jx0q5h1vm9lxjxibwid"))
+       (patches (search-patches "libcss-check-format.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem pkg-config perl))
@@ -5705,7 +5730,7 @@ written in C.  It is developed as part of the NetSurf project.")
 (define-public libdom
   (package
     (name "libdom")
-    (version "0.4.1")
+    (version "0.4.2")                 ;TODO include patch for additional tags?
     (source
      (origin
        (method url-fetch)
@@ -5713,7 +5738,7 @@ written in C.  It is developed as part of the NetSurf project.")
                            "libdom-" version "-src.tar.gz"))
        (sha256
         (base32
-         "0jpg5hx3y0mdxk5szd47dyijqimd2321brbqk2620pp5f4j0gvlq"))))
+         "0g0gqcglk8f8gbygbcq5ylcx84zsf0vczbm3n3118w2l2splapnh"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem
@@ -5740,7 +5765,7 @@ developed as part of the NetSurf project.")
 (define-public libsvgtiny
   (package
     (name "libsvgtiny")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
@@ -5748,7 +5773,7 @@ developed as part of the NetSurf project.")
                            name "-" version "-src.tar.gz"))
        (sha256
         (base32
-         "10bpkmvfpydj74im3r6kqm9vnvgib6afy0alx71q5n0w5yawy39c"))))
+         "0750q884ax8wygl64wq03zdjj8h838ch3f8jdfkv4gz809zj4my3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem pkg-config gperf-3.0))
@@ -5769,7 +5794,7 @@ project.")
 (define-public libnsbmp
   (package
     (name "libnsbmp")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
@@ -5777,7 +5802,7 @@ project.")
                            name "-" version "-src.tar.gz"))
        (sha256
         (base32
-         "0krjg69a2amxjsahdgm3wmy9ngnyr3gfs2a1zhdlbvb0z1jr7i3r"))))
+         "14r2v1ich4lxn3sdwpiwq5adydrd1qlhbd8mbamalaqj59laf1sl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem))
@@ -5825,7 +5850,7 @@ operations.")
 (define-public libnsgif
   (package
     (name "libnsgif")
-    (version "0.2.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
@@ -5833,7 +5858,7 @@ operations.")
                            name "-" version "-src.tar.gz"))
        (sha256
         (base32
-         "0jwshypgmx16xlsbx3d8njk8a5khazlplca5mxd3rdbhrlsabbly"))))
+         "06q69hn0nz3c6hnwmzfcldyrppkvimx3s97ql3sx4m0lyr1ch530"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem))
@@ -5876,7 +5901,7 @@ client applications.  It is developed as part of the NetSurf project.")
 (define-public libnsutils
   (package
     (name "libnsutils")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
@@ -5884,7 +5909,7 @@ client applications.  It is developed as part of the NetSurf project.")
                            name "-" version "-src.tar.gz"))
        (sha256
         (base32
-         "1w5fyy2i60a3v3if3iqcn9sy9sycx6966rcx53v85gja6hb6a33r"))))
+         "14pakllwf7a205d0dkvyg8jhmqfbi5sh5riw840d13j5dr9b952n"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem))
@@ -5899,7 +5924,7 @@ developed as part of the NetSurf project.")
 (define-public libnspsl
   (package
     (name "libnspsl")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
@@ -5907,7 +5932,7 @@ developed as part of the NetSurf project.")
                            "libnspsl-" version "-src.tar.gz"))
        (sha256
         (base32
-         "02q28n5i6fwqcz1nn167rb71k1q95mx38mfah6zi1lvqrc2q5ifk"))))
+         "105cjkb622wz11z26il4j1n4ydyrrgv0nglr67aawpam5z1wx11n"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem))
@@ -5922,7 +5947,7 @@ Public Suffix List.  It is developed as part of the NetSurf project.")
 (define-public nsgenbind
   (package
     (name "nsgenbind")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method url-fetch)
@@ -5930,7 +5955,7 @@ Public Suffix List.  It is developed as part of the NetSurf project.")
                            "nsgenbind-" version "-src.tar.gz"))
        (sha256
         (base32
-         "1cqwgwca49jvmijwiyaab2bwxicgxdrnlpinf8kp3nha02nm73ad"))))
+         "0p9q9ffn9hf1qrphz2qxq2xvyysn5kg2dbl8cbnkwb5wdkvf0b13"))))
     (build-system gnu-build-system)
     (native-inputs
      (list netsurf-buildsystem bison flex))
@@ -5948,7 +5973,7 @@ w3c webidl files and a binding configuration file.")
 (define-public netsurf
   (package
     (name "netsurf")
-    (version "3.10")
+    (version "3.11")
     (source
      (origin
        (method url-fetch)
@@ -5956,7 +5981,7 @@ w3c webidl files and a binding configuration file.")
                            "releases/source/netsurf-" version "-src.tar.gz"))
        (sha256
         (base32
-         "0plra64c5xyiw12yx2q13brxsv8apmany97zqa2lcqckw4ll8j1n"))
+         "1chw40nx7krpy7m14bajfrcj88h98if8py0k7c2qshpfxxm652n2"))
        (patches (search-patches "netsurf-system-utf8proc.patch"
                                 "netsurf-y2038-tests.patch"
                                 "netsurf-longer-test-timeout.patch"
@@ -6007,22 +6032,17 @@ w3c webidl files and a binding configuration file.")
          (add-after 'unpack 'remove-timestamps
            ;; Avoid embedding timestamp for reproducible builds
            (lambda _
-             (substitute* "utils/git-testament.pl"
+             (substitute* "tools/git-testament.pl"
                (("WT_COMPILEDATE ..$compiledate")
                 "WT_COMPILEDATE \\\""))))
          (add-after 'build 'adjust-welcome
            (lambda _
              (substitute* "frontends/gtk/res/welcome.html"
-             ;; Close some XHTML tags.
+               ;; Close some XHTML tags.
                (("<(img|input)([^>]*)>" _ tag contents)
                 (string-append "<" tag contents " />"))
                ;; Increase freedom.
-               ((" open source") ", free software")
-               ;; Prefer a more privacy-respecting default search engine.
-               (("www.google.co.uk") "www.duckduckgo.com/html")
-               (("Google Search") "DuckDuckGo Search")
-               (("name=\"btnG\"") ""))
-             ;; Remove default links so it doesn't seem we're endorsing them.
+               ((" open source") ", free software"))
              (with-atomic-file-replacement "frontends/gtk/res/welcome.html"
                (lambda (in out)
                  ;; Leave the DOCTYPE header as is.
@@ -6037,8 +6057,23 @@ w3c webidl files and a binding configuration file.")
                     ;; We'd like to use sxml-match here, but it can't
                     ;; match against generic tag symbols...
                     (match sxml
+                      ;; Remove default links so it doesn't seem we're
+                      ;; endorsing them.
                       (`(div (@ (class "links")) . ,rest)
                        '())
+                      ;; Prefer a more privacy-respecting default search
+                      ;; engine.
+                      (`(form . ,rest)
+                       `(form (@ (action "https://lite.duckduckgo.com/lite/")
+                                 (method "post"))
+                              (div (@ (class "websearch"))
+                                   (input (@ (type "text")
+                                             (size "42")
+                                             (name "q")
+                                             (autocomplete "off")
+                                             (value "")))
+                                   (input (@ (type "submit")
+                                             (value "DuckDuckGo Search"))))))
                       (`(ENTITY ,ent)
                        `(*ENTITY* ,ent))
                       ((x ...)

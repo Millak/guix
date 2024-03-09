@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -13578,14 +13579,14 @@ network protocols, and core version control algorithms.")
                                      ":"
                                      share "abcl-contrib.jar")))
                      (display (string-append
-                               "#!" (which "sh") "\n"
+                               "#!" (which "bash") "\n"
                                "if [[ -z $CLASSPATH ]]; then\n"
                                "  cp=\"" classpath "\"\n"
                                "else\n"
                                "  cp=\"" classpath ":$CLASSPATH\"\n"
                                "fi\n"
                                "exec " (which "java")
-                               " -cp $cp org.armedbear.lisp.Main $@\n")))))
+                               " -cp \"$cp\" org.armedbear.lisp.Main \"$@\"\n")))))
                (chmod (string-append bin "abcl") #o755)
                #t))))))
     (home-page "https://abcl.org/")

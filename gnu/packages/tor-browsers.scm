@@ -149,16 +149,16 @@
 
 ;; We copy the official build id, which can be found there:
 ;; https://aus1.torproject.org/torbrowser/update_3/release/.
-(define %torbrowser-build-date "20240213172118")
+(define %torbrowser-build-date "20240305132801")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "13.0.10")
+(define %torbrowser-version "13.0.11")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "115.8.0esr-13.0-1-build1")
+(define %torbrowser-firefox-version "115.8.0esr-13.0-1-build2")
 
 ;; See tor-browser-build/projects/translation/config.
 ;; If Tor Browser and Mullvad Browser updates are not synchronized, maybe this
@@ -168,11 +168,11 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "cbd9b6c415ec2edb99237ef67ccd4f033a7b9c2a")))
+          (commit "16211a4b8524d71525f0ea73c07771c634132b30")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "103dj1zzc68gxzjxwcpc4sbc6qca4zg8kkhdivzpq37ma07sp9sf"))))
+      "1452lpzbx0a049ksw84q7fj93bldfpllpp86aa4kggiv7vb3dqxk"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define translation-tor-browser
@@ -180,11 +180,11 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "a50fa943d7428ebe6e4e6b09f175e098a97eec63")))
+          (commit "012f643d2d6b04ebf868bf62cdb7ad5b727734f5")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "0kvjdkgfdl0sh413wrli9pn7ygv9idrq5yvsi5q8c4bmnnxfig7c"))))
+      "1253zrpl59bwy6s71ip3f84k46m2wwid7ixgf72pzqrkkh5lcnkn"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -200,7 +200,7 @@
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1v4jbgzw640lnsyxk275w62xdyqbw0p0fwvkzfawpg4d3pqp7fpw"))))
+         "0qcl9yqndnaqkvgmmb6f5rrzvwdr323l3r4s3hd9mwv9q1x41h3b"))))
     (arguments
      (list
       #:install-plan
@@ -236,7 +236,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "0lbarj4i21f6jkpk2ji1cmgv625yhqyjksln97zgbbki43bx09v6"))))
+         "0c7jfliznxfdfs5xrwwgib486vgpmpcvq4s54rxxcxfk633kgz67"))))
     (build-system mozilla-build-system)
     (inputs
      (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird

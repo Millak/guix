@@ -5188,7 +5188,7 @@ disk utilization, priority, username, state, and exit code.")
      `())
     (inputs
      `(("go-golang-org-x-text" ,go-golang-org-x-text)
-       ("go-github.com-ulikunitz-xz" ,go-github.com-ulikunitz-xz)))
+       ("go-github-com-ulikunitz-xz" ,go-github-com-ulikunitz-xz)))
     (synopsis "UEFI image editor")
     (description "This package provides a command-line UEFI image editor.")
     (home-page "https://github.com/linuxboot/fiano")

@@ -1131,8 +1131,8 @@ collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
 
 (define-public cgit
-  (let ((commit "793c420897e18eb3474c751d54cf4e0983f85433")
-        (rev "1"))
+  (let ((commit "8905003cba637e5b18069e625cd4f4c05ac30251")
+        (rev "2"))
     (package
       (name "cgit")
       ;; Update the ‘git-source’ input as well.
@@ -1144,7 +1144,7 @@ collaboration using typical untrusted file hosts or services.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1mhrm14wpqvralf9j33ih5ai6naiq3g2jg2z91gnw9dhh8f9ilwz"))
+                  "1ha8d2n59mv89vv4bqgg3dk82n1rqh8kd8y654vqx7v1v7m645qz"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -1220,9 +1220,9 @@ collaboration using typical untrusted file hosts or services.")
              (method url-fetch)
              ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
              ;; which may not match the current (package-version git).
-             (uri "mirror://kernel.org/software/scm/git/git-2.43.0.tar.xz")
+             (uri "mirror://kernel.org/software/scm/git/git-2.44.0.tar.xz")
              (sha256
-              (base32 "1v3nkfm3gw8wr7595qy86qla8xyjvi85fmly4lfph4frfcz60ijl"))))
+              (base32 "1qqxd3pdsca6m93lxxkz9s06xs1sq0ah02lhrr0a6pjvrf6p6n73"))))
          ("bash-minimal" ,bash-minimal)
          ("openssl" ,openssl)
          ("python" ,python)
@@ -2900,13 +2900,13 @@ based on a manifest file published by servers.")
 (define-public patatt
   (package
     (name "patatt")
-    (version "0.4.9")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "patatt" version))
        (sha256
-        (base32 "0fpbkmdlnz9s1lakw11jlrzpz4mb6f4dksdiir9g1ppq0g34sy58"))))
+        (base32 "0a0a5ndlnv7dk2smn8algss6q17gbd6mc7yacz17c9cxabv2c24q"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; No tests.
     (propagated-inputs

@@ -111,7 +111,7 @@ Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
 Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
-Copyright @copyright{} 2023 Giacomo Leidi@*
+Copyright @copyright{} 2023-2024 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
@@ -358,6 +358,7 @@ Foreign Architectures
 
 System Configuration
 
+* Getting Started with the System:: Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
@@ -2879,8 +2880,8 @@ unless your configuration specifies otherwise
 @node After System Installation
 @section After System Installation
 
-Success, you've now booted into Guix System!  From then on, you can update the
-system whenever you want by running, say:
+Success, you've now booted into Guix System!  You can upgrade the system
+whenever you want by running:
 
 @example
 guix pull
@@ -2888,24 +2889,10 @@ sudo guix system reconfigure /etc/config.scm
 @end example
 
 @noindent
-This builds a new system generation with the latest packages and services
-(@pxref{Invoking guix system}).  We recommend doing that regularly so that
-your system includes the latest security updates (@pxref{Security Updates}).
+This builds a new system @dfn{generation} with the latest packages and
+services.
 
-@c See <https://lists.gnu.org/archive/html/guix-devel/2019-01/msg00268.html>.
-@quotation Note
-@cindex sudo vs. @command{guix pull}
-Note that @command{sudo guix} runs your user's @command{guix} command and
-@emph{not} root's, because @command{sudo} leaves @env{PATH} unchanged.  To
-explicitly run root's @command{guix}, type @command{sudo -i guix @dots{}}.
-
-The difference matters here, because @command{guix pull} updates
-the @command{guix} command and package definitions only for the user it is run
-as.  This means that if you choose to use @command{guix system reconfigure} in
-root's login shell, you'll need to @command{guix pull} separately.
-@end quotation
-
-Now, @pxref{Getting Started}, and
+Now, @pxref{Getting Started with the System}, and
 join us on @code{#guix} on the Libera Chat IRC network or on
 @email{guix-devel@@gnu.org} to share your experience!
 
@@ -3159,22 +3146,9 @@ sudo guix system reconfigure /etc/config.scm
 @end example
 
 Upon completion, the system runs the latest versions of its software
-packages.  When you eventually reboot, you'll notice a sub-menu in the
-bootloader that reads ``Old system generations'': it's what allows you
-to boot @emph{an older generation of your system}, should the latest
-generation be ``broken'' or otherwise unsatisfying.  Just like for
-packages, you can always @emph{roll back} to a previous generation
-@emph{of the whole system}:
-
-@example
-sudo guix system roll-back
-@end example
-
-There are many things you'll probably want to tweak on your system:
-adding new user accounts, adding new system services, fiddling with the
-configuration of those services, etc.  The system configuration is
-@emph{entirely} described in the @file{/etc/config.scm} file.
-@xref{Using the Configuration System}, to learn how to change it.
+packages.  Just like for packages, you can always @emph{roll back} to a
+previous generation @emph{of the whole system}.  @xref{Getting Started
+with the System}, to learn how to manage your system.
 
 Now you know enough to get started!
 
@@ -3283,7 +3257,7 @@ out to have a serious bug, users may roll back to the previous instance
 of their profile, which was known to work well.  Similarly, the global
 system configuration on Guix is subject to
 transactional upgrades and roll-back
-(@pxref{Using the Configuration System}).
+(@pxref{Getting Started with the System}).
 
 All packages in the package store may be @emph{garbage-collected}.
 Guix can determine which packages are still referenced by user
@@ -17101,6 +17075,7 @@ instantiated.  Then we show how this mechanism can be extended, for
 instance to support new system services.
 
 @menu
+* Getting Started with the System:: Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
@@ -17121,14 +17096,222 @@ instance to support new system services.
 * Defining Services::           Adding new service definitions.
 @end menu
 
+@node Getting Started with the System
+@section Getting Started
+
+@cindex system configuration file
+@cindex configuration file, of the system
+You're reading this section probably because you have just installed
+Guix System (@pxref{System Installation}) and would like to know where
+to go from here.  If you're already familiar with GNU/Linux system
+administration, the way Guix System is configured is very different from
+what you're used to: you won't install a system service by running
+@command{guix install}, you won't configure services by modifying files
+under @file{/etc}, and you won't create user accounts by invoking
+@command{useradd}; instead, all these aspects are spelled out in a
+@dfn{system configuration file}.
+
+The first step with Guix System is thus to write the @dfn{system
+configuration file}; luckily, system installation already generated one
+for you and stored it under @file{/etc/config.scm}.
+
+@quotation Note
+You can store your system configuration file anywhere you like---it
+doesn't have to be at @file{/etc/config.scm}.  It's a good idea to keep
+it under version control, for instance in a
+@uref{https://git-scm.com/book/en/, Git repository}.
+@end quotation
+
+The @emph{entire} configuration of the system---user accounts, system
+services, timezone, locale settings---is declared in this file, which
+follows this template:
+
+@lisp
+(use-modules (gnu))
+(use-package-modules @dots{})
+(use-service-modules @dots{})
+
+(operating-system
+  (host-name @dots{})
+  (timezone @dots{})
+  (locale @dots{})
+  (bootloader @dots{})
+  (file-systems @dots{})
+  (users @dots{})
+  (packages @dots{})
+  (services @dots{}))
+@end lisp
+
+This configuration file is in fact a Scheme program; the first lines
+pull in modules providing variables you might need in the rest of the
+file---e.g., packages, services, etc.  The @code{operating-system} form
+declares the system configuration as a @dfn{record} with a number of
+@dfn{fields}.  @xref{Using the Configuration System}, to view complete
+examples and learn what to put in there.
+
+The second step, once you have this configuration file, is to test it.
+Of course, you can skip this step if you're feeling lucky---you choose!
+To do that, pass your configuration file to @command{guix system vm} (no
+need to be root, you can do that as a regular user):
+
+@example
+guix system vm /etc/config.scm
+@end example
+
+@noindent
+This command returns the name of a shell script that starts a virtual
+machine (VM) running the system @emph{as described in the configuration
+file}:
+
+@example
+/gnu/store/@dots{}-run-vm.sh
+@end example
+
+@noindent
+In this VM, you can log in as @code{root} with no password.  That's a
+good way to check that your configuration file is correct and that it
+gives the expected result, without touching your system.  @xref{Invoking
+guix system}, for more information.
+
+@quotation Note
+When using @command{guix system vm}, aspects tied to your hardware such
+as file systems and mapped devices are overridden because they cannot be
+meaningfully tested in the VM@.  Other aspects such as static network
+configuration (@pxref{Networking Setup,
+@code{static-networking-service-type}}) are @emph{not} overridden but
+they may not work inside the VM@.
+@end quotation
+
+@cindex system instantiation
+@cindex reconfiguring the system
+The third step, once you're happy with your configuration, is to
+@dfn{instantiate} it---make this configuration effective on your system.
+To do that, run:
+
+@example
+sudo guix system reconfigure /etc/config.scm
+@end example
+
+@cindex upgrading system services
+@cindex system services, upgrading
+@noindent
+This operation is @dfn{transactional}: either it succeeds and you end up
+with an upgraded system, or it fails and nothing has changed.  Note that
+it does @emph{not} restart system services that were already running.
+Thus, to upgrade those services, you have to reboot or to explicitly
+restart them; for example, to restart the secure shell (SSH) daemon, you
+would run:
+
+@example
+sudo herd restart sshd
+@end example
+
+@quotation Note
+System services are managed by the Shepherd (@pxref{Jump Start,,,
+shepherd, The GNU Shepherd Manual}).  The @code{herd} command lets you
+inspect, start, and stop services.  To view the status of services, run:
+
+@example
+sudo herd status
+@end example
+
+To view detailed information about a given service, add its name to the
+command:
+
+@example
+sudo herd status sshd
+@end example
+
+@xref{Services}, for more information.
+@end quotation
+
+@cindex provenance, of the system
+The system records its @dfn{provenance}---the configuration file and
+channels that were used to deploy it.  You can view it like so:
+
+@example
+guix system describe
+@end example
+
+Additionally, @command{guix system reconfigure} preserves previous
+system generations, which you can list:
+
+@example
+guix system list-generations
+@end example
+
+@noindent
+@cindex roll back, for the system
+Crucially, that means that you can always @emph{roll back} to an earlier
+generation should something go wrong!  When you eventually reboot,
+you'll notice a sub-menu in the bootloader that reads ``Old system
+generations'': it's what allows you to boot @emph{an older generation of
+your system}, should the latest generation be ``broken'' or otherwise
+unsatisfying.  You can also ``permanently'' roll back, like so:
+
+@example
+sudo guix system roll-back
+@end example
+
+@noindent
+Alternatively, you can use @command{guix system switch-generation} to
+switch to a specific generation.
+
+Once in a while, you'll want to delete old generations that you do not
+need anymore to allow @dfn{garbage collection} to free space
+(@pxref{Invoking guix gc}).  For example, to remove generations older
+than 4 months, run:
+
+@example
+sudo guix system delete-generations 4m
+@end example
+
+From there on, anytime you want to change something in the system
+configuration, be it adding a user account or changing parameters of a
+service, you will first update your configuration file and then run
+@command{guix system reconfigure} as shown above.
+@cindex upgrade, of the system
+Likewise, to @emph{upgrade} system software, you first fetch an
+up-to-date Guix and then reconfigure your system with that new Guix:
+
+@example
+guix pull
+sudo guix system reconfigure /etc/config.scm
+@end example
+
+@noindent
+We recommend doing that regularly so that your system includes the
+latest security updates (@pxref{Security Updates}).
+
+@c See <https://lists.gnu.org/archive/html/guix-devel/2019-01/msg00268.html>.
+@quotation Note
+@cindex sudo vs. @command{guix pull}
+@command{sudo guix} runs your user's @command{guix} command and
+@emph{not} root's, because @command{sudo} leaves @env{PATH} unchanged.
+
+The difference matters here, because @command{guix pull} updates
+the @command{guix} command and package definitions only for the user it is run
+as.  This means that if you choose to use @command{guix system reconfigure} in
+root's login shell, you'll need to @command{guix pull} separately.
+@end quotation
+
+That's it!  If you're getting started with Guix entirely,
+@pxref{Getting Started}.  The next sections dive in more detail into the
+crux of the matter: system configuration.
+
 @node Using the Configuration System
 @section Using the Configuration System
 
+The previous section showed the overall workflow you would follow when
+administering a Guix System machine (@pxref{Getting Started with the
+System}).  Let's now see in more detail what goes into the system
+configuration file.
+
 The operating system is configured by providing an
 @code{operating-system} declaration in a file that can then be passed to
-the @command{guix system} command (@pxref{Invoking guix system}).  A
-simple setup, with the default Linux-Libre
-kernel, initial RAM disk, and a couple of system services added to those
+the @command{guix system} command (@pxref{Invoking guix system}), as
+we've seen before.  A simple setup, with the default Linux-Libre kernel,
+initial RAM disk, and a couple of system services added to those
 provided by default looks like this:
 
 @findex operating-system
@@ -17136,8 +17319,8 @@ provided by default looks like this:
 @include os-config-bare-bones.texi
 @end lisp
 
-The configuration is declarative and hopefully mostly self-describing.
-It is actually code in the Scheme programming language; the whole
+The configuration is declarative.
+It is code in the Scheme programming language; the whole
 @code{(operating-system @dots{})} expression produces a @dfn{record}
 with a number of @dfn{fields}.
 Some of the fields defined
@@ -17146,16 +17329,21 @@ Others, such as @code{packages} and @code{services}, can be omitted, in
 which case they get a default value.  @xref{operating-system Reference},
 for details about all the available fields.
 
-Below we discuss the effect of some of the most important fields,
-and how to @dfn{instantiate} the operating system using
-@command{guix system}.
+Below we discuss the meaning of some of the most important fields.
 
-@quotation Do not panic
-@cindex Scheme programming language, getting started
-Intimidated by the Scheme language or curious about it?  The Cookbook
-has a short section to get started that explains the fundamentals, which
-you will find helpful when hacking your configuration.  @xref{A Scheme
-Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
+@quotation Troubleshooting
+The configuration file is a Scheme program and you might get the syntax
+or semantics wrong as you get started.  Syntactic issues such as
+misplaced parentheses can often be identified by reformatting your file:
+
+@example
+guix style -f config.scm
+@end example
+
+The Cookbook has a short section to get started with the Scheme
+programming language that explains the fundamentals, which you will find
+helpful when hacking your configuration.  @xref{A Scheme Crash Course,,,
+guix-cookbook, GNU Guix Cookbook}.
 @end quotation
 
 @unnumberedsubsec Bootloader
@@ -17348,18 +17536,70 @@ Alternatively, the @code{modify-services} macro can be used:
   (delete avahi-service-type))
 @end lisp
 
+@unnumberedsubsec Inspecting Services
+
+@cindex troubleshooting, for system services
+@cindex inspecting system services
+@cindex system services, inspecting
+As you work on your system configuration, you might wonder why some
+system service doesn't show up or why the system is not as you expected.
+There are several ways to inspect and troubleshoot problems.
+
+@cindex dependency graph, of Shepherd services
+First, you can inspect the dependency graph of Shepherd services like
+so:
+
+@example
+guix system shepherd-graph /etc/config.scm | \
+  guix shell xdot -- xdot -
+@end example
+
+This lets you visualize the Shepherd services as defined in
+@file{/etc/config.scm}.  Each box is a service as would be shown by
+@command{sudo herd status} on the running system, and each arrow denotes
+a dependency (in the sense that if service @var{A} depends on @var{B},
+then @var{B} must be started before @var{A}).
+
+@cindex extension graph, of services
+Not all ``services'' are Shepherd services though, since Guix System
+uses a broader definition of the term (@pxref{Services}).  To visualize
+system services and their relations at a higher level, run:
+
+@example
+guix system extension-graph /etc/config.scm | \
+  guix shell xdot -- xdot -
+@end example
+
+This lets you view the @dfn{service extension graph}: how services
+``extend'' each other, for instance by contributing to their
+configuration.  @xref{Service Composition}, to understand the meaning of
+this graph.
+
+Last, you may also find it useful to inspect your system configuration
+at the REPL (@pxref{Using Guix Interactively}).  Here is an example
+session:
+
+@example
+$ guix repl
+scheme@@(guix-user)> ,use (gnu)
+scheme@@(guix-user)> (define os (load "config.scm"))
+scheme@@(guix-user)> ,pp (map service-kind (operating-system-services os))
+$1 = (#<service-type localed cabba93>
+      @dots{})
+@end example
+
+@xref{Service Reference}, to learn about the Scheme interface to
+manipulate and inspect services.
+
 @unnumberedsubsec Instantiating the System
 
+@cindex system instantiation
+@cindex reconfiguring the system
 Assuming the @code{operating-system} declaration
-is stored in the @file{my-system-config.scm}
-file, the @command{guix system reconfigure my-system-config.scm} command
-instantiates that configuration, and makes it the default GRUB boot
-entry (@pxref{Invoking guix system}).
-
-@quotation Note
-We recommend that you keep this @file{my-system-config.scm} file safe
-and under version control to easily track changes to your configuration.
-@end quotation
+is stored in the @file{config.scm}
+file, the @command{sudo guix system reconfigure config.scm} command
+instantiates that configuration, and makes it the default boot
+entry.  @xref{Getting Started with the System}, for an overview.
 
 The normal way to change the system configuration is by updating this
 file and re-running @command{guix system reconfigure}.  One should never
@@ -17368,23 +17608,6 @@ system state such as @command{useradd} or @command{grub-install}.  In
 fact, you must avoid that since that would not only void your warranty
 but also prevent you from rolling back to previous versions of your
 system, should you ever need to.
-
-@cindex roll-back, of the operating system
-Speaking of roll-back, each time you run @command{guix system
-reconfigure}, a new @dfn{generation} of the system is created---without
-modifying or deleting previous generations.  Old system generations get
-an entry in the bootloader boot menu, allowing you to boot them in case
-something went wrong with the latest generation.  Reassuring, no?  The
-@command{guix system list-generations} command lists the system
-generations available on disk.  It is also possible to roll back the
-system via the commands @command{guix system roll-back} and
-@command{guix system switch-generation}.
-
-Although the @command{guix system reconfigure} command will not modify
-previous generations, you must take care when the current generation is not
-the latest (e.g., after invoking @command{guix system roll-back}), since
-the operation might overwrite a later generation (@pxref{Invoking guix
-system}).
 
 @unnumberedsubsec The Programming Interface
 
@@ -44444,16 +44667,41 @@ directory, and some way of automatically deploy changes to their user home.
 @cindex Stow-like dot file management
 The @code{home-dotfiles-service-type} from @code{(gnu home services dotfiles)}
 is designed to ease the way into using Guix Home for this kind of users,
-allowing them to point the service to their dotfiles directory, which must
-follow the layout suggested by
-@uref{https://www.gnu.org/software/stow/, GNU Stow},
-and have their dotfiles automatically deployed to their user home, without
+allowing them to point the service to their dotfiles directory without
 migrating them to Guix native configurations.
 
-The dotfiles directory layout is expected to be structured as follows. Please
-keep in mind that it is advisable to keep your dotfiles directories under
+Please keep in mind that it is advisable to keep your dotfiles directories under
 version control, for example in the same repository where you'd track your
 Guix Home configuration.
+
+There are two supported dotfiles directory layouts, for now. The
+@code{'plain} layout, which is structured as follows:
+
+@example
+~$ tree -a ./dotfiles/
+dotfiles/
+├── .gitconfig
+├── .gnupg
+│   ├── gpg-agent.conf
+│   └── gpg.conf
+├── .guile
+├── .config
+│   ├── guix
+│   │   └── channels.scm
+│   └── nixpkgs
+│       └── config.nix
+├── .nix-channels
+├── .tmux.conf
+└── .vimrc
+@end example
+
+This tree structure is installed as is to the
+home directory upon @command{guix home reconfigure}.
+
+The @code{'stow} layout, which must
+follow the layout suggested by
+@uref{https://www.gnu.org/software/stow/, GNU Stow} presents an additional
+application specific directory layer, just like:
 
 @example
 ~$ tree -a ./dotfiles/
@@ -44484,8 +44732,10 @@ dotfiles/
 @end example
 
 For an informal specification please refer to the Stow manual
-(@pxref{Top,,, stow, Introduction}). A suitable configuration would then
-be:
+(@pxref{Top,,, stow, Introduction}). This tree structure is installed following
+GNU Stow's logic to the home directory upon @command{guix home reconfigure}.
+
+A suitable configuration with a @code{'plain} layout could be:
 
 @lisp
 (home-environment
@@ -44493,7 +44743,7 @@ be:
   (services
     (service home-dotfiles-service-type
              (home-dotfiles-configuration
-               (directories (list "./dotfiles"))))))
+               (directories '("./dotfiles"))))))
 @end lisp
 
 The expected home directory state would then be:
@@ -44520,31 +44770,46 @@ Return a service which is very similiar to @code{home-files-service-type}
 (and actually extends it), but designed to ease the way into using Guix
 Home for users that already track their dotfiles under some kind of version
 control.  This service allows users to point Guix Home to their dotfiles
-directory and have their files automatically deployed to their home directory
-just like Stow would, without migrating all of their dotfiles to Guix native
+directory and have their files automatically provisioned to their home
+directory, without migrating all of their dotfiles to Guix native
 configurations.
 @end defvar
+
+@c %start of fragment
 
 @deftp {Data Type} home-dotfiles-configuration
 Available @code{home-dotfiles-configuration} fields are:
 
 @table @asis
-@item @code{source-directory} (default: @code{(current-source-directory)})
-The path where dotfile directories are resolved. By default dotfile directories
-are resolved relative the source location where
+@item @code{source-directory} (default: @code{(current-source-directory)}) (type: string)
+The path where dotfile directories are resolved.  By default dotfile
+directories are resolved relative the source location where
 @code{home-dotfiles-configuration} appears.
 
-@item @code{directories} (type: list-of-strings)
-The list of dotfiles directories where @code{home-dotfiles-service-type} will
-look for application dotfiles.
+@item @code{layout} (default: @code{'plain}) (type: symbol)
+The intended layout of the specified @code{directory}.  It can be either
+@code{'stow} or @code{'plain}.
 
-@item @code{exclude} (default: @code{'(".*~" ".*\\.swp" "\\.git" "\\.gitignore")})
-The list of file patterns @code{home-dotfiles-service-type} will exclude while
-visiting each one of the @code{directories}.
+@item @code{directories} (default: @code{'()}) (type: list-of-strings)
+The list of dotfiles directories where @code{home-dotfiles-service-type}
+will look for application dotfiles.
+
+@item @code{packages} (type: maybe-list-of-strings)
+The names of a subset of the GNU Stow package layer directories.  When provided
+the @code{home-dotfiles-service-type} will only provision dotfiles from this
+subset of applications.  This field will be ignored if @code{layout} is set
+to @code{'plain}.
+
+@item @code{excluded} (default: @code{'(".*~" ".*\\.swp" "\\.git" "\\.gitignore")}) (type: list-of-strings)
+The list of file patterns @code{home-dotfiles-service-type} will exclude
+while visiting each one of the @code{directories}.
 
 @end table
 
 @end deftp
+
+
+@c %end of fragment
 
 @defvar home-xdg-configuration-files-service-type
 The service is very similar to @code{home-files-service-type} (and

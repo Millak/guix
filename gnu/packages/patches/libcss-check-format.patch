@@ -1,0 +1,13 @@
+Submitted upstream at https://bugs.netsurf-browser.org/mantis/view.php?id=2870
+
+--- libcss-0.9.2/test/dump.h.orig
++++ libcss-0.9.2/test/dump.h
+@@ -131,7 +131,7 @@ void dump_rule_media(css_rule_media *s, char **buf, size_t *buflen)
+ 	char *ptr = *buf;
+ 	css_rule *rule;
+ 
+-	ptr += sprintf(ptr, "| @media %s%03lx",
++	ptr += sprintf(ptr, "| @media %s%03" PRIx64,
+ 			s->media->negate_type ? "not " : "",
+ 			s->media->type);
+ 

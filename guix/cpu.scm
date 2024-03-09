@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,7 +113,7 @@
   "Return the architecture name, suitable for GCC's '-march' flag, that
 corresponds to CPU, a record as returned by 'current-cpu'."
   (match (cpu-architecture cpu)
-    ("x86_64"
+    ((or "x86_64" "i686")
      ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.cc.
      (letrec-syntax ((if-flags (syntax-rules (=>)
                                  ((_)
@@ -128,18 +128,21 @@ corresponds to CPU, a record as returned by 'current-cpu'."
 
        (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
                 (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
-                (if-flags ("avx" "raoint" => "grandridge")
-                          ("avx" "amx_fp16" => "graniterapids")
+                (if-flags ("avx512f" "amx_complex" => "graniterapids-d")
+                          ("avx512f" "amx_fp16" => "graniterapids")
+                          ("avx512f" "avx512vp2intersect" => "tigerlake")
+                          ("avx512f" "tsxldtrk" => "sapphirerapids")
+                          ("avx512f" "avx512bf16" => "cooperlake")
+                          ("avx512f" "wbnoinvd" => "icelake-server")
+                          ("avx512f" "avx512bitalg" => "icelake-client")
+                          ("avx512f" "avx512vbmi" => "cannonlake")
+                          ("avx512f" "avx5124vnniw" => "knm")
+                          ("avx512f" "avx512er" => "knl")
+                          ("avx512f" => "skylake-avx512")
+                          ("avx" "prefetchi" => "pantherlake")
+                          ("avx" "user_msr" => "clearwaterforest")
+                          ("avx" "sm3" => "arrowlake-s")
                           ("avx" "avxvnniint8" => "sierraforest")
-                          ("avx" "avx512vp2intersect" => "tigerlake")
-                          ("avx" "tsxldtrk" => "sapphirerapids")
-                          ("avx" "avx512bf16" => "cooperlake")
-                          ("avx" "wbnoinvd" => "icelake-server")
-                          ("avx" "avx512bitalg" => "icelake-client")
-                          ("avx" "avx512vbmi" => "cannonlake")
-                          ("avx" "avx5124vnniw" => "knm")
-                          ("avx" "avx512er" => "knl")
-                          ("avx" "avx512f" => "skylake-avx512")
                           ("avx" "serialize" => "alderlake")
                           ("avx" "clflushopt" => "skylake")
                           ("avx" "adx" => "broadwell")
@@ -190,10 +193,16 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                     (= #x3b (cpu-model cpu)))
              "lujiazui"
              (cpu->micro-architecture-level cpu))
+           (if (and (= 7 (cpu-family cpu))
+                    (>= #x5b (cpu-model cpu)))
+             "yongfeng"
+             (cpu->micro-architecture-level cpu))
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
-         "x86_64")))
+         (match (cpu-architecture cpu)
+           ("x86_64" "x86-64")
+           (_ "generic")))))
     ("aarch64"
      ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
      ;; What to do with big.LITTLE cores?
@@ -210,7 +219,9 @@ corresponds to CPU, a record as returned by 'current-cpu'."
           (#xd15
            "armv8-r")
           ((or #xd46 #xd47 #xd4d #xd48 #xd4e #xd49 #xd4f)
-           "armv9-a")))
+           "armv9-a")
+          ((or #xd80 #xd81)
+           "armv9.2-a")))
        ("0x42"
         "armv8.1-a")
        ("0x43"
@@ -241,8 +252,14 @@ corresponds to CPU, a record as returned by 'current-cpu'."
         "armv8-a")
        ("0x68"
         "armv8-a")
+       ("0x6d"
+        "armv9-a")
        ("0xC0"
-        "armv8.6-a")
+        (match (cpu-model cpu)
+          ((or #xac3 #xac4)
+           "armv8.6-a")
+          (#xac5
+           "armv8.7-a")))
        ("0xC00"
         "armv8-a")
        (_
@@ -275,12 +292,12 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
              ;; v2: CMPXCHG16B, LAHF, SAHF, POPCNT, SSE3, SSE4.1, SSE4.2, SSSE3
              ("avx512f" "avx512bw" "abx512cd" "abx512dq" "avx512vl"
               "avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
-              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v4")
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v4")
              ("avx" "avx2" "bmi1" "bmi2" "f16c" "fma" "movbe"
-              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v3")
-             ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86_64-v2")
-             (_ => "x86_64-v1")))
-         "x86_64-v1"))
+              "popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v3")
+             ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v2")
+             (_ => "x86-64")))
+         "x86-64"))
     (architecture
      ;; TODO: More architectures
      architecture)))
@@ -289,19 +306,22 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
   "Return a matching psABI micro-architecture, allowing optimizations for x86_64
 CPUs for compilers which don't allow for more focused optimizing."
   ;; Matching gcc-architectures isn't an easy task, with the rule-of-thumb being
-  ;; 'Haswell and higher' qualify for x86_64-v3.
+  ;; AVX512F+ for x86-64-v4, AVX+ for x86-64-v3.
   ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
   (match gcc-architecture
-    ((or "grandridge" "graniterapids" "sierraforest" "tigerlake"
-         "sapphirerapids" "cooperlake" "icelake-server" "icelake-client"
-         "cannonlake" "knm" "knl" "skylake-avx512" "alderlake" "skylake"
-         "broadwell" "haswell"
-         "znver4" "znver3" "znver2" "znver1" "bdver4")
-     "x86_64-v3")
+    ((or "graniterapids-d" "graniterapids" "tigerlake" "sapphirerapids"
+         "cooperlake" "icelake-server" "icelake-client" "cannonlake" "knm"
+         "knl" "skylake-avx512"
+         "znver4")
+     "x86-64-v4")
+    ((or "pantherlake" "clearwaterforest" "arrowlake-s" "sierraforest"
+         "alderlake" "skylake" "broadwell" "haswell"
+         "znver3" "znver2" "znver1" "bdver4")
+     "x86-64-v3")
     ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
          "nehalem" "bonnell" "core2"
          "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
          "amdfam10"
-         "lujiazui" "x86-64")
-     "x86_64-v1")
+         "lujiazui" "yongfeng" "x86-64")
+     "x86-64")
     (_ gcc-architecture)))

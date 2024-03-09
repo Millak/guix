@@ -4,7 +4,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
@@ -1787,7 +1787,7 @@ the KDE Plasma 5 desktop.")
                   qtdeclarative-5
                   qtquickcontrols-5
                   qtquickcontrols2-5
-                  qtwayland
+                  qtwayland-5
                   qtx11extras
                   wayland
                   wayland-protocols

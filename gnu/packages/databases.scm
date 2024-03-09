@@ -45,7 +45,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Pjotr Prins <pjotr.guix@thebird.nl>
@@ -62,6 +62,7 @@
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.ne
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -110,6 +111,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -143,6 +145,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -4984,6 +4987,77 @@ implementation, along with tools for interoperability with pandas, NumPy, and
 other traditional Python scientific computing packages.")
     (license license:asl2.0)))
 
+(define-public python-fastparquet
+  (package
+    (name "python-fastparquet")
+    (version "2024.2.0")
+    (source
+     (origin
+       ;; Fastparquet uses setuptools-scm to find the current version. This
+       ;; only works when we use the PyPI tarball, which does not contain
+       ;; tests. Instead, we use the git-fetch method and set the version via
+       ;; envar.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dask/fastparquet")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f32dj1xvd11l0siznqd33dpjlhg9siylcjcfkcdlqfcy45jfj3v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; Remove dependencies on git.
+                (("^.*\"git\", \"status\".*$") "")
+                ;; Guix is only compatible with a single version of numpy
+                ;; at a time. We can safely remove this dependency.
+                (("'oldest-supported-numpy'") ""))))
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set
+            ;; to '0.0.0'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'build-cython-extensions
+            ;; Cython extensions need to be built for the check phase.
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-cramjam
+           python-fsspec
+           python-lzo
+           python-numpy
+           python-packaging
+           python-pandas))
+    (native-inputs
+     (list python-cython
+           python-pytest-runner
+           python-pytest-xdist
+           python-setuptools-scm))
+    (home-page "https://github.com/dask/fastparquet")
+    (synopsis "Python implementation of the Parquet file format")
+    (description
+     "@code{fastparquet} is a Python implementation of the Parquet file
+format.  @code{fastparquet} is used implicitly by @code{dask}, @code{pandas}
+and @code{intake-parquet}.  It supports the following compression algorithms:
+
+@itemize
+@item Gzip
+@item Snappy
+@item Brotli
+@item LZ4
+@item Zstd
+@item LZO (optionally)
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public python-crate
   (package
     (name "python-crate")
@@ -5302,6 +5376,8 @@ compatible with SQLite using a graphical user interface.")
                   go-github-com-mattn-go-runewidth
                   go-golang-org-x-xerrors
                   go-gopkg-in-yaml-v2))
+    (native-inputs (list go-github-com-google-go-cmp-cmp
+                         go-github-com-k0kubun-pp))
     (synopsis "SQL language server written in Go")
     (description
      "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
