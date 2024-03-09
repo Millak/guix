@@ -644,11 +644,9 @@ code for interfacing Caml with C from an IDL description of the C functions.")
               (sha256
                (base32
                 "1jydzw2n84cfiz9y6lk4gih4wbr8jybanmiryfs01svd07g4vpjq"))))
-    (build-system ocaml-build-system)
+    (build-system dune-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:package "extlib"))
     (native-inputs
       (list ocaml-cppo))
     (home-page "https://github.com/ygrek/ocaml-extlib")
