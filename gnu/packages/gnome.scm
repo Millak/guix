@@ -3800,35 +3800,35 @@ functionality was designed to be as reusable and portable as possible.")
                 "0l3mhpyym9m5iz09fz0rgiqxl2ym6kpkwpsp1xrr4aa80nlh1jam"))))
     (build-system gnu-build-system)
     (arguments
-     `(;; The "timeout-server" test hangs when run in parallel.
-       #:parallel-tests? #f
-       #:configure-flags
-       '(;; We don't need static libraries, plus they don't build reproducibly
-         ;; (non-deterministic ordering of .o files in the archive.)
-         "--disable-static"
+     (list
+      ;; The "timeout-server" test hangs when run in parallel.
+      #:parallel-tests? #f
+      #:configure-flags
+      #~'(;; We don't need static libraries, plus they don't build reproducibly
+          ;; (non-deterministic ordering of .o files in the archive.)
+          "--disable-static"
 
-         ;; The programmer kindly gives us a hook to turn off deprecation
-         ;; warnings ...
-         "DISABLE_DEPRECATED_CFLAGS=-DGLIB_DISABLE_DEPRECATION_WARNINGS")
-       ;; ... which they then completly ignore !!
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-parallel-build
-           ;; Parallel build fails because of a failed dependency,
-           ;; https://bugzilla.gnome.org/show_bug.cgi?id=732274
-           (lambda _
-             (substitute* "src/services/name/Makefile.am"
-               (("orbit_name_server_2_DEPENDENCIES = \\$(DEPS) CosNaming.h")
-                "orbit_name_server_2_DEPENDENCIES = \
+          ;; The programmer kindly gives us a hook to turn off deprecation
+          ;; warnings ...
+          "DISABLE_DEPRECATED_CFLAGS=-DGLIB_DISABLE_DEPRECATION_WARNINGS")
+      ;; ... which they then completly ignore !!
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-parallel-build
+            ;; Parallel build fails because of a failed dependency,
+            ;; https://bugzilla.gnome.org/show_bug.cgi?id=732274
+            (lambda _
+              (substitute* "src/services/name/Makefile.am"
+                (("orbit_name_server_2_DEPENDENCIES = \\$(DEPS) CosNaming.h")
+                 "orbit_name_server_2_DEPENDENCIES = \
 $(DEPS) CosNaming.h libname-server-2.a"))))
-         (add-before 'configure 'ignore-deprecations
-           (lambda _
-             (substitute* "linc2/src/Makefile.in"
-               (("-DG_DISABLE_DEPRECATED")
-                "-DGLIB_DISABLE_DEPRECATION_WARNINGS")))))))
+          (add-before 'configure 'ignore-deprecations
+            (lambda _
+              (substitute* "linc2/src/Makefile.in"
+                (("-DG_DISABLE_DEPRECATED")
+                 "-DGLIB_DISABLE_DEPRECATION_WARNINGS")))))))
     (inputs (list glib libidl))
-    (native-inputs
-     (list pkg-config))
+    (native-inputs (list pkg-config))
     (home-page "https://projects.gnome.org/orbit2/")
     (synopsis "CORBA 2.4-compliant Object Request Broker")
     (description  "ORBit2 is a CORBA 2.4-compliant Object Request Broker (orb)
