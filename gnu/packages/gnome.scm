@@ -3797,7 +3797,9 @@ functionality was designed to be as reusable and portable as possible.")
                                     upstream-name "-" version ".tar.bz2")))
               (sha256
                (base32
-                "0l3mhpyym9m5iz09fz0rgiqxl2ym6kpkwpsp1xrr4aa80nlh1jam"))))
+                "0l3mhpyym9m5iz09fz0rgiqxl2ym6kpkwpsp1xrr4aa80nlh1jam"))
+              (patches
+               (search-patches "orbit2-fix-array-allocation-32bit.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
