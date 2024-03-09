@@ -34,7 +34,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -3258,7 +3258,10 @@ error streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g0311ly32f6hfn4q5fvkbjbl2bhv1l9fx6s0kglxfsrwq51926y"))))
+                "1g0311ly32f6hfn4q5fvkbjbl2bhv1l9fx6s0kglxfsrwq51926y"))
+              (patches
+               (search-patches
+                "ruby-x25519-automatic-fallback-non-x86_64.patch"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "spec"
