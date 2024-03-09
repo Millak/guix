@@ -1750,7 +1750,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "2.0.0.0")
+    (version "2.0.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1759,7 +1759,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s4iyjfhjx21xa3z7433m4skfr115565k0ckza87ha2d4nl8kz5h"))))
+        (base32 "1kkmg0gp86qz3ya8y5a00yic1mals138b9fv2cjlm7683sfjjljx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
