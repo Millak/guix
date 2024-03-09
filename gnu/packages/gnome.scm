@@ -857,7 +857,7 @@ tomorrow, the rest of the week and for special occasions.")
     (inputs
      (list babl
            cairo
-           gegl
+           gegl-0.4.44
            geocode-glib
            gexiv2
            gfbgraph
