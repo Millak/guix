@@ -4463,14 +4463,14 @@ install an implementation package such as asdf-astropy.")
 (define python-asdf-unit-schemas
   (package
     (name "python-asdf-unit-schemas")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_unit_schemas" version))
        (sha256
         (base32
-         "16grpx3a9h0v1wirp0zqrfsxm867v5c0xyr98pylzziy45kqvds2"))))
+         "0h24gvm1wip4gh3fw5ki8kwnvcy8gw6b6pajw3i1zvriamdw95fr"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Dependency cycle with python-asdf
