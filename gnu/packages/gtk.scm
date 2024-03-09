@@ -2142,30 +2142,33 @@ and routines to assist in editing internationalized text.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0k93pi0lkf941vanvh1habm6n5wl1n63726j5kqxh34wdlv4mv4s"))))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("check" ,check)
-                     ("gettext" ,gettext-minimal)
-                     ("glib:bin" ,glib "bin")
-                     ("xorg-server" ,xorg-server-for-tests)))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            ;; Tests require a running X server.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((xorg-server (assoc-ref inputs "xorg-server"))
+                    (display ":1"))
+                (setenv "DISPLAY" display)
+
+                ;; On busy machines, tests may take longer than
+                ;; the default of four seconds.
+                (setenv "CK_DEFAULT_TIMEOUT" "20")
+
+                ;; Don't fail due to missing '/etc/machine-id'.
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (zero? (system (string-append xorg-server "/bin/Xvfb "
+                                              display " &")))))))))
+    (native-inputs
+     (list pkg-config
+           check
+           gettext-minimal
+           `(,glib "bin")
+           xorg-server-for-tests))
     ;; Listed in 'Requires.private' of 'girara.pc'.
     (propagated-inputs (list gtk+))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'start-xserver
-                    ;; Tests require a running X server.
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                            (display ":1"))
-                        (setenv "DISPLAY" display)
-
-                        ;; On busy machines, tests may take longer than
-                        ;; the default of four seconds.
-                        (setenv "CK_DEFAULT_TIMEOUT" "20")
-
-                        ;; Don't fail due to missing '/etc/machine-id'.
-                        (setenv "DBUS_FATAL_WARNINGS" "0")
-                        (zero? (system (string-append xorg-server "/bin/Xvfb "
-                                                      display " &")))))))))
     (build-system meson-build-system)
     (home-page "https://pwmt.org/projects/girara/")
     (synopsis "Library for minimalistic gtk+3 user interfaces")
