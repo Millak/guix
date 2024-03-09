@@ -4254,18 +4254,26 @@ between image and reference catalogs. Currently only aligning images with
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "3.0.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "1jsk7b4mx04l0a08j832vnl309dba3gjnha9mbd61dzs9ridrfna"))))
+        (base32 "0fa6y3gmqc0y3nz0h68vq3a84pvx6gc5zp33wg8a4n9b4kipm464"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-n" "auto")))
+      #~(list "-n" "auto" "-p" "no:legacypath")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; ImportError: Error importing plugin " no:legacypath": No module
+          ;; named ' no:legacypath'
+          (add-before 'check 'fix-tests-setup
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*:legacypath.*") "")))))))
     (native-inputs
      (list python-fsspec
            python-packaging
