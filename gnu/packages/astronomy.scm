@@ -4297,25 +4297,24 @@ implementation of the ASDF Standard.")
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
-    (version "1.0.3")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_standard" version))
        (sha256
         (base32
-         "0i7xdjwn5prg2hcnf1zhw57mszc68jjr5sv4rimpzcg7f2dgzn5g"))))
+         "00k1fzc8y8j0ar1chq0nqyfw8bgkkjgrkm32ibn0kz2vn715nlq1"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'remove-blocking-tests
-                          (lambda _
-                            ;; Remove tests require python-asdf where
-                            ;; python-asdf require python-asdf-standard,
-                            ;; break circular dependencies.
-                            (for-each delete-file
-                                      (list "tests/test_manifests.py"
-                                            "tests/test_integration.py")))))))
+     (list
+      #:test-flags
+      ;; Remove tests requiring python-asdf where python-asdf requires
+      ;; python-asdf-standard, break circular dependencies.
+      #~(list "--ignore=tests/test_asdf_schema.py"
+              "--ignore=tests/test_integration.py"
+              "--ignore=tests/test_manifests.py"
+              "--ignore=tests/test_yaml_schema.py")))
     (native-inputs (list python-astropy
                          python-jsonschema
                          python-pypa-build
