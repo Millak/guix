@@ -2130,6 +2130,8 @@ and routines to assist in editing internationalized text.")
     (license license:lgpl2.1+)))
 
 (define-public girara
+  ;; TODO: Move propagated inputs to inputs after core-updates is merged (as
+  ;; of 2024-03)
   (package
     (name "girara")
     (version "0.4.3")
@@ -2168,7 +2170,7 @@ and routines to assist in editing internationalized text.")
            `(,glib "bin")
            xorg-server-for-tests))
     ;; Listed in 'Requires.private' of 'girara.pc'.
-    (propagated-inputs (list gtk+))
+    (propagated-inputs (list gtk+ json-glib))
     (build-system meson-build-system)
     (home-page "https://pwmt.org/projects/girara/")
     (synopsis "Library for minimalistic gtk+3 user interfaces")
