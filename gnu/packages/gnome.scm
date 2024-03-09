@@ -3827,7 +3827,8 @@ $(DEPS) CosNaming.h libname-server-2.a"))))
               (substitute* "linc2/src/Makefile.in"
                 (("-DG_DISABLE_DEPRECATED")
                  "-DGLIB_DISABLE_DEPRECATION_WARNINGS")))))))
-    (inputs (list glib libidl))
+    ;; These are required in the installed pkg-config files.
+    (propagated-inputs (list glib libidl))
     (native-inputs (list pkg-config))
     (home-page "https://projects.gnome.org/orbit2/")
     (synopsis "CORBA 2.4-compliant Object Request Broker")
