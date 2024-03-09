@@ -5704,16 +5704,16 @@ for immediate access from Perl.")
 (define-public perl-inline-c
   (package
     (name "perl-inline-c")
-    (version "0.81")
+    (version "0.82_001")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://cpan/authors/id/T/TI/TINITA/Inline-C-"
+             "mirror://cpan/authors/id/E/ET/ETJ/Inline-C-"
              version ".tar.gz"))
        (sha256
         (base32
-         "1b3sr39813di3j1kwbgn1xq2z726rhjjdw809ydzgmshj26jb1gi"))))
+         "1njzhvid1g08yhqynv26hpw8d0gpb99m7v96zqk0rwxlywy61hc3"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases
