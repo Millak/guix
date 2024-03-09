@@ -11287,41 +11287,44 @@ Features degrade gracefully when viewed from terminal.")
     (license license:gpl3+)))
 
 (define-public emacs-org-pandoc-import
-  (package
-    (name "emacs-org-pandoc-import")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tecosaur/org-pandoc-import/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00z9bpm975mlyqlxbyib3j547br6kvcam04b70qkmq22vh8yf341"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:include
-       (cons* "^filters\\/" "^preprocessors" %default-include)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-exec-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pandoc (assoc-ref inputs "pandoc")))
-               (substitute* "org-pandoc-import.el"
-                 (("\"pandoc\"") (string-append "\"" pandoc "/bin/pandoc\"")))))))))
-    (inputs
-     (list pandoc))
-    (home-page "https://github.com/tecosaur/org-pandoc-import/")
-    (synopsis "Read and edit non-Org file types in Org")
-    (description
-     "This package uses Pandoc to convert selected file types to Org.  It can
+  (let ((commit "db308f1a05be26ce5b287633637ce554599b1377")
+        (revision "0"))
+    (package
+      (name "emacs-org-pandoc-import")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tecosaur/org-pandoc-import/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19z1qaairhpj8kyyqwx8yf53j3f03a9a1z1jfa348qmncnra5jmh"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:include
+         (cons* "^filters\\/" "^preprocessors" %default-include)
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-exec-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((pandoc (assoc-ref inputs "pandoc")))
+                 (substitute* "org-pandoc-import.el"
+                   (("\"pandoc\"")
+                    (string-append "\"" pandoc "/bin/pandoc\"")))))))))
+      (inputs
+       (list pandoc))
+      (home-page "https://github.com/tecosaur/org-pandoc-import/")
+      (synopsis "Read and edit non-Org file types in Org")
+      (description
+       "This package uses Pandoc to convert selected file types to Org.  It can
 convert supported non-Org files to an Org file with Pandoc.
 
 It can also intercept requests for non-Org files it knows it can convert,
 convert the file to a temporary Org file, and open this file instead.  On
 save, it exports back to the original non-Org file.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-pomodoro
   ;; Last release version was from 2016.
