@@ -2132,7 +2132,7 @@ and routines to assist in editing internationalized text.")
 (define-public girara
   (package
     (name "girara")
-    (version "0.3.7")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -2141,7 +2141,7 @@ and routines to assist in editing internationalized text.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k93pi0lkf941vanvh1habm6n5wl1n63726j5kqxh34wdlv4mv4s"))))
+        (base32 "0cbcs3810frgdmal5ia9pf3rk3k5h4xyzw1d2ia3rcg4nms5gcpx"))))
     (arguments
      (list
       #:phases
