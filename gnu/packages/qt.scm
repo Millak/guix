@@ -218,14 +218,14 @@ of C++20 coroutines in connection with certain asynchronous Qt actions.")
 (define-public qt5ct
   (package
     (name "qt5ct")
-    (version "1.5")
+    (version "1.8")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/qt5ct/qt5ct-" version ".tar.bz2"))
        (sha256
-        (base32 "14742vs32m98nbfb5mad0i8ciff5f45gfcb5v03p4hh2dvhhqgfn"))))
+        (base32 "1s88v3x5vxrz981jiqb9cnwak0shz6kgjbkp511i592y85a41dr3"))))
     (build-system qt-build-system)
     (arguments
      (list
