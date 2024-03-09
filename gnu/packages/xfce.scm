@@ -2200,7 +2200,7 @@ local weather in the panel, using forecast data provided by the
 (define-public xfce4-dev-tools
   (package
     (name "xfce4-dev-tools")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -2208,7 +2208,7 @@ local weather in the panel, using forecast data provided by the
                                   "xfce4-dev-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "0dxyfsx70nddkkv0ygkl02wv4p99g62zjkw68sf4bqzhap4lznzf"))))
+                "10bnb8q7sj60ahzfwrb3av4ngr17wk1p6jsnfv0yn8l90kksnb41"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
