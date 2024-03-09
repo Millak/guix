@@ -70,12 +70,12 @@ diff --git a/locale/setlocale.c b/locale/setlocale.c
 index 6a902faa..2d07a644 100644
 --- a/locale/setlocale.c
 +++ b/locale/setlocale.c
-@@ -213,12 +213,71 @@ setdata (int category, struct __locale_data *data)
+@@ -213,12 +213,60 @@ setdata (int category, struct __locale_data *data)
      }
  }
  
 +/* Return in *LOCALE_PATH and *LOCALE_PATH_LEN the locale data search path as
-+   a colon-separated list.  Return ENOMEN on error, zero otherwise.  */
++   an argz list.  Return ENOMEN on error, zero otherwise.  */
 +error_t
 +compute_locale_search_path (char **locale_path, size_t *locale_path_len)
 +{
@@ -87,8 +87,8 @@ index 6a902faa..2d07a644 100644
 +      /* Entries in 'GUIX_LOCPATH' take precedence over 'LOCPATH'.  These
 +	 entries are systematically prefixed with "/X.Y" where "X.Y" is the
 +	 libc version.  */
-+      if (__argz_create_sep (guix_locpath_var, ':',
-+			     locale_path, locale_path_len) != 0
++      if (__argz_add_sep (locale_path, locale_path_len,
++                          guix_locpath_var, ':') != 0
 +	  || __argz_suffix_entries (locale_path, locale_path_len,
 +				    "/" VERSION) != 0)
 +	goto bail_out;
@@ -96,32 +96,21 @@ index 6a902faa..2d07a644 100644
 +
 +  if (locpath_var != NULL && locpath_var[0] != '\0')
 +    {
-+      char *reg_locale_path = NULL;
-+      size_t reg_locale_path_len = 0;
-+
-+      if (__argz_create_sep (locpath_var, ':',
-+			     &reg_locale_path, &reg_locale_path_len) != 0)
-+	goto bail_out;
-+
-+      if (__argz_append (locale_path, locale_path_len,
-+			 reg_locale_path, reg_locale_path_len) != 0)
-+	goto bail_out;
-+
-+      free (reg_locale_path);
-+    }
-+
-+  if (*locale_path != NULL)
-+    {
-+      /* Append the system default locale directory.  */
 +      if (__argz_add_sep (locale_path, locale_path_len,
-+			  _nl_default_locale_path, ':') != 0)
++			   locpath_var, ':') != 0)
 +	goto bail_out;
++
 +    }
++
++  /* Append the system default locale directory.  */
++  if (__argz_add_sep (locale_path, locale_path_len,
++   		       _nl_default_locale_path, ':') != 0)
++    goto bail_out;
 +
 +  /* Last, unconditionally append our own locale directory, which should
 +     contain data for C.UTF-8.  */
 +  if (__argz_add_sep (locale_path, locale_path_len,
-+		      LOCALEDIR "/" VERSION, ':') != 0)
++		       LOCALEDIR "/" VERSION, ':') != 0)
 +    goto bail_out;
 +
 +  return 0;
@@ -181,7 +170,7 @@ new file mode 100644
 index 00000000..505b0f24
 --- /dev/null
 +++ b/string/argz-suffix.c
-@@ -0,0 +1,56 @@
+@@ -0,0 +1,58 @@
 +/* Copyright (C) 2015 Free Software Foundation, Inc.
 +   This file is part of the GNU C Library.
 +   Contributed by Ludovic Courtès <ludo@gnu.org>.
@@ -213,6 +202,8 @@ index 00000000..505b0f24
 +  size_t suffix_len = strlen (suffix);
 +  size_t count = __argz_count (*argz, *argz_len);
 +  size_t new_argz_len = *argz_len + count * suffix_len;
++  if (new_argz_len == 0)
++    return 0;
 +  char *new_argz = malloc (new_argz_len);
 +
 +  if (new_argz)
