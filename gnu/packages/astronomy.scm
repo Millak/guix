@@ -1739,34 +1739,37 @@ celestial-to-terrestrial coordinate transformations.")
 (define-public python-astroquery
   (package
     (name "python-astroquery")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroquery" version))
        (sha256
-        (base32 "1vhkzsqlgn3ji5by2rdf2gwklhbyzvpzb1iglalhqjkkrdaaaz1h"))))
+        (base32 "1jbyfhqk74wsdjxzqi0hcrgc7ha4q8cyjx96nv6w9bjg1b5vlzq4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--pyargs" "astroquery"
-              "-m" "not remote_data")
+              "-m" "not remote_data"
+              ;; Some tests failed with parallel run, see
+              ;; <https://github.com/astropy/astroquery/issues/2968>.
+              ;; "-n" "auto"
+              "-k" (string-append
+                    ;; Failed: DID NOT RAISE <class
+                    ;; 'astropy.utils.exceptions.AstropyDeprecationWarning'>
+                    "not test_raises_deprecation_warning"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" (getcwd)) ; some tests need a writable home
-              ;; To solve pytest/conftest issue. Pytest tries to load all
-              ;; files with word 'test' in them.
-              ;;
-              ;; ImportError while loading conftest ...
-              ;; _pytest.pathlib.ImportPathMismatchError: ...
-              ;;
-              (call-with-output-file "pytest.ini"
-                (lambda (port)
-                  (format port "[pytest]
-python_files = test_*.py"))))))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                ;; Some tests require write access to $HOME.
+                (setenv "HOME" "/tmp")
+                ;; Step out of the source directory to avoid interference;
+                ;; we want to run the installed code with extensions etc.
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v" test-flags))))))))
     (propagated-inputs
      (list python-astropy
            python-beautifulsoup4
