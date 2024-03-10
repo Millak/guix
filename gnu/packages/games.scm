@@ -2130,14 +2130,14 @@ It is similar to standard chess but this variant is far more complicated.")
 (define-public ltris
   (package
     (name "ltris")
-    (version "1.2.6")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/ltris/"
                            "ltris-" version ".tar.gz"))
        (sha256
-        (base32 "1xj65kn815x2hq1ynzjyc90dj178xwa2xvx7jx99qf60ahaf4g62"))))
+        (base32 "144zvnnky79z5ychyyb2wsp7h2pcbl50fbzd9w9dvxkw6adz4yip"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
