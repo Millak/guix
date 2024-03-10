@@ -84,14 +84,14 @@
 (define-public libextractor
   (package
    (name "libextractor")
-   (version "1.11")
+   (version "1.13")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/libextractor/libextractor-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "13xxv11mif3m0mpk7i43mljhhaqrj52kznm1qi3qb8s6hymk7xhn"))))
+              "0mgprmwdhdwq9xhfxfhcncd304425nvcc4zi8ci5f0nja4n333xv"))))
    (build-system gnu-build-system)
    ;; WARNING: Checks require /dev/shm to be in the build chroot, especially
    ;; not to be a symbolic link to /run/shm.
@@ -104,13 +104,12 @@
     `(("exiv2" ,exiv2)
       ("bzip2" ,bzip2)
       ("flac" ,flac)
-      ("ffmpeg" ,ffmpeg-4)
       ("file" ,file)                           ;libmagic, for the MIME plug-in
       ("glib" ,glib)
       ("giflib" ,giflib)
       ("gstreamer" ,gstreamer)
       ("gst-plugins-base" ,gst-plugins-base)
-      ("gtk+" ,gtk+)
+      ("gdk-pixbuf" ,gdk-pixbuf)
       ("libarchive" ,libarchive)
       ("libgsf" ,libgsf)
       ("libjpeg" ,libjpeg-turbo)
@@ -130,17 +129,8 @@
     `(#:configure-flags
       (list (string-append "--with-ltdl="
                            (assoc-ref %build-inputs "libltdl")))
-      #:parallel-tests? #f
       #:phases
       (modify-phases %standard-phases
-        (add-after 'configure 'fix-exiv2-tests
-          ;; exiv2>=0.27.3 rounds geolocation
-          ;; https://github.com/Exiv2/exiv2/pull/1107/commits/db1be4ae8e1077949fcb6a960e93069d6a41b395#diff-f3f55183ccbe956c720c86e61f708d9f
-          (lambda _
-            (substitute* "src/plugins/test_exiv2.c"
-              (("17.585\\\\\" ") "18\\\"")
-              (("21.713\\\\\" ") "22\\\""))
-            #t))
         (add-after 'install 'move-static-libraries
           (lambda* (#:key outputs #:allow-other-keys)
             ;; Move static libraries to the "static" output.
