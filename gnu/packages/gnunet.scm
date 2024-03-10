@@ -435,20 +435,17 @@ The following services are supported:
     (license (list license:agpl3+ license:gpl3+ license:fdl1.3+ license:lgpl3+))
     (home-page "https://git.gnunet.org/gnunet-scheme.git")))
 
-;; FIXME: "gnunet-setup" segfaults under certain conditions and "gnunet-gtk"
-;; does not seem to be fully functional.  This has been reported upstream:
-;; http://lists.gnu.org/archive/html/gnunet-developers/2016-02/msg00004.html
 (define-public gnunet-gtk
   (package (inherit gnunet)
     (name "gnunet-gtk")
-    (version "0.20.0")
+    (version "0.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gnunet/gnunet-gtk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0bandj2f24v4wfq1v5j73zn5jp25dn8r7y0wd7znlkmbh86fb4g9"))))
+                "1b7xfypa0s7zlijgvya8p3rvljnn65w5cjkaw6x83v9ra8l6s0dx"))))
     (arguments
      (list #:configure-flags
            #~(list "--with-libunique"
