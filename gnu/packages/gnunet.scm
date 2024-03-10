@@ -258,7 +258,7 @@ supports HTTP, HTTPS and GnuTLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.20.0")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
@@ -266,7 +266,7 @@ supports HTTP, HTTPS and GnuTLS.")
                            ".tar.gz"))
        (sha256
         (base32
-         "064mmhksznbsymanikwqkgmdhk2f0zjll2aq2cmxa14wm5w9w0jn"))))
+         "0p3q9590bm0d6q6p17jcbq2yiciqmvk5ys6pwdrp4257mhz8prlk"))))
     (build-system gnu-build-system)
     (inputs
      (list bluez
@@ -306,15 +306,17 @@ supports HTTP, HTTPS and GnuTLS.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-problematic-tests
             (lambda _
-              (substitute* "src/cadet/Makefile.in"
-                ;; The speed_reliable tests appear to be unreliable (see:
-                ;; https://bugs.gnunet.org/view.php?id=7787).
-                (("test_cadet_[0-9]+_speed_reliable\\$\\(EXEEXT)")
+              ;; The 'test_communicator_bidirect-tcp' fails
+              ;; non-deterministically (see:
+              ;; https://bugs.gnunet.org/view.php?id=8689).
+              (substitute* "src/service/transport/Makefile.in"
+                (("test_communicator_bidirect-tcp\\$\\(EXEEXT) ")
                  ""))
-              (substitute* "src/core/Makefile.in"
-                ;; The 'test_core_api' test fails non-deterministically (see:
-                ;; https://bugs.gnunet.org/view.php?id=7784).
-                (("test_core_api\\$\\(EXEEXT) ") ""))))
+              ;; The 'test_fs_search_with_and' fails non-deterministically
+              ;; (see: https://bugs.gnunet.org/view.php?id=8692).
+              (substitute* "src/service/fs/Makefile.in"
+                (("test_fs_search_with_and\\$\\(EXEEXT) ")
+                 ""))))
           (add-before 'check 'set-env-var-for-tests
             (lambda _
               (setenv "LANG" "en_US.UTF-8")))
