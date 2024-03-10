@@ -4676,7 +4676,7 @@ on the screen and keyboard to display letters.")
 (define-public manaplus
   (package
     (name "manaplus")
-    (version "1.9.3.23")
+    (version "2.1.3.17")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4684,18 +4684,15 @@ on the screen and keyboard to display letters.")
                     version "/manaplus-" version ".tar.xz"))
               (sha256
                (base32
-                "1ky182p4svwdqm6cf7jbns85hidkhkhq4s17cs2p381f0klapfjz"))))
+                "0ggswsa3xq7lss3j4k7fyzn56sw7hlrwk744i3d9w0n4932nmlg8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list (string-append "CPPFLAGS=-I"
-                            (assoc-ref %build-inputs "sdl-union")
-                            "/include/SDL"))))
+     (list #:configure-flags #~'("--with-sdl2")))
     (native-inputs
      (list pkg-config))
     (inputs
      (list glu curl libxml2 mesa
-           (sdl-union)))
+           sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf))
     (home-page "https://manaplus.org")
     (synopsis "Client for 'The Mana World' and similar games")
     (description
