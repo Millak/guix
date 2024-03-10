@@ -69,7 +69,7 @@
      (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'find-blosc
-                 (lambda* (#:key inputs #:allow-other-keys)
+                 (lambda _
                    (setenv "USE_SYSTEM_BLOSC" "1")
                    (setenv "Blosc_ROOT" #$(this-package-input "c-blosc"))))
                (replace 'check
