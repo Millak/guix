@@ -663,7 +663,12 @@ data types.")
        #:make-flags (list (string-append (format #f "TESTOPTS=-j~d"
                                                  (parallel-job-count))
                            ;; those tests fail on low-memory systems
-                           " --exclude test_mmap test_socket test_threading test_asyncio"
+                           " --exclude"
+                           " test_mmap"
+                           " test_socket"
+                           " test_threading"
+                           " test_asyncio"
+                           " test_shutdown"
                            ,@(if (system-hurd?)
                                  '(" test_posix" ;multiple errors
                                    " test_time"
