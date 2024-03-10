@@ -2,6 +2,7 @@
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,23 +50,30 @@
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags
-      (list
-       ;; Argon2 is always enabled, this just selects the (faster) full version.
-       "--enable-libargon2"
-       ;; The default is OpenSSL which provides better PBKDF performance.
-       "--with-crypto_backend=gcrypt"
-       ;; GRUB 2.06 supports LUKS2, but does it reliably support all set-ups…?
-       "--with-default-luks-format=LUKS1"
-       ;; External tokens would need an env variable to work on Guix, and we
-       ;; don't have users for it yet.
-       "--disable-external-tokens"
-       "--disable-ssh-token"
-       ;; libgcrypt is not found otherwise when cross-compiling.
-       ;; <https://issues.guix.gnu.org/63864>
-       (string-append "--with-libgcrypt-prefix="
-                      (assoc-ref %build-inputs "libgcrypt")))))
+      (append
+        (if (assoc-ref %build-inputs "ruby-asciidoctor")
+            '()
+            (list "--disable-asciidoc"))
+        (list
+          ;; Argon2 is always enabled, this just selects the (faster) full version.
+          "--enable-libargon2"
+          ;; The default is OpenSSL which provides better PBKDF performance.
+          "--with-crypto_backend=gcrypt"
+          ;; GRUB 2.06 supports LUKS2, but does it reliably support all set-ups…?
+          "--with-default-luks-format=LUKS1"
+          ;; External tokens would need an env variable to work on Guix, and we
+          ;; don't have users for it yet.
+          "--disable-external-tokens"
+          "--disable-ssh-token"
+          ;; libgcrypt is not found otherwise when cross-compiling.
+          ;; <https://issues.guix.gnu.org/63864>
+          (string-append "--with-libgcrypt-prefix="
+                         (assoc-ref %build-inputs "libgcrypt"))))))
    (native-inputs
-    (list pkg-config ruby-asciidoctor))
+    (append (list pkg-config)
+            (if (supported-package? ruby-asciidoctor)
+                (list ruby-asciidoctor)
+                '())))
    (inputs
     (list argon2
           json-c
