@@ -43,6 +43,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -67,56 +68,8 @@
   #:use-module (gnu packages xorg)
   #:export (sdl-union))
 
-(define-public sdl
-  (package
-    (name "sdl")
-    (version "1.2.15")
-    (source (origin
-             (method url-fetch)
-             (uri
-              (string-append "https://libsdl.org/release/SDL-"
-                             version ".tar.gz"))
-             (sha256
-              (base32
-               "005d993xcac8236fpvd1iawkz4wqjybkpn8dbwaliqz5jfkidlyn"))
-             (patches (search-patches "sdl-libx11-1.6.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(;; Explicitly link against shared libraries instead of dlopening them.
-       ;; For X11, ALSA, and PulseAudio.
-       ;; OpenGL library is still dlopened at runtime.
-       #:configure-flags '("--disable-alsa-shared"
-                           "--disable-pulseaudio-shared"
-                           "--disable-x11-shared"
-                           ;; Explicitly link with mesa.
-                           ;; This add mesa to libsdl's RUNPATH, to make dlopen
-                           ;; finding the libGL from mesa at runtime.
-                           "LDFLAGS=-lGL")
-
-       #:make-flags '("V=1")            ;build verbosely
-
-       #:tests? #f)) ; no check target
-    (propagated-inputs
-     ;; SDL headers include X11 headers.
-     (list libx11
-           libcap ; 'libSDL.la' contain `-lcap'.
-           ;; TODO: Since building Mesa with Meson it is now necessary that Mesa is
-           ;; a propogated input. We still need to figure out why, possibly due to a
-           ;; change in pkg-config.
-           mesa))
-    (native-inputs (list pkg-config))
-    (inputs (list libxrandr glu alsa-lib pulseaudio))
-    (outputs '("out" "debug"))
-    (synopsis "Cross platform game development library")
-    (description "Simple DirectMedia Layer is a cross-platform development
-library designed to provide low level access to audio, keyboard, mouse,
-joystick, and graphics hardware.")
-    (home-page "https://libsdl.org/")
-    (license license:lgpl2.1)))
-
 (define-public sdl2
   (package
-    (inherit sdl)
     (name "sdl2")
     (version "2.30.1")
     (source (origin
@@ -127,38 +80,120 @@ joystick, and graphics hardware.")
               (sha256
                (base32
                 "0fj7gxc7rlzzrafnx9nmf7ws3paxy583fmx7bcbavi6gr3xmy881"))))
+    (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments sdl)
-       ((#:configure-flags flags)
-        #~(append '("--disable-wayland-shared" "--enable-video-kmsdrm"
-                    "--disable-kmsdrm-shared")
-                  #$flags))
-       ((#:make-flags flags ''())
-        #~(cons*
-           ;; SDL dlopens libudev and libvulkan, so make sure they are in
-           ;; rpath. This overrides the LDFLAG set in sdl’s configure-flags,
-           ;; which isn’t necessary as sdl2 includes Mesa by default.
-           (string-append "LDFLAGS=-Wl,-rpath,"
-                          #$(this-package-input "eudev") "/lib"
-                          ",-rpath,"
-                          #$(this-package-input "vulkan-loader") "/lib")
-           #$flags))))
+     (list
+      #:tests? #f                  ;no check target
+      ;; Explicitly link against shared libraries instead of dlopening them.
+      ;; For X11, ALSA, and PulseAudio.
+      ;; OpenGL library is still dlopened at runtime.
+      #:configure-flags
+      #~(append
+         '("--disable-wayland-shared"
+           "--enable-video-kmsdrm"
+           "--disable-kmsdrm-shared")
+         '("--disable-alsa-shared"
+           "--disable-pulseaudio-shared"
+           "--disable-x11-shared"
+           ;; Explicitly link with mesa.
+           ;; This add mesa to libsdl's RUNPATH, to make dlopen
+           ;; finding the libGL from mesa at runtime.
+           "LDFLAGS=-lGL"))
+      #:make-flags
+      #~(cons*
+         ;; SDL dlopens libudev and libvulkan, so make sure they are in
+         ;; rpath. This overrides the LDFLAG set in sdl’s configure-flags,
+         ;; which isn’t necessary as sdl2 includes Mesa by default.
+         (string-append "LDFLAGS=-Wl,-rpath,"
+                        #$(this-package-input "eudev") "/lib"
+                        ",-rpath,"
+                        #$(this-package-input "vulkan-loader") "/lib")
+         '("V=1"))))                  ;build verbosely
+    (propagated-inputs
+     ;; SDL headers include X11 headers.
+     (list libx11
+           libcap ; 'libSDL.la' contain `-lcap'.
+           ;; TODO: Since building Mesa with Meson it is now necessary that Mesa is
+           ;; a propogated input. We still need to figure out why, possibly due to a
+           ;; change in pkg-config.
+           mesa))
+    (native-inputs (list pkg-config))
     (inputs
      ;; SDL2 needs to be built with ibus support otherwise some systems
      ;; experience a bug where input events are doubled.
      ;;
      ;; For more information, see: https://dev.solus-project.com/T1721
-     (modify-inputs (package-inputs sdl)
-       (append dbus
-               eudev                    ;for discovering input devices
-               glib
-               ibus-minimal
-               libxkbcommon
-               libxcursor               ;enables X11 cursor support
-               vulkan-loader
-               wayland
-               wayland-protocols)))
+     (list
+      libxrandr
+      glu
+      alsa-lib
+      pulseaudio
+      dbus
+      eudev                             ;for discovering input devices
+      glib
+      ibus-minimal
+      libxkbcommon
+      libxcursor                        ;enables X11 cursor support
+      vulkan-loader
+      wayland
+      wayland-protocols))
+    (outputs '("out" "debug"))
+    (synopsis "Cross platform game development library")
+    (description
+     "Simple DirectMedia Layer is a cross-platform development library designed to
+provide low level access to audio, keyboard, mouse, joystick, and graphics
+hardware.")
+    (home-page "https://libsdl.org/")
     (license license:bsd-3)))
+
+(define-public sdl12-compat
+  (package
+    (name "sdl12-compat")
+    (version "1.2.68")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libsdl-org/sdl12-compat")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qsjlzi1wqszi6k4pc3k9xdvzid5cx6ql8wbjw6qdapzpvf6arvz"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ;no check target
+           #:configure-flags
+           ;; This add SDL2 to sdl12-compat's RUNPATH, to make dlopen finding the
+           ;; libSDL2 at runtime.
+           #~'("-DCMAKE_SHARED_LINKER_FLAGS=-lSDL2")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-sdl-config
+                 (lambda _
+                   ;; Keep the old behaviour to honour "--prefix" option for
+                   ;; "--cflags" and "--libs", required by 'perl-alien-sdl'.
+                   (substitute* "sdl-config.in"
+                     (("echo -I[$][{]includedir[}]") "echo -I${prefix}/include")
+                     (("echo -L[$][{]libdir[}]") "echo -L${prefix}/lib"))))
+               (add-after 'install 'install-sdl.pc
+                 (lambda _
+                   (let ((pcdir (string-append #$output
+                                               "/lib/pkgconfig")))
+                     (symlink (string-append pcdir "/sdl12_compat.pc")
+                              (string-append pcdir "/sdl.pc"))))))))
+    (inputs (list sdl2))
+    (propagated-inputs (list glu))      ;required by SDL_opengl.h
+    (synopsis "Cross platform game development library")
+    (description "Simple DirectMedia Layer is a cross-platform development library
+designed to provide low level access to audio, keyboard, mouse, joystick, and
+graphics hardware.  This package is a compatibility layer; it provides a binary and
+source compatible API for programs written against SDL 1.2, but it uses SDL 2.0
+behind the scenes.")
+    (home-page "https://libsdl.org/")
+    ;; dr_mp3 code are under public domain.
+    (license (list license:zlib license:public-domain))))
+
+(define-public sdl sdl12-compat)
 
 (define-public sdl2-2.0
   (package
@@ -451,6 +486,8 @@ directory.")
   "Replace the \"sdl\" propagated input of PACKAGE with SDL2."
   (map (match-lambda
          (("sdl" _)
+          `("sdl2" ,sdl2))
+         (("sdl12-compat" _)
           `("sdl2" ,sdl2))
          (other other))
        (package-propagated-inputs package)))
