@@ -27643,7 +27643,8 @@ decisions with any given backend.")
      (list
       ;; Avoid coverage
       #:test-flags
-      #~(list "-m" "not gpu and not slow and not network"
+      #~(list "-n" "auto"
+              "-m" "not gpu and not slow and not network"
               "-k" (string-append
                     ;; This one cannot be interrupted.
                     "not test_interrupt"
@@ -27696,7 +27697,10 @@ parentdir_prefix = dask-
            python-pyyaml))
     (native-inputs
      (list python-importlib-metadata
-           python-pytest python-pytest-runner python-pytest-rerunfailures
+           python-pytest
+           python-pytest-rerunfailures
+           python-pytest-runner
+           python-pytest-xdist
            python-versioneer))
     (home-page "https://github.com/dask/dask/")
     (synopsis "Parallel computing with task scheduling")
