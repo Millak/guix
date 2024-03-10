@@ -1736,6 +1736,86 @@ Dates (astropy.time)} to provide UT1 values, and the polar motions are used in
 celestial-to-terrestrial coordinate transformations.")
     (license license:bsd-3)))
 
+(define-public python-astroplan
+  (package
+    (name "python-astroplan")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astroplan" version))
+       (sha256
+        (base32 "0jrgii0f11ckxvywinr9kcsljxnpnkh7hv5638wxwcb1iyjmx36r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "astroplan/tests"
+              "-k" (string-append
+                    ;; Test requiring newer python-pytz
+                    "not test_timezone"
+                    ;; Disable tests requiring remote data.
+                    " and not test_FixedTarget_from_name"
+                    " and not test_altitude_constraint"
+                    " and not test_at_night_basic"
+                    " and not test_caches_shapes"
+                    " and not test_compare_airmass_constraint_and_observer"
+                    " and not test_compare_altitude_constraint_and_observer"
+                    " and not test_docs_example"
+                    " and not test_eclipses"
+                    " and not test_eq_observer"
+                    " and not test_event_observable"
+                    " and not test_galactic_plane_separation"
+                    " and not test_get_skycoord"
+                    " and not test_hash_observer"
+                    " and not test_is_night"
+                    " and not test_local_time_constraint_hawaii_tz"
+                    " and not test_local_time_constraint_utc"
+                    " and not test_moon_illumination"
+                    " and not test_moon_separation"
+                    " and not test_observability_table"
+                    " and not test_observer_lon_lat_el"
+                    " and not test_regression_airmass_141"
+                    " and not test_regression_shapes"
+                    " and not test_sun_separation"
+                    " and not test_tonight")
+              "--ignore=astroplan/tests/test_scheduling.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-matplotlib
+           python-numpy
+           python-pytz
+           python-six))
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-mpl
+           python-setuptools-scm))
+    (home-page "https://github.com/astropy/astroplan")
+    (synopsis "Observation planning package for astronomers")
+    (description
+     "This package provides a flexible toolbox for observation planning and
+scheduling.  When complete, the goal is to be easy for Python beginners and new
+observers to to pick up, but powerful enough for observatories preparing nightly
+and long-term schedules.
+
+Features:
+@itemize
+@item calculate rise/set/meridian transit times, alt/az positions for targets at
+observatories anywhere on Earth
+@item built-in plotting convenience functions for standard observation planning
+plots (airmass, parallactic angle, sky maps)
+@item determining observability of sets of targets given an arbitrary set of
+constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
+@end itemize")
+      (license license:bsd-3)))
+
 (define-public python-astroquery
   (package
     (name "python-astroquery")
