@@ -425,6 +425,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/lisp-check.scm			\
   %D%/packages/lisp-xyz.scm			\
   %D%/packages/llvm.scm				\
+  %D%/packages/llvm-meta.scm			\
   %D%/packages/lout.scm				\
   %D%/packages/logging.scm			\
   %D%/packages/logo.scm				\

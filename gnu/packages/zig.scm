@@ -28,7 +28,8 @@
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages llvm))
+  #:use-module (gnu packages llvm)
+  #:use-module (gnu packages llvm-meta))
 
 (define-public zig-0.9
   (package
@@ -130,7 +131,7 @@ toolchain.  Among other features it provides
     (supported-systems %64bit-supported-systems)
     ;; Stage3 can take a lot of time and isn't verbose.
     (properties `((max-silent-time . 9600)
-                  ,@(clang-properties "13")))
+                  ,@(clang-compiler-cpu-architectures "13")))
     (license license:expat)))
 
 (define-public zig-0.10
@@ -195,6 +196,6 @@ toolchain.  Among other features it provides
      (modify-inputs (package-native-inputs zig-0.9)
        (replace "llvm" llvm-15)))
     (properties `((max-silent-time . 9600)
-                  ,@(clang-properties "15")))))
+                  ,@(clang-compiler-cpu-architectures "15")))))
 
 (define-public zig zig-0.10)
