@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2018-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
@@ -38,6 +38,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages check)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
@@ -48,6 +49,50 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sphinx))
+
+(define-public python-blosc
+  (package
+    (name "python-blosc")
+    (version "1.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "blosc" version))
+       (sha256
+        (base32
+         "0xmjs28sgpnb940zrhw010dq2m9d8a5h4fgnjyk6645fgfr1j8f2"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "blosc/c-blosc")))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'find-blosc
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "USE_SYSTEM_BLOSC" "1")
+                   (setenv "Blosc_ROOT" #$(this-package-input "c-blosc"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "-m" "blosc.test")))))))
+    (propagated-inputs
+     (list python-scikit-build python-numpy))
+    (inputs (list c-blosc))
+    (native-inputs (list cmake-minimal))
+    (home-page "https://github.com/blosc/python-blosc")
+    (synopsis "Python wrapper for the Blosc data compressor library")
+    (description "Blosc is a high performance compressor optimized for binary
+data.  It has been designed to transmit data to the processor cache faster
+than the traditional, non-compressed, direct memory fetch approach via a
+@code{memcpy()} system call.
+
+Blosc works well for compressing numerical arrays that contains data with
+relatively low entropy, like sparse data, time series, grids with
+regular-spaced values, etc.
+
+This Python package wraps the Blosc library.")
+    (license license:bsd-3)))
 
 (define-public python-multivolumefile
   (package
