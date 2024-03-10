@@ -1003,6 +1003,35 @@ compliant cache for HTTP responses.  It is only suitable for use as a
 shared proxy).")
       (license license:expat))))
 
+(define-public go-github-com-hashicorp-go-cleanhttp
+  (package
+    (name "go-github-com-hashicorp-go-cleanhttp")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-cleanhttp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i5xslizzwd966w81bz6dxjwzgml4q9bwqa186bsxd1vi8lqxl9p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-cleanhttp"))
+    (home-page "https://github.com/hashicorp/go-cleanhttp")
+    (synopsis "Functions for accessing clean Go @code{http.Client} values")
+    (description
+     "The Go standard library contains a default @code{http.Client} and it is
+a common idiom to tweak it as necessary.  Unfortunately, this is a shared
+value, and it is not uncommon for libraries to assume that they are free to
+modify it at will.  This package provides some simple functions to get a
+\"clean\" @code{http.Client}, namely one that uses the same default values as
+the Go standard library, but returns a client that does not share any state
+with other clients.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hjson-hjson-go
   (package
     (name "go-github-com-hjson-hjson-go")
