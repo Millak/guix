@@ -6731,8 +6731,8 @@ Magic, Egypt, Indians, Norsemen, Persian or Romans.")
     (license license:gpl2+)))
 
 (define-public freegish
-  (let ((commit "21977ee5fc2008231b35160df00efe954c508b16")
-        (revision "2"))
+  (let ((commit "caf58a2f990a939230bab82226e29cd79732f366")
+        (revision "3"))
     (package
       (name "freegish")
       (version (string-append "0-" revision "." (string-take commit 9)))
@@ -6744,7 +6744,7 @@ Magic, Egypt, Indians, Norsemen, Persian or Romans.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1qh0gcnbyxyzmb13jifwba4xrzj94m4w9whdvl0gnds6ricmwply"))
+                  "0980ad8xg0bzm6507bq9sbgw03i7jj33g0f955g0q8jvpb22r65v"))
                 (modules '((guix build utils)))
                 ;; The audio files in the "music" directory are licensed under
                 ;; CC-BY-NC, so we delete them.
@@ -6756,25 +6756,14 @@ Magic, Egypt, Indians, Norsemen, Persian or Romans.")
       (arguments
        `(#:tests? #f ; no tests included
          #:configure-flags
-         (list "-DCMAKE_INSTALL_FHS=ON")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-DATAPATH
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "CMakeLists.txt"
-                 (("^option\\(INSTALL_FHS" line)
-                  (string-append "add_definitions(-DDATAPATH=\""
-                                 (assoc-ref outputs "out") "/share/freegish\")\n"
-                                 line)))
-               #t)))))
+         (list "-DINSTALL_FHS=ON")))
       (inputs
-       (list (sdl-union (list sdl sdl-mixer))
+       (list sdl2
              openal
              libvorbis
              libogg
              mesa
-             libpng
-             zlib))
+             libpng))
       (home-page "https://github.com/freegish/freegish")
       (synopsis "Side-scrolling physics platformer with a ball of tar")
       (description "In FreeGish you control Gish, a ball of tar who lives
