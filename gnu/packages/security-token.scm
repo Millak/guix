@@ -41,6 +41,7 @@
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -950,43 +951,42 @@ for interaction with Nitrokey Pro, Nitrokey Storage, and Librem Key
 devices.")
     (license license:gpl3+)))
 
-(define-public ausweisapp2
+(define-public ausweisapp
   (package
-    (name "ausweisapp2")
-    (version "1.22.2")
+    (name "ausweisapp")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/Governikus/AusweisApp2/releases"
-                                  "/download/" version "/AusweisApp2-" version ".tar.gz"))
+              (uri (string-append "https://github.com/Governikus/AusweisApp/releases"
+                                  "/download/" version "/AusweisApp-" version ".tar.gz"))
               (sha256
                (base32
-                "1qh1m057va7njs3yk0s31kwsvv44fjlsdac6lhiw5npcwssgjn8l"))))
+                "1jzxfybjrc3byw42bqjvn1nsn7vbgcl8y94sywjy6vaj3a58hy36"))))
 
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (inputs
-     (list qtbase-5
-           qtsvg-5
-           qtdeclarative-5
-           qtwebsockets-5
+     (list qtbase
+           qtsvg
+           qtscxml
+           qtdeclarative
+           qtshadertools
+           qtwebsockets
            qtgraphicaleffects
-           qtquickcontrols2-5
            pcsc-lite
            openssl))
     (arguments
-     `(#:modules ((guix build cmake-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-       #:imported-modules (,@%cmake-build-system-modules
-                           (guix build qt-utils))
+     `(#:qtbase ,qtbase
        #:phases
        (modify-phases %standard-phases
-         (add-after 'install 'wrap-qt
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "AusweisApp2" #:output out #:inputs inputs)))))))
-    (home-page "https://github.com/Governikus/AusweisApp2")
+         (replace 'check
+           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+             (when tests? (invoke "ctest" "--output-on-failure" "-j"
+                                  (if parallel-tests?
+                                      (number->string (parallel-job-count))
+                                      "1"))))))))
+    (home-page "https://github.com/Governikus/AusweisApp")
     (synopsis
      "Authentication program for German ID cards and residence permits")
     (description
@@ -995,6 +995,9 @@ used for online authentication with electronic German ID cards and residence
 titles.  To use this app, a supported RFID card reader or NFC-enabled smart
 phone is required.")
     (license license:eupl1.2)))
+
+(define-deprecated/public ausweisapp2 ausweisapp
+    (deprecated-package "ausweisapp2" ausweisapp))
 
 (define-public libfido2
   (package
