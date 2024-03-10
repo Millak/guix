@@ -635,6 +635,7 @@ data types.")
                                "--with-computed-gotos" ;main interpreter loop optimization
                                "--enable-unicode=ucs4"
                                "--without-static-libpython"
+                               "--enable-loadable-sqlite-extensions"
 
                                ;; FIXME: These flags makes Python significantly faster,
                                ;; but leads to non-reproducible binaries.
