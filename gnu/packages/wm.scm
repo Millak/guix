@@ -3054,7 +3054,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "2.2.0")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3063,7 +3063,7 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yhn77hdy7c80hd6r8nmvs206pmp76bx4zr94imfvgs8fh5gb8cy"))))
+                "0firjpp7qw4kb2h1zh5pv5k0xf0jvx6x0r0s7j6y7dhlh5j0s00q"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3079,7 +3079,7 @@ shows a notification for the user on the screen.")
                 (("/etc/") (string-append #$output "/etc/"))
                 (("/usr/share/") (string-append #$output "/usr/share/"))))))))
     (native-inputs (list pkg-config scdoc))
-    (inputs (list libevdev pango wlroots-0.16))
+    (inputs (list libevdev pango wlroots))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
     (description
