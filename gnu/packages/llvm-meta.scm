@@ -60,17 +60,6 @@
               "amdfam10" "barcelona" "btver1" "btver2" "bdver1" "bdver2"
               "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4" "x86-64"
               "x86-64-v2" "x86-64-v3" "x86-64-v4"))
-           ((version>=? version "15.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "knl" "knm" "k8" "athlon64" "athlon-fx" "opteron"
-              "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10" "barcelona"
-              "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4" "znver1"
-              "znver2" "znver3" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
            ((version>=? version "13.0")
             '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
               "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
