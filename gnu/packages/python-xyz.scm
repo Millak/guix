@@ -27560,7 +27560,7 @@ they use the same path.")
        (sha256
         (base32
          "1sy3vdfyyx3bc5590zb7gwpsmimqz8m992x9hsydq8nmhixqjrxa"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-blosc
            python-locket
