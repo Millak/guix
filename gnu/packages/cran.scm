@@ -19330,14 +19330,14 @@ over-plotting in scatter plots with text.")
 (define-public r-colorramps
   (package
     (name "r-colorramps")
-    (version "2.3.2")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "colorRamps" version))
        (sha256
         (base32
-         "0cq8l6ybhff2q2dj2i73b4cnw6v2c6ql24jbrkh0xrpc9wjsarxj"))))
+         "1y4gn6v8wmwq3wcfgdnx1ah2qa53gayvbfa62kp286ga4c8k3prw"))))
     (properties `((upstream-name . "colorRamps")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/colorRamps")
