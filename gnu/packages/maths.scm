@@ -8048,7 +8048,7 @@ easily be incorporated into existing simulation codes.")
          "0nx4sqhmi126m14myzm7syv2053harav9snl0a247wnkcgs5rxrv"))))
     (inputs
      (modify-inputs (package-inputs sundials)
-       (prepend gfortran lapack)))
+       (prepend gfortran openblas)))
     (arguments
      '(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
                            "-DSUNDIALS_INDEX_SIZE=32"
