@@ -102,6 +102,12 @@ void deletePath(const Path & path);
 void deletePath(const Path & path, unsigned long long & bytesFreed,
     size_t linkThreshold = 1);
 
+/* Copy SOURCE to DESTINATION, recursively.  Throw if SOURCE contains a file
+   that is not a regular file, symlink, or directory.  When DELETESOURCE is
+   true, delete source files once they have been copied.  */
+void copyFileRecursively(const Path &source, const Path &destination,
+    bool deleteSource = false);
+
 /* Create a temporary directory. */
 Path createTempDir(const Path & tmpRoot = "", const Path & prefix = "nix",
     bool includePid = true, bool useGlobalCounter = true, mode_t mode = 0755);

@@ -215,13 +215,10 @@ bool isLink(const Path & path)
 }
 
 
-DirEntries readDirectory(const Path & path)
+static DirEntries readDirectory(DIR *dir)
 {
     DirEntries entries;
     entries.reserve(64);
-
-    AutoCloseDir dir = opendir(path.c_str());
-    if (!dir) throw SysError(format("opening directory `%1%'") % path);
 
     struct dirent * dirent;
     while (errno = 0, dirent = readdir(dir)) { /* sic */
@@ -230,11 +227,29 @@ DirEntries readDirectory(const Path & path)
         if (name == "." || name == "..") continue;
         entries.emplace_back(name, dirent->d_ino, dirent->d_type);
     }
-    if (errno) throw SysError(format("reading directory `%1%'") % path);
+    if (errno) throw SysError(format("reading directory"));
 
     return entries;
 }
 
+DirEntries readDirectory(const Path & path)
+{
+    AutoCloseDir dir = opendir(path.c_str());
+    if (!dir) throw SysError(format("opening directory `%1%'") % path);
+    return readDirectory(dir);
+}
+
+static DirEntries readDirectory(int fd)
+{
+    /* Since 'closedir' closes the underlying file descriptor, duplicate FD
+       beforehand.  */
+    int fdcopy = dup(fd);
+    if (fdcopy < 0) throw SysError("dup");
+
+    AutoCloseDir dir = fdopendir(fdcopy);
+    if (!dir) throw SysError(format("opening directory from file descriptor `%1%'") % fd);
+    return readDirectory(dir);
+}
 
 unsigned char getFileType(const Path & path)
 {
@@ -364,6 +379,93 @@ void deletePath(const Path & path, unsigned long long & bytesFreed, size_t linkT
     _deletePath(path, bytesFreed, linkThreshold);
 }
 
+static void copyFile(int sourceFd, int destinationFd)
+{
+    struct stat st;
+    if (fstat(sourceFd, &st) == -1) throw SysError("statting file");
+
+    ssize_t result = copy_file_range(sourceFd, NULL, destinationFd, NULL, st.st_size, 0);
+    if (result < 0 && errno == ENOSYS) {
+	for (size_t remaining = st.st_size; remaining > 0; ) {
+	    unsigned char buf[8192];
+	    size_t count = std::min(remaining, sizeof buf);
+
+	    readFull(sourceFd, buf, count);
+	    writeFull(destinationFd, buf, count);
+	    remaining -= count;
+	}
+    } else {
+	if (result < 0)
+	    throw SysError(format("copy_file_range `%1%' to `%2%'") % sourceFd % destinationFd);
+	if (result < st.st_size)
+	    throw SysError(format("short write in copy_file_range `%1%' to `%2%'")
+			   % sourceFd % destinationFd);
+    }
+}
+
+static void copyFileRecursively(int sourceroot, const Path &source,
+				int destinationroot, const Path &destination,
+				bool deleteSource)
+{
+    struct stat st;
+    if (fstatat(sourceroot, source.c_str(), &st, AT_SYMLINK_NOFOLLOW) == -1)
+	throw SysError(format("statting file `%1%'") % source);
+
+    if (S_ISREG(st.st_mode)) {
+	AutoCloseFD sourceFd = openat(sourceroot, source.c_str(),
+				      O_CLOEXEC | O_NOFOLLOW | O_RDONLY);
+	if (sourceFd == -1) throw SysError(format("opening `%1%'") % source);
+
+	AutoCloseFD destinationFd = openat(destinationroot, destination.c_str(),
+					   O_CLOEXEC | O_CREAT | O_WRONLY | O_TRUNC,
+					   st.st_mode);
+	if (destinationFd == -1) throw SysError(format("opening `%1%'") % source);
+
+	copyFile(sourceFd, destinationFd);
+    } else if (S_ISLNK(st.st_mode)) {
+	char target[st.st_size + 1];
+	ssize_t result = readlinkat(sourceroot, source.c_str(), target, st.st_size);
+	if (result != st.st_size) throw SysError("reading symlink target");
+	target[st.st_size] = '\0';
+	int err = symlinkat(target, destinationroot, destination.c_str());
+	if (err != 0)
+	    throw SysError(format("creating symlink `%1%'") % destination);
+    } else if (S_ISDIR(st.st_mode)) {
+	int err = mkdirat(destinationroot, destination.c_str(), 0755);
+	if (err != 0)
+	    throw SysError(format("creating directory `%1%'") % destination);
+
+	AutoCloseFD destinationFd = openat(destinationroot, destination.c_str(),
+					   O_CLOEXEC | O_RDONLY | O_DIRECTORY);
+	if (err != 0)
+	    throw SysError(format("opening directory `%1%'") % destination);
+
+	AutoCloseFD sourceFd = openat(sourceroot, source.c_str(),
+				      O_CLOEXEC | O_NOFOLLOW | O_RDONLY);
+	if (sourceFd == -1)
+	    throw SysError(format("opening `%1%'") % source);
+
+        if (deleteSource && !(st.st_mode & S_IWUSR)) {
+	    /* Ensure the directory writable so files within it can be
+	       deleted.  */
+            if (fchmod(sourceFd, st.st_mode | S_IWUSR) == -1)
+                throw SysError(format("making `%1%' directory writable") % source);
+        }
+
+        for (auto & i : readDirectory(sourceFd))
+	    copyFileRecursively((int)sourceFd, i.name, (int)destinationFd, i.name,
+				deleteSource);
+    } else throw Error(format("refusing to copy irregular file `%1%'") % source);
+
+    if (deleteSource)
+	unlinkat(sourceroot, source.c_str(),
+		 S_ISDIR(st.st_mode) ? AT_REMOVEDIR : 0);
+}
+
+void copyFileRecursively(const Path &source, const Path &destination, bool deleteSource)
+{
+    copyFileRecursively(AT_FDCWD, source, AT_FDCWD, destination, deleteSource);
+}
 
 static Path tempName(Path tmpRoot, const Path & prefix, bool includePid,
     int & counter)
