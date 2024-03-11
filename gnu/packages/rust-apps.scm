@@ -1783,39 +1783,8 @@ by modifying your @file{Cargo.toml} file from the command line.")
 rebase.")
     (license license:gpl3+)))
 
-(define-public rust-cbindgen
-  (package
-    (name "rust-cbindgen")
-    (version "0.13.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cbindgen" version))
-        (file-name (string-append name "-" version ".tar.xz"))
-        (sha256
-         (base32
-          "0673pq96hs7waavkv58v2pakpxpsfyjvbraa5kyl2b44phgdzcid"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("clap" ,rust-clap-2)
-        ("log" ,rust-log-0.4)
-        ("proc-macro2" ,rust-proc-macro2-1)
-        ("quote" ,rust-quote-1)
-        ("serde" ,rust-serde-1)
-        ("serde-json" ,rust-serde-json-1)
-        ("syn" ,rust-syn-1)
-        ("tempfile" ,rust-tempfile-3)
-        ("toml" ,rust-toml-0.5))))
-    (home-page "https://github.com/eqrion/cbindgen/")
-    (synopsis "Tool for generating C bindings to Rust code")
-    (description
-     "This package provides a tool for generating C/C++ bindings to Rust code.")
-    (license license:mpl2.0)))
-
 (define-public rust-cbindgen-0.26
   (package
-    (inherit rust-cbindgen)
     (name "rust-cbindgen")
     (version "0.26.0")
     (source
@@ -1825,6 +1794,7 @@ rebase.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jdbxmn5h5nlr4bifx85gny309djv5djs9q78fa1d7sj0wdw2sys"))))
+    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-3)
                        ("rust-heck" ,rust-heck-0.4)
@@ -1838,7 +1808,12 @@ rebase.")
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-toml" ,rust-toml-0.5))
        #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5))))
-    (native-inputs (list python-cython))))
+    (native-inputs (list python-cython))
+    (home-page "https://github.com/eqrion/cbindgen/")
+    (synopsis "Tool for generating C bindings to Rust code")
+    (description
+     "This package provides a tool for generating C/C++ bindings to Rust code.")
+    (license license:mpl2.0)))
 
 (define-public rust-cbindgen-0.24
   (package
@@ -1865,6 +1840,8 @@ rebase.")
              (sha256
               (base32
                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
+
+(define-public rust-cbindgen rust-cbindgen-0.26)
 
 ;; This is the unversioned package of the latest version of bindgen.
 (define-public rust-bindgen
