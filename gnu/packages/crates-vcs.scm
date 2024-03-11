@@ -2912,8 +2912,41 @@ Rust implementation of Git.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-uluru" ,rust-uluru-3))))))
 
+(define-public rust-gix-packetline-0.17
+  (package
+    (name "rust-gix-packetline")
+    (version "0.17.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-packetline" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pr8bc383ankggjkkwmqi0k0rmbq6j0kx6j2hr4xwyvlyzp4bzq9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Crate of the gitoxide project implementing the pkt-line serialization format")
+    (description
+     "This package provides a crate of the gitoxide project implementing the
+pkt-line serialization format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-packetline-0.16
   (package
+    (inherit rust-gix-packetline-0.17)
     (name "rust-gix-packetline")
     (version "0.16.7")
     (source
@@ -2923,7 +2956,6 @@ Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ayp00k4a6qgjjyrd2rmzxyx0n8h36dxscjn1pzil5b4x6qq90wa"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -2936,14 +2968,7 @@ Rust implementation of Git.")
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
        (("rust-async-std" ,rust-async-std-1)
-        ("rust-maybe-async" ,rust-maybe-async-0.2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Crate of the gitoxide project implementing the pkt-line serialization format")
-    (description
-     "This package provides a crate of the gitoxide project implementing the
-pkt-line serialization format.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
 (define-public rust-gix-packetline-blocking-0.16
   (package
