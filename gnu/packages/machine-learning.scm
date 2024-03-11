@@ -5160,8 +5160,7 @@ linear algebra routines needed for structured matrices (or operators).")
               (lambda _ (chdir "src")))
             (replace 'configure
               (lambda _
-                (let* ((lapack   #$(this-package-input "lapack"))
-                       (openfst  #$(this-package-input "openfst"))
+                (let* ((openfst  #$(this-package-input "openfst"))
                        (openblas #$(this-package-input "openblas"))
                        (kaldi    #$(this-package-input "kaldi")))
                   (substitute* "./Makefile"
@@ -5171,8 +5170,7 @@ linear algebra routines needed for structured matrices (or operators).")
                      "")
                     (("-lopenblas -llapack -lblas -lf2c")
                      (string-append
-                      "-L" openblas "/lib " "-lopenblas "
-                      "-L" lapack "/lib " "-llapack -lblas "))
+                      "-L" openblas "/lib " "-lopenblas "))
                     (("-lfst -lfstngram")
                      (string-append
                       "-L" openfst "/lib " "-lfst -lfstngram "))
@@ -5194,7 +5192,7 @@ linear algebra routines needed for structured matrices (or operators).")
                   (for-each
                    (lambda (x) (install-file x src))
                    (find-files "." "\\.h$"))))))))
-      (inputs (list kaldi openfst lapack openblas))
+      (inputs (list kaldi openfst openblas))
       (home-page "https://alphacephei.com/vosk")
       (synopsis "Speech recognition toolkit based on @code{kaldi}")
       (description "\
