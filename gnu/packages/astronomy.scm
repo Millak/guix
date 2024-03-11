@@ -4156,21 +4156,21 @@ spectra, and data.")
   (package
     (name "python-suntime")
     (version "1.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "suntime" version))
-              (sha256
-               (base32
-                "1kyd1r6zcs0jmh5gq74adrnb1h7dfr1mzjq4k4vbngfiga8gfd28"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-dateutil))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "suntime" version))
+       (sha256
+        (base32 "1kyd1r6zcs0jmh5gq74adrnb1h7dfr1mzjq4k4vbngfiga8gfd28"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-dateutil))
     (home-page "https://github.com/SatAgro/suntime")
     (synopsis "Sunset and sunrise time calculation python library")
     (description
-     "Python library doing sunrise and sunset time calculation.
-
-Takes a WGS84 (GPS) latitude/longitude as input as well as an UTC or local
-datetime object.")
+     "Python library doing sunrise and sunset time calculation.  Takes a
+WGS84 (GPS) latitude/longitude as input as well as an UTC or local datetime
+object.")
     (license license:lgpl3+)))
 
 (define-public python-synphot
