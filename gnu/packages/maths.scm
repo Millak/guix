@@ -4732,15 +4732,14 @@ schemes.")
     (inputs
      `(("fortran" ,gfortran)
        ("blas" ,openblas)
-       ("lapack" ,lapack)
        ("zlib" ,zlib)))
     (arguments
      `(#:configure-flags `(,(string-append "BLAS_LIBS=-L"
                                            (assoc-ref %build-inputs "blas")
                                            " -lopenblas")
                            ,(string-append "LAPACK_LIBS=-L"
-                                           (assoc-ref %build-inputs "lapack")
-                                           " -llapack"))
+                                           (assoc-ref %build-inputs "blas")
+                                           " -lopenblas"))
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'mpi-setup
 		    ,%openmpi-setup))))
