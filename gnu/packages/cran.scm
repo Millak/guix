@@ -39592,28 +39592,19 @@ package.")
 (define-public r-qs
   (package
     (name "r-qs")
-    (version "0.25.7")
+    (version "0.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qs" version))
        (sha256
         (base32
-         "0a0jay9p2k0ahf08s94dr1w66qhbgzs87vkaanwkd4j6lvijncz7"))))
+         "0qmgnc4igy8mjzarm30cgi4z75hh8f01kvcs6n6s63cy4qk30vs6"))))
     (properties `((upstream-name . "qs")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; Our zstd is at 1.5.0, but this package bundles 1.5.2.
-         (add-after 'unpack 'use-older-zstd
-           (lambda _
-             (substitute* "configure"
-               (("100502") "100500")))))))
     (inputs (list lz4 (list zstd "lib")))
     (propagated-inputs
-     (list r-rapiserialize r-rcpp r-stringfish))
+     (list r-bh r-rapiserialize r-rcpp r-stringfish))
     (native-inputs
      (list pkg-config r-knitr))
     (home-page "https://github.com/traversc/qs")
