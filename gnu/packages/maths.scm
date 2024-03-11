@@ -4445,7 +4445,6 @@ void mc64ad_dist (int *a, int *b, int *c, int *d, int *e, double *f, int *g,
     (inputs
      `(("gfortran" ,gfortran)
        ("blas" ,openblas)
-       ("lapack" ,lapack)
        ("combblas" ,combinatorial-blas)))
     (propagated-inputs
      `(("mpi" ,openmpi)                 ;headers include MPI heades
@@ -4456,7 +4455,7 @@ void mc64ad_dist (int *a, int *b, int *c, int *d, int *e, double *f, int *g,
        #:configure-flags (list "-DBUILD_SHARED_LIBS:BOOL=YES"
                                "-DTPL_ENABLE_COMBBLASLIB=YES"
                                "-DTPL_BLAS_LIBRARIES=-lopenblas"
-                               "-DTPL_LAPACK_LIBRARIES=-llapack"
+                               "-DTPL_LAPACK_LIBRARIES=-lopenblas"
                                (string-append "-DTPL_PARMETIS_LIBRARIES="
                                               (string-join
                                                '("ptscotchparmetis" "ptscotch" "ptscotcherr"
