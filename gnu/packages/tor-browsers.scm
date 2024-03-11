@@ -291,7 +291,7 @@ Browser.")
      (list
       rust
       `(,rust "cargo")
-      rust-cbindgen-0.24
+      rust-cbindgen
       llvm-15
       clang-15
       perl
