@@ -323,7 +323,6 @@ rendering of the atmosphere model and examine its properties.
            gsl
            gtkmm-3
            hdf5
-           lapack
            libpng
            libsigc++
            libxml2
