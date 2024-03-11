@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -147,7 +147,7 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
 ;;; firmed up in v1.0.0; it is the oldest, safest commit that can be travelled
 ;;; to.
 (define %oldest-possible-commit
-  "6298c3ffd9654d3231a6f25390b056483e8f407c") ;v1.0.0
+  "4a0b87f0ec5b6c2dcf82b372dd20ca7ea6acdd9c") ;v0.16.0
 
 (define %reference-channels
   (list (channel (inherit %default-guix-channel)
