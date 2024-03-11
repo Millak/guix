@@ -1958,6 +1958,8 @@ Python library and command line interface.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-n" "auto")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-library-locations
@@ -1983,7 +1985,9 @@ Python library and command line interface.")
               ;; which is patched above.
               (delete-file "tests/test_config.py"))))))
     (native-inputs
-     (list python-pytest python-scikit-image))
+     (list python-pytest
+           python-pytest-xdist
+           python-scikit-image))
     (inputs
      (list openjpeg  ; glymur/lib/openjp2.py
            libtiff)) ; glymur/lib/tiff.py
