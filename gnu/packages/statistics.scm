@@ -180,9 +180,13 @@ be output in text, PostScript, PDF or HTML.")
                (base32
                 "0aa2w4g5057vn1qjp954s2kwxfmy1h7p5yn56fyi7sz9nmaq69gr"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--with-lapack=-lopenblas"
+              "--with-blas=-lopenblas")))
     (home-page "https://mcmc-jags.sourceforge.net/")
     (native-inputs
-     (list gfortran lapack))
+     (list gfortran openblas))
     (synopsis "Gibbs sampler")
     (description "JAGS is Just Another Gibbs Sampler.  It is a program for
 analysis of Bayesian hierarchical models using Markov Chain Monte Carlo (MCMC)
