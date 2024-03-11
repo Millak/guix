@@ -2400,7 +2400,8 @@ online as well as original implementations of various other algorithms.")
                 "08gznhwhqv1x4baksz350ih8q16r5rd0k8vals6078m3h94khr4b"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     '(#:configure-flags (list "--with-lapack=-lopenblas")
+       #:phases (modify-phases %standard-phases
                   (add-after 'install 'add--L-flags-in-ipopt.pc
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       ;; The '.pc' file lists '-llapack -lblas' in "Libs";
@@ -2413,14 +2414,14 @@ online as well as original implementations of various other algorithms.")
                           (("Libs: (.*)-llapack -lblas(.*)$" _ before after)
                            (string-append "Libs: " before " " after "\n"
                                           "Libs.private: " before
-                                          "-L" lapack "/lib -llapack -lblas "
+                                          "-L" openblas "/lib -lopenblas"
                                           after "\n")))
                         #t))))))
     (native-inputs
      (list gfortran pkg-config))
     (inputs
      ;; TODO: Maybe add dependency on COIN-MUMPS, ASL, and HSL.
-     (list lapack))                    ;for both libblas and liblapack
+     (list openblas))                    ;for both libblas and liblapack
     (home-page "https://www.coin-or.org")
     (synopsis "Large-scale nonlinear optimizer")
     (description
