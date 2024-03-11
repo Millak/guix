@@ -3073,20 +3073,20 @@ part of Gitoxide, a Rust implementation of Git.")
        #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
                                    ("rust-serial-test" ,rust-serial-test-2))))))
 
-(define-public rust-gix-prompt-0.7
+(define-public rust-gix-prompt-0.8
   (package
     (name "rust-gix-prompt")
-    (version "0.7.0")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-prompt" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0y26b3d7z222b223ir9qf8yqwhknzc3c5yksjffmwvsid4vr36jw"))))
+        (base32 "18an2s9hxl5hizzncvfl8z4vj9hkxk5wlmnjdizw4ychrbn24hf0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-gix-command" ,rust-gix-command-0.2)
+     `(#:cargo-inputs (("rust-gix-command" ,rust-gix-command-0.3)
                        ("rust-gix-config-value" ,rust-gix-config-value-0.14)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
                        ("rust-rustix" ,rust-rustix-0.38)
@@ -3099,6 +3099,27 @@ part of Gitoxide, a Rust implementation of Git.")
      "Gitoxide is a Rust implementation of Git.  This crate handles the
 terminals prompt.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-prompt-0.7
+  (package
+    (inherit rust-gix-prompt-0.8)
+    (name "rust-gix-prompt")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-prompt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y26b3d7z222b223ir9qf8yqwhknzc3c5yksjffmwvsid4vr36jw"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gix-command" ,rust-gix-command-0.2)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-expectrl" ,rust-expectrl-0.7)
+                                   ("rust-serial-test" ,rust-serial-test-2))))))
 
 (define-public rust-gix-prompt-0.5
   (package
