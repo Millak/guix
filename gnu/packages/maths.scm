@@ -402,6 +402,7 @@ triangulations.")
          (add-after 'unpack 'find-libraries
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "CVXOPT_BLAS_LIB" "openblas")
+             (setenv "CVXOPT_LAPACK_LIB" "openblas")
              (setenv "CVXOPT_BUILD_FFTW" "1")
              (setenv "CVXOPT_BUILD_GLPK" "1")
              (setenv "CVXOPT_BUILD_GSL" "1")
@@ -410,7 +411,6 @@ triangulations.")
      (list fftw
            glpk
            gsl
-           lapack
            openblas
            suitesparse))
     (home-page "https://www.cvxopt.org")
