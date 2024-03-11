@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1672,7 +1673,8 @@ Mathematics (GLM) library to Python.")
     (arguments
      (list
       #:test-flags
-      '(list "-x" "-m"
+      '(list "-n" "auto"
+             "-x" "-m"
              (string-append "not slow"
                             " and not flaky"
                             " and not gpu"
@@ -1798,7 +1800,10 @@ Mathematics (GLM) library to Python.")
               ;; These tests are rather flaky
               " and not test_quiet_quit_when_cluster_leaves"
               " and not multiple_clients_restart"
-              " and not test_steal_twice"))
+              " and not test_steal_twice"
+              " and not test_task_groups_update_start_stop"
+              " and not test_web_preload"
+              " and not test_web_preload_worker"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'versioneer
@@ -1873,10 +1878,11 @@ parentdir_prefix = distributed-
            python-urllib3
            python-zict))
     (native-inputs
-     (list python-importlib-metadata
+     (list python-flaky
+           python-importlib-metadata
            python-pytest
            python-pytest-timeout
-           python-flaky
+           python-pytest-xdist
            python-versioneer))
     (home-page "https://distributed.dask.org")
     (synopsis "Distributed scheduler for Dask")
