@@ -1561,24 +1561,24 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-discover-0.26
+(define-public rust-gix-discover-0.27
   (package
     (name "rust-gix-discover")
-    (version "0.26.0")
+    (version "0.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-discover" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wlhqkrfyln97arr3hyllw4xc9gnk2qb4nkh70z8hy0i6bq5qpd4"))))
+        (base32 "01wwjb9g91nzjfnlhgblsdn7nh8259714r44yxykn2xydr0qkbbg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-dunce" ,rust-dunce-1)
                        ("rust-gix-hash" ,rust-gix-hash-0.13)
                        ("rust-gix-path" ,rust-gix-path-0.10)
-                       ("rust-gix-ref" ,rust-gix-ref-0.38)
+                       ("rust-gix-ref" ,rust-gix-ref-0.39)
                        ("rust-gix-sec" ,rust-gix-sec-0.10)
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-defer" ,rust-defer-0.1)
@@ -1592,6 +1592,31 @@ package is a part of Gitoxide, a pure Rust implementation of Git.")
      "Discover Git repositories and check if a directory is a repository.
 This package is part of Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-discover-0.26
+  (package
+    (inherit rust-gix-discover-0.27)
+    (name "rust-gix-discover")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-discover" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wlhqkrfyln97arr3hyllw4xc9gnk2qb4nkh70z8hy0i6bq5qpd4"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-ref" ,rust-gix-ref-0.38)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-defer" ,rust-defer-0.1)
+                                   ("rust-is-ci" ,rust-is-ci-1)
+                                   ("rust-serial-test" ,rust-serial-test-2)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-discover-0.25
   (package
