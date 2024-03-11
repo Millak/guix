@@ -32,6 +32,7 @@
 
 (define-module (gnu packages gnunet)
   #:use-module (gnu packages)
+  #:use-module (gnu packages apparmor)
   #:use-module (gnu packages base)
   #:use-module (gnu packages file)
   #:use-module (gnu packages aidc)
@@ -137,6 +138,7 @@
            glib
            gst-plugins-base
            gstreamer
+           libapparmor
            libarchive
            libgsf
            libjpeg-turbo
