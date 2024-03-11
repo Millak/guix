@@ -7108,7 +7108,7 @@ set.")
                   texlive-xcolor
                   texlive-xypic))))
     (inputs
-     (list openblas lapack))
+     (list openblas))
     (arguments
      `(#:modules ((srfi srfi-1)
                   ,@%gnu-build-system-modules)
