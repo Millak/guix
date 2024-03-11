@@ -1,6 +1,6 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
@@ -27,6 +27,44 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "8f4ffb3fae133bb21d7991e97c2f19a7108b1143")
+        (title
+         (en "Daemon vulnerability allowing store corruption has been fixed")
+         (fr "Une faille du démon permettant de corrompre le dépôt a été corrigée"))
+        (body
+         (en "A vulnerability in the build daemon, @command{guix-daemon}, was
+identified and fixed.  The vulnerability would allow unprivileged users to
+corrupt the result of @dfn{fixed-output derivations} such as source code
+tarballs and Git checkouts, which in turn could lead to local privilege
+escalation.
+
+This bug is fixed and Guix System users are advised to upgrade their system,
+with a command along the lines of:
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+See @uref{https://issues.guix.gnu.org/69728} for more information on this
+issue.")
+         (fr "Une faille de sécurité du démon de compilation,
+@command{guix-daemon}, a été identifiée et corrigée.  La faille permettait à
+un·e utilisateur·rice sans privilège de corrompre le résultat d'une
+@dfn{dérivation à sortie fixe} telle qu'une archive ou un @i{checkout} Git, ce
+qui peut ensuite permettre une élévation locale de privilèges.
+
+Ce problème est corrigé et les utilisateur·rices de Guix System sont invité·es
+à mettre à jour leur système avec une commande telle que :
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+Voir @uref{https://issues.guix.gnu.org/69728} pour plus d'informations sur
+cette anomalie.")))
 
  (entry (commit "10a193596368443f441077525ebbddf787d91e4b")
         (title
