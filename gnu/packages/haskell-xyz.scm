@@ -5325,18 +5325,15 @@ Accounting.")
     (build-system haskell-build-system)
     (properties '((upstream-name . "hmatrix")))
     (arguments
-     `(#:extra-directories ("lapack")))
+     `(#:configure-flags '("--flags=openblas")
+       #:extra-directories ("openblas")))
     (inputs
      (list ghc-random
            ghc-split
            ghc-storable-complex
            ghc-semigroups
            ghc-vector
-           ;;("openblas" ,openblas)
-           lapack))
-    ;; Guix's OpenBLAS is built with the flag "NO_LAPACK=1" which
-    ;; disables inclusion of the LAPACK functions.
-    ;; (arguments `(#:configure-flags '("--flags=openblas")))
+           openblas))
     (home-page "https://github.com/albertoruiz/hmatrix")
     (synopsis "Haskell numeric linear algebra library")
     (description "The HMatrix package provices a Haskell library for
