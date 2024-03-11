@@ -3346,8 +3346,44 @@ Rust implementation of Git.")
 quotations used by git.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-ref-0.39
+  (package
+    (name "rust-gix-ref")
+    (version "0.39.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ref" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zmvbjqg7b46banbp7a7507wa1mx992gcmgg2wrpzkqjqannj81v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; undeclared crate gix_testtools
+       #:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.28)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-features" ,rust-gix-features-0.36)
+                       ("rust-gix-fs" ,rust-gix-fs-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-lock" ,rust-gix-lock-11)
+                       ("rust-gix-object" ,rust-gix-object-0.39)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-tempfile" ,rust-gix-tempfile-11)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-memmap2" ,rust-memmap2-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.5))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, this crate handles Git references")
+    (description "This package provides a crate to handle git references.
+Part of Gitoxide, a project to create a pure Rust Git implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-ref-0.38
   (package
+    (inherit rust-gix-ref-0.39)
     (name "rust-gix-ref")
     (version "0.38.0")
     (source
@@ -3357,7 +3393,6 @@ quotations used by git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ljasz4v4bikrb06wdp7hafznmhqh0zgmqvy02w2z3f8gb8gdhhf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; undeclared crate gix_testtools
        #:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
@@ -3374,12 +3409,7 @@ quotations used by git.")
                        ("rust-memmap2" ,rust-memmap2-0.7)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-winnow" ,rust-winnow-0.5))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, this crate handles Git references")
-    (description "This package provides a crate to handle git references.
-Part of Gitoxide, a project to create a pure Rust Git implementation.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-winnow" ,rust-winnow-0.5))))))
 
 (define-public rust-gix-ref-0.37
   (package
