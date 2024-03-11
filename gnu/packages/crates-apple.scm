@@ -143,14 +143,14 @@ extension of blocks.")
 (define-public rust-cargo-credential-macos-keychain-0.4
   (package
     (name "rust-cargo-credential-macos-keychain")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential-macos-keychain" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1df098axn8pab6l2mljbkxg3bw1v4mcr4k42x6xy6j15854nsz70"))))
+        (base32 "1rcdh6n5s7yvxw6pkhjwz0h2rqqv2mg3753w7ap20b6w8ydghz2b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
