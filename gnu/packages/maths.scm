@@ -7808,7 +7808,6 @@ symmetric matrices.")
       (inputs
        (list `(,gfortran "lib")
              gmp
-             lapack
              metis
              mpc
              mpfr
