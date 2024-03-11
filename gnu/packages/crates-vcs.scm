@@ -1015,8 +1015,34 @@ implementing the standard git bitmap format.")
 commit-graph files.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-command-0.3
+  (package
+    (name "rust-gix-command")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-command" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z1p86ahd1swpvhjv1shzyrvrh4cgp05fdm7vb3ay0nn6a3s3gkz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-shell-words" ,rust-shell-words-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Handle internal git command execution")
+    (description
+     "This package provides a crate of the gitoxide project handling internal git
+command execution.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-command-0.2
   (package
+    (inherit rust-gix-command-0.3)
     (name "rust-gix-command")
     (version "0.2.10")
     (source
@@ -1026,16 +1052,9 @@ commit-graph files.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ix44maislxlranv67yw5fan5k82lpgax22zgc4jrxvpypxnqmrw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
-       #:cargo-inputs (("rust-bstr" ,rust-bstr-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Handle internal git command execution")
-    (description
-     "This package provides a crate of the gitoxide project handling internal git
-command execution.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1))))))
 
 (define-public rust-gix-commitgraph-0.22
   (package
