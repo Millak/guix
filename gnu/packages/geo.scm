@@ -2609,7 +2609,6 @@ orienteering sport.")
          ("gdal" ,gdal)
          ("geos" ,geos)
          ("glu" ,glu)
-         ("lapack" ,lapack)
          ("libpng" ,libpng)
          ("libtiff" ,libtiff)
          ("mesa" ,mesa)
@@ -2643,6 +2642,11 @@ orienteering sport.")
                              (guix build python-build-system))
          #:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'fix-lapack
+             (lambda _
+               (substitute* "./configure"
+                 (("-lblas") "-lopenblas")
+                 (("-llapack") "-lopenblas"))))
            (replace 'configure
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let ((shell (search-input-file inputs "/bin/bash")))
