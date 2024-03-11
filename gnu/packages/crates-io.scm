@@ -62233,14 +62233,14 @@ extensions.")
 (define-public rust-similar-2
   (package
     (name "rust-similar")
-    (version "2.2.1")
+    (version "2.4.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "similar" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1kszsllryv6lh6771ah0apqk57qh4jp9mrlr1hhkiq6smx2cn2j2"))))
+                "08gspd5a2w21k9s641z6fxvrzj34611rcjbjr5685vh9r8da9zij"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
