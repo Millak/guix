@@ -18529,14 +18529,14 @@ Bioconductor packages.")
 (define-public r-rgl
   (package
     (name "r-rgl")
-    (version "1.2.8")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgl" version))
        (sha256
         (base32
-         "1x0p2yldg2mjf64xd5dd0bidzgy7b39w7zn18ghan2rdf0wffdg5"))
+         "0jbda1b4lrkcpdld369687pm7isy69l5sx1wg2yrpvvzvmcppslz"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/CanvasMatrix/CanvasMatrix.min.js"))))
     ;; For OpenGL and X11 support
@@ -18561,10 +18561,10 @@ Bioconductor packages.")
            r-rmarkdown))                ;for vignettes
     (inputs
      (list freetype
-           libpng
            glu
+           libpng
            libx11
-           pandoc
+           zlib
            zlib))
     (propagated-inputs
      (list r-base64enc
