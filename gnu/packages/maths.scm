@@ -1198,7 +1198,7 @@ provide LAPACK for someone who does not have access to a Fortran compiler.")
     (inputs
      `(("mpi" ,openmpi)
        ("fortran" ,gfortran)
-       ("lapack" ,lapack)))             ;for testing only
+       ("lapack" ,openblas)))             ;for testing only
     (arguments
      `(#:configure-flags `("-DBUILD_SHARED_LIBS:BOOL=YES")
        #:phases (modify-phases %standard-phases
