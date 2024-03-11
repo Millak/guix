@@ -28553,21 +28553,18 @@ and mixture of Gaussian models.")
 (define-public r-accsda
   (package
     (name "r-accsda")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "accSDA" version))
        (sha256
         (base32
-         "0jf4x5j9y7a3mvf2ghjp6bxdq1s5jh2sx3x3ar6f3lyzzvrnls4v"))))
+         "1s0c4wy4bzrc2fkka7kl519z1yckp6s4ggzy1ik992ygyprdcs1q"))))
     (properties `((upstream-name . "accSDA")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2
-           r-ggthemes
-           r-gridextra
-           r-mass))
+     (list r-ggplot2 r-gridextra r-mass))
     (home-page "https://github.com/gumeo/accSDA/wiki")
     (synopsis "Accelerated sparse discriminant analysis")
     (description
