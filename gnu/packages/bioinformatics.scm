@@ -9713,7 +9713,7 @@ subsequent visualization, annotation and storage of results.")
      (list
       #:tests? #false ;TEST_EXTRACT_CHR doesn't produce expected files
       #:make-flags
-      #~(list "BLASFLAGS=-llapack -lopenblas"
+      #~(list "BLASFLAGS=-lopenblas"
               "NO_SSE42=1"
               "NO_AVX2=1"
               "STATIC_ZSTD="
@@ -9740,7 +9740,7 @@ subsequent visualization, annotation and storage of results.")
                            (string-append
                             (assoc-ref outputs "out") "/bin")))))))
     (inputs
-     (list lapack openblas zlib `(,zstd "lib")))
+     (list openblas zlib `(,zstd "lib")))
     (native-inputs
      (list diffutils plink python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")
