@@ -2514,7 +2514,7 @@ the library crate of Cargo.")
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo" ,rust-cargo-0.76)
+        ("rust-cargo" ,rust-cargo)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
         ("rust-cbindgen" ,rust-cbindgen-0.26)
         ("rust-cc" ,rust-cc-1)
