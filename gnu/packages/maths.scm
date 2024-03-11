@@ -9789,7 +9789,6 @@ computation is supported via MPI.")
                   fftw
                   gettext-minimal
                   hdf5-1.10
-                  lapack
                   libarchive
                   libx11
                   libxml2
