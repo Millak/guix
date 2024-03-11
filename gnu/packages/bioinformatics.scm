@@ -9662,8 +9662,8 @@ accessed/downloaded on demand across HTTP.")
     (arguments
      `(#:tests? #f ;no "check" target
        #:make-flags ,#~(list (string-append "LIB_LAPACK="
-                                            #$(this-package-input "lapack")
-                                            "/lib/liblapack.so")
+                                            #$(this-package-input "openblas")
+                                            "/lib/libopenblas.so")
                              "WITH_LAPACK=1"
                              "FORCE_DYNAMIC=1"
                              ;; disable phoning home
@@ -9678,7 +9678,7 @@ accessed/downloaded on demand across HTTP.")
                                        "/bin/")))
                (install-file "plink" bin)))))))
     (inputs
-     (list zlib lapack))
+     (list zlib openblas))
     (native-inputs
      (list unzip gcc-8))
     (home-page "http://pngu.mgh.harvard.edu/~purcell/plink/")
