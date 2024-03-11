@@ -1434,7 +1434,7 @@ Extern C linkage permits the package routines to be called from C++.")
                 "153kj4wx386609g21hw3cv5yxps62qqrc64zwb9ryd2xad1w1a4y"))))
     (build-system gnu-build-system)
     (native-inputs (list gfortran pkg-config))
-    (inputs (list cbc ipopt lapack))
+    (inputs (list cbc ipopt openblas))
     (home-page "https://coin-or.github.io/Bonmin/")
     (synopsis "Basic Open-source Nonlinear Mixed INteger programming")
     (description "Bonmin is a code for solving general MINLP (Mixed Integer
