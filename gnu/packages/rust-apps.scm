@@ -2503,14 +2503,14 @@ the library crate of Cargo.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.29+cargo-0.76.0")
+    (version "0.9.30+cargo-0.77.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "03ks9rl2skvf5j93sbmbz6l72k5cgvf4hc0nhnp7aadrvb05v5sr"))))
+         (base32 "0if4cl1sk67v5xzxbphnnqg07fphxrh08bgji0gj23fvbiiy6xzc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2528,7 +2528,7 @@ the library crate of Cargo.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.7)
+        ("rust-toml" ,rust-toml-0.8)
         ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (native-inputs
      (list pkg-config))
