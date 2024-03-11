@@ -3128,13 +3128,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "12skkbc59alw3asvw36x7nvibx68ccfiqdlgs8b5cvdns5j47f9n"))))
+        (base32 "1rwvzjpidz0sfp52mqgs25599hbvxyc4gdc1yk0kdm8aynhdwi82"))))
     (build-system pyproject-build-system)
     (arguments
      (list
