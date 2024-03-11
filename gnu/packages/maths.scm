@@ -2764,9 +2764,9 @@ fixed point (16.16) format.")
                    (lambda* (#:key tests? #:allow-other-keys)
                      (substitute* "test/Makefile"
                        (("LIBBLAS .*")
-                        "LIBBLAS = -lblas\n")
+                        "LIBBLAS = -lopenblas\n")
                        (("LIBLAPACK .*")
-                        "LIBLAPACK = -llapack\n"))
+                        "LIBLAPACK = -lopenblas\n"))
                      (when tests?
                        (with-directory-excursion "test"
                          (mkdir "obj")
@@ -2785,7 +2785,7 @@ fixed point (16.16) format.")
                                                     "/include/FLAME.h")
                                      (string-append static "/include"))))))))
       (inputs (list gfortran))
-      (native-inputs (list lapack perl python-wrapper))
+      (native-inputs (list openblas perl python-wrapper))
       (synopsis "High-performance library for @acronym{DLA, dense linear algebra} computations")
       (description "@code{libflame} is a portable library for dense matrix
 computations, providing much of the functionality present in LAPACK, developed
