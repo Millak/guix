@@ -1650,7 +1650,6 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
            libnsl))
     (inputs
      `(("giflib" ,giflib)
-       ("lapack" ,lapack)
        ("libjpeg" ,libjpeg-turbo)
        ("libpng" ,libpng)
        ("libx11" ,libx11)
