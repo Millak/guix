@@ -3325,19 +3325,19 @@ Rust implementation of Git.")
 (define-public rust-gix-quote-0.4
   (package
     (name "rust-gix-quote")
-    (version "0.4.10")
+    (version "0.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-quote" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07rjs58hp9mi41dpkd8idczaqdmhi08zi0pv206rcfnp0c1w2zcz"))))
+        (base32 "0va98gn8dw4v5qmq245rk5r12vgjqydavdy2avmwcxfrawli06sd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
-        ("rust-btoi" ,rust-btoi-0.4)
+        ("rust-gix-utils" ,rust-gix-utils-0.1)
         ("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://github.com/Byron/gitoxide")
     (synopsis "Various quotations used by git")
