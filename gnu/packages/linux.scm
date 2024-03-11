@@ -4330,37 +4330,27 @@ to use Linux' inotify mechanism, which allows file accesses to be monitored.")
                 "0am54mi5rk72g5q7k6l6f36gw3r9vwgjmyna43ywcjhqmakyx00b"))
               (patches (search-patches "kmod-module-directory.patch"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config
-           ;; For tests.
-           zstd))
-    (inputs
-     `(("xz" ,xz)
-       ("zlib" ,zlib)
-       ("zstd-lib" ,zstd "lib")))
     (arguments
-     `(#:configure-flags '("--with-xz" "--with-zlib" "--with-zstd"
-                           "--disable-test-modules")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-tests
-           (lambda _
-             ;; XXX: These tests need '--sysconfdir=/etc' to pass.
-             (substitute* "Makefile.in"
-               (("testsuite/test-modprobe") "")
-               (("testsuite/test-depmod") "")
-               (("testsuite/test-blacklist") ""))
-             #t))
-         (add-after 'install 'install-modprobe&co
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (for-each (lambda (tool)
-                           (symlink "kmod"
-                                    (string-append bin "/" tool)))
-                         '("insmod" "rmmod" "lsmod" "modprobe"
-                           "modinfo" "depmod"))
-               #t))))))
+     (list #:configure-flags #~(list "--with-xz" "--with-zlib" "--with-zstd"
+                                     "--disable-test-modules")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-tests
+                 (lambda _
+                   ;; XXX: These tests need '--sysconfdir=/etc' to pass.
+                   (substitute* "Makefile.in"
+                     (("testsuite/test-modprobe") "")
+                     (("testsuite/test-depmod") "")
+                     (("testsuite/test-blacklist") ""))))
+               (add-after 'install 'install-modprobe&co
+                 (lambda _
+                   (for-each (lambda (tool)
+                               (symlink "kmod"
+                                        (string-append #$output "/bin/" tool)))
+                             '("insmod" "rmmod" "lsmod" "modprobe"
+                               "modinfo" "depmod")))))))
+    (native-inputs (list pkg-config zstd)) ;zstd needed for tests
+    (inputs (list xz zlib `(,zstd "lib")))
     (supported-systems (delete "i586-gnu" %supported-systems))
     (home-page "https://www.kernel.org/")
     (synopsis "Kernel module tools")
