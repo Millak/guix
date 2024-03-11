@@ -2434,8 +2434,37 @@ Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-negotiate-0.10
+  (package
+    (name "rust-gix-negotiate")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-negotiate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0540dz6pcybn1g3mq47nvpnmj90akkrasl4b07fv6lf0v766m7wp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.22)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-object" ,rust-gix-object-0.39)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.10)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Implements Git's negotiation algorithms as part of Gixoxide")
+    (description
+     "Gitoxide is a pure Rust implementation of Git.  This package consists of
+Git's negotiation algorithms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-negotiate-0.9
   (package
+    (inherit rust-gix-negotiate-0.10)
     (name "rust-gix-negotiate")
     (version "0.9.0")
     (source
@@ -2445,7 +2474,6 @@ Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0zxnxfjjqxap8plkhz5f4h0gwm83ain229y2vhwwxjgcj7sdqp1a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; user of undeclared crate gix_testtools
        #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
@@ -2455,13 +2483,7 @@ Gitoxide, a pure Rust implementation of Git.")
                        ("rust-gix-object" ,rust-gix-object-0.38)
                        ("rust-gix-revwalk" ,rust-gix-revwalk-0.9)
                        ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Implements Git's negotiation algorithms as part of Gixoxide")
-    (description
-     "Gitoxide is a pure Rust implementation of Git.  This package consists of
-Git's negotiation algorithms.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-negotiate-0.8
   (package
