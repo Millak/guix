@@ -906,7 +906,7 @@ safety and thread safety guarantees.")
                (("features = \\[\"fs\"" all)
                 (string-append all ", \"use-libc\""))))))))))
 
-(define rust-1.74
+(define-public rust-1.74
   (let ((base-rust (rust-bootstrapped-package rust-1.73 "1.74.1"
                     "07930r17dkj3dnsrmilywb6p9i2g2jx56ndfpa2wh8crzhi3xnv7")))
     (package
@@ -938,7 +938,7 @@ safety and thread safety guarantees.")
                (delete 'revert-riscv-pause-instruction))))
          (package-arguments base-rust))))))
 
-(define rust-1.75
+(define-public rust-1.75
   (let ((base-rust (rust-bootstrapped-package rust-1.74 "1.75.0"
                     "1260mf3066ki6y55pvr35lnf54am6z96a3ap3hniwd4xpi2rywsv")))
     (package
