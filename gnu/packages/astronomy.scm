@@ -411,7 +411,6 @@ wide set of telescopes.")
            fftwf
            gfortran
            hdf5
-           lapack
            ncurses
            openblas
            python
