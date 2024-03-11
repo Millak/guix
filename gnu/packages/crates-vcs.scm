@@ -4440,8 +4440,42 @@ package contains validation functions for various kinds of names in Git.")
        (("rust-bstr" ,rust-bstr-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-worktree-0.28
+  (package
+    (name "rust-gix-worktree")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d30k1748k5zdxa24ifww9ym16lga7bphz8ir3lan57f3ph0l7bz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.20)
+                       ("rust-gix-features" ,rust-gix-features-0.36)
+                       ("rust-gix-fs" ,rust-gix-fs-0.8)
+                       ("rust-gix-glob" ,rust-gix-glob-0.14)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-ignore" ,rust-gix-ignore-0.9)
+                       ("rust-gix-index" ,rust-gix-index-0.27)
+                       ("rust-gix-object" ,rust-gix-object-0.39)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Gitoxide functions for handling shared Git worktree types and utilities")
+    (description
+     "This package provides functions for handling shared Git worktree related
+types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-worktree-0.27
   (package
+    (inherit rust-gix-worktree-0.28)
     (name "rust-gix-worktree")
     (version "0.27.0")
     (source
@@ -4451,7 +4485,6 @@ package contains validation functions for various kinds of names in Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1zfpqbrxxwjjhjk1rn60rmajxm4f7ix2jbx44vklz9nv47kpkbyx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
@@ -4464,14 +4497,7 @@ package contains validation functions for various kinds of names in Git.")
                        ("rust-gix-index" ,rust-gix-index-0.26)
                        ("rust-gix-object" ,rust-gix-object-0.38)
                        ("rust-gix-path" ,rust-gix-path-0.10)
-                       ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Gitoxide functions for handling shared Git worktree types and utilities")
-    (description
-     "This package provides functions for handling shared Git worktree related
-types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-gix-worktree-0.26
   (package
