@@ -3560,17 +3560,17 @@ a pure Rust implementation of Git.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-revision-0.23
+(define-public rust-gix-revision-0.24
   (package
     (name "rust-gix-revision")
-    (version "0.23.0")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-revision" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1215fz886j5gzf31kg32g566vm9pds5679d4d9vg79sr6k3pma9c"))))
+        (base32 "0i4mb8d34ar2g7flwjbnf8vwb0xlzaa078sy66y38m6f20bxapgy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
@@ -3578,8 +3578,8 @@ a pure Rust implementation of Git.")
                        ("rust-gix-date" ,rust-gix-date-0.8)
                        ("rust-gix-hash" ,rust-gix-hash-0.13)
                        ("rust-gix-hashtable" ,rust-gix-hashtable-0.4)
-                       ("rust-gix-object" ,rust-gix-object-0.38)
-                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.9)
+                       ("rust-gix-object" ,rust-gix-object-0.39)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.10)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))
@@ -3590,6 +3590,30 @@ a pure Rust implementation of Git.")
      "This package is part of Gitoxide, a pure Rust implementation of Git.  It
 handles finding names and parsing specifications.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-revision-0.23
+  (package
+    (inherit rust-gix-revision-0.24)
+    (name "rust-gix-revision")
+    (version "0.23.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1215fz886j5gzf31kg32g566vm9pds5679d4d9vg79sr6k3pma9c"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.4)
+                       ("rust-gix-object" ,rust-gix-object-0.38)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.9)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revision-0.22
   (package
