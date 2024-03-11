@@ -5834,7 +5834,7 @@ of nucleic acid binding proteins.")
                          (find-files "../bin" ".*"))
                #t))))))
     (inputs
-     (list gsl lapack openblas perl
+     (list gsl openblas perl
            `(,gfortran "lib")))
     (home-page "https://github.com/DReichLab/EIG")
     (synopsis "Tools for population genetics")
