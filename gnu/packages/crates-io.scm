@@ -57547,8 +57547,37 @@ rustc compiler.")
      "This package provides a tool to manipulate rustdoc comments.")
     (license license:asl2.0)))
 
+(define-public rust-rustfix-0.7
+  (package
+    (name "rust-rustfix")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustfix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xaicbgcbvwkf4m9wxmd8jic1a1di0k63mjlyd74jbiap6z0rhby"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Automatically apply the suggestions made by rustc")
+    (description "Automatically apply the suggestions made by rustc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustfix-0.6
   (package
+    (inherit rust-rustfix-0.7)
     (name "rust-rustfix")
     (version "0.6.1")
     (source
@@ -57558,18 +57587,13 @@ rustc compiler.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "10b4qlvfwljp7yss8afj0lnn8vqj78n93n9vfmkq9616kqyqblpc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency chain here
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/rust-lang/rustfix")
-    (synopsis "Automatically apply the suggestions made by rustc")
-    (description "Automatically apply the suggestions made by rustc.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-rustfix-0.5
   (package
