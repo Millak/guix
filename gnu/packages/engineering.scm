@@ -1588,7 +1588,7 @@ or an Ethernet connection.")
     (native-inputs
      `(("fortran" ,gfortran)))
     (inputs
-     (list lapack))
+     (list openblas))
     (home-page "https://github.com/stevengj/harminv")
     (synopsis "Harmonic inversion solver")
     (description
