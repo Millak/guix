@@ -2859,7 +2859,7 @@ with constraints.")
     (native-inputs (list pkg-config))
     ;; These inputs need to be propagated to satisfy dependent packages.
     (propagated-inputs (list eigen gflags glog))
-    (inputs (list openblas lapack suitesparse))
+    (inputs (list openblas suitesparse))
     (synopsis "C++ library for solving large optimization problems")
     (description
      "Ceres Solver is a C++ library for modeling and solving large,
