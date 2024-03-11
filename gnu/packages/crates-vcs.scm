@@ -3019,14 +3019,14 @@ feature pre-selected.")
 (define-public rust-gix-path-0.10
   (package
     (name "rust-gix-path")
-    (version "0.10.4")
+    (version "0.10.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-path" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h1fkwz2ll7ahyd3sy127w3bkcv4lncl1ml37z6bxldf44k2i9hl"))))
+        (base32 "1f2i88q284b29jhlpdy872h60ws06kvfdqw1db6vfif3llhvbq39"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
