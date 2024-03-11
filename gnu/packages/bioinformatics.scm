@@ -8673,7 +8673,9 @@ predicts the locations of structural units in the sequences.")
              (substitute* "Makefile"
                (("INSTALLDIR=.*")
                 (string-append
-                 "INSTALLDIR=" (assoc-ref outputs "out") "/bin\n")))
+                 "INSTALLDIR=" (assoc-ref outputs "out") "/bin\n"))
+               (("-llapack -lblas")
+                "-lopenblas"))
              #t))
          (add-before 'install 'make-install-directory
            ;; The install directory is not created during 'make install'.
@@ -8697,7 +8699,6 @@ predicts the locations of structural units in the sequences.")
        ("perl" ,perl)
        ("python" ,python-wrapper)
        ("blast+" ,blast+)
-       ("lapack" ,lapack)
        ("openblas" ,openblas)))
     (native-inputs
      (list which))
