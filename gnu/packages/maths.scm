@@ -3263,11 +3263,11 @@ compilers.")
            glu
            gmp
            hdf5
-           lapack
            libx11
            libxext
            mesa
            metis
+           openblas
            opencascade-occt))
     (inputs
      (list fontconfig
