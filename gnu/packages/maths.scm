@@ -1071,7 +1071,7 @@ halfspaces) or by their double description with both representations.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list eigen lapack gfortran))
+     (list eigen openblas gfortran))
     (synopsis "Fortran subroutines for solving eigenvalue problems")
     (description
      "ARPACK-NG is a collection of Fortran77 subroutines designed to solve
