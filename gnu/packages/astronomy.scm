@@ -3140,9 +3140,12 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Can't detect opencv-python version. The input opencv might
-          ;; not set the version correctly.
-          (delete 'sanity-check)
+          (add-before 'build 'silent-check-for-opencv
+            (lambda _
+              ;; XXX: Can't detect opencv-python version. The input opencv
+              ;; might not set the version correctly.
+              (substitute* "pyproject.toml"
+                ((".*opencv-python-headless.*") ""))))
           (add-before 'check 'build-extensions
             (lambda _
               ;; Cython extensions have to be built before running the tests.
