@@ -56468,8 +56468,48 @@ please consider using @code{async-std} or @code{tokio}.")
     (description "This package provides a Tokio-based asynchronous runtime.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rusqlite-0.30
+  (package
+    (name "rust-rusqlite")
+    (version "0.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rusqlite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kgjk7h53wp8k2di2j83ivf50f0bk6rg7bq8j36ygxb42lb4d057"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-csv" ,rust-csv-1)
+                       ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+                       ("rust-fallible-streaming-iterator" ,rust-fallible-streaming-iterator-0.1)
+                       ("rust-hashlink" ,rust-hashlink-0.8)
+                       ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.27)
+                       ("rust-rusqlite-macros" ,rust-rusqlite-macros-0.1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1)
+                                   ("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-unicase" ,rust-unicase-2)
+                                   ("rust-uuid" ,rust-uuid-1))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/rusqlite/rusqlite")
+    (synopsis "Wrapper for SQLite")
+    (description "This crate provides a wrapper for SQLite.")
+    (license license:expat)))
+
 (define-public rust-rusqlite-0.29
   (package
+    (inherit rust-rusqlite-0.30)
     (name "rust-rusqlite")
     (version "0.29.0")
     (source (origin
@@ -56479,7 +56519,6 @@ please consider using @code{async-std} or @code{tokio}.")
               (sha256
                (base32
                 "1wj12rmwa8g0bfhsk307fl84k0xcw8ji872xx3k447apdl1rv6sl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
@@ -56501,12 +56540,7 @@ please consider using @code{async-std} or @code{tokio}.")
         ("rust-regex" ,rust-regex-1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-unicase" ,rust-unicase-2)
-        ("rust-uuid" ,rust-uuid-1))))
-    (inputs (list sqlite))
-    (home-page "https://github.com/rusqlite/rusqlite")
-    (synopsis "Wrapper for SQLite")
-    (description "This crate provides a wrapper for SQLite.")
-    (license license:expat)))
+        ("rust-uuid" ,rust-uuid-1))))))
 
 (define-public rust-rusqlite-0.26
   (package
