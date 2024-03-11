@@ -6791,7 +6791,6 @@ A unique design feature of Trilinos is its focus on packages.")
      (list arpack-ng
            openblas
            gfortran
-           lapack
            muparser
            zlib))
     (propagated-inputs
