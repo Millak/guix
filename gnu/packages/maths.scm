@@ -2152,7 +2152,7 @@ the resulting text.")
                      ;; SOURCE_DATE_EPOCH
                      (lambda _
                        (setenv "FORCE_SOURCE_DATE" "1"))))))
-    (inputs (list lapack fftw))
+    (inputs (list openblas fftw))
     ;; FIXME: Even though the fonts are available dvips complains:
     ;; "Font cmmi10 not found; characters will be left blank."
     (native-inputs
