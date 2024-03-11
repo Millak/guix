@@ -2517,7 +2517,6 @@ written in C++.")
           (base32 "16w90za8narkfi590cxj4p7vc1f5sdxc927g5hk6kh4l3mf6iisl"))))
       (inputs
        (list alsa-lib
-             lapack ;compared to base kaldi, replacing `(,gfortran "lib")
              glib
              gstreamer
              jack-2
@@ -2536,7 +2535,6 @@ written in C++.")
             (replace 'configure
               (lambda _
                 (let ((portaudio #$(this-package-input "portaudio"))
-                      (lapack    #$(this-package-input "lapack"))
                       (openfst   #$(this-package-input "openfst"))
                       (openblas  #$(this-package-input "openblas")))
                   #$@(if (target-x86?)
@@ -2570,7 +2568,7 @@ written in C++.")
                      (string-append "OPENBLASROOT=\"" openblas "\""))
                     (("-L\\$OPENBLASLIBDIR -l:libopenblas.a -l:libblas.a -l:liblapack.a -l:libf2c.a")
                      (string-append "-L$OPENBLASLIBDIR -lopenblas "
-                                    "-L" lapack "/lib -lblas -llapack")))
+                                    "-L" openblas "/lib -lopenblas")))
                   (mkdir-p #$output) ; must exist
                   (setenv "CONFIG_SHELL" (which "bash"))
                   (setenv "OPENFST_VER" #$(package-version openfst))
