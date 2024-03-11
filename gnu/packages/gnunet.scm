@@ -65,6 +65,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages upnp)
@@ -120,7 +121,12 @@
     ;; * librpm (rpm)    ; investigate failure
     ;; * libtidy-html (tidy-html) ; investigate failure
     (native-inputs
-     (list pkg-config))
+     (list autoconf-2.71
+           automake
+           gettext-minimal
+           libtool
+           pkg-config
+           texinfo))
     (inputs
      (list bzip2
            exiv2
