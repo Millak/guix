@@ -9664,6 +9664,7 @@ capabilities.")
     (description "This package provides spec generation for clap-rs/clap.")
     (license license:expat)))
 
+;; TODO: Remove this package in favor of rust-cargo in rust-apps.scm.
 (define-public rust-cargo-0.76
   (package
     (name "rust-cargo")
