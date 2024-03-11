@@ -2956,10 +2956,10 @@ can solve two kinds of problems:
            libjpeg-turbo
 
            hdf5
-           lapack
            libsndfile
            libxft
            mesa
+           openblas
            pcre
            portaudio
            qhull
