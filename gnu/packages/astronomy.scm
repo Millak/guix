@@ -4369,13 +4369,13 @@ package such as asdf-astropy.")
 (define python-asdf-coordinates-schemas
   (package
     (name "python-asdf-coordinates-schemas")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_coordinates_schemas" version))
        (sha256
-        (base32 "1x6mipg76c6qldq8s2p2wpsq0cpr9b5krp62xskljdz1f84abyg3"))))
+        (base32 "0kk0rlzv0kkcw6fiwvps4n0x05867xc9hxyyzica31zcvhan12y9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
