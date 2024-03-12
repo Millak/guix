@@ -1979,13 +1979,13 @@ attempting to maintain ISTP compliance
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "11.17.16")
+    (version "11.17.19")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "crds" version))
               (sha256
                (base32
-                "0j84l7132mvwww2y83h2dgz5qw792ilp3hml4h12n7ydks0w0534"))))
+                "1x48yw6jnz7dw0myc86ds0qaki6v1anqaihd5qzrxwrrl61kyp6x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
