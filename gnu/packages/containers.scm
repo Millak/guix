@@ -6,6 +6,7 @@
 ;;; Copyright © 2023 Zongyuan Li <zongyuan.li@c0x0o.me>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages python)
   #:use-module (gnu packages networking)
@@ -160,20 +162,48 @@ runtime (like runc or crun) for a single container.")
         (base32 "1g14q1sm3026h9n85v1gc3m2v9sgrac2mr9yrkh98qg5yahzmpc3"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
-    (inputs
-     (list podman wget))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-before 'install 'refer-to-inputs
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* (find-files "." "^distrobox[^.]*[^1]$")
-                     (("podman") (search-input-file inputs "/bin/podman"))
-                     (("wget") (search-input-file inputs "/bin/wget"))
-                     (("command -v") "test -x"))))
+               ;; Use WRAP-SCRIPT to wrap all of the scripts of distrobox,
+               ;; excluding the host side ones.
+               (add-after 'install 'wrap-scripts
+                 (lambda _
+                   (let ((path (search-path-as-list
+                                 (list "bin")
+                                 (list #$(this-package-input "podman")
+                                       #$(this-package-input "wget")))))
+                     (for-each (lambda (script)
+                                 (wrap-script
+                                   (string-append #$output "/bin/distrobox-"
+                                                  script)
+                                   `("PATH" ":" prefix ,path)))
+                               '("assemble"
+                                 "create"
+                                 "enter"
+                                 "ephemeral"
+                                 "generate-entry"
+                                 "list"
+                                 "rm"
+                                 "stop"
+                                 "upgrade")))))
+               ;; These scripts are used in the container side and the
+               ;; /gnu/store path is not shared with the containers.
+               (add-after 'patch-shebangs 'unpatch-shebangs
+                 (lambda _
+                   (for-each (lambda (script)
+                               (substitute*
+                                 (string-append #$output "/bin/distrobox-"
+                                                script)
+                                 (("#!.*/bin/sh") "#!/bin/sh\n")))
+                             '("export" "host-exec" "init"))))
                (replace 'install
                  (lambda _
                    (invoke "./install" "--prefix" #$output))))))
+    (inputs
+     (list guile-3.0 ; for wrap-script
+           podman
+           wget))
     (home-page "https://distrobox.privatedns.org/")
     (synopsis "Create and start containers highly integrated with the hosts")
     (description
