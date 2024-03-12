@@ -1387,13 +1387,14 @@ void DerivationGoal::buildDone()
                make sure that there's no stale file descriptor pointing to it
                (CVE-2024-27297).  */
 	    foreach (DerivationOutputs::iterator, i, drv.outputs) {
-		if (pathExists(i->second.path)) {
-		    Path pivot = i->second.path + ".tmp";
-		    copyFileRecursively(i->second.path, pivot, true);
-		    int err = rename(pivot.c_str(), i->second.path.c_str());
+		Path output = chrootRootDir + i->second.path;
+		if (pathExists(output)) {
+		    Path pivot = output + ".tmp";
+		    copyFileRecursively(output, pivot, true);
+		    int err = rename(pivot.c_str(), output.c_str());
 		    if (err != 0)
 			throw SysError(format("renaming `%1%' to `%2%'")
-				       % pivot % i->second.path);
+				       % pivot % output);
 		}
 	    }
 	}

@@ -422,6 +422,7 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 	if (destinationFd == -1) throw SysError(format("opening `%1%'") % source);
 
 	copyFile(sourceFd, destinationFd);
+	fchown(destinationFd, st.st_uid, st.st_gid);
     } else if (S_ISLNK(st.st_mode)) {
 	char target[st.st_size + 1];
 	ssize_t result = readlinkat(sourceroot, source.c_str(), target, st.st_size);
@@ -430,6 +431,8 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 	int err = symlinkat(target, destinationroot, destination.c_str());
 	if (err != 0)
 	    throw SysError(format("creating symlink `%1%'") % destination);
+	fchownat(destinationroot, destination.c_str(),
+		 st.st_uid, st.st_gid, AT_SYMLINK_NOFOLLOW);
     } else if (S_ISDIR(st.st_mode)) {
 	int err = mkdirat(destinationroot, destination.c_str(), 0755);
 	if (err != 0)
@@ -455,6 +458,7 @@ static void copyFileRecursively(int sourceroot, const Path &source,
         for (auto & i : readDirectory(sourceFd))
 	    copyFileRecursively((int)sourceFd, i.name, (int)destinationFd, i.name,
 				deleteSource);
+	fchown(destinationFd, st.st_uid, st.st_gid);
     } else throw Error(format("refusing to copy irregular file `%1%'") % source);
 
     if (deleteSource)
