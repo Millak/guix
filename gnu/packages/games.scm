@@ -938,6 +938,41 @@ original rogue game found on 4.2BSD.")
     (home-page "https://github.com/Davidslv/rogue")
     (license license:bsd-3)))
 
+(define-public sgt-puzzles
+  (let ((commit "80aac3104096aee4057b675c53ece8e60793aa90")
+        (revision "0"))
+    (package
+      (name "sgt-puzzles")
+      (version (git-version "20240302" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.tartarus.org/simon/puzzles.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0z4clv0xi98q28riz323ppn165cm62gj1c6h3xdd2sym4v8gy65z"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;No tests.
+        #:configure-flags #~(list "-DNAME_PREFIX=sgt-")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-xdg-open-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "gtk.c"
+                  (("(#define HELP_BROWSER_PATH).+" all define)
+                   (format #f "~a ~s~%" define
+                           (search-input-file inputs "/bin/xdg-open")))))))))
+      (inputs (list gtk+ xdg-utils))
+      (native-inputs (list pkg-config perl imagemagick halibut))
+      (home-page "https://www.chiark.greenend.org.uk/~sgtatham/puzzles/")
+      (synopsis "Simon Tatham's portable puzzle collection")
+      (description "Simon Tatham's Portable Puzzle Collection contains a number of
+popular puzzle games for one player.")
+      (license license:expat))))
 
 (define-public bzflag
   (package
