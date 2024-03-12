@@ -28,7 +28,7 @@
 (channel-news
  (version 0)
 
- (entry (commit "8f4ffb3fae133bb21d7991e97c2f19a7108b1143")
+ (entry (commit "ff1251de0bc327ec478fc66a562430fbf35aef42")
         (title
          (en "Daemon vulnerability allowing store corruption has been fixed")
          (de "Schwachstelle im Daemon behoben, durch die der Store verfälscht werden konnte")
