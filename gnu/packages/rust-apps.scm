@@ -1873,7 +1873,29 @@ rebase.")
                                 (assoc-ref inputs "clang") "/lib")))
                (install-file "target/release/bindgen" bin)
                (wrap-program bindgen
-                 `("LIBCLANG_PATH" = (,llvm-dir)))))))))
+                 `("LIBCLANG_PATH" = (,llvm-dir))))))
+         (add-after 'install 'install-completions
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (bindgen (string-append out "/bin/bindgen")))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (with-output-to-file
+                 (string-append share "/bash-completion/completions/bindgen")
+                 (lambda _ (invoke bindgen "--generate-shell-completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/bindgen.fish")
+                 (lambda _ (invoke bindgen "--generate-shell-completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_bindgen")
+                 (lambda _ (invoke bindgen "--generate-shell-completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/bindgen")
+                 (lambda _
+                   (invoke bindgen "--generate-shell-completions" "elvish")))))))))
     (inputs (list bash-minimal clang))
     (home-page "https://rust-lang.github.io/rust-bindgen/")
     (synopsis "Generate Rust FFI bindings to C and C++ libraries")
