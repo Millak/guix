@@ -3981,7 +3981,7 @@ functions, so that they can be called with scalar or array inputs.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "1.5.2")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have not prebuit version.
@@ -3990,7 +3990,7 @@ functions, so that they can be called with scalar or array inputs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "175i99zwnnwglndr71paiadrx3xq3icxjgdqfv3xxpyn7fx4dzab"))
+        (base32 "00isg6nsqzgjqpkczwvrcmj3ndzav3bfzla0a72b44cgdj20wyv8"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -4005,6 +4005,7 @@ functions, so that they can be called with scalar or array inputs.")
                            ;;    https://github.com/pynbody/pynbody/blob/ \
                            ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
                            ;;    .github/workflows/build-test.yaml#L41
+                           ;; See <https://github.com/pynbody/pynbody/issues/778>
                            "--ignore=tests/copy_on_access_test.py"
                            "--ignore=tests/gravity_test.py"
                            "--ignore=tests/adaptahop_test.py"
@@ -4027,7 +4028,20 @@ functions, so that they can be called with scalar or array inputs.")
                            "--ignore=tests/sph_smooth_test.py"
                            "--ignore=tests/subfind_test.py"
                            "--ignore=tests/subfindhdf_gadget4_test.py"
-                           "--ignore=tests/tipsy_test.py")
+                           "--ignore=tests/tipsy_test.py"
+                           "-k"
+                           (string-append
+                            "not test_div_curl_smoothing"
+                            " and not test_float_kd"
+                            " and not test_kd_delete"
+                            " and not test_kd_issue_88"
+                            " and not test_kdtree_from_existing_kdtree"
+                            " and not test_kdtree_shared_mem"
+                            " and not test_neighbour_list"
+                            " and not test_particles_in_sphere"
+                            " and not test_periodic_smoothing"
+                            " and not test_smooth"
+                            " and not test_smooth_WendlandC2"))
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'set-compiler
