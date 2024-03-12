@@ -196,6 +196,41 @@ following algorithms are available:
 @end itemize")
     (license license:expat)))
 
+(define-public python-ewah-bool-utils
+  (package
+    (name "python-ewah-bool-utils")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ewah_bool_utils" version))
+       (sha256
+        (base32 "11z9vv9m19370j762z100dqhy2ndjzkxk3w9z02lzwadbyibal3h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython python-pytest))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/yt-project/ewah_bool_utils")
+    (synopsis "EWAH Bool Array compression")
+    (description "This package provide a Python wrapper to @acronym{EWAH,
+ Enhanced Word-Aligned Hybrid} compression bitarray method.")
+    (license (list
+              ;; LICENSE: for Python code.
+              license:bsd-3
+              ;; XXX: Check if it's possible to have it as a dedicated package
+              ;; and link here..
+              ;; ewah_bool_utils/cpp/LICENSE: for C++ bundle, sourced from
+              ;; <https://github.com/lemire/EWAHBoolArray>.
+              license:asl2.0))))
+
 (define-public python-pybcj
   (package
     (name "python-pybcj")
