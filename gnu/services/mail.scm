@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
+;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,10 +39,12 @@
   #:use-module (gnu packages dav)
   #:use-module (gnu packages tls)
   #:use-module (guix deprecation)
+  #:use-module ((guix diagnostics) #:select (source-properties->location))
   #:use-module (guix modules)
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (ice-9 curried-definitions)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
@@ -79,10 +82,21 @@
             imap4d-service-type
             %default-imap4d-config-file
 
+            radicale-auth-configuration
+            radicale-auth-configuration?
+            radicale-encoding-configuration
+            radicale-encoding-configuration?
+            radicale-logging-configuration
+            radicale-logging-configuration?
+            radicale-rights-configuration
+            radicale-rights-configuration?
+            radicale-server-configuration
+            radicale-server-configuration?
+            radicale-storage-configuration
+            radicale-storage-configuration?
             radicale-configuration
             radicale-configuration?
             radicale-service-type
-            %default-radicale-config-file
 
             rspamd-configuration
             rspamd-service-type
@@ -1929,23 +1943,258 @@ exim_group = exim
 ;;; Radicale.
 ;;;
 
-(define-record-type* <radicale-configuration>
-  radicale-configuration make-radicale-configuration
-  radicale-configuration?
-  (package     radicale-configuration-package
-               (default radicale))
-  (config-file radicale-configuration-config-file
-               (default %default-radicale-config-file)))
+;; Maybe types
 
-(define %default-radicale-config-file
-  (plain-file "radicale.conf" "
-[auth]
-type = htpasswd
-htpasswd_filename = /var/lib/radicale/users
-htpasswd_encryption = plain
+(define (comma-separated-ip-list? lst)
+  (every (lambda (s)
+           (or (string-prefix? "localhost" s)
+               ((@@ (gnu services vpn) ipv4-address?) s)
+               ((@@ (gnu services vpn) ipv6-address?) s)))
+         lst))
 
-[server]
-hosts = localhost:5232"))
+(define-maybe boolean (prefix radicale-))
+(define-maybe comma-separated-ip-list (prefix radicale-))
+(define-maybe file-name (prefix radicale-))
+(define-maybe non-negative-integer (prefix radicale-))
+(define-maybe string (prefix radicale-))
+(define-maybe symbol (prefix radicale-))
+
+;; Serializers and sanitizers
+
+(define (radicale-serialize-field field-name value)
+  ;; XXX We quote the un-gexp form here because otherwise symbol-literals are
+  ;; treated as variables. We can get away with this because all of our other
+  ;; field value types are primitives by the time they get here so are printed
+  ;; the same whether or not they are quoted.
+  #~(format #f "~a = ~a\n" #$(uglify-field-name field-name) '#$value))
+
+(define (radicale-serialize-boolean field-name value?)
+  (radicale-serialize-field field-name (if value? "True" "False")))
+
+(define (radicale-serialize-comma-separated-ip-list field-name value)
+  (radicale-serialize-field field-name (string-join value ", ")))
+
+(define radicale-serialize-file-name radicale-serialize-field)
+
+(define radicale-serialize-non-negative-integer radicale-serialize-field)
+
+(define radicale-serialize-string radicale-serialize-field)
+
+(define radicale-serialize-symbol radicale-serialize-field)
+
+(define ((sanitize-delimited-symbols syms location field) value)
+  (cond
+   ((not (maybe-value-set? value))
+    value)
+   ((member value syms)
+    (string->symbol (uglify-field-name value)))
+   (else
+    (configuration-field-error (source-properties->location location)
+                               field
+                               value))))
+
+;; Section configuration types
+
+(define-configuration radicale-auth-configuration
+  (type
+   maybe-symbol
+   "The method to verify usernames and passwords. Options are @code{none},
+@code{htpasswd}, @code{remote-user}, and @code{http-x-remote-user}.
+
+This value is tied to @code{htpasswd-filename} and @code{htpasswd-encryption}."
+   (sanitizer
+    (sanitize-delimited-symbols '(none htpasswd remote-user http-x-remote-user)
+                                (current-source-location)
+                                'type)))
+  (htpasswd-filename
+   maybe-file-name
+   "Path to the htpasswd file. Use htpasswd or similar to generate this file.")
+  (htpasswd-encryption
+   maybe-symbol
+   "Encryption method used in the htpasswd file. Options are @code{plain},
+@code{bcrypt}, and @code{md5}."
+   (sanitizer
+    (sanitize-delimited-symbols '(plain bcrypt md5)
+                                (current-source-location)
+                                'htpasswd-encryption)))
+  (delay
+   maybe-non-negative-integer
+   "Average delay after failed login attempts in seconds.")
+  (realm
+   maybe-string
+   "Message displayed in the client when a password is needed.")
+  (prefix radicale-))
+
+(define-configuration radicale-encoding-configuration
+  (request
+   maybe-symbol
+   "Encoding for responding requests.")
+  (stock
+   maybe-symbol
+   "Encoding for storing local collections.")
+  (prefix radicale-))
+
+(define-configuration radicale-logging-configuration
+  (level
+   maybe-symbol
+   "Set the logging level. One of @code{debug}, @code{info}, @code{warning},
+@code{error}, or @code{critical}."
+   (sanitizer (sanitize-delimited-symbols '(debug info warning error critical)
+                                          (current-source-location)
+                                          'level)))
+  (mask-passwords?
+   maybe-boolean
+   "Whether to include passwords in logs.")
+  (prefix radicale-))
+
+(define-configuration radicale-rights-configuration
+  (type
+   maybe-symbol
+   "Backend used to check collection access rights. The recommended backend is
+@code{owner-only}. If access to calendars and address books outside the home
+directory of users is granted, clients won't detect these collections and will
+not show them to the user. Choosing any other method is only useful if you
+access calendars and address books directly via URL. Options are
+@code{authenticate}, @code{owner-only}, @code{owner-write}, and
+@code{from-file}."
+   (sanitizer
+    (sanitize-delimited-symbols '(authenticate owner-only owner-write from-file)
+                                (current-source-location)
+                                'type)))
+  (file
+   maybe-file-name
+   "File for the rights backend @code{from-file}.")
+  (prefix radicale-))
+
+(define-configuration radicale-server-configuration
+  (hosts
+   maybe-comma-separated-ip-list
+   "List of IP addresses that the server will bind to.")
+  (max-connections
+   maybe-non-negative-integer
+   "Maximum number of parallel connections. Set to 0 to disable the limit.")
+  (max-content-length
+   maybe-non-negative-integer
+   "Maximum size of the request body in byetes.")
+  (timeout
+   maybe-non-negative-integer
+   "Socket timeout in seconds.")
+  (ssl?
+   maybe-boolean
+   "Whether to enable transport layer encryption.")
+  (certificate
+   maybe-file-name
+   "Path of the SSL certificate.")
+  (key
+   maybe-file-name
+   "Path to the private key for SSL. Only effective if @code{ssl?} is
+@code{#t}.")
+  (certificate-authority
+   maybe-file-name
+   "Path to CA certificate for validating client certificates. This can be used
+to secure TCP traffic between Radicale and a reverse proxy. If you want to
+authenticate users with client-side certificates, you also have to write an
+authentication plugin that extracts the username from the certificate.")
+  (prefix radicale-))
+
+(define-configuration radicale-storage-configuration
+  (type
+   maybe-symbol
+   "Backend used to store data. Options are @code{multifilesystem} and
+@code{multifilesystem-nolock}."
+   (sanitizer
+    (sanitize-delimited-symbols '(multifilesystem multifilesystem-nolock)
+                                (current-source-location)
+                                'type)))
+  (filesystem-folder
+   maybe-file-name
+   "Folder for storing local collections. Created if not present.")
+  (max-sync-token-age
+   maybe-non-negative-integer
+   "Delete sync-tokens that are older than the specified time in seconds.")
+  (hook
+   maybe-string
+   "Command run after changes to storage.")
+  (prefix radicale-))
+
+;; Helpers for using section configurations in the main configuration
+
+;; XXX These indirections are necessary to avoid creating semantic ambiguity
+(define auth-config? radicale-auth-configuration?)
+(define encoding-config? radicale-encoding-configuration?)
+(define headers-file? file-like?)
+(define logging-config? radicale-logging-configuration?)
+(define rights-config? radicale-rights-configuration?)
+(define server-config? radicale-server-configuration?)
+(define storage-config? radicale-storage-configuration?)
+
+(define-maybe auth-config)
+(define-maybe encoding-config)
+(define-maybe headers-file)
+(define-maybe logging-config)
+(define-maybe rights-config)
+(define-maybe server-config)
+(define-maybe storage-config)
+
+(define ((serialize-radicale-section fields) name cfg)
+  #~(format #f "[~a]\n~a\n" '#$name #$(serialize-configuration cfg fields)))
+
+(define serialize-auth-config
+  (serialize-radicale-section radicale-auth-configuration-fields))
+(define serialize-encoding-config
+  (serialize-radicale-section radicale-encoding-configuration-fields))
+(define serialize-logging-config
+  (serialize-radicale-section radicale-logging-configuration-fields))
+(define serialize-rights-config
+  (serialize-radicale-section radicale-rights-configuration-fields))
+(define serialize-server-config
+  (serialize-radicale-section radicale-server-configuration-fields))
+(define serialize-storage-config
+  (serialize-radicale-section radicale-storage-configuration-fields))
+
+(define (serialize-radicale-configuration cfg)
+  (mixed-text-file
+   "radicale.conf"
+   (serialize-configuration cfg radicale-configuration-fields)))
+
+(define-configuration radicale-configuration
+  ;; Only fields whose default value does not match upstream are not maybe-types
+  (package
+   (file-like radicale)
+   "Package that provides @command{radicale}.")
+  (auth
+   maybe-auth-config
+   "Configuration for auth-related variables.")
+  (encoding
+   maybe-encoding-config
+   "Configuration for encoding-related variables.")
+  (headers-file
+   maybe-headers-file
+   "Custom HTTP headers."
+   (serializer
+    (lambda (field-name value)
+      #~(begin
+          (use-modules (ice-9 rdelim))
+          (format #f "[headers]\n~a\n\n"
+                  (with-input-from-file #$value read-string))))))
+  (logging
+   maybe-logging-config
+   "Configuration for logging-related variables.")
+  (rights
+   maybe-rights-config
+   "Configuration for rights-related variables.")
+  (server
+   maybe-server-config
+   "Configuration for server-related variables. Ignored if WSGI is used.")
+  (storage
+   maybe-storage-config
+   "Configuration for storage-related variables.")
+  (web-interface?
+   maybe-boolean
+   "Whether to use Radicale's built-in web interface."
+   (serializer
+    (lambda (_ use?)
+      #~(format #f "[web]\ntype = ~a\n\n" #$(if use? "internal" "none"))))))
 
 (define %radicale-accounts
   (list (user-group
@@ -1959,42 +2208,87 @@ hosts = localhost:5232"))
          (home-directory "/var/empty")
          (shell (file-append shadow "/sbin/nologin")))))
 
-(define radicale-shepherd-service
-  (match-lambda
-    (($ <radicale-configuration> package config-file)
-     (list (shepherd-service
-            (provision '(radicale))
-            (documentation "Run the radicale daemon.")
-            (requirement '(networking))
-            (start #~(make-forkexec-constructor
-                      (list #$(file-append package "/bin/radicale")
-                        "-C" #$config-file)
-                      #:user "radicale"
-                      #:group "radicale"))
-            (stop #~(make-kill-destructor)))))))
+(define (radicale-shepherd-service cfg)
+  (list (shepherd-service
+         (provision '(radicale))
+         (documentation "Run the radicale daemon.")
+         (requirement '(networking))
+         (start #~(make-forkexec-constructor
+                   (list #$(file-append (radicale-configuration-package cfg)
+                                        "/bin/radicale")
+                         "-C" #$(serialize-radicale-configuration cfg))
+                   #:user "radicale"
+                   #:group "radicale"))
+         (stop #~(make-kill-destructor)))))
 
 (define radicale-activation
   (match-lambda
-    (($ <radicale-configuration> package config-file)
+    (($ <radicale-configuration> _ auth-config _ _ _ _ _ storage-config _)
+     ;; Get values for the collections directory
+     ;; See https://radicale.org/v3.html#running-as-a-service
+     (define filesystem-folder-val
+       (if (maybe-value-set? storage-config)
+           (radicale-storage-configuration-filesystem-folder storage-config)
+           storage-config))
+     (define collections-dir
+       (if (maybe-value-set? filesystem-folder-val)
+           filesystem-folder-val
+           "/var/lib/radicale/collections"))
+     (define collections-parent-dir (dirname collections-dir))
+     ;; Get values for the password file directory
+     (define auth-value-set? (maybe-value-set? auth-config))
+     ;; If auth's type is 'none or unset, that means there is no authentication
+     ;; and we don't need to setup files for it
+     (define auth?
+       (and auth-value-set?
+            (not (eq? (radicale-auth-configuration-type auth-config) 'none))))
+     (define password-file-val
+       (if auth-value-set?
+           (radicale-auth-configuration-htpasswd-filename auth-config)
+           auth-config))
+     (define password-file-dir
+       (if (maybe-value-set? password-file-val)
+           (dirname password-file-val)
+           "/etc/radicale"))
      (with-imported-modules '((guix build utils))
        #~(begin
            (use-modules (guix build utils))
-           (let ((uid (passwd:uid (getpw "radicale")))
-                 (gid (group:gid (getgr "radicale"))))
-             (mkdir-p "/var/lib/radicale/collections")
-             (chown "/var/lib/radicale" uid gid)
-             (chown "/var/lib/radicale/collections" uid gid)
-             (chmod "/var/lib/radicale" #o700)))))))
+           (let ((user (getpwnam "radicale")))
+             ;; Collections directory perms
+             (mkdir-p/perms #$collections-dir user #o700)
+             ;; Password file perms
+             (when #$auth?
+               ;; In theory, the password file and thus this directory should already
+               ;; exist because the user has to make them by hand
+               (mkdir-p/perms #$password-file-dir user #o700))))))))
 
 (define radicale-service-type
   (service-type
    (name 'radicale)
-   (description "Run radicale, a small CalDAV and CardDAV server.")
+   (description "Run Radicale, a small CalDAV and CardDAV server.")
    (extensions
     (list (service-extension shepherd-root-service-type radicale-shepherd-service)
           (service-extension account-service-type (const %radicale-accounts))
           (service-extension activation-service-type radicale-activation)))
    (default-value (radicale-configuration))))
+
+(define (generate-radicale-documentation)
+  (generate-documentation
+   `((radicale-configuration
+      ,radicale-configuration-fields
+      (auth     radicale-auth-configuration)
+      (encoding radicale-encoding-configuration)
+      (logging  radicale-logging-configuration)
+      (rights   radicale-rights-configuration)
+      (server   radicale-server-configuration)
+      (storage  radicale-storage-configuration))
+     (radicale-auth-configuration     ,radicale-auth-configuration-fields)
+     (radicale-encoding-configuration ,radicale-encoding-configuration-fields)
+     (radicale-logging-configuration  ,radicale-logging-configuration-fields)
+     (radicale-rights-configuration   ,radicale-rights-configuration-fields)
+     (radicale-server-configuration   ,radicale-server-configuration-fields)
+     (radicale-storage-configuration  ,radicale-storage-configuration-fields))
+   'radicale-configuration))
 
 ;;;
 ;;; Rspamd.

@@ -28248,23 +28248,195 @@ Mailutils Manual}, for details.
 @cindex CardDAV
 
 @defvar radicale-service-type
-This is the type of the @uref{https://radicale.org, Radicale} CalDAV/CardDAV
-server whose value should be a @code{radicale-configuration}.
+This is the type of the @uref{https://radicale.org, Radicale}
+CalDAV/CardDAV server whose value should be a
+@code{radicale-configuration}.  The default configuration matches the
+@uref{https://radicale.org/v3.html#configuration, upstream
+documentation}.
 @end defvar
 
 @deftp {Data Type} radicale-configuration
 Data type representing the configuration of @command{radicale}.
+Available @code{radicale-configuration} fields are:
 
 @table @asis
-@item @code{package} (default: @code{radicale})
-The package that provides @command{radicale}.
+@item @code{package} (default: @code{radicale}) (type: package)
+Package that provides @command{radicale}.
 
-@item @code{config-file} (default: @code{%default-radicale-config-file})
-File-like object of the configuration file to use, by default it will listen
-on TCP port 5232 of @code{localhost} and use the @code{htpasswd} file at
-@file{/var/lib/radicale/users} with no (@code{plain}) encryption.
+@item @code{auth} (default: @code{'()}) (type: radicale-auth-configuration)
+Configuration for auth-related variables.
+
+@deftp {Data Type} radicale-auth-configuration
+Data type representing the @code{auth} section of a @command{radicale}
+configuration file.  Available @code{radicale-auth-configuration} fields
+are:
+
+@table @asis
+@item @code{type} (default: @code{'none}) (type: symbol)
+The method to verify usernames and passwords.  Options are @code{none},
+@code{htpasswd}, @code{remote-user}, and @code{http-x-remote-user}.
+This value is tied to @code{htpasswd-filename} and
+@code{htpasswd-encryption}.
+
+@item @code{htpasswd-filename} (default: @code{"/etc/radicale/users"}) (type: file-name)
+Path to the htpasswd file.  Use htpasswd or similar to generate this
+file.
+
+@item @code{htpasswd-encryption} (default: @code{'md5}) (type: symbol)
+Encryption method used in the htpasswd file.  Options are @code{plain},
+@code{bcrypt}, and @code{md5}.
+
+@item @code{delay} (default: @code{1}) (type: non-negative-integer)
+Average delay after failed login attempts in seconds.
+
+@item @code{realm} (default: @code{"Radicale - Password Required"}) (type: string)
+Message displayed in the client when a password is needed.
 
 @end table
+
+@end deftp
+
+@item @code{encoding} (default: @code{'()}) (type: radicale-encoding-configuration)
+Configuration for encoding-related variables.
+
+@deftp {Data Type} radicale-encoding-configuration
+Data type representing the @code{encoding} section of a
+@command{radicale} configuration file.  Available
+@code{radicale-encoding-configuration} fields are:
+
+@table @asis
+@item @code{request} (default: @code{'utf-8}) (type: symbol)
+Encoding for responding requests.
+
+@item @code{stock} (default: @code{'utf-8}) (type: symbol)
+Encoding for storing local collections.
+
+@end table
+
+@end deftp
+
+@item @code{headers-file} (default: none) (type: file-like)
+Custom HTTP headers.
+
+@item @code{logging} (default: @code{'()}) (type: radicale-logging-configuration)
+Configuration for logging-related variables.
+
+@deftp {Data Type} radicale-logging-configuration
+Data type representing the @code{logging} section of a
+@command{radicale} configuration file.  Available
+@code{radicale-logging-configuration} fields are:
+
+@table @asis
+@item @code{level} (default: @code{'warning}) (type: symbol)
+Set the logging level.  One of @code{debug}, @code{info},
+@code{warning}, @code{error}, or @code{critical}.
+
+@item @code{mask-passwords?} (default: @code{#t}) (type: boolean)
+Whether to include passwords in logs.
+
+@end table
+
+@end deftp
+
+@item @code{rights} (default: @code{'()}) (type: radicale-rights-configuration)
+Configuration for rights-related variables.  This should be a
+@code{radicale-rights-configuration}.
+
+@deftp {Data Type} radicale-rights-configuration
+Data type representing the @code{rights} section of a @command{radicale}
+configuration file.  Available @code{radicale-rights-configuration}
+fields are:
+
+@table @asis
+@item @code{type} (default: @code{'owner-only}) (type: symbol)
+Backend used to check collection access rights.  The recommended backend
+is @code{owner-only}.  If access to calendars and address books outside
+the home directory of users is granted, clients won't detect these
+collections and will not show them to the user.  Choosing any other
+method is only useful if you access calendars and address books directly
+via URL.  Options are @code{authenticate}, @code{owner-only},
+@code{owner-write}, and @code{from-file}.
+
+@item @code{file} (default: @code{""}) (type: file-name)
+File for the rights backend @code{from-file}.
+
+@end table
+
+@end deftp
+
+@item @code{server} (default: @code{'()}) (type: radicale-server-configuration)
+Configuration for server-related variables.  Ignored if WSGI is used.
+
+@deftp {Data Type} radicale-server-configuration
+Data type representing the @code{server} section of a @command{radicale}
+configuration file.  Available @code{radicale-server-configuration}
+fields are:
+
+@table @asis
+@item @code{hosts} (default: @code{(list "localhost:5232")}) (type: list-of-ip-addresses)
+List of IP addresses that the server will bind to.
+
+@item @code{max-connections} (default: @code{8}) (type: non-negative-integer)
+Maximum number of parallel connections.  Set to 0 to disable the limit.
+
+@item @code{max-content-length} (default: @code{100000000}) (type: non-negative-integer)
+Maximum size of the request body in bytes.
+
+@item @code{timeout} (default: @code{30}) (type: non-negative-integer)
+Socket timeout in seconds.
+
+@item @code{ssl?} (default: @code{#f}) (type: boolean)
+Whether to enable transport layer encryption.
+
+@item @code{certificate} (default: @code{"/etc/ssl/radicale.cert.pem"}) (type: file-name)
+Path of the SSL certificate.
+
+@item @code{key} (default: @code{"/etc/ssl/radicale.key.pem"}) (type: file-name)
+Path to the private key for SSL.  Only effective if @code{ssl?} is
+@code{#t}.
+
+@item @code{certificate-authority} (default: @code{""}) (type: file-name)
+Path to CA certificate for validating client certificates.  This can be
+used to secure TCP traffic between Radicale and a reverse proxy.  If you
+want to authenticate users with client-side certificates, you also have
+to write an authentication plugin that extracts the username from the
+certificate.
+
+@end table
+
+@end deftp
+
+@item @code{storage} (default: @code{'()}) (type: radicale-storage-configuration)
+Configuration for storage-related variables.
+
+@deftp {Data Type} radicale-storage-configuration
+Data type representing the @code{storage} section of a
+@command{radicale} configuration file.  Available
+@code{radicale-storage-configuration} fields are:
+
+@table @asis
+@item @code{type} (default: @code{'multifilesystem}) (type: symbol)
+Backend used to store data.  Options are @code{multifilesystem} and
+@code{multifilesystem-nolock}.
+
+@item @code{filesystem-folder} (default: @code{"/var/lib/radicale/collections"}) (type: file-name)
+Folder for storing local collections.  Created if not present.
+
+@item @code{max-sync-token-age} (default: @code{2592000}) (type: non-negative-integer)
+Delete sync-tokens that are older than the specified time in seconds.
+
+@item @code{hook} (default: @code{""}) (type: string)
+Command run after changes to storage.
+
+@end table
+
+@end deftp
+
+@item @code{web-interface?} (default: @code{#t}) (type: boolean)
+Whether to use Radicale's built-in web interface.
+
+@end table
+
 @end deftp
 
 @subsubheading Rspamd Service
