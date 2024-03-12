@@ -4302,7 +4302,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.6.2")
+    (version "0.7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4310,7 +4310,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "0szq3wr7i7gwm8llgbhssjb63q70rjqqdlj6078vs110waih16p2"))))
+                "0ajqng66b01phs0hjygg9phyc8p3fs0a1isbc0zmxdz2bas3zzzw"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -4322,11 +4322,13 @@ form, numpad.
               "-Duse_sys_libzip=enabled"
               "-Duse_sys_zlib=enabled"
               "-Duse_sys_lz4=enabled"
+              "-Duse_sys_libzstd=enabled"
               "-Duse_sys_xxhash=enabled"
               "-Duse_sys_openssl=enabled"
               "-Duse_sys_tree_sitter=enabled"
               "-Duse_sys_lzma=enabled"
               "-Duse_sys_libmspack=enabled"
+              "-Duse_sys_pcre2=enabled"
               "-Duse_zlib=true"
               "-Duse_lzma=true"
               "-Dinstall_sigdb=false"
@@ -4342,8 +4344,7 @@ form, numpad.
                 (("subdir\\('integration'\\)") ""))
               ;;; Skip failing tests.
               (substitute* "test/unit/meson.build"
-                (("'bin_mach0',\n") "")
-                (("'hash',\n") "")))))))
+                (("'bin_mach0',\n") "")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list capstone
@@ -4352,9 +4353,11 @@ form, numpad.
            libzip
            lz4
            openssl
+           pcre2
            tree-sitter
            xxhash
            zlib
+           (list zstd "lib")
            libmspack))
     (home-page "https://rizin.re")
     (synopsis "Disassemble, debug, analyze, and manipulate binary files")
