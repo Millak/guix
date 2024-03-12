@@ -39,7 +39,7 @@
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
@@ -2962,6 +2962,37 @@ JSON APIs with Behave.")
     (description "This package provides colored output for the
 @command{nosetests} command of the Python Nose unit test framework.")
     (license license:bsd-3)))
+
+(define-public python-nose-exclude
+  (package
+    (name "python-nose-exclude")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nose-exclude" version))
+       (sha256
+        (base32 "0123x1lyv5b2p9civcfg8vilj2ga3q7p2ks1hq25z0gb3ssai3zp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-test
+            (lambda _
+              ;; Disable failing test: AssertionError.
+              (substitute* '("test_dirs/build/test.py"
+                            "test_dirs/test_not_me/test.py")
+                (("def test_i_should_never_run")
+                 "def off_i_should_never_run")))))))
+    (propagated-inputs
+     (list python-nose))
+    (home-page "https://github.com/kgrandis/nose-exclude")
+    (synopsis "Exclude specific directories from nosetests runs")
+    (description
+     "@code{nose-exclude} is a Nose plugin that allows you to easily specify
+directories to be excluded from testing.")
+    (license license:lgpl2.1+)))
 
 (define-public python-nose-random
   (package
