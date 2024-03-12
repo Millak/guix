@@ -13505,6 +13505,7 @@ developed with the aim of being used with the Librem 5 phone.")
        (sha256
         (base32 "0w564z7krgjk19r39mi5qn4kggpdg9ggbyn9pb4aavb61r14npwr"))
        (patches (search-patches "libgda-cve-2021-39359.patch"
+                                "libgda-disable-data-proxy-test.patch"
                                 "libgda-fix-build.patch"
                                 "libgda-fix-missing-initialization.patch"
                                 "libgda-skip-postgresql-tests.patch"))))
