@@ -1639,8 +1639,8 @@ blacklisted.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk18
-  (make-openjdk openjdk17 "18.0.2"
-                "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
+  (make-openjdk openjdk17 "18.0.2.1"
+                "0zxanjzz4p3psqahlidh55vx1ldanq70c2ygk3gcfn9a94vnr9rg"))
 
 (define-public openjdk19
   (make-openjdk openjdk18 "19.0.2"
