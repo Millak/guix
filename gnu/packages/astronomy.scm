@@ -2056,6 +2056,31 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
+(define-public python-cmyt
+  (package
+    (name "python-cmyt")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cmyt" version))
+       (sha256
+        (base32 "1zabmckr1z637pfqqvlkj0asfqqvx2x92163dby8x0c8yiqgdvjb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-colorspacious python-pytest python-pytest-mpl))
+    (propagated-inputs
+     (list python-matplotlib python-numpy))
+    (home-page "https://yt-project.org/")
+    (synopsis "Matplotlib colormaps from the yt project")
+    (description
+     "This package provides a range of colormaps designed for scientific
+use with Matplotlib.  It includes perceptually uniform sequential colormaps such
+as @code{abre}, @code{dusk}, @code{kepl}, and @code{octarine}, as well as
+monochromatic sequential colormaps like @code{blue}, @code{green}, and
+@code{red}, and others (@code{algae}, @code{pastel}, and @code{xray}).")
+    (license license:bsd-3)))
+
 (define-public python-crds
   (package
     (name "python-crds")
