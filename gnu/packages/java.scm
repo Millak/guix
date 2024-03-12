@@ -1660,8 +1660,8 @@ blacklisted.certs.pem"
                (setenv "SOURCE_DATE_EPOCH" "1234567890")))))))))
 
 (define-public openjdk20
-  (make-openjdk openjdk19 "20"
-                "0pk5lpwijfv9qv7vwpsq2xfklbnqdfs6xbdhc5aamrpar4xi4ykx"))
+  (make-openjdk openjdk19 "20.0.2"
+                "1af1v2c3d8x4c6shzl6cv9qwq7a4hn5map5pjh9vjcky0hkzd489"))
 
 (define-public openjdk21
   (make-openjdk openjdk20 "21"
