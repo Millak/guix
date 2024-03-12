@@ -243,6 +243,33 @@ IDL (Corba, Microsoft, and UNO/OpenOffice flavors), Fortran, VHDL, Tcl,
 and to some extent D.")
     (license license:gpl3+)))
 
+(define-public halibut
+  (package
+    (name "halibut")
+    (version "1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.chiark.greenend.org.uk/~sgtatham/halibut/halibut-"
+                    version "/halibut-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ciikn878vivs4ayvwvr63nnhpcg12m8023xv514zxqpdxlzg85a"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ;No tests.
+    (native-inputs (list pkg-config perl))
+    (home-page "https://www.chiark.greenend.org.uk/~sgtatham/halibut/")
+    (synopsis "Documentation production system for software manuals")
+    (description
+     "Halibut is a text formatting system designed primarily for writing software
+documentation.  It accepts a single source format and outputs any combination of
+plain text, HTML, Unix man or info pages, PostScript or PDF.  It has extensive
+support for indexing and cross-referencing, and generates hyperlinks within output
+documents wherever possible.  It supports Unicode, with the ability to fall back to
+an alternative representation if Unicode output is not available.")
+    (license license:expat)))
+
 (define-public doc++
   (package
     (name "doc++")
