@@ -3181,9 +3181,11 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disable tests requiring access to CRDS servers to download ~500MiB of
-      ;; data.
-      #:test-flags #~(list "-k" "not test_crds_selectors_vs_datamodel")
+      #:test-flags
+      #~(list "-n" "auto"
+              ;; Disable tests requiring access to CRDS servers to download
+              ;; ~500MiB of data.
+              "-k" "not test_crds_selectors_vs_datamodel")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
@@ -3199,6 +3201,7 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
      (list python-crds
            python-pytest
            python-pytest-doctestplus
+           python-pytest-xdist
            python-scipy
            python-semantic-version
            python-setuptools-scm))
