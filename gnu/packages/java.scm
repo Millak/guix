@@ -1534,7 +1534,7 @@ new Date();"))
 
 (define-public openjdk12
   (make-openjdk
-   openjdk11 "12.33" "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"
+   openjdk11 "12.33" "0pi2gwib3j2imi4l623iaywrmvfh9rqzh82lj2gxqbrmg55swvjf"
    (source
     (origin
       (method url-fetch)
@@ -1542,7 +1542,7 @@ new Date();"))
       (file-name (string-append name "-" version ".tar.bz2"))
       (sha256
        (base32
-        "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"))
+        "0pi2gwib3j2imi4l623iaywrmvfh9rqzh82lj2gxqbrmg55swvjf"))
       (modules '((guix build utils)))
       (snippet
        '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
