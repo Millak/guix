@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -9875,7 +9875,10 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
                 (("def test_(cputime)" _ name)
                  (string-append "def skip_" name))
                 ;; This test often fails
-                (("def test_gc") "def skip_test_gc"))))
+                (("def test_gc") "def skip_test_gc")
+                ;; This test is known to fail on 32-bit systems.
+                ;; /gnu/store/w8y8wm82by1cnp33n5vy976wbrns9jys-stackprof-0.2.26.gem
+                (("def test_raw") "def skip_test_raw"))))
           (add-before 'check 'build-tests
             (lambda _
               (invoke "rake" "compile")))
