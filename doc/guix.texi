@@ -3445,7 +3445,7 @@ Install the package @var{exp} evaluates to.
 @var{exp} must be a Scheme expression that evaluates to a
 @code{<package>} object.  This option is notably useful to disambiguate
 between same-named variants of a package, with expressions such as
-@code{(@@ (gnu packages base) guile-final)}.
+@code{(@@ (gnu packages commencement) guile-final)}.
 
 Note that this option installs the first output of the specified
 package, which may be insufficient when needing a specific output of a
