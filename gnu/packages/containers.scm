@@ -149,7 +149,7 @@ runtime (like runc or crun) for a single container.")
 (define-public distrobox
   (package
     (name "distrobox")
-    (version "1.5.0.2")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -157,7 +157,7 @@ runtime (like runc or crun) for a single container.")
              (url "https://github.com/89luca89/distrobox")
              (commit version)))
        (sha256
-        (base32 "0h6rpgbcmg33vriyzh9nkdxj8yhfn0y35i1wh1zmb7zss3ik9kxj"))
+        (base32 "1g14q1sm3026h9n85v1gc3m2v9sgrac2mr9yrkh98qg5yahzmpc3"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (inputs
