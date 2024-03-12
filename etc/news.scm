@@ -47,6 +47,11 @@ sudo guix system reconfigure /run/current-system/configuration.scm
 sudo herd restart guix-daemon
 @end example
 
+If you are using Guix on another distro, run @command{info \"(guix) Upgrading
+Guix\"} or visit
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Upgrading-Guix.html} to
+learn how to upgrade Guix.
+
 See @uref{https://issues.guix.gnu.org/69728} for more information on this
 issue.")
          (fr "Une faille de sécurité du démon de compilation,
@@ -62,6 +67,10 @@ Ce problème est corrigé et les utilisateur·rices de Guix System sont invité�
 sudo guix system reconfigure /run/current-system/configuration.scm
 sudo herd restart guix-daemon
 @end example
+
+Pour voir comment mettre à jour Guix sur une autre distribution, lancer
+@command{info \"(guix.fr) Mettre à niveau Guix\"} ou visiter
+@uref{https://guix.gnu.org/manual/devel/fr/html_node/Mettre-a-niveau-Guix.html}.
 
 Voir @uref{https://issues.guix.gnu.org/69728} pour plus d'informations sur
 cette anomalie.")))
