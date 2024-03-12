@@ -12426,11 +12426,11 @@ Scalable Vector Graphics files.")
   (sbcl-package->cl-source-package sbcl-cl-svg))
 
 (define-public sbcl-nodgui
-  (let ((commit "6baccf45371afd4dcc8cd3f38332b300614783b6")
+  (let ((commit "35fd379e11162995ed48c2f8ebe6a5bf0a6f48cb")
         (revision "1"))
     (package
       (name "sbcl-nodgui")
-      (version (git-version "0.4.8.6" revision commit))
+      (version (git-version "0.6.0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -12439,7 +12439,7 @@ Scalable Vector Graphics files.")
                (commit commit)))
          (file-name (git-file-name "cl-nodgui" version))
          (sha256
-          (base32 "0fjz8362qmvkbzj9ylyllkdxg7vvj38l3y5qn4xi2gim92x4lx67"))))
+          (base32 "01l1hyzf8ryc35ydrjhqjn4az8asdwn46knl5gx8v02z2jcv7j24"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -12451,8 +12451,11 @@ Scalable Vector Graphics files.")
              sbcl-esrap
              sbcl-jpeg-turbo
              sbcl-named-readtables
+             sbcl-cl-opengl
              sbcl-parse-number
              sbcl-pngload
+             sbcl-sdl2
+             sbcl-zpng
              tk
              tklib))
       (arguments
