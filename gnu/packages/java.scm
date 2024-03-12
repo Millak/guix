@@ -1664,8 +1664,8 @@ blacklisted.certs.pem"
                 "1af1v2c3d8x4c6shzl6cv9qwq7a4hn5map5pjh9vjcky0hkzd489"))
 
 (define-public openjdk21
-  (make-openjdk openjdk20 "21"
-                "06wjfwrkqykjdkis2s1nh91cy8vwincnmc699cxvyk3fc12jf3vw"
+  (make-openjdk openjdk20 "21.0.2"
+                "0d1g3wnzr5whjpq8gvxq0h7kd7lxd3xgc6bh3kg8vzz096asn0kj"
    (source (origin
              (inherit (package-source base))
              (patches (search-patches "openjdk-21-fix-rpath.patch"
