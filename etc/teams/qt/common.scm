@@ -16,10 +16,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; This file returns a manifest of packages related to linux-libre.
-;;; Simplistically, it selects packages whose names begin with "linux-libre".
-;;; It is used to assist continuous integration of the kernel packages.
-
 (use-modules (guix packages)
              (guix profiles)
              (guix utils)
