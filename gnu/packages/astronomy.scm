@@ -3174,13 +3174,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "1.9.1")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "0h1v5c96c4q44b2npq9953x44dr6pwmkr1s05wfixdv95arqd8v0"))))
+        (base32 "00zc7z3f2fjvmms2h7176wnzjb025v0aasc6fiib9055sk34bc94"))))
     (build-system pyproject-build-system)
     (arguments
      (list
