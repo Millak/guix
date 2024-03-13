@@ -31,6 +31,50 @@
 (channel-news
  (version 0)
 
+ (entry (commit "8d1d98a3aa3448b9d983e4bd64243a938b96e8ab")
+        (title
+         (en "@command{guix git authenticate} usage simplified")
+         (de "@command{guix git authenticate} ist leichter nutzbar")
+         (fr "@command{guix git authenticate} simplifiée"))
+        (body
+         (en "Usage of the @command{guix git authenticate} command has been
+simplified.  The command is useful to channel authors and to developers
+willing to validate the provenance of their code.
+
+On your first use, @command{guix git authenticate} will now record the commit
+and signer (the @dfn{introduction}) in the @file{.git/config} file of your
+repository so that you don't have to pass them on the command line in
+subsequent runs.  It will also install pre-push and post-merge hooks,
+unless preexisting hooks are found.
+
+Run @command{info \"(guix) Invoking guix authenticate\"} for more info.")
+         (de "Der Befehl @command{guix git authenticate} kann jetzt einfacher
+benutzt werden.  Mit dem Befehl können Kanalautoren und Entwickler die
+Provenienz ihres Codes überprüfen.
+
+Beim ersten Gebrauch speichert @command{guix git authenticate} Commit und
+Unterzeichner (wie in der @dfn{Kanaleinführung}) in der Datei
+@file{.git/config} Ihres Repositorys, so dass Sie sie bei späteren
+Ausführungen nicht mehr auf der Befehlszeile angeben müssen.  Auch werden
+Git-Hooks für pre-push und post-merge installiert, wenn es bisher keine
+Hooks dieser Art gibt.
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix git authenticate\"}
+aus, wenn Sie mehr wissen wollen.")
+         (fr "L'utilisation de la commande @command{guix git authenticate} a
+été simplifiée.  Cette commande est utile aux auteur·rices de canaux et aux
+développeur·euses souhaitant pouvoir valider l'origine de leur code.
+
+À la première utilisation, @command{guix git authenticate} enregistre
+désormais le commit et signataire (l'@dfn{introduction}) dans le fichier
+@file{.git/config} du dépôt, ce qui permet de ne pas avoir à les spécifier sur
+la ligne de commande les fois suivantes.  La commande installe aussi des
+crochets « pre-push » et « post-merge », sauf si des crochets préexistants
+sont trouvés.
+
+Lancer @command{info \"(guix.fr) Invoquer guix git authenticate\"} pour en
+savoir plus.")))
+
  (entry (commit "238a74c7dfd1469af064b445abcee38fd7408d5b")
         (title
           (en "Linux-libre 6.7 removed due to end of upstream support")
