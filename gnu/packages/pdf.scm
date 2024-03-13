@@ -703,7 +703,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.5.2")
+    (version "0.5.4")
     (source (origin
               (method url-fetch)
               (uri
@@ -711,7 +711,8 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "15314m9chmh5jkrd9vk2h2gwcwkcffv2kjcxkd4v3wmckz5sfjy6"))))
+                "0ckgamf98sydq543arp865jg1afwzhpzcsbhv6zrch2dm5x7y0x3"))
+              (patches (search-patches "zathura-use-struct-initializers.patch"))))
     (native-inputs
      (list pkg-config
            gettext-minimal
