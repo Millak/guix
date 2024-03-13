@@ -27311,25 +27311,14 @@ timers.")
   (package
     (inherit rust-gloo-timers-0.3)
     (name "rust-gloo-timers")
-    (version "0.2.1")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gloo-timers" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07w999jm1r1i8r574qbmsa3l4w3gxhyx04cbllg0m4pzm934l827"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-futures-channel" ,rust-futures-channel-0.3)
-        ("rust-futures-core" ,rust-futures-core-0.3)
-        ("rust-js-sys" ,rust-js-sys-0.3)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-web-sys" ,rust-web-sys-0.3))
-       #:cargo-development-inputs
-       (("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
+        (base32 "0p2yqcxw0q9kclhwpgshq1r4ijns07nmmagll3lvrgl7pdk5m6cv"))))))
 
 (define-public rust-gmp-mpfr-sys-1
   (package
