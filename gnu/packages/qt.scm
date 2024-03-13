@@ -1728,6 +1728,24 @@ consume data received from the server, or both.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
+(define-public qtsensors
+  (package
+    (inherit qtsvg)
+    (name "qtsensors")
+    (version "6.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "0a3w50bfnmxndyxnn9lsy1wxffhm2am0yjxqx3vx0gfjwv79yvsa"))))
+    (native-inputs (list qtdeclarative))
+    (inputs (list qtbase))
+    (synopsis "Qt Sensors module")
+    (description "The Qt Sensors API provides access to sensor hardware via QML
+and C++ interfaces.  The Qt Sensors API also provides a motion gesture
+recognition API for devices.")))
+
 (define-public qtsensors-5
   (package
     (inherit qtsvg-5)
