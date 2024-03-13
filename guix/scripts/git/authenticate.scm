@@ -148,6 +148,52 @@ in repository configuration file~%")))
       (warning (G_ "could not record introduction and keyring configuration\
  (Guile-Git too old?)~%"))))
 
+(define (install-hooks repository)
+  "Attempt to install in REPOSITORY hooks that invoke 'guix git authenticate'.
+Bail out if one of these already exists."
+  ;; Guile-Git < 0.7.0 lacks 'repository-common-directory'.
+  (if (module-defined? (resolve-interface '(git))
+                       'repository-common-directory)
+      (let ()
+        (define directory
+          (repository-common-directory repository))
+
+        (define pre-push-hook
+          (in-vicinity directory "hooks/pre-push"))
+
+        (define post-merge-hook
+          (in-vicinity directory "hooks/post-merge"))
+
+        (if (or (file-exists? pre-push-hook)
+                (file-exists? post-merge-hook))
+            (begin
+              (warning (G_ "not overriding pre-existing hooks '~a' and '~a'~%")
+                       pre-push-hook post-merge-hook)
+              (display-hint (G_ "Consider running @command{guix git authenticate}
+from your pre-push and post-merge hooks so your repository is automatically
+authenticated before you push and when you pull updates.")))
+            (begin
+              (call-with-output-file pre-push-hook
+                (lambda (port)
+                  (format port "#!/bin/sh
+# Installed by 'guix git authenticate'.
+set -e
+while read local_ref local_oid remote_ref remote_oid
+do
+  guix git authenticate --end=\"$local_oid\"
+done\n")
+                  (chmod port #o755)))
+              (call-with-output-file post-merge-hook
+                (lambda (port)
+                  (format port "#!/bin/sh
+# Installed by 'guix git authenticate'.
+exec guix git authenticate\n")
+                  (chmod port #o755)))
+              (info (G_ "installed hooks '~a' and '~a'~%")
+                    pre-push-hook post-merge-hook))))
+      (warning (G_ "cannot determine where to install hooks\
+ (Guile-Git too old?)~%"))))
+
 (define (show-stats stats)
   "Display STATS, an alist containing commit signing stats as returned by
 'authenticate-repository'."
@@ -271,7 +317,8 @@ expected COMMIT and SIGNER~%")))
        (unless (configured? repository)
          (record-configuration repository
                                #:commit commit #:signer signer
-                               #:keyring-reference keyring))
+                               #:keyring-reference keyring)
+         (install-hooks repository))
 
        (when (and show-stats? (not (null? stats)))
          (show-stats stats))

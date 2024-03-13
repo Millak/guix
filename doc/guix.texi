@@ -7362,6 +7362,11 @@ branches, you can extend @file{.git/config} along these lines:
 	keyring = keyring
 @end smallexample
 
+The first run also attempts to install pre-push and post-merge hooks,
+such that @command{guix git authenticate} is invoked as soon as you run
+@command{git push}, @command{git pull}, and related commands; it does
+not overwrite preexisting hooks though.
+
 The command-line options described below allow you to fine-tune the
 process.
 
