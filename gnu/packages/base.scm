@@ -1213,7 +1213,7 @@ with the Linux kernel.")
         ;; There are undefined references to pthread symbols while linking
         ;; 'support/links-dso-program.cc'.  Since this isn't needed here, turn
         ;; off C++ tests.
-        `(cons "libc_cv_cxx_link_ok=no" ,flags))))))
+        #~(cons "libc_cv_cxx_link_ok=no" #$flags))))))
 
 (define-public glibc-2.32
   (package
