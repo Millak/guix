@@ -23075,6 +23075,28 @@ it.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-fdeflate-0.3
+  (package
+    (name "rust-fdeflate")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fdeflate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ig65nz4wcqaa3y109sh7yv155ldfyph6bs2ifmz1vad1vizx6sg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-simd-adler32" ,rust-simd-adler32-0.3))
+       #:cargo-development-inputs (("rust-miniz-oxide" ,rust-miniz-oxide-0.7)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/image-rs/fdeflate")
+    (synopsis "Fast specialized deflate implementation")
+    (description
+     "This package provides a fast, specialized deflate implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fdlimit-0.1
   (package
     (name "rust-fdlimit")
