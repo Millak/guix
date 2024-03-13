@@ -1257,13 +1257,13 @@ HostData=lib/qt5
 (define-public qtsvg
   (package
     (name "qtsvg")
-    (version "6.5.2")
+    (version "6.6.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "18v337lfk8krg0hff5jx6fi7gn6x3djn03x3psrhlbmgjc8crd28"))))
+                "10c1dmbv5d39n1q4m67gf2h4n6wfkzrlyk8plnxbyhhvxxcis8ss"))))
     (build-system cmake-build-system)
     (arguments
      (list
