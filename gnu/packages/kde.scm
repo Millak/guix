@@ -1603,7 +1603,7 @@ creating routes by drag and drop and more.")
            kio
            kparts
            kpty
-           qtspeech
+           qtspeech-5
            kwallet
            kwindowsystem
            libkexiv2

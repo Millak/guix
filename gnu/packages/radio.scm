@@ -2671,7 +2671,7 @@ voice formats.")
            qtmultimedia-5
            qtquickcontrols2-5
            qtserialport
-           qtspeech
+           qtspeech-5
            qtwebchannel-5
            qtwebengine-5
            qtwebsockets-5

@@ -875,7 +875,7 @@ whom pressing buttons hurts.")
            kxmlgui
            breeze-icons ;; default icon set
            qtbase-5
-           qtspeech))
+           qtspeech-5))
     (home-page "https://apps.kde.org/kmouth/")
     (synopsis "Type-and-say frontend for speech synthesizers")
     (description "KMouth is a program which enables persons that cannot speak

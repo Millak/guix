@@ -1991,7 +1991,7 @@ asynchronous jobs.")
            phonon
            qtdeclarative-5
            qtbase-5
-           qtspeech
+           qtspeech-5
            qtx11extras))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -3255,7 +3255,7 @@ library.")
            kwidgetsaddons
            kwindowsystem
            qtbase-5
-           qtspeech))
+           qtspeech-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Text editing widgets")
     (description "KTextWidgets provides widgets for displaying and editing text.

@@ -2715,7 +2715,7 @@ processes or computers.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
-(define-public qtspeech
+(define-public qtspeech-5
   (package
     (inherit qtsvg-5)
     (name "qtspeech")
@@ -4669,7 +4669,7 @@ color-related widgets.")
            qtscript
            qtscxml-5
            qtsensors-5
-           qtspeech
+           qtspeech-5
            qtsvg-5
            qttools-5
            qtwebchannel-5
@@ -4719,7 +4719,7 @@ color-related widgets.")
                                           "qtscript"
                                           "qtscxml"
                                           "qtsensors-5"
-                                          "qtspeech"
+                                          "qtspeech-5"
                                           "qtsvg"
                                           "qttools"
                                           "qtwebchannel"
