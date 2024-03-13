@@ -713,6 +713,26 @@ by using the poppler rendering engine.")
                (base32
                 "0ckgamf98sydq543arp865jg1afwzhpzcsbhv6zrch2dm5x7y0x3"))
               (patches (search-patches "zathura-use-struct-initializers.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            ;; Tests require a running X server.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((display ":1"))
+                (setenv "DISPLAY" display)
+
+                ;; On busy machines, tests may take longer than
+                ;; the default of four seconds.
+                (setenv "CK_DEFAULT_TIMEOUT" "20")
+
+                ;; Don't fail due to missing '/etc/machine-id'.
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (zero? (system (string-append
+                                (search-input-file inputs "/bin/Xvfb")
+                                " " display " &")))))))))
     (native-inputs
      (list pkg-config
            gettext-minimal
@@ -734,24 +754,6 @@ by using the poppler rendering engine.")
      (list (search-path-specification
             (variable "ZATHURA_PLUGINS_PATH")
             (files '("lib/zathura")))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'start-xserver
-                    ;; Tests require a running X server.
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((display ":1"))
-                        (setenv "DISPLAY" display)
-
-                        ;; On busy machines, tests may take longer than
-                        ;; the default of four seconds.
-                        (setenv "CK_DEFAULT_TIMEOUT" "20")
-
-                        ;; Don't fail due to missing '/etc/machine-id'.
-                        (setenv "DBUS_FATAL_WARNINGS" "0")
-                        (zero? (system (string-append
-                                         (search-input-file inputs "/bin/Xvfb")
-                                         " " display " &")))))))))
     (home-page "https://pwmt.org/projects/zathura/")
     (synopsis "Lightweight keyboard-driven PDF viewer")
     (description "Zathura is a customizable document viewer.  It provides a
