@@ -2125,14 +2125,14 @@ signing, and verification in pure Rust.")
 (define-public rust-elliptic-curve-0.13
   (package
     (name "rust-elliptic-curve")
-    (version "0.13.4")
+    (version "0.13.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "elliptic-curve" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1rqn7yq9rgfs7r0dcj4phxf9hqmw2alfxa0lciamsbkz6sm1xivm"))))
+                "0ixx4brgnzi61z29r3g1606nh2za88hzyz8c5r3p6ydzhqq09rmm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2152,6 +2152,7 @@ signing, and verification in pure Rust.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serdect" ,rust-serdect-0.2)
         ("rust-subtle" ,rust-subtle-2)
+        ("rust-tap" ,rust-tap-1)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.4)
