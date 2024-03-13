@@ -71121,17 +71121,18 @@ should not be relied upon directly.")
 (define-public rust-time-macros-0.2
   (package
     (name "rust-time-macros")
-    (version "0.2.16")
+    (version "0.2.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gx4ngf5g7ydqa8lf7kh9sy72rd4dhvpi31y1jvswi0288rpw696"))))
+        (base32 "0x3pahhk2751c6kqqq9dk6lz0gydbnxr44q01wpjlrz687ps78vv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-time-core" ,rust-time-core-0.1))))
+     `(#:cargo-inputs (("rust-num-conv" ,rust-num-conv-0.1)
+                       ("rust-time-core" ,rust-time-core-0.1))))
     (home-page "https://github.com/time-rs/time")
     (synopsis "Procedural macros for the time crate")
     (description "This package provides procedural macros for the time
