@@ -2180,13 +2180,13 @@ native APIs where it makes sense.")))
 (define-public qtlanguageserver
   (package
     (name "qtlanguageserver")
-    (version "6.5.2")
+    (version "6.6.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "196iicwpqca2ydpca41qs6aqxxq8ycknw6lm2v00h1w3m86frdbk"))))
+                "1bgazi44mwac20biybhp21icgwa8k7jd295j8jsfgzxbw12lq7y3"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
