@@ -3694,18 +3694,18 @@ approximately equal.")
 (define-public rust-assert-cmd-2
   (package
     (name "rust-assert-cmd")
-    (version "2.0.12")
+    (version "2.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert_cmd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rnzd84nqijp147nld05j5j92xpj2j57zfrm6c0d9r138yqkr448"))))
+        (base32 "1a3k03dl57psaky6brb53awzmgbjdivb62j8gy1h8n3dqqx4jwpd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-anstream" ,rust-anstream-0.3)
+       (("rust-anstream" ,rust-anstream-0.6)
         ("rust-anstyle" ,rust-anstyle-1)
         ("rust-bstr" ,rust-bstr-1)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
