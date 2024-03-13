@@ -1752,17 +1752,17 @@ text to a terminal.")
 (define-public rust-anstyle-query-1
   (package
     (name "rust-anstyle-query")
-    (version "1.0.0")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "anstyle-query" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0js9bgpqz21g0p2nm350cba1d0zfyixsma9lhyycic5sw55iv8aw"))))
+                "0j3na4b1nma39g4x7cwvj009awxckjf3z2vkwhldgka44hqj72g2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.48))))
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.52))))
     (home-page "https://github.com/rust-cli/anstyle")
     (synopsis "Look up colored console capabilities")
     (description "Look up colored console capabilities")
