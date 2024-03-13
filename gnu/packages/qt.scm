@@ -28,7 +28,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -5304,7 +5304,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "12.0.1")
+    (version "12.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5327,7 +5327,7 @@ including @i{fix-its} for automatic refactoring.")
                             ((".*marketplace/marketplace.qbs.*") ""))))
               (sha256
                (base32
-                "04h35za3gliai5djxwmzqrbih2g26lcv68pp4wvljkdwkcjsscvb"))))
+                "1lgk547pvg31zzqra7gn9gsszm5wrwxiw06crbr5n2kqfavk9r22"))))
     (build-system qt-build-system)
     (arguments
      (list
