@@ -1939,14 +1939,14 @@ same thing).")
 (define-public rust-ecdsa-0.16
   (package
     (name "rust-ecdsa")
-    (version "0.16.6")
+    (version "0.16.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ecdsa" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1zapr75j8w1b7bdnijppb94f2jrk2qdrhv8i4fqc0c4agd9mv3m4"))))
+                "1jhb0bcbkaz4001sdmfyv8ajrv8a1cg7z7aa5myrd4jjbhmz69zf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1956,7 +1956,8 @@ same thing).")
         ("rust-rfc6979" ,rust-rfc6979-0.4)
         ("rust-serdect" ,rust-serdect-0.2)
         ("rust-sha2" ,rust-sha2-0.10)
-        ("rust-signature" ,rust-signature-2))
+        ("rust-signature" ,rust-signature-2)
+        ("rust-spki" ,rust-spki-0.7))
        #:cargo-development-inputs
        (("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
         ("rust-hex-literal" ,rust-hex-literal-0.4)
