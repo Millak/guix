@@ -1964,13 +1964,13 @@ compositor libraries.")))
 (define-public qtwayland
   (package
     (name "qtwayland")
-    (version "6.5.2")
+    (version "6.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
-        (base32 "16iwar19sgjvxgmbr6hmd3hsxp6ahdjwl1lra2wapl3zzf3bw81h"))))
+        (base32 "0y6x84ckcc53ddclnrlzs08b1kvw6saw9nim0hz4wc5fyz7dbkcv"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
@@ -1987,6 +1987,7 @@ compositor libraries.")))
                      (("QTRY_COMPARE\\(bufferSpy\\.size\\(\\), 1\\);") ""))))
                (add-before 'check 'set-test-environment
                  (lambda _
+                   (setenv "XDG_RUNTIME_DIR" (getcwd))
                    ;; Do not fail just because /etc/machine-id is missing.
                    (setenv "DBUS_FATAL_WARNINGS" "0")
                    ;; Make Qt render "offscreen", required for tests.
