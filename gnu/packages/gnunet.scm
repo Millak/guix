@@ -117,9 +117,8 @@
     ;; WARNING: Checks require /dev/shm to be in the build chroot, especially
     ;; not to be a symbolic link to /run/shm.
     ;; FIXME:
-    ;; The following dependencies are all optional, but should be
+    ;; The following dependency is optional, but should be
     ;; available for maximum coverage:
-    ;; * librpm (rpm)    ; investigate failure
     ;; * libtidy-html (tidy-html) ; investigate failure
     (native-inputs
      (list autoconf-2.71
@@ -149,6 +148,7 @@
            libsmf
            libtiff
            libvorbis
+           rpm
            zlib))
     (synopsis "Library to extract meta-data from media files")
     (description
