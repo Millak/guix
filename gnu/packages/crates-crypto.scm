@@ -5450,14 +5450,14 @@ for generating and verifying digital signatures.")
 (define-public rust-signature-derive-2
   (package
     (name "rust-signature-derive")
-    (version "2.0.1")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "signature_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1z0mjjg3fpj08kc3nkax4lczgp7sfzbcm8q2qgim865510wkgpxc"))))
+                "11h4z3bql9pzj0mf7bv30q9c3rldk9n03520pk3z9siyj78q20xb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
