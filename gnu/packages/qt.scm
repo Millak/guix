@@ -1728,10 +1728,10 @@ consume data received from the server, or both.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
-(define-public qtsensors
+(define-public qtsensors-5
   (package
     (inherit qtsvg-5)
-    (name "qtsensors")
+    (name "qtsensors-5")
     (version "5.15.10")
     (source (origin
               (method url-fetch)
@@ -3835,7 +3835,7 @@ module provides support functions to the automatically generated code.")
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtlocation" ,qtlocation)
        ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtsensors" ,qtsensors)
+       ("qtsensors-5" ,qtsensors-5)
        ("qtserialport" ,qtserialport)
        ("qtsvg-5" ,qtsvg-5)
        ("qttools-5" ,qttools-5)
@@ -4650,7 +4650,7 @@ color-related widgets.")
            qtquickcontrols2-5
            qtscript
            qtscxml-5
-           qtsensors
+           qtsensors-5
            qtspeech
            qtsvg-5
            qttools-5
@@ -4700,7 +4700,7 @@ color-related widgets.")
                                           "qtquickcontrols2"
                                           "qtscript"
                                           "qtscxml"
-                                          "qtsensors"
+                                          "qtsensors-5"
                                           "qtspeech"
                                           "qtsvg"
                                           "qttools"

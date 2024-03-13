@@ -192,7 +192,7 @@ of categories with some of the activities available in that category.
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols2-5
-           qtsensors
+           qtsensors-5
            qtsvg-5))
     (home-page "https://gcompris.net/index-en.html")
     (synopsis "Educational games for small children")

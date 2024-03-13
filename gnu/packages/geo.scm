@@ -2574,7 +2574,7 @@ track your position right from your laptop.")
            qtbase-5
            qtimageformats-5
            qtlocation
-           qtsensors
+           qtsensors-5
            zlib))
     (native-inputs
      (list doxygen
