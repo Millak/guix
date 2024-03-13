@@ -3056,7 +3056,7 @@ MIDI functionality to the Linux-based operating system.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://www.alsa-project.org/files/pub/lib/"
+                    "https://www.alsa-project.org/files/pub/utils/"
                     name "-" version ".tar.bz2"))
               (sha256
                (base32
