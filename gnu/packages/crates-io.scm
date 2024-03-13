@@ -1587,14 +1587,14 @@ it outputs messages to Android's logcat.")
 (define-public rust-anstream-0.6
   (package
     (name "rust-anstream")
-    (version "0.6.11")
+    (version "0.6.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "anstream" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19dndamalavhjwp4i74k8hdijcixb7gsfa6ycwyc1r8xn6y1wbkf"))))
+        (base32 "1yv2idkyf9mp9xwc684v0ywqiy86lwc9gvllwdishl7y6czx0syr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
