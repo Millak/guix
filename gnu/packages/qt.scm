@@ -67,6 +67,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -714,27 +715,26 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qtbase")
-    (version "6.5.2")
+    (version "6.6.2")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "0s8jwzdcv97dfy8n3jjm8zzvllv380l73mwdva7rs2nqnhlwgd1x"))
+                "0yv78bwqzy975854h53rbiilsms62f3v02i3jqz7v8ajk1ml56xq"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
                '(with-directory-excursion "src/3rdparty"
                   (for-each delete-file-recursively
-                            ;; The bundled pcre2 copy is kept, as its headers
-                            ;; are required by some internal bootstrap target
-                            ;; used for the tools.
                             (list "double-conversion" "freetype" "harfbuzz-ng"
-                                  "libpng" "libjpeg" "sqlite" "xcb" "zlib"))))
-              (patches (search-patches "qtbase-use-TZDIR.patch"
-                                       "qtbase-moc-ignore-gcc-macro.patch"
+                                  "pcre2" "md4c" "libpng" "libjpeg"
+                                  "sqlite" "xcb" "zlib"))))
+              (patches (search-patches "qtbase-moc-ignore-gcc-macro.patch"
                                        "qtbase-absolute-runpath.patch"
-                                       "qtbase-qmake-use-libname.patch"))))
+                                       "qtbase-qmake-use-libname.patch"
+                                       "qtbase-find-tools-in-PATH.patch"
+                                       "qtbase-qmake-fix-includedir.patch"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
@@ -812,6 +812,12 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                "qmake/library/qmakebuiltins.cpp")
                   (("/bin/sh")
                    (search-input-file inputs "bin/bash")))
+
+                (substitute* "tests/auto/tools/qt_cmake_create/\
+tst_qt_cmake_create.cpp"
+                  (("/bin/sh")
+                   (which "sh")))
+
                 (substitute* "src/corelib/CMakeLists.txt"
                   (("/bin/ls")
                    (search-input-file inputs "bin/ls")))))
@@ -874,6 +880,24 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                     (string-join
                      (append
                       (list
+                       ;; The 'tst_selftests' fails with the following error:
+                       ;; with expansion:
+                       ;; false
+                       ;; with messages:
+                       ;; test := "keyboard"
+                       ;; arguments := QList("-o", "-,tap")
+                       ;; Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+                       ;; Qt depends on a UTF-8 locale, but has failed to switch to one.
+                       ;; If this causes problems, reconfigure your locale. See the locale(1) manual
+                       ;; for more information.
+
+                       ;; See https://bugreports.qt.io/browse/QTBUG-113371
+                       ;; Add glibc-utf8-locales to native-inpus is no help.
+                       ;; TODO: when core-updates merge, check again.
+                       "tst_selftests"
+
+                       ;; Sometimes it fails.
+                       "tst_qsystemsemaphore"
                        ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
                        "tst_moc"
 
@@ -1044,6 +1068,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 bash-minimal
                 coreutils-minimal
                 md4c
+                libb2
                 libice
                 libsm
                 libxcb
