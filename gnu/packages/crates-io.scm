@@ -42766,6 +42766,26 @@ Rust.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-0.8))))))
 
+(define-public rust-num-conv-0.1
+  (package
+    (name "rust-num-conv")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num-conv" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ndiyg82q73783jq18isi71a7mjh56wxrk52rlvyx0mi5z9ibmai"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/jhpratt/num-conv")
+    (synopsis "Convert between integer types")
+    (description
+     "@code{num_conv} is a crate to convert between integer types without using
+@code{as} casts.  This provides better certainty when refactoring, makes the
+exact behavior of code more explicit, and allows using turbofish syntax.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-num-cpus-1
   (package
     (name "rust-num-cpus")
