@@ -4828,14 +4828,14 @@ function.")
 (define-public rust-sec1-0.7
   (package
     (name "rust-sec1")
-    (version "0.7.2")
+    (version "0.7.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "sec1" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0vh4pvdfnghbjglh6k74vs93jj337jpli28bbyqr0srxh67c9bph"))))
+                "1p273j8c87pid6a1iyyc7vxbvifrw55wbxgr0dh3l8vnbxb7msfk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -4847,7 +4847,7 @@ function.")
         ("rust-subtle" ,rust-subtle-2)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
-       (("rust-hex-literal" ,rust-hex-literal-0.3)
+       (("rust-hex-literal" ,rust-hex-literal-0.4)
         ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/RustCrypto/formats/tree/master/sec1")
     (synopsis
