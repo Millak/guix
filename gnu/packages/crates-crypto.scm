@@ -5403,14 +5403,14 @@ functions core functionality.")
 (define-public rust-signature-2
   (package
     (name "rust-signature")
-    (version "2.1.0")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "signature" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "00457czdia5gvll3a1vzf2ffsdpgcz2dz0h56z7zk28nsbp8h5sy"))))
+                "1pi9hd5vqfr3q3k49k37z06p7gs5si0in32qia4mmr1dancr6m3p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -5418,7 +5418,7 @@ functions core functionality.")
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-signature-derive" ,rust-signature-derive-2))
        #:cargo-development-inputs
-       (("rust-hex-literal" ,rust-hex-literal-0.3)
+       (("rust-hex-literal" ,rust-hex-literal-0.4)
         ("rust-sha2" ,rust-sha2-0.10))))
     (home-page "https://github.com/RustCrypto/traits/tree/master/signature")
     (synopsis
