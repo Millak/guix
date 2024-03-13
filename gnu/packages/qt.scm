@@ -3181,14 +3181,14 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.5.3")
+    (version "6.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "1ra5hyyg4vymp8pgzv08smjc3fl1axdavnkpj1i5zxym1ndww513"))
+         "15h3hniszfkxv2vnn3fnbgbar8wb41ypgn4b4iz4iy6csar8f7fn"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -3220,12 +3220,11 @@ and binaries removed, and adds modular support for using system libraries.")
                     "net/third_party/uri_template"
                     "third_party/abseil-cpp"
                     "third_party/angle"
-                    "third_party/angle/src/common/third_party/base"
-                    "third_party/angle/src/common/third_party/smhasher"
                     "third_party/angle/src/common/third_party/xxhash"
                     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
-                    "third_party/angle/src/third_party/trace_event"
                     "third_party/angle/src/third_party/volk"
+                    "third_party/angle/src/third_party/systeminfo"
+                    "third_party/angle/src/third_party/ceval"
                     "third_party/axe-core"
                     "third_party/blink"
                     "third_party/boringssl"
@@ -3257,8 +3256,6 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/dawn/third_party/khronos"
                     "third_party/devtools-frontend"
                     "third_party/devtools-frontend/src/front_end/third_party/i18n"
-                    "third_party/devtools-frontend/src/front_end/third_party/acorn"
-                    "third_party/devtools-frontend/src/front_end/third_party/acorn-loose"
                     "third_party/devtools-frontend/src/front_end/third_party/\
 additional_readme_paths.json"
                     "third_party/devtools-frontend/src/front_end/third_party/axe-core"
@@ -3269,11 +3266,18 @@ additional_readme_paths.json"
                     "third_party/devtools-frontend/src/front_end/third_party/i18n"
                     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat"
                     "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
-                    "third_party/devtools-frontend/src/front_end/third_party/lit-html"
+                    "third_party/devtools-frontend/src/front_end/third_party/lit"
+                    "third_party/devtools-frontend/src/front_end/third_party/acorn"
                     "third_party/devtools-frontend/src/front_end/third_party/marked"
                     "third_party/devtools-frontend/src/front_end/third_party/puppeteer"
+                    "third_party/devtools-frontend/src/front_end/third_party/\
+puppeteer/package/lib/esm/third_party/mitt"
+                    "third_party/devtools-frontend/src/front_end/third_party/\
+vscode.web-custom-data"
+                    "third_party/devtools-frontend/src/third_party/pyjson5"
                     "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
                     "third_party/devtools-frontend/src/third_party/typescript"
+                    "third_party/devtools-frontend/src/third_party/i18n"
                     "third_party/distributed_point_functions"
                     "third_party/dom_distiller_js"
                     "third_party/emoji-segmenter"
@@ -3316,7 +3320,6 @@ additional_readme_paths.json"
                     "third_party/libgav1"
                     "third_party/libjingle_xmpp"
                     "third_party/libjpeg_turbo"
-                    "third_party/libjxl"
                     "third_party/libpng" ;TODO: make pdfium use system version
                     "third_party/libsecret" ;LGPL2.1+
                     "third_party/libsrtp"
@@ -3335,6 +3338,7 @@ additional_readme_paths.json"
                     "third_party/lss"
                     "third_party/mako"
                     "third_party/markupsafe"
+                    "third_party/material_color_utilities" ;ASL2.0
                     "third_party/mesa_headers"
                     "third_party/metrics_proto"
                     "third_party/minigbm" ;BSD-3
@@ -3354,6 +3358,7 @@ additional_readme_paths.json"
                     "third_party/opus/src/include/opus_multistream.h"
                     "third_party/opus/src/include/opus_types.h"
                     "third_party/ots"
+                    "third_party/flac"
                     "third_party/pdfium"
                     "third_party/pdfium/third_party/agg23"
                     "third_party/pdfium/third_party/base"
@@ -3361,7 +3366,6 @@ additional_readme_paths.json"
                     "third_party/pdfium/third_party/freetype"
                     "third_party/pdfium/third_party/lcms"
                     "third_party/pdfium/third_party/libopenjpeg"
-                    "third_party/pdfium/third_party/libpng16"
                     "third_party/pdfium/third_party/libtiff"
                     "third_party/pdfium/third_party/skia_shared"
                     "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
@@ -3431,6 +3435,7 @@ additional_readme_paths.json"
                     "v8/src/third_party/utf8-decoder"
                     "v8/src/third_party/valgrind"
                     "v8/third_party/inspector_protocol"
+                    "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64"
                     "v8/third_party/v8/builtins")))
 
              (with-directory-excursion "src/3rdparty"
@@ -3498,14 +3503,17 @@ linux/libcurl_wrapper.h"
               "-DQT_FEATURE_webengine_system_libjpeg=ON"
               "-DQT_FEATURE_webengine_system_libpci=ON"
               "-DQT_FEATURE_webengine_system_libpng=ON"
+              "-DQT_FEATURE_webengine_system_libtiff=ON"
               "-DQT_FEATURE_webengine_system_libwebp=ON"
               "-DQT_FEATURE_webengine_system_libxml=ON"
-              "-DQT_FEATURE_webengine_system_libxslt=ON"
               "-DQT_FEATURE_webengine_system_minizip=ON"
               "-DQT_FEATURE_webengine_system_opus=ON"
               "-DQT_FEATURE_webengine_system_pulseaudio=ON"
               "-DQT_FEATURE_webengine_system_re2=ON"
-              "-DQT_FEATURE_webengine_system_zlib=ON")
+              "-DQT_FEATURE_webengine_system_zlib=ON"
+              "-DQT_FEATURE_webengine_system_glib=ON"
+              "-DQT_FEATURE_webengine_system_libvpx=ON"
+              "-DQT_FEATURE_webengine_system_snappy=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -3555,7 +3563,11 @@ linux/libcurl_wrapper.h"
                          '()))))
           (replace 'install
             (lambda _
-              (invoke "cmake" "--install" "."))))))
+              (invoke "cmake" "--install" ".")))
+          (add-after 'install 'delete-installed-tests
+                 (lambda _
+                   (delete-file-recursively
+                    (string-append #$output "/tests")))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtwebengine-5)
        (delete "python2" "python2-six")
