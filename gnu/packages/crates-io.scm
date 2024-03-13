@@ -33299,14 +33299,19 @@ sending emails from Rust applications.")
         (base32 "1mar4njchjd33q7s47r43njjj8farkb78f8ica77jj6gil7lh0px"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--" "--skip=book_test")
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.10)
         ("rust-email" ,rust-email-0.0.20)
         ("rust-lettre" ,rust-lettre-0.9)
         ("rust-mime" ,rust-mime-0.3)
         ("rust-time" ,rust-time-0.1)
-        ("rust-uuid" ,rust-uuid-0.7))))
+        ("rust-uuid" ,rust-uuid-0.7))
+       #:cargo-development-inputs (("rust-glob" ,rust-glob-0.3)
+                                   ("rust-lettre" ,rust-lettre-0.9))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
     (home-page "https://github.com/lettre/lettre")
     (synopsis "Mailer library for Rust")
     (description "Lettre is a mailer library for Rust.  It provides multiple
