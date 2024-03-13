@@ -500,7 +500,7 @@ Telegram project, for its use in telegram desktop client.")
            fcitx5-qt
            ffmpeg
            glib
-           glibmm
+           glibmm-2.76
            gtk+
            hime
            hunspell
