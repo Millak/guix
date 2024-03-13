@@ -4603,7 +4603,7 @@ color-related widgets.")
   (package
     (inherit python-shiboken-2)
     (name "python-shiboken-6")
-    (version "6.5.2")
+    (version "6.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://qt/QtForPython/pyside6/PySide6-"
@@ -4611,7 +4611,7 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1a0v9mjlcjbffm4lf5cfg45hvqai9654p95ygj5cjhfd9z8z3nwh"))))
+                "1w690jpxrski7c71gx05q5fvl2117lnjj5ih8iwckx3s9mlhnqhl"))))
     (build-system cmake-build-system)
     (inputs
      (modify-inputs (package-inputs python-shiboken-2)
@@ -4631,7 +4631,8 @@ color-related widgets.")
            "-DCMAKE_SKIP_RPATH=TRUE"
            (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
                           #$output "/lib")
-           #$flags))))))
+           #$flags))))
+    (properties `((upstream-name . "pyside-setup")))))
 
 (define-public python-pyside-2
   (package
@@ -4767,12 +4768,16 @@ generate Python bindings for your C or C++ code.")
       #:configure-flags
       #~(list "-DBUILD_TESTS=FALSE"
               (string-append "-DPYTHON_EXECUTABLE="
-                             (search-input-file %build-inputs
-                                                "/bin/python")))
+                             (search-input-file %build-inputs "/bin/python")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-to-source-dir
             (lambda _ (chdir "sources/pyside6")))
+          (add-after 'go-to-source-dir 'set-rpath
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("CMAKE_INSTALL_RPATH")
+                 (string-append "CMAKE_INSTALL_RPATH " #$output "/lib")))))
           (add-after 'go-to-source-dir 'fix-qt-module-detection
             (lambda _
               (substitute* "cmake/PySideHelpers.cmake"
