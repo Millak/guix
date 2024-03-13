@@ -148,6 +148,7 @@
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
+;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6375,6 +6376,46 @@ offers a full-featured GUI (GTK and QT versions) that makes it highly
 accessible for novices, as well as a scripting interface offering the full
 flexibility and power of the Python language.")
     (license license:gpl3+)))
+
+(define-public kalamine
+  (package
+    (name "kalamine")
+    (version "0.36")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kalamine" version))
+       (sha256
+        (base32 "1xxncavq5a0dydhzpfjdxmqsddl77275d9k9giw1032bdyb9d5is"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'make-test-layouts
+            (lambda _
+              (apply invoke
+                     (cons* "python" "-m" "kalamine.cli" "build"
+                            (find-files "layouts" "\\.toml")))
+              (invoke "python" "-m" "kalamine.cli" "new" "test.toml"))))))
+    (propagated-inputs
+     (list python-click
+           python-livereload
+           python-lxml
+           python-progress
+           python-pyyaml
+           python-tomli))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
+    ;; packaged.
+    (native-inputs
+     (list python-hatchling python-mypy python-pytest))
+    (home-page "https://github.com/OneDeadKey/kalamine")
+    (synopsis "Keyboard layout maker")
+    (description
+     "Kalamine provides a CLI to create advanced keyboard layout from a
+textual portable description.  It also supports layout emulation via web
+browser.")
+    (license license:expat)))
 
 (define-public python-dm-tree
   (package
