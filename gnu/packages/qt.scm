@@ -2293,13 +2293,13 @@ that helps in Qt development.")))
 (define-public qttools
   (package
     (name "qttools")
-    (version "6.5.2")
+    (version "6.6.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0ha3v488vnm4pgdpyjgf859sak0z2fwmbgcyivcd93qxflign7sm"))))
+                "0ij7djy06xi4v5v29fh31gqq5rnc12vviv3qg3vqf4hiaagrxm76"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2320,7 +2320,7 @@ that helps in Qt development.")))
     (native-inputs (list perl qtdeclarative vulkan-headers))
     ;; Use clang-15, which is built using as a single shared library, which is
     ;; what the build system of qttools expects.
-    (inputs (list clang-15 libxkbcommon mesa qtbase))
+    (inputs (list clang-15 libxkbcommon mesa qtbase `(,zstd "lib")))
     (home-page (package-home-page qtbase))
     (synopsis "Qt Tools and Designer modules")
     (description "The Qt Tools module provides a set of applications to browse
