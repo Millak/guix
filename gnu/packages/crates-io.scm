@@ -57743,29 +57743,28 @@ forth, as well as the ability to create custom thread-pools with ThreadPool.")
 (define-public rust-rustc-serialize-0.3
   (package
     (name "rust-rustc-serialize")
-    (version "0.3.24")
+    (version "0.3.25")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rustc-serialize" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1nkg3vasg7nk80ffkazizgiyv3hb1l9g3d8h17cajbkx538jiwfw"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustc-serialize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00c494bsxjqjvc15h9x2nkgwl6bjdp9bmb9v0xs4ckv0h33lp0zy"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rand" ,rust-rand-0.3))))
-    (home-page "https://github.com/rust-lang-deprecated/rustc-serialize")
+     `(#:tests? #f  ; could not find `rustc_serialize` in the crate root
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/rust-lang/rustc-serialize")
     (synopsis "Generic serialization/deserialization support")
     (description
      "This package provides generic serialization/deserialization support
 corresponding to the @code{derive(RustcEncodable, RustcDecodable)} mode in the
 compiler.  Also includes support for hex, base64, and json encoding and
-decoding.")
-    (license (list license:asl2.0
-                   license:expat))))
+decoding.
+
+This crate is deprecated in favor of serde.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-rustc-std-workspace-alloc-1
   (package
