@@ -70965,14 +70965,14 @@ introspection APIs.")
 (define-public rust-time-0.3
   (package
     (name "rust-time")
-    (version "0.3.31")
+    (version "0.3.34")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gjqcdsdbh0r5vi4c2vrj5a6prdviapx731wwn07cvpqqd1blmzn"))))
+        (base32 "0jc7wgprzqjhzd0nqkbmdlnjwyddnswmjw86ni2vq55v45jqn968"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included
@@ -70981,7 +70981,9 @@ introspection APIs.")
         ("rust-itoa" ,rust-itoa-1)
         ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-conv" ,rust-num-conv-0.1)
         ("rust-num-threads" ,rust-num-threads-0.1)
+        ("rust-powerfmt" ,rust-powerfmt-0.2)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde" ,rust-serde-1)
@@ -70989,6 +70991,7 @@ introspection APIs.")
         ("rust-time-macros" ,rust-time-macros-0.2))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-num-conv" ,rust-num-conv-0.1)
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rstest" ,rust-rstest-0.18)
