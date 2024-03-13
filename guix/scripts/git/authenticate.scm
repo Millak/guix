@@ -74,7 +74,7 @@
                   (alist-cons 'show-stats? #t result)))))
 
 (define %default-options
-  '((directory . ".")))
+  '())
 
 (define (current-branch repository)
   "Return the name of the checked out branch of REPOSITORY or #f if it could
@@ -236,9 +236,9 @@ expected COMMIT and SIGNER~%")))
 
   (with-error-handling
     (with-git-error-handling
-     (let* ((directory   (assoc-ref options 'directory))
-            (show-stats? (assoc-ref options 'show-stats?))
-            (repository  (repository-open directory))
+     (let* ((show-stats? (assoc-ref options 'show-stats?))
+            (repository  (repository-open (or (assoc-ref options 'directory)
+                                              (repository-discover "."))))
             (commit signer (match (command-line-arguments options)
                              ((commit signer)
                               (values commit signer))
