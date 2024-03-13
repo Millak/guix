@@ -31,6 +31,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (guix-git-authenticate))
@@ -73,8 +74,79 @@
                   (alist-cons 'show-stats? #t result)))))
 
 (define %default-options
-  '((directory . ".")
-    (keyring-reference . "keyring")))
+  '((directory . ".")))
+
+(define (current-branch repository)
+  "Return the name of the checked out branch of REPOSITORY or #f if it could
+not be determined."
+  (and (not (repository-head-detached? repository))
+       (let* ((head (repository-head repository))
+              (name (reference-name head)))
+         (and (string-prefix? "refs/heads/" name)
+              (string-drop name (string-length "refs/heads/"))))))
+
+(define (config-value repository key)
+  "Return the config value associated with KEY in the 'guix.authentication' or
+'guix.authentication-BRANCH' name space in REPOSITORY, or #f if no such config
+was found."
+  (let-syntax ((false-if-git-error
+                (syntax-rules ()
+                  ((_ exp)
+                   (catch 'git-error (lambda () exp) (const #f))))))
+    (let* ((config (repository-config repository))
+           (branch (current-branch repository)))
+      ;; First try the BRANCH-specific value, then the generic one.`
+      (or (and branch
+               (false-if-git-error
+                (config-entry-value
+                 (config-get-entry config
+                                   (string-append "guix.authentication-"
+                                                  branch "." key)))))
+          (false-if-git-error
+           (config-entry-value
+            (config-get-entry config
+                              (string-append "guix.authentication."
+                                             key))))))))
+
+(define (configured-introduction repository)
+  "Return two values: the commit and signer fingerprint (strings) as
+configured in REPOSITORY.  Error out if one or both were missing."
+  (let* ((commit (config-value repository "introduction-commit"))
+         (signer (config-value repository "introduction-signer")))
+    (unless (and commit signer)
+      (leave (G_ "unknown introductory commit and signer~%")))
+    (values commit signer)))
+
+(define (configured-keyring-reference repository)
+  "Return the keyring reference configured in REPOSITORY or #f if missing."
+  (config-value repository "keyring"))
+
+(define (configured? repository)
+  "Return true if REPOSITORY already container introduction info in its
+'config' file."
+  (and (config-value repository "introduction-commit")
+       (config-value repository "introduction-signer")))
+
+(define* (record-configuration repository
+                               #:key commit signer keyring-reference)
+  "Record COMMIT, SIGNER, and KEYRING-REFERENCE in the 'config' file of
+REPOSITORY."
+  (define config
+    (repository-config repository))
+
+  ;; Guile-Git < 0.7.0 lacks 'set-config-string'.
+  (if (module-defined? (resolve-interface '(git)) 'set-config-string)
+      (begin
+        (set-config-string config "guix.authentication.introduction-commit"
+                           commit)
+        (set-config-string config "guix.authentication.introduction-signer"
+                           signer)
+        (set-config-string config "guix.authentication.keyring"
+                           keyring-reference)
+        (info (G_ "introduction and keyring recorded \
+in repository configuration file~%")))
+      (warning (G_ "could not record introduction and keyring configuration\
+ (Guile-Git too old?)~%"))))
 
 (define (show-stats stats)
   "Display STATS, an alist containing commit signing stats as returned by
@@ -158,35 +230,48 @@ commits)...~%")
         (progress-reporter/bar (length commits))
         progress-reporter/silent))
 
+  (define (missing-arguments)
+    (leave (G_ "wrong number of arguments; \
+expected COMMIT and SIGNER~%")))
+
   (with-error-handling
     (with-git-error-handling
-     (match (command-line-arguments options)
-       ((commit signer)
-        (let* ((directory   (assoc-ref options 'directory))
-               (show-stats? (assoc-ref options 'show-stats?))
-               (keyring     (assoc-ref options 'keyring-reference))
-               (repository  (repository-open directory))
-               (end         (match (assoc-ref options 'end-commit)
-                              (#f  (reference-target
-                                    (repository-head repository)))
-                              (oid oid)))
-               (history     (match (assoc-ref options 'historical-authorizations)
-                              (#f '())
-                              (file (call-with-input-file file
-                                      read-authorizations))))
-               (cache-key   (or (assoc-ref options 'cache-key)
-                                (repository-cache-key repository))))
-          (define stats
-            (authenticate-repository repository (string->oid commit)
-                                     (openpgp-fingerprint* signer)
-                                     #:end end
-                                     #:keyring-reference keyring
-                                     #:historical-authorizations history
-                                     #:cache-key cache-key
-                                     #:make-reporter make-reporter))
+     (let* ((directory   (assoc-ref options 'directory))
+            (show-stats? (assoc-ref options 'show-stats?))
+            (repository  (repository-open directory))
+            (commit signer (match (command-line-arguments options)
+                             ((commit signer)
+                              (values commit signer))
+                             (()
+                              (configured-introduction repository))
+                             (_
+                              (missing-arguments))))
+            (keyring     (or (assoc-ref options 'keyring-reference)
+                             (configured-keyring-reference repository)
+                             "keyring"))
+            (end         (match (assoc-ref options 'end-commit)
+                           (#f  (reference-target
+                                 (repository-head repository)))
+                           (oid oid)))
+            (history     (match (assoc-ref options 'historical-authorizations)
+                           (#f '())
+                           (file (call-with-input-file file
+                                   read-authorizations))))
+            (cache-key   (or (assoc-ref options 'cache-key)
+                             (repository-cache-key repository))))
+       (define stats
+         (authenticate-repository repository (string->oid commit)
+                                  (openpgp-fingerprint* signer)
+                                  #:end end
+                                  #:keyring-reference keyring
+                                  #:historical-authorizations history
+                                  #:cache-key cache-key
+                                  #:make-reporter make-reporter))
 
-          (when (and show-stats? (not (null? stats)))
-            (show-stats stats))))
-       (_
-        (leave (G_ "wrong number of arguments; \
-expected COMMIT and SIGNER~%")))))))
+       (unless (configured? repository)
+         (record-configuration repository
+                               #:commit commit #:signer signer
+                               #:keyring-reference keyring))
+
+       (when (and show-stats? (not (null? stats)))
+         (show-stats stats))))))

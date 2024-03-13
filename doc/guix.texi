@@ -7314,6 +7314,8 @@ for Fortran development.  For other languages, please use
 @section Invoking @command{guix git authenticate}
 
 @cindex @command{guix git authenticate}
+@cindex authentication, of Git checkouts
+@cindex Git checkout authentication
 
 The @command{guix git authenticate} command authenticates a Git checkout
 following the same rule as for channels (@pxref{channel-authentication,
@@ -7333,13 +7335,35 @@ The general syntax is:
 guix git authenticate @var{commit} @var{signer} [@var{options}@dots{}]
 @end example
 
+@cindex introduction, for Git authentication
 By default, this command authenticates the Git checkout in the current
 directory; it outputs nothing and exits with exit code zero on success
 and non-zero on failure.  @var{commit} above denotes the first commit
 where authentication takes place, and @var{signer} is the OpenPGP
 fingerprint of public key used to sign @var{commit}.  Together, they
-form a ``channel introduction'' (@pxref{channel-authentication, channel
-introduction}).  The options below allow you to fine-tune the process.
+form a @dfn{channel introduction} (@pxref{channel-authentication, channel
+introduction}).  On your first successful run, the introduction is
+recorded in the @file{.git/config} file of your checkout, allowing you
+to omit them from subsequent invocations:
+
+@example
+guix git authenticate [@var{options}@dots{}]
+@end example
+
+Should you have branches that require different introductions, you can
+specify them directly in @file{.git/config}.  For example, if the branch
+called @code{personal-fork} has a different introduction than other
+branches, you can extend @file{.git/config} along these lines:
+
+@smallexample
+[guix "authentication-personal-fork"]
+	introduction-commit = cabba936fd807b096b48283debdcddccfea3900d
+	introduction-signer = C0FF EECA BBA9 E6A8 0D1D  E643 A2A0 6DF2 A33A 54FA
+	keyring = keyring
+@end smallexample
+
+The command-line options described below allow you to fine-tune the
+process.
 
 @table @code
 @item --repository=@var{directory}

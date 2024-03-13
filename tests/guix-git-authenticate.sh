@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -44,6 +44,13 @@ guix git authenticate "$intro_commit" "$intro_signer"	\
 v1_2_0_commit="a099685659b4bfa6b3218f84953cbb7ff9e88063"
 guix git authenticate "$intro_commit" "$intro_signer"	\
      --cache-key="$cache_key" --stats			\
+     --end="$v1_2_0_commit"
+
+# Check a commit that came soon after v1.2.0.  No need to repeat $intro_commit
+# and $intro_signer because it should have been recorded in '.git/config'.
+after_v1_2_0="be4d9527b55b6829e33a6e0727496af25927a786"
+guix git authenticate				\
+     --cache-key="$cache_key" --stats		\
      --end="$v1_2_0_commit"
 
 rm "$XDG_CACHE_HOME/guix/authentication/$cache_key"
