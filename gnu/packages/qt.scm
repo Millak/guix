@@ -2740,6 +2740,50 @@ the end-user is driving and cannot attend the incoming messages on the phone.
 In such a scenario, the messaging application can read out the incoming
 message.")))
 
+(define-public qtspeech
+  (package
+    (name "qtspeech")
+    (version "6.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "1qvf3p2p1pc5fw40d8zq0iawaaqkc0dp5yx85b1dnw1j809bn8y0"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'check)               ;move after the install phase
+               (add-after 'install 'check
+                 (assoc-ref %standard-phases 'check))
+               (add-before 'check 'set-display
+                 (lambda _
+                   ;; Make Qt render "offscreen", required for tests.
+                   (setenv "QT_QPA_PLATFORM" "offscreen")))
+               (add-before 'check 'prepare-for-tests
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (setenv "QML2_IMPORT_PATH"
+                           (string-append (assoc-ref outputs "out")
+                                          "/lib/qt6/qml:"
+                                          (getenv "QML2_IMPORT_PATH")))))
+               (add-after 'install 'delete-installed-tests
+                 (lambda _
+                   (delete-file-recursively
+                    (string-append #$output "/tests")))))))
+    (propagated-inputs (list qtmultimedia))
+    (inputs (list qtbase qtdeclarative))
+    (synopsis "Qt Speech module")
+    (description "The Qt Speech module enables a Qt application to support
+accessibility features such as text-to-speech, which is useful for end-users
+who are visually challenged or cannot access the application for whatever
+reason.  The most common use case where text-to-speech comes in handy is when
+the end-user is driving and cannot attend the incoming messages on the phone.
+In such a scenario, the messaging application can read out the incoming
+message.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtvirtualkeyboard-5
   (package
     (inherit qtsvg-5)
