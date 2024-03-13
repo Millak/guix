@@ -59216,23 +59216,23 @@ Rust code.")
 (define-public rust-schemars-derive-0.8
   (package
     (name "rust-schemars-derive")
-    (version "0.8.8")
+    (version "0.8.16")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "schemars_derive" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "16xfvm16d8nsxdx82fdcyqfi12v61lffyf1wmi34qqg82g74vbj1"))))
+          (base32 "0rq9sdcf5hyvsyj9v9nfy2jgjbjzaldjq4i6y2fcz72xlrpzsry7"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
         (("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote-1)
-         ("rust-serde-derive-internals" ,rust-serde-derive-internals-0.25)
+         ("rust-serde-derive-internals" ,rust-serde-derive-internals-0.26)
          ("rust-syn" ,rust-syn-1))
         #:cargo-development-inputs
-        (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://graham.cool/schemars/")
     (synopsis "Macros for @code{#[derive(JsonSchema)]}, for use with schemars")
     (description "This package provides macros for @code{#[derive(JsonSchema)]},
