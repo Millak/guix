@@ -80144,7 +80144,12 @@ for locating fonts.")
        (uri (crate-uri "zerocopy-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19nj11md42aijyqnfx8pa647fjzhz537xyc624rajwwfrn6b3qcw"))))
+        (base32 "19nj11md42aijyqnfx8pa647fjzhz537xyc624rajwwfrn6b3qcw"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved import `zerocopy`
