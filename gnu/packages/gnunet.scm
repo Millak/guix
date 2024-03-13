@@ -93,7 +93,9 @@
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0mgprmwdhdwq9xhfxfhcncd304425nvcc4zi8ci5f0nja4n333xv"))))
+                "0mgprmwdhdwq9xhfxfhcncd304425nvcc4zi8ci5f0nja4n333xv"))
+              (patches
+               (search-patches "libextractor-tidy-support.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "static"))               ; 420 KiB .a files
@@ -103,6 +105,9 @@
                                   #$(this-package-input "libltdl")))
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'force-reconfigure
+                 (lambda _
+                   (delete-file "configure")))
                (add-after 'install 'move-static-libraries
                  (lambda* (#:key outputs #:allow-other-keys)
                    ;; Move static libraries to the "static" output.
@@ -114,12 +119,6 @@
                                  (install-file file slib)
                                  (delete-file file))
                                (find-files lib "\\.a$"))))))))
-    ;; WARNING: Checks require /dev/shm to be in the build chroot, especially
-    ;; not to be a symbolic link to /run/shm.
-    ;; FIXME:
-    ;; The following dependency is optional, but should be
-    ;; available for maximum coverage:
-    ;; * libtidy-html (tidy-html) ; investigate failure
     (native-inputs
      (list autoconf-2.71
            automake
@@ -149,6 +148,7 @@
            libtiff
            libvorbis
            rpm
+           tidy-html
            zlib))
     (synopsis "Library to extract meta-data from media files")
     (description
