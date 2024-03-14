@@ -995,6 +995,20 @@ libraries.")
 useful for C++.")
     (license license:lgpl2.1+)))
 
+(define-public glibmm-2.76
+  (package
+    (inherit glibmm)
+    (name "glibmm")
+    (version "2.76.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/glibmm/"
+                                  (version-major+minor version)
+                                  "/glibmm-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1cia8vrpwzn8zwalws42mga5hi965840m5s8dvfzv55xx86dhdw6"))))))
+
  (define-public glibmm-2.66
    (package
     (inherit glibmm)
