@@ -1803,6 +1803,52 @@ modules for building a Wayland compositor.")
        (sha256
         (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))))
 
+(define-public wl-mirror
+  (package
+    (name "wl-mirror")
+    (version "0.16.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Ferdi265/wl-mirror")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jdycr9vf5skbf55kbm2hc3zl3qg58x3bb6xqkf9qx14m4ramcdj"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ;No tests.
+           #:configure-flags
+           #~(list "-DINSTALL_DOCUMENTATION=ON"
+                   (string-append "-DWL_PROTOCOL_DIR="
+                                  #$(this-package-input "wayland-protocols")
+                                  "/share/wayland-protocols")
+                   (string-append "-DWLR_PROTOCOL_DIR="
+                                  #$(this-package-input "wlr-protocols")
+                                  "/share/wlr-protocols"))))
+    (inputs (list egl-wayland mesa wayland wayland-protocols wlr-protocols))
+    (native-inputs (list pkg-config scdoc))
+    (home-page "https://github.com/Ferdi265/wl-mirror")
+    (synopsis "Simple Wayland output mirror client")
+    (description
+     "This package provides @command{wl-mirror}, a solution to @code{sway}'s
+lack of output mirroring by mirroring an output onto a client surface.  It has
+the following features:
+
+@itemize
+@item Mirror an output onto a resizable window.
+@item Mirror an output onto another output by fullscreening the window.
+@item React to changes in output scale (including fractional scaling).
+@item Preserve aspect ratio.
+@item Correct flipped or rotated outputs.
+@item Custom flips or rotations.
+@item Mirror custom regions of outputs.
+@item Receive additional options on stdin for changing the mirrored screen or
+region on the fly.
+@end itemize")
+    (license license:gpl3)))
+
 (define-public wmenu
   (package
     (name "wmenu")
