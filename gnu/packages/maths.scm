@@ -8075,7 +8075,7 @@ easily be incorporated into existing simulation codes.")
                            ".tgz"))
        (sha256
         (base32
-         "1a9wbgdqyy1whhfc0yl0yqkax3amnqa6iihhq48d063gc0jwfd9a"))
+         "0gzxgd2ybnh49h57rh47vrqnsyk11jn206j5kf9y7p5vksc79ffz"))
        (patches (search-patches "combinatorial-blas-awpm.patch"
                                 "combinatorial-blas-io-fix.patch"))))
     (build-system cmake-build-system)
