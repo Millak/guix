@@ -138,8 +138,31 @@ Windows Credential Manager.")
        (("rust-cargo-credential" ,rust-cargo-credential-0.3)
         ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
+(define-public rust-clipboard-win-5
+  (package
+    (name "rust-clipboard-win")
+    (version "5.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clipboard-win" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15x28184cw6r8hx30farqvcir0kz151dfbfms4avl9q11rqa1y8j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; unresolved import `clipboard_win::raw`
+       #:cargo-inputs (("rust-error-code" ,rust-error-code-3)
+                       ("rust-windows-win" ,rust-windows-win-3))))
+    (home-page "https://github.com/DoumanAsh/clipboard-win")
+    (synopsis "Simple way to interact with Windows clipboard")
+    (description
+     "This package provides simple way to interact with Windows clipboard.")
+    (license license:boost1.0)))
+
 (define-public rust-clipboard-win-4
   (package
+    (inherit rust-clipboard-win-5)
     (name "rust-clipboard-win")
     (version "4.5.0")
     (source
@@ -149,18 +172,12 @@ Windows Credential Manager.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qh3rypkf1lazniq4nr04hxsck0d55rigb5sjvpvgnap4dyc54bi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; unresolved import `clipboard_win::raw`
        #:cargo-inputs
        (("rust-error-code" ,rust-error-code-2)
         ("rust-str-buf" ,rust-str-buf-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/DoumanAsh/clipboard-win")
-    (synopsis "Simple way to interact with Windows clipboard")
-    (description
-     "This package provides simple way to interact with Windows clipboard.")
-    (license license:boost1.0)))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-clipboard-win-3
   (package
