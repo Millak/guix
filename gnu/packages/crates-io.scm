@@ -61109,18 +61109,17 @@ data.  This crate provides a wrapper that works with any existing Serde
 (define-public rust-serde-json-1
   (package
     (name "rust-serde-json")
-    (version "1.0.111")
+    (version "1.0.114")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_json" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x441azvvdy6x8am4bvkxhswhzw5cr8ml0cqspnihvri8bx4cvhp"))))
+        (base32 "1q4saigxwkf8bw4y5kp6k33dnavlvvwa2q4zmag59vrjsqdrpw65"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; could not find `RandomState` in `hash`
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-indexmap" ,rust-indexmap-2)
         ("rust-itoa" ,rust-itoa-1)
         ("rust-ryu" ,rust-ryu-1)
