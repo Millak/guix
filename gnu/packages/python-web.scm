@@ -61,6 +61,7 @@
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1917,21 +1918,44 @@ Amazon S3 compatible object storage server.")
        (uri (pypi-uri "pycurl" version))
        (sha256
         (base32 "1ji46b924caa4saxvjxs9h673yy0kif297nxpnjn84r7w05mjc2p"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; The tests attempt to access external web servers, so we cannot run
-     ;; them.  Furthermore, they are skipped altogether when using Python 2.
-     '(#:tests? #f
+     '(#:test-flags
+       (list "-n" "auto"
+             "-k" (string-append
+                   ;; Disable hanginging tests
+                   "not test_multi_socket_select"
+                   ;; E assert None is not None
+                   ;; E+ where None =
+                   ;; <tests.multi_callback_test.MultiCallbackTest
+                   ;; testMethod=test_easy_pause_unpause>.socket_result
+                   " and not test_easy_pause_unpause"
+                   " and not test_multi_socket_action"
+                   ;; E pycurl.error: (1, '')
+                   " and not test_http_version_3"
+                   ;; OSError: tests/fake-curl/libcurl/with_gnutls.so: cannot
+                   ;; open shared object file: No such file or directory
+                   " and not test_libcurl_ssl_gnutls"
+                   ;; OSError: tests/fake-curl/libcurl/with_nss.so: cannot
+                   ;; open shared object file: No such file or directory
+                   " and not test_libcurl_ssl_nss"
+                   ;; OSError: tests/fake-curl/libcurl/with_openssl.so: cannot
+                   ;; open shared object file: No such file or directory
+                   " and not test_libcurl_ssl_openssl"))
        #:phases (modify-phases %standard-phases
-                    (add-before 'build 'configure-tls-backend
-                      (lambda _
-                        ;; XXX: PycURL fails to automatically determine which TLS
-                        ;; backend to use when cURL is built with --disable-static.
-                        ;; See setup.py and <https://github.com/pycurl/pycurl/pull/147>.
-                        (setenv "PYCURL_SSL_LIBRARY" "gnutls")
-                        #t)))))
+                  (add-before 'build 'configure-tls-backend
+                    (lambda _
+                      ;; XXX: PycURL fails to automatically determine which
+                      ;; TLS backend to use when cURL is built with
+                      ;; --disable-static.  See setup.py and
+                      ;; <https://github.com/pycurl/pycurl/pull/147>.
+                      (setenv "PYCURL_SSL_LIBRARY" "gnutls"))))))
     (native-inputs
-     (list python-nose python-bottle))
+     (list python-bottle
+           python-flaky
+           python-nose
+           python-pytest
+           python-pytest-xdist))
     (inputs
      (list curl gnutls))
     (home-page "http://pycurl.io/")
