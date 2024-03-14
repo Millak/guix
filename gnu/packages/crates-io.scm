@@ -69014,8 +69014,47 @@ information to the kernel using the sysctl interface.")
         ("rust-errno" ,rust-errno-0.2)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-sysinfo-0.30
+  (package
+    (name "rust-sysinfo")
+    (version "0.30.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sysinfo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "064d267hiqnj2jd9rmkki3fra9yjza6gr6i02qm8a2iqxy45hf0c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; These files aren't available in the build environment.
+             "--skip=test::check_system_info"
+             "--skip=test::check_uid_gid"
+             "--skip=test_networks"
+             "--skip=test_wait_non_child"
+             "--skip=test_process_disk_usage")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-ntapi" ,rust-ntapi-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-windows" ,rust-windows-0.52))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/GuillaumeGomez/sysinfo")
+    (synopsis "System handler to interact with processes")
+    (description
+     "This package is a library to get system information such as processes,
+processors, disks, components and networks.")
+    (license license:expat)))
+
 (define-public rust-sysinfo-0.28
   (package
+    (inherit rust-sysinfo-0.30)
     (name "rust-sysinfo")
     (version "0.28.4")
     (source
@@ -69025,7 +69064,6 @@ information to the kernel using the sysctl interface.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "06zk8awy8gjrk3w68wpkqyprm3j82vq1cibji6db5zlkcv5g7hml"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
@@ -69046,13 +69084,7 @@ information to the kernel using the sysctl interface.")
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
        (("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/GuillaumeGomez/sysinfo")
-    (synopsis "System handler to interact with processes")
-    (description
-     "This package is a library to get system information such as processes,
-processors, disks, components and networks.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-sysinfo-0.27
   (package
