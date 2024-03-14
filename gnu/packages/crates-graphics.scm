@@ -3848,22 +3848,22 @@ applications.")
 (define-public rust-wayland-backend-0.3
   (package
     (name "rust-wayland-backend")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-backend" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r7vz56z6ixfbljraxl4q59g43jfb6i9qkaksi704pzlfgfjs58r"))))
+        (base32 "0h4s8nfrl1q8xys1409lfwkb70cdh81c0pvzr1s69mwhrrhzll4x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `wayland_scanner`
        #:cargo-inputs (("rust-cc" ,rust-cc-1)
                        ("rust-downcast-rs" ,rust-downcast-rs-1)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.26)
                        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+                       ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-scoped-tls" ,rust-scoped-tls-1)
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-wayland-sys" ,rust-wayland-sys-0.31))
