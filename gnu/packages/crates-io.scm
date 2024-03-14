@@ -2083,8 +2083,42 @@ coverage-guided, mutation-based fuzzers.")
        #:cargo-inputs
        (("rust-derive-arbitrary" ,rust-derive-arbitrary-0.4))))))
 
+(define-public rust-arboard-3
+  (package
+    (name "rust-arboard")
+    (version "3.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arboard" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n7s54yjbv3qksq2fivcdnvriplmzp8fd14dfrw7k7048cciy152"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; tests require X11 $DISPLAY
+       #:cargo-inputs (("rust-clipboard-win" ,rust-clipboard-win-5)
+                       ("rust-core-graphics" ,rust-core-graphics-0.23)
+                       ("rust-image" ,rust-image-0.24)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-objc" ,rust-objc-0.2)
+                       ("rust-objc-foundation" ,rust-objc-foundation-0.1)
+                       ("rust-objc-id" ,rust-objc-id-0.1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48)
+                       ("rust-wl-clipboard-rs" ,rust-wl-clipboard-rs-0.8)
+                       ("rust-x11rb" ,rust-x11rb-0.13))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9))))
+    (home-page "https://github.com/1Password/arboard")
+    (synopsis "Image and text handling for the OS clipboard")
+    (description
+     "This package provides image and text handling for the OS clipboard.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-arboard-1
   (package
+    (inherit rust-arboard-3)
     (name "rust-arboard")
     (version "1.2.1")
     (source
@@ -2094,7 +2128,6 @@ coverage-guided, mutation-based fuzzers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1a5qfmpzcf5rwlwsligf9z1gzndpvj0jncc4s3k3z5g214c4l127"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -2116,12 +2149,7 @@ coverage-guided, mutation-based fuzzers.")
         ("rust-x11rb" ,rust-x11rb-0.8))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.8)
-        ("rust-simple-logger" ,rust-simple-logger-1))))
-    (home-page "https://github.com/ArturKovacs/arboard")
-    (synopsis "Image and text handling for the OS clipboard")
-    (description
-     "This package provides image and text handling for the OS clipboard.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-simple-logger" ,rust-simple-logger-1))))))
 
 (define-public rust-arc-swap-1
   (package
