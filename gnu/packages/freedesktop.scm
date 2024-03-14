@@ -1557,6 +1557,37 @@ sent to a Wayland window, such as key presses.  It is analogous to the X11 tool
 XEv.")
     (license license:expat)))
 
+(define-public wlr-protocols
+  (let ((commit "2b8d43325b7012cc3f9b55c08d26e50e42beac7d")
+        (revision "0"))
+    (package
+      (name "wlr-protocols")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.freedesktop.org/wlroots/wlr-protocols.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17blwww6rcrahwc6h6j68gh6wjbj14if3mihpxymfdw5pwl72rav"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list (string-append "PREFIX=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure))))
+      (native-inputs (list wayland))    ;For wayland-scanner.
+      (home-page "https://gitlab.freedesktop.org/wlroots/wlr-protocols")
+      (synopsis
+       "Wayland protocols designed for use in wlroots (and other compositors)")
+      (description
+       "This package provides Wayland protocols designed for use in wlroots (and
+other compositors).")
+      (license license:expat))))
+
 (define-public wtype
   (package
     (name "wtype")
