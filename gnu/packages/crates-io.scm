@@ -44023,14 +44023,14 @@ crate.")
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
-    (version "0.10.57")
+    (version "0.10.64")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "openssl" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0z0f8g84y0lvnbc60586ibjpf8r1q1dv672vfqan5d5bk7imxhms"))
+                "07vb455yh08qh3n493ssw1qsa3zg3zfj438kk2180453hq94i84m"))
               (snippet
                #~(begin (use-modules (guix build utils))
                         (substitute* "Cargo.toml"
