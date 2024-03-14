@@ -51380,14 +51380,14 @@ ecosystem.")
 (define-public rust-pyo3-build-config-0.16
   (package
     (name "rust-pyo3-build-config")
-    (version "0.16.5")
+    (version "0.16.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3-build-config" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j2jj5qnnpagi3gvkwjpydcxfsd5qv3vmpghnaqs7n1mdia5pdmm"))))
+        (base32 "1hndr61lxc2kw7wnnggps3h08lnsqapwa3lxc0l5ji2rg0wrv0cw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
