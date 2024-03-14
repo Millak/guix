@@ -28404,8 +28404,32 @@ hash map.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-hashlink-0.9
+  (package
+    (name "rust-hashlink")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hashlink" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vi5nxldy84raw4jy0fq059xq7mnfha0y2gg7kfihxb0yzvslbk9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-rustc-hash" ,rust-rustc-hash-1)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/kyren/hashlink")
+    (synopsis "HashMap-like containers with user controllable order")
+    (description "This package provides HashMap-like containers that hold
+their key-value pairs in a user controllable order.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hashlink-0.8
   (package
+    (inherit rust-hashlink-0.9)
     (name "rust-hashlink")
     (version "0.8.2")
     (source (origin
@@ -28415,19 +28439,13 @@ hash map.")
               (sha256
                (base32
                 "1ap6ar5jlqq6ln7d9r2j5079mbx0zg8643xacqyjwkqw96ws2q87"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-hashbrown" ,rust-hashbrown-0.13)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-rustc-hash" ,rust-rustc-hash-1)
-        ("rust-serde-test" ,rust-serde-test-1))))
-    (home-page "https://github.com/kyren/hashlink")
-    (synopsis "HashMap-like containers with user controllable order")
-    (description "This package provides HashMap-like containers that hold
-their key-value pairs in a user controllable order.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-hashlink-0.7
   (package
