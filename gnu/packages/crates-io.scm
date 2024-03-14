@@ -62353,8 +62353,33 @@ Rust's serde.")
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))))))
 
+(define-public rust-serial-test-derive-3
+  (package
+    (name "rust-serial-test-derive")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial_test_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04i240k9ml91nz2knj2qxaksm6qnqj65xm7p8wdsq880qynv8gxr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-prettyplease" ,rust-prettyplease-0.2))))
+    (home-page "https://github.com/palfrey/serial_test")
+    (synopsis "Helper crate for serial_test")
+    (description
+     "This package is an helper crate for @code{rust-serial-test}.")
+    (license license:expat)))
+
 (define-public rust-serial-test-derive-2
   (package
+    (inherit rust-serial-test-derive-3)
     (name "rust-serial-test-derive")
     (version "2.0.0")
     (source
@@ -62364,19 +62389,13 @@ Rust's serde.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "13zvd5ds76hhjn3z0axc05n15lzpxpz77jcykic8q5knhlbjklci"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.10))))
-    (home-page "https://github.com/palfrey/serial_test")
-    (synopsis "Helper crate for serial_test")
-    (description
-     "This package is an helper crate for @code{rust-serial-test}.")
-    (license license:expat)))
+       (("rust-env-logger" ,rust-env-logger-0.10))))))
 
 (define-public rust-serial-test-derive-1
   (package
