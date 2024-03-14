@@ -66922,8 +66922,29 @@ values without proliferating generics.")
     (description "Superluminal Performance C API bindings.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-supports-color-3
+  (package
+    (name "rust-supports-color")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "supports-color" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kw5miaai8sarcikzdvsf2ys6rkakngyf2g4yifmgz0xc8ab6acq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-is-ci" ,rust-is-ci-1))))
+    (home-page "https://github.com/zkat/supports-color")
+    (synopsis "Detects whether a terminal supports color")
+    (description
+     "Detects whether a terminal supports color, and gives details about that support.")
+    (license license:asl2.0)))
+
 (define-public rust-supports-color-2
   (package
+    (inherit rust-supports-color-3)
     (name "rust-supports-color")
     (version "2.0.0")
     (source (origin
@@ -66933,17 +66954,11 @@ values without proliferating generics.")
               (sha256
                (base32
                 "0m5kayz225f23k5jyjin82sfkrqhfdq3j72ianafkazz9cbyfl29"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; panicked at 'assertion failed: `(left == right)`
        #:cargo-inputs
        (("rust-is-terminal" ,rust-is-terminal-0.4)
-        ("rust-is-ci" ,rust-is-ci-1))))
-    (home-page "https://github.com/zkat/supports-color")
-    (synopsis "Detects whether a terminal supports color")
-    (description
-     "Detects whether a terminal supports color, and gives details about that support.")
-    (license license:asl2.0)))
+        ("rust-is-ci" ,rust-is-ci-1))))))
 
 (define-public rust-supports-hyperlinks-3
   (package
