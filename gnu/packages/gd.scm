@@ -31,6 +31,7 @@
   #:use-module (guix download)
   #:use-module (gnu packages)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-check)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages fontutils)
@@ -101,14 +102,14 @@ most common applications of GD involve website development.")
 (define-public perl-gd
   (package
     (name "perl-gd")
-    (version "2.73")
+    (version "2.78")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/R/RU/RURBAN/"
                            "GD-" version ".tar.gz"))
        (sha256
-        (base32 "0arjpa8id6k5yjxfq0j2hsinhhjzjch5lwk6gscf48l54drrw729"))))
+        (base32 "1r3fpr8jhpwi48i66rickiphyj442hypsqnk4df4yjs2ym5hacb8"))))
     (build-system perl-build-system)
     (inputs
      (list fontconfig
@@ -118,7 +119,8 @@ most common applications of GD involve website development.")
            libjpeg-turbo
            zlib))
     (native-inputs
-     (list perl-extutils-pkgconfig))
+     (list perl-extutils-pkgconfig
+           perl-test-nowarnings))
     (arguments
      (list #:make-maker-flags
            #~(list (string-append "--lib_jpeg_path="
