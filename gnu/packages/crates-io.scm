@@ -22161,8 +22161,28 @@ deserialized from environment variables.")
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3))))))
 
+(define-public rust-error-code-3
+  (package
+    (name "rust-error-code")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "error-code" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nqpbhi501z3ydaxg4kjyb68xcw025cj22prwabiky0xsljl8ix0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/DoumanAsh/error-code")
+    (synopsis "Alternative @code{Error} for Rust")
+    (description
+     "This package provides a simplified @code{Error} which works in
+@code{no_std} environment.")
+    (license license:boost1.0)))
+
 (define-public rust-error-code-2
   (package
+    (inherit rust-error-code-3)
     (name "rust-error-code")
     (version "2.3.0")
     (source
@@ -22172,18 +22192,11 @@ deserialized from environment variables.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1zxi3pfrmj7hmv2bv94ax8vpylsfs49vwwp48c04wrr5mikma4dm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-str-buf" ,rust-str-buf-1))))
-    (home-page "")
-    (synopsis "Alternative @code{Error} for Rust")
-    (description
-     "This package provides a simplified @code{Error} which works in
-@code{no_std} environment.")
-    (license license:boost1.0)))
+        ("rust-str-buf" ,rust-str-buf-1))))))
 
 (define-public rust-escaper-0.1
   (package
