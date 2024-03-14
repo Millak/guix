@@ -51887,14 +51887,14 @@ Python code from a Rust binary is also supported.")
   (package
     (inherit rust-pyo3-0.19)
     (name "rust-pyo3")
-    (version "0.16.5")
+    (version "0.16.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p5kjsj3jdw2gnahdjrzljmi93w3nxdp11qq8x3i80b0a3l04qqy"))))
+        (base32 "1jn6nhp9a8i5kfwds6fzy3hzb938qim8bajp8gfkkcn9892c8802"))))
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
@@ -51908,7 +51908,6 @@ Python code from a Rust binary is also supported.")
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-num-complex" ,rust-num-complex-0.4)
         ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-paste" ,rust-paste-0.1)
         ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16)
         ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.16)
         ("rust-pyo3-macros" ,rust-pyo3-macros-0.16)
@@ -51916,16 +51915,15 @@ Python code from a Rust binary is also supported.")
         ("rust-unindent" ,rust-unindent-0.1))
        #:cargo-development-inputs
        (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
-        ("rust-bitflags" ,rust-bitflags-1.2)
         ("rust-criterion" ,rust-criterion-0.3)
-        ("rust-half" ,rust-half-1)
         ("rust-proptest" ,rust-proptest-0.10)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-send-wrapper" ,rust-send-wrapper-0.5)
+        ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-trybuild" ,rust-trybuild-1)
         ("rust-widestring" ,rust-widestring-0.5))
-       ;; FIXME: fails to initialize Python interpreter.
+       ;; SIGSEGV: invalid memory reference
        #:tests? #f))))
 
 (define-public rust-pyo3-macros-0.13
