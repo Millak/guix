@@ -4613,21 +4613,21 @@ wayland-client crate for usable bindings.")
 (define-public rust-wayland-server-0.31
   (package
     (name "rust-wayland-server")
-    (version "0.31.0")
+    (version "0.31.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-server" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kmiii32hi7h3r9q923q628rrbglkjkg362c32hnr4s5li90qgrz"))))
+        (base32 "1dzxfabykj156abnbx2i8j8gvmgb9yys9mfj9sx29g45qbay9rh0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-downcast-rs" ,rust-downcast-rs-1)
                        ("rust-io-lifetimes" ,rust-io-lifetimes-2)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
                        ("rust-wayland-scanner" ,rust-wayland-scanner-0.31))))
     (home-page "https://github.com/smithay/wayland-rs")
