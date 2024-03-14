@@ -60313,14 +60313,14 @@ in stable Rust.")
 (define-public rust-semver-1
   (package
     (name "rust-semver")
-    (version "1.0.20")
+    (version "1.0.22")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "semver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "140hmbfa743hbmah1zjf07s8apavhvn04204qjigjiz5w6iscvw3"))))
+        (base32 "1jir6q2ps4s5v52bqxpvwj35p0m0ahl5pf62ppwksbv5kvk3zm4j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
