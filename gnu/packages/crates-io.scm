@@ -5691,27 +5691,26 @@ effort.")
 (define-public rust-backtrace-0.3
   (package
     (name "rust-backtrace")
-    (version "0.3.67")
+    (version "0.3.69")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "backtrace" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1jk48laqafvbyc0mn1v0didk307qc0zji3z5jcq2lpqqdmnkfg93"))))
+         "0dsq23dhw4pfndkx2nsa1ml2g31idm7ss7ljxp8d57avygivg290"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
-       (("rust-addr2line" ,rust-addr2line-0.19)
+       (("rust-addr2line" ,rust-addr2line-0.21)
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.6)
-        ("rust-object" ,rust-object-0.30)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.7)
+        ("rust-object" ,rust-object-0.32)
         ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
