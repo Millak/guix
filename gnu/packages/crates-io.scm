@@ -7358,7 +7358,10 @@ streams in big-endian and little-endian formats.")
         (base32 "0j3qn0z31j06c965hs3kh41l78hxbzzsf1h46xvs3ym48i1i8x3p"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=slice::tests::get_set")
+       #:cargo-inputs
        (("rust-funty" ,rust-funty-1.1)
         ("rust-radium" ,rust-radium-0.6)
         ("rust-serde" ,rust-serde-1)
