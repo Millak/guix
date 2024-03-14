@@ -66992,6 +66992,23 @@ values without proliferating generics.")
     (arguments
      `(#:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4))))))
 
+(define-public rust-supports-unicode-3
+  (package
+    (name "rust-supports-unicode")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "supports-unicode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qpc344453x3ai4k9iygxnbk6lr2nw5jflj8ns5q3dbcmwq1lh5p"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/zkat/supports-unicode")
+    (synopsis "Detects whether a terminal supports unicode")
+    (description "Detects whether a terminal supports unicode.")
+    (license license:asl2.0)))
+
 (define-public rust-sval-2
   (package
     (name "rust-sval")
