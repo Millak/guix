@@ -19807,6 +19807,32 @@ via a doc comment and string interpolation.")
 Google's diff-match-patch.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-divan-0.1
+  (package
+    (name "rust-divan")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "divan" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v757vmvlksbaqz7q8cgq7hvr3dimrddcarz7yj70a4w5kgngmd0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-condtype" ,rust-condtype-1)
+                       ("rust-divan-macros" ,rust-divan-macros-0.1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-regex-lite" ,rust-regex-lite-0.1))
+       #:cargo-development-inputs (("rust-mimalloc" ,rust-mimalloc-0.1))))
+    (inputs (list mimalloc))
+    (home-page "https://github.com/nvzqz/divan")
+    (synopsis "Statistically-comfy benchmarking library")
+    (description "Statistically-comfy benchmarking library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-divan-macros-0.1
   (package
     (name "rust-divan-macros")
