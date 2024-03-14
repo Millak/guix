@@ -4490,14 +4490,14 @@ protocol extensions.")
 (define-public rust-wayland-scanner-0.31
   (package
     (name "rust-wayland-scanner")
-    (version "0.31.0")
+    (version "0.31.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-scanner" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1760n887j18lzd1ni087q7jzsmpcf7ny3dq2698zkjb56r02i3pv"))))
+        (base32 "10y2nq076x4zml8wc5bw75560rwvrsfpi35mdyc02w1854lsdcv3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--release" "--"
@@ -4505,7 +4505,7 @@ protocol extensions.")
                             "--skip=interfaces::tests::interface_gen"
                             "--skip=server_gen::tests::server_gen")
        #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quick-xml" ,rust-quick-xml-0.30)
+                       ("rust-quick-xml" ,rust-quick-xml-0.31)
                        ("rust-quote" ,rust-quote-1))
        #:cargo-development-inputs (("rust-similar" ,rust-similar-2))))
     (home-page "https://github.com/smithay/wayland-rs")
