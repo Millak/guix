@@ -1935,8 +1935,31 @@ windows crate.")
        (("rust-syn" ,rust-syn-1)
         ("rust-windows-tokens" ,rust-windows-tokens-0.32))))))
 
+(define-public rust-windows-interface-0.52
+  (package
+    (name "rust-windows-interface")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-interface" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1la254wzd8qlbxplvb667z5mwdh9jngg1qyhxg6fx9wm00pc73cx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "The interface macro for the windows crate")
+    (description "This package provides the interface macro for the windows
+crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-interface-0.48
   (package
+    (inherit rust-windows-interface-0.52)
     (name "rust-windows-interface")
     (version "0.48.0")
     (source
@@ -1946,17 +1969,11 @@ windows crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1iqcilw0hfyzwhk12xfmcy40r10406sgf4xmdansijlv1kr8vyz6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "The interface macro for the windows crate")
-    (description "This package provides the interface macro for the windows
-crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-windows-interface-0.46
   (package
