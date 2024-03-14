@@ -44116,14 +44116,14 @@ system for OpenSSL.")
 (define-public rust-openssl-sys-0.9
   (package
     (name "rust-openssl-sys")
-    (version "0.9.93")
+    (version "0.9.101")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "openssl-sys" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "078vnn4s18kj8m5sd7b684frhjnxjcjc9z7s7h4871s7q2j5ckfv"))
+         (base32 "1zwd35nc5bq7m26vjsmja4hxf3fzk389blgpmhpzr3p78krv18nx"))
         (snippet
          #~(begin
              (use-modules (guix build utils))
@@ -44131,12 +44131,15 @@ system for OpenSSL.")
              (substitute* "Cargo.toml.orig"
                (("vendored = .*") "vendored = []\n")
                ((".*bssl.*") "")
-               ((".*openssl-src.*") ""))
+               ((".*openssl-src.*") "")
+               ;; Allow any version of bindgen.
+               (("(bindgen = \\{ version =) \".*\"," _ bindgen)
+                (string-append bindgen "\"*\",")))
              (copy-file "Cargo.toml.orig" "Cargo.toml")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.64)
+       (("rust-bindgen" ,rust-bindgen-0.69)
         ("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
