@@ -69980,20 +69980,19 @@ deleting all contents when it's dropped.")
 (define-public rust-tempfile-3
   (package
     (name "rust-tempfile")
-    (version "3.9.0")
+    (version "3.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tempfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ypkl7rvv57n16q28psxpb61rnyhmfaif12ascdnsyljm90l3kh1"))))
+        (base32 "1wdzz35ri168jn9al4s1g2rnsrr5ci91khgarc2rvpb3nappzdw5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-fastrand" ,rust-fastrand-2)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.4)
         ("rust-rustix" ,rust-rustix-0.38)
         ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
