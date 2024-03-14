@@ -2265,6 +2265,28 @@ windows crate.")
                (base32
                 "1rrqbxjkyk6h6p6jjzbcxr0mhqbz0yfndd2s2dsgmbl75f4yy7gn"))))))
 
+(define-public rust-windows-win-3
+  (package
+    (name "rust-windows-win")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-win" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p7jbk3i7wj1i6w7chfp4rpbyd6ckgncp6h493wm4frbc8rkxqjq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `windows_win::sys`
+       #:cargo-inputs (("rust-error-code" ,rust-error-code-3))
+       #:cargo-development-inputs (("rust-clipboard-win" ,rust-clipboard-win-5))))
+    (home-page "https://github.com/DoumanAsh/windows-win-rs")
+    (synopsis "Windows hacking library to find windows and access them")
+    (description
+     "Some windows hacking library with utilities to find windows and access them.")
+    (license license:boost1.0)))
+
 (define-public rust-windows-x86-64-gnu-0.52
   (package
     (name "rust-windows-x86-64-gnu")
