@@ -66,14 +66,14 @@
 (define-public curl
   (package
     (name "curl")
-    (version "8.5.0")
+    (version "8.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://curl.se/download/curl-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1sqfflilf7mcz1g03lazyr6v6pf1rsrzprrknsir10hdwawqvas2"))
+                "05fv468yjrb7qwrxmfprxkrcckbkij0myql0vwwnalgr3bcmbk9w"))
               (patches (search-patches "curl-use-ssl-cert-env.patch"))))
     (outputs '("out"
                "doc"))                  ;1.2 MiB of man3 pages
@@ -150,7 +150,7 @@
     (native-inputs
      (list nghttp2 perl pkg-config python-minimal-wrapper))
     (inputs
-     (list gnutls libidn mit-krb5 `(,nghttp2 "lib") zlib))
+     (list gnutls libidn libpsl mit-krb5 `(,nghttp2 "lib") zlib))
     (native-search-paths
      ;; These variables are introduced by curl-use-ssl-cert-env.patch.
      (list $SSL_CERT_DIR
