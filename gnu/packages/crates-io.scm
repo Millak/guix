@@ -41464,11 +41464,15 @@ nitrokey-test crate.")
                                    ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/nix-rust/nix")
     (synopsis "Rust friendly bindings to *nix APIs")
-    (description "Rust friendly bindings to *nix APIs")
+    (description
+     "Nix seeks to provide friendly bindings to various *nix platform APIs.
+The goal is to not provide a 100% unified interface, but to unify what can be
+while still providing platform specific APIs.")
     (license license:expat)))
 
 (define-public rust-nix-0.27
   (package
+    (inherit rust-nix-0.28)
     (name "rust-nix")
     (version "0.27.1")
     (source
@@ -41478,7 +41482,6 @@ nitrokey-test crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ly0kkmij5f0sqz35lx9czlbk6zpihb7yh1bsy4irzwfd2f4xc1f"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `nix::sys::aio`
        #:cargo-inputs
@@ -41494,14 +41497,7 @@ nitrokey-test crate.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-semver" ,rust-semver-1)
         ("rust-sysctl" ,rust-sysctl-0.4)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/nix-rust/nix")
-    (synopsis "Rust friendly bindings to *nix APIs")
-    (description
-     "Nix seeks to provide friendly bindings to various *nix platform APIs.
-The goal is to not provide a 100% unified interface, but to unify what can be
-while still providing platform specific APIs.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.26
   (package
