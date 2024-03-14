@@ -51581,19 +51581,17 @@ extension to python.")
   (package
     (inherit rust-pyo3-macros-backend-0.19)
     (name "rust-pyo3-macros-backend")
-    (version "0.16.5")
+    (version "0.16.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3-macros-backend" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1bvzvdx2a6hhliny12n2vy7v7gbsgzanxjckjr1cbxbkizss1gak"))))
+                "1f0y9vxmyq1cidk544pwg3my30f6xfqfgf42grw4gx4q5pl687v1"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
