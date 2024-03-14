@@ -57485,8 +57485,31 @@ please consider using @code{async-std} or @code{tokio}.")
         ("rust-url" ,rust-url-2)
         ("rust-uuid" ,rust-uuid-0.8))))))
 
+(define-public rust-rusqlite-macros-0.2
+  (package
+    (name "rust-rusqlite-macros")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rusqlite-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07y5887q4via4k7hdfxh61nmcwwz8r0bqlgxrk1p177lrkgz8cdp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+                       ("rust-litrs" ,rust-litrs-0.4)
+                       ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))
+    (home-page "https://github.com/rusqlite/rusqlite")
+    (synopsis "Private implementation detail of rusqlite crate")
+    (description "This package provides a private implementation detail of the
+@code{rusqlite} crate.")
+    (license license:expat)))
+
 (define-public rust-rusqlite-macros-0.1
   (package
+    (inherit rust-rusqlite-macros-0.2)
     (name "rust-rusqlite-macros")
     (version "0.1.0")
     (source
@@ -57496,15 +57519,9 @@ please consider using @code{async-std} or @code{tokio}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bbgnp7pgk358js63666ix6a9p4fr4lgigaaf4av3aj45qksi4ix"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
-                       ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))
-    (home-page "https://github.com/rusqlite/rusqlite")
-    (synopsis "Private implementation detail of rusqlite crate")
-    (description "This package provides a private implementation detail of the
-@code{rusqlite} crate.")
-    (license license:expat)))
+                       ("rust-sqlite3-parser" ,rust-sqlite3-parser-0.12))))))
 
 
 (define-public rust-rust-htslib-0.38
