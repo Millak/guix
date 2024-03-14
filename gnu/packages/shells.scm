@@ -15,7 +15,7 @@
 ;;; Copyright © 2019, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
@@ -1082,8 +1082,33 @@ directory.  These values can be piped through a series of steps, in a series
 of commands called a ``pipeline''.")
     (license license:expat)))
 
+(define-public rust-nu-ansi-term-0.50
+  (package
+    (name "rust-nu-ansi-term")
+    (version "0.50.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-ansi-term" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "057zhc62hcaxc73zfjwq7gir5bfilmx652hnh9krdp0babhh0a6x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/nushell/nu-ansi-term")
+    (synopsis "Library for ANSI terminal colors and styles (bold, underline)")
+    (description
+     "This package is a library for ANSI terminal colors and styles (bold,
+underline).")
+    (license license:expat)))
+
 (define-public rust-nu-ansi-term-0.49
   (package
+    (inherit rust-nu-ansi-term-0.50)
     (name "rust-nu-ansi-term")
     (version "0.49.0")
     (source
@@ -1093,20 +1118,13 @@ of commands called a ``pipeline''.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0s2svfnircd9jp06wk55qcbb9v5cadkfcjfg99vm21qdjg0x6wy0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://www.nushell.sh")
-    (synopsis "Library for ANSI terminal colors and styles (bold, underline)")
-    (description
-     "This package is a library for ANSI terminal colors and styles (bold,
-underline).")
-    (license license:expat)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-nu-ansi-term-0.46
   (package
