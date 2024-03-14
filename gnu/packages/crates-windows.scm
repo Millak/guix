@@ -1255,8 +1255,34 @@ for Rust.")
      "Contains function definitions for the Windows API library ws2_32.")
     (license license:expat)))
 
+(define-public rust-windows-0.52
+  (package
+    (name "rust-windows")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gnh210qjlprpd1szaq04rjm1zqgdm9j7l9absg0kawi2rwm72p4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-core" ,rust-windows-core-0.52)
+                       ("rust-windows-implement" ,rust-windows-implement-0.52)
+                       ("rust-windows-interface" ,rust-windows-interface-0.52)
+                       ("rust-windows-targets" ,rust-windows-targets-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "The windows crate lets you call any Windows API past,
+present, and future using code generated on the fly directly from the metadata
+describing the API and right into your Rust package where you can call them as
+if they were just another Rust module.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-0.48
   (package
+    (inherit rust-windows-0.52)
     (name "rust-windows")
     (version "0.48.0")
     (source
@@ -1266,19 +1292,11 @@ for Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03vh89ilnxdxdh0n9np4ns4m10fvm93h3b0cc05ipg3qq1mqi1p6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-windows-implement" ,rust-windows-implement-0.48)
         ("rust-windows-interface" ,rust-windows-interface-0.48)
-        ("rust-windows-targets" ,rust-windows-targets-0.48))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "The windows crate lets you call any Windows API past,
-present, and future using code generated on the fly directly from the metadata
-describing the API and right into your Rust package where you can call them as
-if they were just another Rust module.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-targets" ,rust-windows-targets-0.48))))))
 
 (define-public rust-windows-0.46
   (package
