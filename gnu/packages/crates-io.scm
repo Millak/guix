@@ -12835,6 +12835,26 @@ stores strings on the stack, when possible.")
 minutes, seconds.")
     (license license:bsd-3)))
 
+(define-public rust-condtype-1
+  (package
+    (name "rust-condtype")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "condtype" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1by78npyhkc30jccc7kirvwip1fj0jhi2bwfmcw44dqz81xa1w5s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                                   ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/nvzqz/condtype")
+    (synopsis "Choose types at compile-time via boolean constants")
+    (description "Choose types at compile-time via boolean constants.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-const-cstr-0.3
   (package
     (name "rust-const-cstr")
