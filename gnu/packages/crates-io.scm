@@ -55373,6 +55373,30 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.5)))))) ; 0.4
 
+(define-public rust-regex-lite-0.1
+  (package
+    (name "rust-regex-lite")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "regex-lite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13ndx7ibckvlasyzylqpmwlbp4kahrrdl3ph2sybsdviyar63dih"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-regex-test" ,rust-regex-test-0.1))))
+    (home-page "https://github.com/rust-lang/regex/tree/master/regex-lite")
+    (synopsis
+     "Lightweight regex engine optimized for binary size and compilation time")
+    (description
+     "This package provides a lightweight regex engine that optimizes for binary
+size and compilation time.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-regex-syntax-0.8
   (package
     (name "rust-regex-syntax")
