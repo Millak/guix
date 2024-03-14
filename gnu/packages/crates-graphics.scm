@@ -3906,20 +3906,20 @@ protocol.")
 (define-public rust-wayland-client-0.31
   (package
     (name "rust-wayland-client")
-    (version "0.31.1")
+    (version "0.31.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lryhibzmi4hb3jpbraj623l110f6rgp0migpxrm8vrl8wixb9qw"))))
+        (base32 "07rzml07li3bi4nnqx4i2rfj3xkifzxp1d6cd1kflb2wjgp9dyw2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `wayland_protocols`
        #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
                        ("rust-wayland-scanner" ,rust-wayland-scanner-0.31))
        #:cargo-development-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
