@@ -67009,6 +67009,21 @@ values without proliferating generics.")
     (description "Detects whether a terminal supports unicode.")
     (license license:asl2.0)))
 
+(define-public rust-supports-unicode-2
+  (package
+    (inherit rust-supports-unicode-3)
+    (name "rust-supports-unicode")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "supports-unicode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yp703pvpzpmaw9mpncvwf0iqis4xmhs569ii1g20jhqvngc2l7q"))))
+    (arguments
+     `(#:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4))))))
+
 (define-public rust-sval-2
   (package
     (name "rust-sval")
