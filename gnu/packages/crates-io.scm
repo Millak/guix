@@ -19807,6 +19807,28 @@ via a doc comment and string interpolation.")
 Google's diff-match-patch.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-divan-macros-0.1
+  (package
+    (name "rust-divan-macros")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "divan-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18klwl81akqmd0rqgz6l8hmc649hvbcdfc01ix6lh3dy96phnm17"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/nvzqz/divan")
+    (synopsis "Macros for Divan, a statistically-comfy benchmarking library")
+    (description "This package provides macros for Divan, a statistically-comfy
+benchmarking library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dlib-0.5
   (package
     (name "rust-dlib")
