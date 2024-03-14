@@ -38047,6 +38047,43 @@ quality, high performance hash algorithm.")
      "This package provides a diagnostic reporting library and protocol.")
     (license license:asl2.0)))
 
+(define-public rust-miette-5
+  (package
+    (inherit rust-miette-7)
+    (name "rust-miette")
+    (version "5.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "miette" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vl5qvl3bgha6nnkdl7kiha6v4ypd6d51wyc4q1bvdpamr75ifsr"))))
+    (arguments
+     `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-backtrace-ext" ,rust-backtrace-ext-0.2)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-miette-derive" ,rust-miette-derive-5)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-owo-colors" ,rust-owo-colors-3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-supports-color" ,rust-supports-color-2)
+                       ("rust-supports-hyperlinks" ,rust-supports-hyperlinks-2)
+                       ("rust-supports-unicode" ,rust-supports-unicode-2)
+                       ("rust-terminal-size" ,rust-terminal-size-0.1)
+                       ("rust-textwrap" ,rust-textwrap-0.15)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
+                                   ("rust-indenter" ,rust-indenter-0.3)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-semver" ,rust-semver-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-syn" ,rust-syn-2)
+                                   ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-miette-derive-7
   (package
     (name "rust-miette-derive")
