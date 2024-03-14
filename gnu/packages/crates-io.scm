@@ -57870,26 +57870,24 @@ rust-lang/rust integration.")
 (define-public rust-rustc-test-0.3
   (package
     (name "rust-rustc-test")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustc-test" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0a27mlcg0ck0hgsdvwk792x9z1k1qq1wj091f1l5yggbdbcsnx5w"))))
+        (base32 "1fsr9rnlsch5gygxhz0mq3d02vzrrf0jgbwcihhaz0xfn1kpkk5a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f  ; Name collision with the rust compiler.
        #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+        ("rust-rustc-version" ,rust-rustc-version-0.2)
         ("rust-term" ,rust-term-0.4)
-        ("rust-time" ,rust-time-0.1)
-        ("rust-rustc-version" ,rust-rustc-version-0.2))))
+        ("rust-time" ,rust-time-0.1))))
     (home-page "https://github.com/servo/rustc-test")
     (synopsis "Fork of Rust's test crate")
     (description
