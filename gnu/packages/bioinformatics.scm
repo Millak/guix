@@ -9308,6 +9308,69 @@ viewer.")
                (delete 'patch-tests)
                (delete 'configure))))))))
 
+(define-public morpheus
+  (package
+    (name "morpheus")
+    (version "2.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/morpheus.lab/morpheus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jyzbkz8d39kjicrk3ihcx7yvq5wsynvnlcw922bqqsw8nwnn12c"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "3rdparty/eigen")
+           (substitute* '("morpheus/core/cpm_shape_tracker.cpp"
+                          "morpheus/core/membranemapper.h"
+                          "morpheus/testing/components/motility/directed_motion_test.cpp"
+                          "morpheus/testing/components/interaction/generator_cell_sorting.cpp"
+                          "morpheus/testing/components/interaction/test_cell_sorting.cpp"
+                          "morpheus/testing/core/cpm/generator_csm_plane.cpp"
+                          "morpheus/testing/test_operators.h")
+             (("#include \"eigen/") "#include \"eigen3/"))))))
+    ;; This is for a different Morpheus.
+    (properties '((lint-hidden-cve "CVE-2022-31261")))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DMORPHEUS_GUI=OFF"
+             "-DBUILD_TESTING=ON"
+             "-DDOWNLOAD_XTENSOR=OFF")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-gtest-download
+           (lambda _
+             (substitute* "3rdparty/CMakeLists.txt"
+               (("add_subdirectory\\(GTest\\)") ""))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ctest" "--output-junit" "test_results.xml")))))))
+    (inputs (list boost
+                  eigen
+                  file
+                  gnuplot
+                  libtiff
+                  libxslt
+                  xsimd
+                  xtensor
+                  xtl
+                  zlib))
+    (native-inputs
+     (list doxygen googletest xxd))
+    (home-page "https://gitlab.com/morpheus.lab/morpheus")
+    (synopsis "Multicellular simulation")
+    (description
+     "Morpheus is a modeling and simulation environment for the study of
+multi-scale and multicellular systems.")
+    (license license:bsd-3)))
+
 (define-public mosaik
   (let ((commit "5c25216d3522d6a33e53875cd76a6d65001e4e67"))
     (package
