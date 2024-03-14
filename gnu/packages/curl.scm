@@ -75,25 +75,9 @@
                (base32
                 "1sqfflilf7mcz1g03lazyr6v6pf1rsrzprrknsir10hdwawqvas2"))
               (patches (search-patches "curl-use-ssl-cert-env.patch"))))
-    (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;1.2 MiB of man3 pages
-    (inputs
-     (list gnutls libidn mit-krb5 `(,nghttp2 "lib") zlib))
-    (native-inputs
-     (list nghttp2 perl pkg-config python-minimal-wrapper))
-    (native-search-paths
-     ;; These variables are introduced by curl-use-ssl-cert-env.patch.
-     (list $SSL_CERT_DIR
-           $SSL_CERT_FILE
-           ;; Note: This search path is respected by the `curl` command-line
-           ;; tool only.  Patching libcurl to read it too would bring no
-           ;; advantages and require maintaining a more complex patch.
-           (search-path-specification
-            (variable "CURL_CA_BUNDLE")
-            (file-type 'regular)
-            (separator #f)              ;single entry
-            (files '("etc/ssl/certs/ca-certificates.crt")))))
+    (build-system gnu-build-system)
     (arguments
      (list
       #:disallowed-references '("doc")
@@ -163,6 +147,22 @@
                           (display "1501\n" port)
                           (close port)))))
                  #~()))))
+    (native-inputs
+     (list nghttp2 perl pkg-config python-minimal-wrapper))
+    (inputs
+     (list gnutls libidn mit-krb5 `(,nghttp2 "lib") zlib))
+    (native-search-paths
+     ;; These variables are introduced by curl-use-ssl-cert-env.patch.
+     (list $SSL_CERT_DIR
+           $SSL_CERT_FILE
+           ;; Note: This search path is respected by the `curl` command-line
+           ;; tool only.  Patching libcurl to read it too would bring no
+           ;; advantages and require maintaining a more complex patch.
+           (search-path-specification
+            (variable "CURL_CA_BUNDLE")
+            (file-type 'regular)
+            (separator #f)              ;single entry
+            (files '("etc/ssl/certs/ca-certificates.crt")))))
     (synopsis "Command line tool for transferring data with URL syntax")
     (description
      "curl is a command line tool for transferring data with URL syntax,
