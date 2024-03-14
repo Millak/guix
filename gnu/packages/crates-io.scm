@@ -38025,6 +38025,23 @@ quality, high performance hash algorithm.")
      "This package provides derive macros for miette.")
     (license license:asl2.0)))
 
+(define-public rust-miette-derive-5
+  (package
+    (inherit rust-miette-derive-7)
+    (name "rust-miette-derive")
+    (version "5.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "miette-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p33msrngkxlp5ajm8nijamii9vcwwpy8gfh4m53qnmrc0avrrs9"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
+
 (define-public rust-migrations-internals-1
   (package
     (name "rust-migrations-internals")
