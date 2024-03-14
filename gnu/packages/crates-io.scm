@@ -26757,8 +26757,37 @@ permitted in ordinary Rust.")
     ;; Either license can be chosen at the users option.
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gimli-0.28
+  (package
+    (name "rust-gimli")
+    (version "0.28.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gimli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lv23wc8rxvmjia3mcxc6hj9vkqnv1bqq0h8nzjcgf71mrxx6wa2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-fallible-iterator" ,rust-fallible-iterator-0.3)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
+       #:cargo-development-inputs (("rust-test-assembler" ,rust-test-assembler-0.1))))
+    (home-page "https://github.com/gimli-rs/gimli")
+    (synopsis "Library for reading and writing the DWARF debugging format")
+    (description
+     "This package provides a library for reading and writing the DWARF
+debugging format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gimli-0.27
   (package
+    (inherit rust-gimli-0.28)
     (name "rust-gimli")
     (version "0.27.2")
     (source (origin
@@ -26768,7 +26797,6 @@ permitted in ordinary Rust.")
               (sha256
                (base32
                 "1d5v6jjchf4872jynjsg5ni4vankm1341bas8qindygb6g9962md"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
@@ -26786,13 +26814,7 @@ permitted in ordinary Rust.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-test-assembler" ,rust-test-assembler-0.1)
-        ("rust-typed-arena" ,rust-typed-arena-2))))
-    (home-page "https://github.com/gimli-rs/gimli")
-    (synopsis "Library for reading and writing the DWARF debugging format")
-    (description
-     "This package provides a library for reading and writing the DWARF
-debugging format.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-typed-arena" ,rust-typed-arena-2))))))
 
 (define-public rust-gimli-0.26
   (package
