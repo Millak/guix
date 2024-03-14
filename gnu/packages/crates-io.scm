@@ -38003,6 +38003,50 @@ quality, high performance hash algorithm.")
      "This package provides a simple math expression parser and evaluator.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-miette-7
+  (package
+    (name "rust-miette")
+    (version "7.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "miette" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hdgjkkj1vgiqn9dq445m1p8z4y8adiaig8gh2mhsahc699qip2f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-backtrace-ext" ,rust-backtrace-ext-0.2)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-miette-derive" ,rust-miette-derive-7)
+                       ("rust-owo-colors" ,rust-owo-colors-4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-supports-color" ,rust-supports-color-3)
+                       ("rust-supports-hyperlinks" ,rust-supports-hyperlinks-3)
+                       ("rust-supports-unicode" ,rust-supports-unicode-3)
+                       ("rust-syntect" ,rust-syntect-5)
+                       ("rust-terminal-size" ,rust-terminal-size-0.3)
+                       ("rust-textwrap" ,rust-textwrap-0.16)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-indenter" ,rust-indenter-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.2)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/zkat/miette")
+    (synopsis "Diagnostic reporting library and protocol")
+    (description
+     "This package provides a diagnostic reporting library and protocol.")
+    (license license:asl2.0)))
+
 (define-public rust-miette-derive-7
   (package
     (name "rust-miette-derive")
