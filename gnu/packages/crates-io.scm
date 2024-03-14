@@ -31371,14 +31371,14 @@ Resource Identifiers} and @acronym{URIs, Uniform Resource Identifiers}.")
 (define-public rust-is-ci-1
   (package
     (name "rust-is-ci")
-    (version "1.1.1")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "is_ci" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ywra2z56x6d4pc02zq24a4x7gvpixynh9524icbpchbf9ydwv31"))))
+                "0ifwvxmrsj4r29agfzr71bjq6y1bihkx38fbzafq5vl0jn1wjmbn"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/zkat/is_ci")
     (synopsis "Lightweight CI environment checker")
