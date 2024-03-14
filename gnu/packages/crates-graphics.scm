@@ -4181,17 +4181,17 @@ and wayland-server.")
 (define-public rust-wayland-cursor-0.31
   (package
     (name "rust-wayland-cursor")
-    (version "0.31.0")
+    (version "0.31.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-cursor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nxdyyg3a3649n316fbnm8rak5k90j580kfnfxn9src6x45a4jm4"))))
+        (base32 "1fii68l6x235b867q96yx1xqkl16azkf5i841ldd24yxd2l5zkki"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.26)
+     `(#:cargo-inputs (("rust-rustix" ,rust-rustix-0.38)
                        ("rust-wayland-client" ,rust-wayland-client-0.31)
                        ("rust-xcursor" ,rust-xcursor-0.3))))
     (home-page "https://github.com/smithay/wayland-rs")
