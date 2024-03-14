@@ -50114,22 +50114,25 @@ in your code.")
 (define-public rust-proc-macro2-1
   (package
     (name "rust-proc-macro2")
-    (version "1.0.76")
+    (version "1.0.79")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "proc-macro2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "136cp0fgl6rg5ljm3b1xpc0bn0lyvagzzmxvbxgk5hxml36mdz4m"))))
+        (base32 "0bn004ybzdqid81cqppr5c9jrvqsxv50x60sxc41cwpmk0igydg8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--lib")
        #:cargo-inputs
        (("rust-unicode-ident" ,rust-unicode-ident-1))
        #:cargo-development-inputs
-       (("rust-quote" ,rust-quote-1)
-        ("rust-rustversion" ,rust-rustversion-1))))
+       (("rust-flate2" ,rust-flate2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-tar" ,rust-tar-0.4))))
     (home-page "https://github.com/dtolnay/proc-macro2")
     (synopsis "Stable implementation of the upcoming new `proc_macro` API")
     (description "This package provides a stable implementation of the upcoming new
