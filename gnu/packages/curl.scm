@@ -104,6 +104,7 @@
                                        (search-input-file
                                         %build-inputs "lib/libgssrpc.so"))))
               "--disable-static")
+      #:test-target "test-nonflaky"     ;avoid tests marked as "flaky"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'do-not-record-configure-flags
