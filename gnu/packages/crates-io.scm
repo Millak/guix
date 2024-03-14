@@ -43581,8 +43581,44 @@ form and deobfuscated locally.")
      "This package provides a package for loading Wavefront @code{.obj} files.")
     (license license:asl2.0)))
 
+(define-public rust-object-0.32
+  (package
+    (name "rust-object")
+    (version "0.32.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hc4cjwyngiy6k51hlzrlsxgv5z25vv7c2cp0ky1lckfic0259m6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files are included
+         "--skip=read::coff::coff_extended_relocations")
+       #:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-ruzstd" ,rust-ruzstd-0.5)
+        ("rust-wasmparser" ,rust-wasmparser-0.118))))
+    (home-page "https://github.com/gimli-rs/object")
+    (synopsis "Unified interface for reading and writing object file formats")
+    (description
+     "This package provides a unified interface for reading and writing object
+file formats.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-object-0.30
   (package
+    (inherit rust-object-0.32)
     (name "rust-object")
     (version "0.30.3")
     (source (origin
@@ -43592,7 +43628,6 @@ form and deobfuscated locally.")
               (sha256
                (base32
                 "0fdl7qjsz1j9kl3j7f4656fswzrqpyj2kgaizhknmjrx7mfjd1pa"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -43607,13 +43642,7 @@ form and deobfuscated locally.")
         ("rust-memchr" ,rust-memchr-2)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-wasmparser" ,rust-wasmparser-0.57))))
-    (home-page "https://github.com/gimli-rs/object")
-    (synopsis "Unified interface for reading and writing object file formats")
-    (description
-     "This package provides a unified interface for reading and writing object
-file formats.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-wasmparser" ,rust-wasmparser-0.57))))))
 
 (define-public rust-object-0.29
   (package
