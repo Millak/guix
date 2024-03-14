@@ -57561,7 +57561,7 @@ It is automatically published using the compiler repository at
 (define-public rust-rustc-demangle-0.1
   (package
     (name "rust-rustc-demangle")
-    (version "0.1.16")
+    (version "0.1.23")
     (source
       (origin
         (method url-fetch)
@@ -57569,11 +57569,10 @@ It is automatically published using the compiler repository at
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "10qp42sl1wrdbgbbh8rnay2grm976z7hqgz32c4y09l1c071qsac"))))
+          "0xnbk2bmyzshacjm2g1kd4zzv2y2az14bw3sjccq5qkpmsfvn9nn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
     (home-page "https://github.com/alexcrichton/rustc-demangle")
