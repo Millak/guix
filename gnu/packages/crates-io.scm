@@ -18838,8 +18838,31 @@ traits for both structs and enums.")
         ("rust-rustc-version" ,rust-rustc-version-0.2)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-derive-new-0.6
+  (package
+    (name "rust-derive-new")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive-new" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b8jv6jx0b8jgkz9kmz0ciqmnf74xkk0mmvkb5z1c87932kdwl6i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/nrc/derive-new")
+    (synopsis "Simple constructor functions for structs and enums")
+    (description "`#[derive(new)]` implements simple constructor functions for
+structs and enums.")
+    (license license:expat)))
+
 (define-public rust-derive-new-0.5
   (package
+    (inherit rust-derive-new-0.6)
     (name "rust-derive-new")
     (version "0.5.9")
     (source
@@ -18849,17 +18872,11 @@ traits for both structs and enums.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0d9m5kcj1rdmdjqfgj7rxxhdzx0as7p4rp1mjx5j6w5dl2f3461l"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/nrc/derive-new")
-    (synopsis "Simple constructor functions for structs and enums")
-    (description "`#[derive(new)]` implements simple constructor functions for
-structs and enums.")
-  (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-derive-where-1
   (package
