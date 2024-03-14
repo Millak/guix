@@ -66945,8 +66945,26 @@ values without proliferating generics.")
      "Detects whether a terminal supports color, and gives details about that support.")
     (license license:asl2.0)))
 
+(define-public rust-supports-hyperlinks-3
+  (package
+    (name "rust-supports-hyperlinks")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "supports-hyperlinks" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vh4wjflrpa0vadfirzn57glk1wwrdfxkxwgyqzmy7q4d18iw2ic"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/zkat/supports-hyperlinks")
+    (synopsis "Detects whether a terminal supports rendering hyperlinks")
+    (description "Detects whether a terminal supports rendering hyperlinks.")
+    (license license:asl2.0)))
+
 (define-public rust-supports-hyperlinks-2
   (package
+    (inherit rust-supports-hyperlinks-3)
     (name "rust-supports-hyperlinks")
     (version "2.1.0")
     (source
@@ -66956,13 +66974,8 @@ values without proliferating generics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0g93nh1db3f9lyd0ry35bqjrxkg6sbysn36x9hgd9m5h5rlk2hpq"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4))))
-    (home-page "https://github.com/zkat/supports-hyperlinks")
-    (synopsis "Detects whether a terminal supports rendering hyperlinks")
-    (description "Detects whether a terminal supports rendering hyperlinks.")
-    (license license:asl2.0)))
+     `(#:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4))))))
 
 (define-public rust-sval-2
   (package
