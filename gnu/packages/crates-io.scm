@@ -5724,6 +5724,28 @@ effort.")
 trace (backtrace) at runtime in a Rust program.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-backtrace-ext-0.2
+  (package
+    (name "rust-backtrace-ext")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "backtrace-ext" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0l4xacjnx4jrn9k14xbs2swks018mviq03sp7c1gn62apviywysk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3))
+       #:cargo-development-inputs (("rust-miette" ,rust-miette-5)
+                                   ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/gankra/backtrace-ext")
+    (synopsis "conveniences on top of the backtrace crate")
+    (description
+     "This package provides minor conveniences on top of the backtrace crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-barrel-0.6
   (package
     (name "rust-barrel")
