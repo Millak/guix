@@ -4,7 +4,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
 ;;;
@@ -591,6 +591,17 @@ which will be used as a snippet in origin."
    "1a2899x7i6dgbsrf13qzmh133hgfrlvmjsr3bbpffi1ixw1h7azk"
    "0.7.1"
    #:repository-url "https://github.com/ikatyang/tree-sitter-markdown"))
+
+(define-public tree-sitter-matlab
+  (let ((commit "79d8b25f57b48f83ae1333aff6723b83c9532e37")
+        (revision "0"))
+    (tree-sitter-grammar
+     "matlab" "Matlab"
+     "04ffhfnznskkcp91fbnv8jy3wkb9cd8ifwrkrdwcw74n1b2hq80c"
+     (git-version "1.0.2" revision commit)
+     #:repository-url "https://github.com/acristoffers/tree-sitter-matlab"
+     #:commit commit
+     #:license license:expat)))
 
 (define-public tree-sitter-meson
   ;; tag 1.2 is Aug 24,2022  this commit is Feb 28,2023
