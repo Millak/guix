@@ -1941,7 +1941,10 @@ Amazon S3 compatible object storage server.")
                    " and not test_libcurl_ssl_nss"
                    ;; OSError: tests/fake-curl/libcurl/with_openssl.so: cannot
                    ;; open shared object file: No such file or directory
-                   " and not test_libcurl_ssl_openssl"))
+                   " and not test_libcurl_ssl_openssl"
+                   ;; pycurl.error: (56, 'Recv failure: Connection reset by
+                   ;; peer')
+                   " and not test_post_with_read_callback"))
        #:phases (modify-phases %standard-phases
                   (add-before 'build 'configure-tls-backend
                     (lambda _
