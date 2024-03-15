@@ -11725,24 +11725,24 @@ Biology at
 (define-public r-stringdb
   (package
     (name "r-stringdb")
-    (version "2.14.0")
+    (version "2.14.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "STRINGdb" version))
        (sha256
-        (base32 "1ffn73sx0qbzbh8cjil9r159g0fjnvi6y8rlbg6nf7p3zx3aya54"))))
+        (base32 "06bckzczg2rspazcbpp3v265c1dkr9l1vpdhkc7gdn2dk960jlkh"))))
     (properties `((upstream-name . "STRINGdb")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-gplots
            r-hash
+           r-httr
            r-igraph
            r-plotrix
            r-plyr
            r-png
            r-rcolorbrewer
-           r-rcurl
            r-sqldf))
     (home-page "https://git.bioconductor.org/packages/STRINGdb")
     (synopsis "Search tool for the retrieval of interacting proteins database")
