@@ -15914,14 +15914,14 @@ attempts to assess their statistical significance.")
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
-    (version "4.10.0")
+    (version "4.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "clusterProfiler" version))
        (sha256
         (base32
-         "1vlrybyczfci5qnw50k0y2j2853r2p1ff5bpj35rdca4ja0iqh2q"))))
+         "1jwi9029dy7ga4hv75grib7wdaghslwh4qk5awhgw3192a0qcixf"))))
     (properties
      `((upstream-name . "clusterProfiler")))
     (build-system r-build-system)
