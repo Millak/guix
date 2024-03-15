@@ -5191,7 +5191,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
 (define-public libsecret
   (package
     (name "libsecret")
-    (version "0.20.5")
+    (version "0.21.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5200,7 +5200,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                     "libsecret-" version ".tar.xz"))
               (sha256
                (base32
-                "0k9bs47rzb3dwvznb4179d6nw7rbzjdyd4y8hx6vazfd1wscxcrz"))))
+                "081bj59ws08kb261cd1w1mkdkhfbzsjbbkkrm6wllvdyhgbhhg8n"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -5208,12 +5208,6 @@ and the GLib main loop, to integrate well with GNOME applications.")
       #~(list "-Dgtk_doc=false")        ;requires gi-docgen
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-problematic-tests
-            (lambda _
-              (substitute* "libsecret/meson.build"
-                ;; The test-collection test fails non-deterministically (see:
-                ;; https://gitlab.gnome.org/GNOME/libsecret/-/issues/80).
-                ((".*'test-collection',.*") ""))))
           (delete 'check)
           (add-after 'install 'check
             (lambda* (#:key tests? test-options #:allow-other-keys)
