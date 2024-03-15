@@ -4434,7 +4434,7 @@ engineering.")
 (define-public seahorse
   (package
     (name "seahorse")
-    (version "42.0")
+    (version "43.0")
     (source
      (origin
        (method url-fetch)
@@ -4442,7 +4442,7 @@ engineering.")
                            (version-major version) "/" name "-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0c6nafhn4gcjwd1xbs5bjq9785114fc0pbhxbwp7wynyz3msq365"))))
+        (base32 "0bc3xbjzwa4245m6nqzl3v6hzp9hyfbf50iwgwi5hdjglzxin7av"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -4451,8 +4451,11 @@ engineering.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")
+               (("update_desktop_database: true")
+                "update_desktop_database: false"))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a writable HOME.
@@ -4468,7 +4471,7 @@ engineering.")
            libhandy
            libpwquality
            libsecret
-           libsoup-minimal-2))
+           libsoup-minimal))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
