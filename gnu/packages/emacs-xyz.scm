@@ -11161,8 +11161,8 @@ when the cursor enters a fragment and disappear when it leaves.")
 
 (define-public emacs-org-dailies
   ;; No tags or versions.
-  (let ((commit "58e58d4968ddb70312160def1c7c3c00382ef655")
-        (revision "1"))
+  (let ((commit "f2dfc221d3566c6241f87c331667f96569651ada")
+        (revision "2"))
     (package
       (name "emacs-org-dailies")
       (version (git-version "0" revision commit))
@@ -11174,7 +11174,7 @@ when the cursor enters a fragment and disappear when it leaves.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "15xhpxkg2cn2fwaql99gnqcdl012g29lxn9fqb6s282mhr9yan7c"))))
+          (base32 "1nwa2dp1b03smyg8pvwqql1cwmcs4qdszw13ik02d51m238a6wy5"))))
       (build-system emacs-build-system)
       (home-page "https://git.sr.ht/~ngraves/org-dailies")
       (synopsis "Bare-bones daily journaling with Emacs")
