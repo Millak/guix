@@ -12262,16 +12262,17 @@ describing each of the graphs.")
 (define-public r-zlibbioc
   (package
     (name "r-zlibbioc")
-    (version "1.48.0")
+    (version "1.48.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "zlibbioc" version))
               (sha256
                (base32
-                "043xwgw3yclxnxlfl7fdwf7qf7fajzvqdv34qxnngxj9wpgha3gv"))))
+                "078v1iywzc0ng27r0wjchvkh4znzydq1swlalqb95xkmn72vrq8d"))))
     (properties
      `((upstream-name . "zlibbioc")))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/zlibbioc")
     (synopsis "Provider for zlib-1.2.5 to R packages")
     (description "This package uses the source code of zlib-1.2.5 to create
