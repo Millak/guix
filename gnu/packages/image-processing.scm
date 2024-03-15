@@ -832,14 +832,14 @@ due to its architecture which automatically parallelises the image workflows.")
 (define-public gmic
   (package
     (name "gmic")
-    (version "3.3.3")
+    (version "3.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gmic.eu/files/source/gmic_"
                            version ".tar.gz"))
        (sha256
-        (base32 "0pb474cdlxcp3m7gkxrfpnblag6r3wny7vih44gdyy2q8zb3ffch"))))
+        (base32 "06vcwn8c8zhr1j0jy79an1f6vvjh47ipm19a20g3qsnxv7h5c905"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -865,7 +865,6 @@ due to its architecture which automatically parallelises the image workflows.")
            libpng
            libtiff
            libx11
-           ;;opencv ;OpenCV is currently broken in the CI
            openexr
            zlib))
     (home-page "https://gmic.eu/")
