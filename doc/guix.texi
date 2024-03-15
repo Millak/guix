@@ -36837,6 +36837,20 @@ Defaults to @samp{#f}.
 
 @end deftypevr
 
+@deftypevr {@code{tlp-configuration} parameter} string cpu-energy-perf-policy-on-ac
+Set CPU energy/performance policy when on AC mode.  Possible values, in
+order of increasing power saving, are performance, balance_performance,
+default, balance_power and power.
+
+@end deftypevr
+
+@deftypevr {@code{tlp-configuration} parameter} string cpu-energy-perf-policy-on-bat
+Set CPU energy/performance policy when on BAT mode.  Possible values, in
+order of increasing power saving, are performance, balance_performance,
+default, balance_power and power.
+
+@end deftypevr
+
 @cindex thermald
 @cindex CPU frequency scaling with thermald
 @subsubheading Thermald daemon

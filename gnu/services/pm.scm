@@ -443,7 +443,17 @@ already excluded by the driver or via @code{usb-blacklist-wwan?}.")
   (restore-device-state-on-startup?
    (boolean #f)
    "Restore radio device state (bluetooth, wifi, wwan) from previous
-shutdown on system startup."))
+shutdown on system startup.")
+
+  (cpu-energy-perf-policy-on-ac
+   maybe-string
+   "Set CPU energy/performance policy when on AC mode.  Possible values are
+performance, balance_performance, default, balance_power and power.")
+
+  (cpu-energy-perf-policy-on-bat
+   maybe-string
+   "Set CPU energy/performance policy when on BAT mode.  Possible values are
+performance, balance_performance, default, balance_power and power."))
 
 
 (define (tlp-shepherd-service config)
