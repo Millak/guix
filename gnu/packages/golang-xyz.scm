@@ -237,6 +237,31 @@ interface around the standard library's @code{time} package so that the applicat
 can use the realtime clock while tests can use the mock clock.")
     (license license:expat)))
 
+(define-public go-github-com-beorn7-perks-quantile
+  (package
+    (name "go-github-com-beorn7-perks-quantile")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/beorn7/perks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17n4yygjxa6p499dj3yaqzfww2g7528165cl13haj97hlx94dgl7"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/beorn7/perks/quantile"
+           #:unpack-path "github.com/beorn7/perks"))
+    (home-page "https://github.com/beorn7/perks")
+    (synopsis "Compute approximate quantiles over an unbounded data stream")
+    (description
+     "Perks contains the Go package @code{quantile} that computes
+approximate quantiles over an unbounded data stream within low memory and CPU
+bounds.")
+    (license license:expat)))
+
 (define-public go-github-com-bitly-go-hostpool
   (package
     (name "go-github-com-bitly-go-hostpool")
