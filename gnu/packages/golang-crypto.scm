@@ -261,6 +261,29 @@ been designed so it can be used as a standalone package for any projects
 needing to use secp256k1 elliptic curve cryptography.")
       (license license:isc))))
 
+(define-public go-github-com-bwesterb-go-ristretto
+  (package
+    (name "go-github-com-bwesterb-go-ristretto")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bwesterb/go-ristretto")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h508v790wk6g8jq0gh18296xl87vmgc4fhwnac7mk6i5g3mz6v4"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:unpack-path "github.com/bwesterb/go-ristretto"
+           #:import-path "github.com/bwesterb/go-ristretto/edwards25519"))
+    (home-page "https://github.com/bwesterb/go-ristretto")
+    (synopsis "Operations on the Ristretto prime-order group")
+    (description "This is a pure Go implementation of the group operations on
+the Ristretto prime-order group built from Edwards25519.")
+    (license license:expat)))
+
 (define-public go-github-com-cespare-xxhash
   (package
     (name "go-github-com-cespare-xxhash")
