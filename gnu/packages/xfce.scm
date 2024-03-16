@@ -1328,7 +1328,7 @@ the desktop wallpaper.")
 (define-public xfce4-taskmanager
   (package
     (name "xfce4-taskmanager")
-    (version "1.5.5")
+    (version "1.5.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1336,7 +1336,7 @@ the desktop wallpaper.")
                                   "xfce4-taskmanager-" version ".tar.bz2"))
               (sha256
                (base32
-                "1rcaalqv6sdsnc6ick8fifgkqcf2xiflw9yk5szqn2qs4jx02kzn"))))
+                "1fv83xcbnlwabi32z3fsdik1knh7v45ji529dx9kwlv4b8pq6dk7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
