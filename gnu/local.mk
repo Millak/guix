@@ -426,6 +426,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/lisp-check.scm			\
   %D%/packages/lisp-xyz.scm			\
   %D%/packages/llvm.scm				\
+  %D%/packages/llvm-meta.scm			\
   %D%/packages/lout.scm				\
   %D%/packages/logging.scm			\
   %D%/packages/logo.scm				\
@@ -488,6 +489,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/ntp.scm				\
   %D%/packages/nutrition.scm			\
   %D%/packages/nvi.scm				\
+  %D%/packages/nx.scm				\
   %D%/packages/ocaml.scm			\
   %D%/packages/ocr.scm				\
   %D%/packages/openkinect.scm			\
@@ -1044,6 +1046,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-15.0-libc-search-path.patch	\
   %D%/packages/patches/clang-16.0-libc-search-path.patch	\
   %D%/packages/patches/clang-17.0-libc-search-path.patch	\
+  %D%/packages/patches/clang-17.0-link-dsymutil-latomic.patch	\
   %D%/packages/patches/clang-runtime-asan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-esan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-9-libsanitizer-mode-field.patch	\
@@ -1520,6 +1523,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/julia-Use-MPFR-4.2.patch	                \
   %D%/packages/patches/libcall-ui-make-it-installable.patch	\
   %D%/packages/patches/libcss-check-format.patch		\
+  %D%/packages/patches/libextractor-tidy-support.patch		\
   %D%/packages/patches/libftdi-fix-paths-when-FTDIPP-set.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.1.1.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.3.0.patch	\
@@ -1811,7 +1815,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-feedparser-missing-import.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
-  %D%/packages/patches/python-poppler-qt5-fix-build.patch	\
   %D%/packages/patches/python-pyreadstat-link-libiconv.patch	\
   %D%/packages/patches/python-pyls-black-41.patch		\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
@@ -2004,6 +2007,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-latex-decode-fix-test.patch		\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-nokogiri.patch			\
+  %D%/packages/patches/ruby-x25519-automatic-fallback-non-x86_64.patch \
   %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
   %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\

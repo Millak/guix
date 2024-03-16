@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2014, 2015, 2024 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Florian Paul Schmidt <mista.tapas@gmx.net>
@@ -134,7 +134,7 @@ Xfce Desktop Environment.")
 (define-public xfconf
   (package
     (name "xfconf")
-    (version "4.18.1")
+    (version "4.18.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -142,7 +142,7 @@ Xfce Desktop Environment.")
                                   "xfconf-" version ".tar.bz2"))
               (sha256
                (base32
-                "0mr20250mp4pgy82v5kvb0hp5060vy6yz9hd6icmmp6gpd8lfwfr"))))
+                "165xbr6y5z4zr235znkqlwkcy2ib9hgfqrdic0n7p57nas8ccv65"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -332,7 +332,7 @@ development.")
 (define-public garcon
   (package
     (name "garcon")
-    (version "4.18.1")
+    (version "4.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -340,7 +340,7 @@ development.")
                                   "garcon-" version ".tar.bz2"))
               (sha256
                (base32
-                "02y2nkxwx5mp1w6x2ydi3hpgymk7159zvyzk70afp5dcdlm96ypy"))))
+                "0ka35nxqhl4cbmyf9x2ysinihixsqmibqywqr2zqz5iiw699530v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list `(,glib "bin") gobject-introspection intltool pkg-config))
@@ -359,7 +359,7 @@ merging features essential for loading menus modified with menu editors.")
 (define-public tumbler
   (package
     (name "tumbler")
-    (version "4.18.1")
+    (version "4.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -367,7 +367,7 @@ merging features essential for loading menus modified with menu editors.")
                                   "tumbler-" version ".tar.bz2"))
               (sha256
                (base32
-                "1833qnfw2c9wv7iw5cad5x5scj1rsqmmbwfld33zxx8akhd9hqgz"))))
+                "0ymy6a0hbv5iainphgpd7dfi8snpg7zs7lyqq2cgiiza6p3fwc5m"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool
@@ -398,7 +398,7 @@ management D-Bus specification.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.18.4")
+    (version "4.18.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -406,7 +406,7 @@ management D-Bus specification.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0m7vmk7rc2sjfqba0flgnw77kn1j222xqs7r86bpg8sf1614yc1j"))
+                "0qkw1msrvq7hc4mjg9iai0kymgkrpj1nijv04zjbdfcbymhp2cr1"))
               (patches (search-patches "xfce4-panel-plugins.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -605,7 +605,7 @@ per window.")
 (define-public xfce4-appfinder
   (package
     (name "xfce4-appfinder")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -614,7 +614,7 @@ per window.")
                                   "/" name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "136137w2xc78jq0xcbymjwdxapllwyy7h3ydshz0gli7ngbrhaln"))))
+                "1yck11y86d45yxsppd1yqk894k3cf5vh91a5sm559gl175jylm4q"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -682,7 +682,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.18.3")
+    (version "4.18.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -690,7 +690,7 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "18giyc190i7b3nc3l745p6fqpnqivwxm0yc7l0whfa03wndykf9d"))
+                "1p513i8zwc3glv2cf3x2abwm4hvdb7clamj19yadj2036v85a37i"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -727,7 +727,7 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "4.18.7")                           ;stable version = even minor
+    (version "4.18.10")                           ;stable version = even minor
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -735,7 +735,7 @@ like appearance, display, keyboard and mouse settings.")
                                   "thunar-" version ".tar.bz2"))
               (sha256
                (base32
-                "0shbbih2l6h3sda2221h7gsskv2lnchnmypk76cdgf51iafafxi2"))))
+                "020xrwzdnk5b7cli8vmv3yn7sfq6pg7bz57m4p0xh0ln2cgqlc78"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--with-custom-thunarx-dirs-enabled")))
@@ -949,6 +949,26 @@ menu.")
 on the screen.")
     (license gpl2+)))
 
+(define-public xfwm4-themes
+  (package
+    (name "xfwm4-themes")
+    (version "4.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.xfce.org/src/art/xfwm4-themes/"
+                           (version-major+minor version) "/"
+                           "xfwm4-themes-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0xfmdykav4rf6gdxbd6fhmrfrvbdc1yjihz7r7lba0wp1vqda51j"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.xfce.org/")
+    (synopsis "Themes for the Xfce window manager")
+    (description "This package provides a set of additional themes for the Xfce
+window manager.")
+    (license gpl3+)))
+
 (define-public xfdesktop
   (package
     (name "xfdesktop")
@@ -1082,7 +1102,7 @@ features playback of local media files, DVD/CD and live streams.")
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
-    (version "1.1.0")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
@@ -1090,7 +1110,7 @@ features playback of local media files, DVD/CD and live streams.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "18yl792x617qa90g6caw4cy1arfl847majjxkxs0k6rb4ivk70j0"))))
+                "0i9xgd0rgw0j59hlp9kyxndw2b35nhxjls09c20rzdj1sj4dak91"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1226,6 +1246,7 @@ for and start applications.")
            xfconf
            xfdesktop
            xfwm4
+           xfwm4-themes
            xkill
            ;; Panel plugins.
            xfce4-battery-plugin
@@ -1250,7 +1271,7 @@ system resources, while still being visually appealing and user friendly.")
 (define-public xfce4-power-manager
   (package
     (name "xfce4-power-manager")
-    (version "4.18.2")
+    (version "4.18.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -1258,7 +1279,7 @@ system resources, while still being visually appealing and user friendly.")
                                   "xfce4-power-manager-" version ".tar.bz2"))
               (sha256
                (base32
-                "0kfzvhb1hnr16fcplm7bdpp4fcxr3irzq3w4q0lpbc5n6kaqyq71"))))
+                "1w445v3911cf7l6w5c0f84aphv8s579f8srnhjrhf3drd07xsy8d"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -2200,7 +2221,7 @@ local weather in the panel, using forecast data provided by the
 (define-public xfce4-dev-tools
   (package
     (name "xfce4-dev-tools")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -2208,7 +2229,7 @@ local weather in the panel, using forecast data provided by the
                                   "xfce4-dev-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "0dxyfsx70nddkkv0ygkl02wv4p99g62zjkw68sf4bqzhap4lznzf"))))
+                "10bnb8q7sj60ahzfwrb3av4ngr17wk1p6jsnfv0yn8l90kksnb41"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

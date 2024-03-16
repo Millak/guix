@@ -587,6 +587,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "andreas@enge.fr")
   lxqt science tex)
 
+(define-member (person "Tanguy Le Carrour"
+                       "tanguy@bioneland.org")
+  python home)
+
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr")
   core kernel mentors)

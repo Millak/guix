@@ -250,6 +250,7 @@ source code editors and IDEs.")
     (inherit check)
     (version "0.14.0")
     (source (origin
+              (inherit (package-source check))
               (method url-fetch)
               (uri (string-append "https://github.com/libcheck/check/releases"
                                   "/download/" version "/check-" version ".tar.gz"))

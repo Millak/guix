@@ -30,7 +30,7 @@
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022, 2023, 2024 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022-2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
@@ -907,9 +907,12 @@ lock-free fixed size queue written in C++11.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-      ;; The tests are flaky when run in parallel. For more info:
-      ;; https://bugs.gnu.org/46562
-     '(#:parallel-tests? #f))
+     ;; The tests are flaky when run in parallel. For more info:
+     ;; https://bugs.gnu.org/46562
+     `(#:parallel-tests? #f
+       ,@(if (target-riscv64?)
+             `(#:make-flags (list "LDFLAGS=-latomic"))
+             '())))
     (native-inputs
      (list autoconf automake libtool
            ;; For tests.

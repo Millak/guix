@@ -3271,30 +3271,29 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.25")
+    (version "2.26")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "0m814598vc67sjwk83xh9g17n72618l32dgg7fz8y0gycqk6dr06"))))
+          (base32 "1q6z2j1y6pjdz4nzw44srv9j62irnxqhkvrsi46ma7xrzq6ig34g"))))
     (properties
      `((upstream-name . "rmarkdown")
        (updater-extra-propagated-inputs . ("pandoc"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bslib
+     (list pandoc
+           r-bslib
            r-evaluate
            r-fontawesome
            r-htmltools
            r-jquerylib
            r-jsonlite
            r-knitr
-           r-stringr
            r-tinytex
            r-xfun
-           r-yaml
-           pandoc))
+           r-yaml))
     (native-inputs
      (list esbuild r-knitr))
     (home-page "https://rmarkdown.rstudio.com")

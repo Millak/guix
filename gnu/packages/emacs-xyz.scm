@@ -448,7 +448,7 @@ input via a small child-frame spawned at the position of the cursor.")
 (define-public emacs-arei
   (package
     (name "emacs-arei")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -458,7 +458,7 @@ input via a small child-frame spawned at the position of the cursor.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qpri3ygb1fffi9mlipa7qmb6434aispbz1z3j14i7zrqassigm4"))))
+         "0nf101zdrz8yqscpvvmaw0dgb334h9v2ychyjlq95vksvx9r1zid"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
     (home-page "https://git.sr.ht/~abcdw/emacs-arei")
@@ -1065,19 +1065,20 @@ uploading PlatformIO projects.")
 (define-public emacs-hyperbole
   (package
     (name "emacs-hyperbole")
-    (version "9.0.0")
+    (version "9.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "hyperbole-" version ".tar"))
        (sha256
-        (base32 "07kpyp3ggf4knakn18niy819l184apx4d9vbcwv57j8zyqgn4c3l"))))
+        (base32 "0a7py2dvszh0rf2smbmm8msjrc8vbbvlqnsqw0m2l12v8vllmxnb"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons* "DEMO"
                               "DEMO-ROLO.otl"
                               "HY-ABOUT"
+                              "HY-NEWS"
                               "man/hkey-help.txt"
                               "man/hyberbole.info"
                               "kotl/.*"
@@ -11287,41 +11288,44 @@ Features degrade gracefully when viewed from terminal.")
     (license license:gpl3+)))
 
 (define-public emacs-org-pandoc-import
-  (package
-    (name "emacs-org-pandoc-import")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tecosaur/org-pandoc-import/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00z9bpm975mlyqlxbyib3j547br6kvcam04b70qkmq22vh8yf341"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:include
-       (cons* "^filters\\/" "^preprocessors" %default-include)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-exec-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pandoc (assoc-ref inputs "pandoc")))
-               (substitute* "org-pandoc-import.el"
-                 (("\"pandoc\"") (string-append "\"" pandoc "/bin/pandoc\"")))))))))
-    (inputs
-     (list pandoc))
-    (home-page "https://github.com/tecosaur/org-pandoc-import/")
-    (synopsis "Read and edit non-Org file types in Org")
-    (description
-     "This package uses Pandoc to convert selected file types to Org.  It can
+  (let ((commit "db308f1a05be26ce5b287633637ce554599b1377")
+        (revision "0"))
+    (package
+      (name "emacs-org-pandoc-import")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tecosaur/org-pandoc-import/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19z1qaairhpj8kyyqwx8yf53j3f03a9a1z1jfa348qmncnra5jmh"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:include
+         (cons* "^filters\\/" "^preprocessors" %default-include)
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-exec-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((pandoc (assoc-ref inputs "pandoc")))
+                 (substitute* "org-pandoc-import.el"
+                   (("\"pandoc\"")
+                    (string-append "\"" pandoc "/bin/pandoc\"")))))))))
+      (inputs
+       (list pandoc))
+      (home-page "https://github.com/tecosaur/org-pandoc-import/")
+      (synopsis "Read and edit non-Org file types in Org")
+      (description
+       "This package uses Pandoc to convert selected file types to Org.  It can
 convert supported non-Org files to an Org file with Pandoc.
 
 It can also intercept requests for non-Org files it knows it can convert,
 convert the file to a temporary Org file, and open this file instead.  On
 save, it exports back to the original non-Org file.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-pomodoro
   ;; Last release version was from 2016.
@@ -13088,27 +13092,29 @@ The following completions are currently available:
     (license license:gpl3+)))
 
 (define-public emacs-sway
-  (package
-    (name "emacs-sway")
-    (version "0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/thblt/sway.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1w29dkl7s835zgwnc4jx1cp84s6mmwbvlil8z2c31psy0rlajc6i"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/thblt/sway.el")
-    (synopsis "Communication with the Sway window manager")
-    (description
-     "This is a basic library to control the Sway window manager from Emacs.
+  (let ((commit "84eae5e16a643eb00b0a422ded751cceb17cc8f0")
+        (revision "0"))
+    (package
+      (name "emacs-sway")
+      (version (git-version "0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/thblt/sway.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "194plzc6rg7a5j3f68say0znix34yp8421cdlkwnw345czh52mjn"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/thblt/sway.el")
+      (synopsis "Communication with the Sway window manager")
+      (description
+       "This is a basic library to control the Sway window manager from Emacs.
 Its main use case is in combination with popup managers like Shackle, to
 use frames instead of windows while still giving focus to existing frames
 instead of duplicating them.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-sweet-theme
   (let ((commit "78f741806ecebe01224bf54d09ad80e306652508")
@@ -24405,7 +24411,7 @@ mode.")
 (define-public emacs-crux
   (package
     (name "emacs-crux")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -24415,7 +24421,7 @@ mode.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1h28chpyq61k72qh749r5kqq1y70wx3xw9c3zyfzmy750wlw6nyj"))))
+         "00n4k09x3slchs81xw1q0rcb78ncb5k2lvsigb9j7s3kxbj6bvvy"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/bbatsov/crux")
     (synopsis "Collection of useful functions for Emacs")

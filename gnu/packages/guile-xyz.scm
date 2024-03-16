@@ -47,6 +47,7 @@
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1088,7 +1089,7 @@ It has a nice, simple s-expression based syntax.")
 (define-public guile-scheme-json-rpc
   (package
     (name "guile-scheme-json-rpc")
-    (version "0.4.0")
+    (version "0.4.5a")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1097,14 +1098,15 @@ It has a nice, simple s-expression based syntax.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jsampz2ahs18z6yh9b5l3lkj8ycnavs0vg9sjngdj3w3zvrdcvm"))))
+                "0356hm6phcfgvwvx3ys6b927v40jzb7qrfgvql7g78na24zp2cmi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'change-to-guile-dir
                     (lambda _
                       (chdir "guile"))))))
-    (inputs (list guile-3.0 guile-srfi-145 guile-srfi-180))
+    (inputs (list guile-3.0))
+    (propagated-inputs (list guile-srfi-145 guile-srfi-180))
     (native-inputs (list pkg-config))
     (synopsis "Library providing JSON-RPC capability for Guile Scheme")
     (description
@@ -1117,7 +1119,7 @@ for calling methods on remote servers by exchanging JSON objects.")
 (define-public guile-ares-rs
   (package
     (name "guile-ares-rs")
-    (version "0.9.1")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -1127,7 +1129,7 @@ for calling methods on remote servers by exchanging JSON objects.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "173jg8z0cwq5r67lzxsmyir5f6cxd9i5gzb3qryq71cqq4h1c77n"))))
+         "021lg06c5lrp2j1qv8hl4jh4yq07k158h824kjv6b87bxqk7vq54"))))
     (build-system guile-build-system)
     (arguments
      (list

@@ -176,8 +176,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "aeb494322ca9dec4a4d66a7d063239c8536bd538")
-        (revision 16))
+        (commit "4c94b9e983bc51d9504655f1e7727c4f6d14b6b7")
+        (revision 18))
     (package
       (name "guix")
 
@@ -193,7 +193,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1xl769lkpvkjpvq4vwkxm4dp77sr9finvr6izvf4kvyi6s3hbsys"))
+                  "19lqlfafs5mrnciw4jz4iccx5zzhj4pyb20bz6cdqcqbf9nmkfp1"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -991,8 +991,8 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "006b96a9ff41f5d8e639f93f81eeab87d204bd89")
-        (revision "4"))
+  (let ((commit "bdfaab91e82d7d43c35405da3b18c46cde8096de")
+        (revision "5"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
@@ -1003,7 +1003,7 @@ transactions from C or Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1ai3dzwp5ddn5i7xzvg0qcj0nbip03jx0d3vhvxqr1vnlr71rzvh"))
+                  "0qwnd49apwdx8wrfms2spii1kdg5ashf4591kyfyr89070jjmpa7"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
@@ -1530,8 +1530,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "1c80525d21f183ed2556def6fcd021f6ea9a88a4")
-        (revision "98"))
+  (let ((commit "d802b817d81e2ea8c9f30664acd7b3b37b16f7c5")
+        (revision "99"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1542,7 +1542,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0krw4v04ynp8v12zgc87cx6d3rldr13b48kix9rzq4z17x7f39yc"))
+                  "1c69sww6mgwh17dd9k00fy6mi05asxb5l1jf2a7q63gv06h3bp0l"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

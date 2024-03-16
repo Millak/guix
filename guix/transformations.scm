@@ -2,7 +2,7 @@
 ;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
-;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -499,6 +499,10 @@ actual compiler."
                                  "-Dcpu="
                                  (string-replace-substring
                                    #$micro-architecture "-" "_"))))
+                           ((and (search-next "rustc")
+                                 (string=? next (search-next "rustc")))
+                            (list "-C" (string-append "target_cpu="
+                                                      #$micro-architecture)))
                            (else
                              (list (string-append "-march="
                                                   #$micro-architecture))))))))))))
@@ -519,7 +523,7 @@ actual compiler."
                                      (symlink #$program
                                               (string-append bin "/" program)))
                                    '("cc" "gcc" "clang" "g++" "c++" "clang++"
-                                     "go" "zig")))))))
+                                     "go" "rustc" "zig")))))))
 
 (define (build-system-with-tuning-compiler bs micro-architecture)
   "Return a variant of BS, a build system, that ensures that the compiler that

@@ -684,7 +684,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.3.1")
+    (version "0.18.3.2")
     (source
      (origin
        (method git-fetch)
@@ -702,7 +702,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "1k6mrgsvmqsfk95w8kjmp9v2fghjmmpj40667zndrw9jx1h85mwx"))))
+        (base32 "0ri3ss5vgsjk5pzmaaw8yi7sg4lasx58d8kz3m6z5vg7p69gdzxv"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -789,7 +789,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.3.1")
+    (version "0.18.3.2")
     (source
      (origin
        (method git-fetch)
@@ -805,7 +805,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "1fjx8gdzc1pmfsi14r09gfmkglvh560pnxk70p0k82a4gbs1vyz2"))))
+        (base32 "0jic43b7jzc1i7x2mqqpbbb2992687nm12kk642yr10dm4maklzb"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -1750,7 +1750,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "2.0.0.0")
+    (version "2.0.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1759,7 +1759,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s4iyjfhjx21xa3z7433m4skfr115565k0ckza87ha2d4nl8kz5h"))))
+        (base32 "1kkmg0gp86qz3ya8y5a00yic1mals138b9fv2cjlm7683sfjjljx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf

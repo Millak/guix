@@ -425,7 +425,7 @@ applications, there is xclip integration." )
 (define-public ssh-to-age
   (package
     (name "ssh-to-age")
-    (version "1.1.2")
+    (version "1.1.7")
     (source
      (origin
        (method git-fetch)
@@ -434,7 +434,7 @@ applications, there is xclip integration." )
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09rhga9iqmyyq8pkprydy8y15qhzqvbpgzvs681rcyllf8szrj73"))))
+        (base32 "134gpbalyll238wvj9ci0rascgm4csayz863ci99cy5qq8266wrl"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/Mic92/ssh-to-age/cmd/ssh-to-age"
@@ -443,7 +443,7 @@ applications, there is xclip integration." )
                   go-filippo-io-edwards25519
                   go-filippo-io-age))
     (home-page "https://github.com/Mic92/ssh-to-age")
-    (synopsis "Convert SSH @code{ed25519} keys to @code{age} keys.")
+    (synopsis "Convert SSH @code{ed25519} keys to @code{age} keys")
     (description "This package provides a simple command-line tool to
 convert SSH @code{ed25519} keys to @code{age} keys.")
     (license license:expat)))

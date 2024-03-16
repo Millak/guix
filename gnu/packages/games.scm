@@ -2130,14 +2130,14 @@ It is similar to standard chess but this variant is far more complicated.")
 (define-public ltris
   (package
     (name "ltris")
-    (version "1.2.6")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/ltris/"
                            "ltris-" version ".tar.gz"))
        (sha256
-        (base32 "1xj65kn815x2hq1ynzjyc90dj178xwa2xvx7jx99qf60ahaf4g62"))))
+        (base32 "144zvnnky79z5ychyyb2wsp7h2pcbl50fbzd9w9dvxkw6adz4yip"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -4676,7 +4676,7 @@ on the screen and keyboard to display letters.")
 (define-public manaplus
   (package
     (name "manaplus")
-    (version "1.9.3.23")
+    (version "2.1.3.17")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4684,18 +4684,15 @@ on the screen and keyboard to display letters.")
                     version "/manaplus-" version ".tar.xz"))
               (sha256
                (base32
-                "1ky182p4svwdqm6cf7jbns85hidkhkhq4s17cs2p381f0klapfjz"))))
+                "0ggswsa3xq7lss3j4k7fyzn56sw7hlrwk744i3d9w0n4932nmlg8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list (string-append "CPPFLAGS=-I"
-                            (assoc-ref %build-inputs "sdl-union")
-                            "/include/SDL"))))
+     (list #:configure-flags #~'("--with-sdl2")))
     (native-inputs
      (list pkg-config))
     (inputs
      (list glu curl libxml2 mesa
-           (sdl-union)))
+           sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf))
     (home-page "https://manaplus.org")
     (synopsis "Client for 'The Mana World' and similar games")
     (description
@@ -11379,7 +11376,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.4.2")
+    (version "1.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11388,7 +11385,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "039d9dvb2i4y1fj6q5py34r17fwb5jqxkjcg7j57asjk4w9b7i8b"))
+                "1z4vy3drj6dra8rb243pyryr61jnlw3l7yxsxwl9rddv8cdk69lz"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments

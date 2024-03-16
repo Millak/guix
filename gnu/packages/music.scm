@@ -3040,37 +3040,62 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
 using a system-independent interface.")
     (license license:expat)))
 
-(define-public python-pyportmidi
+(define-public portmidi-2
   (package
-    (name "python-pyportmidi")
-    (version (package-version portmidi))
-    (source (package-source portmidi))
-    (build-system python-build-system)
+    (name "portmidi")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PortMidi/portmidi")
+             (commit "b808babecdc5d05205467dab5c1006c5ac0fdfd4")))
+       (sha256
+        (base32 "05a3dfpgbpcg08p8a3acjrrd1qy5hvvray2kz2asygy1vf3mx85s"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no tests included
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir "pm_python") #t))
-         (add-after 'enter-dir 'fix-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               ;; Use Python 3 syntax
-               (("print (\".*\")" _ text)
-                (string-append "print(" text ")\n"))
-               ;; TODO.txt and CHANGES.txt don't exist
-               (("CHANGES =.*") "CHANGES = \"\"\n")
-               (("TODO =.*") "TODO = \"\"\n"))
-             #t)))))
-    (inputs
-     (list portmidi alsa-lib))
-    (native-inputs
-     (list python-cython unzip))
-    (home-page "https://portmedia.sourceforge.net/portmidi/")
-    (synopsis "Python bindings to PortMidi")
+     `(#:tests? #f       ;Tests are interactive and can be found in the
+       #:configure-flags ;pm_tests/ directory of the build tree.
+       (list "-DBUILD_PORTMIDI_TESTS=On")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-version
+                    (lambda _
+                      (substitute* "CMakeLists.txt"
+                        (("2.0.3")
+                         (version))))))))
+    (inputs (list alsa-lib))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/PortMidi/")
+    (synopsis "Library for MIDI I/O")
     (description
-     "This package provides Python bindings to the PortMidi library.")
+     "PortMidi is a library supporting real-time input and output of MIDI data
+using a system-independent interface.")
     (license license:expat)))
+
+(define-public python-pyportmidi
+  (let ((commit "d9e5ee00b208b09618fa0d4a5bbce3c9c077b386")
+        (revision "0"))
+    (package
+      (name "python-pyportmidi")
+      (version (git-version "0.0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/PortMidi/pm_python")
+               (commit commit)))
+         (sha256
+          (base32 "1jvp9na8d1hw46w9ybhkimbavfb3ysw7hp30cbk6dj40k5y5vgvz"))
+         (file-name (git-file-name name version))))
+      (build-system python-build-system)
+      (inputs (list portmidi-2 alsa-lib))
+      (native-inputs (list python-cython))
+      (home-page "https://github.com/PortMidi")
+      (synopsis "Python bindings to PortMidi")
+      (description
+       "This package provides Python bindings to the PortMidi library.")
+      (license license:expat))))
 
 (define-public frescobaldi
   (package
@@ -3080,32 +3105,39 @@ using a system-independent interface.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://github.com/wbsoft/frescobaldi/releases/download/v"
+             "https://github.com/frescobaldi/frescobaldi/releases/download/v"
              version "/frescobaldi-" version ".tar.gz"))
        (sha256
         (base32 "1n60gfnf6x0l1bac088g9adzx0lskbl9knd4y1ynr3y0zcs0kfcz"))))
     (build-system python-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no tests included
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'generate-translations
-            (lambda _
-              (invoke "make" "-C" "i18n")))
-          (add-before 'build 'generate-metadata
-            (lambda _
-              (invoke "make" "-C" "linux"))))))
-    (inputs
-     (list lilypond
-           poppler
-           portmidi
-           python-ly
-           python-poppler-qt5
-           python-pyportmidi
-           python-pyqt
-           python-sip
-           qpageview))
+      #:tests? #f ;no tests included
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'generate-translations
+                     (lambda _
+                       (invoke "make" "-C" "i18n")))
+                   (add-before 'build 'generate-metadata
+                     (lambda _
+                       (invoke "make" "-C" "linux")))
+                   (add-after 'install 'wrap-executable
+                     (lambda _
+                       ;; Ensure that icons are found at runtime.
+                       (wrap-program (string-append #$output
+                                                    "/bin/frescobaldi")
+                         `("QT_PLUGIN_PATH" prefix
+                           ,(list (getenv "QT_PLUGIN_PATH")))))))))
+    (inputs (list bash-minimal
+                  lilypond
+                  poppler
+                  portmidi-2
+                  python-ly
+                  python-poppler-qt5
+                  python-pyportmidi
+                  python-pyqt
+                  python-sip
+                  qpageview
+                  qtsvg-5))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
     (description

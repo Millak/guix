@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-# Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2023-2024 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -39,7 +39,7 @@ else
     EXTRA_OPTIONS=""
 fi
 
-# Visiting a commit older than v1.0.0 must fail (this test is expensive
+# Visiting a commit older than v0.16.0 must fail (this test is expensive
 # because it clones the whole repository).
 guix time-machine -q --commit=v0.15.0 $EXTRA_OPTIONS -- describe && false
 

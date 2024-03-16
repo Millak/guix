@@ -148,6 +148,7 @@
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
+;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6377,6 +6378,46 @@ offers a full-featured GUI (GTK and QT versions) that makes it highly
 accessible for novices, as well as a scripting interface offering the full
 flexibility and power of the Python language.")
     (license license:gpl3+)))
+
+(define-public kalamine
+  (package
+    (name "kalamine")
+    (version "0.36")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kalamine" version))
+       (sha256
+        (base32 "1xxncavq5a0dydhzpfjdxmqsddl77275d9k9giw1032bdyb9d5is"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'make-test-layouts
+            (lambda _
+              (apply invoke
+                     (cons* "python" "-m" "kalamine.cli" "build"
+                            (find-files "layouts" "\\.toml")))
+              (invoke "python" "-m" "kalamine.cli" "new" "test.toml"))))))
+    (propagated-inputs
+     (list python-click
+           python-livereload
+           python-lxml
+           python-progress
+           python-pyyaml
+           python-tomli))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
+    ;; packaged.
+    (native-inputs
+     (list python-hatchling python-mypy python-pytest))
+    (home-page "https://github.com/OneDeadKey/kalamine")
+    (synopsis "Keyboard layout maker")
+    (description
+     "Kalamine provides a CLI to create advanced keyboard layout from a
+textual portable description.  It also supports layout emulation via web
+browser.")
+    (license license:expat)))
 
 (define-public python-dm-tree
   (package
@@ -17269,16 +17310,18 @@ consistent API regardless of how the configuration was created.")
 (define-public python-configargparse
   (package
     (name "python-configargparse")
-    (version "1.5.3")
+    (version "1.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ConfigArgParse" version))
               (sha256
                (base32
-                "17vky4ihicbf7nggg30xs7h3g5rxzwgch8vilnnrvdaacszkq2qv"))))
+                "1l866g1dcf2ljf8fl7ggpxk1rggry0lya4d5b264gradi1qp81p7"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mock python-pytest))
+    (propagated-inputs
+     (list python-pyyaml))
     (synopsis "Replacement for argparse")
     (description "A drop-in replacement for argparse that allows options to also
 be set via config files and/or environment variables.")
@@ -24004,8 +24047,18 @@ manipulation, or @code{stdout}.")
          (base32
           "1vi2fj31vygfcqrkimdmk52q2ldw08g9fn4v4zlgdfgcjlhqyhxn"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-rdflib-6-compatibility
+            (lambda _
+              ;; See https://github.com/trungdong/prov/issues/151
+              (substitute* "src/prov/tests/test_rdf.py"
+                (("\\.serialize\\(format=\"nt\"\\)")
+                 ".serialize(format=\"nt\", encoding=\"utf-8\")")))))))
     (propagated-inputs
-     (list python-dateutil python-lxml python-networkx python-rdflib-5))
+     (list python-dateutil python-lxml python-networkx python-rdflib))
     (native-inputs
      (list graphviz python-pydot))
     (home-page "https://github.com/trungdong/prov")

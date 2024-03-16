@@ -701,14 +701,14 @@ regular-expression notation.")
 (define-public slib
   (package
     (name "slib")
-    (version "3b6")
+    (version "3c1")
     (source (origin
              (method url-fetch)
              (uri (string-append "http://groups.csail.mit.edu/mac/ftpdir/scm/slib-"
                                  version ".zip"))
              (sha256
               (base32
-               "137dn2wwwwg0qbifgxfckjhzj4m4820crpg9kziv402l7f2b931f"))))
+               "10f7l0fmd0xzs6kc2cwqjrx7msdn0fsd918r459xyc05wscfpy62"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There is no check target.

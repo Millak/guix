@@ -1217,7 +1217,7 @@ new Date();"))
 (define-public openjdk11
   (package
     (name "openjdk")
-    (version "11.0.17")
+    (version "11.0.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://openjdk-sources.osci.io/openjdk11/openjdk-"
@@ -1225,7 +1225,7 @@ new Date();"))
               (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1prvqy0ysz0999wrhsrbz6vrknpqfihl9l74l16ph93g89dqi5ia"))
+                "18ca4syp9xlrqjgyjkb1sp9835riy6aym5xs81r8byrz6jlb2473"))
               (modules '((guix build utils)))
               (snippet
                '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
@@ -1534,7 +1534,7 @@ new Date();"))
 
 (define-public openjdk12
   (make-openjdk
-   openjdk11 "12.33" "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"
+   openjdk11 "12.33" "0pi2gwib3j2imi4l623iaywrmvfh9rqzh82lj2gxqbrmg55swvjf"
    (source
     (origin
       (method url-fetch)
@@ -1542,7 +1542,7 @@ new Date();"))
       (file-name (string-append name "-" version ".tar.bz2"))
       (sha256
        (base32
-        "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"))
+        "0pi2gwib3j2imi4l623iaywrmvfh9rqzh82lj2gxqbrmg55swvjf"))
       (modules '((guix build utils)))
       (snippet
        '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
@@ -1573,8 +1573,8 @@ blacklisted.certs.pem"
                   "#! java BlacklistedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk13
-  (make-openjdk openjdk12 "13.0.13"
-                "0pxf4dlig61k0pg7amg4mi919hzam7nzwckry01avgq1wj8ambji"
+  (make-openjdk openjdk12 "13.0.14"
+                "1v92i5rhahqkjw8mz09c9qasnxqc67ygy0y266kdmm534z0da755"
   (source (origin
             (inherit (package-source base))
             (patches '())))))
@@ -1596,8 +1596,8 @@ blacklisted.certs.pem"
 
 (define-public openjdk15
   (make-openjdk
-   openjdk14 "15.0.9"
-   "1k3x06fv89l84ysjsyw8s89q8blghq85m6xjzv373x6297ln8n7a"
+   openjdk14 "15.0.10"
+   "0hdllv348bws6m992bh73jik18x0sv0k2m9l817b3zb7q802sp7x"
    (source (origin
              (inherit (package-source base))
              (modules '())
@@ -1623,8 +1623,8 @@ blacklisted.certs.pem"
 
 (define-public openjdk17
   (make-openjdk
-   openjdk16 "17.0.5"
-   "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
+   openjdk16 "17.0.10"
+   "1bq1rqnipz6wdr05s20gm8nlpb3328ljxckzvc5ag0gf7fzlhn5f"
    (source (origin
              (inherit (package-source base))
              (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
@@ -1639,8 +1639,8 @@ blacklisted.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk18
-  (make-openjdk openjdk17 "18.0.2"
-                "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
+  (make-openjdk openjdk17 "18.0.2.1"
+                "0zxanjzz4p3psqahlidh55vx1ldanq70c2ygk3gcfn9a94vnr9rg"))
 
 (define-public openjdk19
   (make-openjdk openjdk18 "19.0.2"
@@ -1660,12 +1660,12 @@ blacklisted.certs.pem"
                (setenv "SOURCE_DATE_EPOCH" "1234567890")))))))))
 
 (define-public openjdk20
-  (make-openjdk openjdk19 "20"
-                "0pk5lpwijfv9qv7vwpsq2xfklbnqdfs6xbdhc5aamrpar4xi4ykx"))
+  (make-openjdk openjdk19 "20.0.2"
+                "1af1v2c3d8x4c6shzl6cv9qwq7a4hn5map5pjh9vjcky0hkzd489"))
 
 (define-public openjdk21
-  (make-openjdk openjdk20 "21"
-                "06wjfwrkqykjdkis2s1nh91cy8vwincnmc699cxvyk3fc12jf3vw"
+  (make-openjdk openjdk20 "21.0.2"
+                "0d1g3wnzr5whjpq8gvxq0h7kd7lxd3xgc6bh3kg8vzz096asn0kj"
    (source (origin
              (inherit (package-source base))
              (patches (search-patches "openjdk-21-fix-rpath.patch"

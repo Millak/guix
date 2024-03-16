@@ -39,6 +39,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
+;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1604,6 +1605,8 @@ basic input/output.")
                 (search-input-file inputs (string-append "lib/" all)))
                (("libwayland-[[:alpha:]]*\\.so" all)
                 (search-input-file inputs (string-append "lib/" all)))
+               (("libxkbcommon-x11\\.so")
+                (search-input-file inputs "lib/libxkbcommon-x11.so"))
                (("libxkbcommon\\.so")
                 (search-input-file inputs "lib/libxkbcommon.so")))))
          (replace 'install

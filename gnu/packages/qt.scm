@@ -218,14 +218,14 @@ of C++20 coroutines in connection with certain asynchronous Qt actions.")
 (define-public qt5ct
   (package
     (name "qt5ct")
-    (version "1.5")
+    (version "1.8")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/qt5ct/qt5ct-" version ".tar.bz2"))
        (sha256
-        (base32 "14742vs32m98nbfb5mad0i8ciff5f45gfcb5v03p4hh2dvhhqgfn"))))
+        (base32 "1s88v3x5vxrz981jiqb9cnwak0shz6kgjbkp511i592y85a41dr3"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -2171,7 +2171,18 @@ plugin for Adobe After Effects.")
                 "1bkx2sc5hyldarc7w76ymv7dlcna3ib9r2kp67jdqcf856bnrx36"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
+       ((#:tests? _ #f) #f)           ; TODO: Enable the tests
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-qmake
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Adjust the default location of the 'qmake' command known to
+                ;; the 'lprodump' command, which would otherwise look for it
+                ;; in its own bindir.
+                (substitute* "src/linguist/lprodump/main.cpp"
+                  (("app.applicationDirPath\\() \\+ QLatin1String\\(\"/qmake\")")
+                   (format #f "QLatin1String(~s)"
+                           (search-input-file inputs "bin/qmake"))))))))))
     (native-inputs (list perl qtdeclarative-5 vulkan-headers))
     (inputs (list mesa qtbase-5))
     (synopsis "Qt Tools and Designer modules")

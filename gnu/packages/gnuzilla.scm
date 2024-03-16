@@ -3,7 +3,7 @@
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014-2024 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
@@ -764,7 +764,7 @@ variable defined below.  It requires guile-json to be installed."
       ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
       rust
       `(,rust "cargo")
-      rust-cbindgen-0.24
+      rust-cbindgen
       llvm-15
       clang-15
       perl
@@ -1851,7 +1851,7 @@ ca495991b7852b855"))
            pkg-config
            python-wrapper
            rust
-           rust-cbindgen-0.23
+           rust-cbindgen
            which
            yasm))
     (home-page "https://www.thunderbird.net")

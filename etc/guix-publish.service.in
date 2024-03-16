@@ -11,8 +11,8 @@ After=guix-daemon.service
 [Service]
 ExecStart=@localstatedir@/guix/profiles/per-user/root/current-guix/bin/guix publish --user=nobody --port=8181
 Environment='GUIX_LOCPATH=@localstatedir@/guix/profiles/per-user/root/guix-profile/lib/locale' LC_ALL=en_US.utf8
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 
 # Despite the name, this is rate-limited: a broken daemon will eventually fail.
 Restart=always

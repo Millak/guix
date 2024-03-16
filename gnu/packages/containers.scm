@@ -291,7 +291,7 @@ Layer-4 sockets.")
 (define-public cni-plugins
   (package
     (name "cni-plugins")
-    (version "1.0.1")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -299,7 +299,7 @@ Layer-4 sockets.")
              (url "https://github.com/containernetworking/plugins")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1j91in0mg4nblpdccyq63ncbnn2pc2zzjp1fh3jy0bsndllgv0nc"))
+        (base32 "0l6f4z762n8blak41wcxdmdhm92gqw2qcxcqd3s4wiql3d7273kj"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments

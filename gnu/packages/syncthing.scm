@@ -129,7 +129,9 @@ Protocol.")
     (home-page "https://github.com/syncthing/syncthing")
     (properties
      '((release-monitoring-url . "https://syncthing.net/downloads/")
-       (upstream-name . "syncthing-source")))
+       (upstream-name . "syncthing-source")
+       ;; The hashing code greatly benefits from newer architecture support.
+       (tunable? . #t)))
     (license mpl2.0)))
 
 (define-public syncthing-gtk
@@ -704,32 +706,6 @@ using sh's word-splitting rules.")
       (description "This package provides @code{notify}, a file system event
 notification library in Go.")
       (home-page "https://github.com/syncthing/notify")
-      (license expat))))
-
-(define-public go-github-com-beorn7-perks-quantile
-  (let ((commit "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9")
-        (revision "0"))
-    (package
-      (name "go-github-com-beorn7-perks-quantile")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/beorn7/perks")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1hrybsql68xw57brzj805xx2mghydpdiysv3gbhr7f5wlxj2514y"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/beorn7/perks/quantile"
-         #:unpack-path "github.com/beorn7/perks"))
-      (synopsis "Compute approximate quantiles over an unbounded data stream")
-      (description "Perks contains the Go package @code{quantile} that computes
-approximate quantiles over an unbounded data stream within low memory and CPU
-bounds.")
-      (home-page "https://github.com/beorn7/perks")
       (license expat))))
 
 (define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil

@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +48,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -60,22 +62,24 @@
 (define-public python-docker
   (package
     (name "python-docker")
-    (version "5.0.3")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "docker" version))
        (sha256
         (base32
-         "1yr7w8vmdis01myx26pqx7wcyz2cy1mfs421alppq3lpc9ms45nr"))))
+         "18z5wzqm7dbxaa5q4gs8yh2dma8i7savqcvibvy1i56djbxkcdrj"))))
     (build-system python-build-system)
     ;; TODO: Tests require a running Docker daemon.
     (arguments '(#:tests? #f))
     (inputs
      (list python-requests python-six python-urllib3))
+    (native-inputs
+     (list python-setuptools-scm))
     (propagated-inputs
      (list python-docker-pycreds python-paramiko ;adds SSH support
-           python-websocket-client))
+           python-packaging python-websocket-client))
     (home-page "https://github.com/docker/docker-py/")
     (synopsis "Python client for Docker")
     (description "Docker-Py is a Python client for the Docker container

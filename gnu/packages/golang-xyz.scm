@@ -237,6 +237,31 @@ interface around the standard library's @code{time} package so that the applicat
 can use the realtime clock while tests can use the mock clock.")
     (license license:expat)))
 
+(define-public go-github-com-beorn7-perks-quantile
+  (package
+    (name "go-github-com-beorn7-perks-quantile")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/beorn7/perks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17n4yygjxa6p499dj3yaqzfww2g7528165cl13haj97hlx94dgl7"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/beorn7/perks/quantile"
+           #:unpack-path "github.com/beorn7/perks"))
+    (home-page "https://github.com/beorn7/perks")
+    (synopsis "Compute approximate quantiles over an unbounded data stream")
+    (description
+     "Perks contains the Go package @code{quantile} that computes
+approximate quantiles over an unbounded data stream within low memory and CPU
+bounds.")
+    (license license:expat)))
+
 (define-public go-github-com-bitly-go-hostpool
   (package
     (name "go-github-com-bitly-go-hostpool")
@@ -285,28 +310,51 @@ information and periodically output metrics")
     (license license:expat)))
 
 (define-public go-github-com-blang-semver
-  (let ((commit "60ec3488bfea7cca02b021d106d9911120d25fe9")
-        (revision "0"))
-    (package
-      (name "go-github-com-blang-semver")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/blang/semver")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "19pli07y5592g4dyjyj0jq5rn548vc3fz0qg3624vm1j5828p1c2"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/blang/semver"))
-      (home-page "https://github.com/blang/semver")
-      (synopsis "Semantic versioning library written in Go")
-      (description
-       "Semver is a library for Semantic versioning written in Go.")
-      (license license:expat))))
+  (package
+    (name "go-github-com-blang-semver")
+    (version "3.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blang/semver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16s66zbfkn35msmxpkiwf5dv91kzw7yzxzkcv8ma44j7lbgzx5qk"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/blang/semver"))
+    (home-page "https://github.com/blang/semver")
+    (synopsis "Semantic versioning library written in Go")
+    (description
+     "Semver is a library for Semantic versioning written in Go.")
+    (license license:expat)))
+
+(define-public go-github-com-blang-semver-v4
+  (package
+    (inherit go-github-com-blang-semver)
+    (name "go-github-com-blang-semver-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blang/semver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14h9ys4n4kx9cbj42lkdf4i5k3nkll6sd62jcvl7cs565v6fiknz"))))
+    (arguments
+     (list
+      #:import-path "github.com/blang/semver/v4"
+      #:unpack-path "github.com/blang/semver"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))))
 
 (define-public go-github-com-bmizerany-perks-quantile
   (package
