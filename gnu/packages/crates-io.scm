@@ -60331,6 +60331,31 @@ paths point to the same file.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-sample-test-macros-0.2
+  (package
+    (name "rust-sample-test-macros")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sample-test-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vxmx4i0hcnbbaky4d7xpzw2ckff00bkkdmdzn0lbfw9fnd47ijw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-sample-std" ,rust-sample-std-0.2)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-sample-test" ,rust-sample-test-0.2))))
+    (home-page "https://docs.rs/sample-test-macros")
+    (synopsis "Proc-macros used by sample-test")
+    (description "Proc-macros used by sample-test.")
+    (license license:asl2.0)))
+
 (define-public rust-sanakirja-0.10
   (package
     (name "rust-sanakirja")
