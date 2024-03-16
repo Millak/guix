@@ -3310,6 +3310,24 @@ used in non-comparison sorts such as radix sort.")
 Apache Arrow implementation in Rust.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-schema-43
+  (package
+    (inherit rust-arrow-schema-47)
+    (name "rust-arrow-schema")
+    (version "43.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-schema" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zp8jz0pcr2d020rrmkdkzg6yizb2gc0fbfgzddb2w7mxrbwpsrb"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-arrow-select-47
   (package
     (name "rust-arrow-select")
