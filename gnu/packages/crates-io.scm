@@ -77424,6 +77424,28 @@ implementation is incomplete.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-typewit-1
+  (package
+    (name "rust-typewit")
+    (version "1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typewit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "093fgb1q5n48vr4nj3hggbhfi6jzab5048scs6jz1ynalgk9myy6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-typewit-proc-macros" ,rust-typewit-proc-macros-1))
+       #:cargo-development-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/rodrimati1992/typewit/")
+    (synopsis "Type-witness-based abstractions")
+    (description "This package provides type-witness-based abstractions, mostly
+for emulating polymorphism in const fns.")
+    (license license:zlib)))
+
 (define-public rust-typewit-proc-macros-1
   (package
     (name "rust-typewit-proc-macros")
