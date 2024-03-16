@@ -16663,6 +16663,39 @@ number ``crunching``.")
      "This package provides the procedural macros for rust-cssparser.")
     (license license:mpl2.0)))
 
+(define-public rust-csv-async-1
+  (package
+    (name "rust-csv-async")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "csv-async" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w60k4pqm1lnbv0mbz1d1ypmkx487r0q36hyrrh84jkzs2qfazyk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Errors in the test suite code.
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-csv-core" ,rust-csv-core-0.1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-bstr" ,rust-bstr-1)
+                                   ("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-indoc" ,rust-indoc-2)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/gwierzchowski/csv-async")
+    (synopsis "CSV parsing for async")
+    (description "This package provides CSV parsing for async.")
+    (license license:expat)))
+
 (define-public rust-csv-index-0.1
   (package
     (name "rust-csv-index")
