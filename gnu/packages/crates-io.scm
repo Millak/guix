@@ -5329,6 +5329,26 @@ methods.")
     (description "Parse integers directly from `[u8]` slices in safe code.")
     (license license:expat)))
 
+(define-public rust-atoi-simd-0.15
+  (package
+    (name "rust-atoi-simd")
+    (version "0.15.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atoi_simd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a98kvaqyhb1shi2c6qhvklahc7ckvpmibcy319i6g1i9xqkgq4s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                                   ("rust-numtoa" ,rust-numtoa-0.2))))
+    (home-page "https://github.com/RoDmitry/atoi_simd")
+    (synopsis "Fast @code{&[u8]} to integer parser")
+    (description "This package provides a fast @code{&[u8]} to integer parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-atom-0.3
   (package
     (name "rust-atom")
