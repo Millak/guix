@@ -49913,8 +49913,49 @@ applications.")
         ("rust-regex" ,rust-regex-1)
         ("rust-simdutf8" ,rust-simdutf8-0.1))))))
 
+(define-public rust-polars-lazy-0.37
+  (package
+    (name "rust-polars-lazy")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-lazy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y6z1l5rfhii45w2hj0sf3dbml5mlh77rl2s7a7h8vrl2gj46cyq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; no method named `cum_sum` found for enum `polars_plan::dsl::Expr`
+       #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-core" ,rust-polars-core-0.37)
+                       ("rust-polars-io" ,rust-polars-io-0.37)
+                       ("rust-polars-json" ,rust-polars-json-0.37)
+                       ("rust-polars-ops" ,rust-polars-ops-0.37)
+                       ("rust-polars-pipe" ,rust-polars-pipe-0.37)
+                       ("rust-polars-plan" ,rust-polars-plan-0.37)
+                       ("rust-polars-time" ,rust-polars-time-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-pyo3" ,rust-pyo3-0.20)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-smartstring" ,rust-smartstring-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Lazy query engine for the Polars DataFrame library")
+    (description "This crate provides a lazy query engine for the Polars
+@code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-lazy-0.17
   (package
+    (inherit rust-polars-lazy-0.37)
     (name "rust-polars-lazy")
     (version "0.17.0")
     (source
@@ -49924,7 +49965,6 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qabh08q4978s33d2mn2m8c90spg21frr4lhpyxx2ngsw93scgns"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -49934,13 +49974,7 @@ applications.")
         ("rust-polars-core" ,rust-polars-core-0.17)
         ("rust-polars-io" ,rust-polars-io-0.17)
         ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/ritchie46/polars")
-    (synopsis "Lazy query engine for the Polars DataFrame library")
-    (description
-     "This crate provides a lazy query engine for the Polars DataFrame
-library.")
-    (license license:expat)))
+        ("rust-regex" ,rust-regex-1))))))
 
 (define-public rust-polling-3
   (package
