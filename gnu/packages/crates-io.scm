@@ -66366,16 +66366,15 @@ compression and decompression.")
 (define-public rust-streaming-iterator-0.1
   (package
     (name "rust-streaming-iterator")
-    (version "0.1.5")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "streaming-iterator" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xc1gyq137b020m29g85zdhbbdrksdmhf3dq4ri4fjlrfz0kacih"))))
+        (base32 "0845zdv8qb7zwqzglpqc0830i43xh3fb6vqms155wz85qfvk28ib"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/sfackler/streaming-iterator")
     (synopsis "Streaming iterators")
     (description "The iterator APIs in the Rust standard library do not allow
