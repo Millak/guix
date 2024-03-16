@@ -2898,8 +2898,33 @@ Arrow memory format and CSV line-delimited records.")
 the Apache Arrow implementation in Rust.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-format-0.8
+  (package
+    (name "rust-arrow-format")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-format" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1irj67p6c224dzw86jr7j3z9r5zfid52gy6ml8rdqk4r2si4x207"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-planus" ,rust-planus-0.3)
+                       ("rust-prost" ,rust-prost-0.11)
+                       ("rust-prost-derive" ,rust-prost-derive-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tonic" ,rust-tonic-0.8))))
+    (home-page "https://github.com/DataEngineeringLabs/arrow-format")
+    (synopsis "Unofficial flatbuffers and tonic code of Apache Arrow spec")
+    (description "This package provides an nofficial flatbuffers and tonic
+code of Apache Arrow spec.")
+    (license license:asl2.0)))
+
 (define-public rust-arrow-format-0.3
   (package
+    (inherit rust-arrow-format-0.8)
     (name "rust-arrow-format")
     (version "0.3.0")
     (source
@@ -2909,19 +2934,13 @@ the Apache Arrow implementation in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0apg3x3yllbazh6jr85g5yammjqxpnrk6jm4n2yypyhbcvcs4zcz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-flatbuffers" ,rust-flatbuffers-2)
         ("rust-prost" ,rust-prost-0.9)
         ("rust-prost-derive" ,rust-prost-derive-0.9)
-        ("rust-tonic" ,rust-tonic-0.6))))
-    (home-page "https://crates.io/crates/arrow-format")
-    (synopsis "Unofficial flatbuffers and tonic code of Apache Arrow spec")
-    (description "This package provides an nofficial flatbuffers and tonic
-code of Apache Arrow spec.")
-    (license license:asl2.0)))
+        ("rust-tonic" ,rust-tonic-0.6))))))
 
 (define-public rust-arrow-ipc-47
   (package
