@@ -53695,6 +53695,26 @@ they were parsed from")
     (arguments
      (list #:tests? #f))))  ; Not all files included.
 
+(define-public rust-pwd-1
+  (package
+    (name "rust-pwd")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pwd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18p4j95sqqcxn3fbm6gbi7klxp8n40xmcjqy9vz1ww5rg461rivj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://gitlab.com/pwoolcoc/pwd.git")
+    (synopsis "Safe interface to pwd.h")
+    (description "This package provides a safe interface to @code{pwd.h}.")
+    (license license:public-domain)))
+
 (define-public rust-pyo3-build-config-0.20
   (package
     (name "rust-pyo3-build-config")
