@@ -1388,7 +1388,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.8.2")
+    (version "0.9.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1396,7 +1396,7 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "115fy87lcn9scwx52kjs0g250q2d3r10sahl6l8l38fs13dqm8p3"))))
+                "063qxbcy8djijsb0clzkai3mwg43mmlswwrg403vsi2w0n614v5f"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list #:phases
@@ -1409,7 +1409,9 @@ several different time zones.")
                      (("\\$PKG_CONFIG --variable=glib_compile_resources gio-2.0")
                       "which glib-compile-resources")
                      (("\\$PKG_CONFIG --variable=glib_genmarshal glib-2.0")
-                      "which glib-genmarshal")))))))
+                      "which glib-genmarshal")
+                     (("\\$PKG_CONFIG --variable=glib_mkenums glib-2.0")
+                      "which glib-mkenums")))))))
     (native-inputs
      (list intltool pkg-config (list glib "bin") which))
     (inputs
