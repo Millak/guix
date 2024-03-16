@@ -22677,6 +22677,26 @@ libraries generally do not give you a choice in terms of which standards/convent
 they follow.  Etcetera, on the other hand, gives you the choice.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ethnum-1
+  (package
+    (name "rust-ethnum")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ethnum" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b68ngvisb0d40vc6h30zlhghbb3mc8wlxjbf8gnmavk1dca435r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ethnum-intrinsics" ,rust-ethnum-intrinsics-1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/nlordell/ethnum-rs")
+    (synopsis "256-bit integer implementation")
+    (description "This package contains a 256-bit integer implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ethnum-intrinsics-1
   (package
     (name "rust-ethnum-intrinsics")
