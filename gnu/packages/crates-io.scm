@@ -39511,8 +39511,32 @@ multiplication and division with overflow protection.")
     (description "This package provides a multimap implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-multiversion-0.7
+  (package
+    (name "rust-multiversion")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "multiversion" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0al7yrf489lqzxx291sx9566n7slk2njwlqrxbjhqxk1zvbvkixj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-multiversion-macros" ,rust-multiversion-macros-0.7)
+                       ("rust-target-features" ,rust-target-features-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-rustversion" ,rust-rustversion-1))))
+    (home-page "https://github.com/calebzulawski/multiversion")
+    (synopsis "Function multiversioning attribute macros for Rust")
+    (description "This crate provides function multiversioning attribute
+macros for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-multiversion-0.6
   (package
+    (inherit rust-multiversion-0.7)
     (name "rust-multiversion")
     (version "0.6.1")
     (source
@@ -39522,16 +39546,10 @@ multiplication and division with overflow protection.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0wsk9ykdqjd6c54rf5l6yb6ps4hx409cda8aa875xk6k7lm9cp02"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-multiversion-macros" ,rust-multiversion-macros-0.6))))
-    (home-page "https://github.com/calebzulawski/multiversion")
-    (synopsis "Function multiversioning attribute macros for Rust")
-    (description "This crate provides function multiversioning attribute
-macros for Rust.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-multiversion-macros" ,rust-multiversion-macros-0.6))))))
 
 (define-public rust-multiversion-macros-0.7
   (package
