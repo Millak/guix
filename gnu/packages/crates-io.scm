@@ -64555,6 +64555,59 @@ implementation in Rust.")
      "This package provides helpers to write more compact simd code.")
     (license license:expat)))
 
+(define-public rust-simd-json-0.13
+  (package
+    (name "rust-simd-json")
+    (version "0.13.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simd-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xmzpzklnxxnwspf7abhzgr3khbnrw4h8svag8rq9i4v3c88zbrg"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Remove some of the optional dependencies:
+                 (substitute* "Cargo.toml.orig"
+                   ((".*alloc_counter.*") "")
+                   ((".*colored.*") "")
+                   ((".*jemallocator.*") "")
+                   ((".*perfcnt.*") ""))
+                 (rename-file "Cargo.toml.orig" "Cargo.toml")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ;("rust-alloc-counter" ,rust-alloc-counter-0.0.4)
+                       ("rust-beef" ,rust-beef-0.5)
+                       ;("rust-colored" ,rust-colored-2)
+                       ("rust-getopts" ,rust-getopts-0.2)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-halfbrown" ,rust-halfbrown-0.2)
+                       ;("rust-jemallocator" ,rust-jemallocator-0.5)
+                       ("rust-lexical-core" ,rust-lexical-core-0.8)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ;("rust-perfcnt" ,rust-perfcnt-0.8)
+                       ("rust-ref-cast" ,rust-ref-cast-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-simdutf8" ,rust-simdutf8-0.1)
+                       ("rust-value-trait" ,rust-value-trait-0.8))
+       #:cargo-development-inputs (("rust-core-affinity" ,rust-core-affinity-0.8)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-float-cmp" ,rust-float-cmp-0.9)
+                                   ("rust-getopts" ,rust-getopts-0.2)
+                                   ("rust-proptest" ,rust-proptest-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             (delete-file "tests/jsonchecker.rs"))))))
+    (home-page "https://github.com/simd-lite/simd-json")
+    (synopsis "High performance JSON parser based on a port of simdjson")
+    (description "High performance JSON parser based on a port of simdjson.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-simdutf8-0.1
   (package
     (name "rust-simdutf8")
