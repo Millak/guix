@@ -372,7 +372,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
 (define-public copyq
 (package
   (name "copyq")
-  (version "7.1.0")
+  (version "8.0.0")
   (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -381,7 +381,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1f39mh9qv1fa2vbwjigi1raz1pym2pz733j6b77r4588l8aaj2b8"))))
+              "029s1pdp177fnrq5qrwjmd5pf1672l5jhq99is1lczrxi6bsf2qk"))))
   (build-system cmake-build-system)
   (arguments
    (list
