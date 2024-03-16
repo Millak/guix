@@ -2004,6 +2004,55 @@ type.")
 each type.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-apache-avro-0.16
+  (package
+    (name "rust-apache-avro")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "apache-avro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "180113hv4b7dw63szi5rzjb5pj8lwn5zyf8fnxq0kx7qna1wddyf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-apache-avro-derive" ,rust-apache-avro-derive-0.16)
+                       ("rust-bzip2" ,rust-bzip2-0.4)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libflate" ,rust-libflate-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-quad-rand" ,rust-quad-rand-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-regex-lite" ,rust-regex-lite-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-snap" ,rust-snap-1)
+                       ("rust-strum" ,rust-strum-0.25)
+                       ("rust-strum-macros" ,rust-strum-macros-0.25)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-typed-builder" ,rust-typed-builder-0.16)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-xz2" ,rust-xz2-0.1)
+                       ("rust-zstd" ,rust-zstd-0.12))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-apache-avro-test-helper" ,rust-apache-avro-test-helper-0.16)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-md-5" ,rust-md-5-0.10)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serial-test" ,rust-serial-test-2)
+        ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/apache/avro")
+    (synopsis "Library for working with Apache Avro in Rust")
+    (description
+     "This package provides a library for working with Apache Avro in Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-apache-avro-derive-0.16
   (package
     (name "rust-apache-avro-derive")
