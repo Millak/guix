@@ -24971,6 +24971,23 @@ implementation that is more efficient for smaller hash keys.")
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-force-send-sync-1
+  (package
+    (name "rust-force-send-sync")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "force-send-sync" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dpy69psypanm8mx3k0mjmvb0mccyyd8yffcdr1899la8k68ss1j"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/pacman82/force-send-sync")
+    (synopsis "Unsafe wrappers to force Send and Sync")
+    (description "Unsafe wrappers to force Send and Sync.")
+    (license license:expat)))
+
 (define-public rust-foreign-types-0.5
   (package
     (name "rust-foreign-types")
