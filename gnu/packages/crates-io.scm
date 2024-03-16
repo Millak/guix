@@ -46879,8 +46879,47 @@ definitions compiled to support read+write async.")
     (description "Safe Parquet and Thrift reader and writer (sync and async).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-parquet2-0.17
+  (package
+    (name "rust-parquet2")
+    (version "0.17.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "parquet2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kiv50rj44y6flsa2879wi4kwsfldwhyvgrnybaz7kh2bxsfb7sp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-async-stream" ,rust-async-stream-0.3)
+        ("rust-brotli" ,rust-brotli-3)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-lz4" ,rust-lz4-1)
+        ("rust-lz4-flex" ,rust-lz4-flex-0.9)
+        ("rust-parquet-format-safe" ,rust-parquet-format-safe-0.2)
+        ("rust-seq-macro" ,rust-seq-macro-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-snap" ,rust-snap-1)
+        ("rust-streaming-decompression" ,rust-streaming-decompression-0.1)
+        ("rust-xxhash-rust" ,rust-xxhash-rust-0.8)
+        ("rust-zstd" ,rust-zstd-0.12))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/jorgecarleitao/parquet2")
+    (synopsis "Safe implementation of Parquet IO")
+    (description
+     "Parquet2 is a re-write of the official Parquet crate with performance,
+parallelism and safety in mind.")
+    (license license:asl2.0)))
+
 (define-public rust-parquet2-0.6
   (package
+    (inherit rust-parquet2-0.17)
     (name "rust-parquet2")
     (version "0.6.0")
     (source
@@ -46890,7 +46929,6 @@ definitions compiled to support read+write async.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0v9xc20wmn2r1pyaxqd8zf9vnschbf8r00c5kg9332fqrmadz0nv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -46903,13 +46941,7 @@ definitions compiled to support read+write async.")
         ("rust-parquet-format-async-temp" ,rust-parquet-format-async-temp-0.2)
         ("rust-snap" ,rust-snap-1)
         ("rust-streaming-decompression" ,rust-streaming-decompression-0.1)
-        ("rust-zstd" ,rust-zstd-0.9))))
-    (home-page "https://crates.io/crates/parquet2")
-    (synopsis "Safe implementation of Parquet IO")
-    (description
-     "Parquet2 is a re-write of the official Parquet crate with performance,
-parallelism and safety in mind.")
-    (license license:asl2.0)))
+        ("rust-zstd" ,rust-zstd-0.9))))))
 
 (define-public rust-parse-display-0.8
   (package
