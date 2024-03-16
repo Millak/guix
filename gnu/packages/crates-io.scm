@@ -60331,6 +60331,29 @@ paths point to the same file.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-sample-arrow2-0.17
+  (package
+    (name "rust-sample-arrow2")
+    (version "0.17.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sample-arrow2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xw9mdhzb0wx26b4bq1d94ib179lmzc5kfsrhgp5gk75g84k0ash"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrow2" ,rust-arrow2-0.17)
+                       ("rust-sample-std" ,rust-sample-std-0.2))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-sample-test" ,rust-sample-test-0.2))))
+    (home-page "https://docs.rs/sample-arrow2")
+    (synopsis "Samplers for arrow2 for use with sample-test")
+    (description "Samplers for arrow2 for use with sample-test.")
+    (license license:asl2.0)))
+
 (define-public rust-sample-std-0.2
   (package
     (name "rust-sample-std")
