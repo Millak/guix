@@ -43866,8 +43866,40 @@ giga, kibi.")
 giga, kibi.")
     (license license:expat)))
 
+(define-public rust-numtoa-0.2
+  (package
+    (name "rust-numtoa")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "numtoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03yhkhjb3d1zx22m3pgcbpk8baj0zzvaxqc25c584sdq77jw98ka"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=base10_i128_array_too_small"
+         "--skip=base10_i16_array_too_small"
+         "--skip=base10_i32_array_too_small"
+         "--skip=base10_i64_array_too_small"
+         "--skip=base10_i8_array_too_small"
+         "--skip=base10_u128_array_too_small"
+         "--skip=base10_u16_array_too_small"
+         "--skip=base10_u32_array_too_small"
+         "--skip=base10_u64_array_too_small"
+         "--skip=base10_u8_array_too_small")))
+    (home-page "https://gitlab.com/mmstick/numtoa")
+    (synopsis "Convert numbers into stack-allocated byte arrays")
+    (description
+     "This package can convert numbers into stack-allocated byte arrays.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-numtoa-0.1
   (package
+    (inherit rust-numtoa-0.2)
     (name "rust-numtoa")
     (version "0.1.0")
     (source
@@ -43878,13 +43910,7 @@ giga, kibi.")
         (sha256
          (base32
           "1vs9rhggqbql1p26x8nkha1j06wawwgb2jp5fs88b5gi7prvvy5q"))))
-    (build-system cargo-build-system)
-    (arguments '(#:tests? #f))
-    (home-page "https://gitlab.com/mmstick/numtoa")
-    (synopsis "Convert numbers into stack-allocated byte arrays")
-    (description
-     "This package can convert numbers into stack-allocated byte arrays.")
-    (license (list license:expat license:asl2.0))))
+    (arguments '(#:tests? #f))))
 
 (define-public rust-oauth2-types-0.7
   (package
