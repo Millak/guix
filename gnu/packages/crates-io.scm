@@ -227,8 +227,41 @@ cubic beziers.")
 loaded at program startup.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-abi-stable-derive-0.11
+  (package
+    (name "rust-abi-stable-derive")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abi_stable_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16780mmr2hwx8ajcq59nhvq3krv5i8r7mg41x08fx907nil885yp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=sabi_trait::tests::sabi_trait_test_cases"
+         "--skip=stable_abi::tests::test_cases")
+       #:cargo-inputs (("rust-abi-stable-shared" ,rust-abi-stable-shared-0.11)
+                       ("rust-as-derive-utils" ,rust-as-derive-utils-0.11)
+                       ("rust-core-extensions" ,rust-core-extensions-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-typed-arena" ,rust-typed-arena-2))
+       #:cargo-development-inputs
+       (("rust-as-derive-utils" ,rust-as-derive-utils-0.11))))
+    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
+    (synopsis "Implementation detail of abi_stable.")
+    (description "This package contains an implementation detail of abi_stable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-abi-stable-derive-0.10
   (package
+    (inherit rust-abi-stable-derive-0.11)
     (name "rust-abi-stable-derive")
     (version "0.10.3")
     (source
@@ -238,7 +271,6 @@ loaded at program startup.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1w503n9rxja3h8ls6p5xsly8aclbp30dm4hd0525bvpbippi161v"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -254,11 +286,7 @@ loaded at program startup.")
         ("rust-syn" ,rust-syn-1)
         ("rust-typed-arena" ,rust-typed-arena-2))
        #:cargo-development-inputs
-       (("rust-as-derive-utils" ,rust-as-derive-utils-0.10))))
-    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
-    (synopsis "Implementation detail of abi_stable.")
-    (description "This package contains an implementation detail of abi_stable.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-as-derive-utils" ,rust-as-derive-utils-0.10))))))
 
 (define-public rust-abi-stable-shared-0.11
   (package
