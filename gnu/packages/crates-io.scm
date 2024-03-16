@@ -78202,6 +78202,26 @@ including Canonical and Compatible Decomposition and Recomposition, as
 described in Unicode Standard Annex #15.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-reverse-1
+  (package
+    (name "rust-unicode-reverse")
+    (version "1.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-reverse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b4n480vd897pm4klmmz07w8p45kb5ds0037kakd1lmhxfn5vshb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.4))))
+    (home-page "https://github.com/mbrubeck/unicode-reverse")
+    (synopsis "Unicode-aware in-place string reversal")
+    (description "Unicode-aware in-place string reversal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unicode-segmentation-1
   (package
     (name "rust-unicode-segmentation")
