@@ -23434,6 +23434,29 @@ supported in purely NFA-based implementations.")
 is defined in the HTML specification.")
     (license license:mpl2.0)))
 
+(define-public rust-fast-float-0.2
+  (package
+    (name "rust-fast-float")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fast-float" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g7kfll3xyh99kc7r352lhljnwvgayxxa6saifb6725inikmyxlm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-fastrand" ,rust-fastrand-1)
+                                   ("rust-hexf-parse" ,rust-hexf-parse-0.1)
+                                   ("rust-lexical-core" ,rust-lexical-core-0.7)
+                                   ("rust-num-bigint" ,rust-num-bigint-0.3)
+                                   ("rust-ryu" ,rust-ryu-1))))
+    (home-page "https://github.com/aldanor/fast-float-rust")
+    (synopsis "Fast floating-point number parser")
+    (description "This package provides a fast floating-point number parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-faster-hex-0.9
   (package
     (name "rust-faster-hex")
