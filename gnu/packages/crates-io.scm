@@ -16543,14 +16543,14 @@ use with sct crate.")
 (define-public rust-ctor-0.2
   (package
     (name "rust-ctor")
-    (version "0.2.0")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ctor" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "06rhrw85py0gkk7g99qk124mk6d5isq95nn3abc84fyf7zv5ch6x"))))
+                "0p289www67xwnxsqgvlh3mzi0zmdysxsqf4cx2kvgfcj96kiladd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
