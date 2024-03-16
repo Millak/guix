@@ -33176,6 +33176,27 @@ wasm-bindgen crate.")
 friction with idiomatic Rust structs to ease interopability.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-json-deserializer-0.4
+  (package
+    (name "rust-json-deserializer")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "json-deserializer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gv8qa9bprcw0ypz4kmpp844yfjg1dpzayk7xc5i1d3fw4hv8qsz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph.
+       #:cargo-inputs (("rust-indexmap" ,rust-indexmap-1))))
+    (home-page "https://github.com/jorgecarleitao/json-deserializer")
+    (synopsis "Performant library to deserialize JSON")
+    (description
+     "This package provides a performant library to deserialize JSON.")
+    (license license:asl2.0)))
+
 (define-public rust-juliex-0.3
   (package
     (name "rust-juliex")
