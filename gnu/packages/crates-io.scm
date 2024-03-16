@@ -260,8 +260,28 @@ loaded at program startup.")
     (description "This package contains an implementation detail of abi_stable.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-abi-stable-shared-0.11
+  (package
+    (name "rust-abi-stable-shared")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abi_stable_shared" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qrbmlypvxx3zij1c6w6yykpp5pjcfx9qr2d9lzyc8y1i1vdzddj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-core-extensions" ,rust-core-extensions-1))))
+    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
+    (synopsis "Implementation detail of abi_stable")
+    (description "This package contains an implementation detail of abi_stable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-abi-stable-shared-0.10
   (package
+    (inherit rust-abi-stable-shared-0.11)
     (name "rust-abi-stable-shared")
     (version "0.10.3")
     (source
@@ -271,13 +291,8 @@ loaded at program startup.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0psaz0vghdz84vrb311g4b74d2nhrlbmwxa8if88s0bf0s4xmsgc"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-core-extensions" ,rust-core-extensions-1))))
-    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
-    (synopsis "Implementation detail of abi_stable")
-    (description "This package contains an implementation detail of abi_stable.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-core-extensions" ,rust-core-extensions-1))))))
 
 (define-public rust-abomonation-0.7
   (package
