@@ -12312,14 +12312,14 @@ diagnostics easy and relatively painless for everyone!")
 (define-public rust-codspeed-2
   (package
     (name "rust-codspeed")
-    (version "2.3.3")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "codspeed" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16s95jrih19llp4m8rgmymvan0misfcnzc8gb57ynm35rd6spd0f"))))
+        (base32 "0ikj07wl9g7az7mnlarmsyjh6a77vm4l2lmwbsbx2h85m9bb11ab"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-colored" ,rust-colored-2)
