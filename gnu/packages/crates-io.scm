@@ -49618,8 +49618,83 @@ applications.")
         ("rust-polars-io" ,rust-polars-io-0.17)
         ("rust-polars-lazy" ,rust-polars-lazy-0.17))))))
 
+(define-public rust-polars-arrow-0.37
+  (package
+    (name "rust-polars-arrow")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-arrow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03wvwh80cvs3gxdm9if6yfh2kq589538ssrdqx86vyj84ldd5b7s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=ffi::data::binview_nullable_buffered"
+         "--skip=ffi::data::binview_nullable_inlined")
+       #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-arrow-array" ,rust-arrow-array-47)
+                       ("rust-arrow-buffer" ,rust-arrow-buffer-47)
+                       ("rust-arrow-data" ,rust-arrow-data-47)
+                       ("rust-arrow-schema" ,rust-arrow-schema-47)
+                       ("rust-async-stream" ,rust-async-stream-0.3)
+                       ("rust-atoi" ,rust-atoi-2)
+                       ("rust-atoi-simd" ,rust-atoi-simd-0.15)
+                       ("rust-avro-schema" ,rust-avro-schema-0.3)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+                       ("rust-dyn-clone" ,rust-dyn-clone-1)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-ethnum" ,rust-ethnum-1)
+                       ("rust-fast-float" ,rust-fast-float-0.2)
+                       ("rust-foreign-vec" ,rust-foreign-vec-0.1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-itoap" ,rust-itoap-1)
+                       ("rust-lz4" ,rust-lz4-1)
+                       ("rust-multiversion" ,rust-multiversion-0.7)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-polars-arrow-format" ,rust-polars-arrow-format-0.1)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-simdutf8" ,rust-simdutf8-0.1)
+                       ("rust-streaming-iterator" ,rust-streaming-iterator-0.1)
+                       ("rust-strength-reduce" ,rust-strength-reduce-0.2)
+                       ("rust-version-check" ,rust-version-check-0.9)
+                       ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs (("rust-apache-avro" ,rust-apache-avro-0.16)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                                   ("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-flate2" ,rust-flate2-1)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-sample-arrow2" ,rust-sample-arrow2-0.17)
+                                   ("rust-sample-std" ,rust-sample-std-0.1)
+                                   ("rust-sample-test" ,rust-sample-test-0.1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tokio-util" ,rust-tokio-util-0.7))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Arrow interfaces for Polars DataFrame library")
+    (description
+     "This crate provides Arrow interfaces for Polars DataFrame library.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-polars-arrow-0.17
   (package
+    (inherit rust-polars-arrow-0.37)
     (name "rust-polars-arrow")
     (version "0.17.0")
     (source
@@ -49629,18 +49704,12 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "16aakfkiaqk71c3n3274r9ra44v0jrc8wwp5nqdr0srd5y6lii0w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-arrow2" ,rust-arrow2-0.7)
         ("rust-num" ,rust-num-0.4)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/ritchie46/polars")
-    (synopsis "Arrow interfaces for Polars DataFrame library")
-    (description
-     "This crate provides Arrow interfaces for Polars DataFrame library.")
-    (license license:expat)))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-polars-core-0.17
   (package
