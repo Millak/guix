@@ -49976,6 +49976,42 @@ applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-polars-pipe-0.37
+  (package
+    (name "rust-polars-pipe")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-pipe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zxqg0hfws3rl66cy8rp18ka9dnz6185kc30n967miabhqdq62ir"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3)
+                       ("rust-enum-dispatch" ,rust-enum-dispatch-0.3)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-compute" ,rust-polars-compute-0.37)
+                       ("rust-polars-core" ,rust-polars-core-0.37)
+                       ("rust-polars-io" ,rust-polars-io-0.37)
+                       ("rust-polars-ops" ,rust-polars-ops-0.37)
+                       ("rust-polars-plan" ,rust-polars-plan-0.37)
+                       ("rust-polars-row" ,rust-polars-row-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-smartstring" ,rust-smartstring-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Lazy query engine for the Polars DataFrame library")
+    (description "Lazy query engine for the Polars @code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-plan-0.37
   (package
     (name "rust-polars-plan")
