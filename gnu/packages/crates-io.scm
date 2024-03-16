@@ -3080,6 +3080,24 @@ Arrow memory format and CSV line-delimited records.")
 the Apache Arrow implementation in Rust.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-data-43
+  (package
+    (inherit rust-arrow-data-47)
+    (name "rust-arrow-data")
+    (version "43.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12q2dvfaj78rfj5k3sfn8d3fnhwp3iizd4dbf5m14526qniz9x6l"))))
+    (arguments
+     `(#:cargo-inputs (("rust-arrow-buffer" ,rust-arrow-buffer-43)
+                       ("rust-arrow-schema" ,rust-arrow-schema-43)
+                       ("rust-half" ,rust-half-2)
+                       ("rust-num" ,rust-num-0.4))))))
+
 (define-public rust-arrow-format-0.8
   (package
     (name "rust-arrow-format")
