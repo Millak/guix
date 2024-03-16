@@ -58,11 +58,13 @@
                 "([0-9A-Fa-f]{12})"            ;commit hash
                 "(\\+incompatible)?$")))       ;optional +incompatible tag
 
-(define (go-version->git-ref version)
+(define* (go-version->git-ref version #:key subdir)
   "Parse VERSION, a \"pseudo-version\" as defined at
 <https://golang.org/ref/mod#pseudo-versions>, and extract the commit hash from
 it, defaulting to full VERSION (stripped from the \"+incompatible\" suffix if
-present) if a pseudo-version pattern is not recognized."
+present) if a pseudo-version pattern is not recognized.  If SUBDIR is
+specified and this is not a pseudo-version, then this will prefix SUBDIR/ to
+the returned tag; when VERSION misses 'v' prefix use SUBDIR/v instead."
   ;; A module version like v1.2.3 is introduced by tagging a revision in the
   ;; underlying source repository.  Untagged revisions can be referred to
   ;; using a "pseudo-version" like v0.0.0-yyyymmddhhmmss-abcdefabcdef, where
@@ -80,7 +82,13 @@ present) if a pseudo-version pattern is not recognized."
          (match (regexp-exec %go-pseudo-version-rx version)))
     (if match
         (match:substring match 2)
-        version)))
+        (cond
+         ((and subdir (string-prefix? "v" version))
+          (string-append subdir "/" version))
+         ((and subdir (not (string-prefix? "v" version)))
+          (string-append subdir "/v" version))
+         (else
+          version)))))
 
 (define (go-pseudo-version? version)
   "True if VERSION is a Go pseudo-version, i.e., a version string made of a
