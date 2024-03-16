@@ -12334,14 +12334,14 @@ diagnostics easy and relatively painless for everyone!")
 (define-public rust-codspeed-bencher-compat-2
   (package
     (name "rust-codspeed-bencher-compat")
-    (version "2.3.3")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "codspeed-bencher-compat" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17nmj0yzyyv6450yshs1f2qa0n7d9wwzkcc5ixjkiy63dww2ivpy"))))
+        (base32 "172c4xkvwbpvjhrx0w6lc4fa250cxdi8fmfvpv6mffghcxaqpr6h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bencher" ,rust-bencher-0.1)
