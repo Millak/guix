@@ -49976,6 +49976,36 @@ applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-polars-utils-0.37
+  (package
+    (name "rust-polars-utils")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sdmyyd2nzgbkjbxl2jzpqdf09l89r7gxdxf6pc5b6qypdawky9q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-smartstring" ,rust-smartstring-1)
+                       ("rust-sysinfo" ,rust-sysinfo-0.30)
+                       ("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Private utils for the Polars DataFrame library")
+    (description "This package contains the private utils for the Polars
+@code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polling-3
   (package
     (name "rust-polling")
