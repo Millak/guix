@@ -60956,6 +60956,26 @@ paths point to the same file.")
      "Sampling strategies and machinery for testing arbitrary data")
     (license license:asl2.0)))
 
+(define-public rust-sample-test-0.1
+  (package
+    (inherit rust-sample-test-0.2)
+    (name "rust-sample-test")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sample-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cli62gcy91d4n97visnqqpbpws5xwrzlnl0w8dgq6gz8w4m0gki"))))
+    (arguments
+     `(#:cargo-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-sample-std" ,rust-sample-std-0.1)
+                       ("rust-sample-test-macros" ,rust-sample-test-macros-0.1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))))
+
 (define-public rust-sample-test-macros-0.2
   (package
     (name "rust-sample-test-macros")
