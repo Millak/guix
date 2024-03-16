@@ -80564,7 +80564,7 @@ low-level in-memory encoding/decoding.  Alias of @code{xz2} crate.")
 (define-public rust-xz2-0.1
   (package
     (name "rust-xz2")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
@@ -80572,17 +80572,20 @@ low-level in-memory encoding/decoding.  Alias of @code{xz2} crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0v4jb0193gx8s1kvd2ajsgh0ffmwhqhfmrrw1n1h2z7w6jgqcyf1"))))
+         "1qk7nzpblizvayyq4xzi4b0zacmmbqr6vb9fc0v1avyp17f4931q"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; Not all files included in the tarball.
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included in the tarball.
+         "--skip=standard_files")
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.1)
         ("rust-lzma-sys" ,rust-lzma-sys-0.1)
         ("rust-tokio-io" ,rust-tokio-io-0.1))
        #:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.7)
-        ("rust-rand" ,rust-rand-0.5)
+       (("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-tokio-core" ,rust-tokio-core-0.1))))
     (native-inputs
      (list pkg-config xz))
