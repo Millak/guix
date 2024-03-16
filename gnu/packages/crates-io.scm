@@ -45354,6 +45354,29 @@ usability when dealing with Rust Options.")
      "This package provides the Orbital Client Library, used for RedoxOS.")
     (license license:expat)))
 
+(define-public rust-orc-format-0.3
+  (package
+    (name "rust-orc-format")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "orc-format" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02qzqhy1zx9bmylvkmbjrc2mxyddjgn2sqiwwd7kr9zh2p7jsaj0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-fallible-streaming-iterator" ,rust-fallible-streaming-iterator-0.1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-prost" ,rust-prost-0.9))))
+    (home-page "https://github.com/DataEngineeringLabs/orc-format")
+    (synopsis "Unofficial implementation of Apache ORC spec in safe Rust")
+    (description "Unofficial implementation of Apache ORC spec in safe Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ord-subset-3
   (package
     (name "rust-ord-subset")
