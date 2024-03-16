@@ -49711,6 +49711,29 @@ applications.")
         ("rust-num" ,rust-num-0.4)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-polars-arrow-format-0.1
+  (package
+    (name "rust-polars-arrow-format")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-arrow-format" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k5qci66rcwqv4ycb43zlkk128wrdvcqkc95j2qrd4xgfhjfzc0r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-planus" ,rust-planus-0.3)
+                       ("rust-prost" ,rust-prost-0.11)
+                       ("rust-prost-derive" ,rust-prost-derive-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tonic" ,rust-tonic-0.8))))
+    (home-page "https://github.com/polar-rs/arrow-format")
+    (synopsis "Unofficial flatbuffers and tonic code of Apache Arrow spec")
+    (description "Unofficial flatbuffers and tonic code of Apache Arrow spec.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-polars-compute-0.37
   (package
     (name "rust-polars-compute")
