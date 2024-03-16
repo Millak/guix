@@ -49711,6 +49711,31 @@ applications.")
         ("rust-num" ,rust-num-0.4)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-polars-compute-0.37
+  (package
+    (name "rust-polars-compute")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-compute" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p868zl3l4cn8kbdlyp1pf058d1a5g4rmbgmxvny0fh0z23xrn9j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Private compute kernels for the Polars DataFrame library")
+    (description "This package provides private compute kernels for the Polars
+@code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-core-0.37
   (package
     (name "rust-polars-core")
