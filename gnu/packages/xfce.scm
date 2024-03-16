@@ -836,7 +836,7 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
 (define-public thunar-media-tags-plugin
   (package
     (name "thunar-media-tags-plugin")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
@@ -844,7 +844,7 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
                            name "/" (version-major+minor version)
                            "/" name "-" version ".tar.bz2"))
        (sha256
-        (base32 "06sr7b4p9f585gian8vpx7j0pkzg0vvwcrjmrhvh7i5sb90w8rg2"))))
+        (base32 "02n99ymqs8msa798r63sy409pwrycg8p4pxx3yf497k924g134lm"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config intltool))
     (inputs (list exo gtk+ thunar taglib))
