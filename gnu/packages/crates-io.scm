@@ -49913,6 +49913,38 @@ applications.")
         ("rust-regex" ,rust-regex-1)
         ("rust-simdutf8" ,rust-simdutf8-0.1))))))
 
+(define-public rust-polars-json-0.37
+  (package
+    (name "rust-polars-json")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v8jwfyagh8vq8l8hbgp72an83w5lxb90xrq037p0klnp901ygcp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-fallible-streaming-iterator" ,rust-fallible-streaming-iterator-0.1)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+        ("rust-polars-error" ,rust-polars-error-0.37)
+        ("rust-polars-utils" ,rust-polars-utils-0.37)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-simd-json" ,rust-simd-json-0.13)
+        ("rust-streaming-iterator" ,rust-streaming-iterator-0.1))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "JSON related logic for the Polars DataFrame library")
+    (description "JSON related logic for the Polars @code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-lazy-0.37
   (package
     (name "rust-polars-lazy")
