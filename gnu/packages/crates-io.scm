@@ -10275,6 +10275,29 @@ GNOME libsecret.")
         ("rust-cargo-credential" ,rust-cargo-credential-0.3)
         ("rust-libloading" ,rust-libloading-0.8))))))
 
+(define-public rust-cargo-husky-1
+  (package
+    (name "rust-cargo-husky")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-husky" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b9jx720dzw9s7rl82bywz4d089c9rb0j526c1jfzs1g4llvc0kv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-libc" ,rust-libc-0.2)
+                                   ("rust-semver" ,rust-semver-0.9))))
+    (home-page "https://github.com/rhysd/cargo-husky#readme")
+    (synopsis "Autotest support with git hooks")
+    (description "Cargo-husky is a development tool to set Git hooks
+automatically on cargo test.")
+    (license license:expat)))
+
 (define-public rust-cargo-metadata-0.18
   (package
     (name "rust-cargo-metadata")
