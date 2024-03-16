@@ -39647,6 +39647,20 @@ select the mock struct at compile time.  Used with the Mockall crate.")
 debug_assert_* macros.")
     (license (list license:unlicense license:expat license:asl2.0 license:cc0))))
 
+(define-public rust-more-asserts-0.2
+  (package
+    (inherit rust-more-asserts-0.3)
+    (name "rust-more-asserts")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "more-asserts" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12b3fypg2sr4qmxy6wiyx6k9sdg573f5ij98cdmbrg00whnyqhvq"))))
+    (license license:cc0)))
+
 (define-public rust-mozim-0.2
   (package
     (name "rust-mozim")
