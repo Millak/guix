@@ -10634,6 +10634,25 @@ parsing with Serde.")
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-casey-0.4
+  (package
+    (name "rust-casey")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "casey" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sv5ll6aavwcigmr53b22dg16adlz4pa2pb73367sna974k8cib1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/jordy25519/casey")
+    (synopsis "Case transforming macros for ident tokens")
+    (description "Case transforming macros for ident tokens.")
+    (license license:expat)))
+
 (define-public rust-cassowary-0.3
   (package
     (name "rust-cassowary")
