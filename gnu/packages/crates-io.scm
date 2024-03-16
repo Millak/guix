@@ -67017,6 +67017,23 @@ SPIR-V.")
      "This package contains the implementaion details for sqlparser.")
     (license license:asl2.0)))
 
+(define-public rust-sqlparser-derive-0.1
+  (package
+    (inherit rust-sqlparser-derive-0.2)
+    (name "rust-sqlparser-derive")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlparser_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07knj4cvqd9r7jb7b6fzdifxipabv34bnzbcw1x7yk1n9b5pbzjm"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-st-map-0.1
   (package
     (name "rust-st-map")
