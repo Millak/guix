@@ -2641,6 +2641,24 @@ initialisers.  Provides an init closure that's called for each element of the
 array.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-array-init-cursor-0.2
+  (package
+    (name "rust-array-init-cursor")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "array-init-cursor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xpbqf7qkvzplpjd7f0wbcf2n1v9vygdccwxkd1amxp4il0hlzdz"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/planus-org/planus")
+    (synopsis "Utility crate to help keep track of arrays of MaybeUninit")
+    (description
+     "Utility crate to help keep track of arrays of @code{MaybeUninit}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-array-macro-1
   (package
     (name "rust-array-macro")
