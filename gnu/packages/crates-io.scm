@@ -49823,6 +49823,31 @@ applications.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-unsafe-unwrap" ,rust-unsafe-unwrap-0.1))))))
 
+(define-public rust-polars-error-0.37
+  (package
+    (name "rust-polars-error")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-error" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "163pbm00v5p60rbjq4d30lkhnk2fs35259znq7c3dfni09dl7wjh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-avro-schema" ,rust-avro-schema-0.3)
+                       ("rust-object-store" ,rust-object-store-0.9)
+                       ("rust-polars-arrow-format" ,rust-polars-arrow-format-0.1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-simdutf8" ,rust-simdutf8-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Error definitions for the Polars DataFrame library")
+    (description "This package contains the error definitions for the Polars
+@code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-io-0.37
   (package
     (name "rust-polars-io")
