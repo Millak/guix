@@ -49823,8 +49823,66 @@ applications.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-unsafe-unwrap" ,rust-unsafe-unwrap-0.1))))))
 
+(define-public rust-polars-io-0.37
+  (package
+    (name "rust-polars-io")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-io" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13m8qk2bji7zm2fbnnp67djdpf8gah0xclw3ng13kjqly0nbl7xm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-atoi-simd" ,rust-atoi-simd-0.15)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+                       ("rust-fast-float" ,rust-fast-float-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-memmap2" ,rust-memmap2-0.7)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-object-store" ,rust-object-store-0.9)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-core" ,rust-polars-core-0.37)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-polars-json" ,rust-polars-json-0.37)
+                       ("rust-polars-parquet" ,rust-polars-parquet-0.37)
+                       ("rust-polars-time" ,rust-polars-time-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-simd-json" ,rust-simd-json-0.13)
+                       ("rust-simdutf8" ,rust-simdutf8-0.1)
+                       ("rust-smartstring" ,rust-smartstring-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "IO related logic for the Polars DataFrame library")
+    (description
+     "This crate provides IO related logic for the Polars @code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-io-0.17
   (package
+    (inherit rust-polars-io-0.37)
     (name "rust-polars-io")
     (version "0.17.0")
     (source
@@ -49834,7 +49892,6 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0mq921184vwmadxz3996g0ilb4wiws3fajgxpvkkw1152pszb98i"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -49854,12 +49911,7 @@ applications.")
         ("rust-polars-core" ,rust-polars-core-0.17)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1)
-        ("rust-simdutf8" ,rust-simdutf8-0.1))))
-    (home-page "https://github.com/ritchie46/polars")
-    (synopsis "IO related logic for the Polars DataFrame library")
-    (description
-     "This crate provides IO related logic for the Polars DataFrame library.")
-    (license license:expat)))
+        ("rust-simdutf8" ,rust-simdutf8-0.1))))))
 
 (define-public rust-polars-lazy-0.17
   (package
