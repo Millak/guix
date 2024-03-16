@@ -2,7 +2,7 @@
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -2635,20 +2635,21 @@ be used to implement arbitrary protocols.")
 (define-public rust-md-5-0.10
   (package
     (name "rust-md-5")
-    (version "0.10.5")
+    (version "0.10.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "md-5" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1jmrykh705dfclkgxwjysj5y8l1nyrn1gddw5xpgyjyla1l50rb3"))))
+                "1kvq5rnpm4fzwmyv5nmnxygdhhb2369888a06gdc9pxyrzh7x7nq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-digest" ,rust-digest-0.10)
-        ("rust-md5-asm" ,rust-md5-asm-0.5))))
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-md5-asm" ,rust-md5-asm-0.5))
+       #:cargo-development-inputs (("rust-digest" ,rust-digest-0.10)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.2))))
     (home-page "https://github.com/RustCrypto/hashes")
     (synopsis "MD5 hash function")
     (description
