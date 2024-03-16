@@ -60331,6 +60331,31 @@ paths point to the same file.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-sample-test-0.2
+  (package
+    (name "rust-sample-test")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sample-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gymqxvr6avi40g73mg56lgzbs2x4yvy50mm15mpa5k4a7557cp8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-sample-std" ,rust-sample-std-0.2)
+                       ("rust-sample-test-macros" ,rust-sample-test-macros-0.2))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://docs.rs/sample-test")
+    (synopsis "Sampling strategies and machinery for testing arbitrary data")
+    (description
+     "Sampling strategies and machinery for testing arbitrary data")
+    (license license:asl2.0)))
+
 (define-public rust-sample-test-macros-0.2
   (package
     (name "rust-sample-test-macros")
