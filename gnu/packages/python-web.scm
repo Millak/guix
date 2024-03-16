@@ -8478,13 +8478,13 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.11.0")
+    (version "2.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Scrapy" version))
        (sha256
-        (base32 "199nbc7vipdsvxmfxc0lrzbprgl3hr2xgqhvss1083iz1k7fvg9w"))))
+        (base32 "1giyyzwcybmh0yf3aq44hhmf9m4k40rva418pxljpr93fjf06fkk"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -8520,7 +8520,8 @@ regular expressions.")
            python-w3lib
            python-zope-interface))
     (native-inputs
-     (list python-pytest
+     (list python-pexpect
+           python-pytest
            python-pytest-xdist
            python-pyftpdlib
            python-sybil
