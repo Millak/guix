@@ -49711,8 +49711,58 @@ applications.")
         ("rust-num" ,rust-num-0.4)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-polars-core-0.37
+  (package
+    (name "rust-polars-core")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xvp3ppcsfd4z5j0qkarijcnbfnf349r0ksw0c0rl8c218l4vzdy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-arrow-array" ,rust-arrow-array-47)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+                       ("rust-comfy-table" ,rust-comfy-table-7)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-ndarray" ,rust-ndarray-0.15)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-compute" ,rust-polars-compute-0.37)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-polars-row" ,rust-polars-row-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rand-distr" ,rust-rand-distr-0.4)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-smartstring" ,rust-smartstring-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-version-check" ,rust-version-check-0.9)
+                       ("rust-xxhash-rust" ,rust-xxhash-rust-0.8))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Core of the Polars DataFrame library")
+    (description
+     "This crate provides the core of the Polars @code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-core-0.17
   (package
+    (inherit rust-polars-core-0.37)
     (name "rust-polars-core")
     (version "0.17.0")
     (source
@@ -49722,10 +49772,8 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xjv2rja2pzcnn6sazgj2dqzy7gpbp57as6rcf0s0hnpcd054wb7"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
+     `(#:skip-build? #t
        #:cargo-inputs
        (("rust-ahash" ,rust-ahash-0.7)
         ("rust-anyhow" ,rust-anyhow-1)
@@ -49748,12 +49796,7 @@ applications.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unsafe-unwrap" ,rust-unsafe-unwrap-0.1))))
-    (home-page "https://github.com/ritchie46/polars")
-    (synopsis "Core of the Polars DataFrame library")
-    (description
-     "This crate provides the core of the Polars DataFrame library.")
-    (license license:expat)))
+        ("rust-unsafe-unwrap" ,rust-unsafe-unwrap-0.1))))))
 
 (define-public rust-polars-io-0.17
   (package
