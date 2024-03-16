@@ -49976,6 +49976,27 @@ applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-polars-row-0.37
+  (package
+    (name "rust-polars-row")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-row" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "130nsv61fa8dmq1mg2v12q97mqxm22mvqvp7my9dpl6kmablv67l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Row encodings for the Polars DataFrame library")
+    (description "Row encodings for the Polars @code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-sql-0.37
   (package
     (name "rust-polars-sql")
