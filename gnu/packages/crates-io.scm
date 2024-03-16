@@ -49848,6 +49848,26 @@ applications.")
 @code{DataFrame} library.")
     (license license:expat)))
 
+(define-public rust-polars-ffi-0.37
+  (package
+    (name "rust-polars-ffi")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-ffi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1afprspzpr00kr3xv6zg1pwi1l44vv97qik8gd78kj16jql328zh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-core" ,rust-polars-core-0.37))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "FFI utils for the Polars project")
+    (description "FFI utils for the Polars project.")
+    (license license:expat)))
+
 (define-public rust-polars-io-0.37
   (package
     (name "rust-polars-io")
