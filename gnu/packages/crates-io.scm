@@ -39533,30 +39533,47 @@ multiplication and division with overflow protection.")
 macros for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-multiversion-macros-0.7
+  (package
+    (name "rust-multiversion-macros")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "multiversion-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j1avbxw7jscyi7dmnywhlwbiny1fvg1vpp9fy4dc1pd022kva16"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-target-features" ,rust-target-features-0.1))))
+    (home-page "https://github.com/calebzulawski/multiversion")
+    (synopsis "Implementation crate for multiversion")
+    (description "This is an implementation crate for multiversion Rust
+library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-multiversion-macros-0.6
   (package
+    (inherit rust-multiversion-macros-0.7)
     (name "rust-multiversion-macros")
     (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "multiversion-macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1bzkmxgyiwsanqf4lsdzx5gn4harza4rdrzkq5hgksw2wfyy58x8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/calebzulawski/multiversion")
-    (synopsis "Implementation crate for multiversion")
-    (description "This is an implementation crate for multiversion Rust
-library.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-mustache-0.9
   (package
