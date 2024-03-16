@@ -12577,6 +12577,31 @@ diagnostics easy and relatively painless for everyone!")
     (description "Bencher compatibility layer for @code{CodSpeed}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-codspeed-criterion-compat-2
+  (package
+    (name "rust-codspeed-criterion-compat")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "codspeed-criterion-compat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dmhwap6q50a99rsixm2fyghnpr8axwzr8mw558mlcfn2vlrvbh2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-codspeed" ,rust-codspeed-2)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-criterion" ,rust-criterion-0.5)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-smol" ,rust-smol-1)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://codspeed.io")
+    (synopsis "Criterion.rs compatibility layer for CodSpeed")
+    (description "Criterion.rs compatibility layer for @code{CodSpeed}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-coitrees-0.2
   (package
     (name "rust-coitrees")
