@@ -2959,6 +2959,24 @@ can be used for type-erasure.")
 Rust implementation of Apache Arrow.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-buffer-43
+  (package
+    (inherit rust-arrow-buffer-47)
+    (name "rust-arrow-buffer")
+    (version "43.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-buffer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08m7cxfksmc2qsygba0ingr1a3acbrxx9qdr0184wj3z0yg47gmx"))))
+    (arguments
+     `(#:cargo-inputs (("rust-half" ,rust-half-2)
+                       ("rust-num" ,rust-num-0.4))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-arrow-cast-47
   (package
     (name "rust-arrow-cast")
