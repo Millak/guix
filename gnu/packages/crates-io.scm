@@ -44508,6 +44508,54 @@ file formats.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-wasmparser" ,rust-wasmparser-0.57))))))
 
+(define-public rust-object-store-0.9
+  (package
+    (name "rust-object-store")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "object_store" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cwx0xg57cp3z6xjgrqwp0gxgxsagls4h5cd212pmxpxcn5qywdq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-humantime" ,rust-humantime-2)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-md-5" ,rust-md-5-0.10)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-quick-xml" ,rust-quick-xml-0.31)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-ring" ,rust-ring-0.17)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-snafu" ,rust-snafu-0.7)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-futures-test" ,rust-futures-test-0.3)
+                                   ("rust-hyper" ,rust-hyper-0.14)
+                                   ("rust-nix" ,rust-nix-0.28)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/apache/arrow-rs/tree/master/object_store")
+    (synopsis "Generic object store interface")
+    (description "This package provides a generic object store interface for
+uniformly interacting with AWS S3, Google Cloud Storage, Azure Blob Storage and
+local files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-oboe-0.4
   (package
     (name "rust-oboe")
