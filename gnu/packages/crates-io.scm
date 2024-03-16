@@ -77338,6 +77338,22 @@ and XXH3 algorithms.")
      "This package provides compile-time type-checked builder derive.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-typed-builder-0.16
+  (package
+    (inherit rust-typed-builder-0.18)
+    (name "rust-typed-builder")
+    (version "0.16.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typed-builder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05ny1brm9ff3hxrps3n328w28myk4lz0h24jhxx64dhyjhbmq21l"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-typed-builder-macro" ,rust-typed-builder-macro-0.16))))))
+
 (define-public rust-typed-builder-0.5
   (package
     (inherit rust-typed-builder-0.18)
