@@ -62193,6 +62193,27 @@ formats:
 @end itemize")
     (license license:expat)))
 
+(define-public rust-seq-macro-0.3
+  (package
+    (name "rust-seq-macro")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "seq-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d50kbaslrrd0374ivx15jg57f03y5xzil1wd2ajlvajzlkbzw53"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/seq-macro")
+    (synopsis "Repeat sequentially indexed copies of a fragment of code")
+    (description
+     "Macro to repeat sequentially indexed copies of a fragment of code.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-1
   (package
     (name "rust-serde")
