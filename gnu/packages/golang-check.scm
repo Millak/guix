@@ -404,6 +404,31 @@ signalling failures, it offers ways to express expectations and get nice failure
 messages automatically.")
       (license license:asl2.0))))
 
+(define-public go-github-com-jbenet-go-cienv
+  (package
+    (name "go-github-com-jbenet-go-cienv")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-cienv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qyfjvr8n5chpb5zi6r9cf0danrwds3k5lbf7vp7ygcl6wnm0vmv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-cienv"))
+    (home-page "https://github.com/jbenet/go-cienv")
+    (synopsis "CI system environment variables")
+    (description
+     "Package @code{cienv} implements some helper functions to use during tests.
+Many times certain facilities are not available, or tests must run
+differently.")
+    (license license:expat)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
