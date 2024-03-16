@@ -53717,6 +53717,26 @@ Python code from a Rust binary is also supported.")
         ("rust-zip" ,rust-zip-0.6))
        #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-quad-rand-0.2
+  (package
+    (name "rust-quad-rand")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quad-rand" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "125bw7b295khgwk7bnb6vkcdjyki1xbfzrcygh2mzk54yzxa33v5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/not-fl3/quad-rand")
+    (synopsis "Pseudo random implementation with std atomics")
+    (description
+     "This package provides a pseudo random implementation with std atomics.")
+    (license license:expat)))
+
 (define-public rust-quantiles-0.7
   (package
     (name "rust-quantiles")
