@@ -49976,6 +49976,38 @@ applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-polars-time-0.37
+  (package
+    (name "rust-polars-time")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-time" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ly7dpch3h8s9sn8q9y6mxfnrb566p5hx1nzhcxpzjfha6538xbd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-atoi" ,rust-atoi-2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+                       ("rust-now" ,rust-now-0.1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-core" ,rust-polars-core-0.37)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-polars-ops" ,rust-polars-ops-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smartstring" ,rust-smartstring-1))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Time related code for the Polars DataFrame library")
+    (description "This package contains the time related code for the Polars
+@code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-utils-0.37
   (package
     (name "rust-polars-utils")
