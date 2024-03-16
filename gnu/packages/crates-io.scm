@@ -81014,17 +81014,19 @@ file into an in-memory tree structure.")
 (define-public rust-xxhash-rust-0.8
   (package
     (name "rust-xxhash-rust")
-    (version "0.8.2")
+    (version "0.8.10")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "xxhash-rust" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1v9dk6shls1rsmidf2dxdi3460bn7ingqgvn5mf7prgnxmdy2xg5"))))
+         (base32 "00zfsfigb6zh0x8aaickkkyd3vyjgnrq36ym04lil7my4lgahzcj"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t))
+     `(#:tests? #f      ; Only doc tests, which fail.
+       #:cargo-development-inputs (("rust-getrandom" ,rust-getrandom-0.2)
+                                   ("rust-xxhash-c-sys" ,rust-xxhash-c-sys-0.8))))
     (home-page "https://github.com/DoumanAsh/xxhash-rust")
     (synopsis "Implementation of xxHash in Rust")
     (description "This package provides an implementation of the xxHash
