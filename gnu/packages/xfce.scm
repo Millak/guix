@@ -1032,7 +1032,7 @@ devices and folders.")
 (define-public gigolo
   (package
     (name "gigolo")
-    (version "0.5.2")
+    (version "0.5.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1040,7 +1040,7 @@ devices and folders.")
                                   "/" name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1hxv3lla567nnqxxly8xfi8fzmpcdhxb493x9hinr7szfnh1ljp3"))))
+                "1l1g9ljvyzir1jpjf0248nnwwf3sakwljlik6cj5wrj4azv88nfj"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config intltool))
     (inputs (list gtk+))
