@@ -198,18 +198,22 @@ time, as otherwise the internal gzip library will likely be faster.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ulikunitz/xz.git")
+             (url "https://github.com/ulikunitz/xz")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1hbs3x7s7d5ch6ipaqi265w0fwpijs0j19xdbhbjjsyr4khxbqd0"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/ulikunitz/xz"))
+     (list
+      #:import-path "github.com/ulikunitz/xz"))
     (home-page "https://github.com/ulikunitz/xz")
     (synopsis "Read and write xz compressed streams in Go")
-    (description "This package provides a library to read and write xz
-compressed streams in Go.")
+    (description
+     "This package provides a support of reading and writing of xz
+compressed streams.  It includes also a gxz command for compressing and
+decompressing data.  The package is completely written in Go and doesn't have
+any dependency on any C code.")
     (license license:bsd-3)))
 
 ;;;
