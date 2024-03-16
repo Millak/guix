@@ -2553,6 +2553,44 @@ CLI parser, like @code{rust-clap}, by pre-processing the arguments, like
 too long errors.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-argminmax-0.6
+  (package
+    (name "rust-argminmax")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argminmax" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1alfp2wfh3pms6f5fj8qw9birndgac2jd2shdl2xascxsrclnhjj"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs (("rust-arrow" ,rust-arrow-5)
+                       ("rust-arrow2" ,rust-arrow2-0.7)
+                       ("rust-half" ,rust-half-2)
+                       ("rust-ndarray" ,rust-ndarray-0.15)
+                       ("rust-num-traits" ,rust-num-traits-0.2))
+       #:cargo-development-inputs
+       (("rust-codspeed-criterion-compat" ,rust-codspeed-criterion-compat-2)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rstest" ,rust-rstest-0.18)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.6))))
+    (home-page "https://github.com/jvdd/argminmax")
+    (synopsis
+     "ArgMinMax (argmin & argmax in 1 function) with SIMD for floats and integers")
+    (description
+     "@code{ArgMinMax} (argmin & argmax in 1 function) with SIMD for floats and
+integers.")
+    (license license:expat)))
+
 (define-public rust-ariadne-0.1
   (package
     (name "rust-ariadne")
