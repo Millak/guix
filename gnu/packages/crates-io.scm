@@ -49976,6 +49976,57 @@ applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-polars-parquet-0.37
+  (package
+    (name "rust-polars-parquet")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-parquet" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bvdx7mb9sd3kx969297b8rxg417gj74ln5sdwa9zk1n2v2clr5n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=parquet::compression::tests::test_codec_brotli_default"
+         "--skip=parquet::compression::tests::test_codec_brotli_high_compression"
+         "--skip=parquet::compression::tests::test_codec_brotli_low_compression"
+         "--skip=parquet::compression::tests::test_codec_gzip_default"
+         "--skip=parquet::compression::tests::test_codec_gzip_high_compression"
+         "--skip=parquet::compression::tests::test_codec_gzip_low_compression"
+         "--skip=parquet::compression::tests::test_codec_lz4_raw"
+         "--skip=parquet::compression::tests::test_codec_snappy"
+         "--skip=parquet::compression::tests::test_codec_zstd_default")
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-async-stream" ,rust-async-stream-0.3)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-brotli" ,rust-brotli-3)
+        ("rust-ethnum" ,rust-ethnum-1)
+        ("rust-fallible-streaming-iterator" ,rust-fallible-streaming-iterator-0.1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-lz4" ,rust-lz4-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-parquet-format-safe" ,rust-parquet-format-safe-0.2)
+        ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+        ("rust-polars-error" ,rust-polars-error-0.37)
+        ("rust-polars-utils" ,rust-polars-utils-0.37)
+        ("rust-seq-macro" ,rust-seq-macro-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-simdutf8" ,rust-simdutf8-0.1)
+        ("rust-snap" ,rust-snap-1)
+        ("rust-streaming-decompression" ,rust-streaming-decompression-0.1)
+        ("rust-xxhash-rust" ,rust-xxhash-rust-0.8)
+        ("rust-zstd" ,rust-zstd-0.13))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Polars Parquet IO")
+    (description "This package provides polars parquet IO.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-polars-pipe-0.37
   (package
     (name "rust-polars-pipe")
