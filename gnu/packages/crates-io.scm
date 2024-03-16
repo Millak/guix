@@ -2004,6 +2004,31 @@ type.")
 each type.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-apache-avro-test-helper-0.16
+  (package
+    (name "rust-apache-avro-test-helper")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "apache-avro-test-helper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mgj73sli4m49frp4y460p7sxpkc73f00n5rqcbby4sh5fdqh9hf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-color-backtrace" ,rust-color-backtrace-0.5)
+                       ("rust-ctor" ,rust-ctor-0.2)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-ref-thread-local" ,rust-ref-thread-local-0.1))))
+    (home-page "https://github.com/apache/avro")
+    (synopsis "Apache Avro tests helper")
+    (description "This package contains the Apache Avro tests helper.")
+    (license license:asl2.0)))
+
 (define-public rust-app-dirs2-2
   (package
     (name "rust-app-dirs2")
