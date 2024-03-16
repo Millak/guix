@@ -25103,6 +25103,23 @@ implementation that is more efficient for smaller hash keys.")
         (base32
          "0jxgzd04ra4imjv8jgkmdq59kj8fsz6w4zxsbmlai34h26225c00"))))))
 
+(define-public rust-foreign-vec-0.1
+  (package
+    (name "rust-foreign-vec")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "foreign_vec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wv6p8yfahcqbdg2wg7wxgj4dm32g2b6spa5sg5sxg34v35ha6zf"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/DataEngineeringLabs/foreign_vec")
+    (synopsis "Unofficial implementation of Apache Arrow spec in safe Rust")
+    (description "Unofficial implementation of Apache Arrow spec in safe Rust.")
+    (license license:expat)))
+
 (define-public rust-fork-0.1
   (package
     (name "rust-fork")
