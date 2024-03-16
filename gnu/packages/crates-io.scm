@@ -176,8 +176,53 @@ rasterizing OpenType font glyphs.")
 cubic beziers.")
     (license license:asl2.0)))
 
+(define-public rust-abi-stable-0.11
+  (package
+    (name "rust-abi-stable")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abi_stable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0if428pq8ly97zi6q1842nak977rwxnj17650i8gwpxh7qnm3mk9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--features=testing")
+       #:cargo-inputs (("rust-abi-stable-derive" ,rust-abi-stable-derive-0.11)
+                       ("rust-abi-stable-shared" ,rust-abi-stable-shared-0.11)
+                       ("rust-const-panic" ,rust-const-panic-0.2)
+                       ("rust-core-extensions" ,rust-core-extensions-1)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-generational-arena" ,rust-generational-arena-0.2)
+                       ("rust-libloading" ,rust-libloading-0.7)
+                       ("rust-lock-api" ,rust-lock-api-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-repr-offset" ,rust-repr-offset-0.2)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+                                   ("rust-fnv" ,rust-fnv-1)
+                                   ("rust-hashbrown" ,rust-hashbrown-0.13)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
+    (synopsis "Rust-to-Rust ffi,writing libraries loaded at program startup")
+    (description
+     "This package contains code for doing Rust-to-Rust ffi, writing libraries
+loaded at program startup.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-abi-stable-0.10
   (package
+    (inherit rust-abi-stable-0.11)
     (name "rust-abi-stable")
     (version "0.10.5")
     (source
@@ -194,7 +239,6 @@ cubic beziers.")
                                    " <([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)")
                     _ version _)
                    (string-append ">=" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; tests must be run with the "testing" feature
        #:cargo-inputs
@@ -219,13 +263,7 @@ cubic beziers.")
         ("rust-fnv" ,rust-fnv-1)
         ("rust-hashbrown" ,rust-hashbrown-0.11)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
-    (synopsis "Rust-to-Rust ffi,writing libraries loaded at program startup")
-    (description
-     "This package contains code for doing Rust-to-Rust ffi,writing libraries
-loaded at program startup.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-abi-stable-derive-0.11
   (package
