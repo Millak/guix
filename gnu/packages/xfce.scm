@@ -1789,7 +1789,7 @@ be clicked to open the chosen mount point.")
 (define-public xfce4-genmon-plugin
   (package
    (name "xfce4-genmon-plugin")
-   (version "4.1.1")
+   (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1798,7 +1798,7 @@ be clicked to open the chosen mount point.")
                                   "/xfce4-genmon-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0d81npcqnmkw2qaqa8c6igh9j5r4ivgb15zcjwxjkyhrzz89y4dj"))))
+                "0qh3b818kbf5sc07dshkd54nhqncsk0inlwv21zq8h11bzp0i3cl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
