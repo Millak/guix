@@ -76725,6 +76725,23 @@ implementation is incomplete.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-typewit-proc-macros-1
+  (package
+    (name "rust-typewit-proc-macros")
+    (version "1.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typewit_proc_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mlkh4mhbn4b7xg9640blk74bm5ddaa44ihvl0sljw1w5gm86sp3"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rodrimati1992/typewit/")
+    (synopsis "Implementation detail of typewit")
+    (description "Implementation detail of typewit.")
+    (license license:zlib)))
+
 (define-public rust-ubyte-0.10
   (package
     (name "rust-ubyte")
