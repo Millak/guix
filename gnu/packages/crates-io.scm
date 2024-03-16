@@ -44537,6 +44537,38 @@ file formats.")
      "Unsafe bindings for oboe an android library for low latency audio IO.")
     (license license:asl2.0)))
 
+(define-public rust-odbc-api-0.36
+  (package
+    (name "rust-odbc-api")
+    (version "0.36.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "odbc-api" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04xcqqhm7w24b1gj6v4b24z9j65r1zzyxjadlv3xf73fm92cmnd3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests expect a running odbc server.
+       #:cargo-inputs (("rust-force-send-sync" ,rust-force-send-sync-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-odbc-sys" ,rust-odbc-sys-0.21)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-widestring" ,rust-widestring-0.5)
+                       ("rust-winit" ,rust-winit-0.26))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-csv" ,rust-csv-1)
+                                   ("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-test-case" ,rust-test-case-2))))
+    (inputs (list unixodbc))
+    (home-page "https://github.com/pacman82/odbc-api")
+    (synopsis "Write ODBC Applications in (mostly) safe Rust")
+    (description "Write ODBC Applications in (mostly) safe Rust.")
+    (license license:expat)))
+
 (define-public rust-odbc-sys-0.21
   (package
     (name "rust-odbc-sys")
