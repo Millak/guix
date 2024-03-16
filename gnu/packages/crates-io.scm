@@ -5858,6 +5858,37 @@ film grain data.")
      "This package is a library for working with Apache Avro in Rust.")
     (license license:expat)))
 
+(define-public rust-avro-schema-0.3
+  (package
+    (name "rust-avro-schema")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "avro-schema" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gbvciwvi2isa6qanbzi4lbqzzgvhdlzjyzlsa29dflsndaiha5m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=file::round_trip_deflate"
+         "--skip=file::round_trip_snappy")
+       #:cargo-inputs
+       (("rust-async-stream" ,rust-async-stream-0.3)
+        ("rust-crc" ,rust-crc-2)
+        ("rust-fallible-streaming-iterator" ,rust-fallible-streaming-iterator-0.1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-libflate" ,rust-libflate-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-snap" ,rust-snap-1))))
+    (home-page "https://github.com/DataEngineeringLabs/avro-schema")
+    (synopsis "Apache Avro specification")
+    (description "This package contains the Apache Avro specification.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-az-1
   (package
     (name "rust-az")
