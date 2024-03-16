@@ -49976,6 +49976,36 @@ applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-polars-sql-0.37
+  (package
+    (name "rust-polars-sql")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-sql" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jllznqx496lzndl8ph32204w5zbgvbl1wrfxg0nw54kiy5jmxkp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-hex" ,rust-hex-0.4)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-core" ,rust-polars-core-0.37)
+                       ("rust-polars-error" ,rust-polars-error-0.37)
+                       ("rust-polars-lazy" ,rust-polars-lazy-0.37)
+                       ("rust-polars-plan" ,rust-polars-plan-0.37)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sqlparser" ,rust-sqlparser-0.39))
+       #:cargo-development-inputs (("rust-polars-core" ,rust-polars-core-0.37))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "SQL transpiler for Polars")
+    (description "This package contains an SQL transpiler for Polars.  It can
+convert SQL to Polars logical plans.")
+    (license license:expat)))
+
 (define-public rust-polars-time-0.37
   (package
     (name "rust-polars-time")
