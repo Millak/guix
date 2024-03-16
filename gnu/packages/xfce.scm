@@ -793,7 +793,7 @@ and import the new pictures from your camera.")
 (define-public thunar-archive-plugin
   (package
     (name "thunar-archive-plugin")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
@@ -801,7 +801,7 @@ and import the new pictures from your camera.")
                            name "/" (version-major+minor version)
                            "/" name "-" version ".tar.bz2"))
        (sha256
-        (base32 "1vcbbmh2vw43231c7vbkwc35pmhj7ixb65fvssrwfxydsfqkl6x8"))))
+        (base32 "1qxdsnwjy8z358yd0avi1h2r6y1izfv26dzlp5fsh3pwpivzhyb3"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config intltool))
     (inputs (list exo thunar gtk+))
