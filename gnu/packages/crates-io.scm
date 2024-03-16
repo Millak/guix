@@ -12935,6 +12935,31 @@ and 1.0.")
 wrapping.")
     (license license:expat)))
 
+(define-public rust-comfy-table-6
+  (package
+    (inherit rust-comfy-table-7)
+    (name "rust-comfy-table")
+    (version "6.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "comfy-table" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fmqjhry6xa6a9kr0769wiw06694n60kxs5c6nfvzqv8h9w9v5by"))))
+    (arguments
+     `(#:cargo-inputs (("rust-console" ,rust-console-0.15)
+                       ("rust-crossterm" ,rust-crossterm-0.26)
+                       ("rust-strum" ,rust-strum-0.24)
+                       ("rust-strum-macros" ,rust-strum-macros-0.24)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rstest" ,rust-rstest-0.17))))))
+
 (define-public rust-comfy-table-4
   (package
     (inherit rust-comfy-table-7)
