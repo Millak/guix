@@ -46858,6 +46858,27 @@ file and the generated @file{.rs} file.")
 definitions compiled to support read+write async.")
     (license license:asl2.0)))
 
+(define-public rust-parquet-format-safe-0.2
+  (package
+    (name "rust-parquet-format-safe")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "parquet-format-safe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07wf6wf4jrxlq5p3xldxsnabp7jl06my2qp7kiwy9m3x2r5wac8i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-futures" ,rust-futures-0.3))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/jorgecarleitao/parquet-format-safe")
+    (synopsis "Safe Parquet and Thrift reader and writer (sync and async)")
+    (description "Safe Parquet and Thrift reader and writer (sync and async).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-parquet2-0.6
   (package
     (name "rust-parquet2")
