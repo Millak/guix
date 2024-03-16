@@ -66318,6 +66318,28 @@ SPIR-V.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-sqlite3-src" ,rust-sqlite3-src-0.3))))))
 
+(define-public rust-sqlparser-derive-0.2
+  (package
+    (name "rust-sqlparser-derive")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlparser_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m05d4cxcsk1ljgy8zx79dibq62pdfbgp4zmfm9z2r2ma62y3ch1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/sqlparser-rs/sqlparser-rs")
+    (synopsis "Implementation for sqlparser")
+    (description
+     "This package contains the implementaion details for sqlparser.")
+    (license license:asl2.0)))
+
 (define-public rust-st-map-0.1
   (package
     (name "rust-st-map")
