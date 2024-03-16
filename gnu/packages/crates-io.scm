@@ -2004,6 +2004,33 @@ type.")
 each type.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-apache-avro-derive-0.16
+  (package
+    (name "rust-apache-avro-derive")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "apache-avro-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "192wmrzjz1bwfiwv11979kk3dl51q50vgppn2iyph8v9048y85z3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `apache_avro`
+       #:cargo-inputs (("rust-darling" ,rust-darling-0.20)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/apache/avro")
+    (synopsis "Library for deriving Avro schemata from Rust structs and enums")
+    (description "This package provides a library for deriving Avro schemata
+from Rust structs and enums.")
+    (license license:asl2.0)))
+
 (define-public rust-apache-avro-test-helper-0.16
   (package
     (name "rust-apache-avro-test-helper")
