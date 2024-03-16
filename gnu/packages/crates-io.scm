@@ -49255,6 +49255,29 @@ network packet formats.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-planus-0.3
+  (package
+    (name "rust-planus")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "planus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17x8mr175b9clg998xpi5z45f9fsspb0ncfnx2644bz817fr25pw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `planus_example`
+       #:cargo-inputs (("rust-array-init-cursor" ,rust-array-init-cursor-0.2))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/planus-org/planus")
+    (synopsis "Alternative compiler for flatbuffers")
+    (description
+     "Planus is an alternative compiler for flatbuffers, a cross platform
+serialization library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-platform-info-2
   (package
     (name "rust-platform-info")
