@@ -39,7 +39,9 @@
   #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
   #:autoload   (guix base32) (bytevector->nix-base32-string)
   #:autoload   (guix build utils) (mkdir-p)
+  #:autoload   (guix ui) (warning)
   #:autoload   (gcrypt hash) (hash-algorithm sha256)
+  #:autoload   (git structs) (git-error-message)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 peg)
@@ -144,10 +146,15 @@ styles for the same package."
          (versions (remove string-null? (string-split body #\newline))))
     (if (null? versions)
         (begin
+          (warning (G_ "Empty list of versions on proxy ~a for package '~a'. Using latest.~%")
+                   goproxy name)
           ;; If we haven't recieved any versions, look in the version-info json
           ;; object and return a one-element list if found.
           (or (and=> (assoc-ref (go-module-version-info goproxy name) "Version")
-                     list))))
+                     list)
+              (raise (make-compound-condition
+                      (formatted-message (G_ "No versions available for '~a' on proxy ~a.")
+                                         name goproxy))))))
         versions))
 
 (define (go-package-licenses name)
@@ -471,7 +478,10 @@ hence the need to derive this information."
                                                (+ 1 (string-length subdir)))
                             #f)))))
       (vcs-qualified-module-path->root-repo-url module-path)
-      module-path))
+      (begin
+        (warning (G_ "Unable to determine repository root of '~a'. Guessing '~a'.~%")
+                 module-path module-path)
+        module-path)))
 
 (define* (go-module->guix-package-name module-path #:optional version)
   "Converts a module's path to the canonical Guix format for Go packages.
@@ -516,14 +526,19 @@ build a package."
          (select (sxpath `(// (meta (@ (equal? (name "go-import"))))
                               // content))))
     (match (select (html->sxml meta-data #:strict? #t))
-      (() #f)                           ;nothing selected
+      (() (raise (make-compound-condition
+                  (formatted-message (G_ "no <meta/> element in result when accessing module path '~a' using go-get")
+                                     module-path))))
       ((('content content-text) ..1)
        (or
         (find (lambda (meta)
                 (string-prefix? (module-meta-import-prefix meta) module-path))
               (map go-import->module-meta content-text))
         ;; Fallback to the first meta if no import prefixes match.
-        (go-import->module-meta (first content-text)))))))
+        (go-import->module-meta (first content-text))
+        (raise (make-compound-condition
+                (formatted-message (G_ "unable to parse <meta/> when accessing module path '~a' using go-get")
+                                   module-path))))))))
 
 (define (module-meta-data-repo-url meta-data goproxy)
   "Return the URL where the fetcher which will be used can download the
@@ -720,16 +735,35 @@ When VERSION is unspecified, the latest version available is used."
     ;; consistently.
     (setvbuf (current-error-port) 'none)
     (let ((package-name (match args ((name _ ...) name))))
-      (guard (c ((http-get-error? c)
-                 (warning (G_ "Failed to import package ~s.
+      (begin
+        (info (G_ "Importing package ~s...~%") package-name)
+        (guard (c ((http-get-error? c)
+                        (warning (G_ "Failed to import package ~s.
 reason: ~s could not be fetched: HTTP error ~a (~s).
 This package and its dependencies won't be imported.~%")
-                          package-name
-                          (uri->string (http-get-error-uri c))
-                          (http-get-error-code c)
-                          (http-get-error-reason c))
-                 (values #f '())))
-        (apply go-module->guix-package args)))))
+                                 package-name
+                                 (uri->string (http-get-error-uri c))
+                                 (http-get-error-code c)
+                                 (http-get-error-reason c))
+
+                        (values #f '()))
+                  ((formatted-message? c)
+                   (warning (G_ "Failed to import package ~s.
+reason: ~a
+This package and its dependencies won't be imported.~%")
+                            package-name
+                            (apply format #f
+                                   (formatted-message-string c)
+                                   (formatted-message-arguments c)))
+                   (values #f '()))
+                  ((eq? (exception-kind c) 'git-error)
+                   (warning (G_ "Failed to import package ~s.
+reason: ~a
+This package and its dependencies won't be imported.~%")
+                            package-name
+                            (git-error-message c))
+                   (values #f '())))
+               (apply go-module->guix-package args))))))
 
 (define* (go-module-recursive-import package-name
                                      #:key (goproxy "https://proxy.golang.org")
