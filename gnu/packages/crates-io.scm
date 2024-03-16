@@ -43040,6 +43040,27 @@ notification library.")
         ("rust-maildir" ,rust-maildir-0.5)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-now-0.1
+  (package
+    (name "rust-now")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "now" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l135786rb43rjfhwfdj7hi3b5zxxyl9gwf15yjz18cp8f3yk2bd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4))
+       #:cargo-development-inputs (("rust-cargo-husky" ,rust-cargo-husky-1)
+                                   ("rust-criterion" ,rust-criterion-0.4))))
+    (home-page "https://github.com/Kilerd/now")
+    (synopsis "Time toolkit for chrono")
+    (description "This package provides a time toolkit for chrono.")
+    (license license:expat)))
+
 (define-public rust-ntapi-0.4
   (package
     (name "rust-ntapi")
