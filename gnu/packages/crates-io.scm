@@ -36975,6 +36975,27 @@ server (LSP).")
     (description "LZ4 implementation in Rust, no unsafe by default.")
     (license license:expat)))
 
+(define-public rust-lz4-flex-0.9
+  (package
+    (inherit rust-lz4-flex-0.11)
+    (name "rust-lz4-flex")
+    (version "0.9.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lz4_flex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18xm7s81bpfgvvrra2kknrbgfbi295diz90mkhxvr00phfrbp30s"))))
+    (arguments
+     `(#:cargo-inputs (("rust-twox-hash" ,rust-twox-hash-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-lz4-compress" ,rust-lz4-compress-0.1)
+                                   ("rust-lzzzz" ,rust-lzzzz-1)
+                                   ("rust-more-asserts" ,rust-more-asserts-0.2)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-snap" ,rust-snap-1))))))
+
 (define-public rust-lz4-sys-1
   (package
     (name "rust-lz4-sys")
