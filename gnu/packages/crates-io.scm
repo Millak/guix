@@ -28451,6 +28451,30 @@ IEEE 754-2008 binary16 type.")
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-halfbrown-0.2
+  (package
+    (name "rust-halfbrown")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "halfbrown" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vzg46039pd730vc2hdhl09h86j4cd007awwlrf8l407hqd6d245"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-rustc-hash" ,rust-rustc-hash-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/Licenser/halfbrown")
+    (synopsis "Multi backend HashMap for different key space sizes")
+    (description "This package provides a multi backend @code{HashMap} for
+higher performance on different key space sizes.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-home-0.5
   (package
     (name "rust-home")
