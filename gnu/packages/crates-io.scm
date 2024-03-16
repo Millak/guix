@@ -60931,6 +60931,28 @@ paths point to the same file.")
     (description "Sampler definitions and implementations for st.")
     (license license:asl2.0)))
 
+(define-public rust-sample-std-0.1
+  (package
+    (inherit rust-sample-std-0.2)
+    (name "rust-sample-std")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sample-std" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j2p3bj3c8gcxrfx5402zygm5l564p09bc0gj8wfhb1hqcyiayjn"))))
+    (arguments
+     `(#:tests? #f      ; Errors in the test code.
+       #:cargo-inputs (("rust-casey" ,rust-casey-0.4)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rand-regex" ,rust-rand-regex-0.15)
+                       ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-sample-test" ,rust-sample-test-0.1))))))
+
 (define-public rust-sample-test-0.2
   (package
     (name "rust-sample-test")
