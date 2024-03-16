@@ -44537,6 +44537,24 @@ file formats.")
      "Unsafe bindings for oboe an android library for low latency audio IO.")
     (license license:asl2.0)))
 
+(define-public rust-odbc-sys-0.21
+  (package
+    (name "rust-odbc-sys")
+    (version "0.21.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "odbc-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "024gylzq3q7s6b10qhbb8cjis6aj8a83jay553jdsiwgwm65qb2r"))))
+    (build-system cargo-build-system)
+    (inputs (list unixodbc))
+    (home-page "https://github.com/pacman82/odbc-sys")
+    (synopsis "ODBC FFI bindings")
+    (description "This package provides ODBC FFI bindings.")
+    (license license:expat)))
+
 (define-public rust-odds-0.3
   (package
     (name "rust-odds")
