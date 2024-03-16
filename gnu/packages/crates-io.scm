@@ -79265,6 +79265,30 @@ for @code{Valuable} types.")
     (description "Implementation detail for value-bag.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-value-trait-0.8
+  (package
+    (name "rust-value-trait")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "value-trait" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d3yl8g6xzp4ah4r7nrqrb1vxy9vgp53z80vy9ypjxz6q6cdpn6s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-abi-stable" ,rust-abi-stable-0.11)
+                       ("rust-float-cmp" ,rust-float-cmp-0.9)
+                       ("rust-halfbrown" ,rust-halfbrown-0.2)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-ryu" ,rust-ryu-1))))
+    (home-page "https://github.com/simd-lite/value-trait")
+    (synopsis "Traits to deal with JSONesque values")
+    (description "This package provides traits to deal with JSONesque values.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-vcpkg-0.2
   (package
     (name "rust-vcpkg")
