@@ -49976,6 +49976,49 @@ applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1))))))
 
+(define-public rust-polars-plan-0.37
+  (package
+    (name "rust-polars-plan")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polars-plan" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s292gfd4d9l4x5hl0gcaz6zg7gbf9khy079mjx37ap2gd9dgdvz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+                       ("rust-ciborium" ,rust-ciborium-0.2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-polars-arrow" ,rust-polars-arrow-0.37)
+                       ("rust-polars-core" ,rust-polars-core-0.37)
+                       ("rust-polars-ffi" ,rust-polars-ffi-0.37)
+                       ("rust-polars-io" ,rust-polars-io-0.37)
+                       ("rust-polars-json" ,rust-polars-json-0.37)
+                       ("rust-polars-ops" ,rust-polars-ops-0.37)
+                       ("rust-polars-parquet" ,rust-polars-parquet-0.37)
+                       ("rust-polars-time" ,rust-polars-time-0.37)
+                       ("rust-polars-utils" ,rust-polars-utils-0.37)
+                       ("rust-pyo3" ,rust-pyo3-0.20)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smartstring" ,rust-smartstring-1)
+                       ("rust-strum-macros" ,rust-strum-macros-0.25)
+                       ("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "https://www.pola.rs/")
+    (synopsis "Lazy query engine for the Polars DataFrame library")
+    (description "Lazy query engine for the Polars @code{DataFrame} library.")
+    (license license:expat)))
+
 (define-public rust-polars-row-0.37
   (package
     (name "rust-polars-row")
