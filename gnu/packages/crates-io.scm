@@ -55353,6 +55353,32 @@ generators.")
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1))))))
 
+(define-public rust-rand-regex-0.15
+  (package
+    (name "rust-rand-regex")
+    (version "0.15.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rand_regex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gfgx78k1sf3y5z7hf3rn8qnplmvlm908y6ig4razvnrszi9yalb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests segfault.
+       #:cargo-inputs (("rust-rand" ,rust-rand-0.8)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.6))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-distr" ,rust-rand-distr-0.4)
+                                   ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+                                   ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/kennytm/rand_regex")
+    (synopsis "Generates random strings and byte strings matching a regex")
+    (description "Generates random strings and byte strings matching a regex.")
+    (license license:expat)))
+
 (define-public rust-rand-xorshift-0.3
   (package
     (name "rust-rand-xorshift")
