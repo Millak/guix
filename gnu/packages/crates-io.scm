@@ -22677,6 +22677,28 @@ libraries generally do not give you a choice in terms of which standards/convent
 they follow.  Etcetera, on the other hand, gives you the choice.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ethnum-intrinsics-1
+  (package
+    (name "rust-ethnum-intrinsics")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ethnum-intrinsics" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qvb1r3vmnk5nplz6x1014rn6b9nfnig2qmlj8hi3jpq75j8cgh9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; error: unterminated attribute group
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (inputs (list clang))
+    (home-page "https://github.com/nlordell/ethnum-rs")
+    (synopsis "LLVM generated 256-bit integer intrinsics")
+    (description
+     "This package contains LLVM generated 256-bit integer intrinsics.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-evdev-0.12
   (package
     (name "rust-evdev")
