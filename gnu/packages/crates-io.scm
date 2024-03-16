@@ -2933,6 +2933,35 @@ concrete implementations of each type, as well as an @code{Array} trait that
 can be used for type-erasure.")
     (license license:asl2.0)))
 
+(define-public rust-arrow-array-43
+  (package
+    (inherit rust-arrow-array-47)
+    (name "rust-arrow-array")
+    (version "43.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arrow-array" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l7k48p40b8j4nzda5z20b45zsaphm9yylzwryr8n7vxbxrfmmv3"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=array::binary_array::tests::test_binary_array_from_incorrect_list_array")
+       #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-arrow-buffer" ,rust-arrow-buffer-43)
+                       ("rust-arrow-data" ,rust-arrow-data-43)
+                       ("rust-arrow-schema" ,rust-arrow-schema-43)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-chrono-tz" ,rust-chrono-tz-0.8)
+                       ("rust-half" ,rust-half-2)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-num" ,rust-num-0.4)
+                       ("rust-packed-simd-2" ,rust-packed-simd-2-0.3))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-arrow-buffer-47
   (package
     (name "rust-arrow-buffer")
