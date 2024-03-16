@@ -1465,7 +1465,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1473,7 +1473,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0dpzzy03hlw6gljp7ywdi6np41r88p2nr7rypwzy6zdwqwv5832n"))))
+                "17fi33mkdz1nfmsgqlfa20l06wwy0s8lcj21cfg6ikdiihxwpjp7"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than
