@@ -60905,6 +60905,25 @@ paths point to the same file.")
     (description "Samplers for arrow2 for use with sample-test.")
     (license license:asl2.0)))
 
+(define-public rust-sample-arrow2-0.1
+  (package
+    (inherit rust-sample-arrow2-0.17)
+    (name "rust-sample-arrow2")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sample-arrow2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b0pqyxsv6qjg16xsj8isx5maj6cdmy12rg31b7gc14cg4npqmav"))))
+    (arguments
+     `(#:cargo-inputs (("rust-arrow2" ,rust-arrow2-0.17)
+                       ("rust-sample-std" ,rust-sample-std-0.1))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-sample-test" ,rust-sample-test-0.1))))))
+
 (define-public rust-sample-std-0.2
   (package
     (name "rust-sample-std")
