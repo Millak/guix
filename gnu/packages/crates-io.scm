@@ -56304,6 +56304,24 @@ initial value.")
     (description "Test suite of the ref-cast crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ref-thread-local-0.1
+  (package
+    (name "rust-ref-thread-local")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ref_thread_local" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w7zw42bzywh9jfhlj5dswdh79dk7bvh4mmsamw9jy40lrh1dmd0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Xeiron/ref_thread_local.rs")
+    (synopsis "Macro for declaring thread-local `static`s")
+    (description "This package provides a macro for declaring thread-local
+`static`s like using both of `lazy_static!` and `@code{RefCell`}")
+    (license license:expat)))
+
 (define-public rust-refpool-0.4
   (package
     (name "rust-refpool")
