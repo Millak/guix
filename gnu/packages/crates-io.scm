@@ -70696,6 +70696,23 @@ memory all at once.")
     (description "Get information on compilation target.")
     (license license:cc0)))
 
+(define-public rust-target-features-0.1
+  (package
+    (name "rust-target-features")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "target-features" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gb974chm9aj8ifkyibylxkyb5an4bf5y8dxb18pqmck698gmdfg"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/calebzulawski/target-features")
+    (synopsis "Rust compiler target feature database")
+    (description "This package contains a Rust compiler target feature database.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-target-lexicon-0.12
   (package
     (name "rust-target-lexicon")
