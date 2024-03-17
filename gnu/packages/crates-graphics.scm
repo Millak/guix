@@ -2619,14 +2619,14 @@ on correctness, flexibility and ease of use.")
 (define-public rust-palette-derive-0.7
   (package
     (name "rust-palette-derive")
-    (version "0.7.3")
+    (version "0.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "palette_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02ps239sxcr5v294qf89d87sv7fdm9pr2cziwj2l6ggzql703nxp"))))
+        (base32 "0vcxjslri6f24zgv3n6ixhzb21a8z23fa6h42s8ss2zcvc10g2g8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-find-crate" ,rust-find-crate-0.6)
