@@ -7458,7 +7458,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.16")
+    (version "1.18")
     (source
      (origin
        (method git-fetch)
@@ -7467,7 +7467,7 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0spciwqcyldalzdd813zwigbldcnyaxi7kfslq1yp0fg4c4a10aa"))))
+        (base32 "1zl72lsp443aryzmwzh5w4j439jgf5njvh9xig6vjvmzhfcjkk9q"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7496,10 +7496,13 @@ at their peak of economic growth and military prowess.
                 (install-file "advent.6" man)))))))
     (native-inputs
      (list asciidoc
+           cppcheck
            libedit
            pkg-config
+           python-pylint
            python-pyyaml
-           python-wrapper))
+           python-wrapper
+           ruby-asciidoctor))
     (home-page "https://gitlab.com/esr/open-adventure")
     (synopsis "Colossal Cave Adventure")
     (description
