@@ -19282,25 +19282,24 @@ methods from a given list.")
     (license license:gpl3+)))
 
 (define-public emacs-mini-echo
-  (let ((commit "f25a2f543b3e9fa5043ef37c81c17fc15aceb534")
-        (revision "1"))
-    (package
-      (name "emacs-mini-echo")
-      (version (git-version "0.7.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/liuyinz/mini-echo.el.git")
-               (commit commit)))
-         (sha256
-          (base32 "1nbwwf087v1mp5vbmasxqnmbrsgzgm87yd5ajq1hnfxd412w3vhx"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/liuyinz/mini-echo.el")
-      (synopsis "Echo buffer status in minibuffer window")
-      (description "This package lets you show buffer status in the echo area,
+  (package
+    (name "emacs-mini-echo")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/liuyinz/mini-echo.el")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0q4hvbypnjg5q1szwki2md45r5kkdxrr4zxqh57y7d53idjzhpnf"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-hide-mode-line))
+    (home-page "https://github.com/liuyinz/mini-echo.el")
+    (synopsis "Echo buffer status in minibuffer window")
+    (description "This package lets you show buffer status in the echo area,
 so you can get rid of the mode-line.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-mini-frame
   (let ((commit "60838f3cab438dcbda8eaa15ab3e5d1af88910e9")
