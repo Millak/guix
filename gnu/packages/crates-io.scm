@@ -60113,7 +60113,9 @@ suitable for financial calculations.")
         (base32 "08smnqn21vn5zaywfki391v2l9v30cs0446qzzhvjssxmimgxq9g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=RustEmbed")
        #:cargo-inputs
        (("rust-actix-web" ,rust-actix-web-3)
         ("rust-include-flate" ,rust-include-flate-0.1)
