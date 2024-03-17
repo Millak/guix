@@ -497,6 +497,26 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 ;; The current "mainline" kernel.
 
+(define-public linux-libre-6.8-version "6.8.1")
+(define-public linux-libre-6.8-gnu-revision "gnu")
+(define deblob-scripts-6.8
+  (linux-libre-deblob-scripts
+   linux-libre-6.8-version
+   linux-libre-6.8-gnu-revision
+   (base32 "1kqwcm8baq3zx1z8jrgnvm9yps3y9jbf4pv1pbqqprpdscgl9089")
+   (base32 "04xk6myysrfrhfpq6zah8wk2ska7idmr968nh6pcd0ixbhas2k92")))
+(define-public linux-libre-6.8-pristine-source
+  (let ((version linux-libre-6.8-version)
+        (hash (base32 "0s7zgk9m545v8y7qjhv7cprrh58j46gpmb8iynyhy2hlwcv8j34d")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.8)))
+
+
+
+;; The current "stable" kernels. That is, the most recently released major
+;; versions that are still supported upstream.
+
 (define-public linux-libre-6.7-version "6.7.10")
 (define-public linux-libre-6.7-gnu-revision "gnu")
 (define deblob-scripts-6.7
@@ -512,8 +532,9 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.7)))
 
-;; The current "stable" kernels. That is, the most recently released major
-;; versions that are still supported upstream.
+;; The "longterm" kernels — the older releases with long-term upstream support.
+;; Here are the support timelines:
+;; <https://www.kernel.org/category/releases.html>
 
 (define-public linux-libre-6.6-version "6.6.22")
 (define-public linux-libre-6.6-gnu-revision "gnu")
@@ -530,9 +551,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
 
-;; The "longterm" kernels — the older releases with long-term upstream support.
-;; Here are the support timelines:
-;; <https://www.kernel.org/category/releases.html>
 (define-public linux-libre-6.1-version "6.1.82")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
@@ -635,6 +653,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (inherit source)
     (patches (append (origin-patches source)
                      patches))))
+
+(define-public linux-libre-6.8-source
+  (source-with-patches linux-libre-6.8-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
 (define-public linux-libre-6.7-source
   (source-with-patches linux-libre-6.7-pristine-source
@@ -755,6 +778,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-6.8
+  (make-linux-libre-headers* linux-libre-6.8-version
+                             linux-libre-6.8-gnu-revision
+                             linux-libre-6.8-source))
 
 (define-public linux-libre-headers-6.7
   (make-linux-libre-headers* linux-libre-6.7-version
@@ -1113,6 +1141,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-pristine-source linux-libre-6.7-pristine-source)
 (define-public linux-libre-source          linux-libre-6.7-source)
 (define-public linux-libre                 linux-libre-6.7)
+
+(define-public linux-libre-6.8
+  (make-linux-libre* linux-libre-6.8-version
+                     linux-libre-6.8-gnu-revision
+                     linux-libre-6.8-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-6.6
   (make-linux-libre* linux-libre-6.6-version
