@@ -3472,14 +3472,14 @@ podcasts) in Emacs.")
 (define emacs-emms-print-metadata
   (package
     (name "emacs-emms-print-metadata")
-    (version "18")
+    (version "19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "emms-" version ".tar"))
        (sha256
-        (base32 "1jslk37kx7yzvwy4hq1a6b71kp4a3bgfzzp8bpplv7z6vcmwrmgq"))))
+        (base32 "13c884s92ddn52psgkaz3zvb94g23gq41dbidpx7x4gzdhd9qqxm"))))
     (build-system gnu-build-system)
     (arguments
      (list
