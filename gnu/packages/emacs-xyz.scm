@@ -5437,16 +5437,16 @@ Lisp developers who want to write macros with convenience.")
 (define-public emacs-tablist
   (package
     (name "emacs-tablist")
-    (version "1.0")
+    (version "1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/politza/tablist")
+                    (url "https://github.com/emacsorphanage/tablist")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pzsdg0rm59daw34ppss79cg05z9wnr8nkmdcc48nkd0p69ip2yy"))))
+                "11vmvrhmsxy97bfj7jndpc58bik7177i3wvc45mlyldxwyirs962"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/politza/tablist")
     (synopsis "Extension for @code{tabulated-list-mode}")
