@@ -48329,8 +48329,29 @@ Format (MCF).")
 Rust with reasonable performance.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-path-clean-1
+  (package
+    (name "rust-path-clean")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "path-clean" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vzwcrlz39rd94l89rppvkbsn7dvng449f1bnkyk3ayp43y9ld8p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.2))))
+    (home-page "https://github.com/danreeves/path-clean")
+    (synopsis "Rust implementation of cleanname or path.Clean")
+    (description "This package provides a Rust implementation of cleanname or
+path.Clean.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-path-clean-0.1
   (package
+    (inherit rust-path-clean-1)
     (name "rust-path-clean")
     (version "0.1.0")
     (source
@@ -48341,12 +48362,7 @@ Rust with reasonable performance.")
        (sha256
         (base32
          "1pcgqxw0mgg3ha5hi5xkjhyjf488bw5rw1g3qlr9awbq4szh3fpc"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/danreeves/path-clean")
-    (synopsis "Rust implementation of cleanname or path.Clean")
-    (description "This package provides a Rust implementation of cleanname or
-path.Clean.")
-    (license (list license:expat license:asl2.0))))
+    (arguments '())))
 
 (define-public rust-path-slash-0.2
   (package
