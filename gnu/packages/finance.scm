@@ -2359,11 +2359,11 @@ pool.")
 
 (define-public opentaxsolver
   ;; The OTS version is formatted like tax-year_version. So, at time of
-  ;; writing, the version is 2022_20.00. Each part of this is used in
+  ;; writing, the version is 2023_21.03. Each part of this is used in
   ;; different places in the source uri, so it's convenient to have them
   ;; separately like this.
-  (let ((tax-year "2022")
-        (ots-version "20.00"))
+  (let ((tax-year "2023")
+        (ots-version "21.03"))
     (package
       (name "opentaxsolver")
       (version (string-append tax-year "_" ots-version))
@@ -2375,7 +2375,7 @@ pool.")
                              "_linux/OpenTaxSolver" version "_linux64.tgz"))
          (sha256
           (base32
-           "06k0a72bmwdmr71dvrp8b4vl8vilnggsh92hrp7wjdgcjj9m074w"))
+           "1i543bvclnyiwnyjlskhr2bxlsigggvwdhg2519rf12lsghgfszq"))
          (patches (search-patches "opentaxsolver-file-browser-fix.patch"))))
       (build-system glib-or-gtk-build-system)
       (arguments
