@@ -43,7 +43,7 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
@@ -1256,14 +1256,14 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.14.2")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "12s9pc0dhqgawq6jiqhamj1zq9753kgpswny1rcsdx1lkpzrgaq1"))))
+        (base32 "1632y0yr1ig5nihs6kqyvfi117815zszhnfvaabm97qkf5blkj5p"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc))
