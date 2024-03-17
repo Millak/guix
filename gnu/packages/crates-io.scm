@@ -40231,14 +40231,14 @@ possible over the OS abstractions.")
 (define-public rust-mockall-derive-0.11
   (package
     (name "rust-mockall-derive")
-    (version "0.11.1")
+    (version "0.11.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "mockall_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ixhmsrg5ky4b2jlvbxhlpr3mbv7frd6wr8msm005vijb5rmcb96"))))
+                "1fvc9kwjcc9ia6ng7z9z02b4qkl9dvsx9m4z51xz9i0mj1k7bki2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -40247,7 +40247,7 @@ possible over the OS abstractions.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://github.com/asomers/mockall")
     (synopsis "Procedural macros for the Mockall crate")
     (description
