@@ -3524,20 +3524,24 @@ used for multimedia keys.")
 
 (define-public grimshot
   (package
-    (inherit sway)
     (name "grimshot")
+    (version "1.9-contrib.0")
     (source (origin
-              (inherit (package-source sway))
-              (snippet #~(delete-file "contrib/grimshot.1"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/OctopusET/sway-contrib")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (snippet #~(delete-file "grimshot.1"))
+              (sha256
+               (base32
+                "16fa8l81zjy25nsky1i525hb7zjprqz74mbirm9b76pvksschdv5"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan #~`(("grimshot" "bin/")
                               ("grimshot.1" "share/man/man1/"))
            #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "contrib")))
-                        (add-after 'chdir 'patch-script-dependencies
+                        (add-after 'unpack 'patch-script-dependencies
                           (lambda* (#:key inputs #:allow-other-keys)
                             (substitute* "grimshot"
                               (("\\b(date|grim|jq|notify-send|slurp|swaymsg|wl-copy)\\b"
@@ -3559,11 +3563,13 @@ used for multimedia keys.")
                   slurp
                   sway
                   wl-clipboard))
+    (home-page "https://github.com/OctopusET/sway-contrib")
     (synopsis "Screenshot utility for the Sway window manager")
     (description "Grimshot is a screenshot utility for @code{sway}.  It provides
 an interface over @code{grim}, @code{slurp} and @code{jq}, and supports storing
 the screenshot either directly to the clipboard using @code{wl-copy} or to a
-file.")))
+file.")
+    (license license:expat)))
 
 (define-public wld
   (let ((commit "6586736176ef50a88025abae835e29a7ca980126")
