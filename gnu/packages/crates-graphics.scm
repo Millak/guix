@@ -2545,14 +2545,19 @@ graphics and video games.")
 (define-public rust-palette-0.7
   (package
     (name "rust-palette")
-    (version "0.7.3")
+    (version "0.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "palette" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p2inf23vsqy06w7vp7rcxmb9vk91asib534m9cafykn8x0z7qmj"))))
+        (base32 "0ynr6q7629gpw6pg8w1wrsl31sq48nxh1bg4awyrhhk6nyj27z7b"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Regression tests not included.
@@ -2567,17 +2572,10 @@ graphics and video games.")
         ("rust-serde" ,rust-serde-1)
         ("rust-wide" ,rust-wide-0.7))
        #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-3)
-        ("rust-criterion" ,rust-criterion-0.4)
-        ("rust-csv" ,rust-csv-1)
-        ("rust-enterpolation" ,rust-enterpolation-0.2)
+       (("rust-enterpolation" ,rust-enterpolation-0.2)
         ("rust-image" ,rust-image-0.23)
-        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rand-mt" ,rust-rand-mt-4)
         ("rust-ron" ,rust-ron-0.8)
-        ("rust-scad" ,rust-scad-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/Ogeon/palette")
     (synopsis "Convert and manage colors")
