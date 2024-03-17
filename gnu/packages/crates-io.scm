@@ -25683,8 +25683,29 @@ the controling terminal (daemon) using the fork and setsid syscalls.")
 syntax, as used by HTML forms.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fragile-2
+  (package
+    (name "rust-fragile")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fragile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ajfdnwdn921bhjlzyvsqvdgci8ab40ln6w9ly422lf8svb428bc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-slab" ,rust-slab-0.4))))
+    (home-page "https://github.com/mitsuhiko/fragile")
+    (synopsis "Wrapper types for sending non-send values to other threads")
+    (description "This package provides wrapper types for sending non-send
+values to other threads.")
+    (license license:asl2.0)))
+
 (define-public rust-fragile-1
   (package
+    (inherit rust-fragile-2)
     (name "rust-fragile")
     (version "1.0.0")
     (source
@@ -25694,13 +25715,7 @@ syntax, as used by HTML forms.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1wlihmkjyhvl5rckal32p010piy1l15s6l81h7z31jcd971kk839"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/mitsuhiko/rust-fragile")
-    (synopsis "Wrapper types for sending non-send values to other threads")
-    (description "This package provides wrapper types for sending non-send
-values to other threads.")
-    (license license:asl2.0)))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-freetype-0.7
   (package
