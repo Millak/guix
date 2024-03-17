@@ -60174,8 +60174,7 @@ the file-system during development.")
         (base32 "0vc7492a6qlq7r899p7vyx5cwiqwkw2pf85mfw5anwr42ccj4l9a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-walkdir" ,rust-walkdir-2))))
     (home-page "https://github.com/pyros2097/rust-embed")
     (synopsis "Utilities for @code{rust-embed}")
