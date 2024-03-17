@@ -10,7 +10,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 nikita <nikita@n0.is>
 ;;; Copyright © 2017 Rodger Fox <thylakoid@openmailbox.org>
-;;; Copyright © 2017–2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017–2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1508,7 +1508,7 @@ and auto-mapping slices to MIDI note numbers.")
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.24.1")
+    (version "2.24.3")
     (source
      (origin
        (method url-fetch)
@@ -1516,7 +1516,7 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "028m31fjcfgsq3f8ahz4hp2r36shsvkq1fjjibqdcp2aas3r1ifm"))))
+        (base32 "1gj4xjc9842wnqvqj08lkykpz2r72mqqw3x1fk6s9xbsxxv5y06z"))))
     (build-system gnu-build-system)
     (arguments
       (list #:tests? #f                      ;out-test/collated-files.html fails
