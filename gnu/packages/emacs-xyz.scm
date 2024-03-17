@@ -13588,31 +13588,33 @@ allowing unprefixed keys to insert their respective characters as expected.")
       (license license:gpl3+))))
 
 (define-public emacs-clojure-mode
-  (package
-    (name "emacs-clojure-mode")
-    (version "5.18.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/clojure-emacs/clojure-mode")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1d5kkq2i8d04k2qfrb31zyjpij92ckbccnzvz01mls3xrvpr57m5"))))
-    (build-system emacs-build-system)
-    (native-inputs
-     (list emacs-buttercup emacs-dash emacs-paredit emacs-s))
-    (arguments
-     `(#:tests? #t
-       #:test-command '("buttercup")))
-    (home-page "https://github.com/clojure-emacs/clojure-mode")
-    (synopsis "Major mode for Clojure code")
-    (description
-     "This Emacs package provides font-lock, indentation, navigation and basic
+  (let ((commit "af0e518a6b86f2c6f32dfb30b99c067071ed5cd4")
+        (revision "1"))
+    (package
+      (name "emacs-clojure-mode")
+      (version (git-version "5.18.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/clojure-emacs/clojure-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wx3zgrwxywqk7f47idp2d09vjf557xf4l6p5a9xwqmpylnwaznh"))))
+      (build-system emacs-build-system)
+      (native-inputs
+       (list emacs-buttercup emacs-dash emacs-paredit emacs-s))
+      (arguments
+       `(#:tests? #t
+         #:test-command '("buttercup")))
+      (home-page "https://github.com/clojure-emacs/clojure-mode")
+      (synopsis "Major mode for Clojure code")
+      (description
+       "This Emacs package provides font-lock, indentation, navigation and basic
 refactoring for the @uref{http://clojure.org, Clojure programming language}.
 It is recommended to use @code{clojure-mode} with Paredit or Smartparens.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-clj-deps-new
   (let ((commit "e1cf65eb040f5a2e9a3eca970044ba71cc53fb27")
