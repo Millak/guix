@@ -6057,6 +6057,54 @@ adds a 'now' tag providing a convenient access to the arrow.now() API from
 templates.  A format string can be provided to control the output.")
     (license license:expat)))
 
+(define-public python-pypugjs
+  (package
+    (name "python-pypugjs")
+    (version "5.9.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kakulukia/pypugjs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zj7a560h973cl7brfw1nmyhgm8rp8j80wnih0shvhmw4ql23lpa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   ;; Our pyramid is outdated and pyramid-mako is not packaged.
+                   (add-after 'unpack 'disable-pyramid
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "setup.py"
+                         (("'pyramid")
+                          "#'pyramid"))))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "python" "-m" "pytest" "-v"
+                                 "pypugjs/testsuite/")))))))
+    (native-inputs (list python-coverage
+                         python-django
+                         python-jinja2
+                         python-flake8
+                         python-flask
+                         python-mako
+                         python-nose
+                         python-poetry-core
+                         python-pytest
+                         python-tornado-6
+                         python-wheel))
+    (propagated-inputs (list python-charset-normalizer python-six))
+    (home-page "https://github.com/kakulukia/pypugjs")
+    (synopsis "Convert Pug source files into different template languages")
+    (description
+     "PyPugJS is a high-performance port of PugJS for Python, that converts
+any @file{.pug} source into different template languages: Django, Jinja2,
+Mako, and Tornado.")
+    (license license:expat))) ;; MIT
+
 (define-public python-pysdl2
   (package
     (name "python-pysdl2")
