@@ -54,6 +54,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1208,14 +1209,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.8")
+    (version "1.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/djcb/mu/releases/download/v"
                            version "/mu-" version ".tar.xz"))
        (sha256
-        (base32 "129m6rz8vbd7370c3h3ma66bxqdkm6wsdix5qkmv1vm7sanxh4bb"))))
+        (base32 "065nqrsz5bpvhniaacfq67fh78m5pm96svingdviw2hj1y21s6kv"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1223,7 +1224,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
            gnupg                        ; for tests
            texinfo))
     (inputs
-     (list glib gmime guile-3.0 xapian))
+     (list glib gmime guile-3.0 xapian readline python))
     (arguments
      (list
       #:modules '((guix build meson-build-system)
@@ -1238,13 +1239,13 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
           (add-after 'unpack 'patch-bin-references
             (lambda _
               (substitute* '("guile/tests/test-mu-guile.cc"
-                             "mu/tests/test-mu-cmd.cc"
-                             "mu/tests/test-mu-cmd-cfind.cc"
                              "mu/tests/test-mu-query.cc")
                 (("/bin/sh") (which "sh")))
               (substitute* '("lib/tests/bench-indexer.cc"
                              "lib/utils/mu-test-utils.cc")
-                (("/bin/rm") (which "rm")))))
+                (("/bin/rm") (which "rm")))
+              (substitute* '("lib/mu-maildir.cc")
+                (("/bin/mv") (which "mv")))))
           (add-after 'install 'fix-ffi
             (lambda _
               (substitute* (find-files #$output "mu.scm")
