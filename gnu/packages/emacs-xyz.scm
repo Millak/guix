@@ -20258,7 +20258,7 @@ a @url{http://json.org/, JSON} file.")
 (define-public emacs-json-mode
   (package
     (name "emacs-json-mode")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -20267,7 +20267,7 @@ a @url{http://json.org/, JSON} file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0irz9gpw43wkhiq8828wm9nsc3baqg299dgly9iv7jiygk2lp14s"))))
+        (base32 "1yy440aaf17y6nrlcq0phz0x5j3wcymcrdm8pm0rmwdxfmar0csx"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-json-snatcher))
