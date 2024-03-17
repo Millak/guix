@@ -31423,17 +31423,17 @@ crate.")
 (define-public rust-include-flate-codegen-exports-0.1
   (package
     (name "rust-include-flate-codegen-exports")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "include-flate-codegen-exports" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dk7xdrck9f3bjnwm3rmh5gl1hs64lr2gnd3dv3jznharcmyb4mw"))))
+        (base32 "00qswg7avv92mjp0p3kmswp3jask0psz1bmq3h7jin73zx1p0rbm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
        #:cargo-inputs
        (("rust-include-flate-codegen" ,rust-include-flate-codegen-0.1)
         ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))
