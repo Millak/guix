@@ -35203,17 +35203,18 @@ algorithm and related formats (ZLIB, GZIP).")
   (package
     (inherit rust-libflate-2)
     (name "rust-libflate")
-    (version "1.1.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libflate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07hlzg1zly4dw9s39fv2ik6nfcjpjgx82b5kkf3bafdvdvvlldhn"))))
+        (base32 "063xw2z477h3vh7j32y0f54a6nbndd7yf7rr5wpsvfw5nrqsxx2z"))))
     (arguments
      `(#:cargo-inputs
        (("rust-adler32" ,rust-adler32-1)
+        ("rust-core2" ,rust-core2-0.4)
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-libflate-lz77" ,rust-libflate-lz77-1))
        #:cargo-development-inputs
