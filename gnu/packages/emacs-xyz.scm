@@ -34246,16 +34246,16 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "4.3.0")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~protesilaos/modus-themes")
+             (url "https://github.com/protesilaos/modus-themes")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12i32y7y6hcv7mqc6g7pcmxr2f54xf3vl2yavdv76643vlhay32v"))))
+        (base32 "1vy6wyq8hv8fih4m8m1k9n7fdp913nmv0k5g8vppnjivmnrwfswy"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
