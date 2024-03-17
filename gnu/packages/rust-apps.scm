@@ -545,19 +545,20 @@ configuration instructions.")
 (define-public eza
   (package
     (name "eza")
-    (version "0.17.0")
+    (version "0.18.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eza" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "026xagh42nrdy2yg9197mmb2bhm5mdvbf9vd9fk9iysrj1iay63r"))))
+        (base32 "1wnkbzaza0bcw5rld3baikpwwvnajz3j6nbpaic5mhv86rshqlcq"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs `(("rust-ansiterm" ,rust-ansiterm-0.12)
+      #:cargo-inputs `(("rust-ansi-width" ,rust-ansi-width-0.1)
+                       ("rust-ansiterm" ,rust-ansiterm-0.12)
                        ("rust-chrono" ,rust-chrono-0.4)
                        ("rust-git2" ,rust-git2-0.18)
                        ("rust-glob" ,rust-glob-0.3)
@@ -565,24 +566,24 @@ configuration instructions.")
                        ("rust-locale" ,rust-locale-0.2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-natord" ,rust-natord-1)
-                       ("rust-num-cpus" ,rust-num-cpus-1)
                        ("rust-number-prefix" ,rust-number-prefix-0.4)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-palette" ,rust-palette-0.7)
+                       ("rust-path-clean" ,rust-path-clean-1)
                        ("rust-percent-encoding" ,rust-percent-encoding-2)
                        ("rust-phf" ,rust-phf-0.11)
                        ("rust-plist" ,rust-plist-1)
                        ("rust-proc-mounts" ,rust-proc-mounts-0.3)
-                       ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+                       ("rust-rayon" ,rust-rayon-1)
                        ("rust-terminal-size" ,rust-terminal-size-0.3)
                        ("rust-timeago" ,rust-timeago-0.4)
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.3)
+                       ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.6)
                        ("rust-uzers" ,rust-uzers-0.11)
                        ("rust-windows-sys" ,rust-windows-sys-0.52)
                        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
       #:cargo-development-inputs `(("rust-criterion" ,rust-criterion-0.5)
-                                   ("rust-trycmd" ,rust-trycmd-0.14))
+                                   ("rust-trycmd" ,rust-trycmd-0.15))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'build 'build-manual
                      (lambda* (#:key inputs #:allow-other-keys)
@@ -594,7 +595,9 @@ configuration instructions.")
                                             "-f" "markdown"
                                             "-t" "man"
                                             (string-append "man/" page ".md")))))
-                              (list "eza.1" "eza_colors.5")))))
+                              (list "eza.1"
+                                    "eza_colors.5"
+                                    "eza_colors-explanation.5")))))
                    (add-after 'install 'install-extras
                      (lambda* (#:key outputs #:allow-other-keys)
                        (let* ((out (assoc-ref outputs "out"))
@@ -611,6 +614,8 @@ configuration instructions.")
                            (install-file "eza.1" man1))
                          (when (file-exists? "eza_colors.5")
                            (install-file "eza_colors.5" man5))
+                         (when (file-exists? "eza_colors-explanation.5")
+                           (install-file "eza_colors-explanation.5" man5))
                          (mkdir-p bash-completions-dir)
                          (mkdir-p zsh-completions-dir)
                          (mkdir-p fish-completions-dir)
