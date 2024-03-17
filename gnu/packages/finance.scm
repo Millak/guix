@@ -1980,18 +1980,18 @@ that allows you to run services and through them access the Bitcoin Cash network
       #:tests? #f  ; Says test is missing, not sure why
       #:phases
       #~(modify-phases %standard-phases
-          ;; Not importing the googleapis package for now
-          (add-after 'unpack 'ignore-googleapis
+          (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "setup.py"
-                (("'google-api-python-client',") ""))))
-          ;; No module named 'google_auth_oauthlib'
-          (delete 'sanity-check))))
-    (inputs
+                ;; Use compatible fork, and do not fail during sanity check.
+                (("\"pdfminer2\",") "")))))))
+    (propagated-inputs
      (list python-beautifulsoup4
            python-bottle
            python-chardet
            python-dateutil
+           python-google-api-client
+           python-google-auth-oauthlib
            python-lxml
            python-magic
            python-ply
