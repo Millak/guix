@@ -12,7 +12,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Mark Meyer <mark@ofosos.org>
@@ -808,7 +808,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.15.0")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -817,7 +817,7 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d1r62s1qidspck0b1zf8dibyjn9g72agbkjcica4bvfylnbqz9z"))))
+        (base32 "1w1wscq7w0xx4wkkk9rl3pc067yspbk8qnfaq3i9sxc7k6zsy77x"))))
     (build-system python-build-system)
     (arguments
      (list
