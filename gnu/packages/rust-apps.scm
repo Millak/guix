@@ -2048,22 +2048,24 @@ of support files.")
 (define-public treefmt
   (package
     (name "treefmt")
-    (version "0.4.1")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "treefmt" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rarg6rffzl1cf6r167h9p14wr696kwnzr85kwbdy7x7x5zpj5li"))))
+        (base32 "1pfx8kgaf0rc8ijps2fqb61gjnak3sf430hvg52bnby9qqyd51h8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-verbosity-flag" ,rust-clap-verbosity-flag-2)
         ("rust-console" ,rust-console-0.13)
         ("rust-directories" ,rust-directories-3)
+        ("rust-env-logger" ,rust-env-logger-0.10)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-globset" ,rust-globset-0.4)
         ("rust-ignore" ,rust-ignore-0.4)
@@ -2073,12 +2075,12 @@ of support files.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha-1" ,rust-sha-1-0.9)
-        ("rust-structopt" ,rust-structopt-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-which" ,rust-which-4))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3))))
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-mockall" ,rust-mockall-0.11))))
     (home-page "https://numtide.github.io/treefmt")
     (synopsis "Command-line application to format the code tree")
     (description
