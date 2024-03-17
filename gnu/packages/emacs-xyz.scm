@@ -10898,7 +10898,7 @@ sgml/html integration, and indentation (working with sgml).")
 (define-public emacs-jinx
   (package
     (name "emacs-jinx")
-    (version "1.2")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
@@ -10908,7 +10908,7 @@ sgml/html integration, and indentation (working with sgml).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04avl356y0m0i1mqmzzz0245fxflj7i8ssicnvf4wmpjc0qdr694"))))
+        (base32 "14zamk2s20f6dnv23v9snya0mi1bs2nq6xpp5bj06kiymzwhcqjw"))))
     (build-system emacs-build-system)
     (arguments
      (list
