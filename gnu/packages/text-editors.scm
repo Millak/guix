@@ -960,14 +960,14 @@ editors.")
 (define-public texmacs
   (package
     (name "texmacs")
-    (version "2.1.1")
+    (version "2.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.texmacs.org/Download/ftp/tmftp/"
                            "source/TeXmacs-" version "-src.tar.gz"))
        (sha256
-        (base32 "0c780vcwppzhb70d3d96md3hra7338d4fv3aj0sm7jx0mj2a334i"))))
+        (base32 "11l1q5lmsj9g7yil1dn7n1cgsr8iikx59kg9riahpb6xw0p959l7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config xdg-utils))       ;for xdg-icon-resource
