@@ -57035,20 +57035,20 @@ Rust.")
 (define-public rust-rayon-core-1
   (package
     (name "rust-rayon-core")
-    (version "1.12.0")
+    (version "1.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rayon-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vaq0q71yfvcwlmia0iqf6ixj2fibjcf2xjy92n1m1izv1mgpqsw"))))
+        (base32 "1qpwim68ai5h0j7axa8ai8z0payaawv3id0lrgkqmapx7lx8fr8l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; `Sender<usize>` cannot be shared between threads safely
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-wasm-sync" ,rust-wasm-sync-0.1))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-rand" ,rust-rand-0.8)
