@@ -26778,31 +26778,30 @@ be changed by customizing the appropriate variables.")
       (license license:gpl3+))))
 
 (define-public emacs-org-caldav
-  (let ((commit "754989ae500b3f576bdb94fe2ef3059f12eaf7d7")) ;version bump
-    (package
-      (name "emacs-org-caldav")
-      (version "3.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/dengste/org-caldav")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0vx465di6imfxmxxkhd8lsdgywyz3gnindg0fyvb2zshg3zz80bg"))))
-      (build-system emacs-build-system)
-      (arguments
-       ;; Tests require to have two specific calendars on a test server.
-       `(#:exclude '("^org-caldav-testsuite\\.el")))
-      (propagated-inputs
-       (list emacs-org))
-      (home-page "https://github.com/dengste/org-caldav")
-      (synopsis "Sync Org files with external calendars via the CalDAV protocol")
-      (description
-       "Org CalDAV synchronizes events between Org files and a CalDAV
+  (package
+    (name "emacs-org-caldav")
+    (version "3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dengste/org-caldav")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0im6swyhdy8g56lh2nnbz7hb4hjqspi7aag7qc4616m5fs7ijlig"))))
+    (build-system emacs-build-system)
+    (arguments
+     ;; Tests require to have two specific calendars on a test server.
+     `(#:exclude '("^org-caldav-testsuite\\.el")))
+    (propagated-inputs
+     (list emacs-org))
+    (home-page "https://github.com/dengste/org-caldav")
+    (synopsis "Sync Org files with external calendars via the CalDAV protocol")
+    (description
+     "Org CalDAV synchronizes events between Org files and a CalDAV
 calendar.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-zotxt
   (package
