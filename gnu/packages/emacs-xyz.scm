@@ -21588,57 +21588,45 @@ part, which includes creating tokens.")
     (license license:asl2.0)))
 
 (define-public emacs-circe
-  (package
-    (name "emacs-circe")
-    (version "2.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jorgenschaefer/circe")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lrxd4hanaxj85nafsc0wss677slmyaks3qb7a95mj7vic3ib937"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #t
-       #:test-command '("buttercup" "-L" ".")
-       #:emacs ,emacs                 ;requires gnutls
-       #:phases
-       (modify-phases %standard-phases
-         ;; The HOME environment variable should be set to an existing
-         ;; directory for the tests to succeed.
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" "/tmp")))
-         (add-before 'check 'remove-failing-tests
-           (lambda _
-             (make-file-writable "tests/test-circe.el")
-             (emacs-batch-edit-file "tests/test-circe.el"
-               `(progn
-                 (dolist (test
-                          '("should have circe-server-buffer set in the mode hook"
-                            "should complete nicks with colon at the beginning of the input"
-                            "should complete nicks without colon later in the input"))
-                         (goto-char (point-min))
-                         (search-forward (format "(it %S" test))
-                         (beginning-of-line)
-                         (kill-sexp))
-                 (basic-save-buffer))))))))
-    (native-inputs
-     (list emacs-buttercup))
-    ;; In order to securely connect to an IRC server using TLS, Circe requires
-    ;; the GnuTLS binary.
-    (propagated-inputs
-     (list gnutls))
-    (home-page "https://github.com/jorgenschaefer/circe")
-    (synopsis "Client for IRC in Emacs")
-    (description "Circe is a Client for IRC in Emacs.  It integrates well with
+  (let ((commit "cc630eb9acb835012ad207dce545d2c380588da7")
+        (revision "1"))
+    (package
+      (name "emacs-circe")
+      (version (git-version "2.13" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jorgenschaefer/circe")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1m2vnp38yv9fnxchcbf6mrzb7yp7z214vr28pr7sslrmm99dqg89"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:tests? #t
+         #:test-command '("buttercup" "-L" ".")
+         #:emacs ,emacs                 ;requires gnutls
+         #:phases
+         (modify-phases %standard-phases
+           ;; The HOME environment variable should be set to an existing
+           ;; directory for the tests to succeed.
+           (add-before 'check 'set-home
+             (lambda _
+               (setenv "HOME" "/tmp"))))))
+      (native-inputs
+       (list emacs-buttercup))
+      ;; In order to securely connect to an IRC server using TLS, Circe requires
+      ;; the GnuTLS binary.
+      (propagated-inputs
+       (list gnutls))
+      (home-page "https://github.com/jorgenschaefer/circe")
+      (synopsis "Client for IRC in Emacs")
+      (description "Circe is a Client for IRC in Emacs.  It integrates well with
 the rest of the editor, using standard Emacs key bindings and indicating
 activity in channels in the status bar so it stays out of your way unless you
 want to use it.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-tracking
   (package
