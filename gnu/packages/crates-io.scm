@@ -82216,6 +82216,28 @@ attribute that is not in the shared backend crate.")
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
         ("rust-web-sys" ,rust-web-sys-0.3))))))
 
+(define-public rust-wasm-sync-0.1
+  (package
+    (name "rust-wasm-sync")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasm_sync" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1smhpgk5jiir089y5w6y2rgqq9aqzrbxlb4x1vzl3v3zvv561wyg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/DouglasDwyer/wasm_sync")
+    (synopsis "Synchronization primitives for both web and native")
+    (description "This package provides synchronization primitives for both web
+and native running processes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-wasmparser-0.118
   (package
     (name "rust-wasmparser")
