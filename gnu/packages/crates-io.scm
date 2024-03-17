@@ -1696,6 +1696,26 @@ it outputs messages to Android's logcat.")
        (("rust-heapless" ,rust-heapless-0.5)
         ("rust-nom" ,rust-nom-4))))))
 
+(define-public rust-ansi-width-0.1
+  (package
+    (name "rust-ansi-width")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ansi-width" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "023693dwvci91456nfi0aygc44i1f098l2f23ssq67b1ybk3r7i1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://docs.rs/ansi-width")
+    (synopsis "Calculate the width of a string when printed to the terminal")
+    (description
+     "Calculate the width of a string when printed to the terminal.")
+    (license license:expat)))
+
 (define-public rust-anstream-0.6
   (package
     (name "rust-anstream")
