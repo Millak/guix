@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,7 +28,7 @@
 (define-public wego
   (package
     (name "wego")
-    (version "2.1")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
@@ -37,7 +37,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bji9fywa0kg29zj1vrwq7l5f18hh0lcz6rl6sppi5id0qbjpiwl"))))
+        (base32 "09zn1z2744izzkkavs3lc1scsv22js8h28b0d86qd5dh2zfwfikf"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/schachmat/wego"))
     (propagated-inputs
