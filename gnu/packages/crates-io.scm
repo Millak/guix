@@ -56960,19 +56960,20 @@ accessors.")
 (define-public rust-rayon-1
   (package
     (name "rust-rayon")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rayon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cfdnvchf7j4cpha5jkcrrsr61li9i9lp5ak7xdq6d3pvc1xn9ww"))))
+        (base32 "1gdk945j52vq3zx5vb4yzc3yyz19bf2vs8kh47pg7r46pk8kx5p4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-either" ,rust-either-1)
-        ("rust-rayon-core" ,rust-rayon-core-1))
+        ("rust-rayon-core" ,rust-rayon-core-1)
+        ("rust-wasm-sync" ,rust-wasm-sync-0.1))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.8)
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.3))))
