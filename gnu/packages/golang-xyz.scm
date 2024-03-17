@@ -1366,6 +1366,30 @@ command line flags, config files, and default struct values.")
 @url{https://github.com/judwhite/go-svc/raw/master/svc/svc_windows_test.go,here}.")
       (license license:expat))))
 
+(define-public go-github-com-multiformats-go-varint
+  (package
+    (name "go-github-com-multiformats-go-varint")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-varint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l4s0z3rc3d350zp6qximl1jjhic6l8w74wkmx244jgfzsxd93af"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mreiferson/go-options"))
+    (home-page "https://github.com/mreiferson/go-options")
+    (synopsis "Varint helpers that enforce minimal encoding")
+    (description
+     "This package provides a functionality for encoding and decoding unsigned
+varints.")
+    (license license:expat)))
+
 (define-public go-github-com-nats-io-nats-go
   (package
     (name "go-github-com-nats-io-nats-go")
