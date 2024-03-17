@@ -383,9 +383,10 @@ needed."
     (module-name-lookup directory))
 
   (for-each (lambda (module)
-              (load-linux-module* (module-name->file-name module)
-                                  #:lookup-module module-name->file-name))
-            modules))
+              (when (file-exists? module)
+                (load-linux-module* module
+                                    #:lookup-module module-name->file-name)))
+            (map module-name->file-name modules)))
 
 
 ;;;
