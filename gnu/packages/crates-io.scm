@@ -31371,21 +31371,21 @@ a trait for tuples.")
 (define-public rust-include-flate-0.1
   (package
     (name "rust-include-flate")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "include-flate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xd63rhr03ax1w327ws46wc9zyw5k9jsaxfy24j6wg9km3xhfqii"))))
+        (base32 "0j71284rcjl2pnnrnvp2i4r9dyikpw939gcvz0f7qm91qx4v9p6z"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
        #:cargo-inputs
        (("rust-include-flate-codegen-exports" ,rust-include-flate-codegen-exports-0.1)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libflate" ,rust-libflate-0.1))))
+        ("rust-libflate" ,rust-libflate-1))))
     (home-page "https://github.com/SOF3/include-flate")
     (synopsis "Variant of @code{include_bytes!/include_str!} with compression")
     (description
