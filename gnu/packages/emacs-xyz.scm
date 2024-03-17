@@ -313,7 +313,7 @@
 (define-public emacs-ac-php
   (package
     (name "emacs-ac-php")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -322,7 +322,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fmp1595v06dgmx9skxphknaagf9ds9l7ygi7lzxas1s8d05dj10"))))
+        (base32 "1xz86cjsjm72b0rm50fr2z82rcllhczsd4jr5rnp2clbind5w697"))))
     (build-system emacs-build-system)
     (arguments
      (list
