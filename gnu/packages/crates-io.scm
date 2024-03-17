@@ -40195,21 +40195,21 @@ possible over the OS abstractions.")
 (define-public rust-mockall-0.11
   (package
     (name "rust-mockall")
-    (version "0.11.1")
+    (version "0.11.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "mockall" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0k3g3xxf195vsnzmwza047dv89zlg6h5yj5774wjlndgpdvf8han"))))
+                "15kww0a3wv300wkksc6zj0kz1jwk0hyly48daxs2vvpj300lk12c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-downcast" ,rust-downcast-0.11)
-        ("rust-fragile" ,rust-fragile-1)
+        ("rust-fragile" ,rust-fragile-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-mockall-derive" ,rust-mockall-derive-0.11)
         ("rust-predicates" ,rust-predicates-2)
