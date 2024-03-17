@@ -7984,7 +7984,7 @@ mode-line.")
 (define-public emacs-robe
   (package
     (name "emacs-robe")
-    (version "0.8.3")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
@@ -7993,7 +7993,7 @@ mode-line.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xbj7wi389n6pxfvxrakvhylkdlqg8ll9ad2zmxggcchygwah6nl"))))
+        (base32 "0kvyfyr4b0z0l964a8z9shy8nlnxzxc2ljcc02gj2pn1rn1wz0gq"))))
     (build-system emacs-build-system)
     (arguments
      '(#:include (cons "^lib\\/" %default-include)))
