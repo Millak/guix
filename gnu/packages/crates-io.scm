@@ -31396,23 +31396,23 @@ with compile-time deflation and runtime lazy inflation.")
 (define-public rust-include-flate-codegen-0.1
   (package
     (name "rust-include-flate-codegen")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "include-flate-codegen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mbw6fcczmfw4dabps4l90mdn2wdy9zhqwh60xx4fjcxqfsm9ksb"))))
+        (base32 "1s34ssq0l3d2sn8n3mxmkz3jbm600fbckd0213mjjcgs34a6wz9s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
        #:cargo-inputs
-       (("rust-libflate" ,rust-libflate-0.1)
+       (("rust-libflate" ,rust-libflate-1)
         ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))))
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/SOF3/include-flate")
     (synopsis "Macro codegen for the @code{include-flate} crate")
     (description
