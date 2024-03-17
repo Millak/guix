@@ -28694,49 +28694,51 @@ and comments.")
       (license license:gpl3+))))
 
 (define-public emacs-yeetube
-  (package
-    (name "emacs-yeetube")
-    (version "2.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.thanosapollo.org/yeetube")
-             (commit version)))
-       (sha256
-        (base32
-         "0c2iq6rb179zh9qbw7prxsjbiz77j060pj75s82wbbz5xjavzgp5"))
-       (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'locate-binaries
-            (lambda* (#:key inputs #:allow-other-keys)
-              (emacs-substitute-variables "yeetube.el"
-                ("yeetube-ytdlp"
-                 (search-input-file inputs "/bin/yt-dlp")))
-              (emacs-substitute-variables "yeetube-mpv.el"
-                ("yeetube-mpv-path"
-                 (search-input-file inputs "/bin/mpv"))
-                ("yeetube-mpv-torsocks"
-                 (search-input-file inputs "/bin/torsocks")))))
-          (add-after 'unpack 'relax-check
-            (lambda _
-              (substitute* "yeetube-mpv.el"
-                (("\\(yeetube-mpv-check\\)") "")))))))
-    (inputs (list mpv torsocks yt-dlp))
-    (propagated-inputs (list emacs-compat))
-    (home-page "https://thanosapollo.com/blog/yeetube/")
-    (synopsis "Youtube and Invidious front-end for Emacs")
-    (description
-     "This package offers an Emacs interface that allows you to search YouTube
+  (let ((commit "c74e4e77156297624d278a05bdd19c016a91ff9b")) ;version bump
+    (package
+      (name "emacs-yeetube")
+      (version "2.1.4")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.thanosapollo.org/yeetube")
+               (commit commit)))
+         (sha256
+          (base32
+           "1gpfm41d4wzk1i0hnmfn81xv05ida9ljibar7ji4d7nisjbd4vp9"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'locate-binaries
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* (find-files "." "\\.el$")
+                  (("\\(executable-find \"mpv\"\\)")
+                   (format #f "~s"
+                           (search-input-file inputs "/bin/mpv")))
+                  (("\\(executable-find \"torsocks\"\\)")
+                   (format #f "~s"
+                           (search-input-file inputs "/bin/torsocks")))
+                  (("\\(executable-find \"wget\"\\)")
+                   (format #f "~s"
+                           (search-input-file inputs "/bin/wget")))
+                  (("\\(executable-find \"yt-dlp\"\\)")
+                   (format #f "~s"
+                           (search-input-file inputs "/bin/yt-dlp")))))))))
+      (inputs (list mpv torsocks wget yt-dlp))
+      (propagated-inputs (list emacs-compat))
+      (home-page "https://thanosapollo.com/blog/yeetube/")
+      (synopsis "Youtube and Invidious front-end for Emacs")
+      (description
+       "This package offers an Emacs interface that allows you to search YouTube
 or an Invidious instance for a specific query.  The search results are shown
 as links in an Org mode buffer.  The videos can be opened to a user-defined
 video player (by default @command{mpv}) or downloaded using @command{yt-dlp}.
 This package also includes a @code{yt-dlp} front-end.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-org-web-tools
   (package
