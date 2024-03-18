@@ -37057,6 +37057,24 @@ can also be used outside of a proc-macro context.")
     (description "This package provides an LLVM Bitcode parser in Rust.")
     (license license:expat)))
 
+(define-public rust-local-waker-0.1
+  (package
+    (name "rust-local-waker")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "local-waker" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11vlcm8q6dhdf0srkgjnwca48dn9zcz820fq20hv82ffcxy3v1sd"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/actix/actix-net")
+    (synopsis "Synchronization primitive for thread-local task wakeup")
+    (description "This package provides a synchronization primitive for
+thread-local task wakeup.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-locale-0.2
   (package
     (name "rust-locale")
