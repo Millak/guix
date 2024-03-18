@@ -37001,6 +37001,32 @@ harness used by @code{rustc --test}.")
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-termcolor" ,rust-termcolor-1))))))
 
+(define-public rust-listenfd-1
+  (package
+    (name "rust-listenfd")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "listenfd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15jc2xgrp4j6508s5f9d9gq6w1ssgv2mvc5b3795jqnrmiih8l70"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-hyper" ,rust-hyper-0.14)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-warp" ,rust-warp-0.3))))
+    (home-page "https://github.com/mitsuhiko/rust-listenfd")
+    (synopsis "Library to work with listenfds passed from the outside")
+    (description
+     "This package provides a simple library to work with listenfds passed from
+the outside, such as systemd/catflap socket activation.")
+    (license license:asl2.0)))
+
 (define-public rust-litrs-0.4
   (package
     (name "rust-litrs")
