@@ -1450,8 +1450,62 @@ the Actix ecosystem.")
        #:cargo-development-inputs
        (("rust-actix-rt" ,rust-actix-rt-0.2))))))
 
+(define-public rust-actix-web-4
+  (package
+    (name "rust-actix-web")
+    (version "4.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-web" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1159grrp031zy9j97vr3c376w8pdawr8akbib0iqqqxvvrnmb9j3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; could not find `brotli` in the list of imported crates
+       #:cargo-inputs (("rust-actix-codec" ,rust-actix-codec-0.5)
+                       ("rust-actix-http" ,rust-actix-http-3)
+                       ("rust-actix-macros" ,rust-actix-macros-0.2)
+                       ("rust-actix-router" ,rust-actix-router-0.5)
+                       ("rust-actix-rt" ,rust-actix-rt-2)
+                       ("rust-actix-server" ,rust-actix-server-2)
+                       ("rust-actix-service" ,rust-actix-service-2)
+                       ("rust-actix-tls" ,rust-actix-tls-3)
+                       ("rust-actix-utils" ,rust-actix-utils-3)
+                       ("rust-actix-web-codegen" ,rust-actix-web-codegen-4)
+                       ("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-bytestring" ,rust-bytestring-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cookie" ,rust-cookie-0.16)
+                       ("rust-derive-more" ,rust-derive-more-0.99)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-language-tags" ,rust-language-tags-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://actix.rs")
+    (synopsis "Powerful, pragmatic, and fast web framework for Rust")
+    (description
+     "Actix Web is a powerful, pragmatic, and fast web framework for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-web-3
   (package
+    (inherit rust-actix-web-4)
     (name "rust-actix-web")
     (version "3.3.2")
     (source
@@ -1461,7 +1515,6 @@ the Actix ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "11kv8y1p9dw78lnhrw3rqavhmazmy7s0z8j14a3a1yp7fahx8hg6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -1497,13 +1550,7 @@ the Actix ecosystem.")
         ("rust-socket2" ,rust-socket2-0.3)
         ("rust-time" ,rust-time-0.2)
         ("rust-tinyvec" ,rust-tinyvec-1)
-        ("rust-url" ,rust-url-2))))
-    (home-page "https://actix.rs")
-    (synopsis "Powerful, pragmatic, and fast web framework for Rust")
-    (description
-     "Actix Web is a powerful, pragmatic, and fast web framework for
-Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-actix-web-2
   (package
