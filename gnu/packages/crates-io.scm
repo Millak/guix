@@ -60489,8 +60489,36 @@ the file-system during development.")
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-warp" ,rust-warp-0.2))))))
 
+(define-public rust-rust-embed-impl-8
+  (package
+    (name "rust-rust-embed-impl")
+    (version "8.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-embed-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j2gqh8dl6c26y9iicjfgj9r5in3fw8k52fxnczhlln0qsiw46mr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rust-embed-utils" ,rust-rust-embed-utils-8)
+                       ("rust-shellexpand" ,rust-shellexpand-3)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/pyrossh/rust-embed")
+    (synopsis "Rust custom @code{Derive} macro")
+    (description
+     "This package provides a custom @code{Derive} macro which loads files
+into the Rust binary at compile time during release and loads the file from
+the file-system during development.")
+    (license license:expat)))
+
 (define-public rust-rust-embed-impl-5
   (package
+    (inherit rust-rust-embed-impl-8)
     (name "rust-rust-embed-impl")
     (version "5.9.0")
     (source
@@ -60500,7 +60528,6 @@ the file-system during development.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0rlykmykrpllkf4900wv2jfdmq3m5qqrqhw4fdlbzxrfqi0irn9y"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -60508,14 +60535,7 @@ the file-system during development.")
         ("rust-rust-embed-utils" ,rust-rust-embed-utils-5)
         ("rust-shellexpand" ,rust-shellexpand-2)
         ("rust-syn" ,rust-syn-1)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/pyros2097/rust-embed")
-    (synopsis "Rust custom @code{Derive} macro")
-    (description
-     "This package provides a custom @code{Derive} macro which loads files
-into the Rust binary at compile time during release and loads the file from
-the file-system during development.")
-    (license license:expat)))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-rust-embed-utils-8
   (package
