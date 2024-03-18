@@ -58549,6 +58549,49 @@ functionality as retain but gives mutable borrow to the predicate.")
 MIME Message Headers.")
     (license license:expat)))
 
+(define-public rust-rhai-1
+  (package
+    (name "rust-rhai")
+    (version "1.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rhai" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0alqy1jglawbh3wq77axikl0613i3vm81h5yn2jah12d4ir369zn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=tests::check_struct_sizes")
+       #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-core-error" ,rust-core-error-0.0.0)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-instant" ,rust-instant-0.1)
+                       ("rust-libm" ,rust-libm-0.2)
+                       ("rust-no-std-compat" ,rust-no-std-compat-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rhai-codegen" ,rust-rhai-codegen-2)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1)
+                       ("rust-rustyline" ,rust-rustyline-13)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-smartstring" ,rust-smartstring-1)
+                       ("rust-thin-vec" ,rust-thin-vec-0.2)
+                       ("rust-unicode-xid" ,rust-unicode-xid-0.2))
+       #:cargo-development-inputs (("rust-rmp-serde" ,rust-rmp-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://rhai.rs")
+    (synopsis "Embedded scripting for Rust")
+    (description "Embedded scripting for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rhai-codegen-2
   (package
     (name "rust-rhai-codegen")
