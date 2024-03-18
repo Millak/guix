@@ -1349,8 +1349,32 @@ asynchronous request/response operations.")
        #:cargo-development-inputs
        (("rust-actix-testing" ,rust-actix-testing-1))))))
 
+(define-public rust-actix-utils-3
+  (package
+    (name "rust-actix-utils")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n05nzwdkx6jhmzr6f9qsh57a8hqlwv5rjz1i0j3qvj6y7gxr8c8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `futures_util`
+       #:cargo-inputs (("rust-local-waker" ,rust-local-waker-0.1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))))
+    (home-page "https://github.com/actix/actix-net")
+    (synopsis "Network related services and utilities for the Actix ecosystem")
+    (description
+     "This package provides various network related services and utilities for
+the Actix ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-utils-2
   (package
+    (inherit rust-actix-utils-3)
     (name "rust-actix-utils")
     (version "2.0.0")
     (source
@@ -1360,7 +1384,6 @@ asynchronous request/response operations.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0nkby6wpwcmjr3zcghd962l2hyjry0aayncyjzbx2ck6qpg2541f"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-actix-codec" ,rust-actix-codec-0.3)
@@ -1374,13 +1397,7 @@ asynchronous request/response operations.")
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-log" ,rust-log-0.4)
         ("rust-pin-project" ,rust-pin-project-0.4)
-        ("rust-slab" ,rust-slab-0.4))))
-    (home-page "https://actix.rs")
-    (synopsis "Network related services and utilities for the Actix ecosystem")
-    (description
-     "This package provides various network related services and utilities for
-the Actix ecosystem.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-slab" ,rust-slab-0.4))))))
 
 (define-public rust-actix-utils-1
   (package
