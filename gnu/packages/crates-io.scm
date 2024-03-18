@@ -77301,6 +77301,35 @@ stream-based @code{WebSocket} implementation.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-tokio-tungstenite-0.16
+  (package
+    (inherit rust-tokio-tungstenite-0.21)
+    (name "rust-tokio-tungstenite")
+    (version "0.16.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-tungstenite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wnadcv9q2yi7bjkdp6z0g4rk7kbdblsv613fpgjrhgwdbgkj2z8"))))
+    (arguments
+     `(#:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-rustls" ,rust-rustls-0.20)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
+                       ("rust-tungstenite" ,rust-tungstenite-0.16)
+                       ("rust-webpki" ,rust-webpki-0.22)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.22))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.7)
+                                   ("rust-futures-channel" ,rust-futures-channel-0.3)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-url" ,rust-url-2))))))
+
 (define-public rust-tokio-tungstenite-0.11
   (package
     (name "rust-tokio-tungstenite")
