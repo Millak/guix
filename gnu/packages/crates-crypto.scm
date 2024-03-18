@@ -1169,6 +1169,32 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
        (("rust-cipher" ,rust-cipher-0.3)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
+(define-public rust-chacha20-0.7
+  (package
+    (inherit rust-chacha20-0.9)
+    (name "rust-chacha20")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chacha20" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c8h4sp9zh13v8p9arydjcj92xc6j3mccrjc4mizrvq7fzx9717h"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("version = \">=1, <1.4\"") "version = \"^1\""))))))
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cipher" ,rust-cipher-0.3)
+                       ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-cipher" ,rust-cipher-0.3)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.2))))))
+
 (define-public rust-chacha20poly1305-0.10
   (package
     (name "rust-chacha20poly1305")
