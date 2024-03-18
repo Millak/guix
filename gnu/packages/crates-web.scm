@@ -6545,6 +6545,41 @@ makes them accessible for those who wants full control over the network.")
         ("rust-net2" ,rust-net2-0.2)
         ("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-tungstenite-0.16
+  (package
+    (inherit rust-tungstenite-0.21)
+    (name "rust-tungstenite")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tungstenite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l9s7gi9kgl4zynhbyb7737lmwaxaim4b818lwi7y95f2hx73lva"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.13)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-httparse" ,rust-httparse-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rustls" ,rust-rustls-0.20)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-sha-1" ,rust-sha-1-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-utf-8" ,rust-utf-8-0.7)
+                       ("rust-webpki" ,rust-webpki-0.22)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.22))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-input-buffer" ,rust-input-buffer-0.5)
+                                   ("rust-net2" ,rust-net2-0.2)
+                                   ("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-tungstenite-0.11
   (package
     (inherit rust-tungstenite-0.19)
