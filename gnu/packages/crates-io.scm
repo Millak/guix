@@ -29200,6 +29200,41 @@ IEEE 754-2008 binary16 type.")
 higher performance on different key space sizes.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-handlebars-5
+  (package
+    (name "rust-handlebars")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "handlebars" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r51g648z3skfp65xysh3zcai1qlm7z405izxqfnjrlyp5v38a5b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pest" ,rust-pest-2)
+                       ("rust-pest-derive" ,rust-pest-derive-2)
+                       ("rust-rhai" ,rust-rhai-1)
+                       ("rust-rust-embed" ,rust-rust-embed-8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-pprof" ,rust-pprof-0.13)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.3)
+                                   ("rust-tiny-http" ,rust-tiny-http-0.12))))
+    (home-page "https://github.com/sunng87/handlebars-rust")
+    (synopsis "Handlebars templating implemented in Rust")
+    (description "Handlebars templating implemented in Rust.")
+    (license license:expat)))
+
 (define-public rust-home-0.5
   (package
     (name "rust-home")
