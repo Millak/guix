@@ -53669,6 +53669,35 @@ language.")
 files as part of a Cargo build.")
     (license license:asl2.0)))
 
+(define-public rust-prost-build-0.10
+  (package
+    (inherit rust-prost-build-0.12)
+    (name "rust-prost-build")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-build" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1aqc9cjrfwd5kh65xig0vp4cs8dhaqya7pn0kxd83mb2hwwa9rca"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cmake" ,rust-cmake-0.1)
+                       ("rust-heck" ,rust-heck-0.4)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-multimap" ,rust-multimap-0.8)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-prost" ,rust-prost-0.10)
+                       ("rust-prost-types" ,rust-prost-types-0.10)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-which" ,rust-which-4))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.8))))))
+
 (define-public rust-prost-derive-0.12
   (package
     (name "rust-prost-derive")
