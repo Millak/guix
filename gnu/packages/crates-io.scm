@@ -31320,6 +31320,24 @@ variant of this library is available separately as @code{im}.")
 for uint and fixed hash.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-impl-more-0.1
+  (package
+    (name "rust-impl-more")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "impl-more" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bdv06br4p766rcgihhjwqyz8fcz31xyaq14rr53vfh3kifafv10"))))
+    (build-system cargo-build-system)
+    (arguments (list #:tests? #f))  ; use of undeclared crate or module `eyre`
+    (home-page "https://github.com/robjtede/impl-more")
+    (synopsis "Concise, declarative trait implementation macros")
+    (description "Concise, declarative trait implementation macros.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-impl-rlp-0.3
   (package
     (name "rust-impl-rlp")
