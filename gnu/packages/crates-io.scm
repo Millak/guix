@@ -24735,6 +24735,39 @@ prime field implementations in rust.")
 @code{fiat-crypto} libraries.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-figment-0.10
+  (package
+    (name "rust-figment")
+    (version "0.10.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "figment" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dnfri2371wzmk7lcxfd121z35b1b2251d93yc23w8b7f1z6fw3j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `figment::providers::Toml`
+       #:cargo-inputs (("rust-atomic" ,rust-atomic-0.6)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-pear" ,rust-pear-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-uncased" ,rust-uncased-0.9)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-parking-lot" ,rust-parking-lot-0.12)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/SergioBenitez/Figment")
+    (synopsis "Configuration library")
+    (description "This package provides an opinionated configuration library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-file-diff-1
   (package
     (name "rust-file-diff")
