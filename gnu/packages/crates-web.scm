@@ -744,8 +744,34 @@ during testing.")
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-actix-router-0.5
+  (package
+    (name "rust-actix-router")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-router" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04f5cdag2h9lbrgb0pzwznpfrl3ajbdxlsvb8a2kci1rcmcpa96j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; cannot find derive macro `Deserialize` in this scope
+       #:cargo-inputs (("rust-bytestring" ,rust-bytestring-0.1)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/actix/actix-web")
+    (synopsis "Resource path matching and router library")
+    (description
+     "This package provides resource path matching and router library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-router-0.2
   (package
+    (inherit rust-actix-router-0.5)
     (name "rust-actix-router")
     (version "0.2.5")
     (source
@@ -755,7 +781,6 @@ during testing.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0df2626hk4n4yki6j88v3k0gcm8pi5hdnm1mldyvyi8nvbdzgldv"))))
-    (build-system cargo-build-system)
     (arguments
      ;; Tests fail with "error[E0432]: unresolved import `serde_derive`".
      `(#:tests? #false
@@ -764,11 +789,7 @@ during testing.")
         ("rust-http" ,rust-http-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://actix.rs")
-    (synopsis "Resource path matching library")
-    (description "This package provides resource path matching library.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-actix-router-0.1
   (package
