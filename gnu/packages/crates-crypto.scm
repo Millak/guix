@@ -319,6 +319,36 @@ Data (AEAD) Cipher with optional architecture-specific hardware
 acceleration.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-aes-gcm-0.9
+  (package
+    (inherit rust-aes-gcm-0.10)
+    (name "rust-aes-gcm")
+    (version "0.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aes-gcm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xndncn1phjb7pjam63vl0yp7h8jh95m0yxanr1092vx7al8apyz"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.4)
+                       ("rust-aes" ,rust-aes-0.7)
+                       ("rust-cipher" ,rust-cipher-0.3)
+                       ("rust-ctr" ,rust-ctr-0.8)
+                       ("rust-ghash" ,rust-ghash-0.4)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-aead" ,rust-aead-0.4)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-aes-gcm-0.8
   (package
     (inherit rust-aes-gcm-0.10)
