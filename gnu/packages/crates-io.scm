@@ -60485,8 +60485,31 @@ into the Rust binary at compile time during release and loads the file from
 the file-system during development.")
     (license license:expat)))
 
+(define-public rust-rust-embed-utils-8
+  (package
+    (name "rust-rust-embed-utils")
+    (version "8.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-embed-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10am6j29b5p7na45cz6vqxkg8gy47xbir95d9vzzyrr50f4r1xl6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-globset" ,rust-globset-0.4)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/pyrossh/rust-embed")
+    (synopsis "Utilities for @code{rust-embed}")
+    (description "This package provides utilities for @code{rust-embed}.")
+    (license license:expat)))
+
 (define-public rust-rust-embed-utils-5
   (package
+    (inherit rust-rust-embed-utils-8)
     (name "rust-rust-embed-utils")
     (version "5.1.0")
     (source
@@ -60496,14 +60519,8 @@ the file-system during development.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0vc7492a6qlq7r899p7vyx5cwiqwkw2pf85mfw5anwr42ccj4l9a"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/pyros2097/rust-embed")
-    (synopsis "Utilities for @code{rust-embed}")
-    (description "This package provides utilities for @code{rust-embed}.")
-    (license license:expat)))
+     `(#:cargo-inputs (("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-eml-parser-0.1
   (package
