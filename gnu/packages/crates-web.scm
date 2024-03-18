@@ -120,8 +120,38 @@
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))))
 
+(define-public rust-actix-codec-0.5
+  (package
+    (name "rust-actix-codec")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-codec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12m2jxysk2xpxi193340zv4w215cv9fyyna7rxvzh6wck0hhlysz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `tokio_test`
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-sink" ,rust-futures-sink-0.3)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/actix/actix-net")
+    (synopsis "Codec utilities for working with framed protocols")
+    (description
+     "This package provides codec utilities for working with framed protocols.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-codec-0.3
   (package
+    (inherit rust-actix-codec-0.5)
     (name "rust-actix-codec")
     (version "0.3.0")
     (source
@@ -131,7 +161,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0w7506qd2f8q83z6l5lqx1363ks0ysx8f7qgvy8fknrq70xq7lbq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -141,13 +170,7 @@
         ("rust-log" ,rust-log-0.4)
         ("rust-pin-project" ,rust-pin-project-0.4)
         ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio-util" ,rust-tokio-util-0.3))))
-    (home-page "https://actix.rs")
-    (synopsis "Codec utilities for working with framed protocols")
-    (description
-     "This package provides codec utilities for working with framed
-protocols.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tokio-util" ,rust-tokio-util-0.3))))))
 
 (define-public rust-actix-codec-0.2
   (package
