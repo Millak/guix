@@ -74614,6 +74614,29 @@ handle Unicode characters correctly.")
      "An owned slice that packs the slice storage into a single word when possible.")
     (license license:mpl2.0)))
 
+(define-public rust-thin-vec-0.2
+  (package
+    (name "rust-thin-vec")
+    (version "0.2.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thin-vec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jsyprh9gjyp2ivnpbfpqmwdcqxfyjj1s9srmfikdhjjh7a91353"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=std_tests::test_set_len_invalid")
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/gankra/thin-vec")
+    (synopsis "Vec that takes up less space on the stack")
+    (description
+     "This package provides a vec that takes up less space on the stack.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-thiserror-1
   (package
     (name "rust-thiserror")
