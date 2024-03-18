@@ -83447,6 +83447,33 @@ UTF-32 types are provided, including support for malformed encoding.")
 command-line, uniformly on all platforms")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-wildmatch-2
+  (package
+    (name "rust-wildmatch")
+    (version "2.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wildmatch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09dhkskicsyi74abcav57mschy7g16r9ibfsgwsl45bkpk0mk7lk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-ntest" ,rust-ntest-0.9)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-regex-lite" ,rust-regex-lite-0.1))))
+    (home-page "https://github.com/becheran/wildmatch")
+    (synopsis
+     "String matching with single- and multi-character wildcard operator")
+    (description "This package provides simple string matching with single- and
+multi-character wildcard operator.")
+    (license license:expat)))
+
 (define-public rust-winnow-0.6
   (package
     (name "rust-winnow")
