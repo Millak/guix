@@ -4043,6 +4043,31 @@ that integrates with Rust idioms.")
         ("rust-test-case" ,rust-test-case-1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))))
 
+(define-public rust-jsonwebtoken-7
+  (package
+    (name "rust-jsonwebtoken")
+    (version "7.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonwebtoken" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ciz205wcjcn7n6i871zz5xlbzk863b0ybgiqi7li9ipwhawraxg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.12)
+                       ("rust-pem" ,rust-pem-0.8)
+                       ("rust-ring" ,rust-ring-0.16)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-simple-asn1" ,rust-simple-asn1-0.4))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4))))
+    (home-page "https://github.com/Keats/jsonwebtoken")
+    (synopsis "Create and decode JWTs in a strongly typed way")
+    (description "Create and decode JWTs in a strongly typed way.")
+    (license license:expat)))
+
 (define-public rust-multipart-0.18
   (package
     (name "rust-multipart")
