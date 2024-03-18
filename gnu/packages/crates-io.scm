@@ -68998,6 +68998,27 @@ to the same address.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-stable-pattern-0.1
+  (package
+    (name "rust-stable-pattern")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stable-pattern" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i8hq82vm82mqj02qqcsd7caibrih7x5w3a1xpm8hpv30261cr25"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; no method named `as_str` found for struct `std::str::Split`
+       #:cargo-inputs (("rust-memchr" ,rust-memchr-2))))
+    (home-page "https://github.com/SergioBenitez/stable-pattern")
+    (synopsis "Stable port of std::str::Pattern and friends")
+    (description
+      "This package provides a stable port of @code{std::str::Pattern} and friends.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-stacker-0.1
   (package
     (name "rust-stacker")
