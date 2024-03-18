@@ -53715,6 +53715,25 @@ the most part, users of @code{prost} shouldn't need to interact with
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-prost-derive-0.10
+  (package
+    (inherit rust-prost-derive-0.12)
+    (name "rust-prost-derive")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k77nir4xa06gbsdjzlygyv73razj9d11dnvxd18byspv92hyrvv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-prost-derive-0.9
   (package
     (inherit rust-prost-derive-0.11)
