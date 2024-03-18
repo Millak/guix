@@ -1048,8 +1048,33 @@ ecosystem.")
     (description "Actix server config utils.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-actix-service-2
+  (package
+    (name "rust-actix-service")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-service" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fipjcc5kma7j47jfrw55qm09dakgvx617jbriydrkqqz10lk29v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `actix_rt`
+       #:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))))
+    (home-page "https://github.com/actix/actix-net")
+    (synopsis "Service trait and combinators for asynchronous request/response")
+    (description
+     "This package provides a service trait and combinators for representing
+asynchronous request/response operations.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-service-1
   (package
+    (inherit rust-actix-service-2)
     (name "rust-actix-service")
     (version "1.0.6")
     (source
@@ -1059,21 +1084,13 @@ ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1fw2b1cpxrpqk778mpvxv0cazj0pwjyb6khzs4syhnqvb1fl6lh0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-pin-project" ,rust-pin-project-0.4))
        #:cargo-development-inputs
        (("rust-actix-rt" ,rust-actix-rt-1)
-        ("rust-criterion" ,rust-criterion-0.3))))
-    (home-page "https://actix.rs")
-    (synopsis
-     "Service trait and combinators for asynchronous request/response")
-    (description
-     "This package provides a service trait and combinators for representing
-asynchronous request/response operations.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-criterion" ,rust-criterion-0.3))))))
 
 (define-public rust-actix-service-0.4
   (package
