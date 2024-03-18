@@ -4751,6 +4751,76 @@ responses, and headers for the Rocket web framework.")
         ("rust-time" ,rust-time-0.1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.1))))))
 
+(define-public rust-salvo-core-0.16
+  (package
+    (name "rust-salvo-core")
+    (version "0.16.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "salvo_core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01dazprfzmjmvwgcrvqxjd12hgwwlk71mskwyl4cj2y2gm5p80bv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=fs::test::test_named_file_builder"
+         "--skip=routing::filter::path::tests::test_parse_multi_regex"
+         "--skip=routing::filter::path::tests::test_parse_multi_regex_with_prefix"
+         "--skip=routing::filter::path::tests::test_parse_multi_regex_with_prefix_and_suffix"
+         "--skip=routing::filter::path::tests::test_parse_multi_regex_with_suffix"
+         "--skip=routing::filter::path::tests::test_parse_single_regex"
+         "--skip=routing::filter::path::tests::test_parse_single_regex_with_prefix"
+         "--skip=routing::filter::path::tests::test_parse_single_regex_with_prefix_and_suffix"
+         "--skip=routing::filter::path::tests::test_parse_single_regex_with_suffix"
+         "--skip=routing::filter::path::tests::test_parse_wildcard_regex")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-async-compression" ,rust-async-compression-0.3)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cookie" ,rust-cookie-0.16)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-fastrand" ,rust-fastrand-1)
+                       ("rust-form-urlencoded" ,rust-form-urlencoded-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-headers" ,rust-headers-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-multer" ,rust-multer-2)
+                       ("rust-multimap" ,rust-multimap-0.8)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-pin-utils" ,rust-pin-utils-0.1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
+                       ("rust-salvo-macros" ,rust-salvo-macros-0.16)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tempdir" ,rust-tempdir-0.3)
+                       ("rust-textnonce" ,rust-textnonce-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs (("rust-reqwest" ,rust-reqwest-0.11))))
+    (inputs (list openssl))
+    (native-inputs (list pkg-config))
+    (home-page "https://salvo.rs")
+    (synopsis "Core components of the Salvo web framework")
+    (description
+     "This package provides the core components of the Salvo web framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-salvo-extra-0.16
   (package
     (name "rust-salvo-extra")
