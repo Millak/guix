@@ -5298,6 +5298,38 @@ futures.")
     (description "This package provides recursion for async functions in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-async-session-3
+  (package
+    (name "rust-async-session")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-session" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c76vazdlcs2rsxq8gd8a6wnb913vxhnfx1hyfmfpqml4gjlrnh7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-async-lock" ,rust-async-lock-2)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-base64" ,rust-base64-0.13)
+                       ("rust-bincode" ,rust-bincode-1)
+                       ("rust-blake3" ,rust-blake3-0.3)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-hmac" ,rust-hmac-0.11)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.9))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1))))
+    (home-page "https://github.com/http-rs/async-session")
+    (synopsis "Async session support with pluggable middleware")
+    (description "Async session support with pluggable middleware.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-signal-0.2
   (package
     (name "rust-async-signal")
