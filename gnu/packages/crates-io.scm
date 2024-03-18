@@ -19281,20 +19281,20 @@ Rust.")
 (define-public rust-derive-arbitrary-1
   (package
     (name "rust-derive-arbitrary")
-    (version "1.3.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "derive_arbitrary" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1dy8pmv7d8diqhbh1b88v8q5g0inwkgb465877jqimbjqjgfpkgk"))))
+                "04bnd985frl81r5sgixgpvncnnj1bfpfnd7qvdx1aahnqi9pbrv7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/rust-fuzz/arbitrary")
     (synopsis "Derives arbitrary traits")
     (description "This crate implements support for automatically deriving the
