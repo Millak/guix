@@ -24188,8 +24188,32 @@ is defined in the HTML specification.")
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
         ("rust-wyhash" ,rust-wyhash-0.5))))))
 
+(define-public rust-fd-lock-4
+  (package
+    (name "rust-fd-lock")
+    (version "4.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fd-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ixrsd19k2cpl773p9hd0yk3hac684d9aphbxy0jq9q64bd6hmvy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/yoshuawuyts/fd-lock")
+    (synopsis "Advisory lock on a file")
+    (description "Fd-lock provides an advisory lock on a file using a file
+descriptor to it.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fd-lock-3
   (package
+    (inherit rust-fd-lock-4)
     (name "rust-fd-lock")
     (version "3.0.12")
     (source
@@ -24199,20 +24223,12 @@ is defined in the HTML specification.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hlnn1302p37qlc9xl2k5y0vw8q8id5kg59an6riy89hjlynpbir"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-rustix" ,rust-rustix-0.37)
         ("rust-windows-sys" ,rust-windows-sys-0.48))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/yoshuawuyts/fd-lock")
-    (synopsis "Advisory lock on a file")
-    (description
-     "Fd-lock provides an advisory lock on a file using a file descriptor to
-it.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-fd-lock-2
   (package
