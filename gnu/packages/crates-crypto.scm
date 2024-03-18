@@ -5514,6 +5514,30 @@ for additional details.")
         ("rust-syn" ,rust-syn-1)
         ("rust-synstructure" ,rust-synstructure-0.12))))))
 
+(define-public rust-simple-asn1-0.4
+  (package
+    (name "rust-simple-asn1")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simple_asn1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jxy9as8nj65c2n27j843g4fpb95x4fjz31w6qx63q3wwlys2b39"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-num-bigint" ,rust-num-bigint-0.2)
+                       ("rust-num-traits" ,rust-num-traits-0.2))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.7)
+                                   ("rust-rand" ,rust-rand-0.5))))
+    (home-page "https://github.com/acw/simple_asn1")
+    (synopsis "Simple DER/ASN.1 encoding/decoding library")
+    (description
+     "This package provides a simple DER/ASN.1 encoding/decoding library.")
+    (license license:isc)))
+
 (define-public rust-spki-0.7
   (package
     (name "rust-spki")
