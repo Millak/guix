@@ -359,27 +359,28 @@ paging.")
 (define-public cargo-machete
   (package
     (name "cargo-machete")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri name version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lbymfxgcizmj1c1ydpzinjbjhc7c9j0wb5y1xq33j80s5hzayaz"))))
+        (base32 "1an8d88njnk8hfsnwnx52zlzdmijscv7m20as1ci986rxz3vgpcl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;Error: No such file or directory (os error 2)
+       #:install-source? #f
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-argh" ,rust-argh-0.1)
                        ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
-                       ("rust-cargo-toml" ,rust-cargo-toml-0.16)
-                       ("rust-grep" ,rust-grep-0.2)
+                       ("rust-cargo-toml" ,rust-cargo-toml-0.19)
+                       ("rust-grep" ,rust-grep-0.3)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-serde" ,rust-serde-1)
-                       ("rust-toml-edit" ,rust-toml-edit-0.20)
+                       ("rust-toml-edit" ,rust-toml-edit-0.22)
                        ("rust-walkdir" ,rust-walkdir-2))))
     (home-page "https://github.com/est31/cargo-udeps")
     (synopsis "Find unused dependencies in Cargo.toml")
