@@ -53611,6 +53611,27 @@ language.")
                                    ("rust-proptest" ,rust-proptest-1)
                                    ("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-prost-0.10
+  (package
+    (inherit rust-prost-0.12)
+    (name "rust-prost")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gh81qwzpi04cfxiypddpad9pvcdssy31fv9zjpdm84anqfz9bbi"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-prost-derive" ,rust-prost-derive-0.10))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-log" ,rust-log-0.4)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-prost-0.9
   (package
     (inherit rust-prost-0.11)
