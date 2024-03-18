@@ -6462,23 +6462,24 @@ c6e7d37.  However, this package works only up to 128 bytes.")
 (define-public rust-base64-0.21
   (package
     (name "rust-base64")
-    (version "0.21.5")
+    (version "0.21.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "base64" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1y8x2xs9nszj5ix7gg4ycn5a6wy7ca74zxwqri3bdqzdjha6lqrm"))))
+                "0rw52yvsk75kar9wgqfwgb414kvil1gn7mqkrhn9zf1537mpsacx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
+       (("rust-clap" ,rust-clap-3)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-rstest" ,rust-rstest-0.12)
-        ("rust-rstest-reuse" ,rust-rstest-reuse-0.3)
-        ("rust-structopt" ,rust-structopt-0.3))))
+        ("rust-rstest" ,rust-rstest-0.13)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
+        ("rust-strum" ,rust-strum-0.25))))
     (home-page "https://github.com/marshallpierce/rust-base64")
     (synopsis "Encodes and decodes base64 as bytes or utf8")
     (description
