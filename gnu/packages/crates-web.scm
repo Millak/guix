@@ -1243,8 +1243,54 @@ asynchronous request/response operations.")
         ("rust-parking-lot" ,rust-parking-lot-0.9)
         ("rust-threadpool" ,rust-threadpool-1))))))
 
+(define-public rust-actix-tls-3
+  (package
+    (name "rust-actix-tls")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pxyqpr5nangbl55gdc5zpc84viah7qhmpjw5v3pnirb5w5fdk6l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `actix_server`
+       #:cargo-inputs (("rust-actix-rt" ,rust-actix-rt-2)
+                       ("rust-actix-service" ,rust-actix-service-2)
+                       ("rust-actix-utils" ,rust-actix-utils-3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-impl-more" ,rust-impl-more-0.1)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.7)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.25)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.22)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.26))))
+    (home-page "https://github.com/actix/actix-net")
+    (synopsis "TLS acceptor services for Actix ecosystem")
+    (description
+     "This package provides TLS acceptor services for Actix ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-tls-2
   (package
+    (inherit rust-actix-tls-3)
     (name "rust-actix-tls")
     (version "2.0.0")
     (source
@@ -1254,7 +1300,6 @@ asynchronous request/response operations.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1yqmlyn02c72a1rrmjkfx5hnz286130y3sq4ll1mbkv1fdyrny14"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -1269,12 +1314,7 @@ asynchronous request/response operations.")
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.14)
         ("rust-tokio-tls" ,rust-tokio-tls-0.3)
         ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))
-    (home-page "https://actix.rs")
-    (synopsis "TLS acceptor services for Actix ecosystem")
-    (description
-     "This package provides TLS acceptor services for Actix ecosystem.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))))
 
 (define-public rust-actix-tls-1
   (package
