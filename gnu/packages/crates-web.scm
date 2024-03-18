@@ -2474,8 +2474,28 @@ transfer coding.")
         ("rust-sha-1" ,rust-sha-1-0.8)
         ("rust-time" ,rust-time-0.1))))))
 
+(define-public rust-headers-core-0.3
+  (package
+    (name "rust-headers-core")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "headers-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r1w80i2bhmyh8s5mjr2dz6baqlrm6cak6yvzm4jq96lacjs5d2l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-http" ,rust-http-1))))
+    (home-page "https://hyper.rs")
+    (synopsis "Typed HTTP headers core trait")
+    (description "This package provides typed HTTP headers core trait.")
+    (license license:expat)))
+
 (define-public rust-headers-core-0.2
   (package
+    (inherit rust-headers-core-0.3)
     (name "rust-headers-core")
     (version "0.2.0")
     (source
@@ -2485,15 +2505,9 @@ transfer coding.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ab469xfpd411mc3dhmjhmzrhqikzyj8a17jn5bkj9zfpy0n9xp7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-http" ,rust-http-0.2))))
-    (home-page "https://hyper.rs")
-    (synopsis "Typed HTTP headers core trait")
-    (description "This package provides typed HTTP headers core trait.")
-    (license license:expat)))
+       #:cargo-inputs (("rust-http" ,rust-http-0.2))))))
 
 (define-public rust-headers-core-0.1
   (package
