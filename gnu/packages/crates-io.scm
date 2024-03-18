@@ -74496,6 +74496,28 @@ unstable language features.")
     (description "This package provides a newtypes for text offsets")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-textnonce-1
+  (package
+    (name "rust-textnonce")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "textnonce" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10v653sz0305dlzdqh6wh795hxypk24s21iiqcfyv16p1kbzhhvp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.12)
+                       ("rust-rand" ,rust-rand-0.7)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1))))
+    (home-page "https://github.com/mikedilger/textnonce")
+    (synopsis "Text based random nonce generator")
+    (description "Text based random nonce generator.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-textwrap-0.16
   (package
     (name "rust-textwrap")
