@@ -8958,7 +8958,14 @@ user.")
     (arguments
      (list
       #:tests? #t
-      #:test-command #~(list "make" "test-only")))
+      #:test-command #~(list "make" "test-only")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'compatibility-with-recent-buttercup
+            (lambda _
+              (substitute* (find-files "tests/" "\\.el$")
+                (("\\(buttercup-minor-mode\\) -\\*-")
+                 "(buttercup-minor-mode); lexical-binding: t -*-")))))))
     (native-inputs (list emacs-buttercup))
     (build-system emacs-build-system)
     (home-page "https://elpa.nongnu.org/nongnu/subed.html")
