@@ -21081,7 +21081,7 @@ the @code{loopback} Shepherd service.
 @defvar %qemu-static-networking
 This is the @code{static-networking} record representing network setup
 when using QEMU's user-mode network stack on @code{eth0} (@pxref{Using
-the user mode network stack,,, QEMU, QEMU Documentation}).
+the user mode network stack,,, qemu, QEMU Documentation}).
 @end defvar
 
 @cindex DHCP, networking service
