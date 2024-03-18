@@ -31990,6 +31990,31 @@ deordinalize, demodulize, foreign key, and pluralize/singularize are supported
 as both traits and pure functions acting on String types.")
     (license license:bsd-2)))
 
+(define-public rust-inlinable-string-0.1
+  (package
+    (name "rust-inlinable-string")
+    (version "0.1.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inlinable_string" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ysjci8yfvxgf51z0ny2nnwhxrclhmb3vbngin8v4bznhr3ybyn8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/fitzgen/inlinable_string")
+    (synopsis "Crate which provides the `InlinableString` type")
+    (description
+     "The @code{inlinable_string} crate provides the @code{InlinableString} type
+-- an owned, grow-able UTF-8 string that stores small strings inline and avoids
+heap-allocation -- and the @code{StringExt} trait which abstracts string
+operations over both @code{std::string::String} and @code{InlinableString} (or
+even your own custom string type).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-inline-c-0.1
   (package
     (name "rust-inline-c")
