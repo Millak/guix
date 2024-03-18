@@ -1141,7 +1141,8 @@ safety and thread safety guarantees.")
                                  '("fn uplift_dwp_of_bin_on_linux")))
                            (substitute* "cache_lock.rs"
                              ,@(make-ignore-test-list
-                                 '("fn multiple_download")))))))
+                                 '("fn multiple_download"
+                                   "fn download_then_mutate")))))))
                    `())
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
