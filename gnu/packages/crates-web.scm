@@ -2404,8 +2404,34 @@ transfer coding.")
                        ("rust-quinn-proto" ,rust-quinn-proto-0.10)
                        ("rust-tokio-util" ,rust-tokio-util-0.7))))))
 
+(define-public rust-headers-0.4
+  (package
+    (name "rust-headers")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "headers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1abari69kjl2yv2dg06g2x17qgd1a20xp7aqmmg2vfhcppk0c89j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-headers-core" ,rust-headers-core-0.3)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-httpdate" ,rust-httpdate-1)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-sha1" ,rust-sha1-0.10))))
+    (home-page "https://hyper.rs")
+    (synopsis "Typed HTTP headers")
+    (description "This package provides typed HTTP headers.")
+    (license license:expat)))
+
 (define-public rust-headers-0.3
   (package
+    (inherit rust-headers-0.4)
     (name "rust-headers")
     (version "0.3.9")
     (source
@@ -2415,7 +2441,6 @@ transfer coding.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0w62gnwh2p1lml0zqdkrx9dp438881nhz32zrzdy61qa0a9kns06"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.21)
@@ -2424,11 +2449,7 @@ transfer coding.")
         ("rust-http" ,rust-http-0.2)
         ("rust-httpdate" ,rust-httpdate-1)
         ("rust-mime" ,rust-mime-0.3)
-        ("rust-sha1" ,rust-sha1-0.10))))
-    (home-page "https://hyper.rs")
-    (synopsis "Typed HTTP headers")
-    (description "This package provides typed HTTP headers.")
-    (license license:expat)))
+        ("rust-sha1" ,rust-sha1-0.10))))))
 
 (define-public rust-headers-0.2
   (package
