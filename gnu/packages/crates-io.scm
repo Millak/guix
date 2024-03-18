@@ -17154,8 +17154,38 @@ feature flags.")
 number ``crunching``.")
     (license license:expat)))
 
+(define-public rust-cssparser-0.33
+  (package
+    (name "rust-cssparser")
+    (version "0.33.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cssparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07i8k47fmym7kzs95qfhg6zrh4yyf2vl4460rmdyvyx06vck9scv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Not all files included in the tarball.
+       #:cargo-inputs (("rust-cssparser-macros" ,rust-cssparser-macros-0.6)
+                       ("rust-dtoa-short" ,rust-dtoa-short-0.3)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-phf" ,rust-phf-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs (("rust-difference" ,rust-difference-2)
+                                   ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/servo/rust-cssparser")
+    (synopsis "Rust implementation of CSS Syntax Level 3")
+    (description
+     "This package contains a Rust implementation of CSS Syntax Level 3.")
+    (license license:mpl2.0)))
+
 (define-public rust-cssparser-0.29
   (package
+    (inherit rust-cssparser-0.33)
     (name "rust-cssparser")
     (version "0.29.6")
     (source
@@ -17165,7 +17195,6 @@ number ``crunching``.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1yp0zl5cmw9x95np9a51153fdb1ng8fgzwyssg7hr5dmki0h6ggr"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Not all files included in the tarball.
        #:cargo-inputs
@@ -17182,12 +17211,7 @@ number ``crunching``.")
        #:cargo-development-inputs
        (("rust-difference" ,rust-difference-2)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/servo/rust-cssparser")
-    (synopsis "Rust implementation of CSS Syntax Level 3")
-    (description
-     "This package contains a Rust implementation of CSS Syntax Level 3.")
-    (license license:mpl2.0)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-cssparser-0.28
   (package
