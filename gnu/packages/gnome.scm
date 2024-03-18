@@ -4553,7 +4553,7 @@ passwords in the GNOME keyring.")
 (define-public vala
   (package
     (name "vala")
-    (version "0.56.14")
+    (version "0.56.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/vala/"
@@ -4561,7 +4561,7 @@ passwords in the GNOME keyring.")
                                   "vala-" version ".tar.xz"))
               (sha256
                (base32
-                "0mzmldhf6474dp2jkxj160kkafdz32c2l5f8xnm05p4vr9lc50lk"))))
+                "16yaiff5nl2dfyvs3bj8y7wvzh9riz6wqlx7csgg1lpm01b7nj05"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
