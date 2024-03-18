@@ -380,8 +380,61 @@
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-actix-http-3
+  (package
+    (name "rust-actix-http")
+    (version "3.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-http" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hx7rjc1cwrrql5qmihl31hf7nblwyd6a4mvhcghvz41shzv28yj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `once_cell`
+       #:cargo-inputs (("rust-actix-codec" ,rust-actix-codec-0.5)
+                       ("rust-actix-rt" ,rust-actix-rt-2)
+                       ("rust-actix-service" ,rust-actix-service-2)
+                       ("rust-actix-tls" ,rust-actix-tls-3)
+                       ("rust-actix-utils" ,rust-actix-utils-3)
+                       ("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-brotli" ,rust-brotli-3)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-bytestring" ,rust-bytestring-1)
+                       ("rust-derive-more" ,rust-derive-more-0.99)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-h2" ,rust-h2-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-httparse" ,rust-httparse-1)
+                       ("rust-httpdate" ,rust-httpdate-1)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-language-tags" ,rust-language-tags-0.3)
+                       ("rust-local-channel" ,rust-local-channel-0.1)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-zstd" ,rust-zstd-0.13))))
+    (home-page "https://actix.rs")
+    (synopsis "HTTP primitives for the Actix ecosystem")
+    (description
+     "This package provides HTTP primitives for the Actix ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-http-2
   (package
+    (inherit rust-actix-http-3)
     (name "rust-actix-http")
     (version "2.2.0")
     (source
@@ -391,7 +444,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0x78h9lzqdhp06v1kf4dhbiqp8sc911w4lqfj5rmdbhpg3l9j8j5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -435,12 +487,7 @@
         ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
         ("rust-sha-1" ,rust-sha-1-0.9)
         ("rust-slab" ,rust-slab-0.4)
-        ("rust-time" ,rust-time-0.2))))
-    (home-page "https://actix.rs")
-    (synopsis "HTTP primitives for the Actix ecosystem")
-    (description
-     "This package provides HTTP primitives for the Actix ecosystem.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-time" ,rust-time-0.2))))))
 
 (define-public rust-actix-http-1
   (package
