@@ -1642,6 +1642,36 @@ algorithms.")
 hash functions.")
     (license license:expat)))
 
+(define-public rust-csrf-0.4
+  (package
+    (name "rust-csrf")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "csrf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q7ixhshj6a7x2vgsr4d4iqa5mgp4fwkr4lx2hgvnj9xcy1py9dh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.4)
+                       ("rust-aes-gcm" ,rust-aes-gcm-0.9)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-chacha20poly1305" ,rust-chacha20poly1305-0.8)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-hmac" ,rust-hmac-0.11)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-typemap" ,rust-typemap-0.3))))
+    (home-page "https://github.com/heartsucker/rust-csrf")
+    (synopsis "CSRF protection primitives")
+    (description "This package provides CSRF protection primitives.")
+    (license license:expat)))
+
 (define-public rust-ctr-0.9
   (package
     (name "rust-ctr")
