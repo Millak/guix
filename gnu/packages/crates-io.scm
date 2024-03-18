@@ -53081,6 +53081,31 @@ macro use case.")
      "This package provides fetching active mounts and swaps on a Linux system.")
     (license license:expat)))
 
+(define-public rust-proc-quote-0.4
+  (package
+    (name "rust-proc-quote")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-quote" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0051nax31x1yzr1imbp200l2gpz6pqcmlcna099r33773lbap12y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; The test suite hasn't aged well
+       #:cargo-inputs (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-proc-quote-impl" ,rust-proc-quote-impl-0.3)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/Goncalerta/proc-quote")
+    (synopsis "Procedural macro implementation of quote!")
+    (description
+     "This package provides a procedural macro implementation of quote!.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-proc-quote-impl-0.3
   (package
     (name "rust-proc-quote-impl")
