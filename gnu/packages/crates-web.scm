@@ -2093,8 +2093,62 @@ built on the Actix ecosystem.")
                                    ("rust-tokio" ,rust-tokio-1)
                                    ("rust-tower-http" ,rust-tower-http-0.4))))))
 
+(define-public rust-axum-extra-0.9
+  (package
+    (name "rust-axum-extra")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "axum-extra" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13yxdzc0jj9d2q4yqf13qs4psrx9l86vk3zn79vifrh1f8pz8pw9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-axum" ,rust-axum-0.7)
+                       ("rust-axum-core" ,rust-axum-core-0.4)
+                       ("rust-axum-macros" ,rust-axum-macros-0.4)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cookie" ,rust-cookie-0.18)
+                       ("rust-form-urlencoded" ,rust-form-urlencoded-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-headers" ,rust-headers-0.4)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-http-body" ,rust-http-body-1)
+                       ("rust-http-body-util" ,rust-http-body-util-0.1)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-multer" ,rust-multer-3)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-prost" ,rust-prost-0.12)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-html-form" ,rust-serde-html-form-0.2)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-path-to-error" ,rust-serde-path-to-error-0.1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-tower" ,rust-tower-0.4)
+                       ("rust-tower-layer" ,rust-tower-layer-0.3)
+                       ("rust-tower-service" ,rust-tower-service-0.3))
+       #:cargo-development-inputs (("rust-axum" ,rust-axum-0.7)
+                                   ("rust-hyper" ,rust-hyper-1)
+                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tower" ,rust-tower-0.4)
+                                   ("rust-tower-http" ,rust-tower-http-0.5))))
+    (home-page "https://github.com/tokio-rs/axum")
+    (synopsis "Extra utilities for axum")
+    (description "Extra utilities for axum.")
+    (license license:expat)))
+
 (define-public rust-axum-extra-0.7
   (package
+    (inherit rust-axum-extra-0.9)
     (name "rust-axum-extra")
     (version "0.7.7")
     (source
@@ -2104,7 +2158,6 @@ built on the Actix ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0gr8mdpi5xfq964zhaygap0qjvzwspvj8fdg41rp6b1qx4xl6gm9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs (("rust-axum" ,rust-axum-0.6)
@@ -2139,11 +2192,7 @@ built on the Actix ecosystem.")
                                    ("rust-serde-json" ,rust-serde-json-1)
                                    ("rust-tokio" ,rust-tokio-1)
                                    ("rust-tower" ,rust-tower-0.4)
-                                   ("rust-tower-http" ,rust-tower-http-0.4))))
-    (home-page "https://github.com/tokio-rs/axum")
-    (synopsis "Extra utilities for axum")
-    (description "Extra utilities for axum")
-    (license license:expat)))
+                                   ("rust-tower-http" ,rust-tower-http-0.4))))))
 
 (define-public rust-axum-macros-0.3
   (package
