@@ -53777,6 +53777,23 @@ the most part, users of @code{prost} shouldn't need to interact with
 Protobuf reference for more information about well known types.")
     (license license:asl2.0)))
 
+(define-public rust-prost-types-0.10
+  (package
+    (inherit rust-prost-types-0.12)
+    (name "rust-prost-types")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prost-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s0y8sc045xjynikw7n9ywm0z39fdkna3j39ivf1241n551022id"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-prost" ,rust-prost-0.10))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))))
+
 ;; It's recommended that rust-protobuf, rust-protobuf-codegen
 ;; and rust-probuf-codegen-pure be the same version
 (define-public rust-protobuf-2
