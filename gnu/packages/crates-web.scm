@@ -4462,8 +4462,64 @@ in the Rust programming language.")
     (inputs
      (list openssl))))
 
+(define-public rust-rocket-0.5
+  (package
+    (name "rust-rocket")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rocket" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0l4i93dai7pyzlkvdjkqg2g7ni1r6749cwx4nrrhsrr6rdybaywy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-stream" ,rust-async-stream-0.3)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-atomic" ,rust-atomic-0.5)
+                       ("rust-binascii" ,rust-binascii-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-figment" ,rust-figment-0.10)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-multer" ,rust-multer-2)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-ref-cast" ,rust-ref-cast-1)
+                       ("rust-rmp-serde" ,rust-rmp-serde-1)
+                       ("rust-rocket-codegen" ,rust-rocket-codegen-0.5)
+                       ("rust-rocket-http" ,rust-rocket-http-0.5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-state" ,rust-state-0.6)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7)
+                       ("rust-ubyte" ,rust-ubyte-0.10)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-version-check" ,rust-version-check-0.9)
+                       ("rust-yansi" ,rust-yansi-1))
+       #:cargo-development-inputs (("rust-figment" ,rust-figment-0.10)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://rocket.rs")
+    (synopsis
+     "Web framework with focus on ease-of-use, expressibility, and speed")
+    (description
+     "Rocket is a web framework with a focus on ease-of-use, expressibility,
+and speed.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rocket-0.4
   (package
+    (inherit rust-rocket-0.5)
     (name "rust-rocket")
     (version "0.4.7")
     (source
@@ -4473,7 +4529,6 @@ in the Rust programming language.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "04ybnhjw92zaan92lsmx6mkhqc9cpsg3885svb3wzyj39pyzvsvz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -4490,14 +4545,7 @@ in the Rust programming language.")
         ("rust-toml" ,rust-toml-0.4)
         ("rust-version-check" ,rust-version-check-0.9)
         ("rust-yansi" ,rust-yansi-0.5)
-        ("rust-yansi" ,rust-yansi-0.5))))
-    (home-page "https://rocket.rs")
-    (synopsis
-     "Web framework with focus on ease-of-use, expressibility, and speed")
-    (description
-     "Rocket is a web framework with a focus on ease-of-use, expressibility,
-and speed.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-yansi" ,rust-yansi-0.5))))))
 
 (define-public rust-rocket-codegen-0.5
   (package
