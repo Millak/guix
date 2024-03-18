@@ -1909,7 +1909,7 @@ tutorial.")
   (package
     (inherit gtkmm)
     (name "gtkmm")
-    (version "3.24.8")
+    (version "3.24.9")
     (source
      (origin
        (method url-fetch)
@@ -1918,7 +1918,7 @@ tutorial.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1i4ql0j6id6g34w5nbhd7vjak7l3s50lqgdjaj2ranrfj9j0r56j"))))
+        (base32 "1kj4mla3z9kxhdby5w88nl744xkmq6xchf79m1kfa72p0kjbzm9h"))))
     (propagated-inputs
      `(("atkmm-2.28" ,atkmm-2.28)
        ("cairomm-1.14" ,cairomm-1.14)
