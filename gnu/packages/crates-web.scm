@@ -2023,8 +2023,49 @@ built on the Actix ecosystem.")
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-uuid" ,rust-uuid-1))))))
 
+(define-public rust-axum-core-0.4
+  (package
+    (name "rust-axum-core")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "axum-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qx28wg4j6qdcdrisqwyaavlzc0zvbsrcwa99zf9456lfbyn6p51"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       ;; The doc tests contain references to axum_extra.
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-http-body" ,rust-http-body-1)
+                       ("rust-http-body-util" ,rust-http-body-util-0.1)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-sync-wrapper" ,rust-sync-wrapper-0.1)
+                       ("rust-tower-http" ,rust-tower-http-0.5)
+                       ("rust-tower-layer" ,rust-tower-layer-0.3)
+                       ("rust-tower-service" ,rust-tower-service-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs (("rust-axum" ,rust-axum-0.7)
+                                   ("rust-futures-util" ,rust-futures-util-0.3)
+                                   ("rust-hyper" ,rust-hyper-1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tower-http" ,rust-tower-http-0.5))))
+    (home-page "https://github.com/tokio-rs/axum")
+    (synopsis "Core types and traits for @code{axum}")
+    (description "Core types and traits for @code{axum}.")
+    (license license:expat)))
+
 (define-public rust-axum-core-0.3
   (package
+    (inherit rust-axum-core-0.4)
     (name "rust-axum-core")
     (version "0.3.4")
     (source
@@ -2034,7 +2075,6 @@ built on the Actix ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0b1d9nkqb8znaba4qqzxzc968qwj4ybn4vgpyz9lz4a7l9vsb7vm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
                        ("rust-bytes" ,rust-bytes-1)
@@ -2051,11 +2091,7 @@ built on the Actix ecosystem.")
                                    ("rust-futures-util" ,rust-futures-util-0.3)
                                    ("rust-hyper" ,rust-hyper-0.14)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-tower-http" ,rust-tower-http-0.4))))
-    (home-page "https://github.com/tokio-rs/axum")
-    (synopsis "Core types and traits for @code{axum}")
-    (description "Core types and traits for @code{axum}.")
-    (license license:expat)))
+                                   ("rust-tower-http" ,rust-tower-http-0.4))))))
 
 (define-public rust-axum-extra-0.7
   (package
