@@ -4751,6 +4751,28 @@ responses, and headers for the Rocket web framework.")
         ("rust-time" ,rust-time-0.1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.1))))))
 
+(define-public rust-salvo-macros-0.16
+  (package
+    (name "rust-salvo-macros")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "salvo_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hdlzvcv2vvbr60w1kmfr9bx8glx4xs9g0ry1pwa7yf7ig987z90"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-proc-quote" ,rust-proc-quote-0.4)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://salvo.rs")
+    (synopsis "Salvo proc macros")
+    (description "This package provides proc macros for salvo.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-stdweb-0.4
   (package
     (name "rust-stdweb")
