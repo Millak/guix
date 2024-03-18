@@ -2288,18 +2288,18 @@ last place (ULPs) comparisons.")
 (define-public rust-arbitrary-1
   (package
     (name "rust-arbitrary")
-    (version "1.3.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "arbitrary" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0km5cj0sxfzv863blfjpz49mlikaxbaslyzk463i9jn1fgzril72"))))
+                "0471f0c4f1bgibhyhf8vnapkp158h1nkrzx0wnq97jwd9n0jcnkx"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-derive-arbitrary" ,rust-derive-arbitrary-1))))
+     `(#:cargo-inputs (("rust-derive-arbitrary" ,rust-derive-arbitrary-1))
+       #:cargo-development-inputs (("rust-exhaustigen" ,rust-exhaustigen-0.1))))
     (home-page "https://github.com/rust-fuzz/arbitrary")
     (synopsis "Trait for generating structured data from unstructured data")
     (description
