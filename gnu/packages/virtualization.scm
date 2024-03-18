@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
@@ -177,7 +177,8 @@
                            version ".tar.xz"))
        (sha256
         (base32 "1fv5wbxpjxqzv10bdlq0ykgqfmzqx4s8yfch9zvqcm8h0il1gk23"))
-       (patches (search-patches "qemu-disable-some-qtests-tests.patch"
+       (patches (search-patches "qemu-build-info-manual.patch"
+                                "qemu-disable-some-qtests-tests.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
        (snippet
