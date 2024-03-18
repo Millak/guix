@@ -6165,8 +6165,53 @@ the Trust-DNS client to use rustls for TLS.")
        (("rust-openssl" ,rust-openssl-0.10)
         ("rust-tokio" ,rust-tokio-0.1))))))
 
+(define-public rust-tungstenite-0.21
+  (package
+    (name "rust-tungstenite")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tungstenite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qaphb5kgwgid19p64grhv2b9kxy7f1059yy92l9kwrlx90sdwcy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-httparse" ,rust-httparse-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rustls" ,rust-rustls-0.22)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.7)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-utf-8" ,rust-utf-8-0.7)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.26))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-input-buffer" ,rust-input-buffer-0.5)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-socket2" ,rust-socket2-0.5))))
+    (home-page "https://github.com/snapview/tungstenite-rs")
+    (synopsis "Lightweight stream-based WebSocket implementation")
+    (description
+     "This library provides an implementation of WebSockets, RFC6455.  It
+allows for both synchronous (like TcpStream) and asynchronous usage and is
+easy to integrate into any third-party event loops including MIO.  The API
+design abstracts away all the internals of the WebSocket protocol but still
+makes them accessible for those who wants full control over the network.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tungstenite-0.20
   (package
+    (inherit rust-tungstenite-0.21)
     (name "rust-tungstenite")
     (version "0.20.1")
     (source
@@ -6176,7 +6221,6 @@ the Trust-DNS client to use rustls for TLS.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1fbgcv3h4h1bhhf5sqbwqsp7jnc44bi4m41sgmhzdsk2zl8aqgcy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
                        ("rust-bytes" ,rust-bytes-1)
@@ -6197,16 +6241,7 @@ the Trust-DNS client to use rustls for TLS.")
                                    ("rust-env-logger" ,rust-env-logger-0.10)
                                    ("rust-input-buffer" ,rust-input-buffer-0.5)
                                    ("rust-net2" ,rust-net2-0.2)
-                                   ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/snapview/tungstenite-rs")
-    (synopsis "Lightweight stream-based WebSocket implementation")
-    (description
-     "This library provides an implementation of WebSockets, RFC6455.  It
-allows for both synchronous (like TcpStream) and asynchronous usage and is
-easy to integrate into any third-party event loops including MIO.  The API
-design abstracts away all the internals of the WebSocket protocol but still
-makes them accessible for those who wants full control over the network.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-tungstenite-0.19
   (package
