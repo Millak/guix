@@ -4462,6 +4462,25 @@ in the Rust programming language.")
     (inputs
      (list openssl))))
 
+(define-public rust-rfc7239-0.1
+  (package
+    (name "rust-rfc7239")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rfc7239" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ixsyn8y2jfhfqnhwivgil3cvdr4jdr5s0nr7gqq3d3yryrifwq8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-uncased" ,rust-uncased-0.9))))
+    (home-page "https://github.com/icewind1991/rfc7239")
+    (synopsis "Parser for rfc7239 formatted Forwarded headers")
+    (description "Parser for rfc7239 formatted Forwarded headers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rocket-0.5
   (package
     (name "rust-rocket")
