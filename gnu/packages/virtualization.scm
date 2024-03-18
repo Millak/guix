@@ -169,16 +169,16 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "8.1.3")
+    (version "8.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1fv5wbxpjxqzv10bdlq0ykgqfmzqx4s8yfch9zvqcm8h0il1gk23"))
+        (base32 "1wy45fbf4816l4ylsz8b8cbypva9apcdnvlgqfr586icp30lcww4"))
        (patches (search-patches "qemu-build-info-manual.patch"
-                                "qemu-disable-some-qtests-tests.patch"
+                                "qemu-disable-bios-tables-test.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -197,7 +197,7 @@
              (for-each delete-file (find-files "." "^(efi|pxe)-.*\\.rom$")))
            ;; Delete bundled code that we provide externally.
            (for-each delete-file-recursively
-                     '("subprojects/dtc"
+                     '("roms/u-boot/scripts/dtc"
                        "roms/ipxe"
                        "roms/openbios"
                        "roms/opensbi"
@@ -322,10 +322,18 @@
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               ;; Ensure the executables created by these source files reference
               ;; /bin/sh from the store so they work inside the build container.
-              (substitute* '("block/cloop.c" "migration/exec.c"
-                             "net/tap.c" "tests/qtest/libqtest.c"
+              (substitute* '("block/cloop.c"
+                             "migration/exec.c"
+                             "migration/migration.c"
+                             "net/tap.c"
+                             "util/envlist.c")
+                (("/bin/sh")
+                 (search-input-file inputs "/bin/sh")))
+              ;; For tests, use the native /bin/sh is available.
+              (substitute* '("tests/qtest/libqtest.c"
                              "tests/qtest/vhost-user-blk-test.c")
-                (("/bin/sh") (search-input-file inputs "/bin/sh")))
+                (("/bin/sh")
+                 (search-input-file (or native-inputs inputs) "/bin/sh")))
               (substitute* "tests/qemu-iotests/testenv.py"
                 (("#!/usr/bin/env python3")
                  (string-append "#!" (search-input-file (or native-inputs inputs)
