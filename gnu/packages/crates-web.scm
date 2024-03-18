@@ -4751,6 +4751,58 @@ responses, and headers for the Rocket web framework.")
         ("rust-time" ,rust-time-0.1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.1))))))
 
+(define-public rust-salvo-extra-0.16
+  (package
+    (name "rust-salvo-extra")
+    (version "0.16.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "salvo_extra" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "023wagm5mpkp1jnpggllbddqigsy5h4qnw2lk8m3j25fj61fl3iy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=proxy::tests::test_proxy"
+                            "--skip=serve::tests::test_serve_static_files"
+                            "--skip=sse::tests::test_sse_retry")
+       #:cargo-inputs (("rust-async-compression" ,rust-async-compression-0.3)
+                       ("rust-async-session" ,rust-async-session-3)
+                       ("rust-base64" ,rust-base64-0.13)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-cookie" ,rust-cookie-0.16)
+                       ("rust-csrf" ,rust-csrf-0.4)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hkdf" ,rust-hkdf-0.12)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-hyper-rustls" ,rust-hyper-rustls-0.23)
+                       ("rust-jsonwebtoken" ,rust-jsonwebtoken-7)
+                       ("rust-mime" ,rust-mime-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pin-project" ,rust-pin-project-1)
+                       ("rust-salvo-core" ,rust-salvo-core-0.16)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tokio-tungstenite" ,rust-tokio-tungstenite-0.16)
+                       ("rust-tokio-util" ,rust-tokio-util-0.6)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs (("rust-reqwest" ,rust-reqwest-0.11))))
+    (inputs (list openssl))
+    (native-inputs (list pkg-config))
+    (home-page "https://salvo.rs")
+    (synopsis "Extra components of the Salvo web framework")
+    (description
+     "This package provides the extra components of the Salvo web framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-salvo-macros-0.16
   (package
     (name "rust-salvo-macros")
