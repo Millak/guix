@@ -71219,6 +71219,28 @@ and process stack traces from native applications, minidumps or minified
 @code{JavaScript}.")
     (license license:expat)))
 
+(define-public rust-symbolic-common-9
+  (package
+    (inherit rust-symbolic-common-12)
+    (name "rust-symbolic-common")
+    (version "9.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symbolic-common" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cl2jfm3fd4cqvmc364s1622gg0zp2966z2g9apa428b6fx662c0"))))
+    (arguments
+     `(#:tests? #f      ; unresolved import `symbolic_testutils`
+       #:cargo-inputs (("rust-debugid" ,rust-debugid-0.8)
+                       ("rust-memmap2" ,rust-memmap2-0.5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-similar-asserts" ,rust-similar-asserts-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-symbolic-demangle-12
   (package
     (name "rust-symbolic-demangle")
