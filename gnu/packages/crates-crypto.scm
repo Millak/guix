@@ -3568,6 +3568,33 @@ a cipher, can be used as a Message Authentication Code (MAC).")
 for constructing a Message Authentication Code (MAC).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-polyval-0.5
+  (package
+    (inherit rust-polyval-0.6)
+    (name "rust-polyval")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polyval" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1890wqvc0csc9y9k9k4gsbz91rgdnhn6xnfmy9pqkh674fvd46c4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+                       ("rust-opaque-debug" ,rust-opaque-debug-0.3)
+                       ("rust-universal-hash" ,rust-universal-hash-0.4)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-polyval-0.4
   (package
     (inherit rust-polyval-0.6)
