@@ -76270,6 +76270,36 @@ operations.")
        #:cargo-development-inputs
        (("rust-tokio" ,rust-tokio-0.2))))))
 
+(define-public rust-tokio-metrics-0.3
+  (package
+    (name "rust-tokio-metrics")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-metrics" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04p1kf7sgcrs2n62331fm5yvv8scqv2x81qixdz8pjb23lj0kkpa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `tokio_metrics::RuntimeMonitor`
+       #:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1))
+       #:cargo-development-inputs (("rust-axum" ,rust-axum-0.6)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-num-cpus" ,rust-num-cpus-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://tokio.rs")
+    (synopsis "Runtime and task level metrics for Tokio applications")
+    (description "Runtime and task level metrics for Tokio applications.")
+    (license license:expat)))
+
 (define-public rust-tokio-mock-task-0.1
   (package
     (name "rust-tokio-mock-task")
