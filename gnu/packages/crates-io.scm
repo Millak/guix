@@ -17274,21 +17274,20 @@ number ``crunching``.")
 (define-public rust-cssparser-macros-0.6
   (package
     (name "rust-cssparser-macros")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cssparser-macros" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0vp13g4blyjvhg3j4r9b7vrwhnfi1y2fmhv8hxgficpjazg7bbnz"))))
+         (base32 "0cfkzj60avrnskdmaf7f8zw6pp3di4ylplk455zrzaf19ax8id8k"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=match_byte")
+       #:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/servo/rust-cssparser")
     (synopsis "Procedural macros for cssparser")
     (description
