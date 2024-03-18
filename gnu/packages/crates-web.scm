@@ -4751,6 +4751,43 @@ responses, and headers for the Rocket web framework.")
         ("rust-time" ,rust-time-0.1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.1))))))
 
+(define-public rust-salvo-0.16
+  (package
+    (name "rust-salvo")
+    (version "0.16.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "salvo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jw9h9aac4ms9shvssc8mw53q9842f5bfqv1a8aqkpcyd2j23n4b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `salvo_extra`
+       #:cargo-inputs (("rust-salvo-core" ,rust-salvo-core-0.16)
+                       ("rust-salvo-extra" ,rust-salvo-extra-0.16))
+       #:cargo-development-inputs
+       (("rust-async-stream" ,rust-async-stream-0.3)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-jsonwebtoken" ,rust-jsonwebtoken-7)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tower" ,rust-tower-0.4)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-log" ,rust-tracing-log-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://salvo.rs")
+    (synopsis "Salvo is a web framework")
+    (description
+     "Salvo is a powerful web framework that can make your work easier.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-salvo-core-0.16
   (package
     (name "rust-salvo-core")
