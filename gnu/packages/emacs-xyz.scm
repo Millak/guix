@@ -9323,14 +9323,14 @@ correct movement and editing than you would otherwise have.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "29.1.4.4")
+    (version "29.1.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "compat-" version ".tar"))
               (sha256
                (base32
-                "0710g552b1nznnfx2774gmg6yizs27s0bakqm95nsjrp6kgznbfr"))))
+                "191cjzrw9xm5bvcf8s1yr9hdcn9i02789xfd8pz33lk65s0rq413"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~pkal/compat")
     (synopsis "Emacs Lisp Compatibility Library")
