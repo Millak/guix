@@ -71246,6 +71246,27 @@ and process stack traces from native applications, minidumps or minified
 languages and compilers.")
     (license license:expat)))
 
+(define-public rust-symbolic-demangle-9
+  (package
+    (inherit rust-symbolic-demangle-12)
+    (name "rust-symbolic-demangle")
+    (version "9.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symbolic-demangle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l0s1lwsrfb8sq1wz4yh8szdncnkdkz4ww9qkqvb6ay7vcghm51b"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-cpp-demangle" ,rust-cpp-demangle-0.3)
+                       ("rust-msvc-demangler" ,rust-msvc-demangler-0.9)
+                       ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+                       ("rust-symbolic-common" ,rust-symbolic-common-9))
+       #:cargo-development-inputs
+       (("rust-similar-asserts" ,rust-similar-asserts-1))))))
+
 (define-public rust-symlink-0.1
   (package
     (name "rust-symlink")
