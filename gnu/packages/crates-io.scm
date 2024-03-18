@@ -48828,8 +48828,30 @@ library.")
 pdqsort.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pear-0.2
+  (package
+    (name "rust-pear")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pear" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j03s6m80iqldnm6jzh3k1fbyk0lxirx8bi4ivgq3k3sq7va1k2c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-inlinable-string" ,rust-inlinable-string-0.1)
+                       ("rust-pear-codegen" ,rust-pear-codegen-0.2)
+                       ("rust-yansi" ,rust-yansi-1))))
+    (home-page "https://crates.io/crates/pear")
+    (synopsis "Pear is a fruit")
+    (description "This package provides a pear is a fruit.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pear-0.1
   (package
+    (inherit rust-pear-0.2)
     (name "rust-pear")
     (version "0.1.5")
     (source
@@ -48839,15 +48861,9 @@ pdqsort.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "02lnp8c414z5ds0lskd4zxlalrjljzpkg8g6kizszij4h52sgprj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-pear-codegen" ,rust-pear-codegen-0.1))))
-    (home-page "https://crates.io/crates/pear")
-    (synopsis "Pear is a fruit")
-    (description "This package provides a pear is a fruit.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-pear-codegen" ,rust-pear-codegen-0.1))))))
 
 (define-public rust-pear-codegen-0.2
   (package
