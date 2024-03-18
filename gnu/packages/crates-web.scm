@@ -4499,8 +4499,43 @@ in the Rust programming language.")
 and speed.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rocket-codegen-0.5
+  (package
+    (name "rust-rocket-codegen")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rocket_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k6hdf9s9y73kzj89qs688gnfjj1sl4imp6pdjz22pzpmdk808x2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; can't find crate for `rocket`
+       #:cargo-inputs (("rust-devise" ,rust-devise-0.4)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rocket-http" ,rust-rocket-http-0.5)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "https://rocket.rs")
+    (synopsis "Procedural macros for the Rocket web framework")
+    (description
+     "This package provides procedural macros for the Rocket web framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rocket-codegen-0.4
   (package
+    (inherit rust-rocket-codegen-0.5)
     (name "rust-rocket-codegen")
     (version "0.4.7")
     (source
@@ -4510,7 +4545,6 @@ and speed.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "18s2dll8c4sd26s8cfr6cizj5z55xwnk6r6x7b2wvcf8n9ajrb6f"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -4520,12 +4554,7 @@ and speed.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-rocket-http" ,rust-rocket-http-0.4)
         ("rust-version-check" ,rust-version-check-0.9)
-        ("rust-yansi" ,rust-yansi-0.5))))
-    (home-page "https://rocket.rs")
-    (synopsis "Procedural macros for the Rocket web framework")
-    (description
-     "This package provides procedural macros for the Rocket web framework.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-yansi" ,rust-yansi-0.5))))))
 
 (define-public rust-rocket-http-0.4
   (package
