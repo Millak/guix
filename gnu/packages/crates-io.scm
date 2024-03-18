@@ -15154,6 +15154,25 @@ contents of the OS-level clipboard.")
 numbers using the CORDIC method.")
     (license license:bsd-3)))
 
+(define-public rust-core-error-0.0.0
+  (package
+    (name "rust-core-error")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-error" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13wvc7lcpi7f6rr0racns4l52gzpix4xhih6qns30hmn5sbv5kgg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "https://github.com/core-error/core-error")
+    (synopsis "std::error::Error for libcore")
+    (description "std::error::Error for libcore.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-extensions-1
   (package
     (name "rust-core-extensions")
