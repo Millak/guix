@@ -4036,6 +4036,28 @@ applications written in Rust.  Its API is inspired by the popular
 and metrics over HTTP.")
     (license license:asl2.0)))
 
+(define-public rust-poem-derive-1
+  (package
+    (name "rust-poem-derive")
+    (version "1.3.59")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "poem-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cdvid2ryn4h9wj7087shf20ijvahh1n44bmwghngn6qh13czpa2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/poem-web/poem")
+    (synopsis "Macros for poem")
+    (description "This package provides macros for poem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-reqwest-0.11
   (package
     (name "rust-reqwest")
