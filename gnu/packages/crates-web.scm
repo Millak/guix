@@ -1655,8 +1655,33 @@ the Actix ecosystem.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-tokio-timer" ,rust-tokio-timer-0.2))))))
 
+(define-public rust-actix-web-codegen-4
+  (package
+    (name "rust-actix-web-codegen")
+    (version "4.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-web-codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xalrv1s7imzfgxyql6zii5bpxxkk11rlcc8n4ia3v1hpgmm07zb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `rustversion`
+       #:cargo-inputs (("rust-actix-router" ,rust-actix-router-0.5)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://actix.rs")
+    (synopsis "Routing and runtime macros for Actix Web")
+    (description
+     "This package provides routing and runtime macros for Actix Web.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-web-codegen-0.4
   (package
+    (inherit rust-actix-web-codegen-4)
     (name "rust-actix-web-codegen")
     (version "0.4.0")
     (source
@@ -1666,17 +1691,12 @@ the Actix ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ys3f6q0hgflqvp271s49q88m41db3iynm7ydxy0wgikjdqgf9md"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://actix.rs")
-    (synopsis "Actix web proc macros")
-    (description "This package provides Actix web proc macros.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-actix-web-codegen-0.2
   (package
