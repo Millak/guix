@@ -60423,8 +60423,48 @@ reading and writing BAM files.")
 suitable for financial calculations.")
     (license license:expat)))
 
+(define-public rust-rust-embed-8
+  (package
+    (name "rust-rust-embed")
+    (version "8.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-embed" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ic70vd4lh6dhjnxaq8wywq3bg23jf78jyyashb3s1b601nz8y7v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=create_is_accurate"
+                            "--skip=last_modified_is_accurate"
+                            "--skip=RustEmbed")
+       #:cargo-inputs (("rust-actix-web" ,rust-actix-web-4)
+                       ("rust-axum" ,rust-axum-0.7)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-include-flate" ,rust-include-flate-0.2)
+                       ("rust-mime-guess" ,rust-mime-guess-2)
+                       ("rust-poem" ,rust-poem-1)
+                       ("rust-rocket" ,rust-rocket-0.5)
+                       ("rust-rust-embed-impl" ,rust-rust-embed-impl-8)
+                       ("rust-rust-embed-utils" ,rust-rust-embed-utils-8)
+                       ("rust-salvo" ,rust-salvo-0.16)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-warp" ,rust-warp-0.3))
+       #:cargo-development-inputs (("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/pyrossh/rust-embed")
+    (synopsis "Rust custom @code{Derive} macro")
+    (description
+     "This package provides a custom @code{Derive} macro which loads files
+into the Rust binary at compile time during release and loads the file from
+the file-system during development.")
+    (license license:expat)))
+
 (define-public rust-rust-embed-5
   (package
+    (inherit rust-rust-embed-8)
     (name "rust-rust-embed")
     (version "5.9.0")
     (source
@@ -60434,7 +60474,6 @@ suitable for financial calculations.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "08smnqn21vn5zaywfki391v2l9v30cs0446qzzhvjssxmimgxq9g"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -60448,14 +60487,7 @@ suitable for financial calculations.")
         ("rust-rust-embed-utils" ,rust-rust-embed-utils-5)
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-warp" ,rust-warp-0.2))))
-    (home-page "https://github.com/pyros2097/rust-embed")
-    (synopsis "Rust custom @code{Derive} macro")
-    (description
-     "This package provides a custom @code{Derive} macro which loads files
-into the Rust binary at compile time during release and loads the file from
-the file-system during development.")
-    (license license:expat)))
+        ("rust-warp" ,rust-warp-0.2))))))
 
 (define-public rust-rust-embed-impl-5
   (package
