@@ -37927,44 +37927,46 @@ released, and track their progress in watching a series.")
     (license license:gpl3+)))
 
 (define-public emacs-webpaste
-  (package
-    (name "emacs-webpaste")
-    (version "3.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/etu/webpaste.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07hj9nr7x6c9w2dnvc58cfbprgp9cqzdxflp5qlpglzdw0bi9s3c"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #t
-       #:test-command '("make" "unit" "integration")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; Do not use cask to run tests.
-             (substitute* "Makefile"
-               (("\\$\\{CASK\\} exec ") ""))
-             ;; Disable tests that need network access.
-             (substitute* (list "tests/unit/test-webpaste-provider-creation.el"
-                                "tests/integration/test-webpaste-providers.el")
-               (("describe") "xdescribe")))))))
-    (native-inputs
-     (list emacs-buttercup))
-    (propagated-inputs
-     (list emacs-request))
-    (home-page "https://github.com/etu/webpaste.el")
-    (synopsis "Paste to pastebin-like services")
-    (description "This mode pastes whole buffers or parts of buffers
+  (let ((commit "8ac7b2d409f158bcaa853aa1c5763e8acf2857bb")
+        (revision "1"))
+    (package
+      (name "emacs-webpaste")
+      (version (git-version "3.2.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/etu/webpaste.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wl2q4q7c2a1m60q4dnajsyzkc9yprkyzx4hxzmxkwry22k906x3"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:tests? #t
+         #:test-command '("make" "unit" "integration")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-tests
+             (lambda _
+               ;; Do not use cask to run tests.
+               (substitute* "Makefile"
+                 (("\\$\\{CASK\\} exec ") ""))
+               ;; Disable tests that need network access.
+               (substitute* (list "tests/unit/test-webpaste-provider-creation.el"
+                                  "tests/integration/test-webpaste-providers.el")
+                 (("describe") "xdescribe")))))))
+      (native-inputs
+       (list emacs-buttercup))
+      (propagated-inputs
+       (list emacs-request))
+      (home-page "https://github.com/etu/webpaste.el")
+      (synopsis "Paste to pastebin-like services")
+      (description "This mode pastes whole buffers or parts of buffers
 to pastebin-like services.  It supports more than one service and will
 failover if one service fails.  More services can easily be added over time
 and preferred services can easily be configured.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-keystore-mode
   (let ((release "0.0.1")
