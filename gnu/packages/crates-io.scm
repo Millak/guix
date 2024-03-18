@@ -9740,8 +9740,31 @@ little-endian.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-bytestring-1
+  (package
+    (name "rust-bytestring")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bytestring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wpf0c5c72x3ycdb85vznkmcy8fy6ckzd512064dyabbx81h5n3l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `ahash`
+       #:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://actix.rs")
+    (synopsis "UTF-8 encoded string with Bytes as a storage")
+    (description "This package provides a UTF-8 encoded read-only string using
+`Bytes` as storage.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bytestring-0.1
   (package
+    (inherit rust-bytestring-1)
     (name "rust-bytestring")
     (version "0.1.5")
     (source
@@ -9751,18 +9774,12 @@ little-endian.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qzkncgky5p5vsdb9msmfg6d92dcs9idcjcr5nk7inkja7x0az7w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://actix.rs")
-    (synopsis "UTF-8 encoded string with Bytes as a storage")
-    (description
-     "This package provides a UTF-8 encoded string with Bytes as a storage.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-byteyarn-0.2
   (package
