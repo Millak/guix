@@ -64,6 +64,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,7 @@
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
@@ -5462,7 +5464,14 @@ it won't take longer to install 15 machines than it would to install just 2.")
                     (man1 (string-append man "/man1"))
                     (man5 (string-append man "/man5"))
                     (man7 (string-append man "/man7"))
-                    (release "target/release")
+                    (release ,(if (%current-target-system)
+                                  (string-append
+                                    "target/"
+                                    (platform-rust-target
+                                      (lookup-platform-by-target
+                                        (%current-target-system)))
+                                    "/release")
+                                  "target/release"))
                     (greetd-bin (string-append release "/greetd"))
                     (agreety-bin (string-append release "/agreety")))
                (install-file greetd-bin sbin)
@@ -5472,8 +5481,10 @@ it won't take longer to install 15 machines than it would to install just 2.")
                  (install-file "greetd.5" man5)
                  (install-file "greetd-ipc.7" man7)
                  (install-file "agreety.1" man1))))))))
+    (inputs
+     (list linux-pam))
     (native-inputs
-     (list linux-pam scdoc))
+     (list scdoc))
     (synopsis "Minimal and flexible login manager daemon")
     (description
      "greetd is a minimal and flexible login manager daemon
