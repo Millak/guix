@@ -29235,6 +29235,38 @@ higher performance on different key space sizes.")
     (description "Handlebars templating implemented in Rust.")
     (license license:expat)))
 
+(define-public rust-handlebars-4
+  (package
+    (inherit rust-handlebars-5)
+    (name "rust-handlebars")
+    (version "4.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "handlebars" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09dj4rk6r9ngy1ki34mppcqq4pcnlhjd02yhnf724qpkkympp9ps"))))
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pest" ,rust-pest-2)
+                       ("rust-pest-derive" ,rust-pest-derive-2)
+                       ("rust-rhai" ,rust-rhai-1)
+                       ("rust-rust-embed" ,rust-rust-embed-8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-pprof" ,rust-pprof-0.10)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.3)
+                                   ("rust-tiny-http" ,rust-tiny-http-0.11))))
+    (native-inputs (list protobuf))))
+
 (define-public rust-home-0.5
   (package
     (name "rust-home")
