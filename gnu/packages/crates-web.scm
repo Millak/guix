@@ -4905,6 +4905,32 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
     (description "This package provides a low level HTTP server library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tiny-http-0.11
+  (package
+    (inherit rust-tiny-http-0.12)
+    (name "rust-tiny-http")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tiny_http" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jkpniq72ppbhppyxd2q36kjji05qljsvv1fhvxiwg6j217fzmp0"))))
+    (arguments
+     `(#:cargo-inputs (("rust-ascii" ,rust-ascii-1)
+                       ("rust-chunked-transfer" ,rust-chunked-transfer-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-rustls" ,rust-rustls-0.20)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-fdlimit" ,rust-fdlimit-0.1)
+                                   ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+                                   ("rust-sha1" ,rust-sha1-0.6))))))
+
 (define-public rust-tiny-http-0.6
   (package
     (inherit rust-tiny-http-0.12)
