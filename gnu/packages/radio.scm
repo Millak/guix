@@ -1683,7 +1683,7 @@ instances over the network, and general QSO and DXpedition logging.")
            libusb
            qtbase-5
            qtmultimedia-5
-           qtserialport
+           qtserialport-5
            wsjtx-hamlib))
     (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
     (synopsis "Weak-signal ham radio communication program")
@@ -1721,7 +1721,7 @@ weak-signal conditions.")
       qtbase-5
       qtwebsockets-5
       qtmultimedia-5
-      qtserialport))
+      qtserialport-5))
     (arguments
      `(#:tests? #f)) ; No test suite
     (synopsis "Weak-signal ham radio communication program, forked from WSJTX")
@@ -1798,7 +1798,7 @@ focused on DXing and being shaped by community of DXers.JTDX")
            libusb
            qtbase-5
            qtmultimedia-5
-           qtserialport
+           qtserialport-5
            wsjtx-hamlib))
     (home-page "http://js8call.com/")
     (synopsis "Weak-signal ham radio communication program")
@@ -2670,7 +2670,7 @@ voice formats.")
            qtlocation
            qtmultimedia-5
            qtquickcontrols2-5
-           qtserialport
+           qtserialport-5
            qtspeech-5
            qtwebchannel-5
            qtwebengine-5
@@ -2850,9 +2850,7 @@ software-defined radio receivers.")
            qtgamepad
            qtbase-5
            qtmultimedia-5
-           ;; TODO: Needs to be renamed to qtserialport-5. when version 6 is
-           ;; packed.
-           qtserialport
+           qtserialport-5
            rtaudio))
     (home-page "https://wfview.org/")
     (synopsis "Software to control Icom radios")
@@ -3221,7 +3219,7 @@ memory contents between them.")
                    (substitute* "lib/CMakeLists.txt"
                      (("(DESTINATION \")/etc/udev/" _ directive)
                       (string-append directive #$output "/lib/udev/"))))))))
-    (inputs (list libusb qtbase-5 qtlocation qtserialport yaml-cpp))
+    (inputs (list libusb qtbase-5 qtlocation qtserialport-5 yaml-cpp))
     (native-inputs (list qttools-5))
     (home-page "https://dm3mat.darc.de/qdmr/")
     (synopsis "GUI application and command line tool to program DMR radios")

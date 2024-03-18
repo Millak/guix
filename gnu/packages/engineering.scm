@@ -737,9 +737,7 @@ multipole-accelerated algorithm.")
      (list boost
            libgit2
            qtbase-5
-           ;; TODO: Needs to be renamed to qtserialport-5. when version 6 is
-           ;; packed.
-           qtserialport
+           qtserialport-5
            qtsvg-5
            zlib))
     (home-page "https://fritzing.org")
@@ -4229,7 +4227,7 @@ netlists from the drawn schematic, allowing the simulation of the circuit.")
                   "08rqhl6a5a8s67a8yl16944zgcsnnb08xfv4klzyqwlvaqgfp783"))))
       (build-system gnu-build-system)
       (native-inputs (list qttools-5))
-      (inputs (list qtbase-5 qtserialport))
+      (inputs (list qtbase-5 qtserialport-5))
       (arguments
        (list #:tests? #f                      ; no tests.
              #:phases #~(modify-phases %standard-phases

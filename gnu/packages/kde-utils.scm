@@ -152,7 +152,7 @@ well as CD-ROM images.")
                     qtcharts
                     qtdeclarative-5
                     qtmultimedia-5
-                    qtserialport))
+                    qtserialport-5))
       (home-page "https://atelier.kde.org")
       (synopsis "Desktop interface to control 3D printers powered by AtCore")
       (description "Atelier provides interface to control and manage your printer.
@@ -729,7 +729,7 @@ combinations are distinct enough to be readable and accessible.")
                   "1830r6ylpn3l7y2frl8cih5cpjgbkfrib9jq7jklf8aszhlsihf2"))))
       (build-system qt-build-system)
       (native-inputs (list extra-cmake-modules))
-      (inputs (list qtcharts qtdeclarative-5 qtserialport))
+      (inputs (list qtcharts qtdeclarative-5 qtserialport-5))
       (home-page "https://invent.kde.org/libraries/atcore")
       (synopsis "Library for connection and management of 3D printers")
       (description

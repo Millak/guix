@@ -1388,7 +1388,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtmultimedia-5
            qtpositioning
            qtscript
-           qtserialport
+           qtserialport-5
            qttranslations
            qtwebengine-5
            qxlsx-qt5

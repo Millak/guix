@@ -3009,7 +3009,7 @@ growing set of geoscientific methods.")
            qtkeychain
            qtlocation
            qtmultimedia-5
-           qtserialport
+           qtserialport-5
            qtsvg-5
            qwt
            ;; saga

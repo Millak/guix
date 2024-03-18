@@ -2054,7 +2054,7 @@ compositor libraries.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
-(define-public qtserialport
+(define-public qtserialport-5
   (package
     (inherit qtsvg-5)
     (name "qtserialport")
@@ -2085,6 +2085,38 @@ compositor libraries.")
     (description "The Qt Serial Port module provides the library for
 interacting with serial ports from within Qt.")))
 
+(define-public qtserialport
+  (package
+    (name "qtserialport")
+    (version "6.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (qt-url name version))
+       (sha256
+        (base32 "0dywalgafvxi2jgdv9dk22hwwd8qsgk5xfybh75n3njmwmwnarg1"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-dlopen-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/serialport/qtudev_p.h"
+                     ;; Use the absolute paths for dynamically loaded libs,
+                     ;; otherwise the lib will be searched in LD_LIBRARY_PATH
+                     ;; which typically is not set in guix.
+                     (("setFileNameAndVersion\\(QStringLiteral\\(\"udev\")")
+                      (format #f "setFileNameAndVersion(QStringLiteral(~s))"
+                              (string-append #$(this-package-input "eudev")
+                                             "/lib/libudev")))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list qtbase eudev))
+    (home-page (package-home-page qtbase))
+    (synopsis "Qt Serial Port module")
+    (description "The Qt Serial Port module provides the library for
+interacting with serial ports from within Qt.")
+    (license (package-license qtbase))))
+
 (define-public qtserialbus
   (package
     (inherit qtsvg-5)
@@ -2107,7 +2139,7 @@ interacting with serial ports from within Qt.")))
                    (format #f "QStringLiteral(~s)"
                            (search-input-file inputs
                                               "lib/libsocketcan.so"))))))))))
-    (inputs (list libsocketcan qtbase-5 qtserialport))
+    (inputs (list libsocketcan qtbase-5 qtserialport-5))
     (synopsis "Qt Serial Bus module")
     (description "The Qt Serial Bus API provides classes and functions to
 access the various industrial serial buses and protocols, such as CAN, ModBus,
@@ -2258,7 +2290,7 @@ Server Protocol (LSP) for Qt.")
             (add-before 'check 'pre-check
               (lambda _
                 (setenv "HOME" "/tmp")))))))
-    (native-inputs (list perl qtdeclarative-5 qtquickcontrols-5 qtserialport))
+    (native-inputs (list perl qtdeclarative-5 qtquickcontrols-5 qtserialport-5))
     (inputs (list icu4c openssl qtbase-5 zlib))
     (synopsis "Qt Location and Positioning modules")
     (description "The Qt Location module provides an interface for location,
@@ -3918,8 +3950,8 @@ module provides support functions to the automatically generated code.")
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtlocation" ,qtlocation)
        ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtsensors-5" ,qtsensors-5)
-       ("qtserialport" ,qtserialport)
+       ("qtsensors" ,qtsensors-5)
+       ("qtserialport" ,qtserialport-5)
        ("qtsvg-5" ,qtsvg-5)
        ("qttools-5" ,qttools-5)
        ("qtwebchannel-5" ,qtwebchannel-5)
