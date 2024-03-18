@@ -880,8 +880,40 @@ during testing.")
         ("rust-tokio-reactor" ,rust-tokio-reactor-0.1)
         ("rust-tokio-timer" ,rust-tokio-timer-0.2))))))
 
+(define-public rust-actix-server-2
+  (package
+    (name "rust-actix-server")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-server" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m62qbg7vl1wddr6mm8sd4rnvd3w5v3zcn8fmdpfl8q4xxz3xc9y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `actix_codec`
+       #:cargo-inputs (("rust-actix-rt" ,rust-actix-rt-2)
+                       ("rust-actix-service" ,rust-actix-service-2)
+                       ("rust-actix-utils" ,rust-actix-utils-3)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-mio" ,rust-mio-0.8)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-uring" ,rust-tokio-uring-0.4)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://actix.rs")
+    (synopsis "General purpose TCP server built for the Actix ecosystem")
+    (description
+     "This package provides a general purpose TCP server built for the Actix
+ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-server-1
   (package
+    (inherit rust-actix-server-2)
     (name "rust-actix-server")
     (version "1.0.4")
     (source
@@ -891,7 +923,6 @@ during testing.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "13khzd6pz9pqksxmw2syipfwq2gi5v9warx6pa24g8iccxp7wh25"))))
-    (build-system cargo-build-system)
     (arguments
      ;; Tests fail with "error[E0432]: unresolved import `bytes`" error.
      `(#:tests? #false
@@ -907,13 +938,7 @@ during testing.")
         ("rust-mio-uds" ,rust-mio-uds-0.6)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-slab" ,rust-slab-0.4)
-        ("rust-socket2" ,rust-socket2-0.3))))
-    (home-page "https://actix.rs")
-    (synopsis "General purpose TCP server built for the Actix ecosystem")
-    (description
-     "This package provides a general purpose TCP server built for the Actix
-ecosystem.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-socket2" ,rust-socket2-0.3))))))
 
 (define-public rust-actix-server-0.6
   (package
