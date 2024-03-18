@@ -447,20 +447,24 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "3.0.1")
+   (version "3.1.2")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "https://flintlib.org/flint-" version ".tar.gz"))
       (sha256
-       (base32 "1d4lawfvmjd4n7rp4z9xkwwjjbrjhkmxnxw1xf0ki1isa001lcbv"))))
+       (base32 "0017bjncpx4kdx67qcnm3nahz3gyyi2w3ggkrx586r3llcqs9czx"))))
    (build-system gnu-build-system)
    (inputs
     (list ntl))
    (propagated-inputs
-    (list gmp mpfr)) ; header files from both are included by flint/arith.h
+    (list gmp mpfr)) ; header files included by flint.h or mpfr_mat.h
    (arguments
-    `(#:parallel-tests? #f))            ; seems to be necessary on arm
+      ;; Parallel tests failed in the past on ARM, this may need to be
+      ;; tested again.
+    `(#:parallel-tests? #f
+      ;; Prevent build machine specifics from ending up in the binary.
+      #:configure-flags '("--disable-assembly")))
    (synopsis "Fast library for number theory")
    (description
     "FLINT is a C library for number theory.  It supports arithmetic
@@ -473,7 +477,7 @@ Operations that can be performed include conversions, arithmetic,
 GCDs, factoring, solving linear systems, and evaluating special
 functions.  In addition, FLINT provides various low-level routines for
 fast arithmetic.")
-   (license license:lgpl2.1+)
+   (license license:lgpl3+)
    (home-page "https://flintlib.org/")
    (properties
     '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
@@ -1011,7 +1015,8 @@ extends it by a set of algebraic capabilities.")
                   (guix build utils)
                   (guix build cmake-build-system))
 
-       #:phases (modify-phases %standard-phases
+       #:phases
+       (modify-phases %standard-phases
                   (add-after 'unpack 'disable-some-tests
                     ;; Not all platforms are well supported by the test suite.
                     (lambda _
