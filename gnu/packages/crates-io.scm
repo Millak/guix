@@ -61985,17 +61985,17 @@ sub-processes using a fork-like interface.")
         ("rust-rustyline-derive" ,rust-rustyline-derive-0.3)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-rustyline-derive-0.9
+(define-public rust-rustyline-derive-0.10
   (package
     (name "rust-rustyline-derive")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustyline-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hvaj1n0k7ys8iqfxvymmakv9aqqpvm53hagw55jw7954xaaycjs"))))
+        (base32 "0lfr25qdrn0awccq999d6g8m7bhsyxbkliibdpzimbzniff9bbz5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -62005,6 +62005,23 @@ sub-processes using a fork-like interface.")
     (synopsis "Rustyline macros implementation in Rust")
     (description "This package provides Rustyline macros implementation in Rust.")
     (license license:expat)))
+
+(define-public rust-rustyline-derive-0.9
+  (package
+    (inherit rust-rustyline-derive-0.10)
+    (name "rust-rustyline-derive")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustyline-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hvaj1n0k7ys8iqfxvymmakv9aqqpvm53hagw55jw7954xaaycjs"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-rustyline-derive-0.7
   (package
