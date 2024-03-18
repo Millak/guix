@@ -1437,7 +1437,7 @@ other API remains the same.")
 (define-public template-glib
   (package
     (name "template-glib")
-    (version "3.36.1")
+    (version "3.36.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1445,7 +1445,7 @@ other API remains the same.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00x5yq1yidxxv6hmlvblpp2k0vf60s0xzyi0psplbmss70bpl5iv"))))
+                "0j4rc4jvxk5pzmx5831s90m9g4cfyp10hxd1ndiyg34806jg6800"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~'("-D" "gtk_doc=true")))
