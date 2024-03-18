@@ -52083,6 +52083,42 @@ and should not be relied upon directly.")
 programs.")
     (license license:asl2.0)))
 
+(define-public rust-pprof-0.10
+  (package
+    (inherit rust-pprof-0.13)
+    (name "rust-pprof")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pprof" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vvqawd720d39a87zhdjdh7ipmq6im5766658sn44ma7v7z2niyn"))))
+    (arguments
+     `(#:tests? #f  ; no method named `flamegraph` found for struct `pprof::Report`
+       #:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-criterion" ,rust-criterion-0.3)
+                       ("rust-findshlibs" ,rust-findshlibs-0.10)
+                       ("rust-inferno" ,rust-inferno-0.11)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.24)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-prost" ,rust-prost-0.10)
+                       ("rust-prost-build" ,rust-prost-build-0.10)
+                       ("rust-prost-derive" ,rust-prost-derive-0.10)
+                       ("rust-protobuf" ,rust-protobuf-2)
+                       ("rust-protobuf-codegen-pure" ,rust-protobuf-codegen-pure-2)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-symbolic-demangle" ,rust-symbolic-demangle-9)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-pq-sys-0.4
   (package
     (name "rust-pq-sys")
