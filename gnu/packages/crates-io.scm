@@ -23492,6 +23492,23 @@ blocking data structures.")
      "This package provides a collection of high-performance task executors.")
     (license license:expat)))
 
+(define-public rust-exhaustigen-0.1
+  (package
+    (name "rust-exhaustigen")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "exhaustigen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1djym5wjcib78fxspkkal0vdq8dd1vlllk6f6858m5haf53zg23x"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/graydon/exhaustigen-rs")
+    (synopsis "Exhaustive test generator")
+    (description "This package provides an exhaustive test generator.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-exitcode-1
   (package
     (name "rust-exitcode")
