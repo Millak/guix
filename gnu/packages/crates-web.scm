@@ -2184,14 +2184,14 @@ transfer coding.")
   (package
     (inherit rust-h2-0.4)
     (name "rust-h2")
-    (version "0.3.21")
+    (version "0.3.25")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "h2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cq8g5bgk3fihnqicy3g8gc3dpsalzqjg4bjyip9g4my26m27z4i"))))
+        (base32 "1sqq8rnv3vrwra7wzgc6099j9zw80rnm9aslhsa8d674qlh2igag"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
@@ -2206,16 +2206,16 @@ transfer coding.")
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-tokio-util" ,rust-tokio-util-0.7)
                        ("rust-tracing" ,rust-tracing-0.1))
-       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9)
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10)
                                    ("rust-hex" ,rust-hex-0.4)
                                    ("rust-quickcheck" ,rust-quickcheck-1)
                                    ("rust-rand" ,rust-rand-0.8)
                                    ("rust-serde" ,rust-serde-1)
                                    ("rust-serde-json" ,rust-serde-json-1)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
+                                   ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
                                    ("rust-walkdir" ,rust-walkdir-2)
-                                   ("rust-webpki-roots" ,rust-webpki-roots-0.22))))))
+                                   ("rust-webpki-roots" ,rust-webpki-roots-0.25))))))
 
 (define-public rust-h2-0.2
   (package
