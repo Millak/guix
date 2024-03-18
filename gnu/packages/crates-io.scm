@@ -73939,7 +73939,7 @@ writing colored text to a terminal.")
 (define-public rust-termios-0.3
   (package
     (name "rust-termios")
-    (version "0.3.1")
+    (version "0.3.3")
     (source
       (origin
         (method url-fetch)
@@ -73947,7 +73947,7 @@ writing colored text to a terminal.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "09any1p4jp4bphvb5ikagnvwjc3xn2djchy96nkpa782xb2j1dkj"))))
+          "0sxcs0g00538jqh5xbdqakkzijadr8nj7zmip0c7jz3k83vmn721"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
