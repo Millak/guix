@@ -1,0 +1,229 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 79b878c..95ec54c 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -71,26 +71,26 @@ features = ["clock"]
+ optional = true
+ default-features = false
+ 
+-[dependencies.eyre06]
+-version = "0.6"
+-optional = true
+-package = "eyre"
++#[dependencies.eyre06]
++#version = "0.6"
++#optional = true
++#package = "eyre"
+ 
+-[dependencies.fluent]
+-version = "0.16.0"
+-optional = true
++#[dependencies.fluent]
++#version = "0.16.0"
++#optional = true
+ 
+-[dependencies.fluent-langneg]
+-version = "0.13.0"
+-optional = true
++#[dependencies.fluent-langneg]
++#version = "0.13.0"
++#optional = true
+ 
+-[dependencies.fluent-syntax]
+-version = "0.11.0"
+-optional = true
++#[dependencies.fluent-syntax]
++#version = "0.11.0"
++#optional = true
+ 
+-[dependencies.futures-util]
+-version = "0.3.17"
+-features = ["sink"]
++#[dependencies.futures-util]
++#version = "0.3.17"
++#features = ["sink"]
+ 
+ [dependencies.headers]
+ version = "0.3.7"
+@@ -125,9 +125,9 @@ features = [
+ optional = true
+ default-features = false
+ 
+-[dependencies.intl-memoizer]
+-version = "0.5.1"
+-optional = true
++#[dependencies.intl-memoizer]
++#version = "0.5.1"
++#optional = true
+ 
+ [dependencies.libcookie]
+ version = "0.17"
+@@ -146,16 +146,16 @@ version = "0.4.1"
+ optional = true
+ package = "csrf"
+ 
+-[dependencies.libopentelemetry]
+-version = "0.21.0"
+-features = ["metrics"]
+-optional = true
+-package = "opentelemetry"
++#[dependencies.libopentelemetry]
++#version = "0.21.0"
++#features = ["metrics"]
++#optional = true
++#package = "opentelemetry"
+ 
+-[dependencies.libprometheus]
+-version = "0.13.0"
+-optional = true
+-package = "prometheus"
++#[dependencies.libprometheus]
++#version = "0.13.0"
++#optional = true
++#package = "prometheus"
+ 
+ [dependencies.libtempfile]
+ version = "3.2.0"
+@@ -178,17 +178,17 @@ optional = true
+ version = "0.10.56"
+ optional = true
+ 
+-[dependencies.opentelemetry-http]
+-version = "0.10.0"
+-optional = true
++#[dependencies.opentelemetry-http]
++#version = "0.10.0"
++#optional = true
+ 
+-[dependencies.opentelemetry-prometheus]
+-version = "0.14.0"
+-optional = true
++#[dependencies.opentelemetry-prometheus]
++#version = "0.14.0"
++#optional = true
+ 
+-[dependencies.opentelemetry-semantic-conventions]
+-version = "0.13.0"
+-optional = true
++#[dependencies.opentelemetry-semantic-conventions]
++#version = "0.13.0"
++#optional = true
+ 
+ [dependencies.parking_lot]
+ version = "0.12.0"
+@@ -219,14 +219,14 @@ optional = true
+ version = "0.11.1"
+ optional = true
+ 
+-[dependencies.redis]
+-version = "0.23.0"
+-features = [
+-    "aio",
+-    "tokio-comp",
+-    "connection-manager",
+-]
+-optional = true
++#[dependencies.redis]
++#version = "0.23.0"
++#features = [
++#    "aio",
++#    "tokio-comp",
++#    "connection-manager",
++#]
++#optional = true
+ 
+ [dependencies.regex]
+ version = "1.5.5"
+@@ -263,9 +263,9 @@ optional = true
+ [dependencies.smallvec]
+ version = "1.6.1"
+ 
+-[dependencies.sse-codec]
+-version = "0.3.2"
+-optional = true
++#[dependencies.sse-codec]
++#version = "0.3.2"
++#optional = true
+ 
+ [dependencies.thiserror]
+ version = "1.0.30"
+@@ -323,10 +323,10 @@ default-features = false
+ [dependencies.tracing]
+ version = "0.1.36"
+ 
+-[dependencies.unic-langid]
+-version = "0.9.0"
+-features = ["macros"]
+-optional = true
++#[dependencies.unic-langid]
++#version = "0.9.0"
++#features = ["macros"]
++#optional = true
+ 
+ [dependencies.wildmatch]
+ version = "2"
+@@ -383,13 +383,13 @@ embed = [
+     "hex",
+     "mime_guess",
+ ]
+-i18n = [
+-    "fluent",
+-    "fluent-langneg",
+-    "fluent-syntax",
+-    "unic-langid",
+-    "intl-memoizer",
+-]
++#i18n = [
++#    "fluent",
++#    "fluent-langneg",
++#    "fluent-syntax",
++#    "unic-langid",
++#    "intl-memoizer",
++#]
+ multipart = ["multer"]
+ native-tls = [
+     "server",
+@@ -400,20 +400,20 @@ openssl-tls = [
+     "tokio-openssl",
+     "openssl",
+ ]
+-opentelemetry = [
+-    "libopentelemetry",
+-    "opentelemetry-http",
+-    "opentelemetry-semantic-conventions",
+-]
+-prometheus = [
+-    "libopentelemetry",
+-    "opentelemetry-prometheus",
+-    "libprometheus",
+-]
+-redis-session = [
+-    "session",
+-    "redis",
+-]
++#opentelemetry = [
++#    "libopentelemetry",
++#    "opentelemetry-http",
++#    "opentelemetry-semantic-conventions",
++#]
++#prometheus = [
++#    "libopentelemetry",
++#    "opentelemetry-prometheus",
++#    "libprometheus",
++#]
++#redis-session = [
++#    "session",
++#    "redis",
++#]
+ rustls = [
+     "server",
+     "tokio-rustls",
+@@ -445,7 +445,7 @@ tempfile = [
+ ]
+ test = [
+     "sse",
+-    "sse-codec",
++#    "sse-codec",
+     "tokio-util/compat",
+ ]
+ tower-compat = [
