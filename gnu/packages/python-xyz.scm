@@ -7647,6 +7647,71 @@ validation and serialization.")
 Interfaces} via data models provided in the JSON format.")
     (license license:expat)))
 
+(define-public python-pydantic-settings
+  (package
+    (name "python-pydantic-settings")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydantic_settings" version))
+       (sha256
+        (base32 "1vf58f398ngk6wpf0jn51ghw65mjs3m03yn06h25jlsmx6jzdf80"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable tests requiring python-ruff.
+                    "not test_docs_examples[docs/index.md:24-83]"
+                    " and not test_docs_examples[docs/index.md:113-137]"
+                    " and not test_docs_examples[docs/index.md:148-156]"
+                    " and not test_docs_examples[docs/index.md:173-183]"
+                    " and not test_docs_examples[docs/index.md:193-201]"
+                    " and not test_docs_examples[docs/index.md:212-243]"
+                    " and not test_docs_examples[docs/index.md:286-317]"
+                    " and not test_docs_examples[docs/index.md:331-372]"
+                    " and not test_docs_examples[docs/index.md:430-439]"
+                    " and not test_docs_examples[docs/index.md:453-459]"
+                    " and not test_docs_examples[docs/index.md:514-522]"
+                    " and not test_docs_examples[docs/index.md:547-549]"
+                    " and not test_docs_examples[docs/index.md:553-585]"
+                    " and not test_docs_examples[docs/index.md:620-645]"
+                    " and not test_docs_examples[docs/index.md:654-732]"
+                    " and not test_docs_examples[docs/index.md:738-772]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; hatchling.build failed on this line with error:
+                ;; ValueError: Unknown classifier in field
+                ;; `project.classifiers`: Framework :: Pydantic :: 2
+                (("'Framework :: Pydantic :: 2',") "")
+                ;; python-dotenv>=0.21.0
+                ((">=0.21.0") ">=0.20.0"))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; FileNotFoundError: [Errno 2] No such file or directory:
+              ;; '/homeless-shelter/
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-dotenv
+           python-pydantic-2
+           python-pyaml
+           python-tomli))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-examples
+           python-pytest-mock))
+    (home-page "https://docs.pydantic.dev/latest/usage/pydantic_settings/")
+    (synopsis "Settings management using Pydantic")
+    (description
+     "Pydantic Settings provides optional Pydantic features for loading a
+settings or config class from environment variables or secrets files.")
+    (license license:expat)))
+
 (define-public python-pydoc-markdown
   (package
     (name "python-pydoc-markdown")
