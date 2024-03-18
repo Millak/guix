@@ -37057,6 +37057,31 @@ can also be used outside of a proc-macro context.")
     (description "This package provides an LLVM Bitcode parser in Rust.")
     (license license:expat)))
 
+(define-public rust-local-channel-0.1
+  (package
+    (name "rust-local-channel")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "local-channel" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j1ywn459kl4fdmjfyljm379k40qwwscd7mqp25lppxqd5gcijxn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `futures_util`
+       #:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-sink" ,rust-futures-sink-0.3)
+                       ("rust-local-waker" ,rust-local-waker-0.1))))
+    (home-page "https://github.com/actix/actix-net")
+    (synopsis
+     "Non-threadsafe multi-producer, single-consumer, futures-aware, FIFO queue")
+    (description
+     "This package provides a non-threadsafe multi-producer, single-consumer,
+futures-aware, FIFO queue.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-local-waker-0.1
   (package
     (name "rust-local-waker")
