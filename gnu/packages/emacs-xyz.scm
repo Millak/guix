@@ -27764,8 +27764,17 @@ turn.")
       (native-inputs
        (list emacs-buttercup emacs-undercover))
       (arguments
-       `(#:tests? #t
-         #:test-command '("buttercup" "-L" "test/github-review-test.el")))
+       (list
+        #:tests? #t
+        #:test-command #~(list "buttercup" "-L" "test/github-review-test.el")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'compatibility-with-recent-buttercup
+              (lambda _
+                (emacs-batch-edit-file "test/github-review-test.el"
+                  '(progn
+                    (insert ";;; -*-lexical-binding:t-*-")
+                    (basic-save-buffer))))))))
       (home-page "https://github.com/charignon/github-review")
       (synopsis "Review GitHub pull requests within Emacs")
       (description "This package provides commands to pull in, comment on, and
