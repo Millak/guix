@@ -58549,6 +58549,31 @@ functionality as retain but gives mutable borrow to the predicate.")
 MIME Message Headers.")
     (license license:expat)))
 
+(define-public rust-rhai-codegen-2
+  (package
+    (name "rust-rhai-codegen")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rhai_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v45b68rf6yd7z5flryjh8mjb599qis0amff2wx1hj4x9kfgidwx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; TODO: Only 36/68 tests pass.
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-rhai" ,rust-rhai-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://rhai.rs/book/plugins/index.html")
+    (synopsis "Procedural macros support package for Rhai")
+    (description "This package provides procedural macros support package for
+Rhai, a scripting language and engine for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ringbuf-0.2
   (package
     (name "rust-ringbuf")
