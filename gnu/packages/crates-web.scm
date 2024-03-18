@@ -4604,8 +4604,54 @@ and speed.")
         ("rust-version-check" ,rust-version-check-0.9)
         ("rust-yansi" ,rust-yansi-0.5))))))
 
+(define-public rust-rocket-http-0.5
+  (package
+    (name "rust-rocket-http")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rocket_http" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17iq208zf9rfxdnx8hfjxnn51074cc9li99yjigzwnfhjhv6d89p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; can't find crate for `rocket`
+       #:cargo-inputs (("rust-cookie" ,rust-cookie-0.18)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-pear" ,rust-pear-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-ref-cast" ,rust-ref-cast-1)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-stable-pattern" ,rust-stable-pattern-0.1)
+                       ("rust-state" ,rust-state-0.6)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-uncased" ,rust-uncased-0.9)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-x509-parser" ,rust-x509-parser-0.13))))
+    (home-page "https://rocket.rs")
+    (synopsis "HTTP requests, responses and headers tooling for Rocket")
+    (description
+     "This package provides types, traits, and parsers for HTTP requests,
+responses, and headers for the Rocket web framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rocket-http-0.4
   (package
+    (inherit rust-rocket-http-0.5)
     (name "rust-rocket-http")
     (version "0.4.7")
     (source
@@ -4615,7 +4661,6 @@ and speed.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ga98nbcga8amg4xhrfkn1wljnqx9h0vv7mnay9g66vsxl042dnf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -4629,13 +4674,7 @@ and speed.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-state" ,rust-state-0.4)
         ("rust-time" ,rust-time-0.1)
-        ("rust-unicode-xid" ,rust-unicode-xid-0.1))))
-    (home-page "https://rocket.rs")
-    (synopsis "HTTP requests, responses and headers tooling for Rocket")
-    (description
-     "This package provides types, traits, and parsers for HTTP requests,
-responses, and headers for the Rocket web framework.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-unicode-xid" ,rust-unicode-xid-0.1))))))
 
 (define-public rust-stdweb-0.4
   (package
