@@ -2247,6 +2247,31 @@ for constructing a Message Authentication Code (MAC), as in the AES-GCM
 authenticated encryption cipher.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ghash-0.4
+  (package
+    (inherit rust-ghash-0.5)
+    (name "rust-ghash")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ghash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "169wvrc2k9lw776x3pmqp76kc0w5717wz01bfg9rz0ypaqbcr0qm"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+(\\.[[:digit:]]+)*),"
+                                   " <([[:digit:]]+(\\.[[:digit:]]+)*)")
+                    _ version _)
+                   (string-append ">=" version)))))))
+    (arguments
+     `(#:cargo-inputs (("rust-opaque-debug" ,rust-opaque-debug-0.3)
+                       ("rust-polyval" ,rust-polyval-0.5)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-ghash-0.3
   (package
     (inherit rust-ghash-0.5)
