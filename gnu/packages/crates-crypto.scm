@@ -1225,6 +1225,31 @@ ChaCha8Poly1305 and ChaCha12Poly1305 lightweight variants.")
        #:cargo-development-inputs
        (("rust-aead" ,rust-aead-0.4))))))
 
+(define-public rust-chacha20poly1305-0.8
+  (package
+    (inherit rust-chacha20poly1305-0.10)
+    (name "rust-chacha20poly1305")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chacha20poly1305" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18mb6k1w71dqv5q50an4rvp19l6yg8ssmvfrmknjfh2z0az7lm5n"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("version = \">=1, <1.4\"") "version = \"^1\""))))))
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.4)
+                       ("rust-chacha20" ,rust-chacha20-0.7)
+                       ("rust-cipher" ,rust-cipher-0.3)
+                       ("rust-poly1305" ,rust-poly1305-0.7)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-aead" ,rust-aead-0.4))))))
+
 (define-public rust-cipher-0.4
   (package
     (name "rust-cipher")
