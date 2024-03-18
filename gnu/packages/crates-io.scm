@@ -39862,7 +39862,7 @@ drop-in allocator.")
 (define-public rust-mime-guess-2
   (package
     (name "rust-mime-guess")
-    (version "2.0.3")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
@@ -39870,15 +39870,14 @@ drop-in allocator.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "04pjpbl90z4yn0cmifvwgf4mqznciw6b095k626q96bxx71d9116"))))
+         "1vs28rxnbfwil6f48hh58lfcx90klcvg68gxdc60spwa4cy2d4j1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-mime" ,rust-mime-0.3)
         ("rust-unicase" ,rust-unicase-2))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-unicase" ,rust-unicase-2))))
+       (("rust-criterion" ,rust-criterion-0.3))))
     (home-page "https://github.com/abonander/mime_guess")
     (synopsis "Detect a file's MIME type by its extension")
     (description "This package provides a simple crate for detection of a
