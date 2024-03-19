@@ -5875,8 +5875,8 @@ code written in the D programming language.")
 
 (define-public emacs-extempore-mode
   ;; Use the latest commit at time of packaging.  There are no releases or tags.
-  (let ((commit "09518ae6650d7be33a4633a4c0f31b7130d04c6e")
-        (revision "1"))
+  (let ((commit "92e0fff482a0a4dc2971c39581c5ea9e84ae5e1c")
+        (revision "2"))
     (package
       (name "emacs-extempore-mode")
       (version (git-version "0.0.0" revision commit))
@@ -5888,7 +5888,7 @@ code written in the D programming language.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hfza9lzdsz94gxhmzyp9fwviscv19rmnjgd0q613faayn11sjsp"))))
+          (base32 "1chxl2x9wjblhfknx7aa8pgqppc60917n437bxapx4hp3275x16q"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/extemporelang/extempore-emacs-mode")
       (synopsis "Emacs major mode for Extempore source files")
