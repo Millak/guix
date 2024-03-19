@@ -5022,14 +5022,14 @@ weights.")
 (define-public r-sass
   (package
     (name "r-sass")
-    (version "0.4.8")
+    (version "0.4.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sass" version))
        (sha256
         (base32
-         "0364ndnmlqrga3k4c1hfy1894k5wpm9srf9201g9zb92rlq2kfj2"))))
+         "1lnl2xssz33vg7p6a8ij55hg6j1p1d3y2mq22pvf0r3rmnd08cz1"))))
     (properties `((upstream-name . "sass")))
     (build-system r-build-system)
     (propagated-inputs
