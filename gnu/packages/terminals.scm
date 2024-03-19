@@ -36,7 +36,7 @@
 ;;; Copyright © 2022, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
@@ -865,16 +865,23 @@ eye-candy, customizable, and reasonably lightweight.")
       ;; also to address a GCC 10 issue when doing PGO builds.
       #:build-type "release"
       ;; Enable LTO as recommended by INSTALL.md.
-      #:configure-flags #~'("-Db_lto=true")))
-    (native-inputs (list ncurses ;for 'tic'
-                         pkg-config scdoc wayland-protocols))
+      ;; when cross-compilation, enable lto will fail.
+      #:configure-flags (if (%current-target-system)
+                            #~'()
+                            #~'("-Db_lto=true"))))
+    (native-inputs (append
+                    (if (%current-target-system)
+                        (list wayland pkg-config-for-build)
+                        '())
+                    (list ncurses ;for 'tic'
+                          pkg-config scdoc wayland-protocols)))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (inputs (list fcft libxkbcommon wayland))
+    (inputs (list fcft libxkbcommon wayland wayland-protocols))
     (synopsis "Wayland-native terminal emulator")
     (description
      "@command{foot} is a terminal emulator for systems using the Wayland
