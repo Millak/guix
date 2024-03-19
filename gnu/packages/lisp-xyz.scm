@@ -10189,6 +10189,38 @@ supplement, not a competitor, to Alexandria.")
 (define-public ecl-rutils
   (sbcl-package->ecl-package sbcl-rutils))
 
+(define-public sbcl-arrow-macros
+  ;; The latest upstream version tag is dated (pushed in 2020), use the latest
+  ;; commit instead.
+  (let ((commit "16bdfd31298182099c7d70df4598104e5a38b05e")
+        (revision "0"))
+    (package
+      (name "sbcl-arrow-macros")
+      (version (git-version "0.2.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hipeta/arrow-macros")
+               (commit commit)))
+         (file-name (git-file-name "arrow-macros" version))
+         (sha256
+          (base32 "0q4vpysk4h9ghs5zmnzzilky9jyz7i8n0x0p98nq528crbrkh6c4"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (home-page "https://github.com/hipeta/arrow-macros/")
+      (synopsis "Clojure-like arrow macros in Common Lisp")
+      (description
+       "Arrow-macros provides clojure-like arrow macros (ex. ->, ->>) and diamond wands
+in swiss-arrows.")
+      (license license:expat))))
+
+(define-public cl-arrow-macros
+  (sbcl-package->cl-source-package sbcl-arrow-macros))
+
+(define-public ecl-arrow-macros
+  (sbcl-package->ecl-package sbcl-arrow-macros))
+
 (define-public sbcl-arrows
   (let ((commit "df7cf0067e0132d9697ac8b1a4f1b9c88d4f5382")
         (revision "0"))
