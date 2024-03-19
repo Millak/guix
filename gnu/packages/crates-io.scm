@@ -47062,16 +47062,15 @@ PartialOrd types, like floats.")
   (package
     (inherit rust-ordered-float-2)
     (name "rust-ordered-float")
-    (version "1.0.2")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ordered-float" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0625x96987kspdxbikry5mb7hsf5pdc5bbanxd8wjwqlx0ar71hq"))))
+         "1drp3v9jsm1mn0wqp4p5y19j3bmz3w5rw4yxzi39zlld4wssy19k"))))
     (arguments
      `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2)
                        ("rust-serde" ,rust-serde-1))
