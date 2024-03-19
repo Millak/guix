@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -270,7 +271,7 @@ useful when FULL-BOOT?  is true."
                                         (volatile-root? volatile?)))))
     (define kernel-arguments
       #~(list #$@(if graphic? #~() #~("console=ttyS0"))
-              #+@(operating-system-kernel-arguments os "/dev/vda1")))
+              #$@(operating-system-kernel-arguments os "/dev/vda1")))
 
     (define rw-image
       #~(format #f "/tmp/guix-image-~a" (basename #$base-image)))
@@ -340,7 +341,7 @@ host."
 
   (define kernel-arguments
     #~(list #$@(if graphic? #~() #~("console=ttyS0"))
-            #+@(operating-system-kernel-arguments os "/dev/vda1")))
+            #$@(operating-system-kernel-arguments os "/dev/vda1")))
 
   #~`(#+(file-append qemu "/bin/"
                      (qemu-command (or target system)))
