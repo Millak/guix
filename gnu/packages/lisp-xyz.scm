@@ -8091,6 +8091,38 @@ UTF-8 has is that it doesn't depend on any other libraries.")
 (define-public ecl-trivial-utf-8
   (sbcl-package->ecl-package sbcl-trivial-utf-8))
 
+(define-public sbcl-trivial-utilities
+  (let ((commit "279ff255562628196942632c543d91c357067221")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-utilities")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/ediethelm/trivial-utilities")
+               (commit commit)))
+         (file-name (git-file-name "trivial-utilities" version))
+         (sha256
+          (base32 "0k1xmn5f5dik7scadw0vyy67mik4ypnfqbhlv2vsg9afxzbpx2dz"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria sbcl-iterate sbcl-closer-mop))
+      (home-page "https://gitlab.com/ediethelm/trivial-utilities")
+      (synopsis "Collection of useful types, functions and macros for Common Lisp")
+      (description
+       "This package provides a collection of types, functions and macros.  Some
+ of the functionality is implemented from Graham's On Lisp and Seibel's Practical
+ Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-trivial-utilities
+  (sbcl-package->cl-source-package sbcl-trivial-utilities))
+
+(define-public ecl-trivial-utilities
+  (sbcl-package->ecl-package sbcl-trivial-utilities))
+
 (define-public sbcl-idna
   (package
     (name "sbcl-idna")
