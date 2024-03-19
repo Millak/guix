@@ -7134,6 +7134,96 @@ multipart/form-data.")
 (define-public ecl-http-body
   (sbcl-package->ecl-package sbcl-http-body))
 
+(define-public sbcl-ciel
+  (let ((commit "6cc1cef5e37e9f495c8163271a5de48de99f348a")
+        (revision "0"))
+    (package
+      (name "sbcl-ciel")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ciel-lang/CIEL")
+               (commit commit)))
+         (file-name (git-file-name "ciel" version))
+         (sha256
+          (base32 "1bwafbbsppxqvijf43dii55mpzrklh6faj2m5dhajg2f2m8qckgi"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-access
+             sbcl-alexandria
+             sbcl-arrow-macros
+             sbcl-bordeaux-threads
+             sbcl-cl-ansi-text
+             sbcl-cl-ansi-text
+             sbcl-cl-cron
+             sbcl-cl-csv
+             sbcl-cl-json-pointer
+             sbcl-cl-ppcre
+             sbcl-cl-punch
+             sbcl-cl-reexport
+             sbcl-cl-str
+             sbcl-clesh
+             sbcl-clingon
+             sbcl-closer-mop
+             sbcl-cmd
+             sbcl-dbi
+             sbcl-defstar
+             sbcl-deploy
+             sbcl-dexador
+             sbcl-dissect
+             sbcl-easy-routes
+             sbcl-file-notify
+             sbcl-fn
+             sbcl-for
+             sbcl-fset
+             sbcl-generic-cl
+             sbcl-hunchentoot
+             sbcl-local-time
+             sbcl-log4cl
+             sbcl-lparallel
+             sbcl-lquery
+             sbcl-metabang-bind
+             sbcl-modf
+             sbcl-named-readtables
+             sbcl-nodgui
+             sbcl-parse-float
+             sbcl-parse-number
+             sbcl-printv
+             sbcl-pythonic-string-reader
+             sbcl-quicksearch
+             sbcl-quri
+             sbcl-repl-utilities
+             sbcl-serapeum
+             sbcl-shasht
+             sbcl-shlex
+             sbcl-spinneret
+             sbcl-sxql
+             sbcl-trivia
+             sbcl-trivial-arguments
+             sbcl-trivial-do
+             sbcl-trivial-monitored-thread
+             sbcl-trivial-package-local-nicknames
+             sbcl-trivial-types
+             sbcl-vgplot
+             sbcl-which))
+      (home-page "http://ciel-lang.org/")
+      (synopsis "CIEL Is an Extended Lisp")
+      (description
+       "CIEL is a ready-to-use collection of libraries providing: a binary, to
+run CIEL scripts; a simple full-featured REPL for the terminal; a Lisp library
+and a core image .")
+      (license license:expat))))
+
+(define-public cl-ciel
+  (sbcl-package->cl-source-package sbcl-ciel))
+
+(define-public ecl-ciel
+  (sbcl-package->ecl-package sbcl-ciel))
+
 (define-public sbcl-circular-streams
   (let ((commit "e770bade1919c5e8533dd2078c93c3d3bbeb38df")
         (revision "1"))
