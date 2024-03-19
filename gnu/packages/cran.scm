@@ -2318,13 +2318,13 @@ known as Dynamic Linear Models.")
 (define-public r-zcompositions
   (package
     (name "r-zcompositions")
-    (version "1.5.0-2")
+    (version "1.5.0-3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "zCompositions" version))
               (sha256
                (base32
-                "08kcl870x7kai7zdhqgm4cbfhbrf673rjxghbwpn08l7pwkhix60"))))
+                "1gbwx3vgx5viqnn5jsszild6ikyc2pmf1hdjc9475caf9xx9l589"))))
     (properties `((upstream-name . "zCompositions")))
     (build-system r-build-system)
     (propagated-inputs
