@@ -54804,6 +54804,31 @@ macro use case.")
      "This package provides a procedural macro implementation of quote!.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-procfs-core-0.16
+  (package
+    (name "rust-procfs-core")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "procfs-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0acs0p19yfcs0h787ls24vi5ql4g6c62cm57qh2cxx397a958d9d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/eminence/procfs")
+    (synopsis "Data structures and parsing for the procfs pseudo-filesystem")
+    (description
+     "This package provides data structures and parsing for the Linux procfs
+pseudo-filesystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-procinfo-0.4
   (package
     (name "rust-procinfo")
