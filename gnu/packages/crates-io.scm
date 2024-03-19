@@ -31478,6 +31478,28 @@ Rust.")
        #:cargo-development-inputs
        (("rust-approx" ,rust-approx-0.3))))))
 
+(define-public rust-getch-0.3
+  (package
+    (name "rust-getch")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "getch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a0v3ck9w65zcgg055laiyyvkb6lxaph1h3zvw6pgq99bcnhx68k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-termios" ,rust-termios-0.3))))
+    (home-page "https://nest.pijul.com/pmeunier/getch")
+    (synopsis "Portable implementation of getch")
+    (description
+     "This package provides a portable implementation of getch, using
+@code{_getch} on Windows, and @code{termios} on Unix.")
+    (license license:asl2.0)))
+
 (define-public rust-gethostname-0.4
   (package
     (name "rust-gethostname")
