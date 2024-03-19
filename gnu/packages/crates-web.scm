@@ -6308,18 +6308,18 @@ DNS protocol library for all Trust-DNS projects.")
         ("rust-futures" ,rust-futures-0.3)
         ("rust-tokio" ,rust-tokio-0.2))))))
 
-(define-public rust-trust-dns-proto-0.18
+(define-public rust-trust-dns-proto-0.18.0-alpha.2
   (package
     (inherit rust-trust-dns-proto-0.19)
     (name "rust-trust-dns-proto")
-    (version "0.18.1")
+    (version "0.18.0-alpha.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-proto" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vmhw7vdaa6b7wfv438f272ijjl2qlpcp6b1myvif4iay8pp4fi5"))))
+        (base32 "0gs15ckm4d4s59jqmm35lbpx7mvylrk8hiialpnga6d9p0m3lzra"))))
     (arguments
      `(#:cargo-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
