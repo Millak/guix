@@ -32663,11 +32663,12 @@ that works on WASM too.")
         (base32 "00ng7jmv6pqwqc8w1297f768bn0spwwicdr7hb40baax00r3gc4b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-tokio" ,rust-tokio-1))))
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1)
+                                   ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/dermesser/integer-encoding-rs")
     (synopsis "Encoding and decoding integers to and from bytestrings")
     (description
