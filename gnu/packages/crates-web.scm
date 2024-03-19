@@ -265,11 +265,7 @@
        (sha256
         (base32 "0v77m394gzbrrzg12xkqgli11vwhig0zcxy3yhmq1s91j9bcjp69"))))
     (arguments
-     ;; XXX: The crate fails to't build with: "error[E0432]: unresolved import
-     ;; `trust_dns_resolver::Background`".  I assume it really expects
-     ;; trust-dns-resolver at version 0.18-alpha.2, which we do not provide.
-     `(#:skip-build? #true
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-actix-codec" ,rust-actix-codec-0.2)
         ("rust-actix-rt" ,rust-actix-rt-1)
         ("rust-actix-service" ,rust-actix-service-1)
@@ -283,19 +279,11 @@
         ("rust-rustls" ,rust-rustls-0.16)
         ("rust-tokio-openssl" ,rust-tokio-openssl-0.4)
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
-        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18)
-        ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.18)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18.0-alpha.2)
+        ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.18.0-alpha.2)
         ("rust-webpki" ,rust-webpki-0.21))
        #:cargo-development-inputs
-       (("rust-actix-testing" ,rust-actix-testing-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("0.18.0-alpha.2")
-                ,(package-version rust-trust-dns-proto-0.18)))
-             #t)))))))
+       (("rust-actix-testing" ,rust-actix-testing-1))))))
 
 (define-public rust-actix-connect-0.2
   (package
