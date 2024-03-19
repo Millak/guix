@@ -5842,18 +5842,18 @@ the Trust-DNS client to use DNS over HTTPS.")
        (("rust-env-logger" ,rust-env-logger-0.7)
         ("rust-futures" ,rust-futures-0.3))))))
 
-(define-public rust-trust-dns-https-0.18
+(define-public rust-trust-dns-https-0.18.0-alpha.2
   (package
     (inherit rust-trust-dns-https-0.19)
     (name "rust-trust-dns-https")
-    (version "0.18.1")
+    (version "0.18.0-alpha.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-https" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03dapd5larsjlpk6mr4xnm2sb0h7l6dg988wjnaxd8zfi5swq5nl"))))
+        (base32 "10mad0ys35mp0w91pydk0pzxqd0q2yqvwcf4ppfww7s0l7m8dyid"))))
     (arguments
      `(#:tests? #false                  ;network unreachable
        #:cargo-inputs
@@ -5867,8 +5867,8 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-rustls" ,rust-rustls-0.16)
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
-        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18)
-        ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.18)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18.0-alpha.2)
+        ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.18.0-alpha.2)
         ("rust-typed-headers" ,rust-typed-headers-0.2)
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.18))
