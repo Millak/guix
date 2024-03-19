@@ -529,8 +529,7 @@ these types and other mathematical functions.")
             (modules '((guix build utils)))
             (snippet
              '(begin
-                (delete-file-recursively "src/libtool-origin")
-                #t))))
+                (delete-file-recursively "src/libtool-origin")))))
    (build-system gnu-build-system)
    (native-inputs
     (list libtool perl)) ; for configuration
@@ -558,7 +557,8 @@ these types and other mathematical functions.")
     "NTL is a C++ library providing data structures and algorithms
 for manipulating signed, arbitrary length integers, and for vectors,
 matrices, and polynomials over the integers and over finite fields.")
-   (license license:gpl2+)
+   (license license:lgpl2.1+) ; Linking with gf2x makes the distributed
+                              ; binary de facto gpl3+.
    (home-page "https://shoup.net/ntl/")))
 
 (define-public singular
