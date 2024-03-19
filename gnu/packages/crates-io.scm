@@ -23762,6 +23762,68 @@ not support network, only raw protocol parser.")
 from macros.")
     (license license:expat)))
 
+(define-public rust-dockworker-0.5
+  (package
+    (name "rust-dockworker")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dockworker" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1grdrc54l50ji3b1x25gx63qcjpsapjrw95fvh5p83za0k81ai8v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--" ; Tests require network access.
+         "--skip=docker::tests::test_api"
+         "--skip=docker::tests::test_events"
+         "--skip=docker::tests::test_networks"
+         "--skip=docker::tests::test_ping"
+         "--skip=docker::tests::test_system_info"
+         "--skip=docker::tests::test_version")
+       #:cargo-inputs
+       (("rust-async-stream" ,rust-async-stream-0.3)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-hyper-rustls" ,rust-hyper-rustls-0.24)
+        ("rust-hyper-tls" ,rust-hyper-tls-0.5)
+        ("rust-hyperlocal" ,rust-hyperlocal-0.8)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-named-pipe" ,rust-named-pipe-0.4)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-rustls" ,rust-rustls-0.21)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-reqwest" ,rust-reqwest-0.11))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/Idein/dockworker")
+    (synopsis "Docker daemon API client (a fork of Faraday's boondock)")
+    (description
+     "This package provides a Rust library for talking to the Docker daemon.
+This project is a fork of Faraday's boondock.")
+    (license license:asl2.0)))
+
 (define-public rust-docmatic-0.1
   (package
     (name "rust-docmatic")
