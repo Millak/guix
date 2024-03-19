@@ -18295,24 +18295,20 @@ into structs when implementing custom derives.")
   (package
     (inherit rust-darling-0.14)
     (name "rust-darling")
-    (version "0.13.1")
+    (version "0.13.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "darling" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x7pgzjswg28798zd5gk5g6nifhcaqq0apqmclydi39zd2w21myh"))))
+        (base32 "0g25pad4mhq7315mw9n4wpg8j3mwyhwvr541kgdl0aar1j2ra7d0"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-darling-core" ,rust-darling-core-0.13)
-        ("rust-darling-macro" ,rust-darling-macro-0.13))
-       #:cargo-development-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
+     `(#:cargo-inputs (("rust-darling-core" ,rust-darling-core-0.13)
+                       ("rust-darling-macro" ,rust-darling-macro-0.13))
+       #:cargo-development-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                                   ("rust-quote" ,rust-quote-1)
+                                   ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-darling-0.12
   (package
