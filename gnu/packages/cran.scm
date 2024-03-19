@@ -20495,14 +20495,14 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-bigrquery
   (package
     (name "r-bigrquery")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigrquery" version))
        (sha256
         (base32
-         "1s2vvygv4d8mdd67r6j2s9d1xg009lpxysfarmrnqh0s2s1rglkz"))))
+         "0wkm9xka83skq1cnv830q4jnqvwm8rlmns2mj8n692h2y5qxlmna"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bit64
