@@ -76425,6 +76425,29 @@ template language.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-termbg-0.5
+  (package
+    (name "rust-termbg")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termbg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pidjkz38z13iz8xchrz1nidxny5zjmxvbl1fs4arilvpzhfc4ic"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/dalance/termbg")
+    (synopsis "Terminal background color detection")
+    (description "This package provides terminal background color detection.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-termbox-sys-0.2
   (package
     (name "rust-termbox-sys")
