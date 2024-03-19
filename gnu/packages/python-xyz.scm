@@ -12821,19 +12821,18 @@ approach.")
     (build-system python-build-system)
     (arguments
      ;; TODO: Package missing test dependencies.
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; For cluster execution Snakemake will call Python.  Since there is
-         ;; no suitable PYTHONPATH set, cluster execution will fail.  We fix
-         ;; this by calling the snakemake wrapper instead.
-         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "snakemake/executors/__init__.py"
-               (("\\{sys.executable\\} -m snakemake")
-                (string-append (assoc-ref outputs "out")
-                               "/bin/snakemake")))
-             #t)))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; For cluster execution Snakemake will call Python.  Since there is
+          ;; no suitable PYTHONPATH set, cluster execution will fail.  We fix
+          ;; this by calling the snakemake wrapper instead.
+          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+            (lambda _
+              (substitute* "snakemake/executors/__init__.py"
+                (("\\{sys.executable\\} -m snakemake")
+                 (string-append #$output "/bin/snakemake"))))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
