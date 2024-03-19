@@ -16707,13 +16707,13 @@ were influenced by the drake R package by Will Landau (2018)
 (define-public r-targets
   (package
     (name "r-targets")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "targets" version))
               (sha256
                (base32
-                "1g21cp0p5jdghr61w9q3y73jm2k248z4apn7rlxqm6m18i4x7zsb"))))
+                "1ddpbhvdydxm62k6ay7hpqjh8kh2isjpcdh3gygzcdrghx6d7x65"))))
     (properties `((upstream-name . "targets")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64url
