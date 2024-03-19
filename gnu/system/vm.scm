@@ -210,7 +210,9 @@ environment with the store shared with the host.  MAPPINGS is a list of
                        virtual-file-systems)))))
 
 (define* (common-qemu-options image shared-fs
-                              #:key rw-image?)
+                              #:key
+                              rw-image?
+                              (target (%current-target-system)))
   "Return the a string-value gexp with the common QEMU options to boot IMAGE,
 with '-virtfs' options for the host file systems listed in SHARED-FS."
 
@@ -221,7 +223,7 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
   #~(;; Only enable kvm if we see /dev/kvm exists.
      ;; This allows users without hardware virtualization to still use these
      ;; commands.
-     #$@(if (file-exists? "/dev/kvm")
+     #$@(if (and (not target) (file-exists? "/dev/kvm"))
             '("-enable-kvm")
             '())
 
@@ -302,7 +304,8 @@ useful when FULL-BOOT?  is true."
               #$@(common-qemu-options (if volatile? base-image rw-image)
                                       (map file-system-mapping-source
                                            (cons %store-mapping mappings))
-                                      #:rw-image? (not volatile?))
+                                      #:rw-image? (not volatile?)
+                                      #:target target)
               "-m " (number->string #$memory-size)
               #$@options))
 
