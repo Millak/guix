@@ -3841,6 +3841,30 @@ algorithm described in MetaCell analysis of single-cell RNA-seq
 data using K-nn graph partitions.")
     (license license:gpl2)))
 
+(define-public r-tictoc
+  (package
+    (name "r-tictoc")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "tictoc" version))
+              (sha256
+               (base32
+                "0cw8r1gn4p2v1l3d80brk9sfr9nyckyyym5nr9xq3d74l74vgkcg"))))
+    (properties `((upstream-name . "tictoc")))
+    (build-system r-build-system)
+    (home-page "https://github.com/jabiru/tictoc")
+    (synopsis
+     "Time R scripts and implementations of stack and list structures")
+    (description
+     "The tictoc package provides the timing functions @code{tic} and
+@code{toc} that can be nested.  It provides an alternative to
+@code{system.time()} with a different syntax similar to that in another
+well-known software package.  @code{tic} and @code{toc} are easy to use, and
+are especially useful when timing several sections in more than a few lines of
+code.")
+    (license license:asl2.0)))
+
 (define-public r-tidyft
   (package
     (name "r-tidyft")
