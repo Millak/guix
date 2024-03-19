@@ -1960,6 +1960,26 @@ crate.")
                        ("rust-syn" ,rust-syn-2)
                        ("rust-windows-metadata" ,rust-windows-metadata-0.56))))))
 
+(define-public rust-windows-bindgen-0.54
+  (package
+    (inherit rust-windows-bindgen-0.57)
+    (name "rust-windows-bindgen")
+    (version "0.54.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hid039rnygimc2kxkzfc892j6hcdjpza2490ggz35r8fjs7csfq"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-windows-metadata" ,rust-windows-metadata-0.54))))))
+
 (define-public rust-windows-bindgen-0.52
   (package
     (inherit rust-windows-bindgen-0.56)
