@@ -101,6 +101,8 @@ Authenticate the given Git checkout using COMMIT/SIGNER as its introduction.\n")
   -k, --keyring=REFERENCE
                          load keyring from REFERENCE, a Git branch"))
   (display (G_ "
+      --end=COMMIT       authenticate revisions up to COMMIT"))
+  (display (G_ "
       --stats            display commit signing statistics upon completion"))
   (display (G_ "
       --cache-key=KEY    cache authenticated commits under KEY"))

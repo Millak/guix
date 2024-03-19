@@ -7632,6 +7632,9 @@ contain OpenPGP public keys in @file{.key} files, either in binary form
 or ``ASCII-armored''.  By default the keyring is loaded from the branch
 named @code{keyring}.
 
+@item --end=@var{commit}
+Authenticate revisions up to @var{commit}.
+
 @item --stats
 Display commit signing statistics upon completion.
 
