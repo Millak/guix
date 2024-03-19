@@ -1692,6 +1692,42 @@ expression library for Common Lisp.  It is a non-recursive, backtracing VM.")
 (define-public cl-re
   (sbcl-package->cl-source-package sbcl-re))
 
+(define-public sbcl-boost-json
+  (let ((commit "eca166f5ff1f10bad14e00b9fd5bf9fcf3691a47")
+        (revision "0"))
+    (package
+      (name "sbcl-boost-json")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cl-boost/json")
+               (commit commit)))
+         (file-name (git-file-name "cl-boost-json" version))
+         (sha256
+          (base32 "12k0470899qsll2qixksxf2vrhjmskk3nzp1di9k04n1b29nrakd"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           ;; See <https://github.com/cl-boost/json/pull/2>.
+           (add-after 'unpack 'fix-decode-symbol
+             (lambda _
+               (substitute* '("decode.lisp" "encode.lisp")
+                 (("formfeed") "page")))))))
+      (home-page "https://github.com/cl-boost/json")
+      (synopsis "JSON encoding and decoding for Common Lisp")
+      (description
+       "BOOST-JSON is a simple JSON parsing library for Common Lisp.")
+      (license license:asl2.0))))
+
+(define-public cl-boost-json
+  (sbcl-package->cl-source-package sbcl-boost-json))
+
+(define-public ecl-boost-json
+ (sbcl-package->ecl-package sbcl-boost-json))
+
 (define-public sbcl-boost-parse
   (let ((commit "c8f7e536b950752f3e35003e7ee0446e0fd51b50")
         (revision "0"))
