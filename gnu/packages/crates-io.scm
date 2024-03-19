@@ -63708,6 +63708,33 @@ single-cell matrices.")
 Rust code.")
     (license license:expat)))
 
+(define-public rust-schemars-0.6
+  (package
+    (inherit rust-schemars-0.8)
+    (name "rust-schemars")
+    (version "0.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "schemars" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v6acgxkbhaw7fzg4mp09jv231f0mr224my629435wxasrrrfmh7"))))
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=doc_comments_struct")
+       #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.5)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-either" ,rust-either-1)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-schemars-derive" ,rust-schemars-derive-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-uuid" ,rust-uuid-0.8))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
+
 (define-public rust-schemars-derive-0.8
   (package
     (name "rust-schemars-derive")
