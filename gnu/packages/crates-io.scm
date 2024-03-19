@@ -41495,6 +41495,41 @@ streaming API for miniz_oxide.")
      "This package provides math interoperability standard types.")
     (license license:expat)))
 
+(define-public rust-minus-5
+  (package
+    (name "rust-minus")
+    (version "5.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "minus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19cwjr8ikqpngxj6c4xbbvylkjkp19cs4k2dnnav5ngzz4nywv6p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--" ; unresolved imports
+         "--skip=src/lib.rs - (line 174)"
+         "--skip=src/lib.rs - (line 200)"
+         "--skip=src/lib.rs - (line 233)")
+       #:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossterm" ,rust-crossterm-0.27)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-textwrap" ,rust-textwrap-0.16)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/arijit79/minus")
+    (synopsis "Asynchronous data feedable terminal paging library for Rust")
+    (description
+     "This package provides a asynchronous data feedable terminal paging
+library for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mio-0.8
   (package
     (name "rust-mio")
