@@ -54804,6 +54804,34 @@ macro use case.")
      "This package provides a procedural macro implementation of quote!.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-procinfo-0.4
+  (package
+    (name "rust-procinfo")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "procinfo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "175l4cprsb56jrkycpz0743clgc8fyhxv4i8hhgqjd967mzl5cba"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--" ; thread panic on bad unwrap.
+         "--skip=pid::status::tests::test_status")
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nom" ,rust-nom-2)
+        ("rust-rustc-version" ,rust-rustc-version-0.2))))
+    (home-page "https://github.com/danburkert/procinfo-rs")
+    (synopsis "Library for accessing Linux processes and system information")
+    (description
+     "This package provides a library for accessing Linux processes and system
+information.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-prodash-28
   (package
     (name "rust-prodash")
