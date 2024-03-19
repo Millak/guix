@@ -65453,8 +65453,45 @@ programs in rust.")
      "This package provides a path to the element that failed to deserialize.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-qs-0.8
+  (package
+    (name "rust-serde-qs")
+    (version "0.8.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_qs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19pngnlga4xnap85kdvn661662hf42lkkppp9sd04py7xs056wf7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-actix-web" ,rust-actix-web-3)
+                       ("rust-actix-web" ,rust-actix-web-2)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-warp" ,rust-warp-0.3))
+       #:cargo-development-inputs
+       (("rust-csv" ,rust-csv-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+        ("rust-serde-with" ,rust-serde-with-1))))
+    (home-page "https://github.com/samscott89/serde_qs")
+    (synopsis "Querystrings for Serde")
+    (description
+     "This crate is a Rust library for serialising to and deserialising from
+querystrings.  This crate is designed to extend @code{serde_urlencoded} when
+using nested parameters, similar to those used by @code{qs} for Node, and
+commonly used by Ruby on Rails via Rack.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-qs-0.7
   (package
+    (inherit rust-serde-qs-0.8)
     (name "rust-serde-qs")
     (version "0.7.2")
     (source
@@ -65464,7 +65501,6 @@ programs in rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1jz6gpr02d393f8cwdxbgfl3jhx5svr1z5ilxhdh16slqvijvy2s"))))
-    (build-system cargo-build-system)
     (arguments
      ;; XXX: The crate fails to't build with with the same error as
      ;; rust-actix-connect.  Skip build for now.
@@ -65478,15 +65514,7 @@ programs in rust.")
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
        (("rust-csv" ,rust-csv-1)
-        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7))))
-    (home-page "https://github.com/samscott89/serde_qs")
-    (synopsis "Querystrings for Serde")
-    (description
-     "This crate is a Rust library for serialising to and deserialising from
-querystrings.  This crate is designed to extend @code{serde_urlencoded} when
-using nested parameters, similar to those used by @code{qs} for Node, and
-commonly used by Ruby on Rails via Rack.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7))))))
 
 (define-public rust-serde-regex-1
   (package
