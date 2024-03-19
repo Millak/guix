@@ -6551,21 +6551,35 @@ other queries.")
        (("rust-env-logger" ,rust-env-logger-0.7)
         ("rust-futures" ,rust-futures-0.3))))))
 
-(define-public rust-trust-dns-resolver-0.18
+(define-public rust-trust-dns-resolver-0.18.0-alpha.2
   (package
     (inherit rust-trust-dns-resolver-0.19)
     (name "rust-trust-dns-resolver")
-    (version "0.18.1")
+    (version "0.18.0-alpha.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-resolver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cldg6y937il4kjk7rirgfhmk0chz41w7qys9h96skaznh4dzmvj"))))
+        (base32 "0bsal2vz7q3fqdyxa0j1rbbh1hm8mxxv7mf62hjqnvr25d8b343g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false                  ;network unreachable
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests" "--"
+         "--skip=async_resolver::tests::test_domain_search"
+         "--skip=async_resolver::tests::test_fqdn"
+         "--skip=async_resolver::tests::test_idna"
+         "--skip=async_resolver::tests::test_large_ndots"
+         "--skip=async_resolver::tests::test_lookup_cloudflare"
+         "--skip=async_resolver::tests::test_lookup_google"
+         "--skip=async_resolver::tests::test_lookup_quad9"
+         "--skip=async_resolver::tests::test_ndots"
+         "--skip=async_resolver::tests::test_search_list"
+         "--skip=hosts::tests::test_read_hosts_conf"
+         "--skip=name_server::name_server::tests::test_name_server"
+         "--skip=resolver::tests::test_lookup"
+         "--skip=system_conf::unix::tests::test_read_resolv_conf")
        #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-failure" ,rust-failure-0.1)
@@ -6579,11 +6593,11 @@ other queries.")
         ("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-trust-dns-https" ,rust-trust-dns-https-0.18)
-        ("rust-trust-dns-native-tls" ,rust-trust-dns-native-tls-0.18)
-        ("rust-trust-dns-openssl" ,rust-trust-dns-openssl-0.18)
-        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18)
-        ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.18)
+        ("rust-trust-dns-https" ,rust-trust-dns-https-0.18.0-alpha.2)
+        ("rust-trust-dns-native-tls" ,rust-trust-dns-native-tls-0.18.0-alpha.2)
+        ("rust-trust-dns-openssl" ,rust-trust-dns-openssl-0.18.0-alpha.2)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18.0-alpha.2)
+        ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.18.0-alpha.2)
         ("rust-webpki-roots" ,rust-webpki-roots-0.18))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.7)
