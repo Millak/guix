@@ -18440,23 +18440,21 @@ reading attributes into structs when implementing custom derives.")
   (package
     (inherit rust-darling-core-0.14)
     (name "rust-darling-core")
-    (version "0.13.1")
+    (version "0.13.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "darling_core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0933k2avb6xk9j4ryr0bvp3pww5j8i0nrqvsnkgd3vic3lj0yd3s"))))
+        (base32 "046n83f9jpszlngpjxkqi39ayzxf5a35q673c69jr1dn0ylnb7c5"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-fnv" ,rust-fnv-1)
-        ("rust-ident-case" ,rust-ident-case-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-strsim" ,rust-strsim-0.10)
-        ("rust-syn" ,rust-syn-1))))))
+     `(#:cargo-inputs (("rust-fnv" ,rust-fnv-1)
+                       ("rust-ident-case" ,rust-ident-case-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-strsim" ,rust-strsim-0.10)
+                       ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-darling-core-0.12
   (package
