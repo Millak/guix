@@ -12617,6 +12617,45 @@ contain lags, diffs and missing values.")
     ;; Any GPL version.
     (license license:gpl2+)))
 
+(define-public r-dyngen
+  (package
+    (name "r-dyngen")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dyngen" version))
+       (sha256
+        (base32
+         "095jqn1rd83qm3ayca9hmv6bhlaa2c338020l46vniq8n38kbnra"))))
+    (properties `((upstream-name . "dyngen")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-dplyr
+           r-dynutils
+           r-ggplot2
+           r-ggraph
+           r-ggrepel
+           r-gillespiessa2
+           r-igraph
+           r-lmds
+           r-matrix
+           r-patchwork
+           r-pbapply
+           r-purrr
+           r-rlang
+           r-tibble
+           r-tidygraph
+           r-tidyr
+           r-viridis))
+    (home-page "https://github.com/dynverse/dyngen")
+    (synopsis "Multi-Modal simulator for single-cell omics analyses")
+    (description
+     "This package provides a multi-modal simulation engine for studying
+dynamic cellular processes at single-cell resolution.")
+    (license license:expat)))
+
 (define-public r-dynutils
   (package
     (name "r-dynutils")
