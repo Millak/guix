@@ -295,6 +295,10 @@ useful when FULL-BOOT?  is true."
                         "-initrd" #$(file-append os "/initrd")
                         (format #f "-append ~s"
                                 (string-join #$kernel-arguments " "))))
+              ;; Default qemu-riscv64 have not PCI, virt have it, so we set it.
+              #$@(if (target-riscv64? (or target system))
+                     #~("-M" "virt")
+                     #~())
               #$@(common-qemu-options (if volatile? base-image rw-image)
                                       (map file-system-mapping-source
                                            (cons %store-mapping mappings))
