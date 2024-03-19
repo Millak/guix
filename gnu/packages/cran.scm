@@ -1344,13 +1344,13 @@ compositional data.")
 (define-public r-gwasexacthw
   (package
     (name "r-gwasexacthw")
-    (version "1.01")
+    (version "1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "GWASExactHW" version))
               (sha256
                (base32
-                "19qmk8h7kxmn9kzw0x4xns5p3qqz27xkqq4q6zmh4jzizd0fsl78"))))
+                "1xzcvmbh27ibd7g9zlqyp215q4yfkhdypcvm5gjkvw1qhd3pl4yk"))))
     (properties `((upstream-name . "GWASExactHW")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=GWASExactHW")
