@@ -63734,6 +63734,27 @@ Rust code.")
 for use with schemars.")
     (license license:expat)))
 
+(define-public rust-schemars-derive-0.6
+  (package
+    (inherit rust-schemars-derive-0.8)
+    (name "rust-schemars-derive")
+    (version "0.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "schemars_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a9h8bqqqd0i6605gyhz2jw2hi1wq1vfi262qrflkn3pyk75wlrq"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde-derive-internals" ,rust-serde-derive-internals-0.25)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))))
+
 (define-public rust-scoped-threadpool-0.1
   (package
     (name "rust-scoped-threadpool")
