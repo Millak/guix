@@ -7247,6 +7247,13 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
               (uri (git-reference
                     (url "https://github.com/jackaudio/a2jmidid")
                     (commit version)))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix build for for riscv64-linux, same as:
+               ;;   https://github.com/jackaudio/a2jmidid/pull/18
+               '(substitute* "sigsegv.c"
+                  (("!defined[(]__aarch64__[)]")
+                   "!defined(__arch64__) && !defined(__riscv)")))
               (sha256
                (base32 "1x6rcl3f4nklnx4p5jln9a7fpj9y7agjxs9rw7cccmwnski7pnsq"))
               (file-name (git-file-name name version))))
