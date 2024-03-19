@@ -363,7 +363,10 @@ FILE-SYSTEMS."
 
   `("ahci"                                  ;for SATA controllers
     "usb-storage" "uas"                     ;for the installation image etc.
-    "usbhid" "hid-generic" "hid-apple"      ;keyboards during early boot
+    "usbhid" "hid-generic"                  ;keyboards during early boot
+    ,@(if (target-riscv64? system)
+          '()
+          '("hid-apple"))
     "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
     "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
     ,@(if (string-match "^(x86_64|i[3-6]86)-" system)
