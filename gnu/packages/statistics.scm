@@ -4533,14 +4533,14 @@ more complete @code{viridis} package.")
 (define-public r-tidyselect
   (package
     (name "r-tidyselect")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyselect" version))
        (sha256
         (base32
-         "0fwy4qp3j0ksy15rkrh3588h7wa8c21h0fzx5s762zg34yvjd3ak"))))
+         "0g4h8mfm5ima0izy4h0c65q478473xsj4hskh15dzg5z1fx9g7hn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang r-vctrs r-withr))
