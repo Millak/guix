@@ -47013,14 +47013,14 @@ PartialOrd types, like floats.")
   (package
     (inherit rust-ordered-float-4)
     (name "rust-ordered-float")
-    (version "3.4.0")
+    (version "3.9.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ordered-float" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1gr31ksgbqariv6hz3s5bc15a5vh4k65dyn8m7j59lhnji0b2knq"))))
+                "1p3jkxlz89ndm4lmwr2n5kdnckhm5pcmqqkihkag259dff8c7qgi"))))
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
                        ("rust-bytemuck" ,rust-bytemuck-1)
