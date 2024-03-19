@@ -1348,7 +1348,24 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      linux-libre-gnu-revision
                      linux-libre-source
                      '("riscv64-linux")
-                     #:extra-version "riscv64-generic"))
+                     #:extra-version "riscv64-generic"
+                     #:extra-options
+                     (append
+                      ;; required `guix system vm'
+                      `(("CONFIG_USB_HID" . m)
+                        ("CONFIG_HID_GEMBIRD" . m)
+                        ("CONFIG_AHCI_DWC" . m)
+                        ("CONFIG_SATA_AHCI" . m)
+                        ("CONFIG_CRYPTO_SERPENT" . m)
+                        ("CONFIG_CRYPTO_WP512" . m)
+                        ("CONFIG_USB_UAS" . m)
+                        ("CONFIG_USB_STORAGE" . m)
+                        ("CONFIG_HID_GENERIC" . m)
+                        ("CONFIG_DRM_CIRRUS_QEMU" . m)
+                        ("CONFIG_HW_RANDOM_VIRTIO" . m)
+                        ("CONFIG_VIRTIO_CONSOLE" . m)
+                        ("CONFIG_CRYPTO_XTS" . m))
+                      %default-extra-linux-options)))
 
 (define-public linux-libre-mips64el-fuloong2e
   (make-linux-libre* linux-libre-version
