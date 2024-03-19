@@ -4952,13 +4952,13 @@ package instead.")
 (define-public r-hmisc
   (package
     (name "r-hmisc")
-    (version "5.1-1")
+    (version "5.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Hmisc" version))
        (sha256
-        (base32 "0laan26ja6m9k3spkk1ymalwb181ramzjq6ii3b0404xv2kfywa9"))))
+        (base32 "088gniwbymzhqg3vp0kpkbazryjzy9iq6wdvf9hg9qf0sjbibpg7"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
     (native-inputs
