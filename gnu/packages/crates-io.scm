@@ -9893,6 +9893,30 @@ almost the same speed for encoding: about 3% slower when encoding 32 bytes.
         ("rust-base58" ,rust-base58-0.1)
         ("rust-rust-base58" ,rust-rust-base58-0.0))))))
 
+(define-public rust-bsd-kvm-0.1
+  (package
+    (name "rust-bsd-kvm")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bsd-kvm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gncwfwlx6mq47qc1siwaiqlsaccy7vsc1v39ybs4xvvn4lfpd4l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Missing kvm.h.
+       #:cargo-inputs (("rust-bsd-kvm-sys" ,rust-bsd-kvm-sys-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (inputs (list clang))
+    (home-page "https://github.com/dalance/bsd-kvm")
+    (synopsis "BSD Kernel Data Access Library (libkvm) binding")
+    (description
+     "This package provides the BSD Kernel Data Access Library (libkvm) binding.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bsd-kvm-sys-0.2
   (package
     (name "rust-bsd-kvm-sys")
