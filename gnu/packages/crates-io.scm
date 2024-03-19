@@ -65888,6 +65888,31 @@ Rust's serde.")
 @code{serde_with}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-with-macros-1
+  (package
+    (inherit rust-serde-with-macros-3)
+    (name "rust-serde-with-macros")
+    (version "1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_with_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10l0rsy0k61nvpn1brcfvzp8yfnvsqdgh6zdwp03qf85dzndd0p1"))))
+    (arguments
+     `(#:cargo-inputs (("rust-darling" ,rust-darling-0.13)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-version-sync" ,rust-version-sync-0.9))))))
+
 (define-public rust-serde-xml-rs-0.6
   (package
     (name "rust-serde-xml-rs")
