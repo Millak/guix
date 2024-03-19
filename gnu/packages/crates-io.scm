@@ -54804,6 +54804,47 @@ macro use case.")
      "This package provides a procedural macro implementation of quote!.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-procfs-0.16
+  (package
+    (name "rust-procfs")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "procfs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d4k8ai16b5cv05dpz7b87qn5dap3jdyfnrvycb5zhmhas9hs7kk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=net::tests::test_snmp"
+         "--skip=process::task::tests::test_task_runsinglethread"
+         "--skip=process::tests::test_proc_status_for_kthreadd"
+         "--skip=tests::test_meminfo"
+         "--skip=process::tests::test_proc_fd_count_runsinglethread")
+       #:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-procfs-core" ,rust-procfs-core-0.16)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-procinfo" ,rust-procinfo-0.4))))
+    (home-page "https://github.com/eminence/procfs")
+    (synopsis "Interface to the Linux procfs pseudo-filesystem")
+    (description
+     "This package provides an interface to the Linux procfs pseudo-filesystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-procfs-core-0.16
   (package
     (name "rust-procfs-core")
