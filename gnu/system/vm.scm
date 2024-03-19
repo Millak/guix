@@ -52,6 +52,7 @@
 
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
+  #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
   #:use-module (gnu system image)
   #:use-module (gnu system linux-container)
@@ -137,7 +138,9 @@
 
 (define* (virtualized-operating-system os
                                        #:optional (mappings '())
-                                       #:key (full-boot? #f) volatile?)
+                                       #:key (full-boot? #f) volatile?
+                                       (system (%current-system))
+                                       (target (%current-target-system)))
   "Return an operating system based on OS suitable for use in a virtualized
 environment with the store shared with the host.  MAPPINGS is a list of
 <file-system-mapping> to realize in the virtualized OS."
@@ -167,15 +170,18 @@ environment with the store shared with the host.  MAPPINGS is a list of
           (append (map mapping->file-system mappings)
                   user-file-systems)))
 
-  (operating-system (inherit os)
-
+  (operating-system
+    (inherit os)
     ;; XXX: Until we run QEMU with UEFI support (with the OVMF firmware),
     ;; force the traditional i386/BIOS method.
     ;; See <https://bugs.gnu.org/28768>.
     (bootloader (bootloader-configuration
-                  (inherit (operating-system-bootloader os))
-                  (bootloader grub-bootloader)
-                  (targets '("/dev/vda"))))
+                 (inherit (operating-system-bootloader os))
+                 (bootloader
+                  (if (target-riscv64? (or target system))
+                      u-boot-qemu-riscv64-bootloader
+                      grub-bootloader))
+                 (targets '("/dev/vda"))))
 
     (initrd (lambda (file-systems . rest)
               (apply (operating-system-initrd os)
@@ -259,7 +265,9 @@ useful when FULL-BOOT?  is true."
   (mlet* %store-monad ((os ->  (virtualized-operating-system
                                 os mappings
                                 #:full-boot? full-boot?
-                                #:volatile? volatile?))
+                                #:volatile? volatile?
+                                #:system system
+                                #:target target))
                        (base-image -> (system-image
                                        (image
                                         (inherit
