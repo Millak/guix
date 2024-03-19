@@ -251,6 +251,39 @@ accessors, hash-tables, sets, uiop:run-program, arrays and a few others.")
      ;; TODO: Tests fail on call to coreutils echo for ecl.
      `(#:tests? #f))))
 
+(define-public sbcl-st-json
+  (let ((commit "4a0025bcc5b6921454822f1b9f38f697b4eeaf43")
+        (revision "0"))
+    (package
+      (name "sbcl-st-json")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marijnh/ST-JSON")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06qrhr5iw73k96lai2x9w52l6gnmlxy7fsr0r35gz6nz1f71x7gx"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://marijnhaverbeke.nl/st-json/")
+      (synopsis "JSON for Common Lisp")
+      (description
+       "ST-JSON (@code{ST} because it originated at Streamtech) is a Common Lisp
+ library for encoding and decoding JSON values (as specified on json.org).
+
+This library does mostly the same thing as CL-JSON, but is simpler and more
+precise about types (distinguishing boolean false, the empty array, and the
+empty object).")
+      (license license:zlib))))
+
+(define-public cl-st-json
+  (sbcl-package->cl-source-package sbcl-st-json))
+
+(define-public ecl-st-json
+  (sbcl-package->ecl-package sbcl-st-json))
+
 (define-public sbcl-stdutils
   (let ((commit "4a4e5a4036b815318282da5dee2a22825369137b")
         (revision "0"))
