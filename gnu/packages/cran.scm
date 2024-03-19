@@ -14793,13 +14793,13 @@ contains or can be specified by the user.")
 (define-public r-wrs2
   (package
     (name "r-wrs2")
-    (version "1.1-5")
+    (version "1.1-6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "WRS2" version))
               (sha256
                (base32
-                "028xs424m879siaf3rrhzl1dacp9j7wcl5fpikyx2n0cc7anq4vq"))))
+                "1wsnsl4gy1hbgxfzzhfybak0jqmxq9fsh3scqyxydd7ia9r2n52k"))))
     (properties `((upstream-name . "WRS2")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-plyr r-reshape))
