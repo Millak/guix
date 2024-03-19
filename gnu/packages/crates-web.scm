@@ -3309,18 +3309,17 @@ dependencies.")
 (define-public rust-http-types-2
   (package
     (name "rust-http-types")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p7g2rzgzvnd419a5ddlyb2nz85z9bw7cdkqyl7467cx2fxkwq9j"))))
+        (base32 "1bgmfmvirsa1alcyw15mkh227j3a62aq1x47lkxxnfnnf9x1i6vf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-async-channel" ,rust-async-channel-1)
         ("rust-async-std" ,rust-async-std-1)
@@ -3333,9 +3332,11 @@ dependencies.")
         ("rust-rand" ,rust-rand-0.7)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-qs" ,rust-serde-qs-0.7)
+        ("rust-serde-qs" ,rust-serde-qs-0.8)
         ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
-        ("rust-url" ,rust-url-2))))
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-http" ,rust-http-0.2))))
     (home-page "https://github.com/http-rs/http-types")
     (synopsis "Common types for HTTP operations")
     (description
