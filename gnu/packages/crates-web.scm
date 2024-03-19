@@ -6688,28 +6688,31 @@ the Trust-DNS client to use rustls for TLS.")
     (inputs
      (list openssl))))
 
-(define-public rust-trust-dns-rustls-0.18
+(define-public rust-trust-dns-rustls-0.18.0-alpha.2
   (package
     (inherit rust-trust-dns-rustls-0.19)
     (name "rust-trust-dns-rustls")
-    (version "0.18.1")
+    (version "0.18.0-alpha.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19vhb0xsyr0wy4p0liwhv4rqmwv6szfmmid6439gq7wah1x1hzp4"))))
+        (base32 "1qbqn9isrn9awbbhfd72nfqx529idzwdc025ga85vqpxkpryadhc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false                  ;missing file
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=tests::test_tls_client_stream_ipv4")
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-log" ,rust-log-0.4)
         ("rust-rustls" ,rust-rustls-0.16)
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
-        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18.0-alpha.2)
         ("rust-webpki" ,rust-webpki-0.21))
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.10))))))
