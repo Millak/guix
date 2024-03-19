@@ -16272,14 +16272,19 @@ this to write Rust programs which can be customized by end users easily.")
 (define-public rust-console-0.15
   (package
     (name "rust-console")
-    (version "0.15.5")
+    (version "0.15.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "console" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q5dwppyn1zsj5h9zjxfzah8l91y7cyw270m6hz7x9vhi6z9zmy3"))))
+        (base32 "1sz4nl9nz8pkmapqni6py7jxzi7nzqjxzb3ya4kxvmkb0zy867qf"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; break-dead-code was removed from proptest in 1.3.0.
+                   ((".*break-dead-code.*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -16287,7 +16292,7 @@ this to write Rust programs which can be customized by end users easily.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-windows-sys" ,rust-windows-sys-0.42))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-proptest" ,rust-proptest-1)
         ("rust-regex" ,rust-regex-1))))
