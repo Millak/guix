@@ -2991,6 +2991,57 @@ management.")
 (define-public ecl-eager-future2
   (sbcl-package->ecl-package sbcl-eager-future2))
 
+(define-public sbcl-easy-routes
+  (let ((commit "7832f8bf3d07825b5eb967a2ef04da7c40c18248")
+        (revision "0"))
+    (package
+      (name "sbcl-easy-routes")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/easy-routes")
+               (commit commit)))
+         (file-name (git-file-name "cl-easy-routes" version))
+         (sha256
+          (base32 "1banw54kz2llzb9h5sm47ckfc9l348m7qncm0npsy0w837rxkyzx"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("easy-routes"
+                         "easy-routes+djula"
+                         "easy-routes+errors")))
+      (native-inputs
+       (list sbcl-stefil))
+      (inputs
+        (list sbcl-djula
+              sbcl-hunchentoot
+              sbcl-hunchentoot-errors
+              sbcl-routes))
+      (home-page "https://github.com/mmontone/easy-routes/")
+      (synopsis "Routes handling utility on top of Hunchentoot")
+      (description
+       "EASY-ROUTES is yet another routes handling system on top of
+Hunchentoot.  It's just glue code for Restas routing subsystem (CL-ROUTES).
+
+It supports:
+@itemize
+@item dispatch based on HTTP method
+@item arguments extraction from the url path
+@item decorators
+@item URL generation from route names
+@end itemize
+
+This package provides EASY-ROUTES, EASY-ROUTES+DJULA and EASY-ROUTES+ERRORS
+systems.")
+      (license license:expat))))
+
+(define-public cl-easy-routes
+  (sbcl-package->cl-source-package sbcl-easy-routes))
+
+(define-public ecl-easy-routes
+  (sbcl-package->ecl-package sbcl-easy-routes))
+
 (define-public sbcl-jpl-util
   (let ((commit "0311ed374e19a49d43318064d729fe3abd9a3b62"))
     (package
