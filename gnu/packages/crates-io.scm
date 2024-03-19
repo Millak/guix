@@ -36976,6 +36976,33 @@ advertised and discovered using this mechanism.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-libproc-0.14
+  (package
+    (name "rust-libproc")
+    (version "0.14.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libproc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0va3jzmgfj57lf0zfq59acfkid3frs6nvx9xlsnc5jd4g1q4kdlf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.69)
+        ("rust-errno" ,rust-errno-0.3)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-procfs" ,rust-procfs-0.16)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/andrewdavidmackenzie/libproc-rs")
+    (synopsis "Library to get information about running processes")
+    (description
+     "This package provides a library to get information about running
+processes for both MacOS and Linux.")
+    (license license:expat)))
+
 (define-public rust-libpulse-binding-2
   (package
     (name "rust-libpulse-binding")
