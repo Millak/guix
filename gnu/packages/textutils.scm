@@ -27,7 +27,7 @@
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>;;
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -199,15 +199,20 @@ libenca and several charset conversion libraries and tools.")
          ;; For tests.
          ("perl" ,perl))))
     (arguments
-     '(#:make-flags (list "CC=gcc"
+     `(#:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "prefix=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
          (add-before 'check 'check-data
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key ,@(if (%current-target-system)
+                                 '(native-inputs)
+                                 '())
+                     inputs #:allow-other-keys)
              (for-each (lambda (i)
-                         (copy-file (assoc-ref inputs i)
+                         (copy-file (assoc-ref ,@(if (%current-target-system)
+                                                     '((or native-inputs inputs))
+                                                     '(inputs)) i)
                                     (string-append "data/" i)))
                        '("NormalizationTest.txt" "GraphemeBreakTest.txt"))
              (substitute* "data/GraphemeBreakTest.txt"
