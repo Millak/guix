@@ -6071,25 +6071,25 @@ extension for the Trust-DNS client to use tokio-openssl for TLS.")
     (inputs
      (list openssl))))
 
-(define-public rust-trust-dns-openssl-0.18
+(define-public rust-trust-dns-openssl-0.18.0-alpha.2
   (package
     (inherit rust-trust-dns-openssl-0.19)
     (name "rust-trust-dns-openssl")
-    (version "0.18.1")
+    (version "0.18.0-alpha.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trust-dns-openssl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1870s27ifsdh9plgcwwbxzvlw17r3dn9v6s0zfryf6kfp9hzpfz2"))))
+        (base32 "16h58wlwgm4jhadi0vxnppdbxlhnxnfid9jxwgnv2fs4d8q9dhg9"))))
     (arguments
      `(#:cargo-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-tokio-openssl" ,rust-tokio-openssl-0.4)
-        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18))
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.18.0-alpha.2))
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.10)
         ("rust-tokio" ,rust-tokio-0.2))))))
