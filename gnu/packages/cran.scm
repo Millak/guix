@@ -10736,14 +10736,14 @@ vectors.")
 (define-public r-tinytex
   (package
     (name "r-tinytex")
-    (version "0.49")
+    (version "0.50")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tinytex" version))
        (sha256
         (base32
-         "0i9icscy5n6p6w3f4v2z3cznywrrv2l6xyyhb0k1fpa4cpn6j4cl"))))
+         "11k0pl073b4k4wmpxkw4a071jbpvhr1g3cwm9v99rw3gh6p6x15l"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-xfun))
