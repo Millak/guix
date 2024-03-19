@@ -47037,21 +47037,23 @@ PartialOrd types, like floats.")
   (package
     (inherit rust-ordered-float-3)
     (name "rust-ordered-float")
-    (version "2.1.1")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ordered-float" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0632g8bacvras6nig1bb1ihgc560476jkrb3is6n542ll86q8vvn"))))
+         "075i108hr95pr7hy4fgxivib5pky3b6b22rywya5qyd2wmkrvwb8"))))
     (arguments
-     `(#:skip-build?
-       #t
-       #:cargo-inputs
-       (("rust-num-traits" ,rust-num-traits-0.2)
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rkyv" ,rust-rkyv-0.7)
+        ("rust-schemars" ,rust-schemars-0.6)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde-test" ,rust-serde-test-1))))))
@@ -47069,7 +47071,11 @@ PartialOrd types, like floats.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0625x96987kspdxbikry5mb7hsf5pdc5bbanxd8wjwqlx0ar71hq"))))))
+         "0625x96987kspdxbikry5mb7hsf5pdc5bbanxd8wjwqlx0ar71hq"))))
+    (arguments
+     `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-ordered-multimap-0.4
   (package
