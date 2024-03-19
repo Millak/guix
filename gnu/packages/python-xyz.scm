@@ -12963,7 +12963,22 @@ Python style, together with a fast and comfortable execution environment.")
                  "")
                 (("\"-m snakemake\"")
                  (string-append "\"" #$output
-                                "/bin/snakemake" "\"")))))
+                                "/bin/snakemake" "\""))
+                ;; The snakemake command produced by format_job_exec contains
+                ;; references to /gnu/store.  Prior to patching above that's
+                ;; just a reference to Python; after patching it's a reference
+                ;; to the snakemake executable.
+                ;;
+                ;; In Tibanna execution mode Snakemake arranges for a certain
+                ;; Docker image to be deployed to AWS.  It then passes its own
+                ;; command line to Tibanna.  This is misguided because it only
+                ;; ever works if the local Snakemake command was run inside
+                ;; the same Docker image.  In the case of using Guix this is
+                ;; never correct, so we need to replace the store reference.
+                (("tibanna_args.command = command")
+                 (string-append
+                  "tibanna_args.command = command.replace('"
+                  #$output "/bin/snakemake', 'python3 -m snakemake')")))))
           (add-after 'unpack 'patch-version
             (lambda _
               (substitute* "setup.py"
