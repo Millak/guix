@@ -16,6 +16,7 @@
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
+;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -656,6 +657,28 @@ IOCP and Async I/O abstractions.")
         ("rust-ws2-32-sys" ,rust-ws2-32-sys-0.2))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
+
+(define-public rust-named-pipe-0.4
+  (package
+    (name "rust-named-pipe")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "named_pipe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0azby10wzmsrf66m1bysbil0sjfybnvhsa8py093xz4irqy4975d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; failed to resolve: could not find `shared` in `winapi`
+       #:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/blackbeam/named_pipe")
+    (synopsis "Wrapper for overlapped (asyncronous) IO of Windows's named pipes")
+    (description
+     "This package provides a wrapper for overlapped (asyncronous) IO of
+Windows's named pipes.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-nt-time-0.6
   (package
@@ -3361,4 +3384,3 @@ windows crate.")
               (sha256
                (base32
                 "17z8q25pd3dp6b84qm9nlayd3ym78sbryxlqmgcxvz9vpmy8qarz"))))))
-
