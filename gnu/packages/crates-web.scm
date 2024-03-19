@@ -3702,6 +3702,31 @@ dependencies.")
         ("rust-unicase" ,rust-unicase-1)
         ("rust-url" ,rust-url-1))))))
 
+(define-public rust-hyperlocal-0.8
+  (package
+    (name "rust-hyperlocal")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyperlocal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "136978rsp0wr6x28cxivxhbq2np66l4jrq3n9xwckrrd5dxxzbqg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-pin-project" ,rust-pin-project-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/softprops/hyperlocal")
+    (synopsis "Hyper bindings for Unix domain sockets")
+    (description
+     "This package provides Hyper bindings for Unix domain sockets.")
+    (license license:expat)))
+
 (define-public rust-hyper-native-tls-0.3
   (package
     (name "rust-hyper-native-tls")
