@@ -2686,6 +2686,19 @@ Windows crate.")
        (sha256
         (base32 "0d1vizbp6b1wjh3qnjrh120w1iwqal3lfj52wdac847zgy1gg4rr"))))))
 
+(define-public rust-windows-metadata-0.54
+  (package
+    (inherit rust-windows-metadata-0.57)
+    (name "rust-windows-metadata")
+    (version "0.54.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hh4bpima19p18kr5a2ss46hgmgafjkqzyfzhm0dazvx6sw70hz4"))))))
+
 (define-public rust-windows-metadata-0.52
   (package
     (inherit rust-windows-metadata-0.56)
