@@ -3231,14 +3231,14 @@ response bodies.")
 (define-public rust-http-client-6
   (package
     (name "rust-http-client")
-    (version "6.3.4")
+    (version "6.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1i0mys38gsih9kkrdbfsmd8p9lnb2nd5wch76cpkjmqk8mm2mhcq"))))
+        (base32 "19g19jli98cd0ywrzcsbw5j34rypm8n43yszxa3gaaqyr46m2iqr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -3249,7 +3249,7 @@ response bodies.")
         ("rust-async-tls" ,rust-async-tls-0.10)
         ("rust-async-trait" ,rust-async-trait-0.1)
         ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-dashmap" ,rust-dashmap-4)
+        ("rust-dashmap" ,rust-dashmap-5)
         ("rust-deadpool" ,rust-deadpool-0.7)
         ("rust-futures" ,rust-futures-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
@@ -3259,6 +3259,8 @@ response bodies.")
         ("rust-isahc" ,rust-isahc-0.9)
         ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.18)
+        ("rust-tokio" ,rust-tokio-0.2)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
         ("rust-web-sys" ,rust-web-sys-0.3))))
