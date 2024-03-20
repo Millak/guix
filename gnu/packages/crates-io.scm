@@ -14733,14 +14733,14 @@ const functions with conditional compilations.")
 (define-public rust-const-oid-0.9
   (package
     (name "rust-const-oid")
-    (version "0.9.2")
+    (version "0.9.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "const-oid" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "04xr993r37hd3kcwzll34kpihxrxj7yhr7fawgir8gs80wyby3sj"))))
+                "1y0jnqaq7p2wvspnx7qj76m7hjcqpz73qzvr9l2p9n2s51vr6if2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))
