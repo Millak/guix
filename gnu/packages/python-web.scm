@@ -63,6 +63,7 @@
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3421,6 +3422,24 @@ over the default provided with Python and, importantly, enables full
 verification of the SSL peer.")
     (home-page "https://github.com/cedadev/ndg_httpsclient/")
     (license license:bsd-3)))
+
+(define-public python-noiseprotocol
+  (package
+    (name "python-noiseprotocol")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "noiseprotocol" version))
+       (sha256
+        (base32 "0ifnj0mpbqsfqba9n12vf5yzxj4qf2gxql3ry43qyshgnrqsi4mh"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cryptography))
+    (home-page "https://github.com/plizonczyk/noiseprotocol")
+    (synopsis "Implementation of Noise Protocol Framework")
+    (description
+     "This package provides an implementation of Noise Protocol Framework.")
+    (license license:expat)))
 
 (define-public python-websocket-client
   (package
