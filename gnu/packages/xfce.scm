@@ -2234,7 +2234,8 @@ local weather in the panel, using forecast data provided by the
                 "10bnb8q7sj60ahzfwrb3av4ngr17wk1p6jsnfv0yn8l90kksnb41"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           libxslt))
     (inputs
      (list glib))
     (home-page "https://docs.xfce.org/xfce/xfce4-dev-tools/")
