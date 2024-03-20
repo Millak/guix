@@ -7882,18 +7882,18 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.38.7")
+    (version "1.38.8")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "0xx6ybvnbpxj59g1fiij8bicniamhhd7d7fcw8c7py15y3h2mlc1"))))
+                "126qq2549h3dpjiq36709pym5bfwk6jqbz5q2sb5hl8lwm1apv8w"))))
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics r-genomeinfodbdata r-iranges r-s4vectors))
+     (list r-biocgenerics r-genomeinfodbdata r-iranges r-rcurl r-s4vectors))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/GenomeInfoDb")

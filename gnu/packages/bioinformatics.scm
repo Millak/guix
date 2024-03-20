@@ -11675,30 +11675,6 @@ clustering analysis, differential analysis, motif inference and exploration of
 single cell ATAC-seq sequencing data.")
     (license license:gpl3)))
 
-(define-public r-tictoc
-  (package
-    (name "r-tictoc")
-    (version "1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "tictoc" version))
-              (sha256
-               (base32
-                "037jbwb58mj5asf3kr6hpf3fy9c6fkinnd8hbpfb141a2jsa8pph"))))
-    (properties `((upstream-name . "tictoc")))
-    (build-system r-build-system)
-    (home-page "https://github.com/jabiru/tictoc")
-    (synopsis
-     "Time R scripts and implementations of stack and list structures")
-    (description
-     "The tictoc package provides the timing functions @code{tic} and
-@code{toc} that can be nested.  It provides an alternative to
-@code{system.time()} with a different syntax similar to that in another
-well-known software package.  @code{tic} and @code{toc} are easy to use, and
-are especially useful when timing several sections in more than a few lines of
-code.")
-    (license license:asl2.0)))
-
 (define-public r-tsis
   (let ((commit "24460298fbe1d26e4da390f6e4f3d4d9d62334dc")
         (revision "1"))
@@ -16479,45 +16455,6 @@ to retrieve data from DisGeNET v6.0 (Jan, 2019).")
 sequencing data in microbiome studies with the Dirichlet-tree Multinomial
 Mixtures.")
       (license license:cc0))))
-
-(define-public r-dyngen
-  (package
-    (name "r-dyngen")
-    (version "1.0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "dyngen" version))
-       (sha256
-        (base32
-         "095jqn1rd83qm3ayca9hmv6bhlaa2c338020l46vniq8n38kbnra"))))
-    (properties `((upstream-name . "dyngen")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-assertthat
-           r-dplyr
-           r-dynutils
-           r-ggplot2
-           r-ggraph
-           r-ggrepel
-           r-gillespiessa2
-           r-igraph
-           r-lmds
-           r-matrix
-           r-patchwork
-           r-pbapply
-           r-purrr
-           r-rlang
-           r-tibble
-           r-tidygraph
-           r-tidyr
-           r-viridis))
-    (home-page "https://github.com/dynverse/dyngen")
-    (synopsis "Multi-Modal simulator for single-cell omics analyses")
-    (description
-     "This package provides a multi-modal simulation engine for studying
-dynamic cellular processes at single-cell resolution.")
-    (license license:expat)))
 
 ;; Needed for r-liana
 (define-public r-omnipathr/devel

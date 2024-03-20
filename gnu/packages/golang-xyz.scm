@@ -1035,6 +1035,83 @@ increment versions.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-jbenet-go-random
+  (package
+    (name "go-github-com-jbenet-go-random")
+    (version "0.0.0-20190219211222-123a90aedc0c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-random")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kgx19m8p76rmin8s8y6j1padciv1dx37qzy7jkh9bw49ai3haw3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-random"))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize))
+    (home-page "https://github.com/jbenet/go-random")
+    (synopsis "Go library and a program that outputs randomness")
+    (description
+     "This is a Unix utility that outputs randomness.  It is a thin
+wrapper around @code{crypto/rand}.")
+    (license license:expat)))
+
+(define-public go-github-com-jbenet-go-temp-err-catcher
+  (package
+    (name "go-github-com-jbenet-go-temp-err-catcher")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-temp-err-catcher")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n482jhh6jwq43jj21xkq8grqzx78hjh7f44p0q3n01zp1dsh97r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-temp-err-catcher"))
+    (home-page "https://github.com/jbenet/go-temp-err-catcher")
+    (synopsis "Error handling helper library")
+    (description "Package @code{temperrcatcher} provides a @code{TempErrCatcher}
+object, which implements simple error-retrying functionality.")
+    (license license:expat)))
+
+(define-public go-github-com-jbenet-goprocess
+  (package
+    (name "go-github-com-jbenet-goprocess")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/goprocess")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z4a5skx9kh2c727pc6zz0vhf9v8acd320s7z0f1kwy3y1nbdhjk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/goprocess"))
+    (native-inputs
+     (list go-github-com-jbenet-go-cienv))
+    (home-page "https://github.com/jbenet/goprocess")
+    (synopsis "Manage process life cycles in Go")
+    (description
+     "@code{goprocess} introduces a way to manage process lifecycles in
+Go.  It is much like @code{go.net/context} (it actually uses a Context), but it is
+more like a Context-WaitGroup hybrid.  @code{goprocess} is about being able to start
+and stop units of work, which may receive @code{Close} signals from many clients.")
+    (license license:expat)))
+
 (define-public go-github-com-jinzhu-copier
   (package
     (name "go-github-com-jinzhu-copier")
@@ -1056,6 +1133,31 @@ increment versions.")
     (description
      "This package provides a library, which supports copying value from one
 struct to another.")
+    (license license:expat)))
+
+(define-public go-github-com-josharian-intern
+  (package
+    (name "go-github-com-josharian-intern")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/josharian/intern")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1za48ppvwd5vg8vv25ldmwz1biwpb3p6qhf8vazhsfdg9m07951c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/josharian/intern"))
+    (home-page "https://github.com/josharian/intern")
+    (synopsis "String interning for Go")
+    (description
+     "This library defines functions to perform string interning in Go,
+storing only one copy of each unique string in memory.  All functions may be
+called concurrently with themselves and each other.")
     (license license:expat)))
 
 (define-public go-github-com-k0kubun-pp
@@ -1731,6 +1833,34 @@ query information regarding the number of CPUs available to the system.")
      "This package implements algorithms for
 @url{https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average,exponentially
 weighted moving averages}.")
+    (license license:expat)))
+
+(define-public go-github-com-whyrusleeping-go-sysinfo
+  (package
+    (name "go-github-com-whyrusleeping-go-sysinfo")
+    (version "0.0.0-20190219211824-4a357d4b90b1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/go-sysinfo")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s6yjp9incc579wbbga33vq0hcanv8j2xh9l90ya0r4fihz39jiq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/go-sysinfo"))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize))
+    (home-page "https://github.com/whyrusleeping/go-sysinfo")
+    (synopsis "Package to extract system information")
+    ;; There is not much information provided by the project, see
+    ;; <https://github.com/whyrusleeping/go-sysinfo/issues>.
+    (description
+     "This packages provides a basic system stats like @code{DiskUsage} and
+@code{MemoryInfo}.")
     (license license:expat)))
 
 (define-public go-go-uber-org-automaxprocs

@@ -427,6 +427,12 @@ See @url{https://prosody.im/doc/modules/mod_tls}."
 @url{https://prosody.im/doc/modules/mod_saslauth}."
      common)
 
+    (insecure-sasl-mechanisms
+     (string-list '("PLAIN" "LOGIN"))
+     "Set of mechanisms that will not be offered on unencrypted connections.
+See @url{https://prosody.im/doc/modules/mod_saslauth}."
+     common)
+
     (s2s-require-encryption?
      (boolean #f)
      "Whether to force all server-to-server connections to be encrypted or not.

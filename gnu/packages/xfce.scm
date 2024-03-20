@@ -471,7 +471,7 @@ applications menu, workspace switcher and more.")
 (define-public xfce4-clipman-plugin
   (package
     (name "xfce4-clipman-plugin")
-    (version "1.6.4")
+    (version "1.6.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -479,7 +479,7 @@ applications menu, workspace switcher and more.")
                                   "xfce4-clipman-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1v5c1z154a46426198m3pl0fyrlsgfiqy4x9rvzcwzlp6lg5iplz"))))
+                "083i9pbcqjkdzzjx055ld4gd4gn3xnc3rn10vpsqv1vg01dlgb88"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -498,7 +498,7 @@ matching them against regular expressions.")
 (define-public xfce4-pulseaudio-plugin
   (package
     (name "xfce4-pulseaudio-plugin")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
@@ -507,7 +507,7 @@ matching them against regular expressions.")
                            (version-major+minor version) "/"
                            "xfce4-pulseaudio-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "0b4fjvrrah0b97cbv8ds7r6cwnj392ya2r7703ixf724f43hkpah"))))
+        (base32 "0j037wnx0z22nw11mq0y3cnq1srr52zckjap3klj3hirghh2nx5x"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config dbus-glib dbus))
@@ -793,7 +793,7 @@ and import the new pictures from your camera.")
 (define-public thunar-archive-plugin
   (package
     (name "thunar-archive-plugin")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
@@ -801,7 +801,7 @@ and import the new pictures from your camera.")
                            name "/" (version-major+minor version)
                            "/" name "-" version ".tar.bz2"))
        (sha256
-        (base32 "1vcbbmh2vw43231c7vbkwc35pmhj7ixb65fvssrwfxydsfqkl6x8"))))
+        (base32 "1qxdsnwjy8z358yd0avi1h2r6y1izfv26dzlp5fsh3pwpivzhyb3"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config intltool))
     (inputs (list exo thunar gtk+))
@@ -836,7 +836,7 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
 (define-public thunar-media-tags-plugin
   (package
     (name "thunar-media-tags-plugin")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
@@ -844,7 +844,7 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
                            name "/" (version-major+minor version)
                            "/" name "-" version ".tar.bz2"))
        (sha256
-        (base32 "06sr7b4p9f585gian8vpx7j0pkzg0vvwcrjmrhvh7i5sb90w8rg2"))))
+        (base32 "02n99ymqs8msa798r63sy409pwrycg8p4pxx3yf497k924g134lm"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config intltool))
     (inputs (list exo gtk+ thunar taglib))
@@ -1032,7 +1032,7 @@ devices and folders.")
 (define-public gigolo
   (package
     (name "gigolo")
-    (version "0.5.2")
+    (version "0.5.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1040,7 +1040,7 @@ devices and folders.")
                                   "/" name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1hxv3lla567nnqxxly8xfi8fzmpcdhxb493x9hinr7szfnh1ljp3"))))
+                "1l1g9ljvyzir1jpjf0248nnwwf3sakwljlik6cj5wrj4azv88nfj"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config intltool))
     (inputs (list gtk+))
@@ -1136,7 +1136,7 @@ on your desktop.")
 (define-public xfce4-dict
   (package
     (name "xfce4-dict")
-    (version "0.8.5")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
@@ -1144,7 +1144,7 @@ on your desktop.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "06xa7987azyx6y4mkmg58qv7gsg66szmr8ly29l9l1v1xl5sp7i9"))))
+                "0h8adjgb7126hafik7r1k9wr3g6d835ggsh8zj9k4k9mf35bfpdf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1300,7 +1300,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.13.1")
+    (version "0.13.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/ristretto/"
@@ -1308,7 +1308,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
                                   "ristretto-" version ".tar.bz2"))
               (sha256
                (base32
-                "07kraf6k18f53vgx98hvrb20hcm5134m7c958w96fl142nzzy6np"))))
+                "1nbxfm6ljcw45vn8hhjxwcv3k387hdah4jnn07n9w08n63g5x7vp"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils
@@ -1328,7 +1328,7 @@ the desktop wallpaper.")
 (define-public xfce4-taskmanager
   (package
     (name "xfce4-taskmanager")
-    (version "1.5.5")
+    (version "1.5.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1336,7 +1336,7 @@ the desktop wallpaper.")
                                   "xfce4-taskmanager-" version ".tar.bz2"))
               (sha256
                (base32
-                "1rcaalqv6sdsnc6ick8fifgkqcf2xiflw9yk5szqn2qs4jx02kzn"))))
+                "1fv83xcbnlwabi32z3fsdik1knh7v45ji529dx9kwlv4b8pq6dk7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1388,7 +1388,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.8.2")
+    (version "0.9.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1396,7 +1396,7 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "115fy87lcn9scwx52kjs0g250q2d3r10sahl6l8l38fs13dqm8p3"))))
+                "063qxbcy8djijsb0clzkai3mwg43mmlswwrg403vsi2w0n614v5f"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list #:phases
@@ -1409,7 +1409,9 @@ several different time zones.")
                      (("\\$PKG_CONFIG --variable=glib_compile_resources gio-2.0")
                       "which glib-compile-resources")
                      (("\\$PKG_CONFIG --variable=glib_genmarshal glib-2.0")
-                      "which glib-genmarshal")))))))
+                      "which glib-genmarshal")
+                     (("\\$PKG_CONFIG --variable=glib_mkenums glib-2.0")
+                      "which glib-mkenums")))))))
     (native-inputs
      (list intltool pkg-config (list glib "bin") which))
     (inputs
@@ -1463,7 +1465,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1471,7 +1473,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0dpzzy03hlw6gljp7ywdi6np41r88p2nr7rypwzy6zdwqwv5832n"))))
+                "17fi33mkdz1nfmsgqlfa20l06wwy0s8lcj21cfg6ikdiihxwpjp7"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than
@@ -1502,7 +1504,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.10.4")
+   (version "1.10.5")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1512,7 +1514,7 @@ of data to either CD/DVD/BD.")
                                 version ".tar.bz2"))
             (sha256
              (base32
-              "1534h1a3a8b9pl20zpccaifrlsrbsihdcdjndn9nmqalgrl9kwd2"))))
+              "0732f1v6s1zkflq47rgdsimq73k7q94gwag1y9sza5smd8m1ywgs"))))
    (build-system gnu-build-system)
    (native-inputs
     (list pkg-config intltool
@@ -1531,7 +1533,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-screensaver
   (package
     (name "xfce4-screensaver")
-    (version "4.18.2")
+    (version "4.18.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1541,7 +1543,7 @@ A plugin for the Xfce panel is also available.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "161bdsvkbknaf9fpz4b1r4amnm72hzfmx9c6krg2396k2k2d5z74"))))
+                "0f9sw703pcgz47689qgc550h2hpqlzvsfgggd7z9s6516rhk2wfi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1602,7 +1604,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-cpugraph-plugin
   (package
    (name "xfce4-cpugraph-plugin")
-   (version "1.2.8")
+   (version "1.2.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1611,7 +1613,7 @@ A plugin for the Xfce panel is also available.")
                                   "/xfce4-cpugraph-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1gylfmpn36cm1b1kz0x8smy5hixzlhmdg5i53cj5fzgk4773id5z"))))
+                "05frfn3y009xndks9rsw90jgk0v5zfarn5jqaqci45v9ab82sy9p"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1787,7 +1789,7 @@ be clicked to open the chosen mount point.")
 (define-public xfce4-genmon-plugin
   (package
    (name "xfce4-genmon-plugin")
-   (version "4.1.1")
+   (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1796,7 +1798,7 @@ be clicked to open the chosen mount point.")
                                   "/xfce4-genmon-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0d81npcqnmkw2qaqa8c6igh9j5r4ivgb15zcjwxjkyhrzz89y4dj"))))
+                "0qh3b818kbf5sc07dshkd54nhqncsk0inlwv21zq8h11bzp0i3cl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -2195,7 +2197,7 @@ lan interface (signal state, signal quality, network name (SSID)).")
 (define-public xfce4-weather-plugin
   (package
    (name "xfce4-weather-plugin")
-   (version "0.11.1")
+   (version "0.11.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -2204,12 +2206,12 @@ lan interface (signal state, signal quality, network name (SSID)).")
                                   "/xfce4-weather-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0fajhibacccfw0rl8741iz7qkqls4ynn9760j78rbp6wl3wlcld4"))))
+                "0sw7p8xsgyc7b5w92abigqz9mii79w2vdlprm5c0hmb3g3zhmm35"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
     (inputs
-     (list gtk+ libsoup-minimal-2 libxfce4ui libxml2 xfce4-panel))
+     (list gtk+ json-c libsoup-minimal-2 libxfce4ui libxml2 xfce4-panel))
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-weather-plugin")
     (synopsis "Show information about local weather in the Xfce panel")
@@ -2232,7 +2234,8 @@ local weather in the panel, using forecast data provided by the
                 "10bnb8q7sj60ahzfwrb3av4ngr17wk1p6jsnfv0yn8l90kksnb41"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           libxslt))
     (inputs
      (list glib))
     (home-page "https://docs.xfce.org/xfce/xfce4-dev-tools/")

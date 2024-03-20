@@ -10,7 +10,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 nikita <nikita@n0.is>
 ;;; Copyright © 2017 Rodger Fox <thylakoid@openmailbox.org>
-;;; Copyright © 2017–2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017–2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -54,6 +54,7 @@
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -867,7 +868,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
 (define-public hydrogen
   (package
     (name "hydrogen")
-    (version "1.2.0")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -876,7 +877,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v4ir1my8zndw5rvz6jr42ysprwycgxrlsc53070y3620n699nha"))))
+        (base32 "0qb16yn3igs95silvngwy5mjwlzsyz5axwbd3lz6pjhwbf81rn7d"))))
     (build-system cmake-build-system)
     (arguments
      `(#:test-target "tests"
@@ -1508,7 +1509,7 @@ and auto-mapping slices to MIDI note numbers.")
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.24.1")
+    (version "2.24.3")
     (source
      (origin
        (method url-fetch)
@@ -1516,7 +1517,7 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "028m31fjcfgsq3f8ahz4hp2r36shsvkq1fjjibqdcp2aas3r1ifm"))))
+        (base32 "1gj4xjc9842wnqvqj08lkykpz2r72mqqw3x1fk6s9xbsxxv5y06z"))))
     (build-system gnu-build-system)
     (arguments
       (list #:tests? #f                      ;out-test/collated-files.html fails
@@ -5047,7 +5048,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.1.1")
+    (version "4.2.1")
     (source
      (origin
        (method git-fetch)
@@ -5056,7 +5057,7 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12h26k9qnsq027gdpch579nchwrqva1ymwm2fj5xmlh0aayrwy4d"))
+        (base32 "0rc5ma1k0cjllfl86apbyj61sh0691lsmqnvqicyn0zi53z8w9v0"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5284,7 +5285,7 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "23.06")
+    (version "23.12")
     (source
      (origin
        (method url-fetch)
@@ -5292,7 +5293,7 @@ specification and header.")
                            (version-major+minor version) "/"
                            "rosegarden-" version ".tar.xz"))
        (sha256
-        (base32 "1k3j5p6lx3w6pbsh95xiyfj8g8ysmvd18v0wmx7kdb3vyj5mfd0z"))))
+        (base32 "0clkzrs931dypvqcn5hzx2v3bq9gc439g71phahgwkh4c1jfcmrz"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -7246,22 +7247,27 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
               (uri (git-reference
                     (url "https://github.com/jackaudio/a2jmidid")
                     (commit version)))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix build for for riscv64-linux, same as:
+               ;;   https://github.com/jackaudio/a2jmidid/pull/18
+               '(substitute* "sigsegv.c"
+                  (("!defined[(]__aarch64__[)]")
+                   "!defined(__arch64__) && !defined(__riscv)")))
               (sha256
                (base32 "1x6rcl3f4nklnx4p5jln9a7fpj9y7agjxs9rw7cccmwnski7pnsq"))
               (file-name (git-file-name name version))))
     (arguments
-     `(#:tests? #f      ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/")))
-               (substitute* (string-append bin "a2j")
-                 (("a2j_control") (string-append bin "a2j_control")))
-               (wrap-program (string-append bin "a2j_control")
-                `("PYTHONPATH" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+     (list #:tests? #f      ; No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-programs
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((bin (string-append #$output "/bin/")))
+                     (substitute* (string-append bin "a2j")
+                       (("a2j_control") (string-append bin "a2j_control")))
+                     (wrap-program (string-append bin "a2j_control")
+                       `("PYTHONPATH" prefix (,(getenv "GUIX_PYTHONPATH"))))))))))
     (build-system meson-build-system)
     (inputs
      (list alsa-lib

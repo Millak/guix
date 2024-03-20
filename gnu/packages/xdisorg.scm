@@ -41,9 +41,9 @@
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
@@ -1256,14 +1256,14 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.14.2")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "12s9pc0dhqgawq6jiqhamj1zq9753kgpswny1rcsdx1lkpzrgaq1"))))
+        (base32 "1632y0yr1ig5nihs6kqyvfi117815zszhnfvaabm97qkf5blkj5p"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc))
@@ -1341,16 +1341,16 @@ Guile will work for XBindKeys.")
         (base32 "1winwzdy9yxvxnrv8gqpigl9y0c2px27mnms62bdilp4x6llrs9r"))))
     (build-system gnu-build-system)
     (inputs
-     (list asciidoc libxcb xcb-util xcb-util-keysyms xcb-util-wm))
+     (list libxcb xcb-util xcb-util-keysyms xcb-util-wm))
     (arguments
-     `(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:tests? #f  ; no check target
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" %output)
-             ;; Keep the documentation where the build system installs LICENSE.
-             (string-append "DOCPREFIX=" %output
-                            "/share/doc/" ,name "-" ,version))))
+     (list #:phases #~(modify-phases %standard-phases (delete 'configure))
+           #:tests? #f  ; no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   ;; Keep the documentation where the build system installs LICENSE.
+                   (string-append "DOCPREFIX=" #$output
+                                  "/share/doc/" #$name "-" #$version))))
     (home-page "https://github.com/baskerville/sxhkd")
     (synopsis "Simple X hotkey daemon")
     (description "sxhkd is a simple X hotkey daemon with a powerful and

@@ -7,7 +7,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023, 2024 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -79,7 +79,7 @@
 (define-public wine-minimal
   (package
     (name "wine-minimal")
-    (version "8.18")
+    (version "9.0")
     (source
      (origin
        (method url-fetch)
@@ -91,7 +91,7 @@
               (string-append "https://dl.winehq.org/wine/source/" dir
                              "wine-" version ".tar.xz")))
        (sha256
-        (base32 "1nv06awb3hv26v64nqnks9yiz7w368scxznj77vxa3zpmhafzyih"))))
+        (base32 "1vm61hrkinjqicxidhbhq3j8sb1iianfypdvjmnvgxcmac50kzbw"))))
     (properties '((upstream-name . "wine")))
     (build-system gnu-build-system)
     (native-inputs (list bison flex))
@@ -304,7 +304,7 @@ integrate Windows applications into your desktop.")
 (define-public wine-staging-patchset-data
   (package
     (name "wine-staging-patchset-data")
-    (version "8.18")
+    (version "9.0")
     (source
      (origin
        (method git-fetch)
@@ -313,7 +313,7 @@ integrate Windows applications into your desktop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qabyw5139xdfsvzbwbrn1nnqssgwk8mn88mxnq2cdkk9gbjvq56"))))
+        (base32 "0xdinbj9byihy8snv6h1mcb79rh35zwhhld4g7mjg0k2wvjgskwl"))))
     (build-system trivial-build-system)
     (native-inputs
      (list coreutils))
@@ -359,7 +359,7 @@ integrate Windows applications into your desktop.")
                              "wine-" wine-version ".tar.xz"))
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
-          (base32 "1nv06awb3hv26v64nqnks9yiz7w368scxznj77vxa3zpmhafzyih")))))
+          (base32 "1vm61hrkinjqicxidhbhq3j8sb1iianfypdvjmnvgxcmac50kzbw")))))
     (inputs (modify-inputs (package-inputs wine)
               (prepend autoconf ; for autoreconf
                        ffmpeg

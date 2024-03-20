@@ -12,7 +12,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2017, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2017, 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017, 2020-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
@@ -149,7 +149,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.6")
+    (version "2.7.7")
     (source
      (origin
        (method url-fetch)
@@ -157,7 +157,7 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "0w6nh2lnzfqcxasfsppmh4q309p1flzgfiv25hahzsd8kx879055"))))
+        (base32 "0rzfh8xdsd1r0xb7yb0h2zyzwhbsp7si8c0haaqgzcz4k2p4bz2q"))))
     (build-system qt-build-system)
     (arguments
      (list

@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2018, 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -410,7 +410,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.80.1")
+    (version "0.81.0")
     (source
      (origin
        (method git-fetch)
@@ -419,7 +419,7 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iqqrw95lpgjbmi777jdl5z1nizxgfy8xwpmy1fasjlb2yh2kp93"))))
+        (base32 "1fkshxaq12pd72v8m2f3a6d6jk9gh39hn0846gfkfinvw7yykzrl"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -736,7 +736,7 @@ The following systems are supported:
 (define-public mgba
   (package
     (name "mgba")
-    (version "0.10.2")
+    (version "0.10.3")
     (source
      (origin
        (method git-fetch)
@@ -746,7 +746,7 @@ The following systems are supported:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wwpjcblp2c1svab4z1if5xb7707wsy6zw590lwdz9za35i0h37q"))
+         "1h4wsx76kylsn4f4418swbp6zjp1x94dfn751iks1i6i529pfay1"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure we don't use the bundled software.
@@ -760,7 +760,8 @@ The following systems are supported:
     (arguments
      `(#:tests? #f                      ;no "test" target
        #:configure-flags
-       (list "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
+       (list "-DBUILD_LTO=OFF" ;FIXME: <https://github.com/mgba-emu/mgba/issues/3115>
+             "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
              "-DUSE_LIBZIP=OFF")))      ;use "zlib" instead
     (native-inputs (list pkg-config qttools-5))
     (inputs
@@ -1574,14 +1575,14 @@ that compiles to WebAssembly.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.7.0")
+    (version "2.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "14wrrzai25mh8qra3lsfibx8z6f96cqbnmsfh9kyhkvpc7yiyjs4"))))
+        (base32 "1dr70z1dkfw2gp43jq0qp7g73glr36a7qdcv1jvp1m927nhz95vy"))))
     (build-system gnu-build-system)
     (arguments
      (list

@@ -49,7 +49,7 @@
 ;;; Copyright © 2018 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2016, 2018 Tomáš Čech <sleep_walker@gnu.org>
-;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -136,6 +136,7 @@
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
@@ -6058,6 +6059,54 @@ adds a 'now' tag providing a convenient access to the arrow.now() API from
 templates.  A format string can be provided to control the output.")
     (license license:expat)))
 
+(define-public python-pypugjs
+  (package
+    (name "python-pypugjs")
+    (version "5.9.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kakulukia/pypugjs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zj7a560h973cl7brfw1nmyhgm8rp8j80wnih0shvhmw4ql23lpa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   ;; Our pyramid is outdated and pyramid-mako is not packaged.
+                   (add-after 'unpack 'disable-pyramid
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "setup.py"
+                         (("'pyramid")
+                          "#'pyramid"))))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "python" "-m" "pytest" "-v"
+                                 "pypugjs/testsuite/")))))))
+    (native-inputs (list python-coverage
+                         python-django
+                         python-jinja2
+                         python-flake8
+                         python-flask
+                         python-mako
+                         python-nose
+                         python-poetry-core
+                         python-pytest
+                         python-tornado-6
+                         python-wheel))
+    (propagated-inputs (list python-charset-normalizer python-six))
+    (home-page "https://github.com/kakulukia/pypugjs")
+    (synopsis "Convert Pug source files into different template languages")
+    (description
+     "PyPugJS is a high-performance port of PugJS for Python, that converts
+any @file{.pug} source into different template languages: Django, Jinja2,
+Mako, and Tornado.")
+    (license license:expat))) ;; MIT
+
 (define-public python-pysdl2
   (package
     (name "python-pysdl2")
@@ -6173,26 +6222,20 @@ bookmarks using a declarative input in the form of a markdown file.")
 (define-public python-joblib
   (package
     (name "python-joblib")
-    (version "1.1.1")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "joblib" version))
               (sha256
                (base32
-                "0019p280s2k941mihl67l7y6amwx86639xp3zvpsg1lmyish67rh"))))
-    (build-system python-build-system)
+                "1cbjjzsh9hzaqr2cqja95673p7j88b8bd02hjpkq8xz147k6by4j"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "JOBLIB_MULTIPROCESSING" "0")
-               (invoke "pytest" "-v" "joblib"
-                       ;; We disable this test to avoid having to depend on ipython/jupyter
-                       "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))))))
-    (native-inputs
-     (list python-pytest))
+     (list
+      #:test-flags  ; disabled to avoid having to depend on ipython/jupyter
+      #~(list "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-psutil))
     (home-page "https://joblib.readthedocs.io/")
     (synopsis "Using Python functions as pipeline jobs")
     (description
@@ -11434,6 +11477,27 @@ removal, line continuation, indentation, comment processing, identifier
 processing, values parsing, case insensitive comparison, and more.")
     (license license:expat)))
 
+(define-public python-pypytools
+  (package
+    (name "python-pypytools")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pypytools" version))
+       (sha256
+        (base32 "0ag5xyzagprji0m2pkqsfy8539s003mn41pl6plbmh6iwi9w0h51"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (propagated-inputs (list python-py))
+    (home-page "https://github.com/antocuni/pypytools/")
+    (synopsis
+     "Tools to use PyPy-specific features, with CPython fallbacks")
+    (description
+     "This package provides a collection of useful tools to use PyPy-specific
+features, with CPython fallbacks.")
+    (license license:x11)))
+
 (define-public python-simplegeneric
   (package
     (name "python-simplegeneric")
@@ -12801,19 +12865,18 @@ approach.")
     (build-system python-build-system)
     (arguments
      ;; TODO: Package missing test dependencies.
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; For cluster execution Snakemake will call Python.  Since there is
-         ;; no suitable PYTHONPATH set, cluster execution will fail.  We fix
-         ;; this by calling the snakemake wrapper instead.
-         (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "snakemake/executors/__init__.py"
-               (("\\{sys.executable\\} -m snakemake")
-                (string-append (assoc-ref outputs "out")
-                               "/bin/snakemake")))
-             #t)))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; For cluster execution Snakemake will call Python.  Since there is
+          ;; no suitable PYTHONPATH set, cluster execution will fail.  We fix
+          ;; this by calling the snakemake wrapper instead.
+          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+            (lambda _
+              (substitute* "snakemake/executors/__init__.py"
+                (("\\{sys.executable\\} -m snakemake")
+                 (string-append #$output "/bin/snakemake"))))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
@@ -12944,7 +13007,22 @@ Python style, together with a fast and comfortable execution environment.")
                  "")
                 (("\"-m snakemake\"")
                  (string-append "\"" #$output
-                                "/bin/snakemake" "\"")))))
+                                "/bin/snakemake" "\""))
+                ;; The snakemake command produced by format_job_exec contains
+                ;; references to /gnu/store.  Prior to patching above that's
+                ;; just a reference to Python; after patching it's a reference
+                ;; to the snakemake executable.
+                ;;
+                ;; In Tibanna execution mode Snakemake arranges for a certain
+                ;; Docker image to be deployed to AWS.  It then passes its own
+                ;; command line to Tibanna.  This is misguided because it only
+                ;; ever works if the local Snakemake command was run inside
+                ;; the same Docker image.  In the case of using Guix this is
+                ;; never correct, so we need to replace the store reference.
+                (("tibanna_args.command = command")
+                 (string-append
+                  "tibanna_args.command = command.replace('"
+                  #$output "/bin/snakemake', 'python3 -m snakemake')")))))
           (add-after 'unpack 'patch-version
             (lambda _
               (substitute* "setup.py"
@@ -14264,6 +14342,41 @@ Markdown.  The library features international input, various Markdown
 extensions, and several HTML output formats.  A command line wrapper
 markdown_py is also provided to convert Markdown files to HTML.")
     (license license:bsd-3)))
+
+(define-public python-markdown2
+  (package
+    (name "python-markdown2")
+    (version "2.4.13")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/trentm/python-markdown2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m1wy8i4xmna5b97dvks8cfjmc1wid8pxmd2h82869d0ajva3r6a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  (invoke "python" "testall.py"))))))))
+    (native-inputs
+     (list python-pygments))
+    (home-page "https://github.com/trentm/python-markdown2")
+    (synopsis "Fast and complete Python implementation of Markdown")
+    (description
+     "This package provides a fast and complete Python implementation of
+Markdown.  It was written to closely match the behaviour of the original
+Perl-implemented Markdown.pl.  It also comes with a number of
+extensions (called @code{extras}) for things like syntax coloring, tables,
+header-ids.")
+    (license license:expat)))
 
 (define-public python-mdx-include
   (package
@@ -30562,7 +30675,7 @@ accessor layer.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.13.3")
+    (version "4.15.0")
     (source
      (origin
        (method git-fetch)
@@ -30572,7 +30685,7 @@ accessor layer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1m0mrp20wjvy804214f4zzlbaqrakam0g3qr562yn2mjcgfba554"))))
+         "0m2sp65q21hhlfkvyby4sjc8cmwv3l0avw42xsna8za8ax9xadxr"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

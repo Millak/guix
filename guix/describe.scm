@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +27,7 @@
                                 sexp->channel
                                 manifest-entry-channel)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
   #:export (current-profile
             current-profile-date
@@ -55,20 +56,49 @@
   ;; later on.
   (program-arguments))
 
+(define (find-profile program)
+  "Return the profile created by 'guix pull' or 'guix time-machine' that
+PROGRAM lives in; PROGRAM is expected to end in \"/bin/guix\".  Return #f if
+such a profile could not be found."
+  (and (string-suffix? "/bin/guix" program)
+       ;; Note: We want to do _lexical dot-dot resolution_.  Using ".."  for
+       ;; real would instead take us into the /gnu/store directory that
+       ;; ~/.config/guix/current/bin points to, whereas we want to obtain
+       ;; ~/.config/guix/current.
+       (let ((candidate (dirname (dirname program))))
+         (and (file-exists? (string-append candidate "/manifest"))
+              (let ((manifest (guard (c ((profile-error? c) #f))
+                                (profile-manifest candidate))))
+                (define (fallback)
+                  (or (and=> (false-if-exception (readlink program))
+                             find-profile)
+                      (and=> (false-if-exception (readlink (dirname program)))
+                             (lambda (target)
+                               (find-profile (in-vicinity target "guix"))))))
+
+                ;; Is CANDIDATE the "right" profile--the one created by 'guix
+                ;; pull'?  It might be that CANDIDATE itself contains a
+                ;; symlink to the "right" profile; this happens for instance
+                ;; when using 'guix shell -CW'.  Thus, if CANDIDATE doesn't
+                ;; fit the bill, dereference PROGRAM or its parent directory
+                ;; and try again.
+                (match (and manifest
+                            (manifest-lookup manifest
+                                             (manifest-pattern (name "guix"))))
+                  (#f
+                   (fallback))
+                  (entry
+                   (if (assq 'source (manifest-entry-properties entry))
+                       candidate
+                       (fallback)))))))))
+
 (define current-profile
   (mlambda ()
     "Return the profile (created by 'guix pull') the calling process lives in,
 or #f if this is not applicable."
     (match initial-program-arguments
       ((program . _)
-       (and (string-suffix? "/bin/guix" program)
-            ;; Note: We want to do _lexical dot-dot resolution_.  Using ".."
-            ;; for real would instead take us into the /gnu/store directory
-            ;; that ~/.config/guix/current/bin points to, whereas we want to
-            ;; obtain ~/.config/guix/current.
-            (let ((candidate (dirname (dirname program))))
-              (and (file-exists? (string-append candidate "/manifest"))
-                   candidate)))))))
+       (find-profile program)))))
 
 (define (current-profile-date)
   "Return the creation date of the current profile (produced by 'guix pull'),
