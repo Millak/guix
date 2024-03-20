@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,14 +107,14 @@ together, allowing them to pretend they have a direct connection.")
 (define-public magic-wormhole
   (package
     (name "magic-wormhole")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "magic-wormhole" version))
         (sha256
          (base32
-          "0q41j99718y7m95zg1vaybnsp31lp6lhyqkbv4yqz5ys6jixh3qv"))))
+          "05hm5pnrxli69a28h3pbgx6s6pwy8279l506kha7y3i7hs1dcfxc"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -128,6 +129,7 @@ together, allowing them to pretend they have a direct connection.")
              #t)))))
     (native-inputs
      (list python-mock
+           python-noiseprotocol
            ;; XXX These are required for the test suite but end up being referenced
            ;; by the built package.
            ;; https://bugs.gnu.org/25235
