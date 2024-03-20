@@ -524,14 +524,14 @@ targets")
 (define-public rust-der-derive-0.7
   (package
     (name "rust-der-derive")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "der_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0cmyza28s52wfb67ymydjmvsc4m3sfp98dv9vprx6ibmdfx94iqi"))))
+                "0jg0y3k46bpygwc5cqha07axz5sdnsx5116g3nxf0rwrabj7rs2z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
