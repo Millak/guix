@@ -12972,8 +12972,32 @@ CMAKE environmental variable is set.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-codegenrs-3
+  (package
+    (name "rust-codegenrs")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "codegenrs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hjr5pp099aipm2apcd65a2fp2z6qsixnapsj3rbjgdiyixxzndx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-derive-more" ,rust-derive-more-0.99)
+        ("rust-difference" ,rust-difference-2)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3))))
+    (home-page "https://github.com/crate-ci/codegenrs")
+    (synopsis "Moving code-gen out of build.rs")
+    (description "Moving code-gen out of build.rs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-codegenrs-2
   (package
+    (inherit rust-codegenrs-3)
     (name "rust-codegenrs")
     (version "2.0.0")
     (source (origin
@@ -12983,17 +13007,12 @@ CMAKE environmental variable is set.")
               (sha256
                (base32
                 "1mld8n8r4ns433gxs2jbndrzqjrxv7v0pwc66pf9a2v2mrgvbv6p"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-clap" ,rust-clap-3)
         ("rust-derive-more" ,rust-derive-more-0.99)
         ("rust-difference" ,rust-difference-2)
-        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3))))
-    (home-page "https://github.com/crate-ci/codegenrs")
-    (synopsis "Moving code-gen our of build.rs")
-    (description "Moving code-gen our of build.rs")
-    (license (list license:expat license:asl2.0))))
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3))))))
 
 (define-public rust-codespan-reporting-0.11
   (package
