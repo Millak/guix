@@ -1874,23 +1874,25 @@ text to a terminal.")
 (define-public rust-anstyle-parse-0.2
   (package
     (name "rust-anstyle-parse")
-    (version "0.2.0")
+    (version "0.2.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "anstyle-parse" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1vjprf080adyxxpls9iwwny3g7irawfns9s2cj9ngq28dqhzsrg7"))))
+                "134jhzrz89labrdwxxnjxqjdg06qvaflj1wkfnmyapwyldfwcnn7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Not all files included.
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=state::codegen::table")
        #:cargo-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-utf8parse" ,rust-utf8parse-0.2))
        #:cargo-development-inputs
-       (("rust-codegenrs" ,rust-codegenrs-2)
-        ("rust-criterion" ,rust-criterion-0.4)
+       (("rust-codegenrs" ,rust-codegenrs-3)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-proptest" ,rust-proptest-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-vte-generate-state-changes" ,rust-vte-generate-state-changes-0.1))))
