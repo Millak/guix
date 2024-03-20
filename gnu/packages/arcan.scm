@@ -171,7 +171,7 @@ engine with a Lua scripting interface.")
     (inputs
      (modify-inputs (package-inputs arcan)
        (delete "libdrm")
-       (prepend sdl)))
+       (prepend glu libglvnd mesa sdl)))
     (arguments
      `(,@(ensure-keyword-arguments
           (package-arguments arcan)
