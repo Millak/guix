@@ -32,6 +32,7 @@
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2484,6 +2485,71 @@ by modifying your @file{Cargo.toml} file from the command line.")
      "This application is a terminal-based sequence editor for git interactive
 rebase.")
     (license license:gpl3+)))
+
+(define-public procs
+  (package
+    (name "procs")
+    (version "0.14.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "procs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ixl4912md5spanasf4kj0js35j6ff2rpwxbj9q15699cj5di8x4"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bsd-kvm" ,rust-bsd-kvm-0.1)
+                       ("rust-bsd-kvm-sys" ,rust-bsd-kvm-sys-0.2)
+                       ("rust-byte-unit" ,rust-byte-unit-5)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-console" ,rust-console-0.15)
+                       ("rust-directories" ,rust-directories-5)
+                       ("rust-dockworker" ,rust-dockworker-0.5)
+                       ("rust-errno" ,rust-errno-0.3)
+                       ("rust-getch" ,rust-getch-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libproc" ,rust-libproc-0.14)
+                       ("rust-minus" ,rust-minus-5)
+                       ("rust-nix" ,rust-nix-0.28)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pager" ,rust-pager-0.16)
+                       ("rust-pager" ,rust-pager-0.16)
+                       ("rust-procfs" ,rust-procfs-0.16)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-termbg" ,rust-termbg-0.5)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-uzers" ,rust-uzers-0.11)
+                       ("rust-which" ,rust-which-6)
+                       ("rust-winapi" ,rust-winapi-0.3))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'install-manual-page
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (man (string-append out "/share/man/man1")))
+                         (mkdir-p man)
+                         (invoke "a2x"
+                                 "--no-xmllint"
+                                 "--doctype=manpage"
+                                 "--format=manpage"
+                                 "man/procs.1.adoc"
+                                 (string-append "--destination-dir=" man))))))))
+    (native-inputs (list asciidoc))
+    (home-page "https://github.com/dalance/procs")
+    (synopsis "Modern replacement for @command{ps}")
+    (description "This package provides a  modern replacement for @command{ps}
+with colored output, multi-column keyword search, additional information, pager
+support, watch support (like @command{top}) and a tree view.")
+    (license license:expat)))
 
 (define-public rust-cbindgen-0.27
   (package
