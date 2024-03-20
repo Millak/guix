@@ -610,7 +610,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.3.1")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -619,7 +619,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0slx7hmlw2gpcqg951vwvnyl7j52pfzqyaldphghhfxbfzjs7v64"))))
+        (base32 "1hfkp24m1yipadanjf5wm6clmyllkcbh7fbw8whnrvxa2v7sa4l8"))))
     (build-system python-build-system)
     (arguments
      (list
