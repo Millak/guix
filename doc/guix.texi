@@ -10466,7 +10466,10 @@ field (@pxref{Channels}); alternatively, its source can be a directory
 name, in which case an additional @code{#:commit} argument must be
 supplied to specify the commit being built (a hexadecimal string).
 
-The resulting package is a Guix instance of the given channel, similar
+Optionally, a @code{#:channels} argument specifying additional channels
+can be provided.
+
+The resulting package is a Guix instance of the given channel(s), similar
 to how @command{guix time-machine} would build it.
 @end defvar
 

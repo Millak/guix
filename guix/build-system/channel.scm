@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +37,7 @@
 
 (define* (build-channels name inputs
                          #:key source system commit
+                         (channels '())
                          (authenticate? #t)
                          #:allow-other-keys)
   (mlet* %store-monad ((instances
@@ -44,7 +45,7 @@
                                (return (list source)))
                               ((channel? source)
                                (latest-channel-instances*
-                                (list source)
+                                (cons source channels)
                                 #:authenticate? authenticate?))
                               ((string? source)
                                ;; If SOURCE is a store file name, as is the
@@ -64,12 +65,14 @@
 (define channel-build-system
   ;; Build system used to "convert" a channel instance to a package.
   (let ((lower (lambda* (name #:key system source commit (authenticate? #t)
+                              (channels '())
                               #:allow-other-keys)
                  (bag
                    (name name)
                    (system system)
                    (build build-channels)
                    (arguments `(#:source ,source
+                                #:channels ,channels
                                 #:authenticate? ,authenticate?
                                 #:commit ,commit))))))
     (build-system (name 'channel)
