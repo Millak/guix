@@ -16655,7 +16655,7 @@ and comparison operations when used heavily in numeric code.")
 (define-public sbcl-cl-form-types
   (package
     (name "sbcl-cl-form-types")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -16665,7 +16665,7 @@ and comparison operations when used heavily in numeric code.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17kdjqmm2ib347b8lqm3k4kca2j53kr0azb6h7m0v5i157ibndsw"))))
+         "0k4j657vfh4zblp9a7d3z15r82yyz4fzqh8vfn2s7ljsj1dmhp2n"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-agutil
