@@ -12366,6 +12366,24 @@ features useful for text console applications.")
 supports @code{readline} shortcuts.")
     (license license:expat)))
 
+(define-public python-urwidgets
+  (package
+    (name "python-urwidgets")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urwidgets" version))
+       (sha256
+        (base32 "123n9qfg6qwwh1911y71c3msxi89n8cjj15wh2snqmwdkyfwy6nl"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-urwid))
+    (home-page "https://github.com/AnonymouX47/urwidgets")
+    (synopsis "Collection of widgets for urwid")
+    (description
+     "This package provides a collection of widgets for urwid.")
+    (license license:expat)))
+
 (define-public python-textdistance
   (package
     (name "python-textdistance")
