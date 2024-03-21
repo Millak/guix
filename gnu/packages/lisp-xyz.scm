@@ -7681,21 +7681,21 @@ audio library for Common Lisp.")
          (sha256
           (base32 "0sfmvqmsg9z13x0v77448rpdqgyprdq739nsbrjw9a28hv9jmkg9"))))
       (build-system asdf-build-system/sbcl)
-      (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cl-fastcgi" ,sbcl-cl-fastcgi)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("hunchentoot" ,sbcl-hunchentoot)
-         ("lack" ,sbcl-lack)
-         ("split-sequence" ,sbcl-split-sequence)
-         ("usocket" ,sbcl-usocket)
-         ("quri" ,sbcl-quri)))
       (arguments
        '(#:asd-systems '("clack"
                          "clack-handler-fcgi"
                          "clack-socket"
                          "clack-handler-hunchentoot")))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cl-fastcgi
+             sbcl-flexi-streams
+             sbcl-hunchentoot
+             sbcl-lack
+             sbcl-quri
+             sbcl-split-sequence
+             sbcl-usocket))
       (home-page "https://github.com/fukamachi/clack")
       (synopsis "Web Application Environment for Common Lisp")
       (description
