@@ -16693,7 +16693,15 @@ Macros and symbol-macros are fully expanded and all special forms, except
   (sbcl-package->cl-source-package sbcl-cl-form-types))
 
 (define-public ecl-cl-form-types
-  (sbcl-package->ecl-package sbcl-cl-form-types))
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl-form-types)))
+    (package
+      (inherit pkg)
+      (arguments
+       ;; FIXME: Syntax error in declaration (TYPE T (FORM &KEY STRICT
+       ;; EXPAND-COMPILER-MACROS (TEST (QUOTE FORM-TYPE=))))
+       ;; An error occurred during initialization: COMPILE-FILE-ERROR while...
+       ;; See <https://github.com/alex-gutev/cl-form-types/issues/22>.
+       '(#:tests? #f)))))
 
 (define-public sbcl-generic-cl
   (package
