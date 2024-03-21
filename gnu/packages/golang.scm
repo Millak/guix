@@ -5176,48 +5176,6 @@ maps, slices, or pointers, and copy their data as well instead of just their
 references.")
     (license license:expat)))
 
-(define-public go-github-com-multiformats-go-multiaddr
-  (let ((commit "fe1c46f8be5af4aff4db286e08839295bd922efb")
-        (revision "0"))
-    (package
-      (name "go-github-com-multiformats-go-multiaddr")
-      (version (git-version "1.3.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiformats/go-multiaddr")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0p5f8h098a4yjjmzsgqs7vhx1iqifb8izwg3559cr4h7clkpzznh"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path
-         "github.com/multiformats/go-multiaddr"))
-      (native-inputs
-       (list go-github-com-multiformats-go-multihash
-             go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-mr-tron-base58
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
-      (home-page "https://github.com/multiformats/go-multiaddr")
-      (synopsis "Composable and future-proof network addresses")
-      (description "Multiaddr is a standard way to represent addresses that
-does the following:
-
-@itemize
-@item Support any standard network protocols.
-@item Self-describe (include protocols).
-@item Have a binary packed format.
-@item Have a nice string representation.
-@item Encapsulate well.
-@end itemize\n")
-      (license license:expat))))
-
 (define-public go-github-com-multiformats-go-multiaddr-net
   (let ((commit "1cb9a0e8a6de3c8a10f6cee60d01d793603c4f7e")
         (revision "0"))
