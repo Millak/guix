@@ -12390,6 +12390,44 @@ Needleman-Wunsch).")
     ;; Dual licensed; also includes public domain source.
     (license (list license:gpl3 license:bsd-2))))
 
+(define-public pairadise
+  (package
+    (name "pairadise")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Xinglab/PAIRADISE")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ycwcqabm4zdng0a7j593g35d5yzvvwm7dyi3b8s19zdi4rjzrwd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "pairadise")))
+         (add-before 'build '2to3
+           (lambda _ (invoke "2to3" "--write" "--nobackups" "."))))))
+    (inputs (list star))
+    (propagated-inputs (list python-pysam))
+    (home-page "https://github.com/Xinglab/PAIRADISE")
+    (synopsis "Paired replicate analysis of allelic differential splicing events")
+    (description
+     "PAIRADISE is a method for detecting @dfn{allele-specific alternative
+splicing} (ASAS) from RNA-seq data.  Unlike conventional approaches that
+detect ASAS events one sample at a time, PAIRADISE aggregates ASAS signals
+across multiple individuals in a population.  By treating the two alleles of
+an individual as paired, and multiple individuals sharing a heterozygous SNP
+as replicates, PAIRADISE formulates ASAS detection as a statistical problem
+for identifying differential alternative splicing from RNA-seq data with
+paired replicates.")
+    (license license:gpl3+)))
+
 (define-public pardre
   (package
     (name "pardre")
