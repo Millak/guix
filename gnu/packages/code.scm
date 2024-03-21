@@ -183,14 +183,14 @@ highlighting your own code that seemed comprehensible when you wrote it.")
 (define-public global                             ; a global variable
   (package
     (name "global")
-    (version "6.6.10")
+    (version "6.6.12")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/global/global-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1s6c9nzpp4jfq14l3mk9fnyipizljkka8hdr1wwh2g798nlydl9d"))))
+               "00ari03n0wdzz1ib73p64h8g1p0a9js61fxl92jyq50fhh35najl"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
