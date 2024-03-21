@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;;
@@ -87,7 +87,7 @@ Features include:
 (define-public tuba
   (package
     (name "tuba")
-    (version "0.4.1")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -96,7 +96,7 @@ Features include:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v2ihp1dkp13jklp3kysv4blflhx3w0hwcyink4mb7hwsaqy0xnm"))))
+        (base32 "1s1iq9bwv6wp4dyvrdjdbmj9sqj9zxa0c78swcw7nhmm3fksh3vz"))))
     (build-system meson-build-system)
     (arguments
       (list
