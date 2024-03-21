@@ -2636,13 +2636,13 @@ maintained.")
 (define-public khard
   (package
     (name "khard")
-    (version "0.18.0")
+    (version "0.19.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri name version))
               (sha256
                (base32
-                "05860fdayqap128l7i6bcmi9kdyi2gx02g2pmh88d56xgysd927y"))))
+                "1464j728hjjpzlc89v4rbml3p4b38zp1igjd9yq3xnn3lc6hmwsr"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
