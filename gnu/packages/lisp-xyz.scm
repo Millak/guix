@@ -22573,8 +22573,8 @@ application development library.")
   (sbcl-package->cl-source-package sbcl-cl-glfw3))
 
 (define-public sbcl-cl-gltf
-  (let ((commit "dab186ebf9169926ccfcdec121a157162ad6ed83")
-        (revision "0"))
+  (let ((commit "7a3af05a7f491d8973b217f096806ef12a97474b")
+        (revision "1"))
     (package
       (name "sbcl-cl-gltf")
       (version (git-version "2.0.0" revision commit))
@@ -22586,7 +22586,7 @@ application development library.")
                (commit commit)))
          (file-name (git-file-name "cl-gltf" version))
          (sha256
-          (base32 "0ijy0paph7w037a2k14pv8j44mnj4gwhddhxzyqsz3qwl6fpb7yb"))))
+          (base32 "1d64fg2l2c0wns3wpp1xypd8687gnp3k70fv9fb48m1kpzg4kvrh"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        ;; No tests provided.
@@ -22612,6 +22612,8 @@ application development library.")
 ;; ** There is no package with the name SEQUENCE.An error occurred during
 ;; initialization: COMPILE-FILE-ERROR while compiling #<cl-source-file
 ;; "trivial-extensible-sequences" "fallback">.
+;;
+;; See <https://github.com/Shirakumo/cl-gltf/issues/3>
 ;;
 ;; (define-public ecl-cl-gltf
 ;;   (sbcl-package->ecl-package sbcl-cl-gltf))
