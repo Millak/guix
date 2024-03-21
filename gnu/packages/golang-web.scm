@@ -1280,6 +1280,49 @@ following:
 @end itemize\n")
       (license license:expat))))
 
+(define-public go-github-com-multiformats-go-multiaddr-net
+  ;; This commit is from <2018-10-01> and associated with GX package manager,
+  ;; since that time the project has changed versing stile and GX is dropped.
+  ;; The latest versioned tag is v0.1.5 <2020-04-30>. The project is archved
+  ;; on <2021-10-05>.
+  (let ((commit "1cb9a0e8a6de3c8a10f6cee60d01d793603c4f7e")
+        (revision "0"))
+    (package
+      (name "go-github-com-multiformats-go-multiaddr-net")
+      (version (git-version "1.6.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/multiformats/go-multiaddr-net")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ypgi47xdz3bh8lh7f8cmk7w3ql9g4izx5l3kzdg9gda1xn5zxq3"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        ;; TODO: Tests fail because they try to access the network.
+        #:tests? #f
+        #:import-path "github.com/multiformats/go-multiaddr-net"))
+      (native-inputs
+       (list go-github-com-gxed-hashland-keccakpg
+             go-github-com-minio-blake2b-simd
+             go-github-com-minio-sha256-simd
+             go-github-com-mr-tron-base58
+             go-github-com-multiformats-go-multiaddr
+             go-github-com-multiformats-go-multihash
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
+      (home-page "https://github.com/multiformats/go-multiaddr-net")
+      (synopsis "Multiaddress net tools")
+      (description
+       "This package provides Multiaddr specific versions of common functions
+in stdlib's @command{net} package.  This means wrappers of standard net
+symbols like @command{net.Dial} and @command{net.Listen}, as well as
+conversion to and from @command{net.Addr}.")
+      (license license:expat))))
+
 (define-public go-github-com-nwidger-jsoncolor
   (package
     (name "go-github-com-nwidger-jsoncolor")
