@@ -12428,6 +12428,21 @@ for identifying differential alternative splicing from RNA-seq data with
 paired replicates.")
     (license license:gpl3+)))
 
+(define-public r-pairadise
+  (package
+    (inherit pairadise)
+    (name "r-pairadise")
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "pairadise/src/pairadise_model"))))))
+    (inputs '())
+    (propagated-inputs (list r-doparallel r-foreach r-iterators r-nloptr))
+    (license license:expat)))
+
 (define-public pardre
   (package
     (name "pardre")
