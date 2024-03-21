@@ -1450,6 +1450,40 @@ Caching.")
 to jQuery to the Go language.")
     (license license:bsd-3)))
 
+(define-public go-github-com-quic-go-qpack
+  (package
+    (name "go-github-com-quic-go-qpack")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/qpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00mjz445hhx4yar5l8p21bpp4d06jyg2ajw0ax7bh64d37l4kx39"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests require ginkgo v2.
+      #:tests? #f
+      #:go go-1.20
+      #:import-path "github.com/quic-go/qpack"))
+    (propagated-inputs
+     (list go-github-com-onsi-ginkgo
+           go-github-com-onsi-gomega
+           go-golang-org-x-net))
+    (home-page "https://github.com/quic-go/qpack")
+    (synopsis "Minimal QPACK (RFC 9204) implementation for Go")
+    (description
+     "A minimal QPACK (RFC 9204) implementation in Go.  It is minimal in the sense
+that it doesn't use the dynamic table at all, but just the static table and (Huffman
+encoded) string literals.  Wherever possible, it reuses code from the
+@url{https://github.com/golang/net/tree/master/http2/hpack, HPACK implementation in
+the Go standard library}.")
+    (license license:expat)))
+
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
