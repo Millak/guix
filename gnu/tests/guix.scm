@@ -17,6 +17,8 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu tests guix)
+  #:use-module (gnu home)
+  #:use-module (gnu home services)
   #:use-module (gnu tests)
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
@@ -37,6 +39,7 @@
   #:use-module (ice-9 match)
   #:export (%test-guix-build-coordinator
             %test-guix-data-service
+            %test-guix-home-service
             %test-nar-herder
             %test-bffe))
 
@@ -250,6 +253,76 @@ host	all	all	::1/128 	trust"))))))
    (name "guix-data-service")
    (description "Connect to a running Guix Data Service.")
    (value (run-guix-data-service-test))))
+
+
+;;;
+;;; Guix Home
+;;;
+
+(define %guix-home-service-he
+  (home-environment
+   (services
+    (list (simple-service 'guix-home-service-test
+                          home-files-service-type
+                          `(("guix-home-service-activated"
+                             ,(plain-file "guix-home-service-activated"
+                                          "Guix Home service activated"))))))))
+
+(define %guix-home-service-os
+  (simple-operating-system
+   (service guix-home-service-type
+            `(("alice" ,%guix-home-service-he)))))
+
+(define (run-guix-home-service-test)
+  (define os
+    (marionette-operating-system
+     %guix-home-service-os
+     #:imported-modules '((gnu services herd))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (memory-size 1024)))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "guix-home-service")
+
+          (test-assert "service started"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'guix-home-alice)
+                  (#f #f)
+                  ;; herd returns (running #f), likely because of one shot,
+                  ;; so consider any non-error a success.
+                  (('service response-parts ...) #t)))
+             marionette))
+
+          (test-assert "file-exists"
+            (marionette-eval
+             '(begin
+                (sleep 3) ;make sure service has time to symlink files
+                (file-exists? "/home/alice/guix-home-service-activated"))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "guix-home-service-test" test))
+
+(define %test-guix-home-service
+  (system-test
+   (name "guix-home-service")
+   (description "Activate a Guix home environment.")
+   (value (run-guix-home-service-test))))
 
 
 ;;;

@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020, 2021, 2022 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2024 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,6 +101,8 @@
             guix-data-service-commits-getmail-retriever-configuration
 
             guix-data-service-type
+
+            guix-home-service-type
 
             nar-herder-service-type
             nar-herder-configuration
@@ -685,6 +688,41 @@ ca-certificates.crt file in the system profile."
      (guix-data-service-configuration))
    (description
     "Run an instance of the Guix Data Service.")))
+
+
+;;;
+;;; Guix Home Service
+;;;
+
+(define (guix-home-shepherd-service config)
+  (map (match-lambda
+         ((user he)
+          (shepherd-service
+           (documentation "Activate Guix Home.")
+           (requirement '(user-processes))
+           (provision (list (symbol-append 'guix-home- (string->symbol user))))
+           (one-shot? #t)
+           (auto-start? #t)
+           (start #~(make-forkexec-constructor
+                     '(#$(file-append he "/activate"))
+                     #:user #$user
+                     #:environment-variables
+                     (list (string-append "HOME=" (passwd:dir (getpw #$user)))
+                           "GUIX_SYSTEM_IS_RUNNING_HOME_ACTIVATE=t")
+                     #:group (group:name (getgrgid (passwd:gid (getpw #$user))))))
+           (stop #~(make-kill-destructor)))))
+       config))
+
+(define guix-home-service-type
+  (service-type
+   (name 'guix-home)
+   (description "Sets up Guix Home for the specified user accounts.")
+   (extensions (list (service-extension
+                      shepherd-root-service-type
+                      guix-home-shepherd-service)))
+   (compose concatenate)
+   (extend append)
+   (default-value '())))
 
 
 ;;;

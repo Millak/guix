@@ -144,7 +144,12 @@ as shepherd package."
               (format #f "/run/user/~a" (getuid)))
           "/shepherd/socket"))
         #$(reload-configuration-gexp config)
-        #$(launch-shepherd-gexp config)))
+        ;; Don't attempt to start user shepherd if the system is running the
+        ;; activation script. /run/user/<uid> may not have been created
+        ;; yet. But do otherwise so if the runtime dir does not exist an error
+        ;; is logged.
+        (unless (getenv "GUIX_SYSTEM_IS_RUNNING_HOME_ACTIVATE")
+          #$(launch-shepherd-gexp config))))
 
 (define (shepherd-xdg-configuration-files config)
   `(("shepherd/init.scm" ,(home-shepherd-configuration-file config))))
