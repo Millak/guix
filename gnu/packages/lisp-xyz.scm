@@ -6435,6 +6435,40 @@ connections (keep-alive), and SSL.")
      ;; Tests fail on ECL with 'Socket error in "socket": EINVAL'.
      '(#:tests? #f))))
 
+(define-public sbcl-hunchentoot-errors
+  (let ((commit "69eb3bcea59ed1ccf3dd1960e6d48fb21f1dadab")
+        (revision "0"))
+    (package
+      (name "sbcl-hunchentoot-errors")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/hunchentoot-errors")
+               (commit commit)))
+         (file-name (git-file-name "cl-hunchentoot-errors" version))
+         (sha256
+          (base32 "0fab7s8qhhs713cw014qqvzm5z61wmxm2fcbkarhg41cz3li9k1j"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-mimeparse
+             sbcl-hunchentoot
+             sbcl-parse-number
+             sbcl-string-case))
+      (home-page "https://github.com/mmontone/hunchentoot-errors/")
+      (synopsis "Hunchentoot error pages and logs with request and session information")
+      (description
+       "This package provides a functionality augmenting Hunchentoot error
+pages and logs with request and session information.")
+      (license license:expat))))
+
+(define-public cl-hunchentoot-errors
+  (sbcl-package->cl-source-package sbcl-hunchentoot-errors))
+
+(define-public ecl-hunchentoot-errors
+  (sbcl-package->ecl-package sbcl-hunchentoot-errors))
+
 (define-public sbcl-lunamech-matrix-api
   (let ((commit "aa54a820149584c237b03d500ad83397fe25dc92")
         (revision "0"))
