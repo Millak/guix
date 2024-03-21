@@ -20475,6 +20475,41 @@ encodings.")
 (define-public cl-mime
   (sbcl-package->cl-source-package sbcl-cl-mime))
 
+(define-public sbcl-cl-mimeparse
+  (let ((commit "93cbdf6f6fe8a2eb5f652f8adec453eb98ea0547")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-mimeparse")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/cl-mimeparse")
+               (commit commit)))
+         (file-name (git-file-name "cl-mimeparse" version))
+         (sha256
+          (base32 "0gdkpi3620va0a3q56svcn1q9f5w0pqfhx30lnldg8fjnrdfiwkk"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-test-systems '("cl-mimeparse-tests")))
+      (native-inputs
+       (list sbcl-rt))
+      (inputs
+       (list sbcl-cl-ppcre sbcl-parse-number))
+      (home-page "https://github.com/mmontone/cl-mimeparse/")
+      (synopsis "Common Lisp library for parsing MIME types")
+      (description
+       "This package provides a library for parsing MIME types, in the spirit
+of http://code.google.com/p/mimeparse/, with a Common Lisp flavor.")
+      (license license:expat))))
+
+(define-public cl-mimeparse
+  (sbcl-package->cl-source-package sbcl-cl-mimeparse))
+
+(define-public ecl-cl-mimeparse
+  (sbcl-package->ecl-package sbcl-cl-mimeparse))
+
 (define-public sbcl-cl-mixed
   (let ((commit "4aaff134d3902d93a2a8605c10de4bcfc62d7afa")
         (revision "0"))
