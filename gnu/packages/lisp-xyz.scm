@@ -17131,21 +17131,21 @@ Macros and symbol-macros are fully expanded and all special forms, except
         (base32
          "1c40vqb49g0adfv17jxgk0ds1n6a2dph30cibq01sicmqdgrrbi8"))))
     (build-system asdf-build-system/sbcl)
-    (inputs
-     `(("agutil" ,sbcl-agutil)
-       ("alexandria" ,sbcl-alexandria)
-       ("anaphora" ,sbcl-anaphora)
-       ("arrows" ,sbcl-arrows)
-       ("cl-custom-hash-table" ,sbcl-custom-hash-table)
-       ("cl-form-types" ,sbcl-cl-form-types)
-       ("static-dispatch" ,sbcl-static-dispatch)
-       ("trivia" ,sbcl-trivia)))
-    (native-inputs
-     (list sbcl-prove))
     (arguments
      ;; Tests fail because SBCL head size is not high enough.
      ;; https://github.com/alex-gutev/generic-cl/issues/6
      `(#:tests? #f))
+    (inputs
+     (list sbcl-agutil
+           sbcl-alexandria
+           sbcl-anaphora
+           sbcl-arrows
+           sbcl-cl-form-types
+           sbcl-custom-hash-table
+           sbcl-static-dispatch
+           sbcl-trivia))
+    (native-inputs
+     (list sbcl-prove))
     (home-page "https://alex-gutev.github.io/generic-cl/")
     (synopsis "Generic function interface to standard Common Lisp functions")
     (description "@code{generic-cl} provides a generic function wrapper over
