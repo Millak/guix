@@ -1484,6 +1484,47 @@ encoded) string literals.  Wherever possible, it reuses code from the
 the Go standard library}.")
     (license license:expat)))
 
+(define-public go-github-com-quic-go-quic-go
+  (package
+    (name "go-github-com-quic-go-quic-go")
+    (version "0.39.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/quic-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0acabl3cz48nxpggc5s7fwxpmr5amyi09jygn5m5xxkkbhqs2cxq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX More packages required...
+      #:tests? #f
+      #:go go-1.20
+      #:import-path "github.com/quic-go/quic-go"))
+    (propagated-inputs
+     (list go-github-com-cheekybits-genny
+           go-github-com-golang-protobuf-proto
+           go-github-com-marten-seemann-chacha20
+           go-github-com-quic-go-qpack
+           go-github-com-quic-go-qtls-go1-20
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/quic-go/quic-go")
+    (synopsis "QUIC in Go")
+    (description
+     "This package provides a Go language implementation of the QUIC network
+protocol.")
+    (license license:expat)))
+
+(define-public go-github-com-lucas-clemente-quic-go
+  (deprecated-package "go-github-com-lucas-clemente-quic-go" go-github-com-quic-go-quic-go))
+
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
