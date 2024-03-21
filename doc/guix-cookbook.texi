@@ -3803,7 +3803,7 @@ the guest.
 
 @quotation Important
 By default, a single MAC address is used for all guests, unless
-provided.  Failing to provided different MAC addresses to each virtual
+provided.  Failing to provide different MAC addresses to each virtual
 machine making use of the bridge would cause networking issues.
 @end quotation
 
