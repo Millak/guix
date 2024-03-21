@@ -21996,24 +21996,23 @@ Common Lisp.")
        ;; clack-test and dexador.
        `(#:tests? #f))
       (native-inputs
-       `(("clack" ,sbcl-clack)
-         ("rove" ,sbcl-rove)))
+       (list sbcl-clack sbcl-rove))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cffi" ,sbcl-cffi)
-         ("cl-speedy-queue" ,sbcl-cl-speedy-queue) ;; Required for ecl build
-         ("clack-socket" ,sbcl-clack)
-         ("fast-http" ,sbcl-fast-http)
-         ("fast-io" ,sbcl-fast-io)
-         ("lev" ,sbcl-lev)
-         ("quri" ,sbcl-quri)
-         ("rove" ,sbcl-rove)
-         ("smart-buffer" ,sbcl-smart-buffer)
-         ("static-vectors" ,sbcl-static-vectors)
-         ("swap-bytes" ,sbcl-swap-bytes)
-         ("trivial-utf-8" ,sbcl-trivial-utf-8)
-         ("vom" ,sbcl-vom)))
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-cl-speedy-queue ;; Required for ecl build
+             sbcl-clack
+             sbcl-fast-http
+             sbcl-fast-io
+             sbcl-lev
+             sbcl-quri
+             sbcl-rove
+             sbcl-smart-buffer
+             sbcl-static-vectors
+             sbcl-swap-bytes
+             sbcl-trivial-utf-8
+             sbcl-vom))
       (home-page "https://github.com/fukamachi/woo")
       (synopsis "Non-blocking HTTP server based on libev")
       (description
