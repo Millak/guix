@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -2174,15 +2174,10 @@ raise a deprecation warning if the 'compression-level' field was used."
 
              ;; Use lazy socket activation unless ADVERTISE? is true: in that
              ;; case the process should start right away to advertise itself.
-             (start #~(if (and (defined? 'make-systemd-constructor) ;> 0.9.0?
-                               #$(not advertise?))
-                          (make-systemd-constructor
-                           #$command #$endpoints #$@options)
-                          (make-forkexec-constructor #$command #$@options)))
-             (stop #~(if (and (defined? 'make-systemd-destructor)
-                              #$(not advertise?))
-                         (make-systemd-destructor)
-                         (make-kill-destructor))))))))
+             (start #~(make-systemd-constructor
+                       #$command #$endpoints #$@options
+                       #:lazy-start? #$(not advertise?)))
+             (stop #~(make-systemd-destructor)))))))
 
 (define %guix-publish-accounts
   (list (user-group (name "guix-publish") (system? #t))
