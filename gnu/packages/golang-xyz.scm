@@ -1968,6 +1968,22 @@ Go.")
 ;;; Executables:
 ;;;
 
+(define-public go-hclogvet
+  (package
+    (inherit go-github-com-hashicorp-go-hclog)
+    (name "go-hclogvet")
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-hclog/hclogvet"
+      #:unpack-path "github.com/hashicorp/go-hclog"
+      #:install-source? #f))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (description
+     "@code{hclogvet} is a @code{go vet} tool for checking that the
+Trace/Debug/Info/Warn/Error methods on @code{hclog.Logger} are used
+correctly.")))
+
 (define-public go-numcpus
   (package
     (inherit go-github-com-tklauser-numcpus)
