@@ -4246,6 +4246,61 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
+(define-public python-pytorch2
+  (package
+    (inherit python-pytorch)
+    (name "python-pytorch")
+    (version "2.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hdr0d6n072qd0nq2dkxhc9pva6vggj9hpzc0glpc60vfgk0cgzb"))
+              (patches (search-patches "python-pytorch2-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-peachpy"
+                              "tbb" "XNNPACK" "zstd"))
+                  (substitute* "caffe2/CMakeLists.txt"
+                    (("target_link_libraries\\(\\$\\{test_name\\}_\\$\\{CPU_CAPABILITY\\} c10 sleef gtest_main\\)")
+                     "target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest gtest_main)"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))
+    (inputs
+     (modify-inputs (package-inputs python-pytorch)
+       (replace "xnnpack" xnnpack-for-torch2)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytorch)
+       (append python-filelock
+               python-fsspec
+               python-jinja2
+               python-networkx
+               python-opt-einsum
+               python-sympy)
+       (replace "onnx" onnx-for-torch2)
+       (replace "onnx-optimizer" onnx-optimizer-for-torch2)))))
+
 (define-public python-pytorch-for-r-torch
   (package
     (inherit python-pytorch)
