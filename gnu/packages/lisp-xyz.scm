@@ -17209,12 +17209,9 @@ predictable cross-platform behavior and some utilities useful for versioning.")
           (base32 "07pfkibaridihg8lbq2czwa4iqifqk24n6rx7bfnv7i49p1ppja1"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       `(("cl-mpg123" ,sbcl-cl-mpg123)
-         ("cl-out123" ,sbcl-cl-out123)))
+       (list sbcl-cl-mpg123 sbcl-cl-out123))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("documentation-utils" ,sbcl-documentation-utils)
-         ("trivial-features" ,sbcl-trivial-features)))
+       (list sbcl-cffi sbcl-documentation-utils sbcl-trivial-features))
       (home-page "https://shinmera.github.io/deploy/")
       (synopsis "Deployment tools for standalone Common Lisp application")
       (description
