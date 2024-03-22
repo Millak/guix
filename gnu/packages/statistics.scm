@@ -115,7 +115,7 @@
 (define-public pspp
   (package
     (name "pspp")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
       (method url-fetch)
@@ -123,7 +123,7 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "1pyqlab9kw65wxc8pilcwb64l18w37xxdg3r6n287c7mda4cpxm8"))))
+        "002c08rxym056mn7a73jwjmcazqd4gh5j1cyml603y4ckvqb1nwf"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
