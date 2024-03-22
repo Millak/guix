@@ -5,10 +5,11 @@
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
+;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -141,6 +142,36 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
     (native-inputs
      (list go-github-com-alecthomas-assert-v2
            go-github-com-alecthomas-repr))))
+
+(define-public go-github-com-alecthomas-kingpin
+  (package
+    (name "go-github-com-alecthomas-kingpin")
+    (version "2.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/kingpin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mndnv3hdngr3bxp7yxfd47cas4prv98sqw534mx7vp38gd88n5r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alecthomas/kingpin"))
+    (native-inputs
+     (list go-github-com-alecthomas-template
+           go-github-com-alecthomas-units
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/alecthomas/kingpin")
+    (synopsis "Go library provides utilities for building command line interfaces")
+    (description
+     "Go library provides utilities for building command line interfaces.")
+    (license license:expat)))
+
+(define-public go-github-com-kingpin
+  (deprecated-package "go-github-com-kingpin" go-github-com-alecthomas-kingpin))
 
 (define-public go-github-com-alecthomas-participle-v2
   (package
