@@ -633,30 +633,6 @@ the current goroutine's ID.")
       (home-page "https://github.com/petermattis/goid")
       (license asl2.0))))
 
-(define-public go-github-com-kballard-go-shellquote
-  (let ((commit "95032a82bc518f77982ea72343cc1ade730072f0")
-        (revision "1"))
-    (package
-      (name "go-github-com-kballard-go-shellquote")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/kballard/go-shellquote")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1rspvmnsikdq95jmx3dykxd4k1rmgl98ryjrysvl0cf18hl1vq80"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/kballard/go-shellquote"))
-      (synopsis "Shell-style string joins and splits")
-      (description "Shellquote provides utilities for joining/splitting strings
-using sh's word-splitting rules.")
-      (home-page "https://github.com/kballard/go-shellquote")
-      (license expat))))
-
 (define-public go-github-com-syncthing-notify
   (let ((commit "69c7a957d3e261f9744f46b3dd4d608d8480ad90")
         (revision "5"))
