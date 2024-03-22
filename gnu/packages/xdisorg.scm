@@ -370,41 +370,41 @@ with X11 or Wayland, or in a text terminal with ncurses.")
                    license:lgpl3+))))   ; library and bindings
 
 (define-public copyq
-(package
-  (name "copyq")
-  (version "8.0.0")
-  (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                   (url "https://github.com/hluk/CopyQ")
-                   (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "029s1pdp177fnrq5qrwjmd5pf1672l5jhq99is1lczrxi6bsf2qk"))))
-  (build-system cmake-build-system)
-  (arguments
-   (list
-    #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
-    #:tests? #f)) ; Test suite is a rather manual process.
-  (inputs
-   (list qtbase-5
-         qtscript
-         qtsvg-5
-         qtx11extras
-         qtdeclarative-5
-         qtwayland-5
-         wayland
-         knotifications))
-  (native-inputs
-   (list extra-cmake-modules qttools-5))
-  (synopsis "Clipboard manager with advanced features")
-  (description "CopyQ is clipboard manager with editing and scripting
+  (package
+    (name "copyq")
+    (version "8.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hluk/CopyQ")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "029s1pdp177fnrq5qrwjmd5pf1672l5jhq99is1lczrxi6bsf2qk"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
+      #:tests? #f)) ; Test suite is a rather manual process.
+    (inputs
+     (list qtbase-5
+           qtscript
+           qtsvg-5
+           qtx11extras
+           qtdeclarative-5
+           qtwayland-5
+           wayland
+           knotifications))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (synopsis "Clipboard manager with advanced features")
+    (description "CopyQ is clipboard manager with editing and scripting
 features.  CopyQ monitors system clipboard and saves its content in customized
 tabs.  Saved clipboard can be later copied and pasted directly into any
 application.")
-  (home-page "https://hluk.github.io/CopyQ/")
-  (license license:gpl3+)))
+    (home-page "https://hluk.github.io/CopyQ/")
+    (license license:gpl3+)))
 
 (define-public xkeysnail
   (package
