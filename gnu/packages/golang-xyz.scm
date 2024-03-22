@@ -2063,6 +2063,31 @@ weighted moving averages}.")
 @code{MemoryInfo}.")
     (license license:expat)))
 
+(define-public go-github-com-xhit-go-str2duration-v2
+  (package
+    (name "go-github-com-xhit-go-str2duration-v2")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xhit/go-str2duration")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c9zi9mfy5ww413y1jpfh1rdis43lvd5v6gvajqzh4q1km9lyxjj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xhit/go-str2duration/v2"))
+    (home-page "https://github.com/xhit/go-str2duration")
+    (synopsis "Convert string to duration in golang")
+    (description
+     "This package provides a means to obtain @code{time.Duration} from a
+string.  The string can be a string retorned for @code{time.Duration} or a
+similar string with weeks or days too.")
+    (license license:bsd-3)))
+
 (define-public go-go-uber-org-automaxprocs
   (package
     (name "go-go-uber-org-automaxprocs")
