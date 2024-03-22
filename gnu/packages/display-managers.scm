@@ -330,36 +330,37 @@ experience for your users, your family and yourself")
                                        "lightdm-vnc-ipv6.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-tests? #f             ; fails when run in parallel
-       #:configure-flags
-       (list "--localstatedir=/var"
-             "--enable-gtk-doc"
-             ;; Otherwise the test suite fails on such a warning.
-             "CFLAGS=-Wno-error=missing-prototypes")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/shared-data-manager.c"
-               (("/bin/rm")
-                (search-input-file inputs "bin/rm")))
-             (substitute* '("data/users.conf"
-                            "common/user-list.c")
-               (("/bin/false")
-                (search-input-file inputs "bin/false"))
-               (("/usr/sbin/nologin")
-                (search-input-file inputs "sbin/nologin")))
-             (substitute* "src/seat.c"
-               (("/bin/sh")
-                (search-input-file inputs "bin/sh")))))
-         (add-before 'check 'pre-check
-           (lambda _
-             (wrap-program "tests/src/test-python-greeter"
-               `("GUIX_PYTHONPATH"      ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-               `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
-             ;; Avoid printing locale warnings, which trip up the text
-             ;; matching tests.
-             (unsetenv "LC_ALL"))))))
+     (list
+      #:parallel-tests? #f             ; fails when run in parallel
+      #:configure-flags
+      #~(list "--localstatedir=/var"
+              "--enable-gtk-doc"
+              ;; Otherwise the test suite fails on such a warning.
+              "CFLAGS=-Wno-error=missing-prototypes")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/shared-data-manager.c"
+                (("/bin/rm")
+                 (search-input-file inputs "bin/rm")))
+              (substitute* '("data/users.conf"
+                             "common/user-list.c")
+                (("/bin/false")
+                 (search-input-file inputs "bin/false"))
+                (("/usr/sbin/nologin")
+                 (search-input-file inputs "sbin/nologin")))
+              (substitute* "src/seat.c"
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (wrap-program "tests/src/test-python-greeter"
+                `("GUIX_PYTHONPATH"      ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
+              ;; Avoid printing locale warnings, which trip up the text
+              ;; matching tests.
+              (unsetenv "LC_ALL"))))))
     (inputs
      (list audit
            bash-minimal                 ;for cross-compilation
