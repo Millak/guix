@@ -3223,7 +3223,7 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
 (define-public clipman
   (package
     (name "clipman")
-    (version "1.6.1")
+    (version "1.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3231,7 +3231,7 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256 (base32
-                        "0b9kvj0dif4221dy6c1npknhhjxvbc4kygzhwxjirpwjws0yv6v9"))))
+                        "033l2hy46r2zjy8dllcmkjxidhnqac9kfh4wkq9hfvim9imp5a4m"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/yory8/clipman"
