@@ -3227,7 +3227,7 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url (string-append "https://github.com/yory8/" name "/"))
+                    (url "https://github.com/chmouel/clipman")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256 (base32
@@ -3260,7 +3260,7 @@ Run the binary in your session by adding @command{exec wl-paste -t text --watch
 clipman store} (or @command{exec wl-paste -t text --watch clipman store 1>>
 PATH/TO/LOGFILE 2>&1 &} to log errors) at the beginning of wherever you
 initialize programs.")
-    (home-page "https://github.com/yory8/clipman")
+    (home-page "https://github.com/chmouel/clipman")
     (license license:gpl3)))
 
 (define-public kbdd
