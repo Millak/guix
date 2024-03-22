@@ -161,9 +161,10 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
      (list
       #:import-path "github.com/alecthomas/kingpin"))
     (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
      (list go-github-com-alecthomas-template
-           go-github-com-alecthomas-units
-           go-github-com-stretchr-testify))
+           go-github-com-alecthomas-units))
     (home-page "https://github.com/alecthomas/kingpin")
     (synopsis "Go library provides utilities for building command line interfaces")
     (description
