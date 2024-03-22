@@ -3240,15 +3240,13 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
                         (add-before 'build 'patch
                           (lambda _
                             (substitute* "src/github.com/yory8/clipman/main.go"
-                              (("gopkg.in/alecthomas/kingpin.v2")
-                               "github.com/alecthomas/kingpin")
                               (("\"wl-copy\"")
                                (string-append "\"" (which "wl-copy") "\"")))))
                         (delete 'install-license-files))))
     (native-inputs (list go-github-com-alecthomas-template
                          go-github-com-alecthomas-units))
     (inputs (list go-github-com-kballard-go-shellquote
-                  go-github-com-alecthomas-kingpin
+                  go-gopkg-in-alecthomas-kingpin-v2
                   libnotify
                   wl-clipboard))
     (synopsis "Basic clipboard manager with support for persisting copy buffers")
