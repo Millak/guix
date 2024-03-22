@@ -170,8 +170,28 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
      "Go library provides utilities for building command line interfaces.")
     (license license:expat)))
 
-(define-public go-github-com-kingpin
-  (deprecated-package "go-github-com-kingpin" go-github-com-alecthomas-kingpin))
+(define-public go-github-com-alecthomas-kingpin-v2
+  (package
+    (inherit go-github-com-alecthomas-kingpin)
+    (name "go-github-com-alecthomas-kingpin-v2")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alecthomas/kingpin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12xl62xzwq2h71hp1i0133403zhyqwsh95sr870fx18wmpqh8shf"))))
+    (arguments
+     (list
+      #:import-path "github.com/alecthomas/kingpin/v2"))
+    (propagated-inputs
+     (list go-github-com-alecthomas-units
+           go-github-com-xhit-go-str2duration-v2))
+    (native-inputs
+     (list go-github-com-stretchr-testify))))
 
 (define-public go-github-com-alecthomas-participle-v2
   (package
