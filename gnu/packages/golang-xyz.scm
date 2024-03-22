@@ -201,6 +201,33 @@ structs.  The approach is similar to how other marshallers work in Golang,
 \"unmarshalling\" an instance of a grammar into a struct.")
     (license license:expat)))
 
+(define-public go-github-com-alecthomas-template
+  (let ((commit "a0175ee3bccc567396460bf5acd36800cb10c49c")
+        (revision "0"))
+    (package
+      (name "go-github-com-alecthomas-template")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alecthomas/template")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qjgvvh26vk1cyfq9fadyhfgdj36f1iapbmr5xp6zqipldz8ffxj"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/alecthomas/template"))
+      (home-page "https://github.com/alecthomas/template")
+      (synopsis "Fork of Go's text/template adding newline elision")
+      (description
+       "This is a fork of Go 1.4's text/template package with one addition: a
+backslash immediately after a closing delimiter will delete all subsequent
+newlines until a non-newline.")
+      (license license:bsd-3))))
+
 (define-public go-github-com-anmitsu-go-shlex
   (package
     (name "go-github-com-anmitsu-go-shlex")
