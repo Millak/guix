@@ -202,6 +202,7 @@ structs.  The approach is similar to how other marshallers work in Golang,
     (license license:expat)))
 
 (define-public go-github-com-alecthomas-template
+  ;; No release, see <https://github.com/alecthomas/template/issues/7>.
   (let ((commit "a0175ee3bccc567396460bf5acd36800cb10c49c")
         (revision "0"))
     (package
@@ -227,6 +228,34 @@ structs.  The approach is similar to how other marshallers work in Golang,
 backslash immediately after a closing delimiter will delete all subsequent
 newlines until a non-newline.")
       (license license:bsd-3))))
+
+(define-public go-github-com-alecthomas-units
+  ;; No release, see <https://github.com/alecthomas/units/issues/9>.
+  (let ((commit "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a")
+        (revision "0"))
+    (package
+      (name "go-github-com-alecthomas-units")
+      (version "0.0.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alecthomas/units")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1j65b91qb9sbrml9cpabfrcf07wmgzzghrl7809hjjhrmbzri5bl"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/alecthomas/units"))
+      (native-inputs
+       (list go-github-com-stretchr-testify))
+      (home-page "https://github.com/alecthomas/units")
+      (synopsis "Helpful unit multipliers and functions for Go")
+      (description
+       "This library provides unit multipliers and functions for Go.")
+      (license license:expat))))
 
 (define-public go-github-com-anmitsu-go-shlex
   (package
