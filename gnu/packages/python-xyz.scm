@@ -108,7 +108,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021, 2022, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021–2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ZmnSCPxj <ZmnSCPxj@protonmail.com>
@@ -33544,17 +33544,24 @@ and powerful way to handle real-world data, featuring:
 (define-public python-box
   (package
     (name "python-box")
-    (version "5.3.0")
+    (version "7.1.1")
     (source
+     ;; The PyPI tarball does not contain all test files.
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-box" version))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/cdgriffith/Box")
+         (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jhrdif57khx2hsw1q6a9x42knwcvq8ijgqyq1jmll6y6ifyzm2f"))))
-    (build-system python-build-system)
+         "1v8s6wji17fh87nvamzysvxi8f51h6szh6h6dxvids56gg5zc553"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-msgpack python-ruamel.yaml python-toml))
+     (list python-msgpack python-ruamel.yaml python-tomli python-tomli-w))
+    (native-inputs
+     (list python-cython python-pytest python-wheel))
     (home-page "https://github.com/cdgriffith/Box")
     (synopsis "Advanced Python dictionaries with dot notation access")
     (description
