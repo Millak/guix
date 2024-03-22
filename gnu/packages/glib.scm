@@ -209,6 +209,21 @@ shared NFS home directories.")
                   (("@SYSCONFDIR_FROM_PKGDATADIR@/dbus-1/session-local.conf")
                    "/var/run/jami/session-local.conf")))))))))))
 
+(define-public dbus-1.15.0
+  ;; Dbus 1.15.2 has a breaking change.
+  (hidden-package
+   (package/inherit dbus
+     (version "1.15.0")
+     (source (origin
+               (method url-fetch)
+               (uri (string-append
+                     "https://dbus.freedesktop.org/releases/dbus/dbus-"
+                     version ".tar.xz"))
+               (sha256
+                (base32
+                 "02k4zm5h24clwp4csp2r3xp2lxib31jlk3xkgdj2c0njkb5whwsh"))
+               (patches (search-patches "dbus-helper-search-path.patch")))))))
+
 ;;; The reason this is not enabled in the regular dbus package is because it
 ;;; impacts the performance of D-Bus (including its library) as a whole, even
 ;;; when the DBUS_VERBOSE environment variable is not set.
