@@ -382,7 +382,9 @@ experience for your users, your family and yourself")
            libtool
            vala                         ;for Vala bindings
            ;; For tests
-           dbus
+           ;; All tests fail with dbus >= 1.15.2, see
+           ;; https://github.com/canonical/lightdm/issues/346
+           dbus-1.15.0
            python-wrapper
            python-pygobject
            which
