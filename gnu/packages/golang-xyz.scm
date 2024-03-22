@@ -2166,6 +2166,13 @@ CPU quota.")
 Go.")
     (license license:expat)))
 
+(define-public go-gopkg-in-alecthomas-kingpin-v2
+  (package
+    (inherit go-github-com-alecthomas-kingpin)
+    (arguments
+     (list
+      #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
+
 (define-public go-gopkg-in-op-go-logging-v1
   (package
     (inherit go-github-com-op-go-logging)
