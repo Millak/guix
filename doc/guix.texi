@@ -5529,6 +5529,7 @@ account security concerns and deal with authenticated updates.
 * Specifying Additional Channels::  Extending the package collection.
 * Using a Custom Guix Channel::  Using a customized Guix.
 * Replicating Guix::            Running the @emph{exact same} Guix.
+* Customizing the System-Wide Guix:: Default channels on Guix System.
 * Channel Authentication::      How Guix verifies what it fetches.
 * Channels with Substitutes::   Using channels with available substitutes.
 * Creating a Channel::          How to write your custom channel.
@@ -5685,6 +5686,64 @@ This gives you super powers, allowing you to track the provenance of binary
 artifacts with very fine grain, and to reproduce software environments at
 will---some sort of ``meta reproducibility'' capabilities, if you will.
 @xref{Inferiors}, for another way to take advantage of these super powers.
+
+@node Customizing the System-Wide Guix
+@section Customizing the System-Wide Guix
+
+@cindex system-wide Guix, customization
+@cindex channels, for the default Guix
+If you're running Guix System or building system images with it, maybe
+you will want to customize the system-wide @command{guix} it
+provides---specifically, @file{/run/current-system/profile/bin/guix}.
+For example, you might want to provide additional channels or to pin its
+revision.
+
+This can be done using the @code{guix-for-channels} procedure, which
+returns a package for the given channels, and using it as part of your
+operating system configuration, as in this example:
+
+@lisp
+(use-modules (guix channels))
+
+(define my-channels
+  ;; Channels that should be available to
+  ;; /run/current-system/profile/bin/guix.
+  (append
+   (list (channel
+          (name 'guix-science)
+          (url "https://github.com/guix-science/guix-science")
+          (branch "master")))
+   %default-channels))
+
+(operating-system
+  ;; @dots{}
+  (services
+    ;; Change the package used by 'guix-service-type'.
+    (modify-services %base-services
+      (guix-service-type
+       config => (guix-configuration
+                  (inherit config)
+                  (channels my-channels)
+                  (guix (guix-for-channels my-channels)))))))
+@end lisp
+
+The resulting operating system will have both the @code{guix} and the
+@code{guix-science} channels visible by default.  The @code{channels}
+field of @code{guix-configuration} above further ensures that
+@file{/etc/guix/channels.scm}, which is used by @command{guix pull},
+specifies the same set of channels (@pxref{guix-configuration-channels,
+@code{channels} field of @code{guix-configuration}}).
+
+The @code{(gnu packages package-management)} module exports the
+@code{guix-for-channels} procedure, described below.
+
+@deffn {Procedure} guix-for-channels @var{channels}
+Return a package corresponding to @var{channels}.
+
+The result is a ``regular'' package, which can be used in
+@code{guix-configuration} as shown above or in any other place that
+expects a package.
+@end deffn
 
 @node Channel Authentication
 @section Channel Authentication
@@ -19749,7 +19808,8 @@ This data type represents the configuration of the Guix build daemon.
 
 @table @asis
 @item @code{guix} (default: @var{guix})
-The Guix package to use.
+The Guix package to use.  @xref{Customizing the System-Wide Guix} to
+learn how to provide a package with a pre-configured set of channels.
 
 @item @code{build-group} (default: @code{"guixbuild"})
 Name of the group for build user accounts.
