@@ -5499,16 +5499,16 @@ $ wget -O - \
 @cindex configuration file for channels
 @cindex @command{guix pull}, configuration file
 @cindex configuration of @command{guix pull}
-Guix and its package collection are updated by running @command{guix pull}
-(@pxref{Invoking guix pull}).  By default @command{guix pull} downloads and
-deploys Guix itself from the official GNU@tie{}Guix repository.  This can be
-customized by defining @dfn{channels} in the
-@file{~/.config/guix/channels.scm} file.  A channel specifies a URL and branch
-of a Git repository to be deployed, and @command{guix pull} can be instructed
-to pull from one or more channels.  In other words, channels can be used
-to @emph{customize} and to @emph{extend} Guix, as we will see below.
-Guix is able to take into account security concerns and deal with authenticated
-updates.
+Guix and its package collection are updated by running @command{guix
+pull}.  By default @command{guix pull} downloads and deploys Guix itself
+from the official GNU@tie{}Guix repository.  This can be customized by
+providing a file specifying the set of @dfn{channels} to pull from
+(@pxref{Invoking guix pull}).  A channel
+specifies the URL and branch of a Git repository to be deployed, and
+@command{guix pull} can be instructed to pull from one or more channels.
+In other words, channels can be used to @emph{customize} and to
+@emph{extend} Guix, as we will see below.  Guix is able to take into
+account security concerns and deal with authenticated updates.
 
 @menu
 * Specifying Additional Channels::  Extending the package collection.
