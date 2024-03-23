@@ -6072,7 +6072,7 @@ to a Yojson.Safe value.")
 (define-public ocaml-merlin-lib
   (package
     (name "ocaml-merlin-lib")
-    (version "4.7-414")
+    (version "4.14-414")
     (source
      (origin
        (method git-fetch)
@@ -6082,7 +6082,7 @@ to a Yojson.Safe value.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1bd4j2zq0lyszbkibgky1z9swv4scb7ljww3fv1kqy0cya743b5l"))))
+         "1d9q6yl5i08j9lkmbywh5q1yfjxin5n9yp9bqwi7a9lanhwg8psi"))))
     (build-system dune-build-system)
     (arguments '(#:package "merlin-lib"
                  #:tests? #f))          ; no tests
@@ -6099,7 +6099,7 @@ interfaces and the standard higher-level merlin protocol.")
   (package
     (inherit ocaml-merlin-lib)
     (name "ocaml-merlin-lib")
-    (version "4.7.1-500")
+    (version "4.14-500")
     (source
      (origin
        (method git-fetch)
@@ -6109,7 +6109,7 @@ interfaces and the standard higher-level merlin protocol.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05a87i2dkzv800nwb6y7b2j45avg8gs3gzb5a98wrj1i5zjqwh01"))))
+         "0rx0h8a7m435jmfvpxjf4682dxgb2f74ar1k1m3c3hls6yxgw0a9"))))
     (properties '())))
 
 (define-public ocaml5.0-merlin-lib
