@@ -858,21 +858,21 @@ instead of symbols.")
   (sbcl-package->ecl-package sbcl-list-named-class))
 
 (define-public sbcl-golden-utils
-  (let ((commit "fe1898f9abbd302b0359f017637c063173cf73e1")
-        (revision "3"))
+  (let ((commit "e43914ad2bdb0c8e1b1f10ef591aafc3c55b89e7")
+        (revision "4"))
     (package
       (name "sbcl-golden-utils")
       (version (git-version "0.0.0" revision commit))
-      (home-page "https://github.com/mfiano/mfiano-utils")
+      (home-page "https://github.com/lisp-mirror/golden-utils")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name "golden-utils" version))
+         (file-name (git-file-name "cl-golden-utils" version))
          (sha256
-          (base32 "1ljc8yj32lmd1d60446rzl9m0r1ar15gdzacsf6blw1kny8xlrsr"))))
+          (base32 "09vq29wjr3x7h3fshwxg8h1psy4p73yl61cjljarpqjhsgz7lmbp"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria))
