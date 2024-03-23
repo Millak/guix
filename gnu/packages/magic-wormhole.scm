@@ -35,12 +35,12 @@
     (name "magic-wormhole-mailbox-server")
     (version "0.4.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "magic-wormhole-mailbox-server" version))
-        (sha256
-         (base32
-          "1yw8i8jv5iv1kkz1aqimskw7fpichjn6ww0fq0czbalwj290bw8s"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "magic-wormhole-mailbox-server" version))
+       (sha256
+        (base32
+         "1yw8i8jv5iv1kkz1aqimskw7fpichjn6ww0fq0czbalwj290bw8s"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mock python-pytest))
@@ -54,11 +54,12 @@
            python-twisted))
     (home-page "https://github.com/warner/magic-wormhole-mailbox-server")
     (synopsis "Magic-Wormhole central mailbox server")
-    (description "This package provides the main server that Magic-Wormhole
-clients connect to.  The server performs store-and-forward delivery for small
+    (description
+     "This package provides the main server that Magic-Wormhole clients
+connect to.  The server performs store-and-forward delivery for small
 key-exchange and control messages.  Bulk data is sent over a direct TCP
 connection, or through a transit-relay.")
-   (license license:expat)))
+    (license license:expat)))
 
 (define-public magic-wormhole-transit-relay
   (package
