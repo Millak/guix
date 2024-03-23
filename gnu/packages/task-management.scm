@@ -443,21 +443,22 @@ on arbitrary tasks.  All the time data is saved in files residing in the
           (base32 "1j2h5cv8wnmw41fpz1ggsgi599qhk184cas9kgd92glj3m4alg6f"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* '("tests/test_cli.py" "tests/test_formatter.py")
-               (("tests\\.helpers") "helpers"))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "tests" "-k"
-                       (string-append
-                        ;; Test expects wrong output string.
-                        "not test_bad_start_date "
-                        ;; Unknown failure
-                        "and not test_default_command_args"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* '("tests/test_cli.py" "tests/test_formatter.py")
+                (("tests\\.helpers") "helpers"))))
+          (replace 'check
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests" "-k"
+                        (string-append
+                         ;; Test expects wrong output string.
+                         "not test_bad_start_date "
+                         ;; Unknown failure
+                         "and not test_default_command_args"))))))))
     (native-inputs
       (list python-setuptools-scm
             python-pytest
