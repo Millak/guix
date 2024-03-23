@@ -2968,3 +2968,24 @@ the zlib (RFC 1950) and Deflate (RFC 1951) compressed data format
 specification standards.  It supports the most commonly used functions
 exported by the zlib library.")
     (license license:expat)))
+
+(define-public miniz-for-pytorch
+  (package
+    (inherit miniz)
+    (version "pytorch-2.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/richgel999/miniz")
+                    (commit "2.2.0")))
+              (file-name (git-file-name (package-name miniz) version))
+              (sha256
+               (base32
+                "09j9ihigfsavgcmk8l36zmbjvdf1x1w7h2v4rkww1qk1sb43y5zf"))
+              (patches (search-patches "miniz-for-pytorch.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments miniz)
+       ((#:configure-flags flags '())
+        ;; The changes break the examples.
+        `(cons "-DBUILD_EXAMPLES=OFF" ,flags))))
+    (properties '((hidden? . #t)))))
