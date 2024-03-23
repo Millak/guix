@@ -1562,7 +1562,9 @@ reliably with @code{bmaptool} than with traditional tools, like @code{dd} or
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sglcn38rgn6y3m5ahngizyn3x2rzhqjphs7g0ppnlinkz56rcv4"))))
+                "0sglcn38rgn6y3m5ahngizyn3x2rzhqjphs7g0ppnlinkz56rcv4"))
+              (patches
+               (search-patches "duc-fix-test-sh.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
