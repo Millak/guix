@@ -8766,6 +8766,22 @@ get an precise reference of when the executable was built.")))
     (synopsis "Communicate with ocaml dune using rpc")
     (description "Library to connect and control a running dune instance.")))
 
+(define-public ocamlc-loc
+  (package
+    (inherit dune-ordering)
+    (name "ocamlc-loc")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "ocamlc-loc"
+       ;; Tests have a cyclic dependency on stdune
+       #:tests? #f))
+    (propagated-inputs (list dune-dyn ocaml-odoc))
+    (synopsis "Parse ocaml compiler output into structured form")
+    (description
+     "This library parses ocaml complier output and returns it as ocaml values.
+This library offers no backwards compatibility guarantees.")))
+
+
 (define-public ocaml-either
   (package
     (name "ocaml-either")
