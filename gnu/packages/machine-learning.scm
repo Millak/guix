@@ -4039,6 +4039,57 @@ and Darknet.")
       (supported-systems '("x86_64-linux" "armhf-linux" "aarch64-linux"))
       (license license:bsd-2))))
 
+(define-public qnnpack
+  (let ((commit "7d2a4e9931a82adc3814275b6219a03e24e36b4c")
+        (revision "0"))
+    (package
+      (name "qnnpack")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pytorch/qnnpack")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1dgzriiaz9arsrfwhx42y4l74wbzn6xvdmllfb66v4pmvi5gpxc5"))
+         (modules '((guix build utils)))
+         (snippet
+          '(delete-file-recursively "deps"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; The shared library build fails with linker errors, so we build the
+        ;; static library with -fPIC as in the bundled PyTorch version.
+        #:configure-flags
+        ''("-DQNNPACK_LIBRARY_TYPE=static"
+           "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-cmake
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("IF.*SOURCE_DIR.*")
+                   "IF(FALSE)\n")
+                  (("IF\\(NOT TARGET.*")
+                   "IF(FALSE)\n")
+                  (("TARGET_LINK_LIBRARIES.*(fxdiv|psimd|fp16)\\).*")
+                   "")
+                  (("(TARGET_LINK_LIBRARIES.*) fp16 (.*)" _ before after)
+                   (string-append before " " after))))))))
+      (inputs (list clog cpuinfo fp16 fxdiv psimd pthreadpool))
+      (native-inputs (list googletest googlebenchmark))
+      (home-page "https://github.com/pytorch/qnnpack")
+      (synopsis "Quantized Neural Network PACKage")
+      (description "QNNPACK is a library for low-precision neural network
+inference.  It contains the implementation of common neural network operators
+on quantized 8-bit tensors.")
+      (supported-systems
+       '("armv7-linux" "aarch64-linux" "i686-linux" "x86_64-linux"))
+      (license license:bsd-3))))
+
 (define-public xnnpack
   ;; There's currently no tag on this repo.
   (let ((version "0.0")
