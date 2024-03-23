@@ -19048,30 +19048,27 @@ applications.")
 (define-public python-kombu
   (package
     (name "python-kombu")
-    (version "5.2.4")
+    (version "5.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "kombu" version))
        (sha256
-        (base32 "044ng79gj04668kf5fmy7fjkw8302xyapskkn65ym52zfbpf7kip"))))
-    (build-system python-build-system)
+        (base32 "1n9i4hj1h3aivgy82l7accyjh1rqn20am00152l5syhl19bmpnpk"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        ;; The transport tests attempt to pass messages to
-                        ;; many different databases.
-                        "--ignore" "t/unit/transport")))))))
+     (list #:test-flags
+           ;; TODO: Package azure-identity (required for this file)
+           #~(list "--ignore" "t/unit/transport/test_azurestoragequeues.py")))
     (native-inputs
-     (list python-case python-pyro4 python-pytest-sugar
-           python-pytest python-pytz))
+     (list python-botocore
+           python-case
+           python-pyro4
+           python-pytest
+           python-pytest-sugar
+           python-tzdata))
     (propagated-inputs
-     (list python-amqp python-cached-property python-vine))
+     (list python-amqp python-typing-extensions python-vine))
     (home-page "https://kombu.readthedocs.io")
     (synopsis "Message passing library for Python")
     (description "The aim of Kombu is to make messaging in Python as easy as
