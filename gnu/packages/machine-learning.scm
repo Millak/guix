@@ -4764,6 +4764,34 @@ Note: currently this package does not provide GPU support.")
            (delete 'disable-avx-dependencies)))))
     (supported-systems '("x86_64-linux"))))
 
+(define %python-pytorch-for-r-torch-version "2.0.1")
+
+(define %python-pytorch-for-r-torch-src
+  (origin
+    (inherit %python-pytorch-src)
+    (uri (git-reference
+          (url "https://github.com/pytorch/pytorch")
+          (commit (string-append "v" %python-pytorch-for-r-torch-version))))
+    (file-name (git-file-name "python-pytorch"
+                              %python-pytorch-for-r-torch-version))
+    (sha256
+     (base32
+      "0iirrn687i7sfv0p0i7dn89x3rf13a7l8y1y5h190h51yjxpxqxa"))))
+
+(define-public qnnpack-pytorch-for-r-torch
+  (package
+    (inherit qnnpack-pytorch)
+    (version (string-append "pytorch-" %python-pytorch-for-r-torch-version))
+    (source
+     (origin
+       (inherit %python-pytorch-for-r-torch-src)
+       (patches '())
+       (modules '((guix build utils)
+                  (srfi srfi-26)
+                  (ice-9 ftw)))
+       (snippet
+        (origin-snippet (package-source qnnpack-pytorch)))))))
+
 (define-public python-pytorch-for-r-torch
   (package
     (inherit python-pytorch)
