@@ -1795,6 +1795,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/pam-krb5-CVE-2020-10595.patch		\
   %D%/packages/patches/pango-skip-libthai-test.patch		\
   %D%/packages/patches/password-store-tree-compat.patch		\
+  %D%/packages/patches/pdfpc-build-with-vala-0.56.patch         \
   %D%/packages/patches/petri-foo-0.1.87-fix-recent-file-not-exist.patch			\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
   %D%/packages/patches/plasp-fix-normalization.patch \

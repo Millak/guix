@@ -1526,22 +1526,24 @@ multiple files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))))
+        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))
+       (patches
+        (search-patches "pdfpc-build-with-vala-0.56.patch"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))           ; no test target
-    (inputs
-     `(("cairo" ,cairo)
-       ("discount" ,discount) ; libmarkdown
-       ("qrencode" ,qrencode)
-       ("gtk+" ,gtk+)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("json-glib" ,json-glib)
-       ("libgee" ,libgee)
-       ("poppler" ,poppler)
-       ("pango" ,pango)
-       ("vala" ,vala)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+    (inputs (list
+             cairo
+             discount ; libmarkdown
+             qrencode
+             gtk+
+             gstreamer
+             gst-plugins-base
+             json-glib
+             libgee
+             poppler
+             pango
+             vala
+             webkitgtk-with-libsoup2))
     (native-inputs
      (list pkg-config))
     (home-page "https://pdfpc.github.io/")
