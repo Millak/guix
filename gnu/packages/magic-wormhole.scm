@@ -20,7 +20,9 @@
 (define-module (gnu packages magic-wormhole)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages check)
   #:use-module (gnu packages python-check)
@@ -115,24 +117,20 @@ together, allowing them to pretend they have a direct connection.")
         (sha256
          (base32
           "05hm5pnrxli69a28h3pbgx6s6pwy8279l506kha7y3i7hs1dcfxc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; XXX I can't figure out how to build the docs properly.
-         ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34515#101
-         (add-after 'install 'install-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "docs/wormhole.1" man))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX I can't figure out how to build the docs properly.
+          ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34515#101
+          (add-after 'install 'install-docs
+            (lambda _
+              (install-file "docs/wormhole.1"
+                            (string-append #$output "/share/man/man1")))))))
     (native-inputs
      (list python-mock
-           python-noiseprotocol
-           ;; XXX These are required for the test suite but end up being referenced
-           ;; by the built package.
-           ;; https://bugs.gnu.org/25235
+           python-pytest
            magic-wormhole-mailbox-server
            magic-wormhole-transit-relay))
     (propagated-inputs
@@ -140,6 +138,7 @@ together, allowing them to pretend they have a direct connection.")
            python-click
            python-hkdf
            python-humanize
+           python-noiseprotocol
            python-pynacl
            python-spake2
            python-tqdm
