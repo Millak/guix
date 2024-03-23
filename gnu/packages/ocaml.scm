@@ -2028,6 +2028,7 @@ about.")
      `(#:package "ordering"
        ;; Tests have a cyclic dependency on stdune
        #:tests? #f))
+    (properties '())
     (synopsis "Dune element ordering")
     (description "This library represents element ordering in OCaml.")))
 
