@@ -71,20 +71,20 @@ connection, or through a transit-relay.")
         (sha256
          (base32
           "0ppsx2s1ysikns1h053x67z2zmficbn3y3kf52bzzslhd2s02j6b"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+       #~(modify-phases %standard-phases
          (add-after 'install 'install-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
+           (lambda _
+             (let* ((out #$output)
                     (docs (string-append out "/share/doc/magic-wormhole-transit-relay")))
                (for-each (lambda (file)
                            (install-file file docs))
-                         (find-files "docs/"))
-               #t))))))
+                         (find-files "docs/"))))))))
     (native-inputs
-     (list python-mock python-pyflakes python-tox))
+     (list python-mock python-pyflakes python-pytest python-tox))
     (propagated-inputs
      (list python-twisted))
     (home-page
