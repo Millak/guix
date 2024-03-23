@@ -244,6 +244,30 @@ it adds to the Pytest command line interface (CLI).")
 times and detect flakyness.")
     (license license:asl2.0)))
 
+(define-public python-pytest-shard
+  (let ((commit "64610a08dac6b0511b6d51cf895d0e1040d162ad")
+        (revision "0"))
+    (package
+      (name "python-pytest-shard")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/AdamGleave/pytest-shard")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1h31m68igz670bzl307hazjrfbr8pk14mxflllar18ydmlrnl677"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs (list python-pytest))
+      (home-page "https://github.com/AdamGleave/pytest-shard")
+      (synopsis "Pytest plugin for sharding tests")
+      (description "This package provides a Pytest extension for sharding
+tests at the granularity of individual test cases, which can be run in
+parallel and on multiple machines.")
+      (license license:expat))))
+
 (define-public python-testfixtures
   (package
     (name "python-testfixtures")
