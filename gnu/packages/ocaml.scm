@@ -8781,6 +8781,22 @@ get an precise reference of when the executable was built.")))
      "This library parses ocaml complier output and returns it as ocaml values.
 This library offers no backwards compatibility guarantees.")))
 
+(define-public ocaml-chrome-trace
+  (package
+    (inherit dune-ordering)
+    (name "ocaml-chrome-trace")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "chrome-trace"
+       ;; Tests have a cyclic dependency on stdune
+       #:tests? #f))
+    (propagated-inputs (list ocaml-odoc))
+    (synopsis "Chrome trace event generation library for ocaml")
+    (description
+     "Output trace data to a file in Chrome's trace_event format. This format is
+    compatible with chrome trace viewer chrome://tracing.
+    This library offers no backwards compatibility guarantees.")
+    (license license:expat)))
 
 (define-public ocaml-either
   (package
