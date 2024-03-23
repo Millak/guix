@@ -52,7 +52,7 @@
            python-six
            python-treq
            python-twisted))
-    (home-page "https://github.com/warner/magic-wormhole-mailbox-server")
+    (home-page "https://github.com/magic-wormhole/magic-wormhole-mailbox-server")
     (synopsis "Magic-Wormhole central mailbox server")
     (description
      "This package provides the main server that Magic-Wormhole clients
@@ -88,7 +88,7 @@ connection, or through a transit-relay.")
      (list python-mock python-pytest))
     (propagated-inputs
      (list python-twisted))
-    (home-page "https://github.com/warner/magic-wormhole-transit-relay")
+    (home-page "https://github.com/magic-wormhole/magic-wormhole-transit-relay")
     (synopsis "Magic-Wormhole relay server")
     (description
      "This package provides the Magic-Wormhole Transit Relay server, which
@@ -136,7 +136,7 @@ together, allowing them to pretend they have a direct connection.")
            python-tqdm
            python-twisted
            python-txtorcon))
-    (home-page "https://github.com/warner/magic-wormhole")
+    (home-page "https://github.com/magic-wormhole/magic-wormhole")
     (synopsis "Securely transfer data between computers")
     (description
      "Magic-Wormhole is a library and a command-line tool named wormhole,
