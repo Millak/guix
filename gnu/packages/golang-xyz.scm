@@ -1382,8 +1382,8 @@ command line flags, config files, and default struct values.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/mreiferson/go-options"))
-    (home-page "https://github.com/mreiferson/go-options")
+      #:import-path "github.com/multiformats/go-varint"))
+    (home-page "https://github.com/multiformats/go-varint")
     (synopsis "Varint helpers that enforce minimal encoding")
     (description
      "This package provides a functionality for encoding and decoding unsigned
