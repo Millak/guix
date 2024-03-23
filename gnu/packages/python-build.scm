@@ -10,7 +10,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
-
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -251,6 +251,18 @@ Included are implementations of:
 @item AsyncGenerator
 @end enumerate\n")
     (license license:psfl)))
+
+(define-public python-typing-extensions-4.10
+  (package
+    (inherit python-typing-extensions)
+    (version "4.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typing_extensions" version))
+       (sha256
+        (base32
+         "1jxkj4pni8pdyrn79sq441lsp40xzw363n0qvfc6zfcgkv4dgaxh"))))))
 
 
 ;;;
