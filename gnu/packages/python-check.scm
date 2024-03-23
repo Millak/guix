@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -224,6 +225,24 @@ tests in cram.")
 CSV output mode for Pytest.  It can be enabled via the @option{--csv} option
 it adds to the Pytest command line interface (CLI).")
     (license license:gpl3+)))
+
+(define-public python-pytest-flakefinder
+  (package
+    (name "python-pytest-flakefinder")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-flakefinder" version))
+       (sha256
+        (base32 "03iy80xlkpgzjs2kxa9rrj8dbnp9awyhpcl3hy8fgf5x40cjlhg2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/dropbox/pytest-flakefinder")
+    (synopsis "Pytest plugin for finding flaky tests")
+    (description "This package provides a Pytest plugin to run tests multiple
+times and detect flakyness.")
+    (license license:asl2.0)))
 
 (define-public python-testfixtures
   (package
