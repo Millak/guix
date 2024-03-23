@@ -509,6 +509,12 @@ GZip format, via a subclass of QIODevice.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-test
+            (lambda _
+              ;; Reported as https://bugs.kde.org/show_bug.cgi?id=484306
+              (substitute* "autotests/CMakeLists.txt"
+                (("testdateserialization")
+                 ""))))
           (add-before 'check 'check-setup
             (lambda* (#:key inputs #:allow-other-keys) ;;; XXX: failing test
               (setenv "QT_QPA_PLATFORM" "offscreen")
