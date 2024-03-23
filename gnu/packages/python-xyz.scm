@@ -19085,25 +19085,21 @@ RabbitMQ messaging server is the most popular implementation.")
 (define-public python-billiard
   (package
     (name "python-billiard")
-    (version "3.6.4.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "billiard" version))
        (sha256
-        (base32 "0ismj2p8c66ykpss94rs0bfra5agxxmljz8r3gaq79r8valfb799"))))
-    (build-system python-build-system)
+        (base32 "0b2svqx81511m0k2swjkybcx69f541dzd4rgfdxa2ni7rf232g4s"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-win-files
-           (lambda _
-             (for-each delete-file-recursively
-                       ;; test_multiprocessing seem to be written in Python2.
-                       '("t/integration/tests/test_multiprocessing.py"
-                         "t/unit/test_win32.py"
-                         "billiard/popen_spawn_win32.py"
-                         "billiard/_win.py")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'remove-win-files
+                          (lambda _
+                            (for-each delete-file-recursively
+                                      '("billiard/popen_spawn_win32.py"
+                                        "billiard/_win.py")))))))
     (native-inputs
      (list python-case python-psutil python-pytest))
     (home-page "https://github.com/celery/billiard")
