@@ -1,0 +1,62 @@
+Use the asmjit and cpuinfo packages.
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 134523e..b88b0e7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -235,7 +235,7 @@ message(WARNING "CMAKE_CXX_FLAGS_DEBUG is ${CMAKE_CXX_FLAGS_DEBUG}")
+ message(WARNING "CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")
+ message(WARNING "==========")
+ 
+-if(NOT TARGET asmjit)
++if(FALSE)
+   #Download asmjit from github if ASMJIT_SRC_DIR is not specified.
+   if(NOT DEFINED ASMJIT_SRC_DIR)
+     set(ASMJIT_SRC_DIR "${FBGEMM_SOURCE_DIR}/third_party/asmjit"
+@@ -264,7 +264,7 @@ if(NOT TARGET asmjit)
+   endif()
+ endif()
+ 
+-if(NOT TARGET cpuinfo)
++if(FALSE)
+   #Download cpuinfo from github if CPUINFO_SOURCE_DIR is not specified.
+   if(NOT DEFINED CPUINFO_SOURCE_DIR)
+     set(CPUINFO_SOURCE_DIR "${FBGEMM_SOURCE_DIR}/third_party/cpuinfo"
+@@ -340,9 +340,12 @@ target_include_directories(fbgemm BEFORE
+ target_link_libraries(fbgemm
+   $<BUILD_INTERFACE:asmjit>
+   $<BUILD_INTERFACE:cpuinfo>)
+-add_dependencies(fbgemm
+-  asmjit
+-  cpuinfo)
++
++find_package(asmjit)
++find_package(PkgConfig REQUIRED)
++pkg_check_modules(libcpuinfo REQUIRED IMPORTED_TARGET libcpuinfo)
++
++target_link_libraries(fbgemm asmjit::asmjit PkgConfig::libcpuinfo)
+ 
+ if(OpenMP_FOUND)
+   target_link_libraries(fbgemm OpenMP::OpenMP_CXX)
+diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
+index 2cffddf..bd4d409 100644
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -14,7 +14,7 @@ set(CMAKE_C_STANDARD 11)
+ set(CMAKE_C_EXTENSIONS OFF)
+ set(CMAKE_C_STANDARD_REQUIRED ON)
+ 
+-if(FBGEMM_BUILD_TESTS AND NOT TARGET gtest)
++if(FALSE)
+   #Download Googletest framework from github if
+   #GOOGLETEST_SOURCE_DIR is not specified.
+   if(NOT DEFINED GOOGLETEST_SOURCE_DIR)
+@@ -78,7 +78,7 @@ macro(add_gtest TESTNAME)
+     target_link_libraries(${TESTNAME} ${OpenMP_CXX_LIBRARIES})
+   endif()
+ 
+-  add_dependencies(${TESTNAME} gtest fbgemm)
++  add_dependencies(${TESTNAME} fbgemm)
+   add_test(${TESTNAME} ${TESTNAME})
+   set_target_properties(${TESTNAME} PROPERTIES FOLDER test)
+ endmacro()

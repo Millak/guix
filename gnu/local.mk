@@ -1202,6 +1202,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/fasthenry-spUtils.patch			\
   %D%/packages/patches/fasthenry-spSolve.patch			\
   %D%/packages/patches/fasthenry-spFactor.patch			\
+  %D%/packages/patches/fbgemm-use-system-libraries.patch	\
   %D%/packages/patches/fbreader-curl-7.62.patch		\
   %D%/packages/patches/fbreader-fix-icon.patch		\
   %D%/packages/patches/feedbackd-use-system-gmobile.patch	\

@@ -4115,6 +4115,40 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                                  "-DXNNPACK_BUILD_TESTS=FALSE" ;FIXME: see below
                                  "-DXNNPACK_BUILD_BENCHMARKS=FALSE"))))))
 
+;; Warning: This package requires AVX2 or AVX-512 instructions.
+(define-public fbgemm
+  (package
+    (name "fbgemm")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/fbgemm")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mw30v55aicqdbh3xwfj9p8f38nw70ks5cxiwpgwjsk0dylah9rf"))
+              (patches (search-patches "fbgemm-use-system-libraries.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(delete-file-recursively "third_party"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ''("-DFBGEMM_LIBRARY_TYPE=shared")
+      ;; Tests require AVX2 or AVX-512 instructions
+      #:tests? #f))
+    (inputs (list asmjit cpuinfo))
+    (native-inputs (list pkg-config python googletest))
+    (home-page "https://github.com/pytorch/fbgemm")
+    (synopsis "Facebook GEneral Matrix Multiplication")
+    (description "Low-precision, high-performance matrix-matrix
+multiplications and convolution library for server-side inference.")
+    (supported-systems '("x86_64-linux"))
+    (license license:bsd-3)))
+
 (define-public tensorpipe
   (let ((commit "bb1473a4b38b18268e8693044afdb8635bc8351b")
         (revision "0"))
