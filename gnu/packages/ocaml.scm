@@ -8798,6 +8798,31 @@ This library offers no backwards compatibility guarantees.")))
     This library offers no backwards compatibility guarantees.")
     (license license:expat)))
 
+(define-public ocaml-fiber
+  (package
+    (name "ocaml-fiber")
+    (home-page "https://github.com/ocaml-dune/fiber")
+    (version "3.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "085v1dfxrb4wnkgysghj5q4vr4nx3nxr84rqmy874dr3pk30740n"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "fiber"))
+    (propagated-inputs (list dune-stdune dune-dyn))
+    (native-inputs (list ocaml-odoc ocaml-ppx-expect))
+    (synopsis "Structured concurrency library")
+    (description
+     "This library implements structured concurrency for ocaml.
+     It offers no backwards compatibility guarantees.")
+    (license license:expat)))
+
 (define-public ocaml-either
   (package
     (name "ocaml-either")
