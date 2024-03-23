@@ -5200,7 +5200,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
 (define-public python-torchvision
   (package
     (name "python-torchvision")
-    (version "0.15.2")
+    (version "0.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5210,7 +5210,12 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cq2s13vkgg9rljjbrm4g33yxq7q5zqp7f4xm5cq624gvs0wxmi8"))))
+                "094jz0ryzh0yjxf687r61r482fdh3bax8ix2csghraps0z1sns1b"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "android")
+                  (delete-file-recursively "ios")))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false)) ;the test suite is expensive and there is no easy
