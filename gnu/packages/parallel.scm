@@ -536,11 +536,14 @@ processor name, cache information, and topology information.")
               (inherit (package-source cpuinfo))
               (patches (search-patches "clog-fix-shared-build.patch"))))
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "deps/clog"))))))
+     (list
+      #:configure-flags
+      ''("-DBUILD_SHARED_LIBS=ON"
+         "-DUSE_SYSTEM_LIBS=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'chdir
+                     (lambda _
+                       (chdir "deps/clog"))))))
     (native-inputs (list googletest))
     (inputs '())
     (synopsis "C-style logging library based on printf")
