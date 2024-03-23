@@ -27,6 +27,7 @@
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3387,7 +3388,7 @@ advanced research.")
          (string-append "-DEigen3_DIR=" #$(this-package-input "eigen")
                         "/share/eigen3/cmake")
          (string-append "-DFlatBuffers_DIR="
-                        #$(this-package-input "flatbuffers-shared")
+                        #$(this-package-input "flatbuffers")
                         "/lib/cmake/flatbuffers")
          (string-append "-DNEON_2_SSE_DIR=" #$(this-package-input "neon2sse")
                         "/lib/cmake/NEON_2_SSE")
@@ -3474,7 +3475,7 @@ advanced research.")
        ("cpuinfo" ,cpuinfo)
        ("eigen" ,eigen)
        ("fp16" ,fp16)
-       ("flatbuffers-shared" ,flatbuffers-next-shared)
+       ("flatbuffers" ,flatbuffers-next)
        ("gemmlowp" ,gemmlowp)
        ("mesa-headers" ,mesa-headers)
        ("neon2sse" ,neon2sse)
