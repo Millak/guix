@@ -66,37 +66,37 @@ connection, or through a transit-relay.")
     (name "magic-wormhole-transit-relay")
     (version "0.2.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "magic-wormhole-transit-relay" version))
-        (sha256
-         (base32
-          "0ppsx2s1ysikns1h053x67z2zmficbn3y3kf52bzzslhd2s02j6b"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "magic-wormhole-transit-relay" version))
+       (sha256
+        (base32
+         "0ppsx2s1ysikns1h053x67z2zmficbn3y3kf52bzzslhd2s02j6b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'install 'install-docs
-           (lambda _
-             (let* ((out #$output)
-                    (docs (string-append out "/share/doc/magic-wormhole-transit-relay")))
-               (for-each (lambda (file)
-                           (install-file file docs))
-                         (find-files "docs/"))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-docs
+            (lambda _
+              (let* ((out #$output)
+                     (docs (string-append out "/share/doc/magic-wormhole-transit-relay")))
+                (for-each (lambda (file)
+                            (install-file file docs))
+                          (find-files "docs/"))))))))
     (native-inputs
      (list python-mock python-pyflakes python-pytest python-tox))
     (propagated-inputs
      (list python-twisted))
-    (home-page
-      "https://github.com/warner/magic-wormhole-transit-relay")
+    (home-page "https://github.com/warner/magic-wormhole-transit-relay")
     (synopsis "Magic-Wormhole relay server")
-    (description "This package provides the Magic-Wormhole Transit Relay
-server, which helps clients establish bulk-data transit connections even when
-both are behind NAT boxes.  Each side makes a TCP connection to this server and
+    (description
+     "This package provides the Magic-Wormhole Transit Relay server, which
+helps clients establish bulk-data transit connections even when both are
+behind NAT boxes.  Each side makes a TCP connection to this server and
 presents a handshake.  Two connections with identical handshakes are glued
 together, allowing them to pretend they have a direct connection.")
-   (license license:expat)))
+    (license license:expat)))
 
 (define-public magic-wormhole
   (package
