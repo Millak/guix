@@ -52,6 +52,7 @@
   #:use-module (guix download)
   #:use-module (guix svn-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
@@ -4263,6 +4264,31 @@ the tensors contained therein.")
 API for loading and executing ONNX graphs on optimized backends.  This package
 contains facebook extensions and is used by PyTorch.")
       (license license:expat))))
+
+(define-public ideep-pytorch
+  (package
+    (name "ideep-pytorch")
+    (version "3.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/intel/ideep")
+             (commit (string-append "pytorch-rls-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0y6r938qryi3bnf15rp0fbilsfimdcgmvsa0ygwrn3zifw6386rb"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      ''(("include" "include"))))
+    (home-page "https://github.com/intel/ideep")
+    (synopsis "Ideep headers for interal use by PyTorch")
+    (description "This library is used internally as header-only library by
+PyTorch.")
+    (license license:expat)))
 
 ;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
