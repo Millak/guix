@@ -3994,10 +3994,11 @@ reduction technique that can be used for visualization similarly to t-SNE, but
 also for general non-linear dimension reduction.")
     (license license:bsd-3)))
 
+;; Requires AVX2 on x86_64-linux.
 (define-public nnpack
   (let ((version "0.0")
-        (commit "c07e3a0400713d546e0dea2d5466dd22ea389c73")
-        (revision "1"))
+        (commit "70a77f485e8b934224f3a79efd8edcd84cd377b8")
+        (revision "2"))
     (package
       (name "nnpack")
       (version (git-version version revision commit))
@@ -4008,19 +4009,11 @@ also for general non-linear dimension reduction.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0s0kk3a35w3yzf0q447p72350sbsh4qhg6vm3y2djbj4xpg7jc8v"))
+                  "0c4pw926279s3rlx7mg4l4vhnfy6dh374n6w7zqhcn0bxpym1hv1"))
                 (patches (search-patches "nnpack-system-libraries.patch"))))
       (build-system cmake-build-system)
-      ;; XXX: The test suite runs but it's very expensive, and on x86_64 CPUs
-      ;; that lack the right ISA extensions, tests fail with:
-      ;;
-      ;; Expected equality of these values:
-      ;;   nnp_status_success
-      ;;     Which is: 0
-      ;;   status
-      ;;     Which is: 51
-      ;;
-      ;; where 51 is 'nnp_status_unsupported_hardware'.
+      ;; XXX: The test suite runs but it's very expensive. On x86_64-linux, it
+      ;; requires AVX2 instructions.
       (arguments '(#:tests? #f))
       (synopsis "Acceleration package for neural network computations")
       (description
@@ -4041,6 +4034,8 @@ and Darknet.")
              googletest))
       (native-inputs
        (list python python-peachpy python-six))
+      ;; Supported for Linux.
+      (supported-systems '("x86_64-linux" "armhf-linux" "aarch64-linux"))
       (license license:bsd-2))))
 
 (define-public xnnpack
