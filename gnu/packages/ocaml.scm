@@ -6191,6 +6191,48 @@ External contributors added support for Visual Studio Code, Sublime Text and
 Atom.")
      (license license:expat))))
 
+(define-public ocaml-lsp-server
+  (package
+    (name "ocaml-lsp-server")
+    (version "1.17.0")
+    (home-page "https://github.com/ocaml/ocaml-lsp")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                (url home-page)
+                (commit version)))
+              (sha256
+               (base32
+                "1w1m2mi7va3wcwgvgzqd3af6hrhx5zzyr3hqa228pcimp44w6f0h"))))
+    (build-system dune-build-system)
+    (arguments '(#:tests? #f)) ; tests are failing for v1.17
+    (propagated-inputs (list
+                             ocaml-re
+                             ocaml-ppx-yojson-conv-lib
+                             dune-rpc
+                             ocaml-chrome-trace
+                             dune-dyn
+                             dune-stdune
+                             ocaml-fiber
+                             ocaml-xdg
+                             dune-ordering
+                             ocaml-dune-build-info
+                             ocaml-spawn
+                             ocamlc-loc
+                             ocaml-uutf
+                             ocaml-pp
+                             ocaml-csexp
+                             ocamlformat-rpc-lib
+                             ocaml-odoc
+                             ocaml-merlin-lib))
+    (native-inputs (list ocaml-ppx-expect ocamlformat))
+    (properties `((upstream-name . "ocaml-lsp-server")))
+    (synopsis "LSP Server for OCaml")
+    (description "This package implements an Ocaml language server implementation.")
+    (license license:isc)))
+
+(define-public ocaml5.0-lsp-server (package-with-ocaml5.0 ocaml-lsp-server))
+
 (define-public ocaml-gsl
   (package
     (name "ocaml-gsl")
