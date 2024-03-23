@@ -1386,6 +1386,8 @@ tools_locations = {
                          ;; https://github.com/conan-io/conan/issues/13577).
                          "and not test_other_client_can_link_autotools "
                          "and not test_autotools_lib_template "
+                         ;; Sometimes fail: https://github.com/conan-io/conan/issues/15936
+                         "and not test_basic_parallel_install "
                          (if (not (string-prefix? "x86_64" system))
                              ;; These tests either assume the machine is
                              ;; x86_64, or require a cross-compiler to target
