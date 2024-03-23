@@ -3224,31 +3224,32 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
   (package
     (name "clipman")
     (version "1.6.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/chmouel/clipman")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256 (base32
-                        "033l2hy46r2zjy8dllcmkjxidhnqac9kfh4wkq9hfvim9imp5a4m"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chmouel/clipman")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "033l2hy46r2zjy8dllcmkjxidhnqac9kfh4wkq9hfvim9imp5a4m"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/yory8/clipman"
-           #:install-source? #f
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'build 'patch
-                          (lambda _
-                            (substitute* "src/github.com/yory8/clipman/main.go"
-                              (("\"wl-copy\"")
-                               (string-append "\"" (which "wl-copy") "\"")))))
-                        (delete 'install-license-files))))
-    (native-inputs (list go-github-com-alecthomas-template
-                         go-github-com-alecthomas-units))
-    (inputs (list go-github-com-kballard-go-shellquote
-                  go-gopkg-in-alecthomas-kingpin-v2
-                  libnotify
-                  wl-clipboard))
+     (list
+      #:import-path "github.com/yory8/clipman"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-wl-copy-path
+            (lambda _
+              (substitute* "src/github.com/yory8/clipman/main.go"
+                (("\"wl-copy\"")
+                 (string-append "\"" (which "wl-copy") "\""))))))))
+    (inputs
+     (list go-github-com-kballard-go-shellquote
+           go-gopkg-in-alecthomas-kingpin-v2
+           libnotify
+           wl-clipboard))
     (synopsis "Basic clipboard manager with support for persisting copy buffers")
     (description
      "A clipboard manager for Wayland that relies on an external selector,
