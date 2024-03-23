@@ -8716,7 +8716,7 @@ that involve memoization and recursion.")
 
 (define-public ocaml-dune-build-info
   (package
-    (inherit dune)
+    (inherit dune-ordering)
     (name "ocaml-dune-build-info")
     (build-system dune-build-system)
     (arguments
