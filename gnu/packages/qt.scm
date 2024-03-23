@@ -849,7 +849,7 @@ tst_qt_cmake_create.cpp"
                   ;; 'qtbase-qmake-use-libname.patch' patch.
                   (setenv "LIBRARY_PATH" (string-append #$output "/lib:"
                                                         (getenv "LIBRARY_PATH")))
-                  (setenv "QML2_IMPORT_PATH"
+                  (setenv "QML_IMPORT_PATH"
                           (string-append #$output "/lib/qt6/qml"))
                   (setenv "QT_PLUGIN_PATH"
                           (string-append #$output "/lib/qt6/plugins"))
@@ -1082,7 +1082,7 @@ tst_qt_cmake_create.cpp"
             (variable "QMAKEPATH")
             (files '("lib/qt6")))
            (search-path-specification
-            (variable "QML2_IMPORT_PATH")
+            (variable "QML_IMPORT_PATH")
             (files '("lib/qt6/qml")))
            (search-path-specification
             (variable "QT_PLUGIN_PATH")
@@ -1549,7 +1549,7 @@ with JavaScript and C++.")))
               (when tests?
                 ;; The tests expect to find the modules provided by this
                 ;; package; extend the environment variables needed to do so.
-                (setenv "QML2_IMPORT_PATH"
+                (setenv "QML_IMPORT_PATH"
                         (string-append #$output "/lib/qt6/qml"))
                 (setenv "QT_PLUGIN_PATH"
                         (string-append #$output "/lib/qt6/plugins:"
@@ -1608,7 +1608,7 @@ with JavaScript and C++.")))
                     ;; These tests fail starting with 6.5.2 (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-116019).  They
                     ;; appear to fail because of attempting to load QML from
-                    ;; elsewhere than from QML2_IMPORT_PATH.
+                    ;; elsewhere than from QML_IMPORT_PATH.
                     "cmake_test_common_import_path"
                     "tst_qqmlcomponent"
                     "tst_qmllint"
@@ -1710,9 +1710,9 @@ consume data received from the server, or both.")))
                    (add-after 'install 'prepare-for-tests
                      (lambda _
                        (setenv "QT_QPA_PLATFORM" "offscreen")
-                       (setenv "QML2_IMPORT_PATH"
+                       (setenv "QML_IMPORT_PATH"
                                (string-append #$output "/lib/qt6/qml:"
-                                              (getenv "QML2_IMPORT_PATH")))))
+                                              (getenv "QML_IMPORT_PATH")))))
                    (add-after 'prepare-for-tests 'check
                      (assoc-ref %standard-phases 'check))
                    (add-after 'check 'delete-installed-tests
@@ -2132,9 +2132,9 @@ popular web engines, Qt WebKit 2 and Qt WebEngine.")))
                    (add-after 'install 'prepare-for-tests
                      (lambda _
                        (setenv "QT_QPA_PLATFORM" "offscreen")
-                       (setenv "QML2_IMPORT_PATH"
+                       (setenv "QML_IMPORT_PATH"
                                (string-append #$output "/lib/qt6/qml:"
-                                              (getenv "QML2_IMPORT_PATH")))))
+                                              (getenv "QML_IMPORT_PATH")))))
                    (add-after 'prepare-for-tests 'check
                      (assoc-ref %standard-phases 'check))
                    (add-after 'check 'delete-installed-tests
@@ -2266,9 +2266,9 @@ positioning and geolocation plugins.")))
           (add-after 'install 'prepare-for-tests
             (lambda _
               (setenv "QT_QPA_PLATFORM" "offscreen")
-              (setenv "QML2_IMPORT_PATH"
+              (setenv "QML_IMPORT_PATH"
                       (string-append #$output "/lib/qt6/qml:"
-                                     (getenv "QML2_IMPORT_PATH"))))))))
+                                     (getenv "QML_IMPORT_PATH"))))))))
     (native-inputs (list perl))
     (inputs (list libxkbcommon qtbase qtdeclarative))
     (home-page (package-home-page qtbase))
@@ -2533,9 +2533,9 @@ also contains functionality to support data models and executable content.")))
             (lambda _
               (setenv "ARGS" "-E tst_scion")
               (setenv "QT_QPA_PLATFORM" "offscreen")
-              (setenv "QML2_IMPORT_PATH"
+              (setenv "QML_IMPORT_PATH"
                       (string-append #$output "/lib/qt6/qml:"
-                                     (getenv "QML2_IMPORT_PATH"))))))))
+                                     (getenv "QML_IMPORT_PATH"))))))))
     (build-system cmake-build-system)
     (inputs (list qtbase qtdeclarative libxkbcommon))
     (synopsis "Qt SCXML module")
@@ -2704,9 +2704,9 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
             (assoc-ref %standard-phases 'check))
           (add-before 'check 'prepare-for-tests
             (lambda _
-              (setenv "QML2_IMPORT_PATH"
+              (setenv "QML_IMPORT_PATH"
                       (string-append #$output "/lib/qt6/qml:"
-                                     (getenv "QML2_IMPORT_PATH"))))))))
+                                     (getenv "QML_IMPORT_PATH"))))))))
     (native-inputs (list perl vulkan-headers))
     (inputs (list libxkbcommon qtbase qtdeclarative))
     (synopsis "Qt Remote Objects module")
@@ -2765,10 +2765,10 @@ message.")))
                    (setenv "QT_QPA_PLATFORM" "offscreen")))
                (add-before 'check 'prepare-for-tests
                  (lambda* (#:key outputs #:allow-other-keys)
-                   (setenv "QML2_IMPORT_PATH"
+                   (setenv "QML_IMPORT_PATH"
                            (string-append (assoc-ref outputs "out")
                                           "/lib/qt6/qml:"
-                                          (getenv "QML2_IMPORT_PATH")))))
+                                          (getenv "QML_IMPORT_PATH")))))
                (add-after 'install 'delete-installed-tests
                  (lambda _
                    (delete-file-recursively
