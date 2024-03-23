@@ -13,6 +13,7 @@
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -458,9 +459,9 @@ command---e.g., @code{%salloc}, @code{%sbatch}, etc.")
 (define-public pthreadpool
   ;; This repository has only one tag, 0.1, which is older than what users
   ;; such as XNNPACK expect.
-  (let ((commit "1787867f6183f056420e532eec640cba25efafea")
+  (let ((commit "178e3e0646cc671708bf78e77c273940130ac637")
         (version "0.1")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "pthreadpool")
       (version (git-version version revision commit))
@@ -471,7 +472,7 @@ command---e.g., @code{%salloc}, @code{%sbatch}, etc.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "02hdvxfn5krw8zivkgjx3b4rk9p02yr4mpdjlp75lsv6z1xf5yrx"))
+                  "1s86lnq9bahacf5wxn7y14w70jh3g9lq1l7y16ijwhifd01nc2km"))
                 (patches (search-patches "pthreadpool-system-libraries.patch"))))
       (build-system cmake-build-system)
       (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
