@@ -4336,6 +4336,21 @@ contains facebook extensions and is used by PyTorch.")
 PyTorch.")
     (license license:expat)))
 
+(define-public ideep-pytorch-for-r-torch
+  (package
+    (inherit ideep-pytorch)
+    (version "2.7.3-1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/intel/ideep")
+             (commit (string-append "pytorch-rls-v" version))))
+       (file-name (git-file-name (package-name ideep-pytorch) version))
+       (sha256
+        (base32
+         "0hdpkhcjry22fjx2zg2r48v7f4ljrclzj0li2pgk76kvyblfbyvm"))))))
+
 (define %python-pytorch-version "2.2.1")
 
 (define %python-pytorch-src
