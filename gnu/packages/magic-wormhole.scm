@@ -41,18 +41,9 @@
         (sha256
          (base32
           "1yw8i8jv5iv1kkz1aqimskw7fpichjn6ww0fq0czbalwj290bw8s"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-          (lambda _
-            ;; This test requires network access.
-            (substitute* "src/wormhole_mailbox_server/test/test_web.py"
-              (("test_log_http") "disabled_test_log_http"))
-            #t)))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-mock))
+     (list python-mock python-pytest))
     (propagated-inputs
      (list python-attrs
            python-autobahn
