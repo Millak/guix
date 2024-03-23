@@ -8747,6 +8747,25 @@ get an precise reference of when the executable was built.")))
      "This ocaml library returns user XDG directories such as XDG_CONFIG_HOME,
      XDG_STATE_HOME.")))
 
+(define-public dune-rpc
+  (package
+    (inherit dune-ordering)
+    (name "dune-rpc")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "dune-rpc"
+       ;; Tests have a cyclic dependency on stdune
+       #:tests? #f))
+    (propagated-inputs (list ocaml-csexp
+                             dune-ordering
+                             dune-dyn
+                             ocaml-xdg
+                             dune-stdune
+                             ocaml-pp
+                             ocaml-odoc))
+    (synopsis "Communicate with ocaml dune using rpc")
+    (description "Library to connect and control a running dune instance.")))
+
 (define-public ocaml-either
   (package
     (name "ocaml-either")
