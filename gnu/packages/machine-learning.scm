@@ -5961,6 +5961,20 @@ performance library of basic building blocks for deep learning applications.")
     (supported-systems %64bit-supported-systems)
     (license license:asl2.0)))
 
+(define-public oneapi-dnnl-for-r-torch
+  (package
+    (inherit oneapi-dnnl)
+    (version "2.7.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oneapi-src/oneDNN")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name (package-name oneapi-dnnl) version))
+       (sha256
+        (base32 "1zyw5rd8x346bb7gac9a7x3saviw3zvp6aqz2z1l9sv163vmjfz6"))))))
+
 (define-public python-gguf
   (package
     (name "python-gguf")
