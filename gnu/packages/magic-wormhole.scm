@@ -18,12 +18,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages magic-wormhole)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix gexp)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
@@ -67,7 +67,7 @@
 clients connect to.  The server performs store-and-forward delivery for small
 key-exchange and control messages.  Bulk data is sent over a direct TCP
 connection, or through a transit-relay.")
-   (license expat)))
+   (license license:expat)))
 
 (define-public magic-wormhole-transit-relay
   (package
@@ -104,7 +104,7 @@ server, which helps clients establish bulk-data transit connections even when
 both are behind NAT boxes.  Each side makes a TCP connection to this server and
 presents a handshake.  Two connections with identical handshakes are glued
 together, allowing them to pretend they have a direct connection.")
-    (license expat)))
+   (license license:expat)))
 
 (define-public magic-wormhole
   (package
@@ -158,4 +158,4 @@ The codes are short and human-pronounceable, using a phonetically-distinct
 wordlist.  The receiving side offers tab-completion on the codewords, so
 usually only a few characters must be typed.  Wormhole codes are single-use
 and do not need to be memorized.")
-    (license expat)))
+   (license license:expat)))
