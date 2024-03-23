@@ -111,12 +111,12 @@ together, allowing them to pretend they have a direct connection.")
     (name "magic-wormhole")
     (version "0.13.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "magic-wormhole" version))
-        (sha256
-         (base32
-          "05hm5pnrxli69a28h3pbgx6s6pwy8279l506kha7y3i7hs1dcfxc"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "magic-wormhole" version))
+       (sha256
+        (base32
+         "05hm5pnrxli69a28h3pbgx6s6pwy8279l506kha7y3i7hs1dcfxc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -146,15 +146,16 @@ together, allowing them to pretend they have a direct connection.")
            python-txtorcon))
     (home-page "https://github.com/warner/magic-wormhole")
     (synopsis "Securely transfer data between computers")
-    (description "Magic-Wormhole is a library and a command-line tool named
-wormhole, which makes it possible to securely transfer arbitrary-sized files and
+    (description
+     "Magic-Wormhole is a library and a command-line tool named wormhole,
+which makes it possible to securely transfer arbitrary-sized files and
 directories (or short pieces of text) from one computer to another.  The two
-endpoints are identified by using identical \"wormhole codes\": in general, the
-sending machine generates and displays the code, which must then be typed into
-the receiving machine.
+endpoints are identified by using identical \"wormhole codes\": in general,
+the sending machine generates and displays the code, which must then be typed
+into the receiving machine.
 
 The codes are short and human-pronounceable, using a phonetically-distinct
-wordlist.  The receiving side offers tab-completion on the codewords, so usually
-only a few characters must be typed.  Wormhole codes are single-use and do not
-need to be memorized.")
+wordlist.  The receiving side offers tab-completion on the codewords, so
+usually only a few characters must be typed.  Wormhole codes are single-use
+and do not need to be memorized.")
     (license expat)))
