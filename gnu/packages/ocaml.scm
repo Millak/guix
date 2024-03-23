@@ -8898,6 +8898,18 @@ defined in OCaml 4.12.0.")
 a uniform style.")
     (license license:expat)))
 
+(define-public ocamlformat-rpc-lib
+  (package
+    (inherit ocamlformat)
+    (name "ocamlformat-rpc-lib")
+    (arguments
+     '(#:package "ocamlformat-rpc-lib"))
+    (propagated-inputs (list ocaml-csexp ocaml-odoc))
+    (synopsis "Auto-formatter for OCaml code in RPC mode")
+    (description
+     "OCamlFormat is a tool to automatically format OCaml code in a uniform style.
+This package defines a RPC interface to OCamlFormat.")))
+
 (define-public ocaml-bigstringaf
   (package
     (name "ocaml-bigstringaf")
