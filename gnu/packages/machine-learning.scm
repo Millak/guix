@@ -4734,6 +4734,21 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
+;; This package variant includes the dependencies requiring at least AVX2 or
+;; AVX-512.
+(define-public python-pytorch-avx
+  (package/inherit python-pytorch
+    (name "python-pytorch-avx")
+    (inputs
+     (modify-inputs (package-inputs python-pytorch)
+       (append fbgemm nnpack)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pytorch)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (delete 'disable-avx-dependencies)))))
+    (supported-systems '("x86_64-linux"))))
+
 (define-public python-pytorch-for-r-torch
   (package
     (inherit python-pytorch)
