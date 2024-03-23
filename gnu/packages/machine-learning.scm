@@ -4776,7 +4776,15 @@ Note: currently this package does not provide GPU support.")
                               %python-pytorch-for-r-torch-version))
     (sha256
      (base32
-      "0iirrn687i7sfv0p0i7dn89x3rf13a7l8y1y5h190h51yjxpxqxa"))))
+      "0iirrn687i7sfv0p0i7dn89x3rf13a7l8y1y5h190h51yjxpxqxa"))
+    (patches (search-patches
+              "python-pytorch-for-r-torch-system-libraries.patch"
+              "python-pytorch-runpath.patch"
+              "python-pytorch-without-kineto.patch"
+              ;; Some autogeneration scripts depend on the
+              ;; compile PyTorch library. Therefore, we create
+              ;; dummy versions which are regenerated later.
+              "python-pytorch-for-r-torch-fix-codegen.patch"))))
 
 (define-public qnnpack-pytorch-for-r-torch
   (package
@@ -4792,56 +4800,27 @@ Note: currently this package does not provide GPU support.")
        (snippet
         (origin-snippet (package-source qnnpack-pytorch)))))))
 
+;; Keep in sync with r-torch
 (define-public python-pytorch-for-r-torch
   (package
     (inherit python-pytorch)
     (name "python-pytorch")
-    (version "2.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pytorch/pytorch")
-                    (commit (string-append "v" version))
-                    (recursive? #t)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "14m7v54zyd2qg2xk9mqdpbf4ps7091mdzinzh4vq9p5k4bpznj65"))
-              (patches (search-patches "python-pytorch2-system-libraries.patch"
-                                       "python-pytorch-runpath.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; XXX: Let's be clear: this package is a bundling fest.  We
-                  ;; delete as much as we can, but there's still a lot left.
-                  (for-each (lambda (directory)
-                              (delete-file-recursively
-                               (string-append "third_party/" directory)))
-                            '("benchmark" "cpuinfo" "eigen"
-
-                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
-                              ;; needs these.
-                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
-
-                              "gloo" "googletest" "ios-cmake" "NNPACK"
-                              "onnx" "protobuf" "pthreadpool"
-                              "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))
-                  (substitute* "caffe2/CMakeLists.txt"
-                    (("target_link_libraries\\(\\$\\{test_name\\}_\\$\\{CPU_CAPABILITY\\} c10 sleef gtest_main\\)")
-                     "target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest gtest_main)"))
-                  (substitute* "functorch/CMakeLists.txt"
-                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
-                     "$ORIGIN/../torch/lib"))))))
+    (version %python-pytorch-for-r-torch-version)
+    (source %python-pytorch-for-r-torch-src)
+    (native-inputs
+     (modify-inputs (package-native-inputs python-pytorch)
+       (replace "ideep-pytorch" ideep-pytorch-for-r-torch)))
+    (inputs
+     (modify-inputs (package-inputs python-pytorch)
+       (replace "qnnpack-pytorch" qnnpack-pytorch-for-r-torch)
+       (replace "oneapi-dnnl" oneapi-dnnl-for-r-torch)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-pytorch)
        (append python-filelock
                python-jinja2
                python-networkx
                python-opt-einsum
-               python-sympy)
-       (replace "onnx" onnx-for-torch2)
-       (replace "onnx-optimizer" onnx-optimizer-for-torch2)))))
+               python-sympy)))))
 
 (define-public python-pytorch-geometric
   (package

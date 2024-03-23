@@ -1,0 +1,399 @@
+Patch build files to also system libraries instead of bundled ones for the
+libraries not supported or working only by specifying USE_SYSTEM_LIBS.  This
+includes using the clog, cpuinfo, fbgemm, foxi, fp16, fxdiv, googletest,
+ideep, miniz, nnpack, oneapi-dnnl, pocketfft, pthreadpool, qnnpack,
+qnnpack-pytorch, tensorpipe, valgrind and xnnpack packages.
+For QNNPACK, two versions were bundled and are required: The upstream one and
+an internal fork (now in the package qnnpack-pytorch).
+
+diff --git a/aten/src/ATen/CMakeLists.txt b/aten/src/ATen/CMakeLists.txt
+index 96fc297..7f27b66 100644
+--- a/aten/src/ATen/CMakeLists.txt
++++ b/aten/src/ATen/CMakeLists.txt
+@@ -362,9 +362,9 @@ if(AT_NNPACK_ENABLED)
+   list(APPEND ATen_CPU_DEPENDENCY_LIBS nnpack) # cpuinfo is added below
+ endif()
+ 
+-if(MKLDNN_FOUND)
+-  list(APPEND ATen_CPU_DEPENDENCY_LIBS ${MKLDNN_LIBRARIES})
+-endif(MKLDNN_FOUND)
++if(USE_MKLDNN)
++  list(APPEND ATen_CPU_DEPENDENCY_LIBS DNNL::dnnl)
++endif(USE_MKLDNN)
+ 
+ list(APPEND ATen_CPU_DEPENDENCY_LIBS cpuinfo)
+ 
+diff --git a/caffe2/CMakeLists.txt b/caffe2/CMakeLists.txt
+index 221e3f3..417f601 100644
+--- a/caffe2/CMakeLists.txt
++++ b/caffe2/CMakeLists.txt
+@@ -110,9 +110,6 @@ if(NOT MSVC AND USE_XNNPACK)
+   if(NOT TARGET fxdiv)
+     set(FXDIV_BUILD_TESTS OFF CACHE BOOL "")
+     set(FXDIV_BUILD_BENCHMARKS OFF CACHE BOOL "")
+-    add_subdirectory(
+-      "${FXDIV_SOURCE_DIR}"
+-      "${CMAKE_BINARY_DIR}/FXdiv")
+   endif()
+ endif()
+ 
+@@ -975,7 +972,6 @@ elseif(USE_CUDA)
+ endif()
+ 
+ if(NOT MSVC AND USE_XNNPACK)
+-  TARGET_LINK_LIBRARIES(torch_cpu PRIVATE fxdiv)
+ endif()
+ 
+ # ==========================================================
+@@ -1314,6 +1310,7 @@ target_link_libraries(torch_cpu PUBLIC c10)
+ target_link_libraries(torch_cpu PUBLIC ${Caffe2_PUBLIC_DEPENDENCY_LIBS})
+ target_link_libraries(torch_cpu PRIVATE ${Caffe2_DEPENDENCY_LIBS})
+ target_link_libraries(torch_cpu PRIVATE ${Caffe2_DEPENDENCY_WHOLE_LINK_LIBS})
++target_link_libraries(torch_cpu PRIVATE miniz clog)
+ target_include_directories(torch_cpu INTERFACE $<INSTALL_INTERFACE:include>)
+ target_include_directories(torch_cpu PRIVATE ${Caffe2_CPU_INCLUDE})
+ target_include_directories(torch_cpu SYSTEM PRIVATE "${Caffe2_DEPENDENCY_INCLUDE}")
+@@ -1570,7 +1567,7 @@ if(BUILD_STATIC_RUNTIME_BENCHMARK)
+   add_executable(static_runtime_bench "${STATIC_RUNTIME_BENCHMARK_SRCS}")
+   add_executable(static_runtime_test "${STATIC_RUNTIME_TEST_SRCS}")
+   target_link_libraries(static_runtime_bench torch_library benchmark)
+-  target_link_libraries(static_runtime_test torch_library gtest_main)
++  target_link_libraries(static_runtime_test torch_library gtest_main gtest)
+ endif()
+ 
+ if(BUILD_TENSOREXPR_BENCHMARK)
+@@ -1601,7 +1598,7 @@ if(BUILD_MOBILE_TEST)
+   foreach(test_src ${ATen_MOBILE_TEST_SRCS})
+     get_filename_component(test_name ${test_src} NAME_WE)
+     add_executable(${test_name} "${test_src}")
+-    target_link_libraries(${test_name} torch_library gtest_main)
++    target_link_libraries(${test_name} torch_library gtest_main gtest)
+     target_include_directories(${test_name} PRIVATE $<INSTALL_INTERFACE:include>)
+     target_include_directories(${test_name} PRIVATE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>)
+     target_include_directories(${test_name} PRIVATE ${ATen_CPU_INCLUDE})
+@@ -1622,13 +1619,13 @@ if(BUILD_TEST)
+         if(NOT MSVC)
+           add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}" ../aten/src/ATen/native/quantized/AffineQuantizerBase.cpp)
+           # TODO: Get rid of c10 dependency (which is only needed for the implementation of AT_ERROR)
+-          target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest_main)
++          target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest_main gtest)
+           if(USE_FBGEMM)
+             target_link_libraries(${test_name}_${CPU_CAPABILITY} fbgemm)
+           endif()
+         else()
+           add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}")
+-          target_link_libraries(${test_name}_${CPU_CAPABILITY} torch_library gtest_main)
++          target_link_libraries(${test_name}_${CPU_CAPABILITY} torch_library gtest_main gtest)
+         endif()
+         target_include_directories(${test_name}_${CPU_CAPABILITY} PRIVATE $<INSTALL_INTERFACE:include>)
+         target_include_directories(${test_name}_${CPU_CAPABILITY} PRIVATE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>)
+@@ -1645,7 +1642,7 @@ if(BUILD_TEST)
+   foreach(test_src ${Caffe2_CPU_TEST_SRCS})
+     get_filename_component(test_name ${test_src} NAME_WE)
+     add_executable(${test_name} "${test_src}")
+-    target_link_libraries(${test_name} torch_library gtest_main)
++    target_link_libraries(${test_name} torch_library gtest_main gtest)
+     target_include_directories(${test_name} PRIVATE $<INSTALL_INTERFACE:include>)
+     target_include_directories(${test_name} PRIVATE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>)
+     target_include_directories(${test_name} PRIVATE ${Caffe2_CPU_INCLUDE})
+@@ -1703,7 +1700,7 @@ if(BUILD_TEST)
+     foreach(test_src ${Caffe2_VULKAN_TEST_SRCS})
+       get_filename_component(test_name ${test_src} NAME_WE)
+       add_executable(${test_name} "${test_src}")
+-      target_link_libraries(${test_name} torch_library gtest_main)
++      target_link_libraries(${test_name} torch_library gtest_main gtest)
+       target_include_directories(${test_name} PRIVATE $<INSTALL_INTERFACE:include>)
+       target_include_directories(${test_name} PRIVATE ${Caffe2_CPU_INCLUDE})
+       add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${test_name}>)
+diff --git a/caffe2/serialize/CMakeLists.txt b/caffe2/serialize/CMakeLists.txt
+index 1552b59..67e1a9a 100644
+--- a/caffe2/serialize/CMakeLists.txt
++++ b/caffe2/serialize/CMakeLists.txt
+@@ -2,7 +2,6 @@ file(GLOB tmp *_test.cc)
+ 
+ set(Caffe2_CPU_TEST_SRCS ${Caffe2_CPU_TEST_SRCS} ${tmp})
+ list(APPEND Caffe2_CPU_SRCS
+-  ${PROJECT_SOURCE_DIR}/third_party/miniz-2.1.0/miniz.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/inline_container.cc
+   ${CMAKE_CURRENT_SOURCE_DIR}/istream_adapter.cc
+   ${CMAKE_CURRENT_SOURCE_DIR}/file_adapter.cc
+diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
+index 8c0e3c2..d65576a 100644
+--- a/cmake/Dependencies.cmake
++++ b/cmake/Dependencies.cmake
+@@ -298,7 +298,7 @@ endif()
+ # --- [ PocketFFT
+ set(AT_POCKETFFT_ENABLED 0)
+ if(NOT AT_MKL_ENABLED)
+-  set(POCKETFFT_INCLUDE_DIR "${Torch_SOURCE_DIR}/third_party/pocketfft/")
++  set(POCKETFFT_INCLUDE_DIR "#POCKETFFT_INCLUDE_DIR")
+   if(NOT EXISTS "${POCKETFFT_INCLUDE_DIR}")
+     message(FATAL_ERROR "pocketfft directory not found, expected ${POCKETFFT_INCLUDE_DIR}")
+   elif(NOT EXISTS "${POCKETFFT_INCLUDE_DIR}/pocketfft_hdronly.h")
+@@ -501,19 +501,6 @@ if(USE_QNNPACK)
+     set(QNNPACK_BUILD_TESTS OFF CACHE BOOL "")
+     set(QNNPACK_BUILD_BENCHMARKS OFF CACHE BOOL "")
+     set(QNNPACK_LIBRARY_TYPE "static" CACHE STRING "")
+-    add_subdirectory(
+-      "${QNNPACK_SOURCE_DIR}"
+-      "${CONFU_DEPENDENCIES_BINARY_DIR}/QNNPACK")
+-
+-    # TODO: See https://github.com/pytorch/pytorch/issues/56285
+-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+-      target_compile_options(qnnpack PRIVATE -Wno-deprecated-declarations)
+-    endif()
+-
+-    # We build static versions of QNNPACK and pthreadpool but link
+-    # them into a shared library for Caffe2, so they need PIC.
+-    set_property(TARGET qnnpack PROPERTY POSITION_INDEPENDENT_CODE ON)
+-    set_property(TARGET cpuinfo PROPERTY POSITION_INDEPENDENT_CODE ON)
+ 
+     if(QNNPACK_CUSTOM_THREADPOOL)
+       target_compile_definitions(
+@@ -562,13 +549,6 @@ if(USE_PYTORCH_QNNPACK)
+       set(PYTORCH_QNNPACK_BUILD_TESTS OFF CACHE BOOL "")
+       set(PYTORCH_QNNPACK_BUILD_BENCHMARKS OFF CACHE BOOL "")
+       set(PYTORCH_QNNPACK_LIBRARY_TYPE "static" CACHE STRING "")
+-      add_subdirectory(
+-        "${PYTORCH_QNNPACK_SOURCE_DIR}"
+-        "${CONFU_DEPENDENCIES_BINARY_DIR}/pytorch_qnnpack")
+-      # We build static versions of QNNPACK and pthreadpool but link
+-      # them into a shared library for Caffe2, so they need PIC.
+-      set_property(TARGET pytorch_qnnpack PROPERTY POSITION_INDEPENDENT_CODE ON)
+-      set_property(TARGET cpuinfo PROPERTY POSITION_INDEPENDENT_CODE ON)
+ 
+       if(PYTORCH_QNNPACK_CUSTOM_THREADPOOL)
+         target_compile_definitions(
+@@ -750,11 +730,6 @@ if(BUILD_TEST OR BUILD_MOBILE_BENCHMARK OR BUILD_MOBILE_TEST)
+   # this shouldn't be necessary anymore.
+   get_property(INC_DIR_temp DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
+   set_property(DIRECTORY PROPERTY INCLUDE_DIRECTORIES "")
+-  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../third_party/googletest)
+-  set_property(DIRECTORY PROPERTY INCLUDE_DIRECTORIES ${INC_DIR_temp})
+-
+-  include_directories(BEFORE SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../third_party/googletest/googletest/include)
+-  include_directories(BEFORE SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../third_party/googletest/googlemock/include)
+ 
+   # We will not need to test benchmark lib itself.
+   set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Disable benchmark testing as we don't need it.")
+@@ -829,16 +804,6 @@ if(USE_FBGEMM)
+     else()
+       set(FBGEMM_LIBRARY_TYPE "static" CACHE STRING "")
+     endif()
+-    add_subdirectory("${FBGEMM_SOURCE_DIR}")
+-    set_property(TARGET fbgemm_generic PROPERTY POSITION_INDEPENDENT_CODE ON)
+-    set_property(TARGET fbgemm_avx2 PROPERTY POSITION_INDEPENDENT_CODE ON)
+-    set_property(TARGET fbgemm_avx512 PROPERTY POSITION_INDEPENDENT_CODE ON)
+-    set_property(TARGET fbgemm PROPERTY POSITION_INDEPENDENT_CODE ON)
+-    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 13.0.0)
+-      # See https://github.com/pytorch/pytorch/issues/74352
+-      target_compile_options_if_supported(asmjit -Wno-deprecated-copy)
+-      target_compile_options_if_supported(asmjit -Wno-unused-but-set-variable)
+-    endif()
+   endif()
+ 
+   if(USE_FBGEMM)
+@@ -1001,7 +966,7 @@ if(NOT TARGET fp16 AND NOT USE_SYSTEM_FP16)
+     "${FP16_SOURCE_DIR}"
+     "${CONFU_DEPENDENCIES_BINARY_DIR}/FP16")
+ elseif(NOT TARGET fp16 AND USE_SYSTEM_FP16)
+-  add_library(fp16 STATIC "/usr/include/fp16.h")
++  add_library(fp16 STATIC "#FP16_INCLUDE_DIR")
+   set_target_properties(fp16 PROPERTIES LINKER_LANGUAGE C)
+ endif()
+ list(APPEND Caffe2_DEPENDENCY_LIBS fp16)
+@@ -1395,7 +1360,6 @@ if(USE_DISTRIBUTED AND USE_TENSORPIPE)
+ 
+     # Tensorpipe uses cuda_add_library
+     torch_update_find_cuda_flags()
+-    add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/tensorpipe)
+ 
+     list(APPEND Caffe2_DEPENDENCY_LIBS tensorpipe)
+     if(USE_CUDA)
+@@ -1551,7 +1515,6 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
+       set_target_properties(onnx_proto PROPERTIES CXX_STANDARD 17)
+     endif()
+   endif()
+-  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../third_party/foxi EXCLUDE_FROM_ALL)
+ 
+   add_definitions(-DONNX_NAMESPACE=${ONNX_NAMESPACE})
+   if(NOT USE_SYSTEM_ONNX)
+@@ -1582,7 +1545,7 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
+     endif()
+     set_property(TARGET onnx_proto PROPERTY IMPORTED_LOCATION ${ONNX_PROTO_LIBRARY})
+     message("-- Found onnx: ${ONNX_LIBRARY} ${ONNX_PROTO_LIBRARY}")
+-    list(APPEND Caffe2_DEPENDENCY_LIBS onnx_proto onnx)
++    list(APPEND Caffe2_DEPENDENCY_LIBS onnx_proto onnx onnx_optimizer)
+   endif()
+   include_directories(${FOXI_INCLUDE_DIRS})
+   list(APPEND Caffe2_DEPENDENCY_LIBS foxi_loader)
+@@ -1752,9 +1715,8 @@ if(NOT INTERN_BUILD_MOBILE)
+   endif()
+   if(USE_MKLDNN)
+     include(${CMAKE_CURRENT_LIST_DIR}/public/mkldnn.cmake)
+-    if(MKLDNN_FOUND)
++    if(DNNL_FOUND)
+       set(AT_MKLDNN_ENABLED 1)
+-      include_directories(AFTER SYSTEM ${MKLDNN_INCLUDE_DIR})
+       if(BUILD_CAFFE2_OPS)
+         list(APPEND Caffe2_DEPENDENCY_LIBS caffe2::mkldnn)
+       endif(BUILD_CAFFE2_OPS)
+@@ -1819,7 +1781,7 @@ endif()
+ #
+ set(TEMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libs" FORCE)
+-add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/fmt)
++find_package(fmt)
+ 
+ # Disable compiler feature checks for `fmt`.
+ #
+@@ -1828,7 +1790,6 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/fmt)
+ # CMAKE_CXX_FLAGS in ways that break feature checks. Since we already know
+ # `fmt` is compatible with a superset of the compilers that PyTorch is, it
+ # shouldn't be too bad to just disable the checks.
+-set_target_properties(fmt-header-only PROPERTIES INTERFACE_COMPILE_FEATURES "")
+ 
+ list(APPEND Caffe2_DEPENDENCY_LIBS fmt::fmt-header-only)
+ set(BUILD_SHARED_LIBS ${TEMP_BUILD_SHARED_LIBS} CACHE BOOL "Build shared libs" FORCE)
+diff --git a/cmake/External/nnpack.cmake b/cmake/External/nnpack.cmake
+index a41343c..6075bdd 100644
+--- a/cmake/External/nnpack.cmake
++++ b/cmake/External/nnpack.cmake
+@@ -40,7 +40,7 @@ endif()
+ # (3) Android, iOS, Linux, macOS - supported
+ ##############################################################################
+ 
+-if(ANDROID OR IOS OR ${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
++if(FALSE)
+   message(STATUS "Brace yourself, we are building NNPACK")
+   set(CAFFE2_THIRD_PARTY_ROOT ${PROJECT_SOURCE_DIR}/third_party)
+ 
+@@ -114,6 +114,5 @@ endif()
+ # (4) Catch-all: not supported.
+ ##############################################################################
+ 
+-message(WARNING "Unknown platform - I don't know how to build NNPACK. "
+-                "See cmake/External/nnpack.cmake for details.")
+-set(USE_NNPACK OFF)
++set(NNPACK_FOUND TRUE)
++set(USE_NNPACK ON)
+diff --git a/cmake/public/mkldnn.cmake b/cmake/public/mkldnn.cmake
+index 50404d3..ca067f0 100644
+--- a/cmake/public/mkldnn.cmake
++++ b/cmake/public/mkldnn.cmake
+@@ -4,7 +4,7 @@ if(CPU_AARCH64)
+   include(${CMAKE_CURRENT_LIST_DIR}/ComputeLibrary.cmake)
+ endif()
+ 
+-find_package(MKLDNN QUIET)
++find_package(DNNL REQUIRED)
+ 
+ if(NOT TARGET caffe2::mkldnn)
+   add_library(caffe2::mkldnn INTERFACE IMPORTED)
+@@ -15,7 +15,7 @@ set_property(
+   ${MKLDNN_INCLUDE_DIR})
+ set_property(
+   TARGET caffe2::mkldnn PROPERTY INTERFACE_LINK_LIBRARIES
+-  ${MKLDNN_LIBRARIES})
++  DNNL::dnnl)
+ if(BUILD_ONEDNN_GRAPH)
+   if(NOT TARGET caffe2::dnnl_graph)
+     add_library(caffe2::dnnl_graph INTERFACE IMPORTED)
+diff --git a/setup.py b/setup.py
+index 34b2854..5db117f 100644
+--- a/setup.py
++++ b/setup.py
+@@ -418,13 +418,9 @@ def build_deps():
+     # Windows has very poor support for them.
+     sym_files = [
+         'tools/shared/_utils_internal.py',
+-        'torch/utils/benchmark/utils/valgrind_wrapper/callgrind.h',
+-        'torch/utils/benchmark/utils/valgrind_wrapper/valgrind.h',
+     ]
+     orig_files = [
+         'torch/_utils_internal.py',
+-        'third_party/valgrind-headers/callgrind.h',
+-        'third_party/valgrind-headers/valgrind.h',
+     ]
+     for sym_file, orig_file in zip(sym_files, orig_files):
+         same = False
+diff --git a/test/cpp/c10d/CMakeLists.txt b/test/cpp/c10d/CMakeLists.txt
+index 89c6b91..0c60d08 100644
+--- a/test/cpp/c10d/CMakeLists.txt
++++ b/test/cpp/c10d/CMakeLists.txt
+@@ -16,14 +16,14 @@ function(c10d_add_test test_src)
+   add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${test_name}>)
+ endfunction()
+ 
+-c10d_add_test(FileStoreTest.cpp torch_cpu gtest_main)
+-c10d_add_test(TCPStoreTest.cpp torch_cpu gtest_main)
++c10d_add_test(FileStoreTest.cpp torch_cpu gtest_main gtest)
++c10d_add_test(TCPStoreTest.cpp torch_cpu gtest_main gtest)
+ if(INSTALL_TEST)
+   install(TARGETS FileStoreTest DESTINATION bin)
+   install(TARGETS TCPStoreTest DESTINATION bin)
+ endif()
+ if(NOT WIN32)
+-  c10d_add_test(HashStoreTest.cpp torch_cpu gtest_main)
++  c10d_add_test(HashStoreTest.cpp torch_cpu gtest_main gtest)
+   if(INSTALL_TEST)
+     install(TARGETS HashStoreTest DESTINATION bin)
+   endif()
+@@ -31,11 +31,11 @@ endif()
+ 
+ if(USE_CUDA)
+   if(USE_GLOO AND USE_C10D_GLOO)
+-    c10d_add_test(ProcessGroupGlooTest.cpp torch_cpu c10d_cuda_test gtest_main)
++    c10d_add_test(ProcessGroupGlooTest.cpp torch_cpu c10d_cuda_test gtest_main gtest)
+     if(INSTALL_TEST)
+       install(TARGETS ProcessGroupGlooTest DESTINATION bin)
+     endif()
+-    c10d_add_test(ProcessGroupGlooAsyncTest.cpp torch_cpu c10d_cuda_test gtest_main)
++    c10d_add_test(ProcessGroupGlooAsyncTest.cpp torch_cpu c10d_cuda_test gtest_main gtest)
+   endif()
+   if(USE_NCCL AND USE_C10D_NCCL)
+     # NCCL is a private dependency of libtorch, but the tests include some
+@@ -44,10 +44,10 @@ if(USE_CUDA)
+     # a private dependency of the tests as well.
+     c10d_add_test(
+       ProcessGroupNCCLTest.cpp
+-      torch_cpu c10d_cuda_test gtest_main __caffe2_nccl)
++      torch_cpu c10d_cuda_test gtest_main gtest __caffe2_nccl)
+     c10d_add_test(
+       ProcessGroupNCCLErrorsTest.cpp
+-      torch_cpu c10d_cuda_test gtest_main __caffe2_nccl)
++      torch_cpu c10d_cuda_test gtest_main gtest __caffe2_nccl)
+     if(INSTALL_TEST)
+       install(TARGETS ProcessGroupNCCLTest DESTINATION bin)
+       install(TARGETS ProcessGroupNCCLErrorsTest DESTINATION bin)
+@@ -61,7 +61,7 @@ if(USE_CUDA)
+     # a private dependency of the tests as well.
+     c10d_add_test(
+       ProcessGroupUCCTest.cpp
+-      torch_cpu c10d_cuda_test gtest_main __caffe2_ucc)
++      torch_cpu c10d_cuda_test gtest_main gtest __caffe2_ucc)
+     if(INSTALL_TEST)
+       install(TARGETS ProcessGroupUCCTest DESTINATION bin)
+       install(TARGETS c10d_cuda_test DESTINATION lib)
+@@ -69,7 +69,7 @@ if(USE_CUDA)
+   endif()
+ else()
+   if(USE_GLOO AND USE_C10D_GLOO)
+-    c10d_add_test(ProcessGroupGlooTest.cpp torch_cpu gtest_main)
++    c10d_add_test(ProcessGroupGlooTest.cpp torch_cpu gtest_main gtest)
+   endif()
+ endif()
+ 
+diff --git a/test/cpp/tensorexpr/CMakeLists.txt b/test/cpp/tensorexpr/CMakeLists.txt
+index 7dff706..90b1003 100644
+--- a/test/cpp/tensorexpr/CMakeLists.txt
++++ b/test/cpp/tensorexpr/CMakeLists.txt
+@@ -54,7 +54,7 @@ target_include_directories(tutorial_tensorexpr PRIVATE ${ATen_CPU_INCLUDE})
+ # pthreadpool header. For some build environment we need add the dependency
+ # explicitly.
+ if(USE_PTHREADPOOL)
+-  target_link_libraries(test_tensorexpr PRIVATE pthreadpool_interface)
++  target_link_libraries(test_tensorexpr PRIVATE pthreadpool)
+ endif()
+ if(USE_CUDA)
+   target_link_libraries(test_tensorexpr PRIVATE
