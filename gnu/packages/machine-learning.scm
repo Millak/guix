@@ -4211,34 +4211,6 @@ TensorFlow.js, PyTorch, and MediaPipe.")
          "i686-linux" "x86_64-linux" "i686-mingw" "x86_64-mingw"))
       (license license:bsd-3))))
 
-(define-public xnnpack-for-torch2
-  ;; There's currently no tag on this repo.
-  (let ((version "0.0")
-        (commit "51a987591a6fc9f0fc0707077f53d763ac132cbf")
-        (revision "3"))
-    (package
-      (inherit xnnpack)
-      (name "xnnpack")
-      (version (git-version version revision commit))
-      (home-page "https://github.com/google/XNNPACK") ;fork of QNNPACK
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference (url home-page) (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1rzby82xq8d0rl1d148yz88jh9cpsw5c8b2yw7yg39mi7qmr55rm"))
-                (patches (search-patches "xnnpack-for-torch2-system-libraries.patch"))))
-      (arguments
-       (list
-        #:tests? #false
-        #:configure-flags '(list "-DXNNPACK_USE_SYSTEM_LIBS=YES"
-                                 "-DBUILD_SHARED_LIBS=ON"
-                                 "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
-                                 "-DXNNPACK_LIBRARY_TYPE=shared"
-                                 "-DXNNPACK_BUILD_TESTS=FALSE" ;FIXME: see below
-                                 "-DXNNPACK_BUILD_BENCHMARKS=FALSE"))))))
-
 ;; Warning: This package requires AVX2 or AVX-512 instructions.
 (define-public fbgemm
   (package
@@ -4607,9 +4579,6 @@ Note: currently this package does not provide GPU support.")
                   (substitute* "functorch/CMakeLists.txt"
                     (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
                      "$ORIGIN/../torch/lib"))))))
-    (inputs
-     (modify-inputs (package-inputs python-pytorch)
-       (replace "xnnpack" xnnpack-for-torch2)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-pytorch)
        (append python-filelock
