@@ -152,6 +152,7 @@
 ;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12211,6 +12212,35 @@ without using the configuration machinery.")
     (synopsis "Implementation of a tree structure in Python")
     (description
      "This package provides a Python implementation of a tree structure.")
+    (license license:asl2.0)))
+
+(define-public python-optree
+  (package
+    (name "python-optree")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/metaopt/optree")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1q3wljk7cyl5rsam02sfsj8zjrqx4c3x9vic8j6xx13p8czpsisg"))
+       (patches (search-patches "python-optree-fix-32-bit.patch"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-xdist
+           cmake
+           pybind11))
+    (home-page "https://github.com/metaopt/optree")
+    (synopsis "Optimized PyTree Utilities")
+    (description "This package contains operations on PyTrees (a tree made of
+container data structures in Python).")
     (license license:asl2.0)))
 
 (define-public python-jupyter-core

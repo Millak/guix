@@ -1,0 +1,122 @@
+In include/utils.h, ssize_t is an alias for py::ssize_t, which is an alias for
+Py_ssize_t in Python, which is an alias for the system ssize_t.
+The latter is defined in glibc as int if __WORDSIZE == 32 and as long int if
+__WORDSIZE == 64.  Therefore, we need to remove the explicit template
+specialization for int in the first case.
+
+diff --git a/include/utils.h b/include/utils.h
+index 950a02b..82a9591 100644
+--- a/include/utils.h
++++ b/include/utils.h
+@@ -141,10 +141,12 @@ template <>
+ inline py::handle GET_ITEM_HANDLE<py::tuple>(const py::handle& container, const size_t& item) {
+     return PyTuple_GET_ITEM(container.ptr(), py::ssize_t_cast(item));
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline py::handle GET_ITEM_HANDLE<py::tuple>(const py::handle& container, const int& item) {
+     return PyTuple_GET_ITEM(container.ptr(), py::ssize_t_cast(item));
+ }
++#endif
+ template <>
+ inline py::handle GET_ITEM_HANDLE<py::list>(const py::handle& container, const ssize_t& item) {
+     return PyList_GET_ITEM(container.ptr(), item);
+@@ -153,10 +155,12 @@ template <>
+ inline py::handle GET_ITEM_HANDLE<py::list>(const py::handle& container, const size_t& item) {
+     return PyList_GET_ITEM(container.ptr(), py::ssize_t_cast(item));
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline py::handle GET_ITEM_HANDLE<py::list>(const py::handle& container, const int& item) {
+     return PyList_GET_ITEM(container.ptr(), py::ssize_t_cast(item));
+ }
++#endif
+ 
+ template <typename Container, typename Item>
+ inline py::object GET_ITEM_BORROW(const py::handle& container, const Item& item) {
+@@ -171,11 +175,13 @@ inline py::object GET_ITEM_BORROW<py::tuple>(const py::handle& container, const
+     return py::reinterpret_borrow<py::object>(
+         PyTuple_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline py::object GET_ITEM_BORROW<py::tuple>(const py::handle& container, const int& item) {
+     return py::reinterpret_borrow<py::object>(
+         PyTuple_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#endif
+ template <>
+ inline py::object GET_ITEM_BORROW<py::list>(const py::handle& container, const ssize_t& item) {
+     return py::reinterpret_borrow<py::object>(PyList_GET_ITEM(container.ptr(), item));
+@@ -185,11 +191,13 @@ inline py::object GET_ITEM_BORROW<py::list>(const py::handle& container, const s
+     return py::reinterpret_borrow<py::object>(
+         PyList_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline py::object GET_ITEM_BORROW<py::list>(const py::handle& container, const int& item) {
+     return py::reinterpret_borrow<py::object>(
+         PyList_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#endif
+ 
+ template <typename Container, typename Item>
+ inline py::object GET_ITEM_STEAL(const py::handle& container, const Item& item) {
+@@ -204,11 +212,13 @@ inline py::object GET_ITEM_STEAL<py::tuple>(const py::handle& container, const s
+     return py::reinterpret_steal<py::object>(
+         PyTuple_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline py::object GET_ITEM_STEAL<py::tuple>(const py::handle& container, const int& item) {
+     return py::reinterpret_steal<py::object>(
+         PyTuple_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#endif
+ template <>
+ inline py::object GET_ITEM_STEAL<py::list>(const py::handle& container, const ssize_t& item) {
+     return py::reinterpret_steal<py::object>(PyList_GET_ITEM(container.ptr(), item));
+@@ -218,11 +228,13 @@ inline py::object GET_ITEM_STEAL<py::list>(const py::handle& container, const si
+     return py::reinterpret_steal<py::object>(
+         PyList_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline py::object GET_ITEM_STEAL<py::list>(const py::handle& container, const int& item) {
+     return py::reinterpret_steal<py::object>(
+         PyList_GET_ITEM(container.ptr(), py::ssize_t_cast(item)));
+ }
++#endif
+ 
+ template <typename Container, typename Item>
+ inline void SET_ITEM(const py::handle& container, const Item& item, const py::handle& value) {
+@@ -240,12 +252,14 @@ inline void SET_ITEM<py::tuple>(const py::handle& container,
+                                 const py::handle& value) {
+     PyTuple_SET_ITEM(container.ptr(), py::ssize_t_cast(item), value.inc_ref().ptr());
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline void SET_ITEM<py::tuple>(const py::handle& container,
+                                 const int& item,
+                                 const py::handle& value) {
+     PyTuple_SET_ITEM(container.ptr(), py::ssize_t_cast(item), value.inc_ref().ptr());
+ }
++#endif
+ template <>
+ inline void SET_ITEM<py::list>(const py::handle& container,
+                                const ssize_t& item,
+@@ -258,12 +272,14 @@ inline void SET_ITEM<py::list>(const py::handle& container,
+                                const py::handle& value) {
+     PyList_SET_ITEM(container.ptr(), py::ssize_t_cast(item), value.inc_ref().ptr());
+ }
++#if __WORDSIZE != 32
+ template <>
+ inline void SET_ITEM<py::list>(const py::handle& container,
+                                const int& item,
+                                const py::handle& value) {
+     PyList_SET_ITEM(container.ptr(), py::ssize_t_cast(item), value.inc_ref().ptr());
+ }
++#endif
+ 
+ template <typename PyType>
+ inline void AssertExact(const py::handle& object) {
