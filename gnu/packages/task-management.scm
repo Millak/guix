@@ -453,7 +453,8 @@ on arbitrary tasks.  All the time data is saved in files residing in the
           (replace 'check
             (lambda* (#:key inputs outputs tests? #:allow-other-keys)
               (when tests?
-                (invoke "pytest" "-vv" "tests" "-k"
+                (invoke "pytest" "--hypothesis-profile=ci"
+                        "-vv" "tests" "-k"
                         (string-append
                          ;; Test expects wrong output string.
                          "not test_bad_start_date "
