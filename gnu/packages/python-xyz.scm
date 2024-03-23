@@ -5837,14 +5837,14 @@ provides Python-specific tags that represent an arbitrary Python object.")
 (define-public python-vine
   (package
     (name "python-vine")
-    (version "5.0.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "vine" version))
        (sha256
-        (base32 "0zk3pm0g7s4qfn0gk28lfmsyplvisaxi6826cgpq5njkm4j1cfvx"))))
-    (build-system python-build-system)
+        (base32 "1q31krwxdvwawdn1kfqmpplix31d4jhs0qng26908hawsf0yjqlb"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-case))
     (home-page "https://github.com/celery/vine")
