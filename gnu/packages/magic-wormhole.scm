@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,7 +26,6 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz))
@@ -85,7 +85,7 @@ connection, or through a transit-relay.")
                             (install-file file docs))
                           (find-files "docs/"))))))))
     (native-inputs
-     (list python-mock python-pyflakes python-pytest python-tox))
+     (list python-mock python-pytest))
     (propagated-inputs
      (list python-twisted))
     (home-page "https://github.com/warner/magic-wormhole-transit-relay")
