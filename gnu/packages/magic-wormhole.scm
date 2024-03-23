@@ -20,7 +20,7 @@
 (define-module (gnu packages magic-wormhole)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
+  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
