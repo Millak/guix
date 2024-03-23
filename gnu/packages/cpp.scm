@@ -158,8 +158,8 @@ easy to use API.")
       (license license:expat))))
 
 (define-public asmjit
-  (let ((commit "4ec760a3d1f69e32ba460ecd2513f29b8428700b")
-        (revision "0"))
+  (let ((commit "3ca5c186bf8922e5fe3018432e93651fd2fa4053")
+        (revision "1"))
     (package
       (name "asmjit")
       (version (git-version "0.0.0" revision commit))
@@ -172,7 +172,7 @@ easy to use API.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0skgccbpamcbg1byawfq5n6jzxgj64hnc7jznvk35nkskaaz1nlb"))))
+          (base32 "10k1zc0w8m0vnh52id9qlm1sb99qmpvr6k0ha8ag2h223n0d591g"))))
       (build-system cmake-build-system)
       (arguments
        (list #:configure-flags #~(list "-DASMJIT_TEST=TRUE")))
