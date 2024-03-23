@@ -6046,6 +6046,29 @@ yojson package.  The program @code{atdgen} can be used to derive OCaml-JSON
 serializers and deserializers from type definitions.")
     (license license:bsd-3)))
 
+(define-public ocaml-ppx-yojson-conv-lib
+  (package
+    (name "ocaml-ppx-yojson-conv-lib")
+    (version "0.16.0")
+    (home-page "https://github.com/janestreet/ppx_yojson_conv_lib")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+          (url home-page)
+          (commit (string-append "v" version))))
+        (sha256
+         (base32
+          "1npc1dbrcl3izi2rpf3rqz98jvsxrgzqn2vb95nf8wxgmh6gmrsc"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-yojson))
+    (properties `((upstream-name . "ppx_yojson_conv_lib")))
+    (synopsis "Runtime library used by ocaml PPX yojson convertor")
+    (description "Ppx_yojson_conv_lib is the runtime library used by
+ppx_yojson_conv, a ppx rewriter that can be used to convert ocaml types
+to a Yojson.Safe value.")
+    (license license:expat)))
+
 (define-public ocaml-merlin-lib
   (package
     (name "ocaml-merlin-lib")
