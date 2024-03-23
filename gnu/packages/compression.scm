@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2939,3 +2940,31 @@ list and extract not only RAR archives but also other formats supported by
 libarchive.  It does not rival the non-free @code{unrar} in terms of features,
 but special care has been taken to ensure it meets most user's needs.")
     (license license:gpl2+)))
+
+(define-public miniz
+  (package
+    (name "miniz")
+    (version "3.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/richgel999/miniz")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0672q35vjrpakmsr1gwj9k5fwv5ihzhahm19bq4y74wqpn91p7fw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ''("-DBUILD_SHARED_LIBS=ON")
+      ;; No tests
+      #:tests? #f))
+    (home-page "https://github.com/richgel999/miniz")
+    (synopsis "Independent implementation of zlib and Deflate compression")
+    (description "Miniz is a lossless data compression library that implements
+the zlib (RFC 1950) and Deflate (RFC 1951) compressed data format
+specification standards.  It supports the most commonly used functions
+exported by the zlib library.")
+    (license license:expat)))
