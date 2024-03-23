@@ -91,6 +91,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -4113,6 +4114,41 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                                  "-DXNNPACK_LIBRARY_TYPE=shared"
                                  "-DXNNPACK_BUILD_TESTS=FALSE" ;FIXME: see below
                                  "-DXNNPACK_BUILD_BENCHMARKS=FALSE"))))))
+
+(define-public tensorpipe
+  (let ((commit "bb1473a4b38b18268e8693044afdb8635bc8351b")
+        (revision "0"))
+    (package
+      (name "tensorpipe")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/pytorch/tensorpipe")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0sbpkd69rzybw2j89sjkf4s0j8vkk96d51bsps28894989a75j6v"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(delete-file-recursively "third_party"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        ''("-DBUILD_SHARED_LIBS=ON")
+        ;; There are no tests
+        #:tests? #f))
+      (inputs (list libuv))
+      (native-inputs (list googletest pkg-config pybind11 libnop))
+      (home-page "https://github.com/pytorch/tensorpipe")
+      (synopsis "Tensor-aware point-to-point communication primitive for
+machine learning")
+      (description "TensorPipe provides a tensor-aware channel to transfer
+rich objects from one process to another while using the fastest transport for
+the tensors contained therein.")
+      (license license:bsd-3))))
 
 ;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
