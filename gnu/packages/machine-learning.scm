@@ -4235,6 +4235,35 @@ rich objects from one process to another while using the fastest transport for
 the tensors contained therein.")
       (license license:bsd-3))))
 
+(define-public foxi
+  (let
+      ((commit "c278588e34e535f0bb8f00df3880d26928038cad")
+       (revision "0"))
+    (package
+      (name "foxi")
+      (version (git-version "1.4.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/houseroad/foxi")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0q3ssm5hmmvwfwx87mnnajbavzgpahybw6rpn8ysr9r095dwgq5a"))
+                (patches (search-patches "foxi-fix-build.patch"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; No tests
+        #:tests? #f))
+      (home-page "https://github.com/houseroad/foxi")
+      (synopsis "ONNXIFI with Facebook Extension")
+      (description "ONNX Interface for Framework Integration is a cross-platform
+API for loading and executing ONNX graphs on optimized backends.  This package
+contains facebook extensions and is used by PyTorch.")
+      (license license:expat))))
+
 ;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
   (package
