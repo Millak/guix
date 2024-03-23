@@ -5491,7 +5491,7 @@ Brian 2 simulator.")
 (define-public oneapi-dnnl
   (package
     (name "oneapi-dnnl")
-    (version "3.1")
+    (version "3.3.5")
     (source
      (origin
        (method git-fetch)
@@ -5500,7 +5500,7 @@ Brian 2 simulator.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jgmb5kl0bf4a2zfn94zlb117672r9lvvkkmwl86ihlyr1mpr3d0"))))
+        (base32 "05ra5zziys2hvn29y6ysiqzsf4jr9bf2bci5sc3swvf3bs2y5ihf"))))
     (build-system cmake-build-system)
     (arguments (if (target-riscv64?)
                    (list #:configure-flags #~'("-DDNNL_CPU_RUNTIME=SEQ"))
@@ -5510,6 +5510,7 @@ Brian 2 simulator.")
     (description
      "OneAPI Deep Neural Network Library (oneDNN) is a cross-platform
 performance library of basic building blocks for deep learning applications.")
+    (supported-systems %64bit-supported-systems)
     (license license:asl2.0)))
 
 (define-public python-gguf
