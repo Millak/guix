@@ -105,6 +105,7 @@
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -123,6 +124,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -4346,6 +4348,13 @@ PyTorch.")
     (sha256
      (base32
       "03mm0pwwb5lxdsmmiw3cch9fijgjw81kmmc4ln9rlyazkm7l1r48"))
+    (patches (search-patches "python-pytorch-system-libraries.patch"
+                             "python-pytorch-runpath.patch"
+                             "python-pytorch-without-kineto.patch"
+                             ;; Some autogeneration scripts depend on the
+                             ;; compile PyTorch library. Therefore, we create
+                             ;; dummy versions which are regenerated later.
+                             "python-pytorch-fix-codegen.patch"))
     (modules '((guix build utils)))
     (snippet
      '(begin
@@ -4465,135 +4474,250 @@ PyTorch.")
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.13.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pytorch/pytorch")
-                    (commit (string-append "v" version))
-                    (recursive? #t)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "17yxjzwp4zp75fz7czgz9acijzw7dpyqcza50v8y1x7hfg2gw369"))
-              (patches (search-patches "python-pytorch-system-libraries.patch"
-                                       "python-pytorch-runpath.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; XXX: Let's be clear: this package is a bundling fest.  We
-                  ;; delete as much as we can, but there's still a lot left.
-                  (for-each (lambda (directory)
-                              (delete-file-recursively
-                               (string-append "third_party/" directory)))
-                            '("benchmark" "cpuinfo" "eigen"
-
-                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
-                              ;; needs these.
-                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
-
-                              "gloo" "googletest" "ios-cmake" "NNPACK"
-                              "onnx" "protobuf" "pthreadpool"
-                              "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))
-                  (substitute* "functorch/CMakeLists.txt"
-                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
-                     "$ORIGIN/../torch/lib"))))))
+    (version %python-pytorch-version)
+    (source %python-pytorch-src)
     (build-system python-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'use-system-libraries
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Tell 'setup.py' to let 'CMakeLists.txt' know that we
-                      ;; want to use "system libraries" instead of the bundled
-                      ;; ones.
-                      (setenv "USE_SYSTEM_LIBS" "1")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cmake-patches
+            (lambda _
+              (substitute* "cmake/Dependencies.cmake"
+                (("#POCKETFFT_INCLUDE_DIR")
+                 (string-append
+                  #$(this-package-native-input "pocketfft-cpp") "/include"))
+                (("#FP16_INCLUDE_DIR")
+                 (string-append
+                  #$(this-package-input "fp16") "/include")))))
+          (add-before 'build 'use-system-libraries
+            (lambda _
+              (substitute* '("caffe2/serialize/crc.cc"
+                             "caffe2/serialize/inline_container.cc")
+                (("\"miniz\\.h\"") "<miniz/miniz.h>"))
+              (substitute* "aten/src/ATen/native/vulkan/api/Allocator.h"
+                (("<include/vk_mem_alloc.h>")
+                 "<vk_mem_alloc.h>"))
+              ;; For Vulkan
+              (substitute* "CMakeLists.txt"
+                (("append_cxx_flag.*-Werror=(return-type|range-loop-construct).*") ""))
+              (substitute*
+                  (cons*
+                   "torch/csrc/Module.cpp"
+                   (map
+                    (lambda (name)
+                      (string-append
+                       "torch/utils/benchmark/utils/valgrind_wrapper/"
+                       name))
+                    '("compat_bindings.cpp" "timer_callgrind_template.cpp")))
+                (("<callgrind.h>") "<valgrind/callgrind.h>"))
+              (setenv "USE_FFMPEG" "1")
+              (setenv "USE_VULKAN" "1")
+              (setenv "USE_OPENCV" "1")
+              ;; Tell 'setup.py' to let 'CMakeLists.txt' know that we
+              ;; want to use "system libraries" instead of the bundled
+              ;; ones.
+              (setenv "USE_SYSTEM_LIBS" "1")
+              ;; For oneDNN
+              (setenv "USE_MKLDNN" "1")
+              ;; Only works with CUPTI
+              (setenv "USE_KINETO" "0")
+              ;; Prevent CMake error by disabling explicitely
+              (setenv "USE_ITT" "0")
+              ;; Disable on unsupported systems
+              (if #$(not (member
+                          (or (%current-target-system)
+                              (%current-system))
+                          (package-transitive-supported-systems qnnpack)))
+                  (setenv "USE_QNNPACK" "0")
+                  (setenv "USE_PYTORCH_QNNPACK" "0"))))
+          ;; PyTorch is still built with AVX2 and AVX-512 support selected at
+          ;; runtime, but these dependencies require it (nnpack only for
+          ;; x86_64).
+          (add-before 'build 'disable-avx-dependencies
+            (lambda _
+              (setenv "USE_FBGEMM" "0")
+              (if #$(not
+                     (member (or (%current-target-system)
+                                 (%current-system))
+                             '("armhf-linux" "aarch64-linux")))
+                  (setenv "USE_NNPACK" "0"))))
+          (add-after 'use-system-libraries 'set-max-jobs
+            (lambda _
+              (setenv "MAX_JOBS" (number->string (parallel-job-count)))))
+          (add-after 'set-max-jobs 'codegen1
+            (lambda _
+              (with-directory-excursion "torch/csrc/jit/tensorexpr"
+                (setenv "PYTHONPATH" "../../../..")
+                (invoke "python3" "codegen_external.py")
+                (setenv "PYTHONPATH" #f))
 
-                      (substitute* "cmake/Dependencies.cmake"
-                        (("if\\(USE_SYSTEM_BIND11\\)")
-                         "if(TRUE)"))
+              (invoke "python3" "aten/src/ATen/nnapi/codegen.py")
 
-                      ;; XXX: Disable that for simplicity for now.
-                      (setenv "USE_FBGEMM" "0")))
-                  (add-before 'build 'make-things-writable
-                    (lambda _
-                      ;; The 'build_caffe2' function in
-                      ;; 'tools/build_pytorch_libs.py', called from the
-                      ;; top-level 'setup.py', needs write access to this
-                      ;; directory.
-                      (for-each make-file-writable
-                                (find-files "caffe2/proto" "."
-                                            #:directories? #t))))
-                  (replace 'check
-                    (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-                      ;; Run the test suite following the instructions in
-                      ;; 'CONTRIBUTING.md'.  XXX: Unfortunately this doesn't
-                      ;; work, unless you set GUIX_PYTHONPATH presumably.
-                      (when tests?
-                        (add-installed-pythonpath inputs outputs)
-                        (invoke "python" "test/run_test.py"))))
-                  (add-after 'install 'remove-test-executables
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; Remove test executables, but keep other executables
-                      ;; such as 'torch_shm_manager' and and .so files such as
-                      ;; 'libtorch_global_deps.so'.
-                      (let ((python-site (site-packages inputs outputs)))
-                        (for-each delete-file
-                                  (find-files python-site
-                                              "(^test_cpp_rpc|_test)$")))))
-                  (add-after 'install 'remove-caffe2-onnx-scripts
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin")))
-                        ;; Remove 'convert-caffe2-to-onnx' and
-                        ;; 'convert-onnx-to-caffe2': they seem to be
-                        ;; deprecated and they cause a failure of the
-                        ;; 'sanity-check' phase:
-                        ;;
-                        ;; ImportError: cannot import name 'metanet_pb2' from partially initialized module 'caffe2.proto' (most likely due to a circular import)
-                        (for-each delete-file
-                                  (find-files bin "^convert-.*caffe2"))
+              (invoke "bash" "tools/gen_flatbuffers.sh")
 
-                        (substitute* (find-files out "^entry_points\\.txt$")
-                          (("^convert-.*" all)
-                           (string-append "# " all "\n")))))))
+              ;; Generate dummy files as the generation depends on the compiled
+              ;; library. They are regenerated later.
+              (setenv "PYTHONPATH" ".")
+              (invoke "python3"
+                      "torchgen/operator_versions/gen_mobile_upgraders.py"
+                      "dummy")
+              (setenv "PYTHONPATH" #f)
 
-       ;; XXX: Tests attempt to download data such as
-       ;; <https://raw.githubusercontent.com/pytorch/test-infra/master/stats/slow-tests.json>.
-       ;; We're also missing some Python modules, such as expecttest.
-       #:tests? #f))
+              (invoke "python3"
+                      "torchgen/shape_functions/gen_jit_shape_functions.py"
+                      "dummy")
+
+              (invoke "python3"
+                      "torchgen/decompositions/gen_jit_decompositions.py"
+                      "dummy")))
+          ;; Properly generate autogenerated files ...
+          (add-after 'install 'codegen2
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs)
+              (invoke "python3"
+                      "torchgen/operator_versions/gen_mobile_upgraders.py")
+              (invoke "python3"
+                      "torchgen/shape_functions/gen_jit_shape_functions.py")
+              (invoke "python3"
+                      "torchgen/decompositions/gen_jit_decompositions.py")))
+          ;; ... rebuild their dependencies ...
+          (add-after 'codegen2 'build2
+            (lambda _
+              (invoke "python3" "setup.py" "build")))
+          ;; ... and install again.
+          (add-after 'build2 'install2
+            (lambda _
+              (invoke "python3" "setup.py" "install" (string-append "--prefix=" #$output)
+                      "--no-compile" "--single-version-externally-managed" "--root=/")
+              (invoke "python" "-m" "compileall"
+                      "--invalidation-mode=unchecked-hash" #$output)))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; Run the test suite following the instructions in
+              ;; 'CONTRIBUTING.md'. Unfortunately this doesn't work, unless
+              ;; you set PYTHONPATH or GUIX_PYTHONPATH, but this is done in
+              ;; the codegen2 phase already.
+              (when tests?
+                (invoke "python3" "test/run_test.py" "--core"))))
+          (add-after 'install2 'remove-test-executables
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Remove test executables, but keep other executables
+              ;; such as 'torch_shm_manager' and and .so files such as
+              ;; 'libtorch_global_deps.so'.
+              (let ((python-site (site-packages inputs outputs)))
+                (for-each delete-file
+                          (find-files python-site
+                                      "(^test_cpp_rpc|_test)$")))))
+          (add-after 'install2 'remove-caffe2-onnx-scripts
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin")))
+                ;; Remove 'convert-caffe2-to-onnx' and
+                ;; 'convert-onnx-to-caffe2': they seem to be
+                ;; deprecated and they cause a failure of the
+                ;; 'sanity-check' phase:
+                ;;
+                ;; ImportError: cannot import name 'metanet_pb2' from
+                ;; partially initialized module 'caffe2.proto' (most likely
+                ;; due to a circular import)
+                (for-each delete-file
+                          (find-files bin "^convert-.*caffe2"))
+
+                (substitute* (find-files out "^entry_points\\.txt$")
+                  (("^convert-.*" all)
+                   (string-append "# " all "\n")))))))
+
+      ;; Even only the core tests take a very long time to run.
+      #:tests? #f))
     (native-inputs
-     (list cmake ninja))
+     (list cmake
+           doxygen
+           ideep-pytorch
+           ninja
+           pocketfft-cpp
+           python-expecttest
+           python-pytest-flakefinder
+           python-pytest-rerunfailures-13
+           python-pytest-shard
+           python-pytest-xdist
+           python-hypothesis
+           python-types-dataclasses
+           python-typing-extensions-4.10
+           shaderc
+           valgrind))
     (inputs
-     (list eigen
-           ;; ("fmt" ,fmt)
-           fp16
-           gemmlowp
-           googletest
-           googlebenchmark
-           gloo
-           nnpack
-           openblas
-           openmpi
-           pthreadpool
-           protobuf
-           pybind11
-           sleef
-           xnnpack
-           zstd))
+     (append
+      (list asmjit
+            clog
+            eigen
+            ffmpeg
+            flatbuffers-next
+            fmt
+            foxi
+            fp16
+            fxdiv
+            gemmlowp
+            gloo
+            googletest
+            googlebenchmark
+            libuv
+            miniz-for-pytorch
+            openblas
+            opencv
+            openmpi
+            pthreadpool
+            protobuf
+            pybind11
+            sleef
+            tensorpipe
+            vulkan-headers
+            vulkan-loader
+            vulkan-memory-allocator
+            zstd)
+      ;; TODO: fix build on 32 bit systems once Rust is available.
+      (filter
+       (lambda (pkg)
+         (member (or (%current-target-system)
+                     (%current-system))
+                 (package-transitive-supported-systems pkg)))
+       (list oneapi-dnnl
+             qnnpack
+             qnnpack-pytorch
+             xnnpack))
+      ;; nnpack requires AVX2 for x86_64-linux
+      (filter
+       (lambda (pkg)
+         (member (or (%current-target-system)
+                     (%current-system))
+                 '("armhf-linux" "aarch64-linux")))
+       (list nnpack))))
     (propagated-inputs
-     (list python-astunparse
-           python-click
-           python-numpy
-           python-pyyaml
-           python-cffi
-           python-typing-extensions
-           python-future
-           python-six
-           python-requests
-           onnx                             ;propagated for its Python modules
-           onnx-optimizer
-           cpuinfo))
+     (append
+      (list onnx ;propagated for its Python modules
+            onnx-optimizer
+            python-astunparse
+            python-click
+            python-filelock
+            python-fsspec
+            python-future
+            python-jinja2
+            python-networkx
+            python-numpy
+            python-opt-einsum
+            python-optree
+            python-packaging
+            python-psutil
+            python-pyyaml
+            python-requests
+            python-sympy
+            python-typing-extensions)
+      (filter
+       (lambda (pkg)
+         (member (or (%current-target-system)
+                     (%current-system))
+                 (package-transitive-supported-systems pkg)))
+       (list cpuinfo))))
     (home-page "https://pytorch.org/")
     (synopsis "Python library for tensor computation and deep neural networks")
     (description
@@ -4609,61 +4733,6 @@ PyTorch when needed.
 
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
-
-(define-public python-pytorch2
-  (package
-    (inherit python-pytorch)
-    (name "python-pytorch")
-    (version "2.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pytorch/pytorch")
-                    (commit (string-append "v" version))
-                    (recursive? #t)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0hdr0d6n072qd0nq2dkxhc9pva6vggj9hpzc0glpc60vfgk0cgzb"))
-              (patches (search-patches "python-pytorch2-system-libraries.patch"
-                                       "python-pytorch-runpath.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; XXX: Let's be clear: this package is a bundling fest.  We
-                  ;; delete as much as we can, but there's still a lot left.
-                  (for-each (lambda (directory)
-                              (delete-file-recursively
-                               (string-append "third_party/" directory)))
-                            '("benchmark" "cpuinfo" "eigen"
-
-                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
-                              ;; needs these.
-                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
-
-                              "gloo" "googletest" "ios-cmake" "NNPACK"
-                              "onnx" "protobuf" "pthreadpool"
-                              "pybind11" "python-peachpy"
-                              "tbb" "XNNPACK" "zstd"))
-                  (substitute* "caffe2/CMakeLists.txt"
-                    (("target_link_libraries\\(\\$\\{test_name\\}_\\$\\{CPU_CAPABILITY\\} c10 sleef gtest_main\\)")
-                     "target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest gtest_main)"))
-                  (substitute* "functorch/CMakeLists.txt"
-                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
-                     "$ORIGIN/../torch/lib"))))))
-    (inputs
-     (modify-inputs (package-inputs python-pytorch)
-       (replace "xnnpack" xnnpack-for-torch2)))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-pytorch)
-       (append python-filelock
-               python-fsspec
-               python-jinja2
-               python-networkx
-               python-opt-einsum
-               python-sympy)
-       (replace "onnx" onnx-for-torch2)
-       (replace "onnx-optimizer" onnx-optimizer-for-torch2)))))
 
 (define-public python-pytorch-for-r-torch
   (package

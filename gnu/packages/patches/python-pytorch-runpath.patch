@@ -3,10 +3,10 @@ get installed, quite surprisingly, to 'lib/python3.8/site-packages/{bin,lib}'.
 Make sure RUNPATH matches that.
 
 diff --git a/caffe2/CMakeLists.txt b/caffe2/CMakeLists.txt
-index 5b5622f0..30d27e57 100644
+index 74836372..c8eb69d1 100644
 --- a/caffe2/CMakeLists.txt
 +++ b/caffe2/CMakeLists.txt
-@@ -1909,7 +1909,7 @@ if(BUILD_PYTHON)
+@@ -1910,7 +1910,7 @@ if(BUILD_PYTHON)
    if(${BUILDING_WITH_TORCH_LIBS})
      # site-packages/caffe2/python/caffe2_pybind11_state
      # site-packages/torch/lib
@@ -16,7 +16,7 @@ index 5b5622f0..30d27e57 100644
  
    # Must also include `CMAKE_SHARED_LINKER_FLAGS` in linker flags for
 diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
-index ee9cf410..f190e69b 100644
+index acc95842..8f8fb7d7 100644
 --- a/cmake/Dependencies.cmake
 +++ b/cmake/Dependencies.cmake
 @@ -4,7 +4,7 @@ if(APPLE)
@@ -28,3 +28,16 @@ index ee9cf410..f190e69b 100644
  endif(APPLE)
  # Use separate rpaths during build and install phases
  set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+diff --git a/functorch/CMakeLists.txt b/functorch/CMakeLists.txt
+index f2f32745..db21b656 100644
+--- a/functorch/CMakeLists.txt
++++ b/functorch/CMakeLists.txt
+@@ -21,7 +21,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE pybind::pybind11)
+ 
+ set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+       ${CMAKE_BINARY_DIR}/functorch)
+-set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "${_rpath_portable_origin}/../torch/lib")
++set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/../torch/lib")
+ 
+ # Copy-pasted prefix/suffix logic for Python extensions from
+ # https://github.com/pytorch/pytorch/blob/33bb8ae350611760139457b85842b1d7edf9aa11/caffe2/CMakeLists.txt#L1975
