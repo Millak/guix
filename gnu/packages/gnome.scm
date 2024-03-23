@@ -7567,7 +7567,7 @@ metadata in photo and video files of various formats.")
 (define-public shotwell
   (package
     (name "shotwell")
-    (version "0.31.5")
+    (version "0.32.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/shotwell/"
@@ -7575,17 +7575,20 @@ metadata in photo and video files of various formats.")
                                   "shotwell-" version ".tar.xz"))
               (sha256
                (base32
-                "06awlix23y1cd89n6v9vip48cg08fjq8v6zaw38k5clrrv38y11v"))))
+                "1dkh5bczf9k86akl70inpc2z98qkhg8g44jb2kc8rqcimkzs95vm"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "build-aux/meson/postinstall.py"
-               (("gtk-update-icon-cache") (which "true"))
-               (("update-desktop-database") (which "true"))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false")))))))
     (propagated-inputs
      (list dconf))
     (native-inputs
@@ -7601,6 +7604,7 @@ metadata in photo and video files of various formats.")
            gst-plugins-base
            gstreamer
            json-glib
+           libportal
            libgdata
            libgee
            libgphoto2
