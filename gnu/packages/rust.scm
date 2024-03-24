@@ -1027,7 +1027,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.76))
+  (let ((base-rust rust-1.77))
     (package
       (inherit base-rust)
       (properties (append
@@ -1050,7 +1050,8 @@ safety and thread safety guarantees.")
                          "vendor/curl-sys-0.4.63+curl-8.1.2/curl"
                          "vendor/libffi-sys/libffi"
                          "vendor/libnghttp2-sys/nghttp2"
-                         "vendor/libz-sys/src/zlib"))
+                         "vendor/libz-sys/src/zlib"
+                         "vendor/libz-sys-1.1.9/src/zlib"))
              ;; Use the packaged nghttp2
              (delete-file "vendor/libnghttp2-sys/build.rs")
              (with-output-to-file "vendor/libnghttp2-sys/build.rs"
@@ -1195,7 +1196,7 @@ safety and thread safety guarantees.")
                      ;; The three tests which are known to fail upstream on QEMU
                      ;; emulation on aarch64 and riscv64 also fail on x86_64 in
                      ;; Guix's build system.  Skip them on all builds.
-                     (substitute* "sys/unix/process/process_common/tests.rs"
+                     (substitute* "sys/pal/unix/process/process_common/tests.rs"
                        ;; We can't use make-ignore-test-list because we will get
                        ;; build errors due to the double [ignore] block.
                        (("target_arch = \"arm\"" arm)
