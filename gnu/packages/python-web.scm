@@ -5823,22 +5823,37 @@ library to create slugs from unicode strings while keeping it DRY.")
 (define-public python-branca
   (package
     (name "python-branca")
-    (version "0.3.1")
+    (version "0.7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "branca" version))
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/python-visualization/branca")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pmigd521j2228xf8x34vbx0niwvms7xl7za0lymywj0vydjqxiy"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-jinja2 python-six))
-    (native-inputs
-     (list python-pytest))
+        (base32 "1vs94nqa7r6iwm8mj3m29hg090gmgz4ywnayxh8qiz9ij8jv96wa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This file requires Selenium.
+     (list #:test-flags #~(list "--ignore" "tests/test_iframe.py"
+                                ;; This test passes but is very slow.
+                                "-k" "not test_color_brewer_extendability")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pretend-version
+                 ;; The version string is usually derived via setuptools-scm,
+                 ;; but without the git metadata available, the version string
+                 ;; is set to '0.0.0'.
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                           #$(package-version this-package)))))))
+    (propagated-inputs (list python-jinja2))
+    (native-inputs (list python-numpy python-pytest python-setuptools-scm))
     (home-page "https://github.com/python-visualization/branca")
     (synopsis "Generate complex HTML+JS pages with Python")
-    (description "Generate complex HTML+JS pages with Python")
+    (description "This library is a spinoff from @code{folium} that would host
+the non-map-specific features.  It can be used to generate HTML + JS.")
     (license license:expat)))
 
 (define-public python-tinycss
