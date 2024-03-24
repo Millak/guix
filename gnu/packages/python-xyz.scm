@@ -13710,8 +13710,6 @@ applications.")
        (sha256
         (base32 "0pvwfasa5l78pi32zk55x5ihpdzkdh4f3xwbfmd7ldyjma0zs0z0"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f)) ; no tests in PyPI release and no setup.py in GitHub
     (native-inputs
      (list python-poetry-core python-pytest))
     (home-page "https://github.com/corenting/immutabledict")
