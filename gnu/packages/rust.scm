@@ -957,6 +957,30 @@ safety and thread safety guarantees.")
       (inputs (modify-inputs (package-inputs base-rust)
                              (replace "llvm" llvm-17))))))
 
+(define-public rust-1.77
+  (let ((base-rust (rust-bootstrapped-package rust-1.76 "1.77.0"
+                    "11rda8d8qj24a5mkjzj1x6x9pkvaq0zlhkgdp5b39zj5m0gwsv0d")))
+    (package
+      (inherit base-rust)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'configure 'no-optimized-compiler-builtins
+               (lambda _
+                 ;; Pre-1.77, the behavior was equivalent to this flag being
+                 ;; "false" if the llvm-project submodule wasn't checked out.
+                 ;;
+                 ;; Now there's an explicit check, so the build fails if we don't
+                 ;; manually disable this (given that we don't have the submodule checked out).
+                 ;; Thus making the build behave the same as it did in 1.76 and earlier.
+                 ;;
+                 ;; TODO - make the build system depend on system llvm for this, so we
+                 ;; can get the performance benefits of setting this to true?
+                 (substitute* "config.toml"
+                   (("\\[build\\]")
+                    "[build]\noptimized-compiler-builtins = false")))))))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
