@@ -19111,34 +19111,30 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
 (define-public python-celery
   (package
     (name "python-celery")
-    (version "5.2.6")
+    (version "5.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "celery" version))
        (sha256
-        (base32 "109lcqarrbmh95sk1dm4yxayq1h3i27f4w23ndk64mqgyfnqqffi"))))
-    (build-system python-build-system)
+        (base32 "1fdacw13ij94s59l6lspl09iv6fc8h1p6399jz1h00kwfcfwf347"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "requirements/default.txt"
-               (("pytz.*")
-                "pytz\n"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "t"
-                       "--ignore" "t/integration" ;hangs tests
-                       ;; The MongoDB backend test appears to expect an older
-                       ;; version of MongoDB which provided its own bson
-                       ;; module, fails with " AttributeError: module 'bson'
-                       ;; has no attribute 'encode'".
-                       "--ignore" "t/unit/backends/test_mongodb.py"
-                       ;; AssertionErrors
-                       "-k" "not test_check_privileges_no_fchown ")))))))
+     (list
+      ;; The MongoDB backend test appears to expect an older
+      ;; version of MongoDB which provided its own bson
+      ;; module, fails with " AttributeError: module 'bson'
+      ;; has no attribute 'encode'".
+      #:test-flags #~(list "--ignore" "t/unit/backends/test_mongodb.py"
+                           ;; AssertionError.
+                           "-k" "not test_check_privileges_no_fchown")
+      #:phases #~(modify-phases %standard-phases
+                   ;; Celery requires tzdata >= 2022.7, we have 2022.1.
+                   (add-after 'unpack 'relax-requirements
+                     (lambda _
+                       (substitute* "requirements/default.txt"
+                         (("tzdata.*")
+                          "tzdata\n")))))))
     (native-inputs
      (list python-case
            python-dnspython
@@ -19148,6 +19144,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-msgpack
            python-pytest                ;for pytest-subtests
            python-pytest-celery
+           python-pytest-click
            python-pytest-subtests
            python-pytest-timeout
            python-toml))
@@ -19158,7 +19155,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-click-plugins
            python-click-repl
            python-kombu
-           python-pytz
+           python-tzdata
            python-vine))
     (home-page "https://celeryproject.org")
     (synopsis "Distributed Task Queue")
