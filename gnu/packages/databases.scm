@@ -5352,11 +5352,10 @@ compatible with SQLite using a graphical user interface.")
   (package
     (name "sqls")
     (version "0.2.18")
-    (home-page "https://github.com/lighttiger2505/sqls")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url home-page)
+                    (url "https://github.com/sqls-server/sqls")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -5364,19 +5363,22 @@ compatible with SQLite using a graphical user interface.")
                 "13837v27avdp2nls3vyy7ml12nj7rxragchwf92adn10ffp4aj6c"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/lighttiger2505/sqls"))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/lighttiger2505/sqls"))
     (inputs (list go-github-com-go-sql-driver-mysql
                   go-github-com-lib-pq
+                  go-github-com-mattn-go-runewidth
                   go-github-com-mattn-go-sqlite3
                   go-github-com-olekukonko-tablewriter
                   go-github-com-pkg-errors
                   go-github-com-sourcegraph-jsonrpc2
                   go-golang-org-x-crypto
-                  go-github-com-mattn-go-runewidth
                   go-golang-org-x-xerrors
                   go-gopkg-in-yaml-v2))
     (native-inputs (list go-github-com-google-go-cmp-cmp
                          go-github-com-k0kubun-pp))
+    (home-page "https://github.com/sqls-server/sqls")
     (synopsis "SQL language server written in Go")
     (description
      "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
