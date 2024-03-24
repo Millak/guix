@@ -22,6 +22,7 @@ choice.
 @menu
 * Requirements::                Software needed to build and run Guix.
 * Building from Git::           The latest and greatest.
+* Running the Test Suite::      Testing Guix.
 * Running Guix Before It Is Installed::  Hacker tricks.
 * The Perfect Setup::           The right tools.
 * Alternative Setups::          Other possible tools that do the job.
@@ -304,6 +305,103 @@ to be recompiled to take that change into account.  To do so, run
 Should @command{make} fail with an Automake error message after
 updating, you need to repeat the steps outlined in this section,
 commencing with @command{./bootstrap}.
+
+@node Running the Test Suite
+@section Running the Test Suite
+
+@cindex test suite
+After a successful @command{configure} and @code{make} run, it is a good
+idea to run the test suite.  It can help catch issues with the setup or
+environment, or bugs in Guix itself---and really, reporting test
+failures is a good way to help improve the software.  To run the test
+suite, type:
+
+@example
+make check
+@end example
+
+Test cases can run in parallel: you can use the @code{-j} option of
+GNU@tie{}make to speed things up.  The first run may take a few minutes
+on a recent machine; subsequent runs will be faster because the store
+that is created for test purposes will already have various things in
+cache.
+
+It is also possible to run a subset of the tests by defining the
+@code{TESTS} makefile variable as in this example:
+
+@example
+make check TESTS="tests/store.scm tests/cpio.scm"
+@end example
+
+By default, tests results are displayed at a file level.  In order to
+see the details of every individual test cases, it is possible to define
+the @code{SCM_LOG_DRIVER_FLAGS} makefile variable as in this example:
+
+@example
+make check TESTS="tests/base64.scm" SCM_LOG_DRIVER_FLAGS="--brief=no"
+@end example
+
+The underlying SRFI 64 custom Automake test driver used for the 'check'
+test suite (located at @file{build-aux/test-driver.scm}) also allows
+selecting which test cases to run at a finer level, via its
+@option{--select} and @option{--exclude} options.  Here's an example, to
+run all the test cases from the @file{tests/packages.scm} test file
+whose names start with ``transaction-upgrade-entry'':
+
+@example
+export SCM_LOG_DRIVER_FLAGS="--select=^transaction-upgrade-entry"
+make check TESTS="tests/packages.scm"
+@end example
+
+Those wishing to inspect the results of failed tests directly from the
+command line can add the @option{--errors-only=yes} option to the
+@code{SCM_LOG_DRIVER_FLAGS} makefile variable and set the @code{VERBOSE}
+Automake makefile variable, as in:
+
+@example
+make check SCM_LOG_DRIVER_FLAGS="--brief=no --errors-only=yes" VERBOSE=1
+@end example
+
+The @option{--show-duration=yes} option can be used to print the
+duration of the individual test cases, when used in combination with
+@option{--brief=no}:
+
+@example
+make check SCM_LOG_DRIVER_FLAGS="--brief=no --show-duration=yes"
+@end example
+
+@xref{Parallel Test Harness,,,automake,GNU Automake} for more
+information about the Automake Parallel Test Harness.
+
+Upon failure, please email @email{bug-guix@@gnu.org} and attach the
+@file{test-suite.log} file.  Please specify the Guix version being used
+as well as version numbers of the dependencies (@pxref{Requirements}) in
+your message.
+
+Guix also comes with a whole-system test suite that tests complete
+Guix System instances.  It can only run on systems where
+Guix is already installed, using:
+
+@example
+make check-system
+@end example
+
+@noindent
+or, again, by defining @code{TESTS} to select a subset of tests to run:
+
+@example
+make check-system TESTS="basic mcron"
+@end example
+
+These system tests are defined in the @code{(gnu tests @dots{})}
+modules.  They work by running the operating systems under test with
+lightweight instrumentation in a virtual machine (VM).  They can be
+computationally intensive or rather cheap, depending on whether
+substitutes are available for their dependencies (@pxref{Substitutes}).
+Some of them require a lot of storage space to hold VM images.
+
+Again in case of test failures, please send @email{bug-guix@@gnu.org}
+all the details.
 
 @node Running Guix Before It Is Installed
 @section Running Guix Before It Is Installed
