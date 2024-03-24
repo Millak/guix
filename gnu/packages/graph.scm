@@ -282,7 +282,7 @@ lines.")
 (define-public python-plotly
   (package
     (name "python-plotly")
-    (version "5.14.1")
+    (version "5.20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -291,7 +291,7 @@ lines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12iy5cswn5c0590fvl87nr6vfyhvbxymrldh4c7dfm2gn6h8z8w0"))))
+                "0i22sv8p3kl84nkldbv1253kld85rbwp2pdxivxn64wwflfpqvx6"))))
     (build-system python-build-system)
     (arguments
      (list
