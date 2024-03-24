@@ -957,6 +957,30 @@ safety and thread safety guarantees.")
       (inputs (modify-inputs (package-inputs base-rust)
                              (replace "llvm" llvm-17))))))
 
+(define-public rust-1.77
+  (let ((base-rust (rust-bootstrapped-package rust-1.76 "1.77.0"
+                    "11rda8d8qj24a5mkjzj1x6x9pkvaq0zlhkgdp5b39zj5m0gwsv0d")))
+    (package
+      (inherit base-rust)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'configure 'no-optimized-compiler-builtins
+               (lambda _
+                 ;; Pre-1.77, the behavior was equivalent to this flag being
+                 ;; "false" if the llvm-project submodule wasn't checked out.
+                 ;;
+                 ;; Now there's an explicit check, so the build fails if we don't
+                 ;; manually disable this (given that we don't have the submodule checked out).
+                 ;; Thus making the build behave the same as it did in 1.76 and earlier.
+                 ;;
+                 ;; TODO - make the build system depend on system llvm for this, so we
+                 ;; can get the performance benefits of setting this to true?
+                 (substitute* "config.toml"
+                   (("\\[build\\]")
+                    "[build]\noptimized-compiler-builtins = false")))))))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
@@ -971,7 +995,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.76))
+  (let ((base-rust rust-1.77))
     (package
       (inherit base-rust)
       (properties (append
@@ -994,7 +1018,8 @@ safety and thread safety guarantees.")
                          "vendor/curl-sys-0.4.63+curl-8.1.2/curl"
                          "vendor/libffi-sys/libffi"
                          "vendor/libnghttp2-sys/nghttp2"
-                         "vendor/libz-sys/src/zlib"))
+                         "vendor/libz-sys/src/zlib"
+                         "vendor/libz-sys-1.1.9/src/zlib"))
              ;; Use the packaged nghttp2
              (delete-file "vendor/libnghttp2-sys/build.rs")
              (with-output-to-file "vendor/libnghttp2-sys/build.rs"
@@ -1139,7 +1164,7 @@ safety and thread safety guarantees.")
                      ;; The three tests which are known to fail upstream on QEMU
                      ;; emulation on aarch64 and riscv64 also fail on x86_64 in
                      ;; Guix's build system.  Skip them on all builds.
-                     (substitute* "sys/unix/process/process_common/tests.rs"
+                     (substitute* "sys/pal/unix/process/process_common/tests.rs"
                        ;; We can't use make-ignore-test-list because we will get
                        ;; build errors due to the double [ignore] block.
                        (("target_arch = \"arm\"" arm)
