@@ -227,7 +227,6 @@ Introduction
 Installation
 
 * Binary Installation::         Getting Guix running in no time!
-* Requirements::                Software needed to build and run Guix.
 * Running the Test Suite::      Testing Guix.
 * Setting Up the Daemon::       Preparing the build daemon's environment.
 * Invoking guix-daemon::        Running the build daemon.
@@ -716,7 +715,6 @@ Once installed, Guix can be updated by running @command{guix pull}
 
 @menu
 * Binary Installation::         Getting Guix running in no time!
-* Requirements::                Software needed to build and run Guix.
 * Running the Test Suite::      Testing Guix.
 * Setting Up the Daemon::       Preparing the build daemon's environment.
 * Invoking guix-daemon::        Running the build daemon.
@@ -802,103 +800,6 @@ For example,
      ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub
 @end example
 @end quotation
-
-@node Requirements
-@section Requirements
-
-This section lists requirements when building Guix from source.  The
-build procedure for Guix is the same as for other GNU software, and is
-not covered here.  Please see the files @file{README} and @file{INSTALL}
-in the Guix source tree for additional details.
-
-@cindex official website
-GNU Guix is available for download from its website at
-@url{https://www.gnu.org/software/guix/}.
-
-GNU Guix depends on the following packages:
-
-@itemize
-@item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,
-version 3.0.3 or later;
-@item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
-0.1.0 or later;
-@item
-@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile
-Preparations, how to install the GnuTLS bindings for Guile,,
-gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to
-@uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS
-until version 3.7.8 included.};
-@item
-@uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0
-or later;
-@item @uref{https://notabug.org/guile-zlib/guile-zlib, Guile-zlib},
-version 0.1.0 or later;
-@item @uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib};
-@item @uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};
-@item
-@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.5.0
-or later;
-@item @uref{https://git-scm.com, Git} (yes, both!);
-@item @uref{https://savannah.nongnu.org/projects/guile-json/, Guile-JSON}
-4.3.0 or later;
-@item @url{https://www.gnu.org/software/make/, GNU Make}.
-@end itemize
-
-The following dependencies are optional:
-
-@itemize
-@item
-@c Note: We need at least 0.13.0 for #:nodelay.
-Support for build offloading (@pxref{Daemon Offload Setup}) and
-@command{guix copy} (@pxref{Invoking guix copy}) depends on
-@uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH},
-version 0.13.0 or later.
-
-@item
-@uref{https://notabug.org/guile-zstd/guile-zstd, Guile-zstd}, for zstd
-compression and decompression in @command{guix publish} and for
-substitutes (@pxref{Invoking guix publish}).
-
-@item
-@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} for
-the @code{crate} importer (@pxref{Invoking guix import}).
-
-@item
-@uref{https://www.nongnu.org/guile-lib/doc/ref/htmlprag/, Guile-Lib} for
-the @code{go} importer (@pxref{Invoking guix import}) and for some of
-the ``updaters'' (@pxref{Invoking guix refresh}).
-
-@item
-When @url{http://www.bzip.org, libbz2} is available,
-@command{guix-daemon} can use it to compress build logs.
-@end itemize
-
-Unless @option{--disable-daemon} was passed to @command{configure}, the
-following packages are also needed:
-
-@itemize
-@item @url{https://gnupg.org/, GNU libgcrypt};
-@item @url{https://sqlite.org, SQLite 3};
-@item @url{https://gcc.gnu.org, GCC's g++}, with support for the
-C++11 standard.
-@end itemize
-
-@cindex state directory
-@cindex localstatedir
-@cindex system configuration directory
-@cindex sysconfdir
-When configuring Guix on a system that already has a Guix installation,
-be sure to specify the same state directory as the existing installation
-using the @option{--localstatedir} option of the @command{configure}
-script (@pxref{Directory Variables, @code{localstatedir},, standards,
-GNU Coding Standards}).  Usually, this @var{localstatedir} option is set
-to the value @file{/var}.  The @command{configure} script protects
-against unintended misconfiguration of @var{localstatedir} so you do not
-inadvertently corrupt your store (@pxref{The Store}).  The configuration
-directory should also be configured by setting the @option{--sysconfdir}
-option to the @file{/etc} value, which is the location used by Guix to
-store for example the access control list of authorized machines and the
-definition of offload machines.
 
 @node Running the Test Suite
 @section Running the Test Suite
