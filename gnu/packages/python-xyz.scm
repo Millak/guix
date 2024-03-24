@@ -29158,7 +29158,7 @@ time-or-computationally-expensive properties quick and easy and works in Python
 (define-public python-folium
   (package
     (name "python-folium")
-    (version "0.13.0")
+    (version "0.16.0")
     (source
      (origin
        ;; PyPI has a ".whl" file but not a proper source release.
@@ -29169,12 +29169,46 @@ time-or-computationally-expensive properties quick and easy and works in Python
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00adpdi1890zzzg7ffp04hmx59igdcdpyqa129vnmwqh54b5a006"))))
-    (build-system python-build-system)
+        (base32 "1dbndpqpd7c5pmc58yxz7m6bsll377fz7xqpzh58wm0hjn6ylc00"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; This file requires Selenium.
+           #~(list "--ignore" "tests/selenium/test_selenium.py"
+                   "-k" (string-append
+                         ;; The tests below also require Selenium.
+                         "not test__repr_png_is_bytes"
+                         " and not test_valid_png"
+                         " and not test_valid_png_size"
+                         " and not test_geojson"
+                         " and not test_heat_map_with_weights"
+                         ;; This performs an online request.
+                         " and not test_json_request"
+                         ;; AssertionError.
+                         " and not test_minimap"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pretend-version
+                 ;; The version string is usually derived via setuptools-scm,
+                 ;; but without the git metadata available, the version string
+                 ;; is set to '0.0.0'.
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                           #$(package-version this-package)))))))
     (propagated-inputs
-     (list python-branca python-jinja2 python-numpy python-requests))
+     (list python-branca
+           python-jinja2
+           python-numpy
+           python-requests
+           python-xyzservices))
     (native-inputs
-     (list python-pytest))
+     (list python-geopandas
+           python-nbconvert
+           python-pandas
+           python-pillow
+           python-pytest
+           python-selenium
+           python-setuptools-scm))
     (home-page "https://github.com/python-visualization/folium")
     (synopsis "Make beautiful maps with Leaflet.js & Python")
     (description "@code{folium} makes it easy to visualize data that’s been
