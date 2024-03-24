@@ -13702,18 +13702,18 @@ applications.")
 (define-public python-immutabledict
   (package
     (name "python-immutabledict")
-    (version "2.2.1")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "immutabledict" version))
        (sha256
-        (base32 "0fpc4gbk7inpfbgdypsg6c18bmdjw8gwx47bjw0hvixn3gghxnqx"))))
-    (build-system python-build-system)
+        (base32 "0pvwfasa5l78pi32zk55x5ihpdzkdh4f3xwbfmd7ldyjma0zs0z0"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ; no tests in PyPI release and no setup.py in GitHub
     (native-inputs
-     (list python-pytest))
+     (list python-poetry-core python-pytest))
     (home-page "https://github.com/corenting/immutabledict")
     (synopsis "Immutable wrapper around dictionaries")
     (description
