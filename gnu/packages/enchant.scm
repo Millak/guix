@@ -43,31 +43,25 @@
 (define-public nuspell
   (package
     (name "nuspell")
-    (version "3.1.2")
+    (version "5.1.4")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
          (url "https://github.com/nuspell/nuspell")
-         (commit
-          (string-append "v" version))))
-       (file-name
-        (git-file-name name version))
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0wbb6dwmzlsyy224y0liis0azgzwbjdvcyzc31pw1aw6vbp36na6"))))
+        (base32 "05j1hmczy6v9dyxp77vxhgyl7y5hff3v45vlp86gyh7m9lgqpmra"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list catch2
+     (list catch2-3
            git-minimal
            perl
-           ;;FIX-ME: Building with ronn fails.
-           ;;("ronn" ,ronn)
            pkg-config))
-    (inputs
-     (list boost))
-    (propagated-inputs
-     (list icu4c))
+    (inputs (list boost))
+    (propagated-inputs (list icu4c))
     (synopsis "Fast and safe spellchecking C++ library")
     (description "Nuspell is a fast and safe spelling checker software
 program.  It is designed for languages with rich morphology and complex word
