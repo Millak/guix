@@ -1945,7 +1945,7 @@ weighted moving averages}.")
     ;; There is not much information provided by the project, see
     ;; <https://github.com/whyrusleeping/go-sysinfo/issues>.
     (description
-     "This packages provides a basic system stats like @code{DiskUsage} and
+     "This package provides a basic system stats like @code{DiskUsage} and
 @code{MemoryInfo}.")
     (license license:expat)))
 

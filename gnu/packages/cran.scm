@@ -31533,7 +31533,7 @@ pages.")
      "These utilities facilitate the programmatic manipulations of formulas,
 expressions, calls, assignments and other R language objects.  These objects
 all share the same structure: a left-hand side, operator and right-hand side.
-This packages provides methods for accessing and modifying this structures as
+This package provides methods for accessing and modifying this structures as
 well as extracting and replacing names and symbols from these objects.")
     (license license:gpl2)))
 

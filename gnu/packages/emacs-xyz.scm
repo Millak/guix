@@ -24977,7 +24977,7 @@ tabs, history, or bookmarks from Emacs.")
     (home-page "https://github.com/purcell/ibuffer-projectile")
     (synopsis "Group Ibuffer's list by Projectile root")
     (description
-     "This packages adds functionality to Emacs Ibuffer for grouping buffers
+     "This package adds functionality to Emacs Ibuffer for grouping buffers
 by their Projectile root directory.")
     (license license:gpl3+)))
 
