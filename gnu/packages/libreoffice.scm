@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -354,7 +354,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
     (name "libcmis")
     ;; Note: Use an unreleased version because libreoffice requires it and
     ;; is the only user (see <https://github.com/tdf/libcmis/pull/43>).
-    (version "0.6.0")
+    (version "0.6.2")
     (home-page "https://github.com/tdf/libcmis")
     (source
      (origin
@@ -364,7 +364,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17jx9fb7nmyp6jhz9nlmb3wcp8k03vhcv7sqql6a7jhsjnw3hq0k"))))
+         "0g0wr31gfhxcdfvr0l36zallz349rrxd2d8n03b0b5ffm10b4y0x"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool cppunit pkg-config))
@@ -380,13 +380,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
          ;; it once this is available.
          "--without-man"
          ;; XXX: A configure test fails with GCC7 when including Boost headers.
-         "--disable-werror"
-         ;; During configure, the boost headers are found, but linking
-         ;; fails without the following flag.
-         (string-append "--with-boost="
-                        (dirname (dirname
-                                  (search-input-directory %build-inputs
-                                                          "include/boost")))))
+         "--disable-werror")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'bootstrap
