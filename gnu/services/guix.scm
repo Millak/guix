@@ -719,6 +719,8 @@ ca-certificates.crt file in the system profile."
    (default '()))
   (ttl           nar-herder-configuration-ttl
                  (default #f))
+  (new-ttl       nar-herder-configuration-new-ttl
+                 (default #f))
   (negative-ttl  nar-herder-configuration-negative-ttl
                  (default #f))
   (log-level     nar-herder-configuration-log-level
@@ -750,14 +752,22 @@ ca-certificates.crt file in the system profile."
                        (default #f))
   (directory-max-size
    nar-herder-cached-compression-configuration-directory-max-size
-   (default #f)))
+   (default #f))
+  (unused-removal-duration
+   nar-herder-cached-compression-configuration-unused-removal-duration
+   (default #f))
+  (ttl                 nar-herder-cached-compression-configuration-ttl
+                       (default #f))
+  (new-ttl             nar-herder-cached-compression-configuration-new-ttl
+                       (default #f)))
 
 (define (nar-herder-shepherd-services config)
   (define (cached-compression-configuration->options cached-compression)
     (match-record
         cached-compression
         <nar-herder-cached-compression-configuration>
-      (type level directory directory-max-size)
+        (type level directory directory-max-size
+              unused-removal-duration ttl new-ttl)
 
       `(,(simple-format #f "--enable-cached-compression=~A~A"
                         type
@@ -775,6 +785,27 @@ ca-certificates.crt file in the system profile."
                (simple-format #f "--cached-compression-directory-max-size=~A=~A"
                               type
                               directory-max-size))
+              '())
+        ,@(if unused-removal-duration
+              (list
+               (simple-format
+                #f "--cached-compression-unused-removal-duration=~A=~A"
+                type
+                unused-removal-duration))
+              '())
+        ,@(if ttl
+              (list
+               (simple-format
+                #f "--cached-compression-ttl=~A=~A"
+                type
+                ttl))
+              '())
+        ,@(if new-ttl
+              (list
+               (simple-format
+                #f "--cached-compression-new-ttl=~A=~A"
+                type
+                new-ttl))
               '()))))
 
   (match-record config <nar-herder-configuration>
@@ -783,7 +814,7 @@ ca-certificates.crt file in the system profile."
              database database-dump
              host port
              storage storage-limit storage-nar-removal-criteria
-             ttl negative-ttl log-level
+             ttl new-ttl negative-ttl log-level
              cached-compressions cached-compression-min-uses
              cached-compression-workers cached-compression-nar-source
              extra-environment-variables)
@@ -824,6 +855,9 @@ ca-certificates.crt file in the system profile."
                               storage-nar-removal-criteria)
                       #$@(if ttl
                              (list (string-append "--ttl=" ttl))
+                             '())
+                      #$@(if new-ttl
+                             (list (string-append "--new-ttl=" new-ttl))
                              '())
                       #$@(if negative-ttl
                              (list (string-append "--negative-ttl=" negative-ttl))
