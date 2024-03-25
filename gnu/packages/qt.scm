@@ -730,11 +730,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                             (list "double-conversion" "freetype" "harfbuzz-ng"
                                   "pcre2" "md4c" "libpng" "libjpeg"
                                   "sqlite" "xcb" "zlib"))))
-              (patches (search-patches "qtbase-moc-ignore-gcc-macro.patch"
-                                       "qtbase-absolute-runpath.patch"
-                                       "qtbase-qmake-use-libname.patch"
-                                       "qtbase-find-tools-in-PATH.patch"
-                                       "qtbase-qmake-fix-includedir.patch"))))
+              (patches
+               (search-patches "qtbase-moc-ignore-gcc-macro.patch"
+                               "qtbase-absolute-runpath.patch"
+                               "qtbase-qmake-use-libname.patch"
+                               "qtbase-qmlimportscanner-qml-import-path.patch"
+                               "qtbase-find-tools-in-PATH.patch"
+                               "qtbase-qmake-fix-includedir.patch"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
