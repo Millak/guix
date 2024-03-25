@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>

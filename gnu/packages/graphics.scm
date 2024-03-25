@@ -1313,40 +1313,38 @@ with strong support for multi-part, multi-channel use cases.")
 (define-public openimageio
   (package
     (name "openimageio")
-    (version "2.2.21.0")
+    (version "2.5.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/OpenImageIO/oiio")
-                    (commit (string-append "Release-" version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aicxbshzv1g9d8d08vsj1a9klaycxaifvvp565qjv70wyma2vkr"))))
+                "06x3lqj9qjh5m0zbr5g2g9ii6jk340pgzrhr4fb353y1y2pkx5sw"))))
     (build-system cmake-build-system)
-    ;; FIXME: To run all tests successfully, test image sets from multiple
-    ;; third party sources have to be present.  For details see
-    ;; <https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md>
     (arguments
-     `(#:tests? #f
-       #:configure-flags (list "-DUSE_EXTERNAL_PUGIXML=1")))
+     (list #:tests? #f ; half the tests require online data or use redirection
+           #:configure-flags #~(list "-DUSE_EXTERNAL_PUGIXML=1"
+                                     "-DOIIO_BUILD_TESTS=false")))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("boost" ,boost)
-       ("fmt" ,fmt-8)
-       ("libheif" ,libheif)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("giflib" ,giflib)
-       ("openexr" ,openexr-2)
-       ("ilmbase" ,ilmbase)
-       ("pugixml" ,pugixml)
-       ("python" ,python-wrapper)
-       ("pybind11" ,pybind11)
-       ("robin-map" ,robin-map)
-       ("zlib" ,zlib)))
+     (list boost
+           fmt
+           giflib
+           imath
+           libheif
+           libjpeg-turbo
+           libpng
+           libtiff
+           openexr
+           pugixml
+           pybind11
+           python-wrapper
+           robin-map
+           zlib))
     (synopsis "C++ library for reading and writing images")
     (description
      "OpenImageIO is a library for reading and writing images, and a bunch of
