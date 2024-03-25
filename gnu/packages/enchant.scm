@@ -57,6 +57,9 @@
     (build-system cmake-build-system)
     (native-inputs (list catch2-3 pkg-config))
     (propagated-inputs (list icu4c))
+    (native-search-paths (list (search-path-specification
+                                (variable "DICPATH")
+                                (files '("share/hunspell")))))
     (synopsis "Fast and safe spellchecking C++ library")
     (description "Nuspell is a fast and safe spelling checker software
 program.  It is designed for languages with rich morphology and complex word
