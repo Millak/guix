@@ -797,7 +797,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.4.5")
+    (version "3.4.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -805,7 +805,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "1wd5k0whh2b43a72223cy19pwc29fhrhd2dnc61fha2y5ndgw6ld"))))
+                "1j4jd1fim12h8ry7jkx6y298kyn63pabih1m61rljbzvr3lyy1db"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
@@ -830,13 +830,6 @@ desktop environment.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-gmo-files
-                 ;; gmo files are generated from .po files
-                 ;; so remove them before build to make sure
-                 ;; they are re-generated if needed
-                 (lambda _
-                   (for-each delete-file
-                             (find-files "po" "\\.gmo$"))))
                (add-after 'unpack 'skip-failing-test
                  ;; strtest.cc tests failing due to $HOME and /etc setup
                  ;; difference under guix
