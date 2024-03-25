@@ -55,12 +55,7 @@
        (sha256
         (base32 "05j1hmczy6v9dyxp77vxhgyl7y5hff3v45vlp86gyh7m9lgqpmra"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list catch2-3
-           git-minimal
-           perl
-           pkg-config))
-    (inputs (list boost))
+    (native-inputs (list catch2-3 pkg-config))
     (propagated-inputs (list icu4c))
     (synopsis "Fast and safe spellchecking C++ library")
     (description "Nuspell is a fast and safe spelling checker software
