@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Steve Sprang <scs@stevesprang.com>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Jessica Tallon <tsyesika@tsyesika.se>
@@ -1427,6 +1427,43 @@ in advanced password cracking.  They all are packed into multiple stand-alone
 binaries.  All of these utils are designed to execute only one specific
 function.  Since they all work with @code{STDIN} and @code{STDOUT} you can
 group them into chains.")
+    (license license:expat)))
+
+(define-public zxcvbn-c
+  (package
+    (name "zxcvbn-c")
+    (version "2.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/tsyrogit/zxcvbn-c")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1clm9sxz6q360xk6vq5hi3b0mq374nl958mjcfxk94l692zrpaj4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "CXX=" #$(cxx-for-target)))
+           #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (install-file "zxcvbn.h" (string-append #$output "/include"))
+                   (for-each (lambda (file)
+                               (install-file file
+                                             (string-append #$output "/lib")))
+                             (find-files "." "libzxcvbn\\.so.*")))))))
+    (home-page "https://github.com/tsyrogit/zxcvbn-c")
+    (synopsis "C/C++ implementation of the zxcvbn password strength estimation")
+    (description "This library is a C/C++ implementation of the zxcvbn password
+strength estimator.  It provides functions to rate password strength, by
+comparing the password to several word lists, including English first and last
+names.")
     (license license:expat)))
 
 (define-public hydra
