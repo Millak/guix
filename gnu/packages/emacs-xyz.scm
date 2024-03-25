@@ -25256,7 +25256,7 @@ powerful Org contents.")
 (define-public emacs-org-re-reveal
   (package
     (name "emacs-org-re-reveal")
-    (version "3.25.1")
+    (version "3.26.0")
     (source
      (origin
        (method git-fetch)
@@ -25265,7 +25265,7 @@ powerful Org contents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ayiaqci969d8q3nc0aq0a9djl84lckj2sc5nndbb1bvvhz49xq1"))))
+        (base32 "11if1c1a0i6i2wagjwqmvp2hfkv3slpq7r6dfbpkhlmils2hxr9p"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-htmlize emacs-org))
