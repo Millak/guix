@@ -25550,7 +25550,7 @@ functions.")
 (define-public emacs-benchmark-init
   (package
     (name "emacs-benchmark-init")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -25559,7 +25559,7 @@ functions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19375vamhld4xm2qrdmhlp2nczfvalmz9x6ahl23zwkilr8n1nbw"))))
+        (base32 "1slw10mp9lkfy04qgv7ly76rww2rs3yijq6sjx4jwswd4b46bmsg"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/dholm/benchmark-init-el")
     (synopsis "Benchmark Emacs @code{require} and @code{load} calls")
