@@ -118,7 +118,7 @@ their dependencies automatically upon calculation.")
 (define-public orcus
   (package
     (name "orcus")
-    (version "0.19.0")
+    (version "0.19.2")
     (source (origin
               ;; The test suite requires data files store with Git Large
               ;; File Storage.
@@ -129,7 +129,7 @@ their dependencies automatically upon calculation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02prj6kgph56fkr89k8wlqarrmx65cq92863i4rrny5sqr8c2llr"))))
+                "03q72z91azq35l8jfvjizd6yghjrgrss221iwh5zjwvxgzcbkl7v"))))
     (build-system gnu-build-system)
     (arguments (list #:configure-flags #~(list "--disable-static")))
     (native-inputs (list autoconf automake libtool pkg-config))
