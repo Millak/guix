@@ -225,15 +225,15 @@ BUFR and WMO GTS abbreviated header formats.")
 (define-public cdo
   (package
     (name "cdo")
-    (version "2.1.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://code.mpimet.mpg.de/attachments/download/27481/cdo-"
+             "https://code.mpimet.mpg.de/attachments/download/29313/cdo-"
              version ".tar.gz"))
        (sha256
-        (base32 "1k18llghpf3jnjn0xcnhmbg7arb1fiy854qqn9m5c1abjin38wdq"))))
+        (base32 "0b2d1d8r1lxs422dxajnmvjyhjwfichlkglv3yqm7wq7rjw0yyd4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -258,7 +258,7 @@ BUFR and WMO GTS abbreviated header formats.")
     (inputs
      (list curl eccodes fftw hdf5 libxml2 netcdf proj udunits))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python-wrapper))
     (home-page "https://code.mpimet.mpg.de/projects/cdo")
     (synopsis "Climate data operators")
     (description "@acronym{CDO, Climate Data Operators} is a collection of command-line
