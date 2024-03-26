@@ -924,6 +924,49 @@ concurrent queue for C++11.")
 lock-free fixed size queue written in C++11.")
     (license license:expat)))
 
+(define-public syscmdline
+  (package
+    (name "syscmdline")
+    (version "0.0.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SineStriker/syscmdline")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00n9vkyymp1dzixxl93f6pkpd3ndsk1vib7shhlxv4zvy5hjqhqw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DSYSCMDLINE_BUILD_STATIC=OFF" ;build a shared library
+                   "-DSYSCMDLINE_BUILD_TESTS=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          ;; There isn't currently any exposed test target.
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "bin/tst_basic")))))))
+    (home-page "https://github.com/SineStriker/syscmdline")
+    (synopsis "C++ advanced command line parser")
+    (description "SysCmdLine is a C++ command line parser that is inspired by
+@code{QCommandLineParser} from Qt and @code{System.CommandLine} from C#.  It
+has features such as:
+@itemize
+@item Support sub-commands
+@item Support case-insensitive parsing
+@item Support global options
+@item Support mutually exclusive options
+@item Support short options and group flags
+@item Support help text customization
+@item Support localization
+@item Simple tips for typo correction
+@item Highly configurable
+@item Friendly interface
+@end itemize")
+    (license license:expat)))
+
 (define-public gperftools
   (package
     (name "gperftools")
