@@ -30496,8 +30496,29 @@ heap.")
 total runtime size of an object on the heap")
     (license license:mpl2.0)))
 
+(define-public rust-heck-0.5
+  (package
+    (name "rust-heck")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "heck" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sjmpsdl8czyh9ywl3qcsfsq9a307dg4ni2vnlwgnzzqhc4y0113"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/withoutboats/heck")
+    (synopsis "Case conversion library")
+    (description
+     "This library exists to provide case conversion between common cases like
+CamelCase and snake_case.  It is intended to be unicode aware, internally
+consistent, and reasonably well performing.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-heck-0.4
   (package
+    (inherit rust-heck-0.5)
     (name "rust-heck")
     (version "0.4.1")
     (source
@@ -30507,18 +30528,9 @@ total runtime size of an object on the heap")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1a7mqsnycv5z4z5vnv1k34548jzmc0ajic7c1j8jsaspnhw5ql4m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
-    (home-page "https://github.com/withoutboats/heck")
-    (synopsis "Case conversion library")
-    (description
-     "This library exists to provide case conversion between common cases like
-CamelCase and snake_case.  It is intended to be unicode aware, internally
-consistent, and reasonably well performing.")
-    (license (list license:asl2.0
-                   license:expat))))
+       (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
 (define-public rust-heck-0.3
   (package
