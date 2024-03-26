@@ -50,6 +50,7 @@
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1352,6 +1353,27 @@ following improvements:
 distributed testing in both @code{load} and @code{each} modes.  It also
 supports coverage of subprocesses.")
   (license license:expat)))
+
+(define-public python-pytest-relaxed
+  (package
+    (name "python-pytest-relaxed")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bitprophet/pytest-relaxed")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lnnkadfr390i30209gpl80nymc20pmamvxjhd11gvf4d6f54n7x"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-decorator))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/bitprophet/pytest-relaxed")
+    (synopsis "Relaxed test discovery for pytest")
+    (description "This package provides relaxed test discovery for pytest.")
+    (license license:bsd-2)))
 
 (define-public python-pytest-dotenv
   (package
