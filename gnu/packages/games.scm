@@ -10644,9 +10644,9 @@ ChessX.")
       (home-page "https://git.sr.ht/~zamfofex/moonfish")
       (synopsis "Simple chess engine written in C")
       (description
-       "moonfish is a toy UCI chess engine made for fun.  It is inspired by
-sunfish, but is written in C rather than Python.  It also has TUI tools for
-using any UCI engine and also to connect UCI engines to Lichess.")
+       "moonfish is a toy UCI chess engine written in C for fun.  It has TUI/CLI
+tools for using any UCI engine and also to connect UCI engines to Lichess, as
+well as for converting engines between UCI and UGI.")
       (license license:agpl3+))))
 
 (define-public morris
