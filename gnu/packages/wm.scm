@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2016, 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2016 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
@@ -1505,7 +1505,7 @@ project derived from the original Calm Window Manager.")
 (define-public dunst
   (package
     (name "dunst")
-    (version "1.9.2")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1514,7 +1514,7 @@ project derived from the original Calm Window Manager.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17zrw7jrnlyln81pxw7p4jgvl7j1w1gf488nfskhns6j6dcz90gh"))))
+        (base32 "1d6mc3ac4z16iwgq9934g1yc3412xl0hwv5vs40ycfmasm8qbjga"))))
     (build-system gnu-build-system)
     (arguments
      (list
