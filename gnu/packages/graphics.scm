@@ -707,7 +707,7 @@ baking tools to produce normal maps.")
 (define-public openshadinglanguage
   (package
     (name "openshadinglanguage")
-    (version "1.11.16.0")
+    (version "1.13.8.0")
     (source
      (origin
        (method git-fetch)
@@ -716,52 +716,46 @@ baking tools to produce normal maps.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x0lc163vl2b57l75bf5zxlr6vm2y1f1izlxdnrw3vsapv3r9k9g"))))
+        (base32 "1ji4bw8z4ylsh0jvir3d40p6xyhr63g588gh3bag7bzsr3flsb02"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DUSE_PARTIO=OFF") ; TODO: not packaged
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'add-ilmbase-include-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; OpenEXR 2 propagates ilmbase, but its include files do not
-             ;; appear in the C_INCLUDE_PATH.
-             (let ((headers (string-append
-                             (assoc-ref inputs "ilmbase")
-                             "/include/OpenEXR")))
-               (setenv "C_INCLUDE_PATH"
-                       (string-append headers ":"
-                                      (or (getenv "C_INCLUDE_PATH") "")))
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-append headers ":"
-                                      (or (getenv "CPLUS_INCLUDE_PATH") ""))))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "ctest" "--exclude-regex"
-                       (string-join
-                        (list
-                         "osl-imageio"       ; OIIO not compiled with freetype
-                         "osl-imageio.opt"   ; OIIO not compiled with freetype
-                         "texture-udim"      ; file does not exist
-                         "texture-udim.opt"  ; file does not exist
-                         "example-deformer"  ; could not find OSLConfig
-                         "python-oslquery")  ; no module oslquery
-                        "|"))))))))
+     (list #:configure-flags
+           #~(list "-DUSE_PARTIO=OFF"   ; TODO: not packaged
+                   (string-append "-DLLVM_BC_GENERATOR="
+                                  #$(this-package-native-input "clang")
+                                  "/bin/clang++"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke
+                      "ctest" "--exclude-regex"
+                      (string-join
+                       (list
+                        "osl-imageio" ; file does not exist
+                        "osl-imageio.opt" ; file does not exist
+                        "osl-imageio.opt.rs_bitcode" ; file does not exist
+                        "texture-udim"    ; file does not exist
+                        "texture-udim.opt" ; file does not exist
+                        "texture-udim.opt.rs_bitcode" ; file does not exist
+                        "example-deformer" ; could not find OSLConfig
+                        "python-oslquery") ; no module oslquery
+                       "|"))))))))
     (native-inputs
      (list bison
-           clang-9
+           clang
            flex
-           llvm-9
+           llvm
            pybind11
            python-wrapper))
     (inputs
      (list boost
            imath
-           openexr-2
+           openexr
            openimageio
            pugixml
-           qtbase-5
+           qtbase
            zlib))
     (home-page "https://github.com/AcademySoftwareFoundation/OpenShadingLanguage")
     (synopsis "Shading language for production GI renderers")
