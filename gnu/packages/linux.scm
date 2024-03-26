@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015-2018, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
@@ -2149,14 +2149,14 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
 (define-public psmisc
   (package
     (name "psmisc")
-    (version "23.5")
+    (version "23.7")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/psmisc/psmisc/psmisc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "12z5786dnf37n8wvv73wdcqp3nvsqzhwdk3ajna0mag4yz1fqdyw"))))
+       (base32 "09y30ywh1d4s4f0wgvki115kgpliq48rarmfmmjl0iq22jf5viaq"))))
     (build-system gnu-build-system)
     (arguments
      (list
