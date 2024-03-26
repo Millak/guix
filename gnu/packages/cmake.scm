@@ -8,7 +8,7 @@
 ;;; Copyright © 2017, 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -43,8 +43,10 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
@@ -434,3 +436,45 @@ and workspaces that can be used in the compiler environment of your choice.")
     (description "@code{cmakeos-mode} provides an Emacs major mode for editing
 Cmake files.  It supports syntax highlighting, indenting and refilling of
 comments.")))
+
+(define-public qmsetup
+  (let ((commit "89fa57046241c26dfcfd97ceba174728b24bdd27")
+        (revision "0"))
+    (package
+      (name "qmsetup")
+      ;; The base version string is retrieved from the CMakeLists.txt file.
+      (version (git-version "0.0.1.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/stdware/qmsetup")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0nqpblv08yqv97vjv7cxkpf160s3877gnd7jjqxnfrrknm2396r1"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'patch-paths
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (substitute* "src/corecmd/utils_unix.cpp"
+                           (("\"patchelf\"")
+                            (format #f "~s" (search-input-file
+                                             inputs "bin/patchelf")))))))))
+      (inputs (list patchelf syscmdline))
+      (home-page "https://github.com/stdware/qmsetup")
+      (synopsis "CMake modules and basic libraries for C/C++ projects")
+      (description "QMSetup is a set of CMake Modules and Basic Libraries for
+C/C++ projects.  It features:
+@itemize
+@item Helpful CMake utilities
+@item Generate configuration header files
+@item Reorganize header files
+@item Deploy project dependencies and fix rpaths
+@item Support calling Doxygen via CMake conveniently
+@item Support calling Qt Linguist Tools via CMake conveniently
+@end itemize")
+      (license license:expat))))
