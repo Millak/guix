@@ -10618,8 +10618,8 @@ ChessX.")
       (license license:gpl3+))))
 
 (define-public moonfish
-  (let ((commit "4f8829009e8c26e6a878261e0bc4c7e7617ef6b6")
-        (revision "1"))
+  (let ((commit "fb2cb4f53876b1b0c6060464e0dd5a05ab00e502")
+        (revision "2"))
     (package
       (name "moonfish")
       (version (git-version "0" revision commit))
@@ -10630,34 +10630,17 @@ ChessX.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1ksg42x9cyn3pbfryy9raqb355k47cqcisascpy157c3cgdr2z60"))
+                  "1rbhdahp0s2qm1zi7lpr0bb6zq02y76fc9d9nc2k5n03zh2as97i"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
        (list
-        #:make-flags
-        #~(list (string-append "CC=" #$(cc-for-target)))
-        #:tests? #f                     ;no check target
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)         ;no configure script
-            (replace 'install           ;no 'install' target
-              (lambda _
-                (let* ((out-bin (string-append #$output "/bin"))
-                       (tools-bin (string-append #$output:tools "/bin"))
-                       (tool (string-append tools-bin "/moonfish-")))
-                  (mkdir-p out-bin)
-                  (mkdir-p tools-bin)
-                  (copy-file "moonfish"
-                             (string-append out-bin "/moonfish"))
-                  (copy-file "play"
-                             (string-append tool "play"))
-                  (copy-file "lichess"
-                             (string-append tool "lichess"))
-                  (copy-file "analyse"
-                             (string-append tool "analyse"))))))))
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                             (string-append "PREFIX=" %output))
+        #:tests? #f ;no check target
+        #:phases #~(modify-phases %standard-phases
+                     (delete 'configure)))) ;no configure script
       (inputs (list bearssl cjson))
-      (outputs '("out" "tools"))
       (home-page "https://git.sr.ht/~zamfofex/moonfish")
       (synopsis "Simple chess engine written in C")
       (description
