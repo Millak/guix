@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
-;;; Copyright © 2023 dan <i@dan.games>
+;;; Copyright © 2023, 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -118,7 +118,7 @@ joystick, and graphics hardware.")
   (package
     (inherit sdl)
     (name "sdl2")
-    (version "2.28.5")
+    (version "2.30.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -126,7 +126,7 @@ joystick, and graphics hardware.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "1r36cspzv6h8abiqbbkrgm17g975p9wiziir2xabj3721dyv6b1k"))))
+                "0fj7gxc7rlzzrafnx9nmf7ws3paxy583fmx7bcbavi6gr3xmy881"))))
     (arguments
      (substitute-keyword-arguments (package-arguments sdl)
        ((#:configure-flags flags)
