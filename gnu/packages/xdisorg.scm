@@ -905,7 +905,33 @@ tracking.")
         (base32
          "0jmyryrpqb35y9hd5sgxqy2z0r1snw7d3ljw0jak0n0cjdz1yf9w"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config))
+    (arguments
+     (if (and (or (target-riscv64?)
+                  (target-aarch64?))
+              (%current-target-system))
+         (list
+          #:configure-flags #~(list
+                               ;; when cross-compilation, skip realloc checking
+                               "lf_cv_sane_realloc=yes"
+                               (string-append "PKG_CONFIG=" #$(pkg-config-for-target)))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'update-config-scripts
+                (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                  ;; Replace outdated config.guess and config.sub.
+                  (for-each (lambda (file)
+                              (install-file
+                               (search-input-file
+                                (or native-inputs inputs)
+                                (string-append "/bin/" file)) "."))
+                            '("config.guess" "config.sub"))))))
+         '()))
+    (native-inputs (append (if (and (or (target-riscv64?)
+                                        (target-aarch64?))
+                                    (%current-target-system))
+                               (list config)
+                               '())
+                           (list pkg-config)))
     (inputs
      (list libx11 xcb-util))
     (home-page "https://www.freedesktop.org/wiki/Software/startup-notification/")
