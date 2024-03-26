@@ -91,6 +91,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -183,6 +184,37 @@ code is generated or executed.  It also provides an optional register
 allocator that makes it easy to generate complex code without a significant
 development effort.")
       (license license:zlib))))
+
+(define-public castxml
+  (package
+    (name "castxml")
+    (version "0.6.4")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/CastXML/CastXML")
+                (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0l5ys9zmllfgwhjrm897akbsf38iswfcarhxg27xfhiy0bmzcwsg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "-DCLANG_RESOURCE_DIR="
+                        #$(this-package-native-input "clang") "/lib/clang/"
+                        #$(version-major
+                           (package-version (this-package-native-input "clang")))))))
+    (inputs (list libffi))
+    (native-inputs (list clang-17 llvm-17))
+    (home-page "https://github.com/CastXML/CastXML")
+    (synopsis "C-family abstract syntax tree XML output")
+    (description "CastXML is a C-family abstract syntax tree XML output tool.
+This project is maintained by Kitware in support of ITK, the Insight
+Segmentation and Registration Toolkit.")
+    (license license:asl2.0)))
 
 (define-public range-v3
   (package
