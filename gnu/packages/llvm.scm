@@ -145,12 +145,17 @@ as \"x86_64-linux\"."
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
     (native-inputs
-     (if (version>=? version "15")
-         ;; TODO: Remove this when GCC 12 is the default.
-         ;; libfuzzer fails to build with GCC 11
-         (modify-inputs (package-native-inputs llvm)
-           (prepend gcc-12))
-         (package-native-inputs llvm)))
+     (cond ((version>=? version "18")
+            ;; TODO: Remove this when GCC 13 is the default.
+            ;; libfuzzer fails to build with GCC 12
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-13)))
+           ((version>=? version "15")
+            ;; TODO: Remove this when GCC 12 is the default.
+            ;; libfuzzer fails to build with GCC 11
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-12)))
+           (else (package-native-inputs llvm))))
     (inputs
      (append
       (list llvm)
@@ -544,13 +549,16 @@ output), and Binutils.")
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
     ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
-    ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")))
+    ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
+    ("18.1.2" . "06nfbn8yj8c65q4vamwdiqpxh0dggs6w781swd3285k4af0qwf62")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
     ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
     ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
     ("17.0.6" . ("clang-17.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))
+    ("18.1.2" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
@@ -1442,6 +1450,40 @@ Library.")
 
 (define-public clang-toolchain-17
   (make-clang-toolchain clang-17 libomp-17))
+
+(define-public llvm-18
+  (package
+    (inherit llvm-15)
+    (version "18.1.2")
+    (source (llvm-monorepo version))))
+
+(define-public clang-runtime-18
+  (clang-runtime-from-llvm llvm-18))
+
+(define-public clang-18
+  (clang-from-llvm
+   llvm-18 clang-runtime-18
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-18)))
+     (sha256
+      (base32
+       "1whpd7szjy6i95gzy9jzf154dgk2jdbsp753sv2dx4lg9a9chkcc")))))
+
+(define-public libomp-18
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-18))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-18)
+       (replace "llvm" llvm-18)))))
+
+(define-public clang-toolchain-18
+  (make-clang-toolchain clang-18 libomp-18))
 
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
