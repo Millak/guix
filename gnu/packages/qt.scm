@@ -4420,6 +4420,32 @@ that can be only started once per user.
                      ;; redistribution under GPL3 or LGPL2.1
                      license:gpl3 license:lgpl2.1)))))
 
+(define-public qwindowkit
+  (package
+    (name "qwindowkit")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stdware/qwindowkit")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18yqmfnncah60hpyy7r9pvyhcda0n407wvp5hwinjzicj2ja83v7"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:configure-flags
+           #~(list "-DQWINDOWKIT_BUILD_STATIC=OFF"))) ;build a shared library
+    (native-inputs (list qmsetup))
+    (inputs (list qtbase qtdeclarative))
+    (home-page "https://github.com/stdware/qwindowkit")
+    (synopsis "Frameless window framework for Qt")
+    (description "QWindowKit is a cross-platform window customization
+framework for Qt Widgets and Qt Quick.")
+    (license license:asl2.0)))
+
 (define-public qwt
   (package
     (name "qwt")
