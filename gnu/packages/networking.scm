@@ -3986,8 +3986,8 @@ A very simple IM client working over the DHT.
 
 (define-public dhtnet
   ;; There is no tag nor release; use the latest available commit.
-  (let ((revision "1")
-        (commit "41848a2c770d7eb0940d731014b81643f85e0d07"))
+  (let ((revision "2")
+        (commit "024c46fb1f14276d4adf15764ed97b733890826e"))
     (package
       (name "dhtnet")
       ;; The base version is taken from the CMakeLists.txt file.
@@ -4000,7 +4000,7 @@ A very simple IM client working over the DHT.
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "18v2pjrxfrd26p2z27s90marx7b593nz1xwi47lnp2ja7lm1pj4m"))))
+                  "191gmfdg22hkmxvzh5i19lr512q4bhgajhlg9mxxgb7jq0842mc6"))))
       (outputs (list "out" "debug"))
       (build-system cmake-build-system)
       (arguments
@@ -4016,11 +4016,10 @@ A very simple IM client working over the DHT.
                   ;; The connectionManager test currently segfaults (see:
                   ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/18).
                   ((".*tests_connectionManager.*") "")
-                  ;; The fileutils test fail, asserting an unexpected returned
-                  ;; value for the removeAll call when the directory to be
-                  ;; removed is missing (see:
-                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/17).
-                  ((".*tests_fileutils.*") "")))))))
+                  ;; The ICE tests fail inside the containerized build
+                  ;; environment, perhaps relying on a name resolver (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/25).
+                  ((".*tests_ice.*") "")))))))
       (native-inputs (list cppunit pkg-config))
       ;; This library depends on the Jami fork of pjproject that adds ICE
       ;; support.
