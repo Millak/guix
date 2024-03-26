@@ -1197,6 +1197,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ffmpeg-jami-libopusdec-enable-FEC.patch	\
   %D%/packages/patches/ffmpeg-jami-libopusenc-enable-FEC.patch	\
   %D%/packages/patches/ffmpeg-jami-libopusenc-reload-packet-loss-at-encode.patch \
+  %D%/packages/patches/ffmpeg-jami-pipewiregrab-source-filter.patch	\
   %D%/packages/patches/ffmpeg-jami-remove-mjpeg-log.patch	\
   %D%/packages/patches/ffmpeg-jami-screen-sharing-x11-fix.patch	\
   %D%/packages/patches/fifengine-boost-compat.patch		\
