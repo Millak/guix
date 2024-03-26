@@ -7784,14 +7784,14 @@ types.")
 (define-public rust-bitflags-2
   (package
     (name "rust-bitflags")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bitflags" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01ryy3kd671b0ll4bhdvhsz67vwz1lz53fz504injrd7wpv64xrj"))))
+        (base32 "1h91vdx1il069vdiiissj8ymzj130rbiic0dbs77yxjgjim9sjyg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
