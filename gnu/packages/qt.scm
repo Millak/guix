@@ -998,7 +998,11 @@ tst_qt_cmake_create.cpp"
                                  ;; "'Unable to fetch row' || 'database is
                                  ;; locked'" (see:
                                  ;; https://bugreports.qt.io/browse/QTBUG-117114).
-                                 "tst_qsqlthread")))
+                                 "tst_qsqlthread"
+
+                                 ;; The 'tst_qxmlstream' can time out (see:
+                                 ;; https://bugreports.qt.io/projects/QTBUG/issues/QTBUG-123778).
+                                 "tst_qxmlstream")))
                            ((target-x86-32?)
                              #~((list
                                  ;; QCOMPARE(qRound(actual), expected) returned TRUE
