@@ -150,6 +150,7 @@
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
+;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35995,6 +35996,36 @@ interfaces.")
 of Icelandic Morphology and offers various lookups and queries of the data.
 The database contains over 6.5 million entries, over 3.1 million unique word
 forms, and about 300,000 distinct lemmas.")
+    (license license:expat)))
+
+(define-public python-icecream
+  (package
+    (name "python-icecream")
+    (version "2.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "icecream" version))
+       (sha256
+        (base32 "1pj9kf7lwm799wppvngg3sndi0qf13iq33yhl59n3hsf6z1sg90a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests are failing due to a bug:
+             ;; https://github.com/gruns/icecream/issues/144
+             (string-append "not testEnableDisable"
+                            " and not testSingledispatchArgumentToString"))))
+    (propagated-inputs (list python-asttokens python-colorama python-executing
+                             python-pygments))
+    (native-inputs (list python-hypothesis python-pytest))
+    (home-page "https://github.com/gruns/icecream")
+    (synopsis
+     "Single function call to debug variables, expressions, and program execution")
+    (description
+     "This tool lets you debug variables, expressions, and program execution
+with one function call.  IceCream makes print debugging a little sweeter.")
     (license license:expat)))
 
 (define-public python-icegrams
