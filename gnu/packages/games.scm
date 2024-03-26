@@ -4613,7 +4613,7 @@ falling, themeable graphics and sounds, and replays.")
 (define-public wesnoth
   (package
     (name "wesnoth")
-    (version "1.16.11")
+    (version "1.18.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4622,21 +4622,36 @@ falling, themeable graphics and sounds, and replays.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z0y2il4xq8fdj20fwfggpf6286hb099jh1kdywap9rlrybq142d"))))
+                "0ar0zkyl4rzqgambmdqhklscx478liql1k458ax64bp4xw441kfc"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f)) ;no test target
+     (list #:tests? #f                  ;no test target
+           #:configure-flags #~'("-DENABLE_SYSTEM_LUA=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   ;; XXX: Our Lua doesn't have a C++ library, force C linkage.
+                   (substitute* '("src/lua/wrapper_lua.h"
+                                  "src/lua/wrapper_lualib.h"
+                                  "src/lua/wrapper_lauxlib.h")
+                     (("#include \"(lua|lualib|lauxlib)\\.h\"")
+                      "#include \"lua.hpp\"")))))))
     (inputs
      (list boost
+           curl
            dbus
-           fribidi
            libvorbis
+           lua-5.4
            openssl
            pango
-           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
+           sdl2
+           sdl2-image
+           sdl2-mixer))
     (native-inputs
      (list gettext-minimal
-           pkg-config))
+           pkg-config
+           python-minimal))
     (home-page "https://www.wesnoth.org/")
     (synopsis "Turn-based strategy game")
     (description
@@ -4655,10 +4670,13 @@ next campaign.")
     (inherit wesnoth)
     (name "wesnoth-server")
     (inputs
-     (list boost icu4c openssl sdl2))
+     (list boost icu4c lua-5.4 openssl))
+    (native-inputs
+     (list pkg-config))
     (arguments
-     `(#:configure-flags '("-DENABLE_GAME=OFF")
-       ,@(package-arguments wesnoth)))
+     (substitute-keyword-arguments (package-arguments wesnoth)
+       ((#:configure-flags _)
+        #~'("-DENABLE_SYSTEM_LUA=ON" "-DENABLE_GAME=OFF"))))
     (synopsis "Dedicated @emph{Battle for Wesnoth} server")
     (description "This package contains a dedicated server for @emph{The
 Battle for Wesnoth}.")))
