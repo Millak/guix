@@ -978,7 +978,7 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2-1.6
   (package
     (inherit libgit2)
-    (version "1.6.4")
+    (version "1.6.5")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -988,7 +988,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "078jnis7lwzb38ha5lcrs8hzi4br3c8v7c9xaqkvkcaa8nifcvcm"))))))
+                "1v8sndvknsknf0i967qidmz73q9jx928iq7fqqgx3rbwn2g1gn6s"))))))
 
 (define-public libgit2-1.4
   (package
