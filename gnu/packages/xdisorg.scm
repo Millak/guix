@@ -2402,7 +2402,7 @@ minimalistic tiling window managers such as herbstluftwm and bspwm.")
     (native-inputs
      (list pkg-config m4 libx11)) ; for tests
     (inputs
-     (list libxcb xcb-util))
+     (list libxcb xcb-util libx11))
     (home-page "https://github.com/Airblader/xcb-util-xrm")
     (synopsis "XCB utility functions for the X resource manager")
     (description
