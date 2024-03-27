@@ -11225,6 +11225,32 @@ parsing with Serde.")
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-cargo-util-schemas-0.2
+  (package
+    (name "rust-cargo-util-schemas")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-util-schemas" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jncrbsh5w8pl968a04893mwkaq0cgav19zyy6wpwj4lmj02fgg6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-untagged" ,rust-serde-untagged-0.1)
+                       ("rust-serde-value" ,rust-serde-value-0.7)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Deserialization schemas for Cargo")
+    (description "This package provides deserialization schemas for Cargo.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-casey-0.4
   (package
     (name "rust-casey")
