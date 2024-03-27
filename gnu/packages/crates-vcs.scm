@@ -4129,8 +4129,51 @@ tempfile capability with a global registry to assure clean-up.")
 can be turned off to zero cost.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-transport-0.40
+  (package
+    (name "rust-gix-transport")
+    (version "0.40.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-transport" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w4pngjzbyvm68affvglnkzcyksgv5wxivnakx05lfg9acha40dy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-curl" ,rust-curl-0.4)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-2)
+                       ("rust-gix-command" ,rust-gix-command-0.3)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.23)
+                       ("rust-gix-features" ,rust-gix-features-0.37)
+                       ("rust-gix-packetline" ,rust-gix-packetline-0.17)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-gix-url" ,rust-gix-url-0.26)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
+                                   ("rust-blocking" ,rust-blocking-1)
+                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Implements the Git transport layer for Gitoxide")
+    (description
+     "This package is part of Gitoxide a Rust implementation of Git.  It
+provides an implementation of the Git transport layer.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-transport-0.39
   (package
+    (inherit rust-gix-transport-0.40)
     (name "rust-gix-transport")
     (version "0.39.0")
     (source
@@ -4140,7 +4183,6 @@ can be turned off to zero cost.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0i5ig30l4gqyh70qhm1gdmm2aa3qf33galr0vp36h96nqkpwycgp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
                        ("rust-async-trait" ,rust-async-trait-0.1)
@@ -4163,13 +4205,7 @@ can be turned off to zero cost.")
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-async-std" ,rust-async-std-1)
                                    ("rust-blocking" ,rust-blocking-1)
-                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Implements the Git transport layer for Gitoxide")
-    (description
-     "This package is part of Gitoxide a Rust implementation of Git.  It
-provides an implementation of the Git transport layer.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-maybe-async" ,rust-maybe-async-0.2))))))
 
 (define-public rust-gix-transport-0.38
   (package
