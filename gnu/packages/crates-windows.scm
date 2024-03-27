@@ -2547,15 +2547,15 @@ windows crate.")
   (package
     (inherit rust-windows-x86-64-msvc-0.52)
     (name "rust-windows-x86-64-msvc")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "12ipr1knzj2rwjygyllfi5mkd0ihnbi3r61gag5n2jgyk5bmyl8s"))
+               (base32 "0f4mdp895kkjh9zv8dxvn4pc10xr7839lf5pa9l0193i2pkgr57d"))
               (snippet
-               #~(delete-file "lib/windows.0.48.0.lib"))))
+               #~(delete-file "lib/windows.0.48.5.lib"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-x86-64-msvc-0.42
