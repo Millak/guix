@@ -1646,16 +1646,16 @@ crate.")
   (package
     (inherit rust-windows-i686-gnu-0.52)
     (name "rust-windows-i686-gnu")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_i686_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0hd2v9kp8fss0rzl83wzhw0s5z8q1b4875m6s1phv0yvlxi1jak2"))
+                "0gklnglwd9ilqx7ac3cn8hbhkraqisd0n83jxzf9837nvvkiand7"))
               (snippet
-               #~(delete-file "lib/libwindows.0.48.0.a"))))
+               #~(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-i686-gnu-0.42
