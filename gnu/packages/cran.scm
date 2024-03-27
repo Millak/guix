@@ -6174,6 +6174,36 @@ Google Maps and Stamen Maps).  It includes tools common to those tasks,
 including functions for geolocation and routing.")
     (license license:gpl2)))
 
+(define-public r-ggmosaic
+  (package
+    (name "r-ggmosaic")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggmosaic" version))
+       (sha256
+        (base32 "1zm1zfbd0qk6icw65m9hz1hgyqj632ibq3qilidvx5jy7jh8nbpy"))))
+    (properties `((upstream-name . "ggmosaic")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-ggplot2
+                             r-ggrepel
+                             r-plotly
+                             r-productplots
+                             r-purrr
+                             r-rlang
+                             r-scales
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/haleyjeppson/ggmosaic")
+    (synopsis "Mosaic plots in the ggplot2 framework")
+    (description
+     "This package provides mosaic plots for the ggplot2 framework.  Mosaic
+plot functionality is provided in a single ggplot2 layer by calling the
+@code{geom} @code{mosaic}.")
+    (license license:gpl2+)))
+
 (define-public r-haven
   (package
     (name "r-haven")
