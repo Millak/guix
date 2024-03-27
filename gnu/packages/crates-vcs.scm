@@ -2108,20 +2108,20 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-hashtable-0.4
+(define-public rust-gix-hashtable-0.5
   (package
     (name "rust-gix-hashtable")
-    (version "0.4.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-hashtable" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jnk93sz53b28ajkn4yrvmh0hj3x2jcb81h6nbqc8zkdh601idpy"))))
+        (base32 "0hp2m2rvbv0vav5lkq7d7bvx74qrb6w3hnj1rq3aq69wdzhq1pvx"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.13)
+     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.14)
                        ("rust-hashbrown" ,rust-hashbrown-0.14)
                        ("rust-parking-lot" ,rust-parking-lot-0.12))))
     (home-page "https://github.com/Byron/gitoxide")
@@ -2131,6 +2131,23 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
      "Hashtable based data structures optimized to utilize @code{ObjectId}
 keys.  Part of Gitoxide a Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-hashtable-0.4
+  (package
+    (inherit rust-gix-hashtable-0.5)
+    (name "rust-gix-hashtable")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hashtable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jnk93sz53b28ajkn4yrvmh0hj3x2jcb81h6nbqc8zkdh601idpy"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))))
 
 (define-public rust-gix-hashtable-0.2
   (package
