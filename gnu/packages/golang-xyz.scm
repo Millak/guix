@@ -724,17 +724,19 @@ of unit files.")))
 
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
+    ;; No release, see
+    ;; <https://github.com/cyberdelia/go-metrics-graphite/issues/17>.
     (name "go-github-com-cyberdelia-go-metrics-graphite")
     (version "0.0.0-20161219230853-39f87cc3b432")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/cyberdelia/go-metrics-graphite")
-               (commit (go-version->git-ref version))))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32 "1nnpwryw8i110laffyavvhx38gcd1jnpdir69y6fxxzpx06d094w"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cyberdelia/go-metrics-graphite")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nnpwryw8i110laffyavvhx38gcd1jnpdir69y6fxxzpx06d094w"))))
     (build-system go-build-system)
     (propagated-inputs
      (list go-github-com-rcrowley-go-metrics))
@@ -743,7 +745,8 @@ of unit files.")))
        #:import-path "github.com/cyberdelia/go-metrics-graphite"))
     (home-page "https://github.com/cyberdelia/go-metrics-graphite")
     (synopsis "Graphite client for go-metrics")
-    (description "This package provides a reporter for the
+    (description
+     "This package provides a reporter for the
 @url{https://github.com/rcrowley/go-metrics,go-metrics} library which posts
 metrics to Graphite.")
     (license license:bsd-2)))
