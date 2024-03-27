@@ -44075,23 +44075,51 @@ while still providing platform specific APIs.")
   (package
     (inherit rust-nix-0.27)
     (name "rust-nix")
-    (version "0.26.2")
+    (version "0.26.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06lfvjhsj5zlslsg2jhijrm69npprmsh7r1667qnl7c2jv8s7pdz"))))
+        (base32 "06xgl4ybb8pvjrbmc3xggbgk3kbs1j0c4c0nzdfrmpbgrkrym2sr"))))
     (arguments
-     (list #:skip-build? #t
+     (list #:cargo-test-flags
+           `(list "--release" "--"
+                  "--skip=sys::resource::test::test_self_cpu_time"
+                  "--skip=test_unistd::test_execve::test_cstr_ref"
+                  "--skip=test_unistd::test_execve::test_cstring"
+                  "--skip=test_unistd::test_execveat_absolute::test_cstr_ref"
+                  "--skip=test_unistd::test_execveat_absolute::test_cstring"
+                  ;; Some of the tests hang.
+                  "--skip=test_unistd::test_execveat_empty::test_cstr_ref"
+                  "--skip=test_unistd::test_execveat_empty::test_cstring"
+                  "--skip=test_unistd::test_execveat_relative::test_cstr_ref"
+                  "--skip=test_unistd::test_execveat_relative::test_cstring"
+                  "--skip=test_unistd::test_fexecve::test_cstr_ref"
+                  "--skip=test_unistd::test_fexecve::test_cstring"
+                  ;; Some doctests segfault.
+                  "--skip=sys::personality::set"
+                  "--skip=sys::socket::sendmsg"
+                  "--skip=unistd::Group::from_gid"
+                  "--skip=unistd::Group::from_name"
+                  "--skip=unistd::User::from_name"
+                  "--skip=unistd::User::from_uid")
            #:cargo-inputs
            `(("rust-bitflags" ,rust-bitflags-1)
              ("rust-cfg-if" ,rust-cfg-if-1)
              ("rust-libc" ,rust-libc-0.2)
              ("rust-memoffset" ,rust-memoffset-0.7)
-             ("rust-pin-utils" ,rust-pin-utils-0.1)
-             ("rust-static-assertions" ,rust-static-assertions-1))))))
+             ("rust-pin-utils" ,rust-pin-utils-0.1))
+           #:cargo-development-inputs
+           `(("rust-assert-impl" ,rust-assert-impl-0.1)
+             ("rust-caps" ,rust-caps-0.5)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-parking-lot" ,rust-parking-lot-0.12)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-semver" ,rust-semver-1)
+             ("rust-sysctl" ,rust-sysctl-0.4)
+             ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.25
   (package
