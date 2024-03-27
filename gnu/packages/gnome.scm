@@ -3728,12 +3728,15 @@ diagrams.")
                            "svg1.1/masking-mask-01-b.svg"
                            ;; This test fails on aarch64:
                            "bugs/777834-empty-text-children.svg"
-
                            ;; These two tests fail due to slightly different
                            ;; text rendering (different kerning or similar),
                            ;; nothing alarming.
                            "bugs/340047.svg"
-                           "bugs/749415.svg"))))))))
+                           "bugs/749415.svg"
+                           ;; These two tests fail with the update to cairo
+                           ;; version 1.18.0.
+                           "bugs/587721-text-transform.svg"
+                           "svg1.1/masking-path-03-b.svg"))))))))
     (native-inputs
      (list pkg-config
            `(,glib "bin") ; glib-mkenums, etc.
