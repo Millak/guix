@@ -3614,7 +3614,11 @@ allowing you to declaratively define \"match\" rules.")
               (sha256
                (base32 "0sxb3835nly1jxn071f59fwbdzmqi74j040r81fanxyw3s1azw0i"))))
     (arguments
-     `(#:tests? #f))                     ; It's run after build automatically.
+     (list
+      #:tests? #f                       ; It's run after build automatically.
+      ;; Fix 'Version:' setting in .pc file. See:
+      ;; <https://github.com/unittest-cpp/unittest-cpp/pull/188>
+      #:configure-flags #~(list (string-append "-DPACKAGE_VERSION=" #$version))))
     (build-system cmake-build-system)
     (home-page "https://github.com/unittest-cpp/unittest-cpp")
     (synopsis "Lightweight unit testing framework for C++")
