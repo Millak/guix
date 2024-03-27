@@ -2989,14 +2989,14 @@ Rust implementation of Git.")
 (define-public rust-gix-packetline-0.17
   (package
     (name "rust-gix-packetline")
-    (version "0.17.3")
+    (version "0.17.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-packetline" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0pr8bc383ankggjkkwmqi0k0rmbq6j0kx6j2hr4xwyvlyzp4bzq9"))))
+        (base32 "05d5airkhk7pykgs4p1nwvscv62hb106xyjxnvavc0q9vaz8c15p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
