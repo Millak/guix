@@ -32543,6 +32543,32 @@ providing tooltips with information about each cell and enabling zooming into
 interesting features. iheatmapr uses the plotly library for interactivity.")
     (license license:expat)))
 
+(define-public r-productplots
+  (package
+    (name "r-productplots")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "productplots" version))
+       (sha256
+        (base32 "1igs6d0qwgsfk0z3vxabgv5kva9w2kpzi535gjfdrbx34j4pf3gx"))))
+    (properties `((upstream-name . "productplots")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-plyr))
+    (home-page "https://github.com/hadley/productplots")
+    (synopsis "Product plots for R")
+    (description
+     "Framework for visualising tables of counts, proportions and
+probabilities.  The framework is called product plots, alluding to the
+computation of area as a product of height and width, and the statistical
+concept of generating a joint distribution from the product of conditional and
+marginal distributions.  The framework, with extensions, is sufficient to
+encompass over 20 visualisations previously described in fields of statistical
+graphics and infovis, including bar charts, mosaic plots, treemaps, equal area
+plots and fluctuation diagrams.")
+    (license license:gpl2)))
+
 (define-public r-packrat
   (package
     (name "r-packrat")
