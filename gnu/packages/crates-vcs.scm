@@ -3195,14 +3195,14 @@ part of Gitoxide, a Rust implementation of Git.")
 (define-public rust-gix-prompt-0.8
   (package
     (name "rust-gix-prompt")
-    (version "0.8.3")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-prompt" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18an2s9hxl5hizzncvfl8z4vj9hkxk5wlmnjdizw4ychrbn24hf0"))))
+        (base32 "1n2m39if2wkxdgs3p2w8p5arv822sqaj6p7cbp9fbdg7gjqmwcpm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-command" ,rust-gix-command-0.3)
