@@ -3634,26 +3634,26 @@ a pure Rust implementation of Git.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-revision-0.24
+(define-public rust-gix-revision-0.25
   (package
     (name "rust-gix-revision")
-    (version "0.24.0")
+    (version "0.25.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-revision" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i4mb8d34ar2g7flwjbnf8vwb0xlzaa078sy66y38m6f20bxapgy"))))
+        (base32 "17ydyj6f75zsz6ygmh3im4631cdx5b58spxi9myr7g1k6vgy2y5a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
                        ("rust-gix-date" ,rust-gix-date-0.8)
-                       ("rust-gix-hash" ,rust-gix-hash-0.13)
-                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.4)
-                       ("rust-gix-object" ,rust-gix-object-0.39)
-                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.10)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
+                       ("rust-gix-object" ,rust-gix-object-0.40)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.11)
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))
@@ -3664,6 +3664,30 @@ a pure Rust implementation of Git.")
      "This package is part of Gitoxide, a pure Rust implementation of Git.  It
 handles finding names and parsing specifications.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-revision-0.24
+  (package
+    (inherit rust-gix-revision-0.25)
+    (name "rust-gix-revision")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i4mb8d34ar2g7flwjbnf8vwb0xlzaa078sy66y38m6f20bxapgy"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.4)
+                       ("rust-gix-object" ,rust-gix-object-0.39)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.10)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revision-0.23
   (package
