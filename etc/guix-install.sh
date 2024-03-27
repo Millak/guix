@@ -503,8 +503,8 @@ sys_enable_guix_daemon()
 sys_authorize_build_farms()
 { # authorize the public key(s) of the build farm(s)
     local hosts=(
-	ci.guix.gnu.org
 	bordeaux.guix.gnu.org
+	ci.guix.gnu.org
     )
 
     if prompt_yes_no "Permit downloading pre-built package binaries from the \

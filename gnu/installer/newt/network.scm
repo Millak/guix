@@ -127,8 +127,8 @@ FULL-VALUE tentatives, spaced by 1 second."
           (lambda _ #f))
         (alarm 3))
       (lambda ()
-        (or (url-alive? "https://ci.guix.gnu.org")
-            (url-alive? "https://bordeaux.guix.gnu.org")))
+        (or (url-alive? "https://bordeaux.guix.gnu.org")
+            (url-alive? "https://ci.guix.gnu.org")))
       (lambda ()
         (alarm 0))))
 
