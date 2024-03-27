@@ -3510,7 +3510,7 @@ learning libraries.")
 (define-public xgboost
   (package
     (name "xgboost")
-    (version "1.5.2")
+    (version "1.7.6")
     (source
      (origin
        (method git-fetch)
@@ -3520,7 +3520,7 @@ learning libraries.")
        (file-name (git-file-name name version))
        (patches (search-patches "xgboost-use-system-dmlc-core.patch"))
        (sha256
-        (base32 "0qx04y7cz8z7qv6bk9q7d7ba9b7xzj53l83l2x9ykdwhzacc3dn0"))))
+        (base32 "16fbm5y3hn6ccflmbdlmn7krrdq7c0az3mxd8j1d23s9ky8niw05"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DGOOGLE_TEST=ON")))
@@ -3547,40 +3547,7 @@ in a fast and accurate way.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "tests/python"
-             ;; FIXME: CLI tests fail with PermissionError.
-             "--ignore" "tests/python/test_cli.py"
-             "-k"
-             (string-append
-              "not test_cli_regression_demo"
-              ;; These tests use the Boston dataset that has been
-              ;; removed from scipy.
-              " and not test_sklearn_demo"
-              " and not test_sklearn_parallel_demo"
-              " and not test_predict_shape"
-              " and not test_num_parallel_tree"
-              " and not test_boston_housing_regression"
-              " and not test_boston_housing_rf_regression"
-              " and not test_parameter_tuning"
-              " and not test_regression_with_custom_objective"
-              " and not test_RFECV"
-              ;; Pandas incompatibility? Says:
-              ;; '_CalibratedClassifier' object has no attribute
-              ;; 'base_estimator'
-              " and not test_pandas_input"
-              ;; Accuracy problems?
-              " and not test_exact"
-              " and not test_approx"
-              " and not test_hist"
-              ;; The tests below open a network connection.
-              " and not test_model_compatibility"
-              " and not test_get_group"
-              " and not test_cv_no_shuffle"
-              " and not test_cv"
-              " and not test_training"
-              ;; "'['./runexp.sh']' returned non-zero exit status 1"
-              " and not test_cli_binary_classification"))
+      #:tests? #f ; all tests require network access
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
