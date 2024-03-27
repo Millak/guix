@@ -44205,22 +44205,52 @@ while still providing platform specific APIs.")
   (package
     (inherit rust-nix-0.22)
     (name "rust-nix")
-    (version "0.21.0")
+    (version "0.21.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1isfgr239sxvkcjhcp08rz2nqi4s6w5ik2l2m183ldlxqkz2hdsw"))))
+        (base32 "1iqj1mvf15bja6i3kmsfrmmg5jwd02pxsg1v2ld69q583r9g7nbp"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test_unistd::test_execve::test_cstr_ref"
+         "--skip=test_unistd::test_execve::test_cstring"
+         "--skip=test_unistd::test_execveat_absolute::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_absolute::test_cstring"
+         ;; Some of the tests hang.
+         "--skip=sys::test_socket::test_af_alg_aead"
+         "--skip=test_unistd::test_execveat_empty::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_empty::test_cstring"
+         "--skip=test_unistd::test_execveat_relative::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_relative::test_cstring"
+         "--skip=test_unistd::test_fexecve::test_cstr_ref"
+         "--skip=test_unistd::test_fexecve::test_cstring"
+         ;; cannot find macro `libc_bitflags` in this scope
+         "--skip=macros::libc_bitflags"
+         "--skip=macros::libc_enum"
+         ;; Some doctests segfault.
+         "--skip=sys::personality::set"
+         "--skip=unistd::Group::from_gid"
+         "--skip=unistd::Group::from_name"
+         "--skip=unistd::User::from_name"
+         "--skip=unistd::User::from_uid")
        #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
+       (("rust-bitflags" ,rust-bitflags-1.2)    ; Not a newer version.
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.6))))))
+        ("rust-memoffset" ,rust-memoffset-0.6))
+       #:cargo-development-inputs
+       (("rust-assert-impl" ,rust-assert-impl-0.1)
+        ("rust-caps" ,rust-caps-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-sysctl" ,rust-sysctl-0.1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.20
   (package
