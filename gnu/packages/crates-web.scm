@@ -3079,19 +3079,20 @@ requests and responses.")
 (define-public rust-http-auth-0.1
   (package
     (name "rust-http-auth")
-    (version "0.1.8")
+    (version "0.1.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "http-auth" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1g6gpn2py0c4l45wp61k3zc45vg5l20zq39mxgxh56hzgb6wlc2l"))))
+               (base32 "0mf27f963mxpbyjw20sjmm0ziqvr9z9m7kdlsrbada2fdazrng34"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.21)
         ("rust-digest" ,rust-digest-0.10)
         ("rust-hex" ,rust-hex-0.4)
+        ("rust-http" ,rust-http-1)
         ("rust-http" ,rust-http-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-md-5" ,rust-md-5-0.10)
