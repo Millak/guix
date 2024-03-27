@@ -33873,14 +33873,14 @@ inference diagnostics.
 (define-public r-brms
   (package
     (name "r-brms")
-    (version "2.20.4")
+    (version "2.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "brms" version))
        (sha256
         (base32
-         "0bq76birbaqi2387d4qv2m8vvjcki9nkc2jychz6nkhcd7mg79h0"))))
+         "0n2xxiibypfazcbx8rx4h5c4pl9zlmm0mkpyny23bf54q8rzz2bj"))))
     (properties `((upstream-name . "brms")))
     (build-system r-build-system)
     (propagated-inputs
@@ -33890,6 +33890,7 @@ inference diagnostics.
            r-bridgesampling
            r-coda
            r-future
+           r-future-apply
            r-ggplot2
            r-glue
            r-loo
@@ -33902,8 +33903,7 @@ inference diagnostics.
            r-rcpp
            r-rlang
            r-rstan
-           r-rstantools
-           r-shinystan))
+           r-rstantools))
     (native-inputs (list r-knitr r-r-rsp))
     (home-page
      "https://github.com/paul-buerkner/brms")
