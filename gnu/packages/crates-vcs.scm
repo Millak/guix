@@ -1050,14 +1050,14 @@ Rust implementation of Git.")
 (define-public rust-gix-bitmap-0.2
   (package
     (name "rust-gix-bitmap")
-    (version "0.2.10")
+    (version "0.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-bitmap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09bk3y4mb4zpncqv07mj6n0if69g245b1jgsv96h70314h7wvdkq"))))
+        (base32 "1bl7gqqlsdwngvvpgj6cby07cwidf7m0yk6wv473zqflrdkdnwd3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
