@@ -2494,16 +2494,16 @@ windows crate.")
   (package
     (inherit rust-windows-x86-64-gnullvm-0.52)
     (name "rust-windows-x86-64-gnullvm")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_gnullvm" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0lxryz3ysx0145bf3i38jkr7f9nxiym8p3syklp8f20yyk0xp5kq"))
+                "1k24810wfbgz8k48c2yknqjmiigmql6kk3knmddkv8k8g1v54yqb"))
               (snippet
-               '(delete-file "lib/libwindows.0.48.0.a"))))
+               '(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-x86-64-gnullvm-0.42
