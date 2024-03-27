@@ -2263,14 +2263,14 @@ if they were just another Rust module.")
   (package
     (inherit rust-windows-targets-0.52)
     (name "rust-windows-targets")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows-targets" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1mfzg94w0c8h4ya9sva7rra77f3iy1712af9b6bwg03wrpqbc7kv"))))
+                "034ljxqshifs1lan89xwpcy1hp0lhdh4b5n0d2z4fwjx2piacbws"))))
     (arguments
      `(#:cargo-inputs
        (("rust-windows-aarch64-gnullvm" ,rust-windows-aarch64-gnullvm-0.48)
