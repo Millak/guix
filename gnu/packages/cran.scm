@@ -41288,7 +41288,7 @@ constructing and executing optimized SQL queries.")
         (base32 "0xy5w7cz9sb0xmxvzajg4sf0ip2ihxc5nimh10awchvkywzgsyjf"))))
     (properties `((upstream-name . "varhandle")))
     (build-system r-build-system)
-    (home-page "https://bitbucket.org/mehrad_mahmoudian/varhandle")
+    (home-page "https://codeberg.org/mehrad/varhandle")
     (synopsis "Functions for robust variable handling")
     (description
      "This package contains some functions to help users (especially data
