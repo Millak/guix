@@ -477,6 +477,44 @@ the name of the library itself, which is written in C++.")
       (license (list license:expat        ; cJSON
                      license:bsd-4)))))   ; everything else (LICENSE.txt)
 
+(define-public pystring
+  (package
+    (name "pystring")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/imageworks/pystring")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0h12x24skrlx4fv0k5vl8wnar8gi6bq091yp93awkwsbnm8qwkzd"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; The install phase doesn't install the header
+               (add-after 'install 'install-header
+                 (lambda _
+                   (mkdir-p (string-append #$output "/include"))
+                   (copy-file
+                    (string-append #$(package-source this-package)
+                                   "/pystring.h")
+                    (string-append #$output
+                                   "/include/pystring.h")))))))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/imageworks/pystring")
+    (synopsis "C++ functions matching the Python string methods")
+    (description
+     "Pystring is a collection of C++ functions which match the interface and
+behavior of Python's string class methods using std::string.  Implemented in
+C++, it does not require or make use of a python interpreter.  It provides
+convenience and familiarity for common string operations not included in the
+standard C++ library.  It's also useful in environments where both C++ and
+Python are used.")
+    (license license:bsd-3)))
+
 (define-public dashel
   (package
     (name "dashel")
