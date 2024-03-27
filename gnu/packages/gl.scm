@@ -297,17 +297,17 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "23.3.2")
+    (version "24.0.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (list (string-append "https://archive.mesa3d.org/"
-                                  "mesa-" version ".tar.xz")
-                   (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
-                                  "mesa-" version ".tar.xz")))
-        (sha256
-         (base32
-          "1p4swrbmz3kb1805kdj973hf8virgmix4m9qprmcb2bgl4gviz1w"))))
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://archive.mesa3d.org/"
+                                 "mesa-" version ".tar.xz")
+                  (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
+                                 "mesa-" version ".tar.xz")))
+       (sha256
+        (base32
+         "1gpx3glifdvyw2fxigiannrxkdfhag6b6h0nxab3azbvlfickbkp"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
