@@ -41008,13 +41008,13 @@ of a small set of carefully designed functions, most of which
 (define-public r-maxlik
   (package
     (name "r-maxlik")
-    (version "1.5-2")
+    (version "1.5-2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "maxLik" version))
        (sha256
-        (base32 "0pdigfpyiqacj2ydhpn5w1h89dz1ydk0syzs25lsgdi40sz0bvkw"))))
+        (base32 "0pcjhf8r7xz93qp4phs6l4i56y30ksivgv5ysnjh6khbdmicfm6h"))))
     (properties `((upstream-name . "maxLik")))
     (build-system r-build-system)
     (propagated-inputs (list r-generics r-misctools r-sandwich))
