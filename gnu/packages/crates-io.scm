@@ -10752,14 +10752,14 @@ capabilities.")
 (define-public rust-cargo-credential-0.4
   (package
     (name "rust-cargo-credential")
-    (version "0.4.2")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z9jdiccn474v420qs5bbyrdaqydjs0a4pvnbj39ncrp3h0ss9zc"))))
+        (base32 "1qvmiy683s4hq3fk9gz7bvshngjc2p1mn5arkw5fc5c7ygd04p2f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
