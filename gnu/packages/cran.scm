@@ -5741,13 +5741,13 @@ annotation data to keep updated.")
 (define-public r-ggtern
   (package
     (name "r-ggtern")
-    (version "3.4.2")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggtern" version))
        (sha256
-        (base32 "1xmh0gi81xrzkgjlbxb3jl9mrj407q7ykm4wpdbmd4gdswv20y61"))))
+        (base32 "0ymly9vdzk7rd4p27m1262bm7fvim989yswgw3mr9y0422dn8awa"))))
     (properties `((upstream-name . "ggtern")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5761,6 +5761,7 @@ annotation data to keep updated.")
            r-mass
            r-plyr
            r-proto
+           r-rlang
            r-scales))
     (home-page "http://www.ggtern.com")
     (synopsis "Extension to ggplot2 for ternary diagrams")
