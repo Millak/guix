@@ -23316,18 +23316,18 @@ utilities for sequence data management under the ACNUC system.")
 (define-public r-unigd
   (package
     (name "r-unigd")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "unigd" version))
        (sha256
-        (base32 "0519v2p4jzfpilai022blvyxi56kfdidafwjpa1g6lnmwmpk4isq"))))
+        (base32 "0q6nix6pqjg7adfyisg6zn7hzwkdmz1dhd34c6a58dsg2yq1qh1a"))))
     (properties `((upstream-name . "unigd")))
     (build-system r-build-system)
     (inputs (list cairo fontconfig freetype libpng zlib))
     (propagated-inputs (list r-cpp11 r-systemfonts))
-    (native-inputs (list r-knitr pkg-config))
+    (native-inputs (list pkg-config r-knitr))
     (home-page "https://github.com/nx10/unigd")
     (synopsis "Universal graphics device")
     (description
