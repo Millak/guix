@@ -32,6 +32,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages version-control)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix download)
@@ -83,29 +84,28 @@ dictionaries.")
                 "1bn7z8155czgzlnq2n4c915cl1vd3v95h1bghic3szy7c8q94rgm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static"
-                           ;; Tests require a relocatable build.
-                           "--enable-relocatable")))
+     (list
+      #:configure-flags
+      #~(list"--disable-static"
+             ;; Tests require a relocatable build.
+             "--enable-relocatable")))
     (inputs
      (list aspell hunspell))
     (propagated-inputs
      ;; Required by enchant.pc.
      (list glib))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("groff" ,groff)
-       ("pkg-config" ,pkg-config)
-       ("unittest-cpp" ,unittest-cpp)))
+     (list `(,glib "bin") groff pkg-config unittest-cpp))
     (synopsis "Multi-backend spell-checking library wrapper")
     (description
-      "On the surface, Enchant appears to be a generic spell checking library.
-Looking closer, you'll see the Enchant is more-or-less a fancy wrapper around
-the dlopen() system call.
-
-Enchant steps in to provide uniformity and conformity on top of these libraries,
-and implement certain features that may be lacking in any individual provider
-library.  Everything should \"just work\" for any and every definition of \"just
-working\".")
+     "Enchant is a library---and command-line program---that wraps a number of
+different spelling libraries and programs with a consistent interface.  By
+using Enchant, you can use a wide range of spelling libraries, including some
+specialized for particular languages, without needing to program to each
+library's interface.  If it's not convenient to call a C library, you can
+access most of Enchant's functionality via the @command{enchant} program,
+which communicates over a pipe, like Ispell, and is indeed
+Ispell-compatible.")
     (home-page "https://abiword.github.io/enchant/")
     (license lgpl2.1+)))
 
