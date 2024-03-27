@@ -1623,10 +1623,11 @@ very fast, and tries to be entropy pool friendly.")
         (base32 "1kl9l08aas544627zmhkgp843qx94sxs4inxm20nw1hx7gp79dz0"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/nbrownus/go-metrics-prometheus"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-rcrowley-go-metrics
-           go-github-com-prometheus-client-golang))
+     (list go-github-com-prometheus-client-golang
+           go-github-com-rcrowley-go-metrics))
     (home-page "https://github.com/nbrownus/go-metrics-prometheus")
     (synopsis "Prometheus support for go-metrics")
     (description
