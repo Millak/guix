@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen0@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -5125,7 +5125,7 @@ sample library.")
 (define-public muse-sequencer
   (package
     (name "muse-sequencer")
-    (version "4.1.0")
+    (version "4.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5134,7 +5134,7 @@ sample library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1iihjivpkvmdfqf20kcl9k0s1iwlv9p5vpna7c58lbw3573fiyr4"))))
+                "13b9xx8x8yr58r8765xn770kfn3k2whmvmpl2657nc19max9n61g"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -5174,7 +5174,8 @@ sample library.")
            rubberband
            sord))
     (native-inputs
-     (list perl
+     (list extra-cmake-modules
+           perl
            pkg-config
            python-wrapper
            qttools-5))
