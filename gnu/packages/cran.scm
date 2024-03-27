@@ -38611,21 +38611,23 @@ as a data frame.  It also supports writing data frames to an ODS file.")
 (define-public r-qpdf
   (package
     (name "r-qpdf")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
       (method url-fetch)
       (uri (cran-uri "qpdf" version))
       (sha256
        (base32
-        "0xp9x11jpih59s0skfswi5chmv1p8zhz4f66w0nxfx4jhyj0bjfr"))
+        "0lzyc1g7q809h047il5nkizv124j13m1zf3j32in0gx7dyz10mj1"))
       (modules '((guix build utils)))
       (snippet
        '(begin
            ;; unvendor libqpdf
           (delete-file-recursively "src/libqpdf")
           (delete-file-recursively "src/include/qpdf")))))
-    (properties `((upstream-name . "qpdf")))
+    (properties
+     `((upstream-name . "qpdf")
+       (updater-extra-inputs . ("qpdf"))))
     (build-system r-build-system)
     (arguments
      '(#:phases
