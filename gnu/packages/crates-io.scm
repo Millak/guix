@@ -16165,17 +16165,17 @@ to the @code{is_x86_feature_detected!} macro.")
        #:cargo-development-inputs
        (("rust-tempdir" ,rust-tempdir-0.3))))))
 
-(define-public rust-crates-io-0.39
+(define-public rust-crates-io-0.40
   (package
     (name "rust-crates-io")
-    (version "0.39.1")
+    (version "0.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crates-io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1a5i5l9v2khikp3b1cbpqjbx0nhggfq261lpfv3skh9w2210qlx4"))))
+        (base32 "1y4f7hjs7wq84qcmfcc5mflp00by9vk2ypkfc1wcz2c8zi6qp58r"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-curl" ,rust-curl-0.4)
