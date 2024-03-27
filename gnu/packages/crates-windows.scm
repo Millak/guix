@@ -1422,16 +1422,16 @@ if they were just another Rust module.")
   (package
     (inherit rust-windows-aarch64-gnullvm-0.52)
     (name "rust-windows-aarch64-gnullvm")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_aarch64_gnullvm" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1g71yxi61c410pwzq05ld7si4p9hyx6lf5fkw21sinvr3cp5gbli"))
+                "1n05v7qblg1ci3i567inc7xrkmywczxrs1z3lj3rkkxw18py6f1b"))
               (snippet
-               '(delete-file "lib/libwindows.0.48.0.a"))))
+               '(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-aarch64-gnullvm-0.42
