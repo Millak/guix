@@ -3233,6 +3233,14 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "gnome"))))))
 
+(define-public xremap-hyprland
+  (package
+    (inherit rust-xremap)
+    (name "xremap-hyprland")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "hypr"))))))
+
 (define-public xremap-sway
   (package
     (inherit rust-xremap)
