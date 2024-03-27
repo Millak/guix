@@ -2590,14 +2590,14 @@ the library crate of Cargo.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.30+cargo-0.77.0")
+    (version "0.9.31+cargo-0.78.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0if4cl1sk67v5xzxbphnnqg07fphxrh08bgji0gj23fvbiiy6xzc"))))
+         (base32 "1y60hhjikkzk5s36gskgbxbyzr6ik7w0dn5j84mvqlilcs3ab0lj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
