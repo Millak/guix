@@ -3797,7 +3797,7 @@ Python.")
 (define-public python-sip
   (package
     (name "python-sip")
-    (version "6.7.7")
+    (version "6.8.3")
     (source
       (origin
         (method url-fetch)
@@ -3807,13 +3807,14 @@ Python.")
                                   "/sip-" version ".tar.gz")))
         (sha256
          (base32
-          "1qm9q9lhfky5zvxxkssf4zdfv5k1zikji4hz80d48vdfm1pw1sfy"))
+          "0b3n237lbggz3b6bfmdsl1m4qgai7qyyj6fmvrmc695v32q4g1c8"))
         (patches (search-patches "python-sip-include-dirs.patch"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-wrapper))
     (propagated-inputs
-     (list python-toml python-packaging python-ply))
+     (list python-tomli
+           python-packaging))
     (home-page "https://www.riverbankcomputing.com/software/sip/intro")
     (synopsis "Python binding creator for C and C++ libraries")
     (description
