@@ -68882,18 +68882,17 @@ implementations.")
 (define-public rust-slog-async-2
   (package
     (name "rust-slog-async")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "slog-async" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p7v0jl82snmk1c7f6ch528ladzyprlk5gzaqkdqa342ky3i6266"))))
+        (base32 "113b17aw7jx7mr68vwfq2yiv6mb4702hz6a0g587jb4ai67h7j3j"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-slog" ,rust-slog-2)
         ("rust-take-mut" ,rust-take-mut-0.2)
