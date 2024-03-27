@@ -3283,13 +3283,13 @@ with default R plot functions.")
 (define-public r-plumber
   (package
     (name "r-plumber")
-    (version "1.2.1")
+    (version "1.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plumber" version))
               (sha256
                (base32
-                "1k0y7ylc8bld16imn86g0i0dmxmr3kmh9ax4ys0yrxqzrvji7z3g"))))
+                "1ycq3kjkrlx66h05g5ncvmq2cr051609xs4bzs8n49c70h6p0bpr"))))
     (properties `((upstream-name . "plumber")))
     (build-system r-build-system)
     (propagated-inputs (list r-crayon
