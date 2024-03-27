@@ -44283,21 +44283,65 @@ while still providing platform specific APIs.")
   (package
     (inherit rust-nix-0.21)
     (name "rust-nix")
-    (version "0.20.0")
+    (version "0.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12n1syfd967hblrcrrqk63a4s1h4hsybfqwblh71rihvv8cli6zs"))))
+        (base32 "0ia96wf568sksplpcxzzf2m5jj974sri93469vpnh5b1zcln3q7m"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test_unistd::test_execve::test_cstr_ref"
+         "--skip=test_unistd::test_execve::test_cstring"
+         "--skip=test_unistd::test_execveat_absolute::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_absolute::test_cstring"
+         "--skip=sys::test_aio::test_liocb_listio_nowait"
+         "--skip=sys::test_aio::test_liocb_listio_signal"
+         "--skip=sys::test_aio::test_liocb_listio_wait"
+         "--skip=sys::test_aio::test_write_sigev_signal"
+         "--skip=sys::test_select::test_pselect"
+         "--skip=sys::test_signal::test_old_sigaction_flags"
+         "--skip=sys::test_signal::test_signal"
+         "--skip=sys::test_signal::test_signal_sigaction"
+         "--skip=sys::test_signal::test_sigprocmask"
+         "--skip=sys::test_signalfd::test_signalfd"
+         "--skip=test_unistd::test_alarm"
+         "--skip=test_unistd::test_canceling_alarm"
+         ;; Some of the tests hang.
+         "--skip=sys::test_socket::test_af_alg_aead"
+         "--skip=test_unistd::test_execveat_empty::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_empty::test_cstring"
+         "--skip=test_unistd::test_execveat_relative::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_relative::test_cstring"
+         "--skip=test_unistd::test_fexecve::test_cstr_ref"
+         "--skip=test_unistd::test_fexecve::test_cstring"
+         ;; cannot find macro `libc_bitflags` in this scope
+         "--skip=macros::libc_bitflags"
+         "--skip=macros::libc_enum"
+         ;; Some doctests segfault.
+         "--skip=sys::aio::LioCb<'a>::listio"
+         "--skip=sys::aio::aio_suspend"
+         "--skip=sys::personality::set"
+         "--skip=unistd::Group::from_gid"
+         "--skip=unistd::Group::from_name"
+         "--skip=unistd::User::from_name"
+         "--skip=unistd::User::from_uid")
        #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
+       (("rust-bitflags" ,rust-bitflags-1.2)    ; Not a newer version.
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-libc" ,rust-libc-0.2))))))
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.6))
+       #:cargo-development-inputs (("rust-bytes" ,rust-bytes-0.4)
+                                   ("rust-caps" ,rust-caps-0.5)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-rand" ,rust-rand-0.6)
+                                   ("rust-semver" ,rust-semver-0.9)
+                                   ("rust-sysctl" ,rust-sysctl-0.1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.19
   (package
