@@ -7935,13 +7935,13 @@ by Li, Brown, Huang, and Bickel")
 (define-public r-inext
   (package
     (name "r-inext")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iNEXT" version))
        (sha256
-        (base32 "1yfvadvdwgby047svj9sjwkm7hhrni2ifn6d2g5bv9djcvi22msh"))))
+        (base32 "1nf4jhwqx5im966qzq7si78c5q4jgsa73d74ya8q8aj02n49jcyy"))))
     (properties `((upstream-name . "iNEXT")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-rcpp r-reshape2))
