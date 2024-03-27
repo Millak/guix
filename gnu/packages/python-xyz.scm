@@ -19311,7 +19311,7 @@ applications.")
 (define-public python-qasync
   (package
     (name "python-qasync")
-    (version "0.22.0")
+    (version "0.27.1")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -19321,17 +19321,16 @@ applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q9cllrwf94whr0f6mipa0hdq1rcyqvklwx19g35g2dav8f3xkjl"))))
-    (build-system python-build-system)
+        (base32 "0j6ksfnq9qfjdfppbkdz7jh6w0gnslwnckhafmlgim29b25g0z51"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:test-target "pytest"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-qpa
-           (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-qpa
+                 (lambda _
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list python-poetry-core python-pytest))
     (propagated-inputs
      (list python-pyqt))
     (home-page "https://github.com/CabbageDevelopment/qasync")
