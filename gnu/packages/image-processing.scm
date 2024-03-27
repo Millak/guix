@@ -260,57 +260,36 @@ of external libraries that provide additional functionality.")
 (define-public opencolorio
   (package
     (name "opencolorio")
-    (version "1.1.1")
+    (version "2.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/AcademySoftwareFoundation/OpenColorIO")
              (commit (string-append "v" version))))
-       (patches (search-patches "opencolorio-fix-build-with-gcc11.patch"))
        (sha256
-        (base32 "12srvxca51czpfjl0gabpidj9n84mw78ivxy5w75qhq2mmc798sb"))
-       (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           ;; Remove bundled tarballs, patches, and .jars(!).  XXX: Upstream
-           ;; claims to have fixed USE_EXTERNAL_YAML, but it still fails with:
-           ;; https://github.com/AcademySoftwareFoundation/OpenColorIO/issues/517
-           ;; When removing it, also remove it from the licence field comment.
-           (for-each delete-file-recursively
-                     (filter
-                      (lambda (full-name)
-                        (let ((file (basename full-name)))
-                          (not (or (string-prefix? "yaml-cpp-0.3" file)
-                                   (string=? "unittest.h" file)))))
-                      (find-files "ext" ".*")))
-
-           #t))))
+        (base32 "1h33s2pfy28nj836kx6xx3iks7v38g3kx7c4f6zn1dpskl0zf809"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DCMAKE_CXX_FLAGS="
-                            "-Wno-error=deprecated-declarations "
-                            "-Wno-error=unused-function")
-             "-DOCIO_BUILD_STATIC=OFF"
-             ;; "-DUSE_EXTERNAL_YAML=ON"
-             "-DUSE_EXTERNAL_TINYXML=ON"
-             "-DUSE_EXTERNAL_LCMS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-test-suite
-           (lambda _
-             (substitute* "src/core_tests/CMakeLists.txt"
-               (("/bin/sh") (which "bash")))
-             #t)))))
+     ;; XXX: GPU tests are failing.
+     (list #:configure-flags #~(list "-DOCIO_BUILD_GPU_TESTS=false")))
     (native-inputs
-     (list git pkg-config))
+     ;; XXX: OCIO has unit tests for OpenShadingLanguage, but they fail.
+     ;; They also require OIIO, but OCIO is an optional dependency to it.
+     (list pybind11-2.10 python-wrapper))
     (inputs
-     ;; XXX Adding freeglut, glew, ilmbase, mesa, and openimageio for
-     ;; ocioconvert fails: error: conflicting declaration ?typedef void
-     ;; (* PFNGLGETFRAGMENTMATERIALFVSGIXPROC)(GLenum, GLenum, GLfloat*)
-     (list lcms openexr-2 tinyxml))
+     (list expat
+           freeglut
+           glew
+           imath
+           lcms
+           libglvnd
+           minizip-ng
+           openexr
+           pystring
+           yaml-cpp
+           zlib))
     (home-page "https://opencolorio.org")
     (synopsis "Color management for visual effects and animation")
     (description
@@ -323,9 +302,7 @@ back-end configuration options suitable for high-end production usage.
 OCIO is compatible with the @acronym{ACES, Academy Color Encoding
 Specification} and is @acronym{LUT, look-up table}-format agnostic, supporting
 many popular formats.")
-    (license (list license:expat        ; docs/ociotheme/static, ext/yaml-cpp-*
-                   license:zlib         ; src/core/md5
-                   license:bsd-3))))    ; the rest
+    (license license:bsd-3)))
 
 (define-public vtk
   (package
