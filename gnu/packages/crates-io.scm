@@ -62797,17 +62797,17 @@ rustc compiler.")
     (description "Types for rustdoc's json output.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rustfix-0.7
+(define-public rust-rustfix-0.8
   (package
     (name "rust-rustfix")
-    (version "0.7.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustfix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xaicbgcbvwkf4m9wxmd8jic1a1di0k63mjlyd74jbiap6z0rhby"))))
+        (base32 "1975qnw1rdd1bsj8qzii0vx0mdxv4946xp4gfprmvnj6f04lp1l1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
@@ -62824,6 +62824,30 @@ rustc compiler.")
     (synopsis "Automatically apply the suggestions made by rustc")
     (description "Automatically apply the suggestions made by rustc.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-rustfix-0.7
+  (package
+    (inherit rust-rustfix-0.8)
+    (name "rust-rustfix")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustfix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xaicbgcbvwkf4m9wxmd8jic1a1di0k63mjlyd74jbiap6z0rhby"))))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-rustfix-0.6
   (package
