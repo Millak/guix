@@ -283,20 +283,21 @@ newlines until a non-newline.")
     (name "go-github-com-anmitsu-go-shlex")
     (version "0.0.0-20200514113438-38f4b401e2be")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/anmitsu/go-shlex")
-               (commit (go-version->git-ref version))))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32 "17iz68yzbnr7y4s493asbagbv79qq8hvl2pkxvm6bvdkgphj8w1g"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anmitsu/go-shlex")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17iz68yzbnr7y4s493asbagbv79qq8hvl2pkxvm6bvdkgphj8w1g"))))
     (build-system go-build-system)
     (arguments '(#:import-path "github.com/anmitsu/go-shlex"))
     (home-page "https://github.com/anmitsu/go-shlex")
     (synopsis "Simple shell-like lexical analyzer for Go")
-    (description "This package provides a simple lexical analyzer to parse
-shell-like commands.")
+    (description
+     "This package provides a simple lexical analyzer to parse shell-like
+commands.")
     (license license:expat)))
 
 (define-public go-github-com-armon-go-radix
