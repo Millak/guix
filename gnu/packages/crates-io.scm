@@ -1657,8 +1657,34 @@ it outputs messages to Android's logcat.")
     ;; The user can choose either license.
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-annotate-snippets-0.10
+  (package
+    (name "rust-annotate-snippets")
+    (version "0.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "annotate-snippets" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rmzxhi079d6j67x1dyv3sjkrc13x6av513cn27pwjl8i5bnd6vd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-difference" ,rust-difference-2)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-toml" ,rust-toml-0.5))))
+    (home-page "https://github.com/rust-lang/annotate-snippets-rs")
+    (synopsis "Library for building code annotations")
+    (description "Library for building code annotations.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-annotate-snippets-0.9
   (package
+    (inherit rust-annotate-snippets-0.10)
     (name "rust-annotate-snippets")
     (version "0.9.2")
     (source
@@ -1668,7 +1694,6 @@ it outputs messages to Android's logcat.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07p8r6jzb7nqydq0kr5pllckqcdxlyld2g275v425axnzffpxbyc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1)
                        ("rust-yansi-term" ,rust-yansi-term-0.1))
@@ -1677,11 +1702,7 @@ it outputs messages to Android's logcat.")
                                    ("rust-glob" ,rust-glob-0.3)
                                    ("rust-serde" ,rust-serde-1)
                                    ("rust-toml" ,rust-toml-0.5)
-                                   ("rust-yansi-term" ,rust-yansi-term-0.1))))
-    (home-page "https://github.com/rust-lang/annotate-snippets-rs")
-    (synopsis "Library for building code annotations")
-    (description "Library for building code annotations.")
-    (license (list license:asl2.0 license:expat))))
+                                   ("rust-yansi-term" ,rust-yansi-term-0.1))))))
 
 (define-public rust-ansi-parser-0.8
   (package
