@@ -36102,21 +36102,23 @@ for creating, simulating, or validating values for such parameters.")
 (define-public r-tune
   (package
     (name "r-tune")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tune" version))
        (sha256
         (base32
-         "12z1h574ymg9r3q19h5nhbkmzb5p3ckz7xvp6p0yra1mdmzcq0v9"))))
+         "1z5id7mp9yknxz4lbb0304wn47ii61zmds3grffc4q84v3d9gb76"))))
     (properties `((upstream-name . "tune")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-dials
+           r-dofuture
            r-dplyr
            r-foreach
+           r-future
            r-generics
            r-ggplot2
            r-glue
