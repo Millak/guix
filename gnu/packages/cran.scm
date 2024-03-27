@@ -8147,13 +8147,13 @@ functions from LINPACK.")
 (define-public r-littler
   (package
     (name "r-littler")
-    (version "0.3.19")
+    (version "0.3.20")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "littler" version))
               (sha256
                (base32
-                "02b5lfdhajngs2l0fgy47zn7zn68qbx6m41cs5yzzi80qdfapkz1"))))
+                "0nh6bgnxgryygfzxcwci9gm53adq9r0837apvnpq51w7f6jwq44q"))))
     (properties
      `((upstream-name . "littler")
        (updater-extra-inputs . ("icu4c" "zlib"))))
