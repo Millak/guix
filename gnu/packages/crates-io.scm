@@ -25362,7 +25362,7 @@ sparse files.")
 (define-public rust-filetime-0.2
   (package
     (name "rust-filetime")
-    (version "0.2.22")
+    (version "0.2.23")
     (source
       (origin
         (method url-fetch)
@@ -25370,14 +25370,14 @@ sparse files.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1w1a4zb4ciqjl1chvp9dplbacq07jv97pkdn0pzackbk7vfrw0nl"))))
+          "1za0sbq7fqidk8aaq9v7m9ms0sv8mmi49g6p5cphpan819q4gr0y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.3)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
+        ("rust-redox-syscall" ,rust-redox-syscall-0.4)
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/alexcrichton/filetime")
