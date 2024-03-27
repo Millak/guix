@@ -5027,6 +5027,26 @@ simple editor for binary data, just like @code{QPlainTextEdit} is for text
 data.")
     (license license:lgpl2.1)))
 
+(define-public qthttpserver
+  (package
+    (name "qthttpserver")
+    (version "6.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "1qzw96y20qr1kc9wmys61wm568jsknvlgvh09bbqjcmm6dm3lhd2"))))
+    (build-system cmake-build-system)
+    (inputs (list qtbase qtwebsockets))
+    (home-page (package-home-page qtbase))
+    (synopsis "HTTP server module for Qt")
+    (description "Qt HTTP Server supports building HTTP server functionality
+into an application.  Common use cases are exposing the application's
+functionality through REST APIs, or making devices in a trusted environment
+configurable also via HTTP.")
+    (license license:gpl3+)))
+
 (define-public soqt
   (let ((commit-ref "fb8f655632bb9c9c60e0ff9fa69a5ba22d3ff99d")
         (revision "1"))
