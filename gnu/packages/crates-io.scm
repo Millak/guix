@@ -44148,22 +44148,49 @@ while still providing platform specific APIs.")
   (package
     (inherit rust-nix-0.24)
     (name "rust-nix")
-    (version "0.23.1")
+    (version "0.23.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "nix" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1iimixk7y2qk0jswqich4mkd8kqyzdghcgy6203j8fmxmhbn71lz"))))
+                "0p5kxhm5d8lry0szqbsllpcb5i3z7lg1dkglw0ni2l011b090dwg"))))
     (arguments
-     (list #:skip-build? #t
+     (list #:cargo-test-flags
+           `(list "--release" "--"
+                  "--skip=test_unistd::test_execve::test_cstr_ref"
+                  "--skip=test_unistd::test_execve::test_cstring"
+                  "--skip=test_unistd::test_execveat_absolute::test_cstr_ref"
+                  "--skip=test_unistd::test_execveat_absolute::test_cstring"
+                  ;; Some of the tests hang.
+                  "--skip=test_unistd::test_execveat_empty::test_cstr_ref"
+                  "--skip=test_unistd::test_execveat_empty::test_cstring"
+                  "--skip=test_unistd::test_execveat_relative::test_cstr_ref"
+                  "--skip=test_unistd::test_execveat_relative::test_cstring"
+                  "--skip=test_unistd::test_fexecve::test_cstr_ref"
+                  "--skip=test_unistd::test_fexecve::test_cstring"
+                  ;; Some doctests segfault.
+                  "--skip=sys::personality::set"
+                  "--skip=unistd::Group::from_gid"
+                  "--skip=unistd::Group::from_name"
+                  "--skip=unistd::User::from_name"
+                  "--skip=unistd::User::from_uid")
            #:cargo-inputs
            `(("rust-bitflags" ,rust-bitflags-1)
              ("rust-cc" ,rust-cc-1)
              ("rust-cfg-if" ,rust-cfg-if-1)
              ("rust-libc" ,rust-libc-0.2)
-             ("rust-memoffset" ,rust-memoffset-0.6))))))
+             ("rust-memoffset" ,rust-memoffset-0.6))
+           #:cargo-development-inputs
+           `(("rust-assert-impl" ,rust-assert-impl-0.1)
+             ("rust-caps" ,rust-caps-0.5)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-parking-lot" ,rust-parking-lot-0.11)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-semver" ,rust-semver-1)
+             ("rust-sysctl" ,rust-sysctl-0.1)
+             ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.22
   (package
