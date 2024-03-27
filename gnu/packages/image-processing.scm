@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2014, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
@@ -52,6 +52,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -97,6 +98,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -1317,24 +1319,42 @@ libraries designed for computer vision research and implementation.")
        (sha256
         (base32 "0bs63mk4q8jmx38f031jy5w5n9yy5ng9x8ijwinvjyvas8cichqi"))))
     (build-system cmake-build-system)
+    (outputs '("out" "python"))
     (arguments
-     (list #:tests? #f ; tests require network access and external data
-           #:configure-flags #~'("-DITK_USE_GPU=ON"
-                                 "-DITK_USE_SYSTEM_LIBRARIES=ON"
-                                 "-DITK_USE_SYSTEM_GOOGLETEST=ON"
-                                 "-DITK_BUILD_SHARED=ON"
-                                 ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
-                                 ;; variable in the installed CMake files.  This is necessary as other
-                                 ;; packages using insight-toolkit could not be configured otherwise.
-                                 "-DGTEST_ROOT=gtest"
-                                 "-DCMAKE_CXX_STANDARD=17")
+     (list #:tests? #f        ; tests require network access and external data
+           #:configure-flags
+           #~(list "-DITK_USE_GPU=ON"
+                   "-DITK_USE_SYSTEM_LIBRARIES=ON"
+                   "-DITK_USE_SYSTEM_GOOGLETEST=ON"
+                   "-DITK_USE_SYSTEM_CASTXML=ON"
+                   "-DITK_BUILD_SHARED=ON"
+                   "-DITK_WRAPPING=ON"
+                   "-DITK_WRAP_PYTHON=ON"
+                   "-DITK_DYNAMIC_LOADING=ON"
+                   (let* ((python-version
+                           #$(version-major+minor
+                              (package-version (this-package-input "python"))))
+                          (python-lib-path
+                           (string-append #$output:python
+                                          "/lib/python" python-version
+                                          "/site-packages")))
+                     (string-append "-DPY_SITE_PACKAGES_PATH=" python-lib-path))
+                   ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
+                   ;; variable in the installed CMake files.  This is necessary as other
+                   ;; packages using insight-toolkit could not be configured otherwise.
+                   "-DGTEST_ROOT=gtest"
+                   "-DCMAKE_CXX_STANDARD=17")
 
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'do-not-tune
                           (lambda _
                             (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
                               (("-mtune=native")
-                               "")))))))
+                               ""))))
+                        (add-after 'unpack 'ignore-warnings
+                          (lambda _
+                            (substitute* "Wrapping/Generators/Python/CMakeLists.txt"
+                              (("-Werror") "")))))))
     (inputs
      (list eigen
            expat
@@ -1351,7 +1371,7 @@ libraries designed for computer vision research and implementation.")
            vxl-1
            zlib))
     (native-inputs
-     (list googletest pkg-config))
+     (list castxml googletest pkg-config swig which))
 
     ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
     ;; '-mtune=native -march=corei7', suggesting there's something to be
@@ -1381,13 +1401,16 @@ combine the information contained in both.")
                            version ".tar.xz"))
        (sha256
         (base32 "19cgfpd63gqrvc3m27m394gy2d7w79g5y6lvznb5qqr49lihbgns"))))
+    (outputs '("out"))
     (arguments
-     (list #:tests? #f ; tests require network access and external data
+     (list #:tests? #f        ; tests require network access and external data
            #:configure-flags #~'("-DITKV3_COMPATIBILITY=ON" ; needed for itk-snap
                                  "-DITK_USE_GPU=ON"
                                  "-DITK_USE_SYSTEM_LIBRARIES=ON"
                                  "-DITK_USE_SYSTEM_GOOGLETEST=ON"
-                                 "-DITK_USE_SYSTEM_VXL=ON")))))
+                                 "-DITK_USE_SYSTEM_VXL=ON")))
+    (native-inputs
+     (list googletest pkg-config))))
 
 (define-public insight-toolkit-4.12
   (package (inherit insight-toolkit-4)
