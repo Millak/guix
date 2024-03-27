@@ -36469,14 +36469,14 @@ functions or computational engines (e.g. R, Spark, Stan, etc).")
 (define-public r-infer
   (package
     (name "r-infer")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "infer" version))
        (sha256
         (base32
-         "0rlb7l6jl6f5kgzd9s08bifgvyafvjyfpazgqzl0w1ki875642n1"))))
+         "0a4hb83xrj3c6rbficds9h7lgra04f004wn6kfpszszz0is7k0r9"))))
     (properties `((upstream-name . "infer")))
     (build-system r-build-system)
     (propagated-inputs
@@ -36486,6 +36486,7 @@ functions or computational engines (e.g. R, Spark, Stan, etc).")
            r-generics
            r-ggplot2
            r-glue
+           r-lifecycle
            r-magrittr
            r-patchwork
            r-purrr
