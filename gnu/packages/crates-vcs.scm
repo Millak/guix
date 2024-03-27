@@ -3139,24 +3139,24 @@ Git.  This crate deals with paths and their conversions")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-gix-pathspec-0.4
+(define-public rust-gix-pathspec-0.5
   (package
     (name "rust-gix-pathspec")
-    (version "0.4.1")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-pathspec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ka9h2lfgbfbby5rciipgy6nkl1qkcrhp0xvr11z13m3flpvkfqx"))))
+        (base32 "0iqj3l4z29sg2z4bb21dn3n58wd1jgl6ydpnradzh13wa7lhxnqc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-bstr" ,rust-bstr-1)
-                       ("rust-gix-attributes" ,rust-gix-attributes-0.20)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.21)
                        ("rust-gix-config-value" ,rust-gix-config-value-0.14)
-                       ("rust-gix-glob" ,rust-gix-glob-0.14)
+                       ("rust-gix-glob" ,rust-gix-glob-0.15)
                        ("rust-gix-path" ,rust-gix-path-0.10)
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
@@ -3167,6 +3167,29 @@ Git.  This crate deals with paths and their conversions")
      "This package provides capabilities for handling Git's pathspecs.  It is
 part of Gitoxide, a Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-pathspec-0.4
+  (package
+    (inherit rust-gix-pathspec-0.5)
+    (name "rust-gix-pathspec")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-pathspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ka9h2lfgbfbby5rciipgy6nkl1qkcrhp0xvr11z13m3flpvkfqx"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.20)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-glob" ,rust-gix-glob-0.14)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-serial-test" ,rust-serial-test-2))))))
 
 (define-public rust-gix-pathspec-0.3
   (package
