@@ -14550,14 +14550,14 @@ Decomposition in R (Beaton et al 2014) <doi:10.1016/j.csda.2013.11.006>.")
 (define-public r-insight
   (package
     (name "r-insight")
-    (version "0.19.9")
+    (version "0.19.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "insight" version))
        (sha256
         (base32
-         "0q6wd28bnav9vwzprwvm9fhpmhqvq85iyg4h503lavcvi5g39a9x"))))
+         "0sh7pwnrlggizzpi0smpdq9fds2v8ql3bwdg4yxa2z2apaq3xk6y"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
