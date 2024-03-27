@@ -49317,14 +49317,14 @@ find a device path by its ID.")
 (define-public rust-pasetors-0.6
   (package
     (name "rust-pasetors")
-    (version "0.6.7")
+    (version "0.6.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pasetors" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1h4li2j46hdy58dpnn5ji4z4b4clbr2a6689jmaqv409lfcmcxms"))))
+                "1fkdp4lya95nrkrds3i14288g4a85gxrlg8lnz8hs8zjcryd8dkb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
