@@ -2420,14 +2420,14 @@ package provides git style lock files.")
 (define-public rust-gix-macros-0.1
   (package
     (name "rust-gix-macros")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fz8dqvavv28b6fksjdff4cj6sld3dvxh6nwdmgmk7q552vplpnp"))))
+        (base32 "0cj048i0a5xzqbv99514xfvhxwn833yzaclkmc9pfzp62j7l7zqx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
