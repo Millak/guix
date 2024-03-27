@@ -11092,13 +11092,13 @@ information between package updates.")
 (define-public r-leaflet
   (package
     (name "r-leaflet")
-    (version "2.2.1")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaflet" version))
        (sha256
-        (base32 "1gfsf7bsmp418zv4gpk5i1xg5vvgqwpdkznnvj5x0mk4rcqk1i81"))
+        (base32 "1sxq38dcjhn1bkav7fxglzk8nwi5p32jia2nhijcq5j1766pp1yj"))
        (snippet
         '(for-each
           delete-file
@@ -11242,7 +11242,7 @@ information between package updates.")
            r-rcolorbrewer
            r-scales
            r-sp
-           r-viridis
+           r-viridislite
            r-xfun))
     (home-page "https://rstudio.github.io/leaflet/")
     (synopsis "Create interactive web maps with the JavaScript Leaflet library")
