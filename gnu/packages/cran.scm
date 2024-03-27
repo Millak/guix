@@ -36146,23 +36146,23 @@ methods, and post-processing steps.")
 (define-public r-workflowsets
   (package
     (name "r-workflowsets")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "workflowsets" version))
        (sha256
         (base32
-         "1rv82lx1vmhjqlim7y5vpfsa7mb6msvkhiz17hxr5k9244ykmbhi"))))
+         "1mkczbdhs7cddvbklpqml70078cxmlv34hzg8f0zx1s1bpvvi7x6"))))
     (properties `((upstream-name . "workflowsets")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-dplyr
-           r-hardhat
            r-generics
            r-ggplot2
            r-glue
+           r-hardhat
            r-lifecycle
            r-parsnip
            r-pillar
