@@ -34721,7 +34721,7 @@ the jni-bindgen code generator for binding to JVM APIs from Rust.")
 (define-public rust-jobserver-0.1
   (package
     (name "rust-jobserver")
-    (version "0.1.27")
+    (version "0.1.28")
     (source
      (origin
        (method url-fetch)
@@ -34729,7 +34729,7 @@ the jni-bindgen code generator for binding to JVM APIs from Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0z9w6vfqwbr6hfk9yaw7kydlh6f7k39xdlszxlh39in4acwzcdwc"))))
+         "1mji1wis4w76v3issgpah2x3j1k0ybq0cz3qgypg7pkdablscimb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
