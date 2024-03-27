@@ -25,6 +25,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages man)
@@ -71,7 +72,7 @@ dictionaries.")
 (define-public enchant
   (package
     (name "enchant")
-    (version "2.2.15")
+    (version "2.6.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/AbiWord/enchant/releases"
@@ -79,7 +80,7 @@ dictionaries.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "00vcykbb7lxh51prvmsb62a06q18a6rlk9ba5a7g45c1awaj43rv"))))
+                "1bn7z8155czgzlnq2n4c915cl1vd3v95h1bghic3szy7c8q94rgm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static"
@@ -92,6 +93,7 @@ dictionaries.")
      (list glib))
     (native-inputs
      `(("glib:bin" ,glib "bin")
+       ("groff" ,groff)
        ("pkg-config" ,pkg-config)
        ("unittest-cpp" ,unittest-cpp)))
     (synopsis "Multi-backend spell-checking library wrapper")
