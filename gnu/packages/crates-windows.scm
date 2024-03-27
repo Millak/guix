@@ -101,14 +101,14 @@
 (define-public rust-cargo-credential-wincred-0.4
   (package
     (name "rust-cargo-credential-wincred")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-credential-wincred" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nyznrax07w0mj400k3z9v3waf0bm4yvwz1gdsizzgckr1fz879l"))))
+        (base32 "0bb9yczmk3ral2r20v5c4jzf3l9qp0nmm11i20s0w5inprp9b228"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
