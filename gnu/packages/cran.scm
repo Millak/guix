@@ -4625,16 +4625,16 @@ a list of p-values.")
 (define-public r-htmltools
   (package
     (name "r-htmltools")
-    (version "0.5.7")
+    (version "0.5.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "htmltools" version))
               (sha256
                (base32
-                "11mkk26pjck6r2w2nv6niy90c6l13g64zi01s3j4jgq634kdic7c"))))
+                "15g6ygpz9qfbf2ihapm5vyh8jwddhba6yikgvnara2wdrqcfp71n"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-base64enc r-digest r-ellipsis r-fastmap r-rlang))
+     (list r-base64enc r-digest r-fastmap r-rlang))
     (home-page "https://cran.r-project.org/web/packages/htmltools")
     (synopsis "R tools for HTML")
     (description
