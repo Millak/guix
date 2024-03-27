@@ -12789,14 +12789,14 @@ and @code{format_iso_8601} formats a date in ISO 8601 format.")
 (define-public r-abc-data
   (package
     (name "r-abc-data")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abc.data" version))
        (sha256
         (base32
-         "1bv1n68ah714ws58cf285n2s2v5vn7382lfjca4jxph57lyg8hmj"))))
+         "0zdhrnhvgnk3lp18cxgzsxa38xr7pl55g48pk373q1d6h77qbmj8"))))
     (properties `((upstream-name . "abc.data")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/abc.data/")
