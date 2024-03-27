@@ -1071,14 +1071,14 @@ implementing the standard git bitmap format.")
 (define-public rust-gix-chunk-0.4
   (package
     (name "rust-gix-chunk")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-chunk" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0y2wp3clilp5rdl727x4q4qw1chbgq91l9spq6h7d07nmkgccgh0"))))
+        (base32 "0lhcmzamr5rlcw8h9bvsjqn9dak1mwj3ng2i1djaf6wnd48pbj25"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
