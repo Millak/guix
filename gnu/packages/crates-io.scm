@@ -65284,6 +65284,19 @@ Pwrite traits from the scroll crate.")
 notifications.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-sd-notify-0.3
+  (package
+    (inherit rust-sd-notify-0.4)
+    (name "rust-sd-notify")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sd-notify" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j1ff6hhzcyh3m9c0adxnnjrasnvl1v6qaiv5vj2zgajz0hqml0c"))))))
+
 (define-public rust-seahash-3
   (package
     (name "rust-seahash")
