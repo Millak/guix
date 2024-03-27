@@ -80061,14 +80061,14 @@ parser.")
   (package
     (inherit rust-toml-edit-0.22)
     (name "rust-toml-edit")
-    (version "0.21.0")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "toml_edit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00xa3qfk34qazvnkfxyyyqqc6nyl2ksks1c5bd53n5has0y3hkfk"))))
+        (base32 "1qch02syrd9c8krcimfl72gyjz11fmjssh03hrg41dbqgzyk91ba"))))
     (arguments
      `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
                        ("rust-kstring" ,rust-kstring-2)
