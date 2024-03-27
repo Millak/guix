@@ -16589,14 +16589,14 @@ console, resulting in an interactive editing environment.")
 (define-public r-survey
   (package
     (name "r-survey")
-    (version "4.4-1")
+    (version "4.4-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survey" version))
        (sha256
         (base32
-         "1649srmdr8i9j8grqikkm8nbfav31s7iygx6pv96jvr3wh80yh46"))))
+         "1ggisal5g16p3n03bch7ymawd4hig3fmm02nhxy1z5zh48qhyjla"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice
