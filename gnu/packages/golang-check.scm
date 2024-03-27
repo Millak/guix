@@ -404,6 +404,31 @@ signalling failures, it offers ways to express expectations and get nice failure
 messages automatically.")
       (license license:asl2.0))))
 
+(define-public go-github-com-jbenet-go-cienv
+  (package
+    (name "go-github-com-jbenet-go-cienv")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-cienv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qyfjvr8n5chpb5zi6r9cf0danrwds3k5lbf7vp7ygcl6wnm0vmv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-cienv"))
+    (home-page "https://github.com/jbenet/go-cienv")
+    (synopsis "CI system environment variables")
+    (description
+     "Package @code{cienv} implements some helper functions to use during tests.
+Many times certain facilities are not available, or tests must run
+differently.")
+    (license license:expat)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
@@ -778,6 +803,45 @@ custom assertions to be used alongside native Go testing.")
      "This package provides the Go source code for the @code{go-staticcheck}
 advanced Go linter.")
     (license license:expat)))
+
+(define-public go-pgregory-net-rapid
+  (package
+    (name "go-pgregory-net-rapid")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flyingmutant/rapid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1alyhcbdq6113sfymx7xxmxpcbgvkaipsn15cgjrcqrx8ks1hm5i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "pgregory.net/rapid"))
+    (home-page "https://pgregory.net/rapid/")
+    (synopsis "Go property-based testing library")
+    (description
+     "@code{Rapid} is a Go library for property-based testing.
+
+Rapid checks that properties you define hold for a large number of automatically
+generated test cases.  If a failure is found, rapid automatically minimizes the
+failing test case before presenting it.
+
+Features:
+@itemize
+@item imperative Go API with type-safe data generation using generics
+@item data generation biased to explore \"small\" values and edge cases more
+thoroughly
+@item fully automatic minimization of failing test cases
+@item persistence and automatic re-running of minimized failing test cases
+@item support for state machine (\"stateful\" or \"model-based\") testing
+@item no dependencies outside the Go standard library
+@end itemize")
+    (license license:mpl2.0)))
 
 ;;;
 ;;; Executables:

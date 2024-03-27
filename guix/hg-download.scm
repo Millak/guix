@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2019, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
@@ -84,6 +84,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define modules
     (delete '(guix config)
             (source-module-closure '((guix build hg)
+                                     (guix build download)
                                      (guix build download-nar)
                                      (guix swh)))))
 
@@ -94,6 +95,8 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
         #~(begin
             (use-modules (guix build hg)
                          (guix build utils) ;for `set-path-environment-variable'
+                         ((guix build download)
+                          #:select (download-method-enabled?))
                          (guix build download-nar)
                          (guix swh)
                          (ice-9 match))
@@ -106,26 +109,35 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
             (setvbuf (current-output-port) 'line)
             (setvbuf (current-error-port) 'line)
 
-            (or (hg-fetch '#$(hg-reference-url ref)
-                          '#$(hg-reference-changeset ref)
-                          #$output
-                          #:hg-command (string-append #+hg "/bin/hg"))
-                (download-nar #$output)
+            (or (and (download-method-enabled? 'upstream)
+                     (hg-fetch '#$(hg-reference-url ref)
+                               '#$(hg-reference-changeset ref)
+                               #$output
+                               #:hg-command (string-append #+hg "/bin/hg")))
+                (and (download-method-enabled? 'nar)
+                     (download-nar #$output))
                 ;; As a last resort, attempt to download from Software Heritage.
                 ;; Disable X.509 certificate verification to avoid depending
                 ;; on nss-certs--we're authenticating the checkout anyway.
-                (parameterize ((%verify-swh-certificate? #f))
-                  (format (current-error-port)
-                          "Trying to download from Software Heritage...~%")
-                  (swh-download #$(hg-reference-url ref)
-                                #$(hg-reference-changeset ref)
-                                #$output)))))))
+                (and (download-method-enabled? 'swh)
+                     (parameterize ((%verify-swh-certificate? #f))
+                       (format (current-error-port)
+                               "Trying to download from Software Heritage...~%")
+                       (or (swh-download-directory-by-nar-hash
+                            #$hash '#$hash-algo #$output)
+                           (swh-download #$(hg-reference-url ref)
+                                         #$(hg-reference-changeset ref)
+                                         #$output)))))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "hg-checkout") build
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
+                      #:env-vars (match (getenv "GUIX_DOWNLOAD_METHODS")
+                                   (#f '())
+                                   (value
+                                    `(("GUIX_DOWNLOAD_METHODS" . ,value))))
                       #:system system
                       #:local-build? #t           ;don't offload repo cloning
                       #:hash-algo hash-algo

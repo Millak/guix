@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -90,6 +90,8 @@
             remove-service-extensions
             for-home
             for-home?
+
+            validate-service-list
 
             service-error?
             missing-value-service-error?
@@ -1270,5 +1272,20 @@ targeting one of the types in LST."
 Home service rather than a System service."
   (syntax-parameterize ((for-home? (identifier-syntax #t)))
     exp ...))
+
+(define-with-syntax-properties (validate-service-list (value properties))
+  (%validate-service-list value properties))
+
+(define (%validate-service-list value properties)
+  (match value
+    (((? service?) ...) value)
+    (_
+     (raise
+      (make-compound-condition
+       (condition
+        (&error-location
+         (location (source-properties->location properties))))
+       (formatted-message
+        (G_ "'services' field must contain a list of services")))))))
 
 ;;; services.scm ends here.

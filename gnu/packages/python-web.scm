@@ -44,7 +44,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
@@ -58,9 +58,12 @@
 ;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,15 +81,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages python-web)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -106,8 +109,8 @@
   #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
-  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -121,12 +124,12 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages tls)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages)
   #:use-module (srfi srfi-1))
 
 (define-public python-huggingface-hub
@@ -1278,6 +1281,62 @@ over a different origin than that of the web application.")
 other HTTP libraries.")
     (license license:expat)))
 
+(define-public python-cheroot
+  (package
+    (name "python-cheroot")
+    (version "10.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cheroot" version))
+       (sha256
+        (base32
+         "1w0ind0dza9j1py56y23344piqkpyfmcm060qfrnk6gggy3s3i2r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--cov=cheroot"
+              ;; Tests are flaky in parallel invocation.
+              ;; "--numprocesses=auto"
+              "--doctest-modules"
+              "--showlocals"
+              ;; Disable test requiring networking.
+              "-k" "not test_tls_client_auth")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v"
+                         (append test-flags (list #$output))))))))))
+    (propagated-inputs
+     (list python-jaraco-functools
+           python-more-itertools
+           python-six))
+    (native-inputs
+     (list python-cryptography
+           python-jaraco-text
+           python-portend
+           python-pyopenssl
+           python-pypytools
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-pytest-xdist
+           python-requests
+           python-requests-toolbelt
+           python-requests-unixsocket
+           python-setuptools-scm
+           python-setuptools-scm-git-archive
+           python-trustme))
+    (home-page "https://cheroot.cherrypy.dev")
+    (synopsis "Highly-optimized, pure-python HTTP server")
+    (description
+     "Cheroot is a high-performance, pure-Python HTTP server.")
+    (license license:bsd-3)))
+
 (define-public httpie
   (package
     (name "httpie")
@@ -1917,21 +1976,47 @@ Amazon S3 compatible object storage server.")
        (uri (pypi-uri "pycurl" version))
        (sha256
         (base32 "1ji46b924caa4saxvjxs9h673yy0kif297nxpnjn84r7w05mjc2p"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; The tests attempt to access external web servers, so we cannot run
-     ;; them.  Furthermore, they are skipped altogether when using Python 2.
-     '(#:tests? #f
+     '(#:test-flags
+       (list "-n" "auto"
+             "-k" (string-append
+                   ;; Disable hanginging tests
+                   "not test_multi_socket_select"
+                   ;; E assert None is not None
+                   ;; E+ where None =
+                   ;; <tests.multi_callback_test.MultiCallbackTest
+                   ;; testMethod=test_easy_pause_unpause>.socket_result
+                   " and not test_easy_pause_unpause"
+                   " and not test_multi_socket_action"
+                   ;; E pycurl.error: (1, '')
+                   " and not test_http_version_3"
+                   ;; OSError: tests/fake-curl/libcurl/with_gnutls.so: cannot
+                   ;; open shared object file: No such file or directory
+                   " and not test_libcurl_ssl_gnutls"
+                   ;; OSError: tests/fake-curl/libcurl/with_nss.so: cannot
+                   ;; open shared object file: No such file or directory
+                   " and not test_libcurl_ssl_nss"
+                   ;; OSError: tests/fake-curl/libcurl/with_openssl.so: cannot
+                   ;; open shared object file: No such file or directory
+                   " and not test_libcurl_ssl_openssl"
+                   ;; pycurl.error: (56, 'Recv failure: Connection reset by
+                   ;; peer')
+                   " and not test_post_with_read_callback"))
        #:phases (modify-phases %standard-phases
-                    (add-before 'build 'configure-tls-backend
-                      (lambda _
-                        ;; XXX: PycURL fails to automatically determine which TLS
-                        ;; backend to use when cURL is built with --disable-static.
-                        ;; See setup.py and <https://github.com/pycurl/pycurl/pull/147>.
-                        (setenv "PYCURL_SSL_LIBRARY" "gnutls")
-                        #t)))))
+                  (add-before 'build 'configure-tls-backend
+                    (lambda _
+                      ;; XXX: PycURL fails to automatically determine which
+                      ;; TLS backend to use when cURL is built with
+                      ;; --disable-static.  See setup.py and
+                      ;; <https://github.com/pycurl/pycurl/pull/147>.
+                      (setenv "PYCURL_SSL_LIBRARY" "gnutls"))))))
     (native-inputs
-     (list python-nose python-bottle))
+     (list python-bottle
+           python-flaky
+           python-nose
+           python-pytest
+           python-pytest-xdist))
     (inputs
      (list curl gnutls))
     (home-page "http://pycurl.io/")
@@ -2722,6 +2807,123 @@ object to help create WSGI responses.")
 files.  These locks can also be used to mediate access to other files.")
     (license license:zpl2.1)))
 
+(define-public python-zconfig
+  (package
+    (name "python-zconfig")
+    (version "4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ZConfig" version))
+       (sha256
+        (base32 "0mh13p38vq7ip4zkvaplzr8w0mqrmmqiyb5y663d165slvxl5mpq"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (begin
+                            ;; This test assumes we still have setup.py in the
+                            ;; directory from which we import zconfig, which
+                            ;; does not work after installing the package.
+                            (delete-file-recursively
+                             "src/ZConfig/tests/test_readme.py")
+                            (invoke "zope-testrunner" "-vv" "--test-path=src"
+                                    "--all"))
+                          (format #t "test suite not run~%")))))))
+    (native-inputs (list python-docutils python-manuel python-zope-exceptions
+                         python-zope-testrunner))
+    (home-page "https://github.com/zopefoundation/ZConfig/")
+    (synopsis "Structured configuration library intended for general use")
+    (description
+     "@code{zconfig} is a configuration library intended for general
+use.  It supports a hierarchical schema-driven configuration model that allows
+a schema to specify data conversion routines written in Python.  Its model is
+very different from the model supported by the @code{configparser} module
+found in Python's standard library, and is more suitable to
+configuration-intensive applications.")
+    (license license:zpl2.1)))
+
+(define-public python-zodb
+  (package
+    (name "python-zodb")
+    (version "5.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ZODB" version))
+       (sha256
+        (base32 "1pv4w8mnx6j4xvkcjbkh99pv8ljby7g9f7zjq7zhdmk06sykmiy6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (begin
+                            ;; This test does not work after installing the
+                            ;; package, since it expects the ZODB source code
+                            ;; to reside in the src/ directory.
+                            (delete-file-recursively
+                             "src/ZODB/tests/testdocumentation.py")
+                            (invoke "zope-testrunner" "-vv" "--test-path=src"
+                                    "--all"))
+                          (format #t "test suite not run~%")))))))
+    (propagated-inputs (list python-btrees
+                             python-persistent
+                             python-zconfig
+                             python-six
+                             python-transaction
+                             python-zc-lockfile
+                             python-zodbpickle
+                             python-zope-interface))
+    (native-inputs (list python-manuel python-zope-testing
+                         python-zope-testrunner))
+    (home-page "http://zodb-docs.readthedocs.io")
+    (synopsis "Object-oriented database for Python")
+    (description
+     "@code{ZODB} provides an object-oriented and @acronym{ACID,
+Atomicity Consistency Isolation Durability} compliant database for Python with
+a high degree of transparency.  @code{ZODB} is an object-oriented database,
+not an object-relational mapping.  This comes with several advantaged:
+
+@itemize
+@item no separate language for database operations
+@item very little impact on your code to make objects persistent
+@item no database mapper that partially hides the database.
+@item almost no seam between code and database.
+@end itemize")
+    (license license:zpl2.1)))
+
+(define-public python-zodbpickle
+  (package
+    (name "python-zodbpickle")
+    (version "3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zodbpickle" version))
+       (sha256
+        (base32 "035bjrksl4h92mvjkx6id4gjcpc1k4mbci8ryjl6l9mki7ihx77b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "zope-testrunner" "-vv" "--test-path=src"
+                                  "--all")
+                          (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testrunner))
+    (home-page "https://github.com/zopefoundation/zodbpickle")
+    (synopsis "Uniform pickling interface for @code{zodb}")
+    (description
+     "This package is a fork of the @code{pickle} module (and the
+supporting C extension) from both Python 3.2 and Python 3.3.  The fork adds
+support for the @code{noload} operations used by @code{zodb}.")
+    (license (list license:psfl license:zpl2.1))))
+
 (define-public python-zope-event
   (package
     (name "python-zope-event")
@@ -3220,6 +3422,24 @@ over the default provided with Python and, importantly, enables full
 verification of the SSL peer.")
     (home-page "https://github.com/cedadev/ndg_httpsclient/")
     (license license:bsd-3)))
+
+(define-public python-noiseprotocol
+  (package
+    (name "python-noiseprotocol")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "noiseprotocol" version))
+       (sha256
+        (base32 "0ifnj0mpbqsfqba9n12vf5yzxj4qf2gxql3ry43qyshgnrqsi4mh"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cryptography))
+    (home-page "https://github.com/plizonczyk/noiseprotocol")
+    (synopsis "Implementation of Noise Protocol Framework")
+    (description
+     "This package provides an implementation of Noise Protocol Framework.")
+    (license license:expat)))
 
 (define-public python-websocket-client
   (package
@@ -8277,13 +8497,13 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.11.0")
+    (version "2.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Scrapy" version))
        (sha256
-        (base32 "199nbc7vipdsvxmfxc0lrzbprgl3hr2xgqhvss1083iz1k7fvg9w"))))
+        (base32 "1giyyzwcybmh0yf3aq44hhmf9m4k40rva418pxljpr93fjf06fkk"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -8319,7 +8539,8 @@ regular expressions.")
            python-w3lib
            python-zope-interface))
     (native-inputs
-     (list python-pytest
+     (list python-pexpect
+           python-pytest
            python-pytest-xdist
            python-pyftpdlib
            python-sybil
@@ -8409,7 +8630,7 @@ compatibility with Microformats1 (mf1).")
 (define-public python-extruct
   (package
     (name "python-extruct")
-    (version "0.13.0")
+    (version "0.16.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -8418,7 +8639,7 @@ compatibility with Microformats1 (mf1).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "075zldf3dqcc429z1vk2ngbmv034bnlyk6arh3rh30jbsvz9pzl5"))))
+                "1s05sz6nghrap1gjkg3vsqz6djld6lczd6w3r1542ir8n7binl7a"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -8436,7 +8657,6 @@ compatibility with Microformats1 (mf1).")
            python-mf2py
            python-pyrdfa3
            python-rdflib
-           python-rdflib-jsonld
            python-w3lib))
     (home-page "https://github.com/scrapinghub/extruct")
     (synopsis "Extract embedded metadata from HTML markup")

@@ -590,7 +590,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "3.11.3")
+    (version "3.11.5")
     (source
      (origin
        (method git-fetch)
@@ -599,7 +599,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "0vp3w9a3zzn9kbq48a4b1nylrn1i4ibwxpl377yq04ggqkd6fi9a"))
+         "1f7pvh5bzkasbcfydd82pg7qn987ysbxk3j58dxzq2nzi05s0y4p"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -720,7 +720,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.16.7")
+    (version "1.17.6")
     (source
      (origin
        (method url-fetch)
@@ -728,7 +728,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "0ig7xdsihq7wc8h7n1af275z3kjxq5iiy0x4dwjahgligrdmj7vm"))
+        (base32 "0fsjn74cmrchqgnj88yzdxyj1gm0i2vrzh69b9b9bi7y2wk9il5r"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -848,7 +848,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9.1414213")
+    (version "0.9.9.141421356")
     (source
      (origin
        (method git-fetch)
@@ -857,7 +857,7 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rlgnqld6ls46452xvcr8k4ji4lwmlsrxib5ii9l9clkm0s477wv"))))
+        (base32 "0cw8scjxci98jx5cmm98x0frjrbs3q7w3dwz60xpy67aqmwq7kqx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -919,15 +919,15 @@ http, and https via third-party applications.")
              #t))
          (add-after 'unpack 'fix-configure.ac
            (lambda _
-              (delete-file "configure")
-              (substitute* "configure.ac"
-                (("AC_PATH_PROG.+CURL")
-                 "dnl")
-                (("AC_PATH_PROGS.+GIT")
-                 "dnl")
-                (("AC_PATH_PROG.+GPG")
-                 "dnl"))
-               #t))
+             (delete-file "configure")
+             (substitute* "configure.ac"
+               (("AC_PATH_PROG.+CURL")
+                "dnl")
+               (("AC_PATH_PROGS.+GIT")
+                "dnl")
+               (("AC_PATH_PROG.+GPG")
+                "dnl"))
+             #t))
          (add-after 'configure 'fix-asdf
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Makefile.in"

@@ -9308,6 +9308,69 @@ viewer.")
                (delete 'patch-tests)
                (delete 'configure))))))))
 
+(define-public morpheus
+  (package
+    (name "morpheus")
+    (version "2.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/morpheus.lab/morpheus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jyzbkz8d39kjicrk3ihcx7yvq5wsynvnlcw922bqqsw8nwnn12c"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "3rdparty/eigen")
+           (substitute* '("morpheus/core/cpm_shape_tracker.cpp"
+                          "morpheus/core/membranemapper.h"
+                          "morpheus/testing/components/motility/directed_motion_test.cpp"
+                          "morpheus/testing/components/interaction/generator_cell_sorting.cpp"
+                          "morpheus/testing/components/interaction/test_cell_sorting.cpp"
+                          "morpheus/testing/core/cpm/generator_csm_plane.cpp"
+                          "morpheus/testing/test_operators.h")
+             (("#include \"eigen/") "#include \"eigen3/"))))))
+    ;; This is for a different Morpheus.
+    (properties '((lint-hidden-cve "CVE-2022-31261")))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DMORPHEUS_GUI=OFF"
+             "-DBUILD_TESTING=ON"
+             "-DDOWNLOAD_XTENSOR=OFF")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-gtest-download
+           (lambda _
+             (substitute* "3rdparty/CMakeLists.txt"
+               (("add_subdirectory\\(GTest\\)") ""))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ctest" "--output-junit" "test_results.xml")))))))
+    (inputs (list boost
+                  eigen
+                  file
+                  gnuplot
+                  libtiff
+                  libxslt
+                  xsimd
+                  xtensor
+                  xtl
+                  zlib))
+    (native-inputs
+     (list doxygen googletest xxd))
+    (home-page "https://gitlab.com/morpheus.lab/morpheus")
+    (synopsis "Multicellular simulation")
+    (description
+     "Morpheus is a modeling and simulation environment for the study of
+multi-scale and multicellular systems.")
+    (license license:bsd-3)))
+
 (define-public mosaik
   (let ((commit "5c25216d3522d6a33e53875cd76a6d65001e4e67"))
     (package
@@ -11612,30 +11675,6 @@ clustering analysis, differential analysis, motif inference and exploration of
 single cell ATAC-seq sequencing data.")
     (license license:gpl3)))
 
-(define-public r-tictoc
-  (package
-    (name "r-tictoc")
-    (version "1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "tictoc" version))
-              (sha256
-               (base32
-                "037jbwb58mj5asf3kr6hpf3fy9c6fkinnd8hbpfb141a2jsa8pph"))))
-    (properties `((upstream-name . "tictoc")))
-    (build-system r-build-system)
-    (home-page "https://github.com/jabiru/tictoc")
-    (synopsis
-     "Time R scripts and implementations of stack and list structures")
-    (description
-     "The tictoc package provides the timing functions @code{tic} and
-@code{toc} that can be nested.  It provides an alternative to
-@code{system.time()} with a different syntax similar to that in another
-well-known software package.  @code{tic} and @code{toc} are easy to use, and
-are especially useful when timing several sections in more than a few lines of
-code.")
-    (license license:asl2.0)))
-
 (define-public r-tsis
   (let ((commit "24460298fbe1d26e4da390f6e4f3d4d9d62334dc")
         (revision "1"))
@@ -12350,6 +12389,59 @@ Needleman-Wunsch).")
     (supported-systems '("x86_64-linux"))
     ;; Dual licensed; also includes public domain source.
     (license (list license:gpl3 license:bsd-2))))
+
+(define-public pairadise
+  (package
+    (name "pairadise")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Xinglab/PAIRADISE")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ycwcqabm4zdng0a7j593g35d5yzvvwm7dyi3b8s19zdi4rjzrwd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "pairadise")))
+         (add-before 'build '2to3
+           (lambda _ (invoke "2to3" "--write" "--nobackups" "."))))))
+    (inputs (list star))
+    (propagated-inputs (list python-pysam))
+    (home-page "https://github.com/Xinglab/PAIRADISE")
+    (synopsis "Paired replicate analysis of allelic differential splicing events")
+    (description
+     "PAIRADISE is a method for detecting @dfn{allele-specific alternative
+splicing} (ASAS) from RNA-seq data.  Unlike conventional approaches that
+detect ASAS events one sample at a time, PAIRADISE aggregates ASAS signals
+across multiple individuals in a population.  By treating the two alleles of
+an individual as paired, and multiple individuals sharing a heterozygous SNP
+as replicates, PAIRADISE formulates ASAS detection as a statistical problem
+for identifying differential alternative splicing from RNA-seq data with
+paired replicates.")
+    (license license:gpl3+)))
+
+(define-public r-pairadise
+  (package
+    (inherit pairadise)
+    (name "r-pairadise")
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "pairadise/src/pairadise_model"))))))
+    (inputs '())
+    (propagated-inputs (list r-doparallel r-foreach r-iterators r-nloptr))
+    (license license:expat)))
 
 (define-public pardre
   (package
@@ -16416,45 +16508,6 @@ to retrieve data from DisGeNET v6.0 (Jan, 2019).")
 sequencing data in microbiome studies with the Dirichlet-tree Multinomial
 Mixtures.")
       (license license:cc0))))
-
-(define-public r-dyngen
-  (package
-    (name "r-dyngen")
-    (version "1.0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "dyngen" version))
-       (sha256
-        (base32
-         "095jqn1rd83qm3ayca9hmv6bhlaa2c338020l46vniq8n38kbnra"))))
-    (properties `((upstream-name . "dyngen")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-assertthat
-           r-dplyr
-           r-dynutils
-           r-ggplot2
-           r-ggraph
-           r-ggrepel
-           r-gillespiessa2
-           r-igraph
-           r-lmds
-           r-matrix
-           r-patchwork
-           r-pbapply
-           r-purrr
-           r-rlang
-           r-tibble
-           r-tidygraph
-           r-tidyr
-           r-viridis))
-    (home-page "https://github.com/dynverse/dyngen")
-    (synopsis "Multi-Modal simulator for single-cell omics analyses")
-    (description
-     "This package provides a multi-modal simulation engine for studying
-dynamic cellular processes at single-cell resolution.")
-    (license license:expat)))
 
 ;; Needed for r-liana
 (define-public r-omnipathr/devel

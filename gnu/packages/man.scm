@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Imran Iqbal <imran@imraniqbal.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -217,6 +217,51 @@ a flexible and convenient way.")
      "Man-db is an implementation of the standard Unix documentation system
 accessed using the man command.  It uses a Berkeley DB database in place of
 the traditional flat-text whatis databases.")
+    (license license:gpl2+)))
+
+(define-public man2html
+  (package
+    (name "man2html")
+    (version "1.6g-16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://salsa.debian.org/debian/man2html")
+                    (commit (string-append "debian/" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cxm8b2x4cjmyidi4gfz9q29zrhaxhbnsiqcmlnyr1bdhjsmk786"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      ;; The source include a man page viewer as well as the man2html
+      ;; converter.  We're only interested in the converter, so we specify the
+      ;; explicit 'manhtml' target.
+      #:make-flags #~(list (string-append "bindir=" #$output "/bin")
+                           "manhtml")
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'configure
+                     (lambda _
+                       (setenv "CC" #$(cc-for-target))
+                       (invoke "./configure"
+                               (string-append "-prefix=" #$output))))
+                   (add-before 'install 'chdir
+                     (lambda _
+                       (chdir "man2html")))
+                   (replace 'install
+                     ;; This is needed because the 'manhtml' top level target
+                     ;; doesn't exist in man2html/Makefile.
+                     (lambda* (#:key make-flags #:allow-other-keys
+                               #:rest args)
+                       (apply (assoc-ref %standard-phases 'install)
+                              `(,@args #:make-flags
+                                       ,(delete "manhtml" make-flags))))))))
+    (home-page "https://salsa.debian.org/debian/man2html")
+    (synopsis "Man pages to HTML format converter")
+    (description "@command{man2html} is a command-line tool for converting man
+pages into HTML format.")
     (license license:gpl2+)))
 
 (define-public mandoc

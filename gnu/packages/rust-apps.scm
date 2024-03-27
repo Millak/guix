@@ -84,6 +84,7 @@
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages ssh)
@@ -1782,39 +1783,8 @@ by modifying your @file{Cargo.toml} file from the command line.")
 rebase.")
     (license license:gpl3+)))
 
-(define-public rust-cbindgen
-  (package
-    (name "rust-cbindgen")
-    (version "0.13.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cbindgen" version))
-        (file-name (string-append name "-" version ".tar.xz"))
-        (sha256
-         (base32
-          "0673pq96hs7waavkv58v2pakpxpsfyjvbraa5kyl2b44phgdzcid"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("clap" ,rust-clap-2)
-        ("log" ,rust-log-0.4)
-        ("proc-macro2" ,rust-proc-macro2-1)
-        ("quote" ,rust-quote-1)
-        ("serde" ,rust-serde-1)
-        ("serde-json" ,rust-serde-json-1)
-        ("syn" ,rust-syn-1)
-        ("tempfile" ,rust-tempfile-3)
-        ("toml" ,rust-toml-0.5))))
-    (home-page "https://github.com/eqrion/cbindgen/")
-    (synopsis "Tool for generating C bindings to Rust code")
-    (description
-     "This package provides a tool for generating C/C++ bindings to Rust code.")
-    (license license:mpl2.0)))
-
 (define-public rust-cbindgen-0.26
   (package
-    (inherit rust-cbindgen)
     (name "rust-cbindgen")
     (version "0.26.0")
     (source
@@ -1824,6 +1794,7 @@ rebase.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jdbxmn5h5nlr4bifx85gny309djv5djs9q78fa1d7sj0wdw2sys"))))
+    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-3)
                        ("rust-heck" ,rust-heck-0.4)
@@ -1837,7 +1808,12 @@ rebase.")
                        ("rust-tempfile" ,rust-tempfile-3)
                        ("rust-toml" ,rust-toml-0.5))
        #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5))))
-    (native-inputs (list python-cython))))
+    (native-inputs (list python-cython))
+    (home-page "https://github.com/eqrion/cbindgen/")
+    (synopsis "Tool for generating C bindings to Rust code")
+    (description
+     "This package provides a tool for generating C/C++ bindings to Rust code.")
+    (license license:mpl2.0)))
 
 (define-public rust-cbindgen-0.24
   (package
@@ -1864,6 +1840,69 @@ rebase.")
              (sha256
               (base32
                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
+
+(define-public rust-cbindgen rust-cbindgen-0.26)
+
+(define-public rust-bindgen-cli
+  (package
+    (name "rust-bindgen-cli")
+    (version "0.69.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bindgen-cli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00dfny07m4xfnqbfn7yr7cqwilj6935lbyg5d39yxjfj8jglfcax"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-shlex" ,rust-shlex-1))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
+                    (bindgen (string-append bin "/bindgen"))
+                    (llvm-dir (string-append
+                                (assoc-ref inputs "clang") "/lib")))
+               (install-file "target/release/bindgen" bin)
+               (wrap-program bindgen
+                 `("LIBCLANG_PATH" = (,llvm-dir))))))
+         (add-after 'install 'install-completions
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (bindgen (string-append out "/bin/bindgen")))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (with-output-to-file
+                 (string-append share "/bash-completion/completions/bindgen")
+                 (lambda _ (invoke bindgen "--generate-shell-completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/bindgen.fish")
+                 (lambda _ (invoke bindgen "--generate-shell-completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_bindgen")
+                 (lambda _ (invoke bindgen "--generate-shell-completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/bindgen")
+                 (lambda _
+                   (invoke bindgen "--generate-shell-completions" "elvish")))))))))
+    (inputs (list bash-minimal clang))
+    (home-page "https://rust-lang.github.io/rust-bindgen/")
+    (synopsis "Generate Rust FFI bindings to C and C++ libraries")
+    (description "This package can be used to automatically generate Rust FFI
+bindings to C and C++ libraries.  This package provides the @command{bindgen}
+command.")
+    (license license:bsd-3)))
 
 (define-public sniffglue
   (package
@@ -2361,7 +2400,105 @@ work.  This allows the client to be used in a much simpler way, with the
 background agent taking care of maintaining the necessary state.")
     (license license:expat)))
 
-;;; Note: keep in sync with our current Rust/Cargo version.
+;; Note: Keep rust-cargo and rust-cargo-c in sync with our current
+;; rust:cargo version.
+(define-public rust-cargo
+  (package
+    (name "rust-cargo")
+    (version "0.76.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14yjyvj9bl6mlzx6bbi3igflgdrx1hil9ifnf1dl9xnm4mb2gjw6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `cargo_test_support`
+       #:cargo-inputs
+       (("rust-anstream" ,rust-anstream-0.6)
+        ("rust-anstyle" ,rust-anstyle-1)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-base64" ,rust-base64-0.21)
+        ("rust-bytesize" ,rust-bytesize-1)
+        ("rust-cargo-credential" ,rust-cargo-credential-0.4)
+        ("rust-cargo-credential-libsecret" ,rust-cargo-credential-libsecret-0.4)
+        ("rust-cargo-credential-macos-keychain" ,rust-cargo-credential-macos-keychain-0.4)
+        ("rust-cargo-credential-wincred" ,rust-cargo-credential-wincred-0.4)
+        ("rust-cargo-platform" ,rust-cargo-platform-0.1)
+        ("rust-cargo-util" ,rust-cargo-util-0.2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-color-print" ,rust-color-print-0.3)
+        ("rust-crates-io" ,rust-crates-io-0.39)
+        ("rust-curl" ,rust-curl-0.4)
+        ("rust-curl-sys" ,rust-curl-sys-0.4)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-git2" ,rust-git2-0.18)
+        ("rust-git2-curl" ,rust-git2-curl-0.19)
+        ("rust-gix" ,rust-gix-0.55)
+        ("rust-gix-features" ,rust-gix-features-0.35)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-home" ,rust-home-0.5)
+        ("rust-http-auth" ,rust-http-auth-0.1)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-im-rc" ,rust-im-rc-15)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-jobserver" ,rust-jobserver-0.1)
+        ("rust-lazycell" ,rust-lazycell-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libgit2-sys" ,rust-libgit2-sys-0.16)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-opener" ,rust-opener-0.6)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-os-info" ,rust-os-info-3)
+        ("rust-pasetors" ,rust-pasetors-0.6)
+        ("rust-pathdiff" ,rust-pathdiff-0.2)
+        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rustfix" ,rust-rustfix-0.6)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-untagged" ,rust-serde-untagged-0.1)
+        ("rust-serde-value" ,rust-serde-value-0.7)
+        ("rust-serde-ignored" ,rust-serde-ignored-0.1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-shell-escape" ,rust-shell-escape-0.1)
+        ("rust-supports-hyperlinks" ,rust-supports-hyperlinks-2)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-toml" ,rust-toml-0.8)
+        ("rust-toml-edit" ,rust-toml-edit-0.20)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-unicase" ,rust-unicase-2)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+        ("rust-url" ,rust-url-2)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-same-file" ,rust-same-file-1)
+                                   ("rust-snapbox" ,rust-snapbox-0.4))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list curl libssh2 libgit2-1.7 openssl zlib))
+    (home-page "https://crates.io")
+    (synopsis "Package manager for Rust")
+    (description "Cargo, a package manager for Rust.  This package provides
+the library crate of Cargo.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")

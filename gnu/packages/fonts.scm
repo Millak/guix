@@ -1081,7 +1081,7 @@ utilities to ease adding new glyphs to the font.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "23.11.1")
+    (version "24.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1090,8 +1090,53 @@ utilities to ease adding new glyphs to the font.")
              (commit (string-append "noto-monthly-release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vvxhky35l4i0ha60yw0gj26f3v33hpf2zax17yyj16mww4cn4d8"))))
+        (base32 "087jg8ahpq35xwyrmvm9ivxl0wjic2j4r28bbrwqmgdva9brms40"))))
     (build-system font-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build font-build-system)
+        (guix build utils)
+        (ice-9 ftw))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (define* (install source #:optional (output #$output))
+                (let ((%install (assoc-ref %standard-phases 'install)))
+                  (with-directory-excursion source
+                    (%install #:outputs `(("out" . ,output))))))
+
+              (define (scan-directory name)
+                (scandir name (lambda (file)
+                                (not (member file '("." ".." "LICENSE"))))))
+
+              (define (install-font-variant variant)
+                "Given font variant VARIANT, install one of its formats,
+variable TTF or OTF or TTF."
+                (with-directory-excursion variant
+                  (let ((formats (scan-directory ".")))
+                    (cond
+                     ((member "variable-ttf" formats)
+                      (install "variable-ttf"))
+                     ((member "otf" formats)
+                      (install "otf"))
+                     ((member "ttf" formats)
+                      (install "ttf"))))))
+
+              (define (install-font font)
+                "Given FONT, install one of its variants, either full or
+unhinted, and install its hinted variant into 'ttf' output.  According to the
+source, unhinted and hinted variants are always available."
+                (with-directory-excursion font
+                  (if (member "full" (scan-directory "."))
+                      (install-font-variant "full")
+                      (install-font-variant "unhinted"))
+                  (install "hinted" #$output:ttf)))
+
+              (with-directory-excursion "fonts"
+                (for-each install-font (scan-directory "."))))))))
+    (outputs '("out" "ttf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
@@ -1102,7 +1147,7 @@ display all Unicode symbols.")
 (define-public font-google-noto-emoji
   (package
     (name "font-google-noto-emoji")
-    (version "2.038")
+    (version "2.042")
     (source
      (origin
        (method git-fetch)
@@ -1112,7 +1157,7 @@ display all Unicode symbols.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rgmcc6nqq805iqr8kvxxlk5cf50q714xaxk3ld6rjrd69kb8ix9"))))
+         "17i7awyqz9jv0j2blcf0smmpas375c3pdhjv1zqzl861g8qm1lm2"))))
     (build-system font-build-system)
     (arguments
      (list
@@ -1122,11 +1167,10 @@ display all Unicode symbols.")
             (lambda _
               ;; Note this ensures the correct license file is installed.
               (chdir "fonts")))
-          (add-after 'enter-font-directory 'remove-unsupported
-            (lambda* _
-              (delete-file "NotoColorEmoji_WindowsCompatible.ttf")
-              (delete-file "Noto-COLRv1-noflags.ttf")
-              (delete-file "Noto-COLRv1.ttf"))))))
+          (replace 'install
+            (lambda _
+              (let ((dir (string-append #$output "/share/fonts/truetype")))
+                (install-file "NotoColorEmoji.ttf" dir)))))))
     (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
     (synopsis "Font for rendering color emoji characters")
     (description
@@ -1143,11 +1187,23 @@ family.")
        (method url-fetch)
        (uri (string-append
              "https://github.com/googlefonts/noto-cjk/releases/download/Sans"
-             version "/03_NotoSansCJK-OTC.zip"))
+             version "/01_NotoSansCJK-OTF-VF.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1v9yda7r98g4a3pk0y3cjbgc1i2lv4ax0f0v6aqasfzz4ldlx3sj"))))
+        (base32 "1ka37kqyd0sfqwk485nv6ihrdjl5xycr38m4jq40r2lzmpmkmqym"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (chdir "..")         ;For license.
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "Variable/OTC"
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "Variable/OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))))))))
+    (outputs '("out" "otf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
@@ -1159,17 +1215,29 @@ CJK fonts.")
 (define-public font-google-noto-serif-cjk
   (package
     (name "font-google-noto-serif-cjk")
-    (version "2.001")
+    (version "2.002")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://github.com/googlefonts/noto-cjk/releases/download/Serif"
-             version "/04_NotoSerifCJKOTC.zip"))
+             version "/02_NotoSerifCJK-OTF-VF.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1l6r3sz2s0vcyfx6ria7wqcq45zp40gxgg97lh8hpmajhzw301ig"))))
+        (base32 "007jk7rmfapq5zq4ji9d1l5gpp34p98l9ylhiw33q42d66v2g717"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (chdir "..")         ;For license.
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "Variable/OTC"
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "Variable/OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))))))))
+    (outputs '("out" "otf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -35,9 +35,9 @@
   #:use-module (web uri)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
-  #:export (%mirrors
+  #:export (%download-methods
+            %mirrors
             %disarchive-mirrors
-            %download-fallback-test
             (url-fetch* . url-fetch)
             url-fetch/executable
             url-fetch/tarbomb
@@ -434,10 +434,19 @@
 (define built-in-builders*
   (store-lift built-in-builders))
 
+(define %download-methods
+  ;; Either #f (the default) or a list of symbols denoting the sequence of
+  ;; download methods to be used--e.g., '(swh nar upstream).
+  (make-parameter
+   (and=> (getenv "GUIX_DOWNLOAD_METHODS")
+          (lambda (str)
+            (map string->symbol (string-tokenize str))))))
+
 (define* (built-in-download file-name url
                             #:key system hash-algo hash
                             mirrors content-addressed-mirrors
                             disarchive-mirrors
+                            (download-methods (%download-methods))
                             executable?
                             (guile 'unused))
   "Download FILE-NAME from URL using the built-in 'download' builder.  When
@@ -471,6 +480,11 @@ download by itself using its own dependencies."
                                  ("disarchive-mirrors" . ,disarchive-mirrors)
                                  ,@(if executable?
                                        '(("executable" . "1"))
+                                       '())
+                                 ,@(if download-methods
+                                       `(("download-methods"
+                                          . ,(object->string
+                                              download-methods)))
                                        '()))
 
                     ;; Do not offload this derivation because we cannot be
@@ -478,24 +492,6 @@ download by itself using its own dependencies."
                     ;; built-in.  We may remove this limitation when support
                     ;; for that built-in is widespread.
                     #:local-build? #t)))
-
-(define %download-fallback-test
-  ;; Define whether to test one of the download fallback mechanism.  Possible
-  ;; values are:
-  ;;
-  ;;   - #f, to use the normal download methods, not trying to exercise the
-  ;;     fallback mechanism;
-  ;;
-  ;;   - 'none, to disable all the fallback mechanisms;
-  ;;
-  ;;   - 'content-addressed-mirrors, to purposefully attempt to download from
-  ;;     a content-addressed mirror;
-  ;;
-  ;;   - 'disarchive-mirrors, to download from Disarchive + Software Heritage.
-  ;;
-  ;; This is meant to be used for testing purposes.
-  (make-parameter (and=> (getenv "GUIX_DOWNLOAD_FALLBACK_TEST")
-                         string->symbol)))
 
 (define* (url-fetch* url hash-algo hash
                      #:optional name
@@ -532,10 +528,7 @@ name in the store."
           (unless (member "download" builtins)
             (error "'guix-daemon' is too old, please upgrade" builtins))
 
-          (built-in-download (or name file-name)
-                             (match (%download-fallback-test)
-                               ((or #f 'none) url)
-                               (_ "https://example.org/does-not-exist"))
+          (built-in-download (or name file-name) url
                              #:guile guile
                              #:system system
                              #:hash-algo hash-algo
@@ -543,15 +536,9 @@ name in the store."
                              #:executable? executable?
                              #:mirrors %mirror-file
                              #:content-addressed-mirrors
-                             (match (%download-fallback-test)
-                               ((or #f 'content-addressed-mirrors)
-                                %content-addressed-mirror-file)
-                               (_ %no-mirrors-file))
+                             %content-addressed-mirror-file
                              #:disarchive-mirrors
-                             (match (%download-fallback-test)
-                               ((or #f 'disarchive-mirrors)
-                                %disarchive-mirror-file)
-                               (_ %no-disarchive-mirrors-file)))))))
+                             %disarchive-mirror-file)))))
 
 (define* (url-fetch/executable url hash-algo hash
                                #:optional name

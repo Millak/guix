@@ -21,7 +21,7 @@
   #:use-module (guix scripts)
   #:use-module (guix derivations)
   #:use-module ((guix store) #:select (derivation-path? store-path?))
-  #:autoload   (guix build download) (url-fetch)
+  #:autoload   (guix build download) (%download-methods url-fetch)
   #:autoload   (guix build git) (git-fetch-with-fallback)
   #:autoload   (guix config) (%git)
   #:use-module (ice-9 match)
@@ -55,7 +55,8 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
                        (executable "executable")
                        (mirrors "mirrors")
                        (content-addressed-mirrors "content-addressed-mirrors")
-                       (disarchive-mirrors "disarchive-mirrors"))
+                       (disarchive-mirrors "disarchive-mirrors")
+                       (download-methods "download-methods"))
     (unless url
       (leave (G_ "~a: missing URL~%") (derivation-file-name drv)))
 
@@ -64,26 +65,30 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
       ;; We're invoked by the daemon, which gives us write access to OUTPUT.
-      (when (url-fetch url output
-                       #:print-build-trace? print-build-trace?
-                       #:mirrors (if mirrors
-                                     (call-with-input-file mirrors read)
-                                     '())
-                       #:content-addressed-mirrors
-                       (if content-addressed-mirrors
-                           (call-with-input-file content-addressed-mirrors
-                             (lambda (port)
-                               (eval (read port) %user-module)))
-                           '())
-                       #:disarchive-mirrors
-                       (if disarchive-mirrors
-                           (call-with-input-file disarchive-mirrors read)
-                           '())
-                       #:hashes `((,algo . ,hash))
+      (when (parameterize ((%download-methods
+                            (and download-methods
+                                 (call-with-input-string download-methods
+                                   read))))
+              (url-fetch url output
+                         #:print-build-trace? print-build-trace?
+                         #:mirrors (if mirrors
+                                       (call-with-input-file mirrors read)
+                                       '())
+                         #:content-addressed-mirrors
+                         (if content-addressed-mirrors
+                             (call-with-input-file content-addressed-mirrors
+                               (lambda (port)
+                                 (eval (read port) %user-module)))
+                             '())
+                         #:disarchive-mirrors
+                         (if disarchive-mirrors
+                             (call-with-input-file disarchive-mirrors read)
+                             '())
+                         #:hashes `((,algo . ,hash))
 
-                       ;; Since DRV's output hash is known, X.509 certificate
-                       ;; validation is pointless.
-                       #:verify-certificate? #f)
+                         ;; Since DRV's output hash is known, X.509 certificate
+                         ;; validation is pointless.
+                         #:verify-certificate? #f))
         (when (and executable (string=? executable "1"))
           (chmod output #o755))))))
 
@@ -96,7 +101,8 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
 'bmRepair' builds."
   (derivation-let drv ((url "url")
                        (commit "commit")
-                       (recursive? "recursive?"))
+                       (recursive? "recursive?")
+                       (download-methods "download-methods"))
     (unless url
       (leave (G_ "~a: missing Git URL~%") (derivation-file-name drv)))
     (unless commit
@@ -114,11 +120,18 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
       ;; on ambient authority, hence the PATH value below.
       (setenv "PATH" "/run/current-system/profile/bin:/bin:/usr/bin")
 
-      (git-fetch-with-fallback url commit output
-                               #:hash hash
-                               #:hash-algorithm algo
-                               #:recursive? recursive?
-                               #:git-command %git))))
+      (parameterize ((%download-methods
+                      (and download-methods
+                           (call-with-input-string download-methods
+                             read))))
+        ;; Note: When doing a '--check' build, DRV-OUTPUT and OUTPUT are
+        ;; different, hence the #:item argument below.
+        (git-fetch-with-fallback url commit output
+                                 #:hash hash
+                                 #:hash-algorithm algo
+                                 #:recursive? recursive?
+                                 #:item (derivation-output-path drv-output)
+                                 #:git-command %git)))))
 
 (define (assert-low-privileges)
   (when (zero? (getuid))

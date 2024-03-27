@@ -1273,7 +1273,7 @@ nameservers other than libc.")
 (define-public smartdns
   (package
     (name "smartdns")
-    (version "43")
+    (version "45")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1285,7 +1285,7 @@ nameservers other than libc.")
                           ((".*SYSTEMDSYSTEMUNITDIR.*") "")))
               (sha256
                (base32
-                "0s789l6i4yirmarg80mknc1pp65rz01ky9f7gidgclkfcwzz41l3"))))
+                "1f0j6d8vz1x2f4nr2w3q7azkjh8hlkj81v61a8sw1kq5160qhlb9"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
@@ -1293,7 +1293,7 @@ nameservers other than libc.")
            #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "DESTDIR=" #$output)
                    "PREFIX=''"
-                   (string-append "VER=" #$version))
+                   (string-append "VER=" #$(package-version this-package)))
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
@@ -1321,7 +1321,7 @@ nameservers other than libc.")
                  (lambda _
                    (chdir "../../source"))))))
     (inputs (list openssl))
-    (native-inputs (list googletest `(,isc-bind "utils")))
+    (native-inputs (list googletest `(,isc-bind "utils") which))
     (home-page "https://github.com/pymumu/smartdns")
     (synopsis "Local DNS server")
     (description

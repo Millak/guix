@@ -31,7 +31,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
@@ -260,6 +260,41 @@ softsynth library that can be used with other applications.")
       license:lgpl3+
       ;; Player.
       license:gpl3+))))
+
+(define-public alsa-midi-latency-test
+  (let ((version "0.0.5")
+        (revision "0")
+        (commit "07e43f8a1e6fd6d3bd97a00f2ee5afb74cb66f95"))
+    (package
+      (name "alsa-midi-latency-test")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/koppi/alsa-midi-latency-test")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b3xd4z7zx6mmh6q2q7wnyd0hzikny2cikwzhaab3q86b551vb9n"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                               ;there are no tests
+        #:phases #~(modify-phases %standard-phases
+                     (replace 'bootstrap
+                       (lambda _
+                         (invoke "sh" "./autogen.sh"))))))
+      (native-inputs (list automake autoconf libtool))
+      (inputs (list alsa-lib))
+      (synopsis "Measure the roundtrip time of MIDI messages")
+      (description
+       "@code{alsa-midi-latency-test} measures the roundtrip time of a MIDI
+message in the alsa subsystem of the Linux kernel using a high precision timer.
+It calculates the worst case roundtrip time of all sent MIDI messages and
+displays a histogram of the roundtrip time jitter.")
+      (home-page "https://github.com/koppi/alsa-midi-latency-test")
+      (license license:gpl2+))))
 
 (define-public webrtc-audio-processing
   (package
@@ -1562,7 +1597,7 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
 (define-public libdjinterop
   (package
     (name "libdjinterop")
-    (version "0.16.0")
+    (version "0.20.2")
     (source
      (origin
        (method git-fetch)
@@ -1571,15 +1606,8 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16nrqpr90vb9ggmp9j73m0hspd7pmfdhh0g6iyp8vd7kx7g17qnk"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; crate_test writes a database file to the source tree.
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files ".")))))))
+        (base32 "0gbaji3d105vwshjfmnbxqrs42jjjxp41jqj5srncrfv3xmzsfkr"))))
+    (build-system cmake-build-system)
     (native-inputs
      (list boost pkg-config))
     (inputs

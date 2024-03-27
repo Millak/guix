@@ -23,7 +23,8 @@ choice.
 * Building from Git::           The latest and greatest.
 * Running Guix Before It Is Installed::  Hacker tricks.
 * The Perfect Setup::           The right tools.
-* Alternative Setups::          Other posible tools that do the job.
+* Alternative Setups::          Other possible tools that do the job.
+* Source Tree Structure::       Source code guided tour.
 * Packaging Guidelines::        Growing the distribution.
 * Coding Style::                Hygiene of the contributor.
 * Submitting Patches::          Share your work.
@@ -545,6 +546,257 @@ In NeoVim you can even make a similar setup to Geiser using
 @url{https://conjure.fun/, Conjure} that lets you connect to a running Guile
 process and inject your code there live (sadly it's not packaged in Guix yet).
 
+
+@node Source Tree Structure
+@section Source Tree Structure
+
+@cindex structure, of the source tree
+If you're willing to contribute to Guix beyond packages, or if you'd
+like to learn how it all fits together, this section provides a guided
+tour in the code base that you may find useful.
+
+Overall, the Guix source tree contains almost exclusively Guile
+@dfn{modules}, each of which can be seen as an independent library
+(@pxref{Modules,,, guile, GNU Guile Reference Manual}).
+
+The following table gives an overview of the main directories and what
+they contain.  Remember that in Guile, each module name is derived from
+its file name---e.g., the module in file @file{guix/packages.scm} is
+called @code{(guix packages)}.
+
+@table @file
+@item guix
+This is the location of core Guix mechanisms.  To illustrate what is
+meant by ``core'', here are a few examples, starting from low-level
+tools and going towards higher-level tools:
+
+@table @code
+@item (guix store)
+Connecting to and interacting with the build daemon (@pxref{The Store}).
+@item (guix derivations)
+Creating derivations (@pxref{Derivations}).
+@item (guix gexps)
+Writing G-expressions (@pxref{G-Expressions}).
+@item (guix packages)
+Defining packages and origins (@pxref{package Reference}).
+@item (guix download)
+@itemx (guix git-download)
+The @code{url-fetch} and @code{git-fetch} origin download methods
+(@pxref{origin Reference}).
+@item (guix swh)
+Fetching source code from the
+@uref{https://archive.softwareheritage.org,Software Heritage archive}.
+@item (guix search-paths)
+Implementing search paths (@pxref{Search Paths}).
+@item (guix build-system)
+The build system interface (@pxref{Build Systems}).
+@item (guix profiles)
+Implementing profiles.
+@end table
+
+@cindex build system, directory structure
+@item guix/build-system
+This directory contains specific build system implementations
+(@pxref{Build Systems}), such as:
+
+@table @code
+@item (guix build-system gnu)
+the GNU build system;
+@item (guix build-system cmake)
+the CMake build system;
+@item (guix build-system pyproject)
+The Python ``pyproject'' build system.
+@end table
+
+@item guix/build
+This contains code generally used on the ``build side''
+(@pxref{G-Expressions, strata of code}).  This includes code used to
+build packages or other operating system components, as well as
+utilities:
+
+@table @code
+@item (guix build utils)
+Utilities for package definitions and more (@pxref{Build Utilities}).
+@item (guix build gnu-build-system)
+@itemx (guix build cmake-build-system)
+@itemx (guix build pyproject-build-system)
+Implementation of build systems, and in particular definition of their
+build phases (@pxref{Build Phases}).
+@item (guix build syscalls)
+Interface to the C library and to Linux system calls.
+@end table
+
+@cindex command-line tools, as Guile modules
+@cindex command modules
+@item guix/scripts
+This contains modules corresponding to @command{guix} sub-commands.  For
+example, the @code{(guix scripts shell)} module exports the
+@code{guix-shell} procedure, which directly corresponds to the
+@command{guix shell} command (@pxref{Invoking guix shell}).
+
+@cindex importer modules
+@item guix/import
+This contains supporting code for the importers and updaters
+(@pxref{Invoking guix import}, and @pxref{Invoking guix refresh}).  For
+example, @code{(guix import pypi)} defines the interface to PyPI, which
+is used by the @code{guix import pypi} command.
+@end table
+
+The directories we have seen so far all live under @file{guix/}.  The
+other important place is the @file{gnu/} directory, which contains
+primarily package definitions as well as libraries and tools for Guix
+System (@pxref{System Configuration}) and Guix Home (@pxref{Home
+Configuration}), all of which build upon functionality provided by
+@code{(guix @dots{})} modules@footnote{For this reason, @code{(guix
+@dots{})} modules must generally not depend on @code{(gnu @dots{})}
+modules, with notable exceptions: @code{(guix build-system @dots{})}
+modules may look up packages at run time---e.g., @code{(guix
+build-system cmake)} needs to access the @code{cmake} variable at run
+time---, @code{(guix scripts @dots{})} often rely on @code{(gnu @dots{})}
+modules, and the same goes for some of the @code{(guix import @dots{})}
+modules.}.
+
+@table @file
+@cindex package modules
+@item gnu/packages
+This is by far the most crowded directory of the source tree: it
+contains @dfn{package modules} that export package definitions
+(@pxref{Package Modules}).  A few examples:
+
+@table @code
+@item (gnu packages base)
+Module providing ``base'' packages: @code{glibc}, @code{coreutils},
+@code{grep}, etc.
+@item (gnu packages guile)
+Guile and core Guile packages.
+@item (gnu packages linux)
+The Linux-libre kernel and related packages.
+@item (gnu packages python)
+Python and core Python packages.
+@item (gnu packages python-xyz)
+Miscellaneous Python packages (we were not very creative).
+@end table
+
+In any case, you can jump to a package definition using @command{guix
+edit} (@pxref{Invoking guix edit}) and view its location with
+@command{guix show} (@pxref{Invoking guix package}).
+
+@findex search-patches
+@item gnu/packages/patches
+This directory contains patches applied against packages and obtained
+using the @code{search-patches} procedure.
+
+@item gnu/services
+This contains service definitions, primarily for Guix System
+(@pxref{Services}) but some of them are adapted and reused for Guix Home
+as we will see below.  Examples:
+
+@table @code
+@item (gnu services)
+The service framework itself, which defines the service and service type
+data types (@pxref{Service Composition}).
+@item (gnu services base)
+``Base'' services (@pxref{Base Services}).
+@item (gnu services desktop)
+``Desktop'' services (@pxref{Desktop Services}).
+@item (gnu services shepherd)
+Support for Shepherd services (@pxref{Shepherd Services}).
+@end table
+
+You can jump to a service definition using @command{guix system edit}
+and view its location with @command{guix system search} (@pxref{Invoking
+guix system}).
+
+@item gnu/system
+These are core Guix System modules, such as:
+
+@table @code
+@item (gnu system)
+Defines @code{operating-system} (@pxref{operating-system Reference}).
+@item (gnu system file-systems)
+Defines @code{file-system} (@pxref{File Systems}).
+@item (gnu system mapped-devices)
+Defines @code{mapped-device} (@pxref{Mapped Devices}).
+@end table
+
+@item gnu/build
+These are modules that are either used on the ``build side'' when
+building operating systems or packages, or at run time by operating
+systems.
+
+@table @code
+@item (gnu build accounts)
+Creating @file{/etc/passwd}, @file{/etc/shadow}, etc. (@pxref{User
+Accounts}).
+@item (gnu build activation)
+Activating an operating system at boot time or reconfiguration time.
+@item (gnu build file-systems)
+Searching, checking, and mounting file systems.
+@item (gnu build linux-boot)
+@itemx (gnu build hurd-boot)
+Booting GNU/Linux and GNU/Hurd operating systems.
+@item (gnu build linux-initrd)
+Creating a Linux initial RAM disk (@pxref{Initial RAM Disk}).
+@end table
+
+@item gnu/home
+This contains all things Guix Home (@pxref{Home Configuration});
+examples:
+
+@table @code
+@item (gnu home services)
+Core services such as @code{home-files-service-type}.
+@item (gnu home services ssh)
+SSH-related services (@pxref{Secure Shell}).
+@end table
+
+@item gnu/installer
+This contains the text-mode graphical system installer (@pxref{Guided
+Graphical Installation}).
+
+@item gnu/machine
+These are the @dfn{machine abstractions} used by @command{guix deploy}
+(@pxref{Invoking guix deploy}).
+
+@item gnu/tests
+This contains system tests---tests that spawn virtual machines to check
+that system services work as expected (@pxref{Running the Test Suite}).
+@end table
+
+Last, there's also a few directories that contain files that are
+@emph{not} Guile modules:
+
+@table @file
+@item nix
+This is the C++ implementation of @command{guix-daemon}, inherited from
+Nix (@pxref{Invoking guix-daemon}).
+
+@item tests
+These are unit tests, each file corresponding more or less to one
+module, in particular @code{(guix @dots{})} modules (@pxref{Running the
+Test Suite}).
+
+@item doc
+This is the documentation in the form of Texinfo files: this manual and
+the Cookbook.  @xref{Writing a Texinfo File,,, texinfo, GNU Texinfo},
+for information on Texinfo markup language.
+
+@item po
+This is the location of translations of Guix itself, of package synopses
+and descriptions, of the manual, and of the cookbook.  Note that
+@file{.po} files that live here are pulled directly from Weblate
+(@pxref{Translating Guix}).
+
+@item etc
+Miscellaneous files: shell completions, support for systemd and other
+init systems, Git hooks, etc.
+@end table
+
+With all this, a fair chunk of your operating system is at your
+fingertips!  Beyond @command{grep} and @command{git grep}, @pxref{The
+Perfect Setup} on how to navigate code from your editor, and
+@pxref{Using Guix Interactively} for information on how to use Scheme
+modules interactively.  Enjoy!
 
 @node Packaging Guidelines
 @section Packaging Guidelines

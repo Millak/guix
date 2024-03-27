@@ -41,9 +41,9 @@
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
@@ -370,41 +370,41 @@ with X11 or Wayland, or in a text terminal with ncurses.")
                    license:lgpl3+))))   ; library and bindings
 
 (define-public copyq
-(package
-  (name "copyq")
-  (version "7.1.0")
-  (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                   (url "https://github.com/hluk/CopyQ")
-                   (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "1f39mh9qv1fa2vbwjigi1raz1pym2pz733j6b77r4588l8aaj2b8"))))
-  (build-system cmake-build-system)
-  (arguments
-   (list
-    #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
-    #:tests? #f)) ; Test suite is a rather manual process.
-  (inputs
-   (list qtbase-5
-         qtscript
-         qtsvg-5
-         qtx11extras
-         qtdeclarative-5
-         qtwayland-5
-         wayland
-         knotifications))
-  (native-inputs
-   (list extra-cmake-modules qttools-5))
-  (synopsis "Clipboard manager with advanced features")
-  (description "CopyQ is clipboard manager with editing and scripting
+  (package
+    (name "copyq")
+    (version "8.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hluk/CopyQ")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "029s1pdp177fnrq5qrwjmd5pf1672l5jhq99is1lczrxi6bsf2qk"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
+      #:tests? #f)) ; Test suite is a rather manual process.
+    (inputs
+     (list qtbase-5
+           qtscript
+           qtsvg-5
+           qtx11extras
+           qtdeclarative-5
+           qtwayland-5
+           wayland
+           knotifications))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (synopsis "Clipboard manager with advanced features")
+    (description "CopyQ is clipboard manager with editing and scripting
 features.  CopyQ monitors system clipboard and saves its content in customized
 tabs.  Saved clipboard can be later copied and pasted directly into any
 application.")
-  (home-page "https://hluk.github.io/CopyQ/")
-  (license license:gpl3+)))
+    (home-page "https://hluk.github.io/CopyQ/")
+    (license license:gpl3+)))
 
 (define-public xkeysnail
   (package
@@ -1256,14 +1256,14 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.14.2")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "12s9pc0dhqgawq6jiqhamj1zq9753kgpswny1rcsdx1lkpzrgaq1"))))
+        (base32 "1632y0yr1ig5nihs6kqyvfi117815zszhnfvaabm97qkf5blkj5p"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc))
@@ -1341,16 +1341,16 @@ Guile will work for XBindKeys.")
         (base32 "1winwzdy9yxvxnrv8gqpigl9y0c2px27mnms62bdilp4x6llrs9r"))))
     (build-system gnu-build-system)
     (inputs
-     (list asciidoc libxcb xcb-util xcb-util-keysyms xcb-util-wm))
+     (list libxcb xcb-util xcb-util-keysyms xcb-util-wm))
     (arguments
-     `(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:tests? #f  ; no check target
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" %output)
-             ;; Keep the documentation where the build system installs LICENSE.
-             (string-append "DOCPREFIX=" %output
-                            "/share/doc/" ,name "-" ,version))))
+     (list #:phases #~(modify-phases %standard-phases (delete 'configure))
+           #:tests? #f  ; no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   ;; Keep the documentation where the build system installs LICENSE.
+                   (string-append "DOCPREFIX=" #$output
+                                  "/share/doc/" #$name "-" #$version))))
     (home-page "https://github.com/baskerville/sxhkd")
     (synopsis "Simple X hotkey daemon")
     (description "sxhkd is a simple X hotkey daemon with a powerful and

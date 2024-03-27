@@ -12,7 +12,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2017, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2017, 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017, 2020-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
@@ -149,7 +149,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.6")
+    (version "2.7.7")
     (source
      (origin
        (method url-fetch)
@@ -157,7 +157,7 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "0w6nh2lnzfqcxasfsppmh4q309p1flzgfiv25hahzsd8kx879055"))))
+        (base32 "0rzfh8xdsd1r0xb7yb0h2zyzwhbsp7si8c0haaqgzcz4k2p4bz2q"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -425,7 +425,7 @@ applications, there is xclip integration." )
 (define-public ssh-to-age
   (package
     (name "ssh-to-age")
-    (version "1.1.2")
+    (version "1.1.7")
     (source
      (origin
        (method git-fetch)
@@ -434,7 +434,7 @@ applications, there is xclip integration." )
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09rhga9iqmyyq8pkprydy8y15qhzqvbpgzvs681rcyllf8szrj73"))))
+        (base32 "134gpbalyll238wvj9ci0rascgm4csayz863ci99cy5qq8266wrl"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/Mic92/ssh-to-age/cmd/ssh-to-age"
@@ -443,7 +443,7 @@ applications, there is xclip integration." )
                   go-filippo-io-edwards25519
                   go-filippo-io-age))
     (home-page "https://github.com/Mic92/ssh-to-age")
-    (synopsis "Convert SSH @code{ed25519} keys to @code{age} keys.")
+    (synopsis "Convert SSH @code{ed25519} keys to @code{age} keys")
     (description "This package provides a simple command-line tool to
 convert SSH @code{ed25519} keys to @code{age} keys.")
     (license license:expat)))

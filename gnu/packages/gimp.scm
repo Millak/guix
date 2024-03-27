@@ -283,6 +283,49 @@ buffers.")
     ;; application and GUI binary gegl is licensed under GPL.
     (license (list license:lgpl3+ license:gpl3+))))
 
+;; gnome-photos does not build against gegl 0.4.46 or newer yet.
+;; See also <https://gitlab.gnome.org/GNOME/gnome-photos/-/issues/214>.
+(define-public babl-0.1.96
+  (package
+    (inherit babl)
+    (version "0.1.96")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://download.gimp.org/pub/babl/"
+                                 (version-major+minor version)
+                                 "/babl-" version ".tar.xz")
+                  (string-append "https://ftp.gtk.org/pub/babl/"
+                                 (version-major+minor version)
+                                 "/babl-" version ".tar.xz")
+                  (string-append "ftp://ftp.gtk.org/pub/babl/"
+                                 (version-major+minor version)
+                                 "/babl-" version ".tar.xz")))
+       (sha256
+        (base32 "1xj5hlmm834lb84rpjlfxbqnm5piswgzhjas4h8z90x9b7j3yrrk"))))))
+
+(define-public gegl-0.4.44
+  (package
+    (inherit gegl)
+    (version "0.4.44")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://download.gimp.org/pub/gegl/"
+                                 (string-take version 3)
+                                 "/gegl-" version ".tar.xz")
+                  (string-append "https://ftp.gtk.org/pub/gegl/"
+                                 (version-major+minor version)
+                                 "/gegl-" version ".tar.xz")
+                  (string-append "ftp://ftp.gtk.org/pub/gegl/"
+                                 (version-major+minor version)
+                                 "/gegl-" version ".tar.xz")))
+       (sha256
+        (base32 "09k1sn4h0bakgmq2hgd1iamprngpr81ky3fd9446lh2ycd0xnk0a"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs gegl)
+       (replace "babl" babl-0.1.96)))))
+
 (define-public gimp
   (package
     (name "gimp")

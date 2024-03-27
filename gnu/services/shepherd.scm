@@ -383,6 +383,12 @@ as shepherd package."
           (use-modules (srfi srfi-34)
                        (system repl error-handling))
 
+          (define (make-user-module)
+            ;; Copied from (shepherd support), where it's private.
+            (let ((m (make-fresh-user-module)))
+              (module-use! m (resolve-interface '(shepherd service)))
+              m))
+
           ;; There's code run from shepherd that uses 'call-with-input-file' &
           ;; co.--e.g., the 'urandom-seed' service.  Starting from Shepherd
           ;; 0.9.2, users need to make sure not to leak non-close-on-exec file
@@ -416,7 +422,12 @@ as shepherd package."
               (register-services
                (parameterize ((current-warning-port
                                (%make-void-port "w")))
-                 (map load-compiled '#$(map scm->go files))))))
+                 (map (lambda (file)
+                        (save-module-excursion
+                         (lambda ()
+                           (set-current-module (make-user-module))
+                           (load-compiled file))))
+                      '#$(map scm->go files))))))
 
           (format #t "starting services...~%")
           (let ((services-to-start

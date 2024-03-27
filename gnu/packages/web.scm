@@ -1109,40 +1109,44 @@ APIs.")
     (license (license:non-copyleft "file://LICENSE.TERMS"))))
 
 (define-public fcgiwrap
-  (package
-    (name "fcgiwrap")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gnosek/fcgiwrap")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ryw66h9aazi83amk8l7ha8k5g0c7qvk5g6jv376a1ws9xk2qw6f"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; no tests included
-       #:make-flags (list "CC=gcc")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-CFLAGS
-           ;; Remove broken options unconditionally added to CFLAGS.
-           (lambda _
-             (substitute* "configure.ac"
-               ((" -Werror") ""))
-             #t)))))
-    (native-inputs
-     (list autoconf automake pkg-config))
-    (inputs
-     (list fcgi))
-    (home-page "https://nginx.localdomain.pl/wiki/FcgiWrap")
-    (synopsis "Simple server for running CGI applications over FastCGI")
-    (description "Fcgiwrap is a simple server for running CGI applications
+  (let ((commit "2870d2729a3930988f0041e2d78fec672e69afac")
+        (revision "1"))
+    (package
+      (name "fcgiwrap")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; Upstream last updated in 2015, this forked version has better
+               ;; socket cleanup.
+               (url "https://github.com/flu0r1ne/fcgiwrap")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rkpp4apfhdcrmym3pcpqlncd0r4fyr3pa45i8g6x4p38b4azmmm"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ; no tests included
+         #:make-flags (list "CC=gcc")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-CFLAGS
+             ;; Remove broken options unconditionally added to CFLAGS.
+             (lambda _
+               (substitute* "configure.ac"
+                 ((" -Werror") ""))
+               #t)))))
+      (native-inputs
+       (list autoconf automake pkg-config))
+      (inputs
+       (list fcgi))
+      (home-page "https://nginx.localdomain.pl/wiki/FcgiWrap")
+      (synopsis "Simple server for running CGI applications over FastCGI")
+      (description "Fcgiwrap is a simple server for running CGI applications
 over FastCGI.  It hopes to provide clean CGI support to Nginx (and other web
 servers that may need it).")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public starman
   (package
@@ -4998,8 +5002,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "5f80856ad1587aea38ee4e7b54db558cdb43f6b7")
-        (revision "45"))
+  (let ((commit "b4583bb17714954530e1cc851efaea1666f6adc2")
+        (revision "46"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -5011,7 +5015,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "18m002d9pkh0qn4xn4n6lijl541m9z7c3lbapl7m6zi41p3dywww"))))
+                  "0l9nflx5npmmbvqxrfjhfvyr7mcs9qrf0w3dabs65r7q0g0pjcp0"))))
       (build-system gnu-build-system)
       (arguments
        (list

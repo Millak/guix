@@ -77,7 +77,19 @@ as shepherd package."
           (use-modules (srfi srfi-34)
                        (system repl error-handling))
 
-          (register-services (map load '#$files))
+          (define (make-user-module)
+            ;; Copied from (shepherd support), where it's private.
+            (let ((m (make-fresh-user-module)))
+              (module-use! m (resolve-interface '(shepherd service)))
+              m))
+
+          (register-services
+           (map (lambda (file)
+                  (save-module-excursion
+                   (lambda ()
+                     (set-current-module (make-user-module))
+                     (load file))))
+                '#$files))
 
           #$@(if daemonize?
                  `((action 'root 'daemonize))

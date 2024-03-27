@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -65,6 +65,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages llvm-meta)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
@@ -79,8 +80,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
-            system->llvm-target
-            clang-properties))
+            system->llvm-target))
 
 (define* (system->llvm-target #:optional
                               (system (or (and=> (%current-target-system)
@@ -481,73 +481,7 @@ code analysis tools.")
 
 (define (clang-properties version)
   "Return package properties for Clang VERSION."
-  `((compiler-cpu-architectures
-      ("powerpc64le"
-       ;; This list was obtained from clang/test/Misc/target-invalid-cpu-note.c
-       ;; and then trimmed down.
-       ,@(if (version>=? version "11.0")
-             '("power8" "power9" "power10" "powerpc64le")))
-      ("x86_64"
-       ;; This list was obtained from clang/test/Misc/target-invalid-cpu-note.c
-       ,@(cond
-           ((version>=? version "17.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "meteorlake" "sierraforest" "grandridge"
-              "graniterapids" "graniterapids-d" "emeraldrapids" "knl" "knm" "k8"
-              "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
-              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
-              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4"
-              "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
-           ((version>=? version "16.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "meteorlake" "sierraforest" "grandridge"
-              "graniterapids" "emeraldrapids" "knl" "knm" "k8" "athlon64"
-              "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3" "opteron-sse3"
-              "amdfam10" "barcelona" "btver1" "btver2" "bdver1" "bdver2"
-              "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4" "x86-64"
-              "x86-64-v2" "x86-64-v3" "x86-64-v4"))
-           ((version>=? version "15.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "knl" "knm" "k8" "athlon64" "athlon-fx" "opteron"
-              "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10" "barcelona"
-              "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4" "znver1"
-              "znver2" "znver3" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
-           ((version>=? version "13.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "knl" "knm" "k8" "athlon64" "athlon-fx" "opteron"
-              "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10" "barcelona"
-              "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4" "znver1"
-              "znver2" "znver3" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
-           ((version>=? version "9.0")
-            '("atom" "silvermont" "slm" "goldmont" "goldmont-plus" "tremont"
-              "nehalem" "corei7" "westmere" "sandybridge" "corei7-avx"
-              "ivybridge" "core-avx-i" "haswell" "core-avx2" "broadwell"
-              "skylake" "skylake-avx512" "skx" "cascadelake" "cooperlake"
-              "cannonlake" "icelake-client" "icelake-server" "knl" "knm" "k8"
-              "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
-              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
-              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "x86-64"))
-           (else '()))))))
+  `((clang-compiler-cpu-architectures version)))
 
 (define-public (make-clang-toolchain clang libomp)
   (package
@@ -616,7 +550,8 @@ output), and Binutils.")
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
     ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
     ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
-    ("17.0.6" . ("clang-17.0-libc-search-path.patch"))))
+    ("17.0.6" . ("clang-17.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
   (origin

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
@@ -40,7 +40,10 @@
   #:autoload   (guix swh) (swh-download-directory %verify-swh-certificate?)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
-  #:export (open-socket-for-uri
+  #:export (%download-methods
+            download-method-enabled?
+
+            open-socket-for-uri
             open-connection-for-uri
             http-fetch
             %x509-certificate-directory
@@ -622,6 +625,20 @@ true, verify HTTPS certificates; otherwise simply ignore them."
     (lambda (key . args)
       (print-exception (current-error-port) #f key args))))
 
+(define %download-methods
+  ;; Either #f (the default) or a list of symbols denoting the sequence of
+  ;; download methods to be used--e.g., '(swh nar upstream).
+  (make-parameter
+   (and=> (getenv "GUIX_DOWNLOAD_METHODS")
+          (lambda (str)
+            (map string->symbol (string-tokenize str))))))
+
+(define (download-method-enabled? method)
+  "Return true if METHOD (a symbol such as 'swh) is enabled as part of the
+download fallback sequence."
+  (or (not (%download-methods))
+      (memq method (%download-methods))))
+
 (define (uri-vicinity dir file)
   "Concatenate DIR, slash, and FILE, keeping only one slash in between.
 This is required by some HTTP servers."
@@ -788,18 +805,28 @@ otherwise simply ignore them."
                          hashes)))
                 disarchive-mirrors))
 
+  (define initial-uris
+    (append (if (download-method-enabled? 'upstream)
+                uri
+                '())
+            (if (download-method-enabled? 'content-addressed-mirrors)
+                content-addressed-uris
+                '())
+            (if (download-method-enabled? 'internet-archive)
+                (match uri
+                  ((first . _)
+                   (or (and=> (internet-archive-uri first) list)
+                       '()))
+                  (() '()))
+                '())))
+
   ;; Make this unbuffered so 'progress-report/file' works as expected.  'line
   ;; means '\n', not '\r', so it's not appropriate here.
   (setvbuf (current-output-port) 'none)
 
   (setvbuf (current-error-port) 'line)
 
-  (let try ((uri (append uri content-addressed-uris
-                   (match uri
-                     ((first . _)
-                      (or (and=> (internet-archive-uri first) list)
-                          '()))
-                     (() '())))))
+  (let try ((uri initial-uris))
     (match uri
       ((uri tail ...)
        (or (fetch uri file)
@@ -807,9 +834,10 @@ otherwise simply ignore them."
       (()
        ;; If we are looking for a software archive, one last thing we
        ;; can try is to use Disarchive to assemble it.
-       (or (disarchive-fetch/any disarchive-uris file
-                                 #:verify-certificate? verify-certificate?
-                                 #:timeout timeout)
+       (or (and (download-method-enabled? 'disarchive)
+                (disarchive-fetch/any disarchive-uris file
+                                      #:verify-certificate? verify-certificate?
+                                      #:timeout timeout))
            (begin
              (format (current-error-port) "failed to download ~s from ~s~%"
                      file url)

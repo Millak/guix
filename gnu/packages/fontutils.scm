@@ -11,7 +11,7 @@
 ;;; Copyright © 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
@@ -2049,7 +2049,7 @@ Unicode Charts.  It was developed for use with DejaVu Fonts project.")
 (define-public libraqm
   (package
     (name "libraqm")
-    (version "0.8.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -2058,7 +2058,7 @@ Unicode Charts.  It was developed for use with DejaVu Fonts project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qrdw67n14n0km2f8l0gk8scgj3ybz662s9x8jwj3rrj33nl2d1a"))))
+        (base32 "1bzdrvacgj9629r4mgmag9sm5ay5914fbs8pnxf8xphvrbnbxm8z"))))
     (build-system meson-build-system)
     (native-inputs
      (list gtk-doc/stable pkg-config python-wrapper))

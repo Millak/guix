@@ -5176,86 +5176,6 @@ maps, slices, or pointers, and copy their data as well instead of just their
 references.")
     (license license:expat)))
 
-(define-public go-github-com-multiformats-go-multiaddr
-  (let ((commit "fe1c46f8be5af4aff4db286e08839295bd922efb")
-        (revision "0"))
-    (package
-      (name "go-github-com-multiformats-go-multiaddr")
-      (version (git-version "1.3.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiformats/go-multiaddr")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0p5f8h098a4yjjmzsgqs7vhx1iqifb8izwg3559cr4h7clkpzznh"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path
-         "github.com/multiformats/go-multiaddr"))
-      (native-inputs
-       (list go-github-com-multiformats-go-multihash
-             go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-mr-tron-base58
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
-      (home-page "https://github.com/multiformats/go-multiaddr")
-      (synopsis "Composable and future-proof network addresses")
-      (description "Multiaddr is a standard way to represent addresses that
-does the following:
-
-@itemize
-@item Support any standard network protocols.
-@item Self-describe (include protocols).
-@item Have a binary packed format.
-@item Have a nice string representation.
-@item Encapsulate well.
-@end itemize\n")
-      (license license:expat))))
-
-(define-public go-github-com-multiformats-go-multiaddr-net
-  (let ((commit "1cb9a0e8a6de3c8a10f6cee60d01d793603c4f7e")
-        (revision "0"))
-    (package
-      (name "go-github-com-multiformats-go-multiaddr-net")
-      (version (git-version "1.6.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiformats/go-multiaddr-net")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1ypgi47xdz3bh8lh7f8cmk7w3ql9g4izx5l3kzdg9gda1xn5zxq3"))))
-      (build-system go-build-system)
-      (arguments
-       (quote (#:import-path "github.com/multiformats/go-multiaddr-net"
-               ;; TODO: Tests fail because they try to access the network.
-               #:tests? #f)))
-      (native-inputs
-       (list go-github-com-multiformats-go-multiaddr
-             go-github-com-multiformats-go-multihash
-             go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-mr-tron-base58
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
-      (home-page "https://github.com/multiformats/go-multiaddr-net")
-      (synopsis "Multiaddress net tools")
-      (description "This package provides Multiaddr specific versions of
-common functions in stdlib's @command{net} package.  This means wrappers of
-standard net symbols like @command{net.Dial} and @command{net.Listen}, as well
-as conversion to and from @command{net.Addr}.")
-      (license license:expat))))
-
 (define-public go-github-com-whyrusleeping-tar-utils
   (let ((commit "8c6c8ba81d5c71fd69c0f48dbde4b2fb422b6dfc")
         (revision "0"))
@@ -6050,79 +5970,6 @@ mutex, simply ignore the RLock/RUnlock functions.")
 implementation of generics.")
     (home-page "https://github.com/cheekybits/genny/")
     (license license:expat)))
-
-(define-public go-github-com-quic-go-qpack
-  (package
-    (name "go-github-com-quic-go-qpack")
-    (version "0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/quic-go/qpack")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00mjz445hhx4yar5l8p21bpp4d06jyg2ajw0ax7bh64d37l4kx39"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/quic-go/qpack"
-      ;; Tests require ginkgo v2.
-      #:tests? #f
-      #:go go-1.20))
-    (propagated-inputs (list go-github-com-onsi-gomega
-                             go-github-com-onsi-ginkgo
-                             go-golang-org-x-net))
-    (synopsis "Minimal QPACK (RFC 9204) implementation for Go")
-    (description
-     "A minimal QPACK (RFC 9204) implementation in Go.  It is minimal in the sense
-that it doesn't use the dynamic table at all, but just the static table and (Huffman
-encoded) string literals.  Wherever possible, it reuses code from the
-@url{https://github.com/golang/net/tree/master/http2/hpack, HPACK implementation in
-the Go standard library}.")
-    (home-page "https://github.com/quic-go/qpack")
-    (license license:expat)))
-
-(define-public go-github-com-quic-go-quic-go
-  (package
-    (name "go-github-com-quic-go-quic-go")
-    (version "0.39.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/quic-go/quic-go")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0acabl3cz48nxpggc5s7fwxpmr5amyi09jygn5m5xxkkbhqs2cxq"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/quic-go/quic-go"
-           ;; XXX More packages required...
-           #:tests? #f
-           #:go go-1.20))
-    (propagated-inputs
-     (list go-github-com-quic-go-qtls-go1-20
-           go-github-com-quic-go-qpack
-           go-golang-org-x-crypto
-           go-github-com-cheekybits-genny
-           go-github-com-marten-seemann-chacha20
-           go-github-com-golang-protobuf-proto
-           go-golang-org-x-crypto
-           go-golang-org-x-exp
-           go-golang-org-x-net
-           go-golang-org-x-sys
-           go-golang-org-x-sync))
-    (synopsis "QUIC in Go")
-    (description "This package provides a Go language implementation of the QUIC
-network protocol.")
-    (home-page "https://github.com/quic-go/quic-go")
-    (license license:expat)))
-
-(define-public go-github-com-lucas-clemente-quic-go
-  (deprecated-package "go-github-com-lucas-clemente-quic-go" go-github-com-quic-go-quic-go))
 
 (define-public go-github-com-lunixbochs-vtclean
   (package
@@ -8517,29 +8364,6 @@ configuration languages, but other uses may be possible too.")
     (home-page "https://pkg.go.dev/go.etcd.io/bbolt/")
     (synopsis "Low-level key/value store in Go")
     (description "This package implements a low-level key/value store in Go.")
-    (license license:expat)))
-
-(define-public go-github-com-bwesterb-go-ristretto
-  (package
-    (name "go-github-com-bwesterb-go-ristretto")
-    (version "1.2.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/bwesterb/go-ristretto")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0h508v790wk6g8jq0gh18296xl87vmgc4fhwnac7mk6i5g3mz6v4"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:unpack-path "github.com/bwesterb/go-ristretto"
-       #:import-path "github.com/bwesterb/go-ristretto/edwards25519"))
-    (home-page "https://github.com/bwesterb/go-ristretto")
-    (synopsis "operations on the Ristretto prime-order group")
-    (description "This is a pure Go implementation of the group operations on
-the Ristretto prime-order group built from Edwards25519.")
     (license license:expat)))
 
 (define-public go-github-com-rogpeppe-go-internal

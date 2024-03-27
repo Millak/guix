@@ -22,7 +22,7 @@ Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
 Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
-Copyright @copyright{} 2023 Ludovic Courtès@*
+Copyright @copyright{} 2023-2024 Ludovic Courtès@*
 Copyright @copyright{} 2023 Thomas Ieong
 
 Permission is granted to copy, distribute and/or modify this document
@@ -5299,14 +5299,17 @@ export LC_ALL
 For convenience, @code{guix package} automatically generates
 @file{~/.guix-profile/etc/profile}, which defines all the environment
 variables necessary to use the packages---@code{PATH},
-@code{C_INCLUDE_PATH}, @code{PYTHONPATH}, etc.  Thus it's a good idea to
-source it from @code{/etc/profile}:
+@code{C_INCLUDE_PATH}, @code{PYTHONPATH}, etc.  Likewise, @command{guix
+pull} does that under @file{~/.config/guix/current}.  Thus it's a good
+idea to source both from @code{/etc/profile}:
 
 @example
-GUIX_PROFILE="$HOME/.guix-profile"
-if [ -f "$GUIX_PROFILE/etc/profile" ]; then
-  . "$GUIX_PROFILE/etc/profile"
-fi
+for GUIX_PROFILE in "$HOME/.config/guix/current" "$HOME/.guix-profile"
+do
+  if [ -f "$GUIX_PROFILE/etc/profile" ]; then
+    . "$GUIX_PROFILE/etc/profile"
+  fi
+done
 @end example
 
 Last but not least, Guix provides command-line completion notably for

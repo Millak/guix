@@ -187,13 +187,13 @@
            xcb-util-keysyms
            xcb-util-wm))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:tests? #f                      ; no check target
-       #:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" %output))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))           ; no configure script
+           #:tests? #f                      ; no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))))
     (home-page "https://github.com/baskerville/bspwm")
     (synopsis "Tiling window manager based on binary space partitioning")
     (description "bspwm is a tiling window manager that represents windows as
@@ -1759,6 +1759,50 @@ modules for building a Wayland compositor.")
     (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
                          (delete libdisplay-info)))))
 
+(define-public wlroots-0.15
+  (package
+    (inherit wlroots)
+    (name "wlroots-0.15")
+    (version "0.15.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name "wlroots" version))
+       (sha256
+        (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))))
+
+(define-public wmenu
+  (package
+    (name "wmenu")
+    (version "0.1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~adnano/wmenu")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wjn68r5cx4zvw7sby6sk2ip5h4fn0jbgb1nasm9nsgjpv63pnpm"))))
+    (build-system meson-build-system)
+    (native-inputs (append (if (%current-target-system)
+                               ;; for wayland-scanner
+                               (list pkg-config-for-build
+                                     wayland)
+                               '())
+                           (list pkg-config scdoc)))
+    (inputs (list cairo pango wayland libxkbcommon wayland-protocols))
+    (home-page "https://git.sr.ht/~adnano/wmenu")
+    (synopsis "Dynamic menu for Wayland")
+    (description "@command{wmenu} is a dynamic menu for Wayland, which reads a list
+of newline-separated items from stdin.  When the user selects an item and presses
+Return, their choice is printed to stdout and wmenu terminates.  Entering text will
+narrow the items to those matching the tokens in the input.")
+    (license license:expat)))
+
 (define-public sway
   (package
     (name "sway")
@@ -1837,7 +1881,7 @@ corners, shadows, inactive window dimming, etc.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1846,7 +1890,7 @@ corners, shadows, inactive window dimming, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06iq12p4438d6bv3jlqsf01wjaxrzlnj1bnicn41kad563aq41xl"))))
+        (base32 "0y0qdqzx90kvk6l80darldvizr7p5g65bnblhxlq5a2rgvs9hkpx"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")))
@@ -3054,7 +3098,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "2.2.0")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3063,7 +3107,7 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yhn77hdy7c80hd6r8nmvs206pmp76bx4zr94imfvgs8fh5gb8cy"))))
+                "0firjpp7qw4kb2h1zh5pv5k0xf0jvx6x0r0s7j6y7dhlh5j0s00q"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3079,7 +3123,7 @@ shows a notification for the user on the screen.")
                 (("/etc/") (string-append #$output "/etc/"))
                 (("/usr/share/") (string-append #$output "/usr/share/"))))))))
     (native-inputs (list pkg-config scdoc))
-    (inputs (list libevdev pango wlroots-0.16))
+    (inputs (list libevdev pango wlroots))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
     (description
@@ -3219,7 +3263,7 @@ session.  Nor does it depend on any UI toolkits such as Qt or GTK.")
            linux-pam
            pango
            wayland
-           wlroots-0.16))
+           wlroots-0.15))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags
@@ -3524,20 +3568,24 @@ used for multimedia keys.")
 
 (define-public grimshot
   (package
-    (inherit sway)
     (name "grimshot")
+    (version "1.9-contrib.0")
     (source (origin
-              (inherit (package-source sway))
-              (snippet #~(delete-file "contrib/grimshot.1"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/OctopusET/sway-contrib")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (snippet #~(delete-file "grimshot.1"))
+              (sha256
+               (base32
+                "16fa8l81zjy25nsky1i525hb7zjprqz74mbirm9b76pvksschdv5"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan #~`(("grimshot" "bin/")
                               ("grimshot.1" "share/man/man1/"))
            #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "contrib")))
-                        (add-after 'chdir 'patch-script-dependencies
+                        (add-after 'unpack 'patch-script-dependencies
                           (lambda* (#:key inputs #:allow-other-keys)
                             (substitute* "grimshot"
                               (("\\b(date|grim|jq|notify-send|slurp|swaymsg|wl-copy)\\b"
@@ -3559,11 +3607,13 @@ used for multimedia keys.")
                   slurp
                   sway
                   wl-clipboard))
+    (home-page "https://github.com/OctopusET/sway-contrib")
     (synopsis "Screenshot utility for the Sway window manager")
     (description "Grimshot is a screenshot utility for @code{sway}.  It provides
 an interface over @code{grim}, @code{slurp} and @code{jq}, and supports storing
 the screenshot either directly to the clipboard using @code{wl-copy} or to a
-file.")))
+file.")
+    (license license:expat)))
 
 (define-public wld
   (let ((commit "6586736176ef50a88025abae835e29a7ca980126")

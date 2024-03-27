@@ -2728,20 +2728,20 @@ the Cryptsetup/LUKS utilities to do that (see @inlinefmtifelse{html,
 @code{man cryptsetup}} for more information).
 
 @quotation Warning
-Note that GRUB can unlock LUKS2 devices since version 2.06, but only
-supports the PBKDF2 key derivation function, which is not the default
-for @command{cryptsetup luksFormat}.  You can check which key derivation
-function is being used by a device by running @command{cryptsetup
-luksDump @var{device}}, and looking for the PBKDF field of your
-keyslots.
+While efforts are in progress to extend support to LUKS2, please note
+that Guix only supports devices of type LUKS1 at the moment. You can
+verify that your existing LUKS device is of the right type by running
+@command{cryptsetup luksDump @var{device}}. Alternatively, you can
+create a new LUKS1 device with @command{cryptsetup luksFormat --type
+luks1 @var{device}}.
 @end quotation
 
 Assuming you want to store the root partition on @file{/dev/sda2}, the
-command sequence to format it as a LUKS2 partition would be along these
+command sequence to format it as a LUKS1 partition would be along these
 lines:
 
 @example
-cryptsetup luksFormat --type luks2 --pbkdf pbkdf2 /dev/sda2
+cryptsetup luksFormat --type luks1 /dev/sda2
 cryptsetup open /dev/sda2 my-partition
 mkfs.ext4 -L my-root /dev/mapper/my-partition
 @end example
@@ -3445,7 +3445,7 @@ Install the package @var{exp} evaluates to.
 @var{exp} must be a Scheme expression that evaluates to a
 @code{<package>} object.  This option is notably useful to disambiguate
 between same-named variants of a package, with expressions such as
-@code{(@@ (gnu packages base) guile-final)}.
+@code{(@@ (gnu packages commencement) guile-final)}.
 
 Note that this option installs the first output of the specified
 package, which may be insufficient when needing a specific output of a
@@ -4727,7 +4727,9 @@ the user's @file{~/.config/guix/channels.scm} file, unless @option{-q}
 is passed;
 @item
 the system-wide @file{/etc/guix/channels.scm} file, unless @option{-q}
-is passed;
+is passed (on Guix System, this file can be declared in the operating
+system configuration, @pxref{guix-configuration-channels,
+@code{channels} field of @code{guix-configuration}});
 @item
 the built-in default channels specified in the @code{%default-channels}
 variable.
@@ -5497,16 +5499,16 @@ $ wget -O - \
 @cindex configuration file for channels
 @cindex @command{guix pull}, configuration file
 @cindex configuration of @command{guix pull}
-Guix and its package collection are updated by running @command{guix pull}
-(@pxref{Invoking guix pull}).  By default @command{guix pull} downloads and
-deploys Guix itself from the official GNU@tie{}Guix repository.  This can be
-customized by defining @dfn{channels} in the
-@file{~/.config/guix/channels.scm} file.  A channel specifies a URL and branch
-of a Git repository to be deployed, and @command{guix pull} can be instructed
-to pull from one or more channels.  In other words, channels can be used
-to @emph{customize} and to @emph{extend} Guix, as we will see below.
-Guix is able to take into account security concerns and deal with authenticated
-updates.
+Guix and its package collection are updated by running @command{guix
+pull}.  By default @command{guix pull} downloads and deploys Guix itself
+from the official GNU@tie{}Guix repository.  This can be customized by
+providing a file specifying the set of @dfn{channels} to pull from
+(@pxref{Invoking guix pull}).  A channel
+specifies the URL and branch of a Git repository to be deployed, and
+@command{guix pull} can be instructed to pull from one or more channels.
+In other words, channels can be used to @emph{customize} and to
+@emph{extend} Guix, as we will see below.  Guix is able to take into
+account security concerns and deal with authenticated updates.
 
 @menu
 * Specifying Additional Channels::  Extending the package collection.
@@ -7632,6 +7634,9 @@ contain OpenPGP public keys in @file{.key} files, either in binary form
 or ``ASCII-armored''.  By default the keyring is loaded from the branch
 named @code{keyring}.
 
+@item --end=@var{commit}
+Authenticate revisions up to @var{commit}.
+
 @item --stats
 Display commit signing statistics upon completion.
 
@@ -7677,7 +7682,8 @@ assembly is to C programs.  The term ``derivation'' comes from the fact
 that build results @emph{derive} from them.
 
 This chapter describes all these APIs in turn, starting from high-level
-package definitions.
+package definitions.  @xref{Source Tree Structure}, for a more general
+overview of the source code.
 
 @menu
 * Package Modules::             Packages from the programmer's viewpoint.
@@ -19802,6 +19808,20 @@ few seconds when enough entropy is available and is only done once; you
 might want to turn it off for instance in a virtual machine that does
 not need it and where the extra boot time is a problem.
 
+@anchor{guix-configuration-channels}
+@item @code{channels} (default: @code{%default-channels})
+List of channels to be specified in @file{/etc/guix/channels.scm}, which
+is what @command{guix pull} uses by default (@pxref{Invoking guix
+pull}).
+
+@quotation Note
+When reconfiguring a system, the existing @file{/etc/guix/channels.scm}
+file is backed up as @file{/etc/guix/channels.scm.bak} if it was
+determined to be a manually modified file.  This is to facilitate
+migration from earlier versions, which allowed for in-place
+modifications to @file{/etc/guix/channels.scm}.
+@end quotation
+
 @item @code{max-silent-time} (default: @code{3600})
 @itemx @code{timeout} (default: @code{(* 3600 24)})
 The number of seconds of silence and the number of seconds of activity,
@@ -21081,7 +21101,7 @@ the @code{loopback} Shepherd service.
 @defvar %qemu-static-networking
 This is the @code{static-networking} record representing network setup
 when using QEMU's user-mode network stack on @code{eth0} (@pxref{Using
-the user mode network stack,,, QEMU, QEMU Documentation}).
+the user mode network stack,,, qemu, QEMU Documentation}).
 @end defvar
 
 @cindex DHCP, networking service
@@ -22716,9 +22736,9 @@ Logging level.
 This service type adds a list of known Facebook hosts to the
 @file{/etc/hosts} file.
 (@pxref{Host Names,,, libc, The GNU C Library Reference Manual})
-Each line contains a entry that maps a known server name of the Facebook
-on-line service---e.g., @code{www.facebook.com}---to the local
-host---@code{127.0.0.1} or its IPv6 equivalent, @code{::1}.
+Each line contains an entry that maps a known server name of the Facebook
+on-line service---e.g., @code{www.facebook.com}---to unroutable IPv4 and
+IPv6 addresses.
 
 This mechanism can prevent programs running locally, such as Web
 browsers, from accessing Facebook.
@@ -28551,6 +28571,12 @@ Set of mechanisms that will never be offered.  See
 Defaults to @samp{'("DIGEST-MD5")}.
 @end deftypevr
 
+@deftypevr {@code{prosody-configuration} parameter} string-list insecure-sasl-mechanisms
+Set of mechanisms that will not be offered on unencrypted connections.
+See @url{https://prosody.im/doc/modules/mod_saslauth}.
+Defaults to @samp{'("PLAIN" "LOGIN")}.
+@end deftypevr
+
 @deftypevr {@code{prosody-configuration} parameter} boolean s2s-require-encryption?
 Whether to force all server-to-server connections to be encrypted or not.
 See @url{https://prosody.im/doc/modules/mod_tls}.
@@ -28630,7 +28656,7 @@ See @url{https://prosody.im/doc/configure#virtual_host_settings}.
 
 Available @code{virtualhost-configuration} fields are:
 
-all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
+all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{insecure-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
 @deftypevr {@code{virtualhost-configuration} parameter} string domain
 Domain you wish Prosody to serve.
 @end deftypevr
@@ -28652,7 +28678,7 @@ Defaults to @samp{'()}.
 
 Available @code{int-component-configuration} fields are:
 
-all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
+all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{insecure-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
 @deftypevr {@code{int-component-configuration} parameter} string hostname
 Hostname of the component.
 @end deftypevr
@@ -28705,7 +28731,7 @@ Defaults to @samp{'()}.
 
 Available @code{ext-component-configuration} fields are:
 
-all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
+all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{insecure-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
 @deftypevr {@code{ext-component-configuration} parameter} string component-secret
 Password which the component will use to log in.
 @end deftypevr

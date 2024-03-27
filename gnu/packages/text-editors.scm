@@ -12,7 +12,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Mark Meyer <mark@ofosos.org>
@@ -808,7 +808,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.15.0")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -817,7 +817,7 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d1r62s1qidspck0b1zf8dibyjn9g72agbkjcica4bvfylnbqz9z"))))
+        (base32 "1w1wscq7w0xx4wkkk9rl3pc067yspbk8qnfaq3i9sxc7k6zsy77x"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -960,14 +960,14 @@ editors.")
 (define-public texmacs
   (package
     (name "texmacs")
-    (version "2.1.1")
+    (version "2.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.texmacs.org/Download/ftp/tmftp/"
                            "source/TeXmacs-" version "-src.tar.gz"))
        (sha256
-        (base32 "0c780vcwppzhb70d3d96md3hra7338d4fv3aj0sm7jx0mj2a334i"))))
+        (base32 "11l1q5lmsj9g7yil1dn7n1cgsr8iikx59kg9riahpb6xw0p959l7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config xdg-utils))       ;for xdg-icon-resource
@@ -1473,7 +1473,7 @@ commands.")
 (define-public lite-xl
   (package
     (name "lite-xl")
-    (version "2.1.1")
+    (version "2.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1482,18 +1482,10 @@ commands.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pnmax68hvk1ry4bjsxwq4qimfn55pai8jlljw6jiqzcmh4mp7xm"))
-              (modules '((guix build utils)))
-              (snippet '(substitute* "meson.build"
-                          (("dependency\\('lua5\\.4',")
-                           "dependency('lua-5.4',")))))
+                "19wdq8w6ickyynx6r2wg2vf5isl2577zjizgwbzql9vhqdsi8ag3"))))
     (build-system meson-build-system)
-    (inputs (list agg
-                  freetype
-                  lua-5.4
-                  pcre2
-                  reproc
-                  sdl2))
+    (arguments (list #:configure-flags #~'("-Duse_system_lua=true")))
+    (inputs (list lua-5.4 pcre2 freetype sdl2))
     (native-inputs (list pkg-config))
     (home-page "https://lite-xl.com")
     (synopsis "Lightweight text editor written in Lua")

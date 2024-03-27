@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
@@ -276,14 +276,14 @@ colors, styles, options and details.")
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.86")
+    (version "2.88")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "07y9yg7kdkgmz024qzny8xhjw3c367kxfpwzv19cxcy7qcgsvsy4"))
+        (base32 "1fzm58md2kc32sj19bksnd8yzkg47z5pblkxp28r7vm67xs1mrqd"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.

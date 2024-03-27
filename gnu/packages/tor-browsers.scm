@@ -149,42 +149,40 @@
 
 ;; We copy the official build id, which can be found there:
 ;; https://aus1.torproject.org/torbrowser/update_3/release/.
-(define %torbrowser-build-date "20240305132801")
+(define %torbrowser-build-date "20240322115718")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "13.0.11")
+(define %torbrowser-version "13.0.13")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "115.8.0esr-13.0-1-build2")
+(define %torbrowser-firefox-version "115.9.1esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
-;; If Tor Browser and Mullvad Browser updates are not synchronized, maybe this
-;; will have to be duplicated.
-(define translation-base-browser
+(define torbrowser-translation-base
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "16211a4b8524d71525f0ea73c07771c634132b30")))
+          (commit "8e04ca3c5f440ed8f16b2069ae9565e4b044ec29")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1452lpzbx0a049ksw84q7fj93bldfpllpp86aa4kggiv7vb3dqxk"))))
+      "0as4xjmj17jiyqaqfmqhplwscg39df109pgilkjv560xdpgld10q"))))
 
 ;; See tor-browser-build/projects/translation/config.
-(define translation-tor-browser
+(define torbrowser-translation-specific
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "012f643d2d6b04ebf868bf62cdb7ad5b727734f5")))
+          (commit "bf2fac60a6c41aa67b8147f22a638d498ac2dcdd")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "1253zrpl59bwy6s71ip3f84k46m2wwid7ixgf72pzqrkkh5lcnkn"))))
+      "0bz50bfrljr139rs3zcx84y64vn7fav78ghl85xzm5bww15jfwl1"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -200,7 +198,7 @@
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "0qcl9yqndnaqkvgmmb6f5rrzvwdr323l3r4s3hd9mwv9q1x41h3b"))))
+         "1wn1wxiwhhnx4zzs6gr1qvyvjj5nn449vlgw7kcswpymz3r9mclp"))))
     (arguments
      (list
       #:install-plan
@@ -219,6 +217,8 @@ Browser.")
                           moz-app-name
                           moz-app-remotingname
                           branding-directory
+                          translation-base
+                          translation-specific
                           assets
                           locales
                           build-date
@@ -236,7 +236,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "0c7jfliznxfdfs5xrwwgib486vgpmpcvq4s54rxxcxfk633kgz67"))))
+         "0pkl6q9hfl52v7if20h1vdd1ydl8a7gs6lk95linknh4kaaaw4qm"))))
     (build-system mozilla-build-system)
     (inputs
      (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
@@ -291,7 +291,7 @@ Browser.")
      (list
       rust
       `(,rust "cargo")
-      rust-cbindgen-0.24
+      rust-cbindgen
       llvm-15
       clang-15
       perl
@@ -567,7 +567,7 @@ Browser.")
               (let ((l10ncentral ".mozbuild/l10n-central"))
                 ;; Temporary copy so that we can use ‘mv’ to mimic
                 ;; tor-browser-build/projects/firefox/build.
-                (copy-recursively #$translation-base-browser
+                (copy-recursively #$translation-base
                                   "translation-base-browser")
                 (for-each
                  (lambda (lang)
@@ -591,7 +591,7 @@ Browser.")
               (let ((l10ncentral ".mozbuild/l10n-central"))
                 ;; Temporary copy so that we can use ‘mv’ to mimic
                 ;; tor-browser-build/projects/firefox/build.
-                (copy-recursively #$translation-tor-browser
+                (copy-recursively #$translation-specific
                                   "translation-tor-browser")
                 (for-each
                  (lambda (lang)
@@ -839,6 +839,8 @@ attacks on the privacy of Tor users.")
   (make-torbrowser #:moz-app-name "torbrowser"
                    #:moz-app-remotingname "Tor Browser"
                    #:branding-directory "browser/branding/tb-release"
+                   #:translation-base torbrowser-translation-base
+                   #:translation-specific torbrowser-translation-specific
                    #:assets torbrowser-assets
                    #:locales %torbrowser-locales
                    #:build-date %torbrowser-build-date
@@ -876,29 +878,41 @@ attacks on the privacy of Tor users.")
 
 ;; We copy the official build id, which can be found there:
 ;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
-(define %mullvadbrowser-build-date "20240213150358")
+(define %mullvadbrowser-build-date "20240322132912")
 
 ;; To find the last version, look at
 ;; https://mullvad.net/en/download/browser/linux.
-(define %mullvadbrowser-version "13.0.10")
+(define %mullvadbrowser-version "13.0.13")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-mullvad-browser-".
-(define %mullvadbrowser-firefox-version "115.8.0esr-13.0-1-build1")
+(define %mullvadbrowser-firefox-version "115.9.1esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
-(define translation-mullvad-browser
+(define mullvadbrowser-translation-base
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "57de1569da0e2c48fd999a13e555f6b522041993")))
+          (commit "8e04ca3c5f440ed8f16b2069ae9565e4b044ec29")))
+    (file-name "translation-base-browser")
+    (sha256
+     (base32
+      "0as4xjmj17jiyqaqfmqhplwscg39df109pgilkjv560xdpgld10q"))))
+
+;; See tor-browser-build/projects/translation/config.
+(define mullvadbrowser-translation-specific
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://gitlab.torproject.org/tpo/translation.git")
+          (commit "c5361cb496ae7e047fd9226139537f1fcfc7938d")))
     (file-name "translation-mullvad-browser")
     (sha256
      (base32
-      "1q3979ac92c5mib573hx9w06x3hrfw7r52wzmj9r75sz2hhsmrq3"))))
+      "0kxna8hcn6xyj9mq0k8pzmj0xh6drq6fs69vjhk31g9wjjm99hss"))))
 
 (define mullvadbrowser-assets
   ;; This is a prebuilt Mullvad Browser from which we take the assets we need.
@@ -914,7 +928,7 @@ attacks on the privacy of Tor users.")
          version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1dkkk90lhvmhmi89rfjkx2m0ynyj0zajhxhxfmkzjj6bflmzgipv"))))
+         "1w2spwpxsvizn3xsj2pykisvi4b12y669cpqwhjkpxqlbsrlj0h8"))))
     (arguments
      (list
       #:install-plan
@@ -935,6 +949,8 @@ Mullvad Browser.")
   (make-torbrowser #:moz-app-name "mullvadbrowser"
                    #:moz-app-remotingname "Mullvad Browser"
                    #:branding-directory "browser/branding/mb-release"
+                   #:translation-base mullvadbrowser-translation-base
+                   #:translation-specific mullvadbrowser-translation-specific
                    #:assets mullvadbrowser-assets
                    #:locales %mullvadbrowser-locales
                    #:build-date %mullvadbrowser-build-date
@@ -955,7 +971,7 @@ Mullvad Browser.")
          %mullvadbrowser-firefox-version ".tar.xz"))
        (sha256
         (base32
-         "09wawhb3ci0i7038xs0cqvlm37i90a5iwn9m2p5gaal5cz55dz3n"))))
+         "05s87838b6smd82jhkpw7czbg3ch8fvqiqa174g7zkqi6p7bwcy3"))))
     (arguments
      (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
        ((#:phases phases)
@@ -976,7 +992,7 @@ Mullvad Browser.")
                  (lambda (lang)
                    (system
                     (format #f "cp -Lr ~a/~a .mozbuild/l10n-central/"
-                            #$translation-mullvad-browser lang)))
+                            #$mullvadbrowser-translation-specific lang)))
                  (map car #$%mullvadbrowser-locales))))
             (add-before 'build 'fix-profiles
               ;; Otherwise the profile would change every time the install

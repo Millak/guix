@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
@@ -652,6 +652,8 @@ denoting a specific output of a package."
                  vlist-null)))
     (_
      (raise (condition
+             (&profile-error
+              (profile (and=> (source-property sexp 'filename) dirname)))
              (&message (message "unsupported manifest format")))))))
 
 (define (read-manifest port)

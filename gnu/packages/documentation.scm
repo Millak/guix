@@ -30,7 +30,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages documentation)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -104,7 +104,7 @@
     (description "LaTeX2HTML is a utility that converts LaTeX documents to web
 pages in HTML.")
     (home-page "https://www.latex2html.org/")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public asciidoc
   (package
@@ -175,7 +175,7 @@ EPUB, man page.
 AsciiDoc is highly configurable: both the AsciiDoc source file syntax and
 the backend output markups (which can be almost any type of SGML/XML
 markup) can be customized and extended by the user.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-deprecated asciidoc-py3 asciidoc)
 
@@ -241,7 +241,34 @@ documentation from annotated C++ sources, but it also supports other popular
 programming languages such as C, Objective-C, C#, PHP, Java, Python,
 IDL (Corba, Microsoft, and UNO/OpenOffice flavors), Fortran, VHDL, Tcl,
 and to some extent D.")
-    (license gpl3+)))
+    (license license:gpl3+)))
+
+(define-public halibut
+  (package
+    (name "halibut")
+    (version "1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.chiark.greenend.org.uk/~sgtatham/halibut/halibut-"
+                    version "/halibut-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ciikn878vivs4ayvwvr63nnhpcg12m8023xv514zxqpdxlzg85a"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ;No tests.
+    (native-inputs (list pkg-config perl))
+    (home-page "https://www.chiark.greenend.org.uk/~sgtatham/halibut/")
+    (synopsis "Documentation production system for software manuals")
+    (description
+     "Halibut is a text formatting system designed primarily for writing software
+documentation.  It accepts a single source format and outputs any combination of
+plain text, HTML, Unix man or info pages, PostScript or PDF.  It has extensive
+support for indexing and cross-referencing, and generates hyperlinks within output
+documents wherever possible.  It supports Unicode, with the ability to fall back to
+an alternative representation if Unicode output is not available.")
+    (license license:expat)))
 
 (define-public doc++
   (package
@@ -266,7 +293,7 @@ and to some extent D.")
 generate both TeX output for high-quality hardcopies or HTML output for online
 browsing.  The documentation is extracted directly from the C/C++/IDL source
 or Java class files.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public pod2pdf
   (package
@@ -292,7 +319,7 @@ or Java class files.")
 Documentation} format to PDF files.  It also supports some extensions to the POD
 format, and supports the file types JPG, GIF, TIFF, PNG, and PNM for embedded
 objects.")
-    (license artistic2.0)))
+    (license license:artistic2.0)))
 
 (define-public python-docrepr
   (package
@@ -344,7 +371,7 @@ objects.")
     (description "Docrepr renders Python docstrings to HTML with Sphinx.  It
 can generate rich and plain representations of docstrings, alongside
 additional metadata about the object to which the docstring belongs.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public scrollkeeper
   (package
@@ -377,7 +404,7 @@ documentation metadata as specified by the Open Source Metadata Framework and
 provides a simple API to allow help browsers to find, sort, and search the
 document catalog.  It will also be able to communicate with catalog servers on
 the Net to search for documents which are not on the local system.")
-    (license lgpl2.1+)))
+    (license license:lgpl2.1+)))
 
 (define-public zeal
   (let ((commit "1cfa7c637f745be9d98777f06b4f8dec90892bf2")
@@ -425,4 +452,4 @@ the Net to search for documents which are not on the local system.")
       (synopsis "Offline documentation browser inspired by Dash")
       (description "Zeal is a simple offline documentation browser
 inspired by Dash.")
-      (license gpl3+))))
+      (license license:gpl3+))))

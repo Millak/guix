@@ -6,6 +6,7 @@
 ;;; Copyright © 2023 Zongyuan Li <zongyuan.li@c0x0o.me>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages python)
   #:use-module (gnu packages networking)
@@ -149,7 +151,7 @@ runtime (like runc or crun) for a single container.")
 (define-public distrobox
   (package
     (name "distrobox")
-    (version "1.5.0.2")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -157,23 +159,51 @@ runtime (like runc or crun) for a single container.")
              (url "https://github.com/89luca89/distrobox")
              (commit version)))
        (sha256
-        (base32 "0h6rpgbcmg33vriyzh9nkdxj8yhfn0y35i1wh1zmb7zss3ik9kxj"))
+        (base32 "1g14q1sm3026h9n85v1gc3m2v9sgrac2mr9yrkh98qg5yahzmpc3"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
-    (inputs
-     (list podman wget))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-before 'install 'refer-to-inputs
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* (find-files "." "^distrobox[^.]*[^1]$")
-                     (("podman") (search-input-file inputs "/bin/podman"))
-                     (("wget") (search-input-file inputs "/bin/wget"))
-                     (("command -v") "test -x"))))
+               ;; Use WRAP-SCRIPT to wrap all of the scripts of distrobox,
+               ;; excluding the host side ones.
+               (add-after 'install 'wrap-scripts
+                 (lambda _
+                   (let ((path (search-path-as-list
+                                 (list "bin")
+                                 (list #$(this-package-input "podman")
+                                       #$(this-package-input "wget")))))
+                     (for-each (lambda (script)
+                                 (wrap-script
+                                   (string-append #$output "/bin/distrobox-"
+                                                  script)
+                                   `("PATH" ":" prefix ,path)))
+                               '("assemble"
+                                 "create"
+                                 "enter"
+                                 "ephemeral"
+                                 "generate-entry"
+                                 "list"
+                                 "rm"
+                                 "stop"
+                                 "upgrade")))))
+               ;; These scripts are used in the container side and the
+               ;; /gnu/store path is not shared with the containers.
+               (add-after 'patch-shebangs 'unpatch-shebangs
+                 (lambda _
+                   (for-each (lambda (script)
+                               (substitute*
+                                 (string-append #$output "/bin/distrobox-"
+                                                script)
+                                 (("#!.*/bin/sh") "#!/bin/sh\n")))
+                             '("export" "host-exec" "init"))))
                (replace 'install
                  (lambda _
                    (invoke "./install" "--prefix" #$output))))))
+    (inputs
+     (list guile-3.0 ; for wrap-script
+           podman
+           wget))
     (home-page "https://distrobox.privatedns.org/")
     (synopsis "Create and start containers highly integrated with the hosts")
     (description
@@ -291,7 +321,7 @@ Layer-4 sockets.")
 (define-public cni-plugins
   (package
     (name "cni-plugins")
-    (version "1.0.1")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -299,7 +329,7 @@ Layer-4 sockets.")
              (url "https://github.com/containernetworking/plugins")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1j91in0mg4nblpdccyq63ncbnn2pc2zzjp1fh3jy0bsndllgv0nc"))
+        (base32 "0l6f4z762n8blak41wcxdmdhm92gqw2qcxcqd3s4wiql3d7273kj"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
@@ -334,6 +364,50 @@ Layer-4 sockets.")
     (description
      "This package provides Container Network Interface (CNI) plugins to
 configure network interfaces in Linux containers.")
+    (license license:asl2.0)))
+
+(define-public gvisor-tap-vsock
+  (package
+    (name "gvisor-tap-vsock")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/containers/gvisor-tap-vsock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q1zism0c63k2aq6yhkjqc3b2zsm4lwn0bk39p2kl79h798wfyp4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags `(list ,(string-append "GIT_VERSION=v" version))
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'setenv
+            (lambda _
+              ;; For golang toolchain.
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'prune-tests
+            (lambda _
+              ;; Requires internet connection to fetch QEMU image.
+              (invoke "rm" "-r" "test")))
+          (replace 'install
+            (lambda _
+              (install-file "bin/gvproxy" (string-append #$output "/bin")))))))
+    (native-inputs (list go-1.20))
+    (home-page "https://github.com/containers/gvisor-tap-vsock")
+    (synopsis "Network stack for virtualization based on gVisor")
+    (description "This package provides a replacement for @code{libslirp} and
+@code{VPNKit}, written in pure Go.  It is based on the network stack of gVisor
+and brings a configurable DNS server and dynamic port forwarding.
+
+It can be used with QEMU, Hyperkit, Hyper-V and User-Mode Linux.
+
+The binary is called @command{gvproxy}.")
     (license license:asl2.0)))
 
 ;; For podman to work, the user needs to run

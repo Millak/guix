@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +32,7 @@
 
 (define-module (gnu packages gnunet)
   #:use-module (gnu packages)
+  #:use-module (gnu packages apparmor)
   #:use-module (gnu packages base)
   #:use-module (gnu packages file)
   #:use-module (gnu packages aidc)
@@ -65,6 +66,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages upnp)
@@ -83,86 +85,80 @@
 
 (define-public libextractor
   (package
-   (name "libextractor")
-   (version "1.11")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnu/libextractor/libextractor-"
-                                version ".tar.gz"))
-            (sha256
-             (base32
-              "13xxv11mif3m0mpk7i43mljhhaqrj52kznm1qi3qb8s6hymk7xhn"))))
-   (build-system gnu-build-system)
-   ;; WARNING: Checks require /dev/shm to be in the build chroot, especially
-   ;; not to be a symbolic link to /run/shm.
-   ;; FIXME:
-   ;; The following dependencies are all optional, but should be
-   ;; available for maximum coverage:
-   ;; * librpm (rpm)    ; investigate failure
-   ;; * libtidy-html (tidy-html) ; investigate failure
-   (inputs
-    `(("exiv2" ,exiv2)
-      ("bzip2" ,bzip2)
-      ("flac" ,flac)
-      ("ffmpeg" ,ffmpeg-4)
-      ("file" ,file)                           ;libmagic, for the MIME plug-in
-      ("glib" ,glib)
-      ("giflib" ,giflib)
-      ("gstreamer" ,gstreamer)
-      ("gst-plugins-base" ,gst-plugins-base)
-      ("gtk+" ,gtk+)
-      ("libarchive" ,libarchive)
-      ("libgsf" ,libgsf)
-      ("libjpeg" ,libjpeg-turbo)
-      ("libltdl" ,libltdl)
-      ("libmpeg2" ,libmpeg2)
-      ("libmp4v2" ,libmp4v2)
-      ("libsmf" ,libsmf)
-      ("libogg" ,libogg)
-      ("libtiff" ,libtiff)
-      ("libvorbis" ,libvorbis)
-      ("zlib" ,zlib)))
-   (native-inputs
-    (list pkg-config))
-   (outputs '("out"
-              "static")) ; 420 KiB .a files
-   (arguments
-    `(#:configure-flags
-      (list (string-append "--with-ltdl="
-                           (assoc-ref %build-inputs "libltdl")))
-      #:parallel-tests? #f
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'configure 'fix-exiv2-tests
-          ;; exiv2>=0.27.3 rounds geolocation
-          ;; https://github.com/Exiv2/exiv2/pull/1107/commits/db1be4ae8e1077949fcb6a960e93069d6a41b395#diff-f3f55183ccbe956c720c86e61f708d9f
-          (lambda _
-            (substitute* "src/plugins/test_exiv2.c"
-              (("17.585\\\\\" ") "18\\\"")
-              (("21.713\\\\\" ") "22\\\""))
-            #t))
-        (add-after 'install 'move-static-libraries
-          (lambda* (#:key outputs #:allow-other-keys)
-            ;; Move static libraries to the "static" output.
-            (let* ((out    (assoc-ref outputs "out"))
-                   (lib    (string-append out "/lib"))
-                   (static (assoc-ref outputs "static"))
-                   (slib   (string-append static "/lib")))
-              (mkdir-p slib)
-              (for-each (lambda (file)
-                          (install-file file slib)
-                          (delete-file file))
-                        (find-files lib "\\.a$"))
-              #t))))))
-   (synopsis "Library to extract meta-data from media files")
-   (description
-    "GNU libextractor is a library for extracting metadata from files.  It
+    (name "libextractor")
+    (version "1.13")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/libextractor/libextractor-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0mgprmwdhdwq9xhfxfhcncd304425nvcc4zi8ci5f0nja4n333xv"))
+              (patches
+               (search-patches "libextractor-tidy-support.patch"))))
+    (build-system gnu-build-system)
+    (outputs '("out"
+               "static"))               ; 420 KiB .a files
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-ltdl="
+                                  #$(this-package-input "libltdl")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'force-reconfigure
+                 (lambda _
+                   (delete-file "configure")))
+               (add-after 'install 'move-static-libraries
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Move static libraries to the "static" output.
+                   (let* ((out    #$output)
+                          (lib    (string-append out "/lib"))
+                          (slib   (string-append #$output:static "/lib")))
+                     (mkdir-p slib)
+                     (for-each (lambda (file)
+                                 (install-file file slib)
+                                 (delete-file file))
+                               (find-files lib "\\.a$"))))))))
+    (native-inputs
+     (list autoconf-2.71
+           automake
+           gettext-minimal
+           libtool
+           pkg-config
+           texinfo))
+    (inputs
+     (list bzip2
+           exiv2
+           file                         ;libmagic, for the MIME plug-in
+           flac
+           gdk-pixbuf
+           giflib
+           glib
+           gst-plugins-base
+           gstreamer
+           libapparmor
+           libarchive
+           libgsf
+           libjpeg-turbo
+           libltdl
+           libmp4v2
+           libmpeg2
+           libogg
+           libsmf
+           libtiff
+           libvorbis
+           rpm
+           tidy-html
+           zlib))
+    (synopsis "Library to extract meta-data from media files")
+    (description
+     "GNU libextractor is a library for extracting metadata from files.  It
 supports a very large number of file formats, including audio files, document
 files, and archive files.  Each file format is implemented as a plugin, so
 new formats can be added easily.  The package also contains a command-line
 tool to extract metadata from a file and print the results.")
-   (license license:gpl3+)
-   (home-page "https://www.gnu.org/software/libextractor/")))
+    (license license:gpl3+)
+    (home-page "https://www.gnu.org/software/libextractor/")))
 
 (define-public libmicrohttpd
   (package

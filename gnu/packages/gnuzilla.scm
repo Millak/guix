@@ -3,7 +3,7 @@
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014-2024 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
@@ -522,9 +522,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.8.0")
+(define %icecat-base-version "115.9.1")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20240220000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20240323000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -544,12 +544,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1slmp2v1q3my81z8kiym9rpxw5d9n4sn07v7hv99517w7vr8d05g"))))
+              "0agr8s42lpbq5gixsgj5kpcvimbnyx6msr4il4rvmf7gpw47hr93"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.8.0")
-         (gnuzilla-commit "7e2ff1ad7e03d2bfe0b2daf3f25961b06cab8848")
+         (upstream-icecat-base-version "115.9.1")
+         (gnuzilla-commit "a59b8a2c2e4c8b8de47b3ae4d10032154a47a01e")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -561,7 +561,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "1lv3vfqv0zb634gnvzb37fs04rb1jlrd2n1k51yjsvdznpqfpi1y"))))
+              "0l07x59c0bmj72n0pdhb4mlphw9nmd88i9jg39xvxcw0cv7bw6qm"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -763,7 +763,7 @@ variable defined below.  It requires guile-json to be installed."
       ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
       rust
       `(,rust "cargo")
-      rust-cbindgen-0.24
+      rust-cbindgen
       llvm-15
       clang-15
       perl
@@ -1850,7 +1850,7 @@ ca495991b7852b855"))
            pkg-config
            python-wrapper
            rust
-           rust-cbindgen-0.23
+           rust-cbindgen
            which
            yasm))
     (home-page "https://www.thunderbird.net")

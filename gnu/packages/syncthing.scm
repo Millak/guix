@@ -129,7 +129,9 @@ Protocol.")
     (home-page "https://github.com/syncthing/syncthing")
     (properties
      '((release-monitoring-url . "https://syncthing.net/downloads/")
-       (upstream-name . "syncthing-source")))
+       (upstream-name . "syncthing-source")
+       ;; The hashing code greatly benefits from newer architecture support.
+       (tunable? . #t)))
     (license mpl2.0)))
 
 (define-public syncthing-gtk
@@ -422,31 +424,6 @@ address of the default LAN gateway.")
     (home-page "https://github.com/jackpal/gateway")
     (license bsd-3)))
 
-(define-public go-github-com-lib-pq
-  (package
-    (name "go-github-com-lib-pq")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/lib/pq")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "08j1smm6rassdssdks4yh9aspa1dv1g5nvwimmknspvhx8a7waqz"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/lib/pq"
-       ;; The tests seem to fail without access to the network or a running
-       ;; Postgres instance.
-       #:tests? #f))
-    (synopsis "Golang Postgres driver for Go's database/sql")
-    (description "This package provides a pure Go Postgres driver for Go's
-database/sql package.")
-    (home-page "https://github.com/lib/pq")
-    (license expat)))
-
 (define-public go-github-com-oschwald-geoip2-golang
   (package
     (name "go-github-com-oschwald-geoip2-golang")
@@ -704,32 +681,6 @@ using sh's word-splitting rules.")
       (description "This package provides @code{notify}, a file system event
 notification library in Go.")
       (home-page "https://github.com/syncthing/notify")
-      (license expat))))
-
-(define-public go-github-com-beorn7-perks-quantile
-  (let ((commit "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9")
-        (revision "0"))
-    (package
-      (name "go-github-com-beorn7-perks-quantile")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/beorn7/perks")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1hrybsql68xw57brzj805xx2mghydpdiysv3gbhr7f5wlxj2514y"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/beorn7/perks/quantile"
-         #:unpack-path "github.com/beorn7/perks"))
-      (synopsis "Compute approximate quantiles over an unbounded data stream")
-      (description "Perks contains the Go package @code{quantile} that computes
-approximate quantiles over an unbounded data stream within low memory and CPU
-bounds.")
-      (home-page "https://github.com/beorn7/perks")
       (license expat))))
 
 (define-public go-github-com-matttproud-golang-protobuf-extensions-pbutil

@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -237,6 +238,31 @@ interface around the standard library's @code{time} package so that the applicat
 can use the realtime clock while tests can use the mock clock.")
     (license license:expat)))
 
+(define-public go-github-com-beorn7-perks-quantile
+  (package
+    (name "go-github-com-beorn7-perks-quantile")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/beorn7/perks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17n4yygjxa6p499dj3yaqzfww2g7528165cl13haj97hlx94dgl7"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/beorn7/perks/quantile"
+           #:unpack-path "github.com/beorn7/perks"))
+    (home-page "https://github.com/beorn7/perks")
+    (synopsis "Compute approximate quantiles over an unbounded data stream")
+    (description
+     "Perks contains the Go package @code{quantile} that computes
+approximate quantiles over an unbounded data stream within low memory and CPU
+bounds.")
+    (license license:expat)))
+
 (define-public go-github-com-bitly-go-hostpool
   (package
     (name "go-github-com-bitly-go-hostpool")
@@ -285,28 +311,51 @@ information and periodically output metrics")
     (license license:expat)))
 
 (define-public go-github-com-blang-semver
-  (let ((commit "60ec3488bfea7cca02b021d106d9911120d25fe9")
-        (revision "0"))
-    (package
-      (name "go-github-com-blang-semver")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/blang/semver")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "19pli07y5592g4dyjyj0jq5rn548vc3fz0qg3624vm1j5828p1c2"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/blang/semver"))
-      (home-page "https://github.com/blang/semver")
-      (synopsis "Semantic versioning library written in Go")
-      (description
-       "Semver is a library for Semantic versioning written in Go.")
-      (license license:expat))))
+  (package
+    (name "go-github-com-blang-semver")
+    (version "3.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blang/semver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16s66zbfkn35msmxpkiwf5dv91kzw7yzxzkcv8ma44j7lbgzx5qk"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/blang/semver"))
+    (home-page "https://github.com/blang/semver")
+    (synopsis "Semantic versioning library written in Go")
+    (description
+     "Semver is a library for Semantic versioning written in Go.")
+    (license license:expat)))
+
+(define-public go-github-com-blang-semver-v4
+  (package
+    (inherit go-github-com-blang-semver)
+    (name "go-github-com-blang-semver-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blang/semver")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14h9ys4n4kx9cbj42lkdf4i5k3nkll6sd62jcvl7cs565v6fiknz"))))
+    (arguments
+     (list
+      #:import-path "github.com/blang/semver/v4"
+      #:unpack-path "github.com/blang/semver"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))))
 
 (define-public go-github-com-bmizerany-perks-quantile
   (package
@@ -853,6 +902,40 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-hclog
+  (package
+    (name "go-github-com-hashicorp-go-hclog")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-hclog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lvr4ga95a0xb62vgq1hy558x3r65hn2d0h7bf0a88lsfsrcik0n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-hclog"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-isatty
+           go-golang-org-x-tools))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/hashicorp/go-hclog")
+    (synopsis "Key/value logging interface for Go")
+    (description
+     "This package provides a simple key/value logging interface for Golang
+for use in development and production environments.  Unlike the standard
+library @code{log} package, this package provides logging levels that provide
+decreased output based upon the desired amount of output.  It also comes with
+a command-line program @code{hclogvet} that can be used to check that the logging level
+methods on @code{hclog.Logger} are used correctly.")
+    (license license:expat)))
+
 (define-public go-github-com-hashicorp-go-multierror
   (package
     (name "go-github-com-hashicorp-go-multierror")
@@ -987,6 +1070,83 @@ increment versions.")
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-jbenet-go-random
+  (package
+    (name "go-github-com-jbenet-go-random")
+    (version "0.0.0-20190219211222-123a90aedc0c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-random")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kgx19m8p76rmin8s8y6j1padciv1dx37qzy7jkh9bw49ai3haw3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-random"))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize))
+    (home-page "https://github.com/jbenet/go-random")
+    (synopsis "Go library and a program that outputs randomness")
+    (description
+     "This is a Unix utility that outputs randomness.  It is a thin
+wrapper around @code{crypto/rand}.")
+    (license license:expat)))
+
+(define-public go-github-com-jbenet-go-temp-err-catcher
+  (package
+    (name "go-github-com-jbenet-go-temp-err-catcher")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/go-temp-err-catcher")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n482jhh6jwq43jj21xkq8grqzx78hjh7f44p0q3n01zp1dsh97r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/go-temp-err-catcher"))
+    (home-page "https://github.com/jbenet/go-temp-err-catcher")
+    (synopsis "Error handling helper library")
+    (description "Package @code{temperrcatcher} provides a @code{TempErrCatcher}
+object, which implements simple error-retrying functionality.")
+    (license license:expat)))
+
+(define-public go-github-com-jbenet-goprocess
+  (package
+    (name "go-github-com-jbenet-goprocess")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbenet/goprocess")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z4a5skx9kh2c727pc6zz0vhf9v8acd320s7z0f1kwy3y1nbdhjk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jbenet/goprocess"))
+    (native-inputs
+     (list go-github-com-jbenet-go-cienv))
+    (home-page "https://github.com/jbenet/goprocess")
+    (synopsis "Manage process life cycles in Go")
+    (description
+     "@code{goprocess} introduces a way to manage process lifecycles in
+Go.  It is much like @code{go.net/context} (it actually uses a Context), but it is
+more like a Context-WaitGroup hybrid.  @code{goprocess} is about being able to start
+and stop units of work, which may receive @code{Close} signals from many clients.")
+    (license license:expat)))
+
 (define-public go-github-com-jinzhu-copier
   (package
     (name "go-github-com-jinzhu-copier")
@@ -1008,6 +1168,31 @@ increment versions.")
     (description
      "This package provides a library, which supports copying value from one
 struct to another.")
+    (license license:expat)))
+
+(define-public go-github-com-josharian-intern
+  (package
+    (name "go-github-com-josharian-intern")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/josharian/intern")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1za48ppvwd5vg8vv25ldmwz1biwpb3p6qhf8vazhsfdg9m07951c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/josharian/intern"))
+    (home-page "https://github.com/josharian/intern")
+    (synopsis "String interning for Go")
+    (description
+     "This library defines functions to perform string interning in Go,
+storing only one copy of each unique string in memory.  All functions may be
+called concurrently with themselves and each other.")
     (license license:expat)))
 
 (define-public go-github-com-k0kubun-pp
@@ -1035,6 +1220,33 @@ struct to another.")
      "This package provides a pretty-printer for Go.  The functions defined by
 @code{pp} follow an API similar to @code{fmt} and its configuration can be
 customized globally.")
+    (license license:expat)))
+
+(define-public go-github-com-lib-pq
+  (package
+    (name "go-github-com-lib-pq")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lib/pq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08j1smm6rassdssdks4yh9aspa1dv1g5nvwimmknspvhx8a7waqz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lib/pq"
+      ;; The tests seem to fail without access to the network or a running
+      ;; Postgres instance.
+      #:tests? #f))
+    (home-page "https://github.com/lib/pq")
+    (synopsis "Golang Postgres driver for Go's database/sql")
+    (description
+     "This package provides a pure Go Postgres driver for Go's
+database/sql package.")
     (license license:expat)))
 
 (define-public go-github-com-matryer-try
@@ -1181,6 +1393,30 @@ command line flags, config files, and default struct values.")
        "Go Windows Service wrapper compatible with GNU/Linux.  Windows tests
 @url{https://github.com/judwhite/go-svc/raw/master/svc/svc_windows_test.go,here}.")
       (license license:expat))))
+
+(define-public go-github-com-multiformats-go-varint
+  (package
+    (name "go-github-com-multiformats-go-varint")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-varint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l4s0z3rc3d350zp6qximl1jjhic6l8w74wkmx244jgfzsxd93af"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/multiformats/go-varint"))
+    (home-page "https://github.com/multiformats/go-varint")
+    (synopsis "Varint helpers that enforce minimal encoding")
+    (description
+     "This package provides a functionality for encoding and decoding unsigned
+varints.")
+    (license license:expat)))
 
 (define-public go-github-com-nats-io-nats-go
   (package
@@ -1685,6 +1921,34 @@ query information regarding the number of CPUs available to the system.")
 weighted moving averages}.")
     (license license:expat)))
 
+(define-public go-github-com-whyrusleeping-go-sysinfo
+  (package
+    (name "go-github-com-whyrusleeping-go-sysinfo")
+    (version "0.0.0-20190219211824-4a357d4b90b1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whyrusleeping/go-sysinfo")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s6yjp9incc579wbbga33vq0hcanv8j2xh9l90ya0r4fihz39jiq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/whyrusleeping/go-sysinfo"))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize))
+    (home-page "https://github.com/whyrusleeping/go-sysinfo")
+    (synopsis "Package to extract system information")
+    ;; There is not much information provided by the project, see
+    ;; <https://github.com/whyrusleeping/go-sysinfo/issues>.
+    (description
+     "This package provides a basic system stats like @code{DiskUsage} and
+@code{MemoryInfo}.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-automaxprocs
   (package
     (name "go-go-uber-org-automaxprocs")
@@ -1755,6 +2019,22 @@ Go.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public go-hclogvet
+  (package
+    (inherit go-github-com-hashicorp-go-hclog)
+    (name "go-hclogvet")
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-hclog/hclogvet"
+      #:unpack-path "github.com/hashicorp/go-hclog"
+      #:install-source? #f))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (description
+     "@code{hclogvet} is a @code{go vet} tool for checking that the
+Trace/Debug/Info/Warn/Error methods on @code{hclog.Logger} are used
+correctly.")))
 
 (define-public go-numcpus
   (package

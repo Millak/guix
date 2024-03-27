@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -83,6 +83,7 @@
   #:use-module ((gnu build file-systems)
                 #:select (mount-flags->bit-mask
                           swap-space->flags-bit-mask))
+  #:autoload   (guix channels) (%default-channels channel->code)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix modules)
@@ -211,6 +212,7 @@
             guix-configuration-use-substitutes?
             guix-configuration-substitute-urls
             guix-configuration-generate-substitute-key?
+            guix-configuration-channels
             guix-configuration-extra-options
             guix-configuration-log-file
             guix-configuration-environment
@@ -1740,6 +1742,31 @@ archive' public keys, with GUIX."
         ;; Installed the declared ACL.
         (symlink #+default-acl acl-file))))
 
+(define (install-channels-file channels)
+  "Return a gexp with code to install CHANNELS, a list of channels, in
+/etc/guix/channels.scm."
+  (define channels-file
+    (scheme-file "channels.scm"
+                 `(list ,@(map channel->code channels))))
+
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+
+        ;; If channels.scm already exists, move it out of the way. Create a
+        ;; backup if it's a regular file: it's likely that the user
+        ;; manually defined it.
+        (if (file-exists? "/etc/guix/channels.scm")
+            (if (and (symbolic-link? "/etc/guix/channels.scm")
+                     (store-file-name? (readlink "/etc/guix/channels.scm")))
+                (delete-file "/etc/guix/channels.scm")
+                (rename-file "/etc/guix/channels.scm"
+                             "/etc/guix/channels.scm.bak"))
+            (mkdir-p "/etc/guix"))
+
+        ;; Installed the declared channels.
+        (symlink #+channels-file "/etc/guix/channels.scm"))))
+
 (define %default-authorized-guix-keys
   ;; List of authorized substitute keys.
   (list (file-append guix "/share/guix/berlin.guix.gnu.org.pub")
@@ -1795,6 +1822,8 @@ archive' public keys, with GUIX."
                     (default %default-substitute-urls))
   (generate-substitute-key? guix-configuration-generate-substitute-key?
                             (default #t))         ;Boolean
+  (channels         guix-configuration-channels ;file-like
+                    (default %default-channels))
   (chroot-directories guix-configuration-chroot-directories ;list of file-like/strings
                       (default '()))
   (max-silent-time  guix-configuration-max-silent-time ;integer
@@ -1988,7 +2017,7 @@ proxy of 'guix-daemon'...~%")
 (define (guix-activation config)
   "Return the activation gexp for CONFIG."
   (match-record config <guix-configuration>
-    (guix generate-substitute-key? authorize-key? authorized-keys)
+    (guix generate-substitute-key? authorize-key? authorized-keys channels)
     #~(begin
         ;; Assume that the store has BUILD-GROUP as its group.  We could
         ;; otherwise call 'chown' here, but the problem is that on a COW overlayfs,
@@ -2004,6 +2033,9 @@ proxy of 'guix-daemon'...~%")
         #$(if authorize-key?
               (substitute-key-authorization authorized-keys guix)
               #~#f)
+
+        ;; ... and /etc/guix/channels.scm...
+        #$(and channels (install-channels-file channels))
 
         ;; ... and /etc/guix/machines.scm.
         #$(if (guix-build-machines config)
@@ -2174,15 +2206,10 @@ raise a deprecation warning if the 'compression-level' field was used."
 
              ;; Use lazy socket activation unless ADVERTISE? is true: in that
              ;; case the process should start right away to advertise itself.
-             (start #~(if (and (defined? 'make-systemd-constructor) ;> 0.9.0?
-                               #$(not advertise?))
-                          (make-systemd-constructor
-                           #$command #$endpoints #$@options)
-                          (make-forkexec-constructor #$command #$@options)))
-             (stop #~(if (and (defined? 'make-systemd-destructor)
-                              #$(not advertise?))
-                         (make-systemd-destructor)
-                         (make-kill-destructor))))))))
+             (start #~(make-systemd-constructor
+                       #$command #$endpoints #$@options
+                       #:lazy-start? #$(not advertise?)))
+             (stop #~(make-systemd-destructor)))))))
 
 (define %guix-publish-accounts
   (list (user-group (name "guix-publish") (system? #t))
