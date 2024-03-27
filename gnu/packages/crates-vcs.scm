@@ -1786,6 +1786,38 @@ This package is part of Gitoxide, a pure Rust implementation of Git.")
 compile-time feature flags.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-features-0.37
+  (package
+    (inherit rust-gix-features-0.38)
+    (name "rust-gix-features")
+    (version "0.37.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-features" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bsp9lb4cy00irinxis6wvqvsdcm9fc1fnvkl05z6rf6vkl700nm"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.14)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-jwalk" ,rust-jwalk-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-prodash" ,rust-prodash-28)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha1-smol" ,rust-sha1-smol-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-bstr" ,rust-bstr-1))))))
+
 (define-public rust-gix-features-0.36
   (package
     (inherit rust-gix-features-0.38)
