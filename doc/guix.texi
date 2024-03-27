@@ -128,6 +128,7 @@ Copyright @copyright{} 2024 Herman Rimm@*
 Copyright @copyright{} 2024 Matthew Trzcinski@*
 Copyright @copyright{} 2024 Richard Sent@*
 Copyright @copyright{} 2024 Dariqq@*
+Copyright @copyright{} 2024 Denis 'GNUtoo' Carikli@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -748,7 +749,7 @@ installation script or @i{via} the native package manager of their
 foreign distribution, to also regularly read and follow security
 notices, as shown by @command{guix pull}.
 
-For Debian or a derivative such as Ubuntu, call:
+For Debian or derivatives such as Ubuntu or Trisquel, call:
 
 @example
 sudo apt install guix
