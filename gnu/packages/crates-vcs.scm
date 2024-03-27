@@ -2064,17 +2064,17 @@ matching.")
         ("rust-gix-path" ,rust-gix-path-0.8)
         ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-gix-hash-0.13
+(define-public rust-gix-hash-0.14
   (package
     (name "rust-gix-hash")
-    (version "0.13.3")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-hash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1q1xcp8f5prpyr4x62jixrlgm99snscnf87bny1faqvg4v1gi30z"))))
+        (base32 "0pjdlxbqxd9lbkccryfw2ghifiq3gz9h8ylliw0va8b16vvpsggr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
@@ -2088,6 +2088,24 @@ matching.")
      "Borrowed and owned git hash digests used to identify git objects.  This
 package is part of Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-hash-0.13
+  (package
+    (inherit rust-gix-hash-0.14)
+    (name "rust-gix-hash")
+    (version "0.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q1xcp8f5prpyr4x62jixrlgm99snscnf87bny1faqvg4v1gi30z"))))
+    (arguments
+     `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-hash-0.11
   (package
