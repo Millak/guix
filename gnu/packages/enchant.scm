@@ -90,7 +90,7 @@ dictionaries.")
              ;; Tests require a relocatable build.
              "--enable-relocatable")))
     (inputs
-     (list aspell hunspell))
+     (list aspell hunspell nuspell))
     (propagated-inputs
      ;; Required by enchant.pc.
      (list glib))
