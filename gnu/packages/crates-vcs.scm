@@ -2440,22 +2440,22 @@ package provides git style lock files.")
 implementation of Git.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gix-mailmap-0.20
+(define-public rust-gix-mailmap-0.21
   (package
     (name "rust-gix-mailmap")
-    (version "0.20.1")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-mailmap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01wzzs8gifl6i4vzwbx1ywzwgazy1db6yfh8b3bjsssy1pn5ycp2"))))
+        (base32 "05sscbs0qzn40syp0v7s2xrjx10pdfqqg53axr8xrggcmv1mm1dv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-gix-actor" ,rust-gix-actor-0.28)
+                       ("rust-gix-actor" ,rust-gix-actor-0.29)
                        ("rust-gix-date" ,rust-gix-date-0.8)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))
@@ -2465,6 +2465,26 @@ implementation of Git.")
      "This package contains functions for parsing mailmap files.  It's part of
 Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-mailmap-0.20
+  (package
+    (inherit rust-gix-mailmap-0.21)
+    (name "rust-gix-mailmap")
+    (version "0.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-mailmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01wzzs8gifl6i4vzwbx1ywzwgazy1db6yfh8b3bjsssy1pn5ycp2"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.28)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-mailmap-0.19
   (package
