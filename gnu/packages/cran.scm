@@ -4581,13 +4581,13 @@ in systems and applications.")
 (define-public r-servr
   (package
     (name "r-servr")
-    (version "0.29")
+    (version "0.30")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "servr" version))
               (sha256
                (base32
-                "1zpwvqg9jpvrn8xl9yrlbd5mpxprdgw6v599d6f06rdgh2j537m3"))))
+                "0h1di3whhd6fm4cilm2k2aa0i9j964sw7dv24h21m1q82hb21ya3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-httpuv r-jsonlite r-mime r-xfun))
