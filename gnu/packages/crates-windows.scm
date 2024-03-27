@@ -2383,16 +2383,16 @@ windows crate.")
   (package
     (inherit rust-windows-x86-64-gnu-0.52)
     (name "rust-windows-x86-64-gnu")
-    (version "0.48.0")
+    (version "0.48.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1cblz5m6a8q6ha09bz4lz233dnq5sw2hpra06k9cna3n3xk8laya"))
+                "13kiqqcvz2vnyxzydjh73hwgigsdr2z1xpzx313kxll34nyhmm2k"))
               (snippet
-               #~(delete-file "lib/libwindows.0.48.0.a"))))
+               #~(delete-file "lib/libwindows.0.48.5.a"))))
     (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-x86-64-gnu-0.42
