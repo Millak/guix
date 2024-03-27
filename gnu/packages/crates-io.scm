@@ -58411,6 +58411,53 @@ random generic types.")
 interfaces.")
     (license license:expat)))
 
+(define-public rust-ratatui-0.25
+  (package
+    (inherit rust-ratatui-0.26)
+    (name "rust-ratatui")
+    (version "0.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ratatui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sw0s4s9y09n2nsxs996frrlmy4fay7ibwfrvar0fvmswi99wrd5"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=buffer::tests::index_of_panics_on_out_of_bounds"
+         "--skip=buffer::tests::pos_of_panics_on_out_of_bounds"
+         "--skip=buffer::Buffer::index_of"
+         "--skip=buffer::Buffer::pos_of")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cassowary" ,rust-cassowary-0.3)
+                       ("rust-crossterm" ,rust-crossterm-0.27)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-indoc" ,rust-indoc-2)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-lru" ,rust-lru-0.12)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-stability" ,rust-stability-0.1)
+                       ("rust-strum" ,rust-strum-0.25)
+                       ("rust-termion" ,rust-termion-2)
+                       ("rust-termwiz" ,rust-termwiz-0.20)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-argh" ,rust-argh-0.1)
+        ("rust-better-panic" ,rust-better-panic-0.3)
+        ("rust-cargo-husky" ,rust-cargo-husky-1)
+        ("rust-color-eyre" ,rust-color-eyre-0.6)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-fakeit" ,rust-fakeit-1)
+        ("rust-palette" ,rust-palette-0.7)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-ratatui-0.24
   (package
     (inherit rust-ratatui-0.26)
