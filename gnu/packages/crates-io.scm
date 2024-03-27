@@ -86333,14 +86333,14 @@ combinators library.")
   (package
     (inherit rust-winnow-0.6)
     (name "rust-winnow")
-    (version "0.5.31")
+    (version "0.5.40")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winnow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0734xa05a1x1wg2kcphdhfb39pdcy5qpaf1sjll6qk8kdcp8i94p"))))
+        (base32 "0xk8maai7gyxda673mmw3pj1hdizy5fpi7287vaywykkk19sk4zm"))))
     (arguments
      `(#:skip-build? #t     ; Cut the dependency graph.
        #:cargo-inputs
