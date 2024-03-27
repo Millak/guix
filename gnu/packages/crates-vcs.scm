@@ -4800,14 +4800,14 @@ from a git-tree.  It's part of Gitoxide, a pure Rust implementation of Git.")
 (define-public rust-libgit2-sys-0.16
   (package
     (name "rust-libgit2-sys")
-    (version "0.16.1+1.7.1")
+    (version "0.16.2+1.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libgit2-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "030dnq7hz79qs4rxdllc3ailvqzc432jwwxk7g8av55hh0vbp8pj"))
+        (base32 "1s149nkximw3n42925rp0jax1sf1zmf8gpcim2g9sp7fnkc2chgf"))
        (modules '((guix build utils)))
        (snippet
         #~(begin (delete-file-recursively "libgit2")))))
