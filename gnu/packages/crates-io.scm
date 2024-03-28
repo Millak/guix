@@ -17840,6 +17840,28 @@ number ``crunching``.")
     (description "Bare bones CSV parsing with no_std support.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-cstr-0.2
+  (package
+    (name "rust-cstr")
+    (version "0.2.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cstr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dj6ll9ry27kn4k0vvhlvbhn9dyyr9haxnd06bxaqnmfr01kjlk8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/upsuper/cstr")
+    (synopsis "Macro for building static CStr reference")
+    (description
+     "This package provides the macro for building static CStr reference.")
+    (license license:expat)))
+
 (define-public rust-cstr-core-0.2
   (package
     (name "rust-cstr-core")
