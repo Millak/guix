@@ -1386,6 +1386,25 @@ database/sql package.")
 Printf/Sprintf etc.")
     (license license:unlicense)))
 
+(define-public go-github-com-logrusorgru-aurora-v3
+  (package
+    (inherit go-github-com-logrusorgru-aurora)
+    (name "go-github-com-logrusorgru-aurora-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/logrusorgru/aurora")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0z7cgj8gl69271d0ag4f4yjbsvbrnfibc96cs01spqf5krv2rzjc"))
+       (file-name (git-file-name name version))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/logrusorgru/aurora/v3"))))
+
 (define-public go-github-com-kballard-go-shellquote
   ;; No release, see <https://github.com/kballard/go-shellquote/issues/13>.
   (let ((commit "95032a82bc518f77982ea72343cc1ade730072f0")
