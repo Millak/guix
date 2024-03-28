@@ -85584,8 +85584,55 @@ and native running processes.")
         (base32 "19kslk9pv1bcyp85w63dn1adbp13kz7kjha80abnwz27bmbxvz9j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-watchexec-2
+  (package
+    (name "rust-watchexec")
+    (version "2.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "watchexec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "120g73qpywbrzlcma9nhgaymm44aw2516xwl0fima8yy2ig22car"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= *([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-priority-channel" ,rust-async-priority-channel-0.1)
+        ("rust-async-recursion" ,rust-async-recursion-1)
+        ("rust-atomic-take" ,rust-atomic-take-1)
+        ("rust-clearscreen" ,rust-clearscreen-2)
+        ("rust-command-group" ,rust-command-group-2)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-ignore-files" ,rust-ignore-files-1)
+        ("rust-miette" ,rust-miette-5)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-normalize-path" ,rust-normalize-path-0.2)
+        ("rust-notify" ,rust-notify-5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-project-origins" ,rust-project-origins-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-watchexec-events" ,rust-watchexec-events-1)
+        ("rust-watchexec-signals" ,rust-watchexec-signals-1))
+       #:cargo-development-inputs
+       (("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://watchexec.github.io")
+    (synopsis "Library to execute commands in response to file modifications")
+    (description
+     "This crate is a library to execute commands in response to file
+modifications.")
+    (license license:asl2.0)))
+
 (define-public rust-watchexec-1
   (package
+    (inherit rust-watchexec-2)
     (name "rust-watchexec")
     (version "1.16.0")
     (source
@@ -85595,27 +85642,18 @@ and native running processes.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1v52fi5fvjr7h5npyjkwnfc7801qrl4ayzgq4k03ylxr4lkbvhsb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-clearscreen" ,rust-clearscreen-1)
-        ("rust-derive-builder" ,rust-derive-builder-0.10)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-globset" ,rust-globset-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.20)
-        ("rust-notify" ,rust-notify-4)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/watchexec/watchexec")
-    (synopsis
-     "Library to execute commands in response to file modifications")
-    (description
-     "This crate is a library to execute commands in response to file
-modifications.")
-    (license license:asl2.0)))
+       #:cargo-inputs (("rust-clearscreen" ,rust-clearscreen-1)
+                       ("rust-derive-builder" ,rust-derive-builder-0.10)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-globset" ,rust-globset-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.20)
+                       ("rust-notify" ,rust-notify-4)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-wl-clipboard-rs-0.8
   (package
