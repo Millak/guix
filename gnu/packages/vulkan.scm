@@ -37,6 +37,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
@@ -598,3 +599,27 @@ storage.")
     (home-page
      "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator")
     (license license:expat)))
+
+(define-public vulkan-utility-libraries
+  (package
+    (name "vulkan-utility-libraries")
+    (version "1.3.280.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KhronosGroup/Vulkan-Utility-Libraries")
+             (commit (string-append "vulkan-sdk-" version))))
+       (sha256
+        (base32 "17fmalilczs4x435f8kdx8bf0x5mnjhkmcp34xap8lanpbyzs84q"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_TESTS=ON")))
+    (inputs (list vulkan-headers))
+    (native-inputs (list googletest magic-enum))
+    (home-page "https://github.com/KhronosGroup/Vulkan-Utility-Libraries")
+    (synopsis "Utility libraries for Vulkan developers")
+    (description "Utility libraries for Vulkan developers.")
+    (license license:asl2.0)))
