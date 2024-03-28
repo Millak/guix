@@ -3114,8 +3114,38 @@ library.")
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-pangocairo-sys-0.18
+  (package
+    (name "rust-pangocairo-sys")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pangocairo-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cw82261ixgr9xw549rx11w74h0wz4lw0pqxxir7lzm3fvv8yg7w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.18)
+                       ("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango-sys" ,rust-pango-sys-0.18)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs
+     ;; XXX: Should these be propagated from their respective crates?
+     (list cairo glib pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libgtk-3")
+    (description "This package provides FFI bindings to @code{PangoCairo}.")
+    (license license:expat)))
+
 (define-public rust-pangocairo-sys-0.17
   (package
+    (inherit rust-pangocairo-sys-0.18)
     (name "rust-pangocairo-sys")
     (version "0.17.10")
     (source
@@ -3125,7 +3155,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ymr4aqrdpysz0rh383s4h6hj8nbkyj7n4723f45zzzqkf6x7pwl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.17)
@@ -3133,18 +3162,8 @@ library.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pango-sys" ,rust-pango-sys-0.17)
         ("rust-system-deps" ,rust-system-deps-6))
-       #:cargo-development-inputs
-       (("rust-shell-words" ,rust-shell-words-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     ;; XXX: Should these be propagated from their respective crates?
-     (list cairo glib pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libgtk-3")
-    (description "This package provides FFI bindings to @code{PangoCairo}.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-pangocairo-sys-0.15
   (package
