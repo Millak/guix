@@ -44231,13 +44231,31 @@ while still providing platform specific APIs.")
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bsgc8vjq07a1wg9vz819bva3dvn58an4r87h80dxrfqkqanz4g4"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  ((">= 1\\.1\\.0, < 1\\.3\\.0") ">= 1.1.0"))))))
+        (base32 "1bsgc8vjq07a1wg9vz819bva3dvn58an4r87h80dxrfqkqanz4g4"))))
     (arguments
-     `(#:tests? #f      ; Tests hang forever.
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test_unistd::test_execve::test_cstr_ref"
+         "--skip=test_unistd::test_execve::test_cstring"
+         "--skip=test_unistd::test_execveat_absolute::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_absolute::test_cstring"
+         ;; Some of the tests hang.
+         "--skip=sys::test_socket::test_af_alg_aead"
+         "--skip=test_unistd::test_execveat_empty::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_empty::test_cstring"
+         "--skip=test_unistd::test_execveat_relative::test_cstr_ref"
+         "--skip=test_unistd::test_execveat_relative::test_cstring"
+         "--skip=test_unistd::test_fexecve::test_cstr_ref"
+         "--skip=test_unistd::test_fexecve::test_cstring"
+         ;; cannot find macro `libc_bitflags` in this scope
+         "--skip=macros::libc_bitflags"
+         "--skip=macros::libc_enum"
+         ;; Some doctests segfault.
+         "--skip=sys::personality::set"
+         "--skip=unistd::Group::from_gid"
+         "--skip=unistd::Group::from_name"
+         "--skip=unistd::User::from_name"
+         "--skip=unistd::User::from_uid")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cc" ,rust-cc-1)
@@ -44251,10 +44269,7 @@ while still providing platform specific APIs.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-semver" ,rust-semver-1)
         ("rust-sysctl" ,rust-sysctl-0.1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list rust-bitflags-1 rust-cc-1 rust-cfg-if-1 rust-libc-0.2
-           rust-memoffset-0.6))))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.21
   (package
