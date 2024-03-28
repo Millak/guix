@@ -5066,7 +5066,7 @@ as possible).")
 (define-public cl-json-pointer
   (sbcl-package->cl-source-package sbcl-cl-json-pointer))
 
-(define-public ecl-cl-json-poiniter
+(define-public ecl-cl-json-pointer
   (sbcl-package->ecl-package sbcl-cl-json-pointer))
 
 (define-public sbcl-unix-opts
