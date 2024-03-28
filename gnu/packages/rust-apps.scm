@@ -112,7 +112,12 @@
        (uri (crate-uri "aardvark-dns" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ldqv9v3v9a1m2kka660d5v15y2zasy5z7m4fh5hif74r089cx6x"))))
+        (base32 "0ldqv9v3v9a1m2kka660d5v15y2zasy5z7m4fh5hif74r089cx6x"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
