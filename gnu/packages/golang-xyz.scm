@@ -1405,6 +1405,28 @@ Printf/Sprintf etc.")
      (list
       #:import-path "github.com/logrusorgru/aurora/v3"))))
 
+(define-public go-github-com-logrusorgru-aurora-v4
+  (package
+    (inherit go-github-com-logrusorgru-aurora)
+    (name "go-github-com-logrusorgru-aurora-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/logrusorgru/aurora")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0a4w4p0sl5hwa9fridk7s023sjcis8qf1k8fm3g5qar58vxzlh9w"))
+       (file-name (git-file-name name version))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.19
+      #:import-path "github.com/logrusorgru/aurora/v3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))))
+
 (define-public go-github-com-kballard-go-shellquote
   ;; No release, see <https://github.com/kballard/go-shellquote/issues/13>.
   (let ((commit "95032a82bc518f77982ea72343cc1ade730072f0")
