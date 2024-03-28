@@ -5312,6 +5312,29 @@ managing processes both synchronously (via the PidFd type) and
 asynchronously (via the AsyncPidFd type).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-async-priority-channel-0.1
+  (package
+    (name "rust-async-priority-channel")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-priority-channel" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h36m0avgs86pgh286xkvbnhdhb8bxgsnlxwwazvw88v5scph5n2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-event-listener" ,rust-event-listener-2))
+       #:cargo-development-inputs (("rust-futures-lite" ,rust-futures-lite-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rmcgibbo/async-priority-channel")
+    (synopsis "Async channel with message delivery by priority")
+    (description
+     "This package provides an async channel where pending messages are
+delivered in order of priority.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-process-1
   (package
     (name "rust-async-process")
