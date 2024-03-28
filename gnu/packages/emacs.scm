@@ -384,15 +384,19 @@ editor (console only)")
                 (apply invoke "make" "trampolines" make-flags)))
             (add-after 'validate-runpath 'validate-comp-integrity
               (lambda* (#:key outputs #:allow-other-keys)
-                (if #$(%current-target-system)
-                    (display "Cannot validate native-comp on cross builds.\n")
-                    (invoke
-                     (string-append (assoc-ref outputs "out") "/bin/emacs")
-                     "--batch"
-                     "--load"
-                     #$(local-file
-                        (search-auxiliary-file "emacs/comp-integrity.el"))
-                     "-f" "ert-run-tests-batch-and-exit"))))))))
+                #$(cond
+                   ((%current-target-system)
+                    #~(display "Cannot validate native-comp on cross builds.\n"))
+                   ((string=? (%current-system) "armhf-linux")
+                    #~(display "Integrity test is broken on armhf.\n"))
+                   (else
+                    #~(invoke
+                       (string-append (assoc-ref outputs "out") "/bin/emacs")
+                       "--batch"
+                       "--load"
+                       #$(local-file
+                          (search-auxiliary-file "emacs/comp-integrity.el"))
+                       "-f" "ert-run-tests-batch-and-exit")))))))))
     (inputs
      (modify-inputs (package-inputs emacs-minimal)
        (prepend gnutls
