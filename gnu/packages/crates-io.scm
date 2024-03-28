@@ -75720,14 +75720,14 @@ used by XeTeX and Tectonic.")
 (define-public rust-tectonic-xetex-layout-0.2
   (package
     (name "rust-tectonic-xetex-layout")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_xetex_layout" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0n7wlmxzcn78gvidrqmc9vbrim1zlwsfj4d7qhpj5fspxpsi24b2"))))
+        (base32 "0sbh8wnyrkfvzjlzyk3p9zbzp277p1qhmz0davz2sgnzzgp8ffsn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
