@@ -19088,8 +19088,31 @@ for Rust.")
 hexadecimal, base32, and base64.")
     (license license:expat)))
 
+(define-public rust-data-url-0.3
+  (package
+    (name "rust-data-url")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "data-url" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ahclz72myi350cs1xcsxdh1v0iljpfj4ghcy2fy46mpfhf7laaw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tester" ,rust-tester-0.9))))
+    (home-page "https://github.com/servo/rust-url")
+    (synopsis "Processing of data: URL according to WHATWG's Fetch Standard")
+    (description
+     "Processing of data: URL according to WHATWG's Fetch Standard.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-data-url-0.2
   (package
+    (inherit rust-data-url-0.3)
     (name "rust-data-url")
     (version "0.2.0")
     (source
@@ -19099,17 +19122,10 @@ hexadecimal, base32, and base64.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "19828d6jby17ghi7vr0zia9sy3hlvvjbngrcsllmfh2zfg1kjx4d"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tester" ,rust-tester-0.9))))
-    (home-page "https://github.com/servo/rust-url")
-    (synopsis "Processing of data: URL according to WHATWG's Fetch Standard")
-    (description
-     "Processing of data: URL according to WHATWG's Fetch Standard.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-development-inputs (("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tester" ,rust-tester-0.9))))))
 
 (define-public rust-datetime-0.5
   (package
