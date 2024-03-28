@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1091,6 +1092,28 @@ of the project to ensure it renders properly.")
     (description
      "@code{re-assert} provides a helper class to make assertions of regexes
 simpler.")
+    (license license:expat)))
+
+(define-public python-pytest-testmon
+  (package
+    (name "python-pytest-testmon")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tarpas/pytest-testmon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01qhbkb3n8c5c4id94w6b06q9wb7b6a33mqwyrkdfzk5pzv1gcyd"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (native-inputs (list python-coverage python-pytest))
+    (home-page "https://github.com/tarpas/pytest-testmon")
+    (synopsis "Selects tests affected by changed files and methods")
+    (description
+     "This plug-in auto-selects and reruns tests impacted by recent changes.")
     (license license:expat)))
 
 (define-public python-pytest-trio
