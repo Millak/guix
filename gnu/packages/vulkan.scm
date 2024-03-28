@@ -536,16 +536,16 @@ use the Vulkan API.")
 (define-public volk
   (package
     (name "volk")
-    (version %vulkan-sdk-version)
+    (version "1.3.280.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/zeux/volk")
-                    (commit version)))
+                    (commit (string-append "vulkan-sdk-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xaw3kg754mknx8lfj1p74a9npjfvdvlpicvn0hla4495zpc10rq"))))
+                "0x4jhc8n9c4k8svmmcaxxs613xbsav7wam94gacddlm738cwp13v"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ;no test
