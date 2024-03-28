@@ -47,9 +47,6 @@
   #:use-module (gnu packages wine)
   #:use-module (gnu packages xorg))
 
-;; Note: Remember to change vulkan-loader version when bumping this.
-(define %vulkan-sdk-version "sdk-1.3.231.1")
-
 (define-public spirv-headers
   (package
     (name "spirv-headers")
@@ -479,51 +476,37 @@ shader compilation.")
 (define-public vulkan-validationlayers
   (package
     (name "vulkan-validationlayers")
-    (version %vulkan-sdk-version)
+    (version "1.3.280.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url
                      "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
-                    (commit version)))
+                    (commit (string-append "vulkan-sdk-" version))))
               (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              ;; We don't build static libraries in SPIRV-Tools.
+              (snippet '(substitute* "tests/CMakeLists.txt"
+                          (("-static")
+                           "")))
               (sha256
                (base32
-                "07djrk6yym4vl2b52wr09r8y649v5lark5hnr5rwvlxwxdmd9g75"))))
+                "1w6fsaicrgnzkj5vz2v86a2gk1n7478q6n66ac2920avnin9a64c"))))
     (build-system cmake-build-system)
     (inputs (list glslang
                   libxrandr
                   mesa
+                  robin-hood-hashing
                   shaderc
                   spirv-tools
                   vulkan-loader
+                  vulkan-utility-libraries
                   wayland))
-    (native-inputs (list pkg-config python spirv-headers vulkan-headers))
+    (native-inputs (list googletest pkg-config python spirv-headers vulkan-headers))
     (arguments
-     (list #:tests? #f ;no tests
+     (list #:tests? #f ; tests crash on some hardware (various upstream issues)
            #:configure-flags
-           #~(list "-DUSE_ROBIN_HOOD_HASHING=OFF"
-                   (string-append "-DGLSLANG_INSTALL_DIR="
-                                  (dirname (dirname
-                                            (search-input-directory
-                                             %build-inputs
-                                             "include/glslang"))))
-                   (string-append "-DSPIRV_HEADERS_INSTALL_DIR="
-                                  (dirname (dirname
-                                            (search-input-directory
-                                             %build-inputs
-                                             "include/spirv"))))
-                   (string-append "-DSPIRV_TOOLS_INSTALL_DIR="
-                                  (dirname (dirname
-                                            (search-input-directory
-                                             %build-inputs
-                                             "include/spirv-tools"))))
-                   (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
-                                  (dirname (dirname
-                                            (search-input-directory
-                                             %build-inputs
-                                             "include/vulkan"))))
-                   "-Wno-dev")
+           #~(list "-DBUILD_TESTS=ON")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'install 'set-layer-path-in-manifest
                           (lambda _
@@ -533,7 +516,19 @@ shader compilation.")
                               (substitute* manifest
                                 (("\"libVkLayer_khronos_validation.so\"")
                                  (string-append "\"" #$output
-                                  "/lib/libVkLayer_khronos_validation.so\"")))))))))
+                                                "/lib/libVkLayer_khronos_validation.so\""))))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "VK_LAYER_PATH"
+                                      (string-append (getcwd) "/layers"))
+                              (setenv "LD_LIBRARY_PATH"
+                                      (string-append #$(this-package-input
+                                                        "vulkan-loader") "/lib"))
+                              (setenv "MESA_SHADER_CACHE_DIR"
+                                      (string-append (getcwd) "/shader-cache"))
+                              (setenv "XDG_RUNTIME_DIR" (getcwd))
+                              (invoke "./tests/vk_layer_validation_tests")))))))
     (home-page "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
     (synopsis "Khronos official validation layers for Vulkan")
     (description
