@@ -33894,6 +33894,29 @@ whether or not a given path points to an executable file.")
 stream runs in a TTY.")
     (license license:expat)))
 
+(define-public rust-is-wsl-0.4
+  (package
+    (name "rust-is-wsl")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "is-wsl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19bs5pq221d4bknnwiqqkqrnsx2in0fsk8fylxm1747iim4hjdhp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-is-docker" ,rust-is-docker-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/TheLarkInn/is-wsl")
+    (synopsis
+     "Checks if the process is running inside Windows Subsystem for Linux")
+    (description
+     "This package provides functions to check if the process is running inside
+Windows Subsystem for Linux.")
+    (license license:expat)))
+
 (define-public rust-iso8601-0.4
   (package
     (name "rust-iso8601")
