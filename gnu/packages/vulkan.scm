@@ -359,7 +359,7 @@ API.")
   (package
     (name "shaderc")
     ;; shaderc doesn't follow the versioning scheme of vulkan sdk
-    (version "2022.3")
+    (version "2024.0")
     (source
      (origin
        (method git-fetch)
@@ -369,13 +369,18 @@ API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sdbfi66zmqj0c5q5yv2zvcvry7557yzgxk2mwflyjgqh7kdhb8d"))))
+         "1m5jncn6y8c6g83f8nwh86hz33mvv03x7fyr5zq0ynwanrcpn2hb"))))
     (build-system cmake-build-system)
     (arguments
      `(;; FIXME: Skip most of the tests, because enabling system gtest breaks
        ;; the build: <https://github.com/google/shaderc/issues/470>.
        #:configure-flags
        (list "-DSHADERC_SKIP_TESTS=ON"
+             ;; The two flags are copied from:
+             ;; https://sdk.lunarg.com/sdk/download/1.3.280.0/linux/config.json
+             "-DSHADERC_ENABLE_SHARED_CRT=ON"
+             "-DSHADERC_SKIP_COPYRIGHT_CHECK=ON"
+             "-DPYTHON_EXECUTABLE=python3"
              ;; Note: despite the name, this just specifies the headers.
              (string-append "-Dglslang_SOURCE_DIR="
                             (assoc-ref %build-inputs "glslang") "/include/glslang"))
@@ -401,20 +406,11 @@ API.")
                          ,version
                          ,(package-version spirv-tools)
                          ,(package-version glslang))))
-             #t))
-         ;; see: https://github.com/google/shaderc/pull/1276
-         (add-after 'do-not-look-for-bundled-sources 'drop-additional-glslang-deps
-           (lambda _
-             (substitute* "glslc/CMakeLists.txt"
-               (("OSDependent OGLCompiler") ""))
-             (substitute* "libshaderc/CMakeLists.txt"
-               (("OSDependent OGLCompiler") ""))
-             (substitute* "libshaderc_util/CMakeLists.txt"
-               (("OSDependent OGLCompiler") "")))))))
+             #t)))))
     (inputs
-     (list glslang python spirv-headers spirv-tools))
+     (list glslang spirv-headers spirv-tools))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python))
     (home-page "https://github.com/google/shaderc")
     (synopsis "Tools for shader compilation")
     (description "Shaderc is a collection of tools, libraries, and tests for
