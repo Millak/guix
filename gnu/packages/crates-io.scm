@@ -85810,23 +85810,51 @@ modifications.")
   (package
     (inherit rust-watchexec-2)
     (name "rust-watchexec")
-    (version "1.16.0")
+    (version "1.17.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "watchexec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1v52fi5fvjr7h5npyjkwnfc7801qrl4ayzgq4k03ylxr4lkbvhsb"))))
+        (base32 "0r8j6qvkbr5k5ipyzw0v1lsglhf7l99n9m529mck2ki7ymzqv4iq"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= *([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=gitignore::tests::handles_negative_patterns"
+         "--skip=gitignore::tests::leading_double_wildcard"
+         "--skip=gitignore::tests::leading_slash"
+         "--skip=gitignore::tests::matches_exact"
+         "--skip=gitignore::tests::matches_simple_wildcard"
+         "--skip=gitignore::tests::matches_subdir_exact"
+         "--skip=gitignore::tests::sandwiched_double_wildcard"
+         "--skip=gitignore::tests::wildcard_with_dir"
+         "--skip=ignore::tests::handles_whitelisting"
+         "--skip=ignore::tests::leading_double_wildcard"
+         "--skip=ignore::tests::leading_slash"
+         "--skip=ignore::tests::matches_exact"
+         "--skip=ignore::tests::matches_simple_wildcard"
+         "--skip=ignore::tests::matches_subdir_exact"
+         "--skip=ignore::tests::sandwiched_double_wildcard"
+         "--skip=ignore::tests::wildcard_with_dir"
+         "--skip=notification_filter::tests::test_filename"
+         "--skip=notification_filter::tests::test_ignores_take_precedence"
+         "--skip=notification_filter::tests::test_multiple_ignores"
+         "--skip=notification_filter::tests::test_recursive_directory_ignore")
        #:cargo-inputs (("rust-clearscreen" ,rust-clearscreen-1)
+                       ("rust-command-group" ,rust-command-group-1)
                        ("rust-derive-builder" ,rust-derive-builder-0.10)
                        ("rust-glob" ,rust-glob-0.3)
                        ("rust-globset" ,rust-globset-0.4)
                        ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.20)
+                       ("rust-nix" ,rust-nix-0.22)
                        ("rust-notify" ,rust-notify-4)
                        ("rust-walkdir" ,rust-walkdir-2)
                        ("rust-winapi" ,rust-winapi-0.3))))))
