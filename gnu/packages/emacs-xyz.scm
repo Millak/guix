@@ -12313,6 +12313,30 @@ call.")
 library with Eglot instead of Yasnippet.")
       (license license:gpl3+))))
 
+(define-public emacs-eglot-jl
+  (package
+    (name "emacs-eglot-jl")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/non-Jedi/eglot-jl")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "144q4fj3am165vf1vx2ljlsmpn8vvvs1b95qi3rxlwqskkx0lig3"))))
+    (build-system emacs-build-system)
+    (arguments (list #:include #~(cons "\\.(jl|toml)$" %default-include)))
+    (propagated-inputs (list emacs-eglot))
+    (home-page "https://github.com/non-Jedi/eglot-jl")
+    (synopsis "Julia support for Eglot")
+    (description
+     "This package adds support for Eglot to the Julia language.")
+    (license license:cc0)))
+
 (define-public emacs-consult-xdg-recent-files
   (let ((commit "593023ffb99a368152ebd4e739488fa560bdfdea")
         (revision "0"))
