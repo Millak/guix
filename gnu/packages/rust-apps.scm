@@ -1458,7 +1458,12 @@ on the terminal in a visually appealing way.")
        (uri (crate-uri "netavark" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1viyj9xqq9hkcsghrfx7wjmky3hkxfr96952f9favd4zg9ih64yw"))))
+        (base32 "1viyj9xqq9hkcsghrfx7wjmky3hkxfr96952f9favd4zg9ih64yw"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
