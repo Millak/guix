@@ -85655,6 +85655,28 @@ modifications.")
                        ("rust-walkdir" ,rust-walkdir-2)
                        ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-watchexec-signals-1
+  (package
+    (name "rust-watchexec-signals")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "watchexec-signals" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rd7sqfvd96lbf05w74p7v59ch8xspy5ah509k4h329qdkwmsanc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-miette" ,rust-miette-5)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/watchexec/watchexec")
+    (synopsis "Watchexec's signal types")
+    (description "This package provides watchexec's signal types.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-wl-clipboard-rs-0.8
   (package
     (name "rust-wl-clipboard-rs")
