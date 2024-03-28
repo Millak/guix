@@ -13823,6 +13823,25 @@ wrapping.")
 process group.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-command-group-1
+  (package
+    (inherit rust-command-group-2)
+    (name "rust-command-group")
+    (version "1.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "command-group" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b7d9gy9dhw4jqx5x8njzmaifgxqw0nywjry7bgmjjlv81psia7p"))))
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-nix" ,rust-nix-0.22)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))))
+
 (define-public rust-common-path-1
   (package
     (name "rust-common-path")
