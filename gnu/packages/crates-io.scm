@@ -12905,17 +12905,16 @@ Clap.")
   (package
     (inherit rust-clearscreen-2)
     (name "rust-clearscreen")
-    (version "1.0.4")
+    (version "1.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clearscreen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "083ycj7qhwlq8azy0rl9lpbr69k87hn622wc8mi96w293rsq1zwy"))))
+        (base32 "05xk23szs0s2ybf7gvhhaqs0bmj7dv58zivv2059rxh3saysspg5"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-nix" ,rust-nix-0.20)
+     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.24)
                        ("rust-terminfo" ,rust-terminfo-0.7)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-which" ,rust-which-4)
