@@ -227,17 +227,17 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-headers
   (package
     (name "vulkan-headers")
-    (version %vulkan-sdk-version)
+    (version "1.3.280.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Headers")
-             (commit version)))
+             (commit (string-append "vulkan-sdk-" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "167zdank6pn66mzjdwgrdlmhmsy4v2k0nhw0nwg649k863rgi00j"))))
+         "13mmv5621z73hlfnsrccbcb4z0d7kwj92a081701vbpss45a4whj"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; No tests.
