@@ -251,19 +251,17 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-loader
   (package
     (name "vulkan-loader")
-    ;; XXX: Take a slightly newer commit to fix a test failure on i686:
-    ;; https://github.com/KhronosGroup/Vulkan-Loader/pull/1036
-    (version "sdk-1.3.232")
+    (version "1.3.280.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Loader")
-             (commit "v1.3.232")))
+             (commit (string-append "vulkan-sdk-" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0w69sh669sx9pwlvv2rv92ds2hm2rbzsa6qqcmd8kcad0qfq7dz2"))))
+         "0glix3clqkdbi9kqcp8abmglqpgjd2r2bjqvi11r8sair0z54hnf"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -291,11 +289,10 @@ interpretation of the specifications for these languages.")
                     (string-append "includedir=" vulkan-headers "\n"))))))
            (add-after 'unpack 'use-system-googletest
              (lambda _
-               ;; Inform the build system that googletest is already built.
-               (substitute* "CMakeLists.txt"
-                 ((".*if\\(TARGET gtest\\)")
-                  (string-append "    find_package(GTest REQUIRED)\n"
-                                 "    if(true)")))
+               (substitute* "tests/CMakeLists.txt"
+                 (((string-append "message\\(FATAL_ERROR \"Could not "
+                                  "find googletest directory. See BUILD.md\"\\)"))
+                  "find_package(GTest REQUIRED)"))
                ;; Use the namespaced variable.
                (substitute* "tests/framework/CMakeLists.txt"
                  (("PUBLIC gtest ")
@@ -308,6 +305,10 @@ interpretation of the specifications for these languages.")
            wayland))
     (inputs
      (list vulkan-headers libxrandr))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))))
     (home-page
      "https://github.com/KhronosGroup/Vulkan-Loader")
     (synopsis "Khronos official ICD loader and validation layers for Vulkan")
