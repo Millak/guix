@@ -47152,8 +47152,32 @@ contents.")
         (base32
          "02942l2gc7w5r4js7i9063x99szic5mzzk1055j83v4diqpbpxck"))))))
 
+(define-public rust-open-4
+  (package
+    (name "rust-open")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "open" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04kw6xmsjm0wdqidjndhpzl79iksyrhwyik32z28wjjygq63q21s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-is-wsl" ,rust-is-wsl-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pathdiff" ,rust-pathdiff-0.2))))
+    (home-page "https://github.com/Byron/open-rs")
+    (synopsis "Open a path or URL using the program configured on the system")
+    (description
+     "Use this library to open a path or URL using the program configured on
+the system.")
+    (license license:expat)))
+
 (define-public rust-open-3
   (package
+    (inherit rust-open-4)
     (name "rust-open")
     (version "3.2.0")
     (source
@@ -47163,16 +47187,9 @@ contents.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1y3nhpgh444ns5vqy87jbcnlryqmw62akyi85k2a0m3akq1w0y10"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-pathdiff" ,rust-pathdiff-0.2)
-                       ("rust-windows-sys" ,rust-windows-sys-0.42))))
-    (home-page "https://github.com/Byron/open-rs")
-    (synopsis "Open a path or URL using the program configured on the system")
-    (description
-     "Use this library to open a path or URL using the program configured on
-the system.")
-    (license license:expat)))
+                       ("rust-windows-sys" ,rust-windows-sys-0.42))))))
 
 (define-public rust-open-2
   (package
