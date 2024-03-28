@@ -75361,14 +75361,14 @@ process.")
 (define-public rust-tectonic-docmodel-0.2
   (package
     (name "rust-tectonic-docmodel")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_docmodel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "176wl4f1na18s0bjmxf9chw3854jbpkh64nzsm32d2bvgja9acih"))))
+        (base32 "1dn539wm8lcb34zqwybcwdnhj4yd44adk2wky0frx7s2lr5hfaas"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
