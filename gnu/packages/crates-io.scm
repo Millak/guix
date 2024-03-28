@@ -75085,17 +75085,17 @@ tools.")
         (base32 "15gax4765vm2inh45m7cvaf4mgd2mb2mn0i87np0i1d95qhla822"))))
     (arguments '())))
 
-(define-public rust-tectonic-bridge-core-0.3
+(define-public rust-tectonic-bridge-core-0.4
   (package
     (name "rust-tectonic-bridge-core")
-    (version "0.3.2")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zqhyn00wx6qxs4a0m9iy1qmd1451vx2i3b31ng256x7rm0k6dx4"))))
+        (base32 "1j730zbzi19z45pp995483g1dcax50j4n67aymyhvyscypibv87c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -75105,7 +75105,7 @@ tools.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-md-5" ,rust-md-5-0.10)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
+        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.3)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2))))
     (inputs (list zlib))
     (native-inputs (list pkg-config))
@@ -75116,6 +75116,29 @@ tools.")
 I/O services provided by the Tectonic Rust code.  This API is then consumed by
 the various C/C++ ``engines`` implementing the TeX software.")
     (license license:expat)))
+
+(define-public rust-tectonic-bridge-core-0.3
+  (package
+    (inherit rust-tectonic-bridge-core-0.4)
+    (name "rust-tectonic-bridge-core")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tectonic_bridge_core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zqhyn00wx6qxs4a0m9iy1qmd1451vx2i3b31ng256x7rm0k6dx4"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-md-5" ,rust-md-5-0.10)
+        ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
+        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
+        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2))))))
 
 (define-public rust-tectonic-bridge-flate-0.1
   (package
