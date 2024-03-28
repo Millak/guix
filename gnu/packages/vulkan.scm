@@ -84,15 +84,15 @@ and for the GLSL.std.450 extended instruction set.
 (define-public spirv-tools
   (package
     (name "spirv-tools")
-    (version %vulkan-sdk-version)
+    (version "1.3.280.0")
     (source
      (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/KhronosGroup/SPIRV-Tools")
-            (commit version)))
+            (commit (string-append "vulkan-sdk-" version))))
       (sha256
-       (base32 "03d489ind2az7w7q1slj3mdc04372r3qqbnd7m9akxbg7yix1a5j"))
+       (base32 "1sj84ngwcgmydlj88nx1a9jfmhmxlij7wc92khp8wf1vsfplayas"))
       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
