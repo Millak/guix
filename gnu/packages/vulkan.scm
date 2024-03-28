@@ -327,26 +327,34 @@ and the ICD.")
 (define-public vulkan-tools
   (package
     (name "vulkan-tools")
-    (version %vulkan-sdk-version)
+    (version "1.3.280.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Tools")
-             (commit version)))
+             (commit (string-append "vulkan-sdk-" version))))
        (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "tests/icd/mock_icd_tests.cpp"
+                    ;; Disable driver info test since it relies on git branch info
+                    (("ASSERT_EQ\\(std::string\\(driver_properties\\.driverInfo\\)")
+                     "// ASSERT_EQ(std::string(driver_properties.driverInfo)")))
        (sha256
         (base32
-         "0jzwjfx4c7y15wkwfhhc64rzljpi47bxrm5jw5blfsqjh8zsd27a"))))
+         "0w0m04vscr4a6vr682g3mn7mfni740cmai9ylzlgfdggb77y58xz"))))
     (build-system cmake-build-system)
     (inputs
      (list glslang libxrandr vulkan-loader wayland wayland-protocols))
     (native-inputs
-     (list pkg-config python vulkan-headers))
+     (list googletest pkg-config python volk vulkan-headers))
     (arguments
-     `(#:tests? #f                      ;no tests
-       #:configure-flags (list (string-append "-DGLSLANG_INSTALL_DIR="
-                               (assoc-ref %build-inputs "glslang")))))
+     `(#:configure-flags (list "-DBUILD_TESTS=ON")
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "./tests/vulkan_tools_tests")))))))
     (home-page
      "https://github.com/KhronosGroup/Vulkan-Tools")
     (synopsis "Tools and utilities for Vulkan")
