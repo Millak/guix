@@ -18095,7 +18095,7 @@ requests.")
 (define-public rust-curl-sys-0.4
   (package
     (name "rust-curl-sys")
-    (version "0.4.70+curl-8.5.0")
+    (version "0.4.72+curl-8.6.0")
     (source
       (origin
         (method url-fetch)
@@ -18103,7 +18103,7 @@ requests.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "07l45np3bs10ana73w1ahdax1zbb8jd44ahhr2j7izlshkc360rw"))
+          "1sn97cah732ldcwkw5knm6kh57hx0gfxqmniiwgd2iy42j1xrjr9"))
         (modules '((guix build utils)))
         (snippet
          '(begin (delete-file-recursively "curl")))))
@@ -18118,7 +18118,7 @@ requests.")
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-rustls-ffi" ,rust-rustls-ffi-0.8)
         ("rust-vcpkg" ,rust-vcpkg-0.2)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (native-inputs
      (list pkg-config))
     (inputs
