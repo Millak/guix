@@ -189,22 +189,27 @@ translation between LLVM IR and SPIR-V.")
 (define-public glslang
   (package
     (name "glslang")
-    (version %vulkan-sdk-version)
+    (version "1.3.280.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/glslang")
-             (commit version)))
-       (patches (search-patches "glslang-install-static-libs.patch"))
+             (commit (string-append "vulkan-sdk-" version))))
        (sha256
         (base32
-         "12a1zl8qxa28nbf6m67260c0lwdw3bqbj0jz1382wgm5px1fpqw6"))
+         "1vvgqvwhsimlz8wkk38b9cvp9abggq840iws8al0znzz3mnvkfdn"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ;FIXME: requires bundled SPIRV-Tools
-       #:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                           "-DALLOW_EXTERNAL_SPIRV_TOOLS=ON")
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "ctest")))))))
+    (inputs (list spirv-tools))
     (native-inputs
      (list pkg-config python))
     (home-page "https://github.com/KhronosGroup/glslang")
