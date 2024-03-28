@@ -85914,6 +85914,36 @@ modifications.")
      "This package provides a watchexec filterer component based on globsets.")
     (license license:asl2.0)))
 
+(define-public rust-watchexec-filterer-ignore-1
+  (package
+    (name "rust-watchexec-filterer-ignore")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "watchexec-filterer-ignore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18sfshgvi8d68xc9vc9pz7dar6cfbgzclnfdkyhvgkbw6qhg0igk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `tracing_subscriber::EnvFilter`
+       #:cargo-inputs (("rust-dunce" ,rust-dunce-1)
+                       ("rust-ignore" ,rust-ignore-0.4)
+                       ("rust-ignore-files" ,rust-ignore-files-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-watchexec" ,rust-watchexec-2)
+                       ("rust-watchexec-signals" ,rust-watchexec-signals-1))
+       #:cargo-development-inputs
+       (("rust-project-origins" ,rust-project-origins-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://watchexec.github.io")
+    (synopsis "Watchexec filterer component for ignore files")
+    (description
+     "This package provides a watchexec filterer component for ignore files.")
+    (license license:asl2.0)))
+
 (define-public rust-watchexec-signals-1
   (package
     (name "rust-watchexec-signals")
