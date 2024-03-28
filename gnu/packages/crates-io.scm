@@ -5882,6 +5882,25 @@ they're not available.")
 they're not available.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-atomic-take-1
+  (package
+    (name "rust-atomic-take")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atomic-take" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hzvfqiy0ixsawkh7ci9visn95kx2j6yvnqxz536x5wpzranpax8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/Darksonn/atomic-take")
+    (synopsis "Atomically take a value out of a container once")
+    (description "Atomically take a value out of a container once.")
+    (license license:expat)))
+
 (define-public rust-atomic-write-file-0.1
   (package
     (name "rust-atomic-write-file")
