@@ -1435,31 +1435,15 @@ for handling arrays and scalars with units,respectively")
 (define-public python-upsetplot
   (package
     (name "python-upsetplot")
-    (version "0.6.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "UpSetPlot" version))
        (sha256
         (base32
-         "11zrykwnb00w5spx4mnsnm0f9gwrphdczainpmwkyyi50vipaa2l"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Patch for compatibility with newer setuptools:
-        ;; https://github.com/jnothman/UpSetPlot/pull/178
-        '(substitute* "upsetplot/data.py"
-           (("import distutils")
-            "from distutils.version import LooseVersion")
-           (("if distutils\\.version\\.LooseVersion")
-            "if LooseVersion")))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v" "--doctest-modules")))))))
+         "14l5gcj88cclkj1mf74bcy1pxq1hgsiy27fa3vxrsk32ik1nmdwm"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-matplotlib python-pandas))
     (native-inputs
