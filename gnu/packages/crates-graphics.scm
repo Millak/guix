@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5745,7 +5746,18 @@ for @code{libxkbcommon}.")
                        ("rust-dlib" ,rust-dlib-0.5)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-xkeysym" ,rust-xkeysym-0.2))))
+                       ("rust-xkeysym" ,rust-xkeysym-0.2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'add-absolute-library-references
+           (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+             (substitute* (find-files vendor-dir "\\.rs$")
+               (("libxkbcommon-x11\\.so")
+                (search-input-file inputs "lib/libxkbcommon-x11.so"))
+               (("libxkbcommon\\.so")
+                (search-input-file inputs "lib/libxkbcommon.so"))))))))
+    (inputs
+     (list libxkbcommon))
     (home-page "https://github.com/rust-windowing/xkbcommon-dl")
     (synopsis "Dynamically loaded xkbcommon and xkbcommon-x11 Rust bindings")
     (description
