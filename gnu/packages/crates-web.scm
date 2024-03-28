@@ -5513,6 +5513,8 @@ robust clients and servers.")
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-uuid" ,rust-uuid-1)
         ("rust-zstd" ,rust-zstd-0.12))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://github.com/tower-rs/tower-http")
     (synopsis "Tower middleware and utilities for HTTP clients and servers")
     (description

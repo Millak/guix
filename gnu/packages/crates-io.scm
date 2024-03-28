@@ -49319,6 +49319,8 @@ definitions compiled to support read+write async.")
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
                                    ("rust-rand" ,rust-rand-0.8)
                                    ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://github.com/jorgecarleitao/parquet2")
     (synopsis "Safe implementation of Parquet IO")
     (description
@@ -49350,7 +49352,9 @@ parallelism and safety in mind.")
         ("rust-parquet-format-async-temp" ,rust-parquet-format-async-temp-0.2)
         ("rust-snap" ,rust-snap-1)
         ("rust-streaming-decompression" ,rust-streaming-decompression-0.1)
-        ("rust-zstd" ,rust-zstd-0.9))))))
+        ("rust-zstd" ,rust-zstd-0.9))))
+    (native-inputs '())
+    (inputs '())))
 
 (define-public rust-parse-display-0.8
   (package
@@ -52486,6 +52490,8 @@ applications.")
                        ("rust-url" ,rust-url-2)
                        ("rust-zstd" ,rust-zstd-0.13))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://www.pola.rs/")
     (synopsis "IO related logic for the Polars DataFrame library")
     (description
@@ -52523,7 +52529,9 @@ applications.")
         ("rust-polars-core" ,rust-polars-core-0.17)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1)
-        ("rust-simdutf8" ,rust-simdutf8-0.1))))))
+        ("rust-simdutf8" ,rust-simdutf8-0.1))))
+    (native-inputs '())
+    (inputs '())))
 
 (define-public rust-polars-json-0.37
   (package
@@ -52750,6 +52758,8 @@ applications.")
                        ("rust-smartstring" ,rust-smartstring-1)
                        ("rust-tokio" ,rust-tokio-1)
                        ("rust-version-check" ,rust-version-check-0.9))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://www.pola.rs/")
     (synopsis "Lazy query engine for the Polars DataFrame library")
     (description "Lazy query engine for the Polars @code{DataFrame} library.")
@@ -87646,6 +87656,8 @@ implementation that works everywhere, even WASM!")
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-time" ,rust-time-0.3)
         ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://github.com/zip-rs/zip")
     (synopsis
      "Library to support the reading and writing of zip files")
@@ -87675,7 +87687,9 @@ implementation that works everywhere, even WASM!")
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-time" ,rust-time-0.1))))))
+        ("rust-time" ,rust-time-0.1))))
+    (native-inputs '())
+    (inputs '())))
 
 (define-public rust-zoneinfo-compiled-0.5
   (package
@@ -87720,6 +87734,8 @@ implementation that works everywhere, even WASM!")
                                    ("rust-humansize" ,rust-humansize-2)
                                    ("rust-partial-io" ,rust-partial-io-0.5)
                                    ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://github.com/gyscos/zstd-rs")
     (synopsis "Binding to the zstd compression library")
     (description
@@ -87796,7 +87812,9 @@ implementation that works everywhere, even WASM!")
        (("rust-clap" ,rust-clap-3)
         ("rust-humansize" ,rust-humansize-1)
         ("rust-partial-io" ,rust-partial-io-0.5)
-        ("rust-walkdir" ,rust-walkdir-2))))))
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (native-inputs '())
+    (inputs '())))
 
 (define-public rust-zstd-safe-7
   (package
@@ -87812,6 +87830,8 @@ implementation that works everywhere, even WASM!")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-zstd-sys" ,rust-zstd-sys-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://github.com/gyscos/zstd-rs")
     (synopsis "Safe low-level bindings to the zstd compression library")
     (description
@@ -87868,9 +87888,10 @@ library.")
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-zstd-sys" ,rust-zstd-sys-1))))))
+        ("rust-zstd-sys" ,rust-zstd-sys-1))))
+    (native-inputs '())
+    (inputs '())))
 
-;; TODO: Unbundle zstd.
 (define-public rust-zstd-sys-2
   (package
     (name "rust-zstd-sys")
@@ -87881,12 +87902,17 @@ library.")
        (uri (crate-uri "zstd-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ak51pq1ni6q3qgyr58iq1pcz0vyh80f8vn8m27zrfpm9a8s8ly2"))))
+        (base32 "1ak51pq1ni6q3qgyr58iq1pcz0vyh80f8vn8m27zrfpm9a8s8ly2"))
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    (delete-file-recursively "zstd")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
                        ("rust-cc" ,rust-cc-1)
                        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
     (home-page "https://github.com/gyscos/zstd-rs")
     (synopsis "Low-level bindings to the zstd compression library")
     (description "This package provides low-level Rust bindings to the zstd
