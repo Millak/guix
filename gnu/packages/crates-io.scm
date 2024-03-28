@@ -13799,6 +13799,30 @@ wrapping.")
         ("rust-strum" ,rust-strum-0.20)
         ("rust-strum-macros" ,rust-strum-macros-0.20))))))
 
+(define-public rust-command-group-2
+  (package
+    (name "rust-command-group")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "command-group" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05lr58pzkpw9rnl3ssi6pv72b9vvjc6z0208ng57djqf1xmxz02h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/watchexec/command-group")
+    (synopsis "Extension to Command to spawn in a process group")
+    (description "This package provides an extension to Command to spawn in a
+process group.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-common-path-1
   (package
     (name "rust-common-path")
