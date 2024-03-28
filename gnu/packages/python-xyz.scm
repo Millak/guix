@@ -17497,6 +17497,29 @@ managers.  It also contains additional features that are not part of
 the standard library.")
     (license license:psfl)))
 
+(define-public python-contexttimer
+  (package
+    (name "python-contexttimer")
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/brouberol/contexttimer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00a9h06a1wj66935n863qlk4jpl9gvdvzkkhl8xmgqwdkwv0js54"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-decorator python-unittest2))
+    (native-inputs (list python-mock))
+    (home-page "https://github.com/brouberol/contexttimer")
+    (synopsis "Timer as a context manager")
+    (description
+     "This package offers utilities to measure code block or function
+execution time.")
+    (license license:gpl3)))
+
 (define-public python-texttable
   (package
     (name "python-texttable")
