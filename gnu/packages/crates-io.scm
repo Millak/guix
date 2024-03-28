@@ -32040,6 +32040,35 @@ let} expressions.")
 ignore files such as @file{.gitignore} against file paths.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-ignore-files-1
+  (package
+    (name "rust-ignore-files")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ignore-files" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ifzz6i2ypv1ffvnx75yflzzbv04jzgzil5lci25aik3bkcfsa17"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dunce" ,rust-dunce-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-gix-config" ,rust-gix-config-0.31)
+                       ("rust-ignore" ,rust-ignore-0.4)
+                       ("rust-miette" ,rust-miette-5)
+                       ("rust-project-origins" ,rust-project-origins-1)
+                       ("rust-radix-trie" ,rust-radix-trie-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/watchexec/watchexec")
+    (synopsis "Find, parse, and interpret ignore files")
+    (description "This package provides functions to find, parse, and interpret
+ignore files.")
+    (license license:asl2.0)))
+
 (define-public rust-im-rc-15
   (package
     (name "rust-im-rc")
