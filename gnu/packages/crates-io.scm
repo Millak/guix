@@ -54743,6 +54743,31 @@ status.")
 progress-bars for Rust.")
     (license license:asl2.0)))
 
+(define-public rust-project-origins-1
+  (package
+    (name "rust-project-origins")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "project-origins" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lizp7dp6ddrlgh3xigl8pyai5qn8ab7lnhgwsb19ihgpyix8xm0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; failed to resolve: could not find `main` in `tokio`
+       #:cargo-inputs (("rust-futures" ,rust-futures-0.3)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1))
+       #:cargo-development-inputs
+       (("rust-miette" ,rust-miette-5)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/watchexec/watchexec")
+    (synopsis "Resolve project origins and kinds from a path")
+    (description "Resolve project origins and kinds from a path.")
+    (license license:asl2.0)))
+
 (define-public rust-propfuzz-0.0.1
   (package
     (name "rust-propfuzz")
