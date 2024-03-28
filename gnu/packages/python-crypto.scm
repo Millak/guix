@@ -774,7 +774,7 @@ PKCS#12, PKCS#5, X.509 and TSP.")
 (define-public python-pynacl
   (package
     (name "python-pynacl")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
@@ -790,7 +790,7 @@ PKCS#12, PKCS#5, X.509 and TSP.")
            (delete-file-recursively "src/libsodium")))
        (sha256
         (base32
-         "01b56hxrbif3hx8l6rwz5kljrgvlbj7shmmd2rjh0hn7974a5sal"))))
+         "1fi0jbxhh3svajzldlb6gj5sr5a48v11xlmx0wb831db167l9iwa"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
