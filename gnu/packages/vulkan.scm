@@ -5,7 +5,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
-;;; Copyright © 2022 dan <i@dan.games>
+;;; Copyright © 2022, 2024 dan <i@dan.games>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -52,16 +52,16 @@
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version %vulkan-sdk-version)
+    (version "1.3.280.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/SPIRV-Headers")
-             (commit version)))
+             (commit (string-append "vulkan-sdk-" version))))
        (sha256
         (base32
-         "0z8b485hryya2g0jxv7amwg3fjj7pchbgnsa5ldf5fwgh5js0icm"))
+         "17jw5gwj2vmicyd6522b1zp7x551krfj826j0fg5kl0ixv0q08wk"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
