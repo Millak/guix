@@ -6,7 +6,7 @@
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2023, 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -677,3 +677,11 @@ which will be used as a snippet in origin."
    "scala" "Scala"
    "0hs6gmkq5cx9qrmgfz1mh0c34flwffc0k2mhwf13laawswnywfkz"
    "0.20.2"))
+
+(define-public tree-sitter-tlaplus
+  (tree-sitter-grammar
+   "tlaplus" "TLA+"
+   "1k60dnzafj6m9c2d4xnwiz3d7yw3bg3iwx7c1anhwr76iyxdci3w"
+   "1.0.8"
+   ;; Version 1.2.1 is most recent, but requires tree-sitter >0.21.0
+   #:repository-url "https://github.com/tlaplus-community/tree-sitter-tlaplus"))
