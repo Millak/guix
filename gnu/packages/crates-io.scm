@@ -75471,14 +75471,14 @@ output to HTML.")
 (define-public rust-tectonic-engine-xetex-0.4
   (package
     (name "rust-tectonic-engine-xetex")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_engine_xetex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hkby5n9hsyzxkgmwzp2xdm0n53f7rp0vs198ns8zgxy5rvl8xv8"))))
+        (base32 "11if3zyzp8149gf1j4fhwk8kbbs2agxkk5la1lhmq4icrj6szwrf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
