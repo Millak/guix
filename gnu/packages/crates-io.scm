@@ -33841,6 +33841,26 @@ Rust.")
     (description "get build model is debug")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-is-docker-0.2
+  (package
+    (name "rust-is-docker")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "is-docker" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cyibrv6817cqcpf391m327ss40xlbik8wxcv5h9pj9byhksx2wj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/TheLarkInn/is-docker")
+    (synopsis "Checks if the process is running inside a Docker container")
+    (description "This package provides a helper function to check if the
+process is running inside a Docker container.")
+    (license license:expat)))
+
 (define-public rust-is-executable-1
   (package
     (name "rust-is-executable")
