@@ -44995,6 +44995,24 @@ combinators library (fork for proposals for v8)")
 nothing.")
     (license license:expat)))
 
+(define-public rust-normalize-path-0.2
+  (package
+    (name "rust-normalize-path")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "normalize-path" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bc919zp34b9312wqd92jbi3xa9gxljxh8nfw7v6sk7znb98shzm"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/cargo-bins/cargo-binstall")
+    (synopsis "Like canonicalize, but without performing I/O")
+    (description "This package provides a rust function like canonicalize, but
+without performing I/O.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-normalize-line-endings-0.3
   (package
     (name "rust-normalize-line-endings")
