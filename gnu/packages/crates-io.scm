@@ -85859,6 +85859,31 @@ modifications.")
                        ("rust-walkdir" ,rust-walkdir-2)
                        ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-watchexec-events-1
+  (package
+    (name "rust-watchexec-events")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "watchexec-events" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qra2hpkdf5ln1vb5jpxp17s3va7dm2svb8d067r2xgx0az3nq01"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; `Event: serde::de::Deserialize<'_>` is not satisfied
+       #:cargo-inputs (("rust-nix" ,rust-nix-0.26)
+                       ("rust-notify" ,rust-notify-5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-watchexec-signals" ,rust-watchexec-signals-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-snapbox" ,rust-snapbox-0.4))))
+    (home-page "https://github.com/watchexec/watchexec")
+    (synopsis "Watchexec's event types")
+    (description "This package provides watchexec's event types.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-watchexec-signals-1
   (package
     (name "rust-watchexec-signals")
