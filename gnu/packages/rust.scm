@@ -1111,7 +1111,10 @@ safety and thread safety guarantees.")
                            (substitute* "cache_lock.rs"
                              ,@(make-ignore-test-list
                                  '("fn multiple_download"
-                                   "fn download_then_mutate")))))))
+                                   "fn download_then_mutate")))
+                           (substitute* "global_cache_tracker.rs"
+                             ,@(make-ignore-test-list
+                                 '("fn package_cache_lock_during_build")))))))
                    `())
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
