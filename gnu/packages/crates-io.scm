@@ -75255,14 +75255,14 @@ bindings.")
 (define-public rust-tectonic-bridge-icu-0.2
   (package
     (name "rust-tectonic-bridge-icu")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_icu" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kbqi4gn26ymjxlg912p1f2v9rb8a39fr3mvpg2j2hm503vh4dj5"))))
+        (base32 "0zhvqbysn58ja5f4ki7ip6asdqbii45f5l79g90g50q293pfc12d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
