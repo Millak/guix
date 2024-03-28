@@ -6,7 +6,7 @@
 ;;; Copyright © 2016-2018, 2021-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1130,7 +1130,7 @@ removed so that it fits within common partitioning schemes.")))
               (add-after 'unpack 'set-environment
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
                   (setenv "SCP" (search-input-file
-                                 native-inputs "libexec/scp.bin"))
+                                 (or native-inputs inputs) "libexec/scp.bin"))
                   (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
       (native-inputs
        (modify-inputs (package-native-inputs base)
