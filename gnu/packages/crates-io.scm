@@ -85884,6 +85884,36 @@ modifications.")
     (description "This package provides watchexec's event types.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-watchexec-filterer-globset-1
+  (package
+    (name "rust-watchexec-filterer-globset")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "watchexec-filterer-globset" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "045j0cp83yl6csn04qi19d5jfgfzylgcnvgziksqjcdgrv6b1c54"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `tracing_subscriber::EnvFilter`
+       #:cargo-inputs
+       (("rust-ignore" ,rust-ignore-0.4)
+        ("rust-ignore-files" ,rust-ignore-files-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-watchexec" ,rust-watchexec-2)
+        ("rust-watchexec-filterer-ignore" ,rust-watchexec-filterer-ignore-1))
+       #:cargo-development-inputs
+       (("rust-project-origins" ,rust-project-origins-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://watchexec.github.io")
+    (synopsis "Watchexec filterer component based on globset")
+    (description
+     "This package provides a watchexec filterer component based on globsets.")
+    (license license:asl2.0)))
+
 (define-public rust-watchexec-signals-1
   (package
     (name "rust-watchexec-signals")
