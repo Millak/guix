@@ -87871,28 +87871,22 @@ library.")
         ("rust-zstd-sys" ,rust-zstd-sys-1))))))
 
 ;; TODO: Unbundle zstd.
-;; The 'legacy' feature, enabled by default, needs headers which aren't
-;; installed by default in zstd.
 (define-public rust-zstd-sys-2
   (package
     (name "rust-zstd-sys")
-    (version "2.0.8+zstd.1.5.5")
+    (version "2.0.10+zstd.1.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zstd-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "137c0wkxb04l0ig5df8a1ni94dl0g2ibz2q9dicg4bfk4ppfcmjm"))))
+        (base32 "1ak51pq1ni6q3qgyr58iq1pcz0vyh80f8vn8m27zrfpm9a8s8ly2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f     ; invalid inclusion of reserved file name
-       #:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.64)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
     (home-page "https://github.com/gyscos/zstd-rs")
     (synopsis "Low-level bindings to the zstd compression library")
     (description "This package provides low-level Rust bindings to the zstd
