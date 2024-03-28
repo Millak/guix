@@ -75221,14 +75221,14 @@ with no Rust bindings.")
 (define-public rust-tectonic-bridge-harfbuzz-0.2
   (package
     (name "rust-tectonic-bridge-harfbuzz")
-    (version "0.2.8")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_harfbuzz" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18mn8yjrnh2dv7r40ipzj8qzqda09cn3c7dsl7134wv1whn42hvb"))
+        (base32 "17mj3qks5nv0cc65h7h27j1kz3l5lib0krcai1mwdng72igmrypp"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "harfbuzz")
@@ -75241,8 +75241,7 @@ with no Rust bindings.")
      `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-tectonic-bridge-graphite2" ,rust-tectonic-bridge-graphite2-0.2)
-        ("rust-tectonic-bridge-icu" ,rust-tectonic-bridge-icu-0.2)
-        ("rust-tectonic-dep-support" ,rust-tectonic-dep-support-0.1))))
+        ("rust-tectonic-bridge-icu" ,rust-tectonic-bridge-icu-0.2))))
     (inputs (list freetype graphite2 harfbuzz icu4c))
     (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
