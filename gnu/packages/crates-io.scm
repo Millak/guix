@@ -17610,6 +17610,30 @@ number ``crunching``.")
      "This package contains a Rust implementation of CSS Syntax Level 3.")
     (license license:mpl2.0)))
 
+(define-public rust-cssparser-0.31
+  (package
+    (inherit rust-cssparser-0.33)
+    (name "rust-cssparser")
+    (version "0.31.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cssparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gnmn2wjvhvkj98ygcd5jdwi0wxsigvd7j0yq0zfgfsz7vwz8gav"))))
+    (arguments
+     `(#:tests? #f  ; Not all files included in the tarball.
+       #:cargo-inputs (("rust-cssparser-macros" ,rust-cssparser-macros-0.6)
+                       ("rust-dtoa-short" ,rust-dtoa-short-0.3)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-phf" ,rust-phf-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs (("rust-difference" ,rust-difference-2)
+                                   ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-cssparser-0.29
   (package
     (inherit rust-cssparser-0.33)
