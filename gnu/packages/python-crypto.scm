@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016, 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -782,25 +782,19 @@ PKCS#12, PKCS#5, X.509 and TSP.")
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Remove spurious dependency on python-wheel, can be removed
-           ;; for 1.5.
-           (substitute* "setup.py"
-             (("\"wheel\"") ""))
            ;; Remove bundled libsodium.
            (delete-file-recursively "src/libsodium")))
        (sha256
         (base32
          "1fi0jbxhh3svajzldlb6gj5sr5a48v11xlmx0wb831db167l9iwa"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'build 'use-system-sodium
            (lambda _
-             (setenv "SODIUM_INSTALL" "system")))
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+             (setenv "SODIUM_INSTALL" "system"))))))
     (native-inputs
      (list python-hypothesis python-pytest))
     (propagated-inputs
