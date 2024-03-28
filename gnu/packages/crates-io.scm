@@ -75591,14 +75591,14 @@ interface for fetching URLs using one of several HTTP backends.")
 (define-public rust-tectonic-io-base-0.4
   (package
     (name "rust-tectonic-io-base")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_io_base" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zb04vlg5i082wlv7cfjrkg7yrzd8mhkc7chw15dh26x2z96is18"))))
+        (base32 "13vqkvxn2r6y827ghj84ndmx991m26sdd4zxpgb7fll00bqwcr6v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
