@@ -5029,10 +5029,10 @@ Although it should technically be possible to travel to such an old
 commit, the ease to do so will largely depend on the availability of
 binary substitutes.  When traveling to a distant past, some packages may
 not easily build from source anymore.  One such example are old versions
-of Python 2 which had time bombs in its test suite, in the form of
-expiring SSL certificates.  This particular problem can be worked around
-by setting the hardware clock to a value in the past before attempting
-the build.
+of OpenSSL whose tests would fail after a certain date.  This particular
+problem can be worked around by running a @dfn{virtual build machine}
+with its clock set to the right time (@pxref{build-vm, Virtual Build
+Machines}).
 @end quotation
 
 The general syntax is:
