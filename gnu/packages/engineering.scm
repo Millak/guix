@@ -173,7 +173,7 @@
 (define-public librecad
   (package
     (name "librecad")
-    (version "2.2.0-rc2")
+    (version "2.2.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -182,39 +182,12 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08cl4935c9vznz9qdw1zgd86rn7hl64zpfayxl07x21bhf53pn24"))
-              (patches
-               (search-patches "librecad-support-for-boost-1.76.patch"))))
+                "04pyywkc0nzhdx1wi0g63hldmbpdp0wvlrhqv8p3m1z6wyyafgjn"))))
     (build-system qt-build-system)
     (arguments
      '(#:test-target "check"
        #:phases
        (modify-phases %standard-phases
-         ;; Without this patch boost complains that "make_array" is not a
-         ;; member of "boost::serialization".
-         (add-after 'unpack 'patch-boost-error
-           (lambda _
-             (substitute* "librecad/src/lib/math/lc_quadratic.h"
-               (("#include \"rs_vector.h\"" line)
-                (string-append line
-                               "\n#include <boost/serialization/array_wrapper.hpp>")))
-             (substitute* "librecad/src/lib/math/rs_math.cpp"
-               (("#include <boost/numeric/ublas/matrix.hpp>" line)
-                (string-append "#include <boost/serialization/array_wrapper.hpp>\n"
-                               line)))
-             #t))
-         ;; Fix build against Qt 5.11.
-         (add-after 'unpack 'add-missing-headers
-           (lambda _
-             (substitute* "librecad/src/ui/generic/widgetcreator.cpp"
-               (("#include <QPushButton>") "#include <QPushButton>
-#include <QActionGroup>"))
-             #t))
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "librecad/src/lib/engine/rs_system.cpp"
-                 (("/usr/share") (string-append out "/share"))))))
          (replace 'configure
            (lambda* (#:key inputs #:allow-other-keys)
              (system* "qmake" (string-append "BOOST_DIR="
@@ -227,8 +200,7 @@
                (mkdir-p bin)
                (install-file "unix/librecad" bin)
                (mkdir-p share)
-               (copy-recursively "unix/resources" share))
-             #t)))))
+               (copy-recursively "unix/resources" share)))))))
     (inputs
      (list boost muparser freetype qtbase-5 qtsvg-5))
     (native-inputs
