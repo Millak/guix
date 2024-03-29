@@ -28,7 +28,7 @@
 ;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
@@ -2547,7 +2547,7 @@ by AOM, including with alpha.")
 (define-public libheif
   (package
     (name "libheif")
-    (version "1.12.0")
+    (version "1.17.6")
     (source
      (origin
        (method git-fetch)
@@ -2556,16 +2556,16 @@ by AOM, including with alpha.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cp2d216hp7gw3n56x3g5q5n8jb9ganyanrlibxw8fw16il8nca6"))))
+        (base32 "00rc8ffc2s9dz9szhy0f0raas8wnn5cyni1imd5lqz79by6qz7x6"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ;no test target although there is a tests folder
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
-     `(("gdk-pixbuf" ,gdk-pixbuf) ;optional
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)))
+      (list gdk-pixbuf ; optional
+            libjpeg-turbo
+            libpng))
      ;; Propagated to satisfy 'libheif.pc'.
      (propagated-inputs
       (list dav1d libaom libde265 x265))
