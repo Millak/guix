@@ -22778,8 +22778,8 @@ resolving the tension between granularity and concurrency.")
 
 (define-public sbcl-binding-arrows
   ;; Fork of sbcl-arrows that does not have a new tag.
-  (let ((commit "d19364ec8850880ed6e42078ccaa2ed9114dc83a")
-        (revision "1"))
+  (let ((commit "46bcba8bb1ff27cd5caab3bda36f000d0489a4f2")
+        (revision "2"))
     (package
      (name "sbcl-binding-arrows")
      (version (git-version "1.0.0" revision commit))
@@ -22789,9 +22789,9 @@ resolving the tension between granularity and concurrency.")
        (uri (git-reference
              (url "https://github.com/phoe/binding-arrows")
              (commit commit)))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-binding-arrows" version))
        (sha256
-        (base32 "0hqikgzic7kjq2n1d924yldfm30qz67cmsk6gghi9cbmxkwdlwp8"))))
+        (base32 "0kzybw5qlb49czh9v2lnxniz9jzqx306a6lnarfv59x48a7cch22"))))
      (build-system asdf-build-system/sbcl)
      (native-inputs
       (list sbcl-hu.dwim.stefil))
