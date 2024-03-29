@@ -1673,8 +1673,7 @@ Mathematics (GLM) library to Python.")
     (arguments
      (list
       #:test-flags
-      '(list "-n" "auto"
-             "-x" "-m"
+      '(list "-x" "-m"
              (string-append "not slow"
                             " and not flaky"
                             " and not gpu"
@@ -1882,7 +1881,6 @@ parentdir_prefix = distributed-
            python-importlib-metadata
            python-pytest
            python-pytest-timeout
-           python-pytest-xdist
            python-versioneer))
     (home-page "https://distributed.dask.org")
     (synopsis "Distributed scheduler for Dask")
