@@ -491,6 +491,38 @@ information and periodically output metrics")
 quantiles over an unbounded data stream within low memory and CPU bounds.")
     (license license:bsd-2)))
 
+(define-public go-github-com-briandowns-spinner
+  (package
+    (name "go-github-com-briandowns-spinner")
+    (version "1.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/briandowns/spinner")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "036r59m068k8grr0q77a6b1rqw4dyxm00fsxj7b9w1fjviq8djs6"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/briandowns/spinner"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-isatty
+           go-golang-org-x-term))
+    (home-page "https://github.com/briandowns/spinner")
+    (synopsis "Terminal spinner/progress indicators")
+    (description
+     "Package spinner is a simple package to add a spinner / progress
+indicator to any terminal application.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-burntsushi-toml
   (package
     (name "go-github-com-burntsushi-toml")
