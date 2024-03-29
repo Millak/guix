@@ -233,14 +233,15 @@ browser for easy news reading.")
 (define-public gwenview
   (package
     (name "gwenview")
-    (version "23.04.3")
+    (version "23.08.5")
     (source
      (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/release-service/" version
                             "/src/gwenview-" version ".tar.xz"))
         (sha256
-         (base32 "0vijsq4174p4asdjq47bzdp2xkfn8hpg7b4dgp3yvapfxwjgp148"))))
+         (base32 "0f4h2vf8nkz1jcrxw98n52divvdmxh434659m1pd4l5pag0d3z54"))
+        (patches (search-patches "gwenview-kimageannotator.patch"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases
@@ -281,7 +282,7 @@ browser for easy news reading.")
            libtiff
            phonon
            purpose
-           qtimageformats
+           qtimageformats-5
            qtsvg-5
            qtwayland-5
            qtx11extras
