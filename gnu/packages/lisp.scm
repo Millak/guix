@@ -444,17 +444,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.4.0")
+    (version "2.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "0xhpdnsg8idzxkn20iw8gd2rk470d7vc22vrp5clq9fj117vgn43"))
-       ;; TODO: Remove these patches when updating to sbcl > 2.4.0.
-       (patches (search-patches "sbcl-fix-ppc64-build.patch"
-                                "sbcl-fix-riscv-build.patch"))
+        (base32 "1lbvb9rzlkl3h8s75i2js4dnmgxmvs41jxjb5dj0f603r688xxjd"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -497,7 +494,8 @@ an interpreter, a compiler, a debugger, and much more.")
            (texlive-updmap.cfg (list texlive-texinfo))
            which))
     (inputs
-     (list gmp                          ; for sb-gmp
+     (list bash-minimal
+           gmp                          ; for sb-gmp
            mpfr                         ; for sb-mpfr
            (list zstd "lib")))
     (arguments
@@ -532,8 +530,7 @@ an interpreter, a compiler, a debugger, and much more.")
                                 cl-asdf
                                 "/share/common-lisp/source/asdf/asdf.lisp"))
                     (contrib-asdf "contrib/asdf/asdf.lisp"))
-               (copy-file guix-asdf contrib-asdf))
-             #t))
+               (copy-file guix-asdf contrib-asdf))))
          (add-before 'build 'patch-unix-tool-paths
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -579,17 +576,17 @@ an interpreter, a compiler, a debugger, and much more.")
                  (("\\(deftest pwent\\.[12]" all)
                   (string-append "#+nil ;disabled by Guix\n" all))
                  (("\\(deftest grent\\.[12]" all)
-                  (string-append "#+nil ;disabled by Guix\n" all))))
-             #t))
+                  (string-append "#+nil ;disabled by Guix\n" all))))))
          (add-before 'build 'fix-contrib-library-path
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((gmp (assoc-ref inputs "gmp"))
                    (mpfr (assoc-ref inputs "mpfr")))
                (substitute* '("contrib/sb-gmp/gmp.lisp")
-                 (("\"libgmp\\.so") (string-append "\"" gmp "/lib/libgmp.so")))
+                 (("\"libgmp\\.so")
+                  (string-append "\"" gmp "/lib/libgmp.so")))
                (substitute* '("contrib/sb-mpfr/mpfr.lisp")
-                 (("\"libmpfr\\.so") (string-append "\"" mpfr "/lib/libmpfr.so"))))
-             #t))
+                 (("\"libmpfr\\.so")
+                  (string-append "\"" mpfr "/lib/libmpfr.so"))))))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "CC" "gcc")
@@ -635,8 +632,7 @@ an interpreter, a compiler, a debugger, and much more.")
                  (lambda ()
                    (display
                     (string-append "(sb-ext:set-sbcl-source-location \""
-                                   source-dir "\")") )))
-               #t)))
+                                   source-dir "\")") ))))))
          (add-after 'install 'remove-coreutils-references
            ;; They are only useful on non-Linux, non-SBCL.
            (lambda* (#:key outputs #:allow-other-keys)
@@ -650,14 +646,12 @@ an interpreter, a compiler, a debugger, and much more.")
                   "(\"/usr/bin/env\""))
                (substitute* (string-append share-dir "contrib/asdf/uiop.lisp")
                  (("\\(\".*/usr/bin/env\"")
-                  "(\"/usr/bin/env\""))
-               #t)))
+                  "(\"/usr/bin/env\"")))))
          (add-after 'install 'install-shared-library
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (lib-dir (string-append out "/lib")))
-               (install-file "src/runtime/libsbcl.so" lib-dir)
-               #t)))
+               (install-file "src/runtime/libsbcl.so" lib-dir))))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -668,8 +662,7 @@ an interpreter, a compiler, a debugger, and much more.")
                (mkdir-p new-doc/sbcl-dir)
                (copy-recursively (string-append old-doc-dir "/sbcl")
                                  new-doc/sbcl-dir)
-               (delete-file-recursively old-doc-dir)
-               #t))))
+               (delete-file-recursively old-doc-dir)))))
        ;; No 'check' target, though "make.sh" (build phase) runs tests.
        #:tests? #f))
     (native-search-paths
