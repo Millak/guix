@@ -231,6 +231,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -292,6 +293,51 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
+
+(define-public python-apprise
+  (package
+    (name "python-apprise")
+    (version "1.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "apprise" version))
+       (sha256
+        (base32 "0wvs1k71fipn617y9wsdcvwcgg2pd0nvriarlwl4438la4086ppg"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-certifi
+                             python-click
+                             python-dataclasses
+                             python-markdown
+                             python-pyyaml
+                             python-requests
+                             python-requests-oauthlib))
+    (native-inputs (list python-babel
+                         python-coverage
+                         python-cryptography
+                         python-flake8
+                         python-paho-mqtt
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-mock
+                         python-pytest-xdist
+                         python-wheel))
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                       (when tests?
+                         (delete-file "test/test_plugin_macosx.py")
+                         (invoke "pytest")))))))
+    (home-page "https://github.com/caronc/apprise")
+    (synopsis
+     "Push notification Python library that works with many platforms")
+    (description
+     "Apprise is a Python library that allows sending push notifications to a broad
+range of notification services, such as Telegram, Discord, Slack, Amazon SNS,
+Gotify, etc.")
+    (license license:bsd-2)))
 
 (define-public python-xmldiff
   (package
