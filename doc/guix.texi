@@ -5018,11 +5018,11 @@ opens the door to security vulnerabilities.  @xref{Invoking guix pull,
 @option{--allow-downgrades}}.
 @end quotation
 
-Due to @command{guix time-machine} relying on the ``inferiors''
-mechanism (@pxref{Inferiors}), the oldest commit it can travel to is
-commit @samp{6298c3ff} (``v1.0.0''), dated May 1@sup{st}, 2019, which is
-the first release that included the inferiors mechanism.  An error is
-returned when attempting to navigate to older commits.
+@c Keep this paragraph in sync with 'time-machine.scm'.
+@command{guix time-machine} raises an error when attempting to travel to
+commits older than ``v0.16.0'' (commit @samp{4a0b87f0}), dated
+Dec.@: 2018.  This is one of the oldest commits supporting the channel
+mechanism that makes ``time travel'' possible.
 
 @quotation Note
 Although it should technically be possible to travel to such an old
