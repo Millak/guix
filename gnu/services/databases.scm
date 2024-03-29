@@ -273,12 +273,9 @@ host	all	all	::1/128 	md5"))
                       (lambda ()
                         (setgid (passwd:gid user))
                         (setuid (passwd:uid user))
-                        (primitive-exit
-                         (apply system*
-                                initdb
-                                "-D"
-                                #$data-directory
-                                initdb-args)))
+                        (apply execl initdb
+                               initdb "-D" #$data-directory
+                               initdb-args))
                       (lambda ()
                         (primitive-exit 1))))
                  (pid (waitpid pid))))))))))
