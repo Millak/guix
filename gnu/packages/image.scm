@@ -2558,8 +2558,6 @@ by AOM, including with alpha.")
        (sha256
         (base32 "00rc8ffc2s9dz9szhy0f0raas8wnn5cyni1imd5lqz79by6qz7x6"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f)) ;no test target although there is a tests folder
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
