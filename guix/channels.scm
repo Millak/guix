@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -20,12 +20,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix channels)
-  #:use-module (git)
-  #:use-module (guix git)
-  #:use-module (guix git-authenticate)
-  #:use-module ((guix openpgp)
-                #:select (openpgp-public-key-fingerprint
-                          openpgp-format-fingerprint))
+  #:use-module (git)                              ;TODO: autoload
+  #:autoload   (guix git) (update-cached-checkout
+                           url+commit->name
+                           commit-difference
+                           with-repository)
+  #:autoload   (guix git-authenticate) (authenticate-repository)
+  #:autoload   (guix openpgp) (openpgp-public-key-fingerprint
+                               openpgp-format-fingerprint)
   #:use-module (guix base16)
   #:use-module (guix records)
   #:use-module (guix gexp)
