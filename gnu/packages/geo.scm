@@ -3187,23 +3187,19 @@ latitude and longitude.")
 (define-public gplates
   (package
     (name "gplates")
-    ;; Note: use a pre-release to cope with newer Boost, ref
-    ;; https://discourse.gplates.org/t/compilation-error-with-boost-1-77/452/3
-    (version "2.3.01-beta.3")
+    (version "2.4")
     (source (origin
-              (method url-fetch)
-              (uri "https://cloudstor.aarnet.edu.au/plus/s\
-/ojsYNOyUYE3evNp/download?path=%2F&files=gplates_2.3.1-beta.3_src.zip")
-              (file-name (string-append name "-" version ".zip"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/GPlates/GPlates")
+                    (commit (string-append "GPlates-" version))))
               (sha256
                (base32
-                "06i87dfab0cq9gdi5mh6sf9wigawpp0d05zbyslv910443i26gwv"))))
+                "1awb4igchgpmrvj6blxd1w81c617bs66w6cfrwvf30n6rjlyn6q5"))
+              (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DBoost_NO_BOOST_CMAKE=ON")
-       #:tests? #f))                    ;no test target
-    (native-inputs
-     (list unzip))                      ;for the beta
+     (list #:tests? #f))                    ;no test target
     (inputs
      (list boost
            cgal
