@@ -445,7 +445,7 @@ activation.")))
              (warning (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script
 won't execute anything.  You can check if xdg runtime directory exists,
 XDG_RUNTIME_DIR variable is set to appropriate value and manually execute the
-script by running '$HOME/.guix-home/on-first-login'"))))))))
+script by running '$HOME/.guix-home/on-first-login'~%"))))))))
 
 (define (on-first-login-script-entry on-first-login)
   "Return, as a monadic value, an entry for the on-first-login script
