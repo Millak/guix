@@ -148,6 +148,31 @@ contains the archive keys used for that.")
     ;; "The keys in the keyrings don't fall under any copyright."
     (license license:public-domain)))
 
+(define-public pureos-archive-keyring
+  (package
+    (name "pureos-archive-keyring")
+    (version "2021.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://repo.puri.sm/pureos/pool/main/p/pureos-archive-keyring/"
+                    "pureos-archive-keyring_" version ".tar.xz"))
+              (sha256
+               (base32
+                "1a0d084a98bycyhbw531646rbivvlfkdk6ldshl5dy6fvzmbci0d"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("keyrings/pureos-archive-keyring.gpg"
+                         "share/keyrings/")
+                        ("keyrings/pureos-archive-removed-keys.gpg"
+                         "share/keyrings/"))))
+    (home-page "https://source.puri.sm/pureos/core/pureos-archive-keyring")
+    (synopsis "GnuPG archive keys of the Pureos archive")
+    (description "The Pureos distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license (list license:public-domain ;; the keys
+                   license:gpl2+))))     ;; see debian/copyright
+
 (define-public trisquel-keyring
   (package
     (name "trisquel-keyring")
