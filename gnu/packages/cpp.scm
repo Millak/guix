@@ -1161,7 +1161,7 @@ code and retrieving their output.")
 (define-public sobjectizer
   (package
     (name "sobjectizer")
-    (version "5.7.2.6")
+    (version "5.8.2")
     (source
      (origin
        (method git-fetch)
@@ -1169,7 +1169,7 @@ code and retrieving their output.")
              (url "https://github.com/Stiffstream/sobjectizer")
              (commit (string-append "v." version))))
        (sha256
-        (base32 "0n6smpjkkkw0xab8wcpy3p0dpw2v9sxgwl6azl3am6abmv4mff12"))
+        (base32 "0ya5xlgm3arvzvcnsajw03kc3cibbdbap9p7kgpxn00byqbxixr7"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1178,8 +1178,7 @@ code and retrieving their output.")
        (modify-phases %standard-phases
          (add-after 'unpack 'change-directory
            (lambda _
-             (chdir "dev")
-             #t)))))
+             (chdir "dev"))))))
     (home-page "https://stiffstream.com/en/products/sobjectizer.html")
     (synopsis "Cross-platform actor framework for C++")
     (description
