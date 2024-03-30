@@ -2033,9 +2033,6 @@ covers feedback and persistent events.")
            qtbase-5))
     (arguments
      (list
-      ;; The `plasma-querytest' test is known to fail when tests are run in parallel:
-      ;; <https://sources.debian.org/src/kpackage/5.107.0-1/debian/changelog/#L92>
-      #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -2062,6 +2059,13 @@ covers feedback and persistent events.")
                  "filePath(\"etc\", QStringLiteral(\"passwd\"))")
                 (("\"/bin/ls\"")
                  "\"/etc/passwd\""))))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The 'plasma-query' test fails non-deterministically, as
+              ;; reported e.g. in <https://bugs.gentoo.org/919151>.
+              (substitute* "autotests/CMakeLists.txt"
+                ((".*querytest.*")
+                 ""))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "HOME" (getcwd)))))))
