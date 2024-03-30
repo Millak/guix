@@ -258,6 +258,7 @@ contains the archive keys used for that.")
            (add-after 'unpack 'patch-source
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let ((debian #$(this-package-input "debian-archive-keyring"))
+                     (pureos #$(this-package-input "pureos-archive-keyring"))
                      (trisquel #$(this-package-input "trisquel-keyring"))
                      (ubuntu #$(this-package-input "ubuntu-keyring")))
                  (substitute* "Makefile"
@@ -271,6 +272,11 @@ contains the archive keys used for that.")
                    (("/usr") debian))
                  (substitute* "scripts/gutsy"
                    (("/usr") ubuntu))
+                 (substitute* "scripts/amber"
+                   (("/usr/share/keyrings/pureos-archive-keyring.gpg")
+                    (string-append
+                     pureos
+                     "/share/keyrings/pureos-archive-keyring.gpg")))
                  (substitute* "scripts/robur"
                    (("/usr/share/keyrings/trisquel-archive-keyring.gpg")
                     (string-append
@@ -283,6 +289,8 @@ contains the archive keys used for that.")
                  (substitute* (find-files "scripts")
                    (("keyring.*(debian-archive-keyring.gpg)"_ keyring)
                     (string-append "keyring " debian "/share/keyrings/" keyring))
+                   (("keyring.*(pureos-archive-keyring.gpg)" _ keyring)
+                    (string-append "keyring " pureos "/share/keyrings/" keyring))
                    (("keyring.*(trisquel-archive-keyring.gpg)" _ keyring)
                     (string-append "keyring " trisquel "/share/keyrings/" keyring))
                    (("keyring.*(ubuntu-archive-keyring.gpg)" _ keyring)
@@ -309,6 +317,7 @@ contains the archive keys used for that.")
          #:tests? #f))  ; no tests
     (inputs
      (list debian-archive-keyring
+           pureos-archive-keyring
            trisquel-keyring
            ubuntu-keyring
            bash-minimal
