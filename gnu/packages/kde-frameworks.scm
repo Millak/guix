@@ -1160,9 +1160,17 @@ protocols used in KDE Plasma.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "ctest" "-E"
-                        ;; XXX: maybe is upstream bug
-                        "(kwayland-testWaylandRegistry|\
-kwayland-testPlasmaShell|kwayland-testPlasmaWindowModel)")))))))
+                        (string-append
+                         "("
+                         (string-join
+                          ;; XXX: maybe is upstream bug
+                          '("kwayland-testWaylandRegistry"
+                            "kwayland-testPlasmaShell"
+                            "kwayland-testPlasmaWindowModel"
+                            ;; The 'kwayland-testXdgForeign' may fail on
+                            ;; powerpc64le with a 'Subprocess aborted' error.
+                            "kwayland-testXdgForeign") "|")
+                         ")"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt-style API to interact with the wayland client and server")
     (description "As the names suggest they implement a Client respectively a
