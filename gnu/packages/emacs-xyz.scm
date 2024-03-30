@@ -18384,6 +18384,25 @@ package.")
 memoizing functions.")
     (license license:unlicense)))
 
+(define-public emacs-memory-usage
+  (package
+    (name "emacs-memory-usage")
+    (version "0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/memory-usage-"
+                           version ".el"))
+       (sha256
+        (base32 "03qwb7sprdh1avxv3g7hhnhl41pwvnpxcpnqrikl7picy78h1gwj"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/memory-usage.html")
+    (synopsis "Analyze the memory usage of Emacs in various ways")
+    (description
+     "This package provides the command @code{memory-usage}, which lists all
+buffers and how much memory they use.")
+    (license license:gpl3+)))
+
 (define-public emacs-linum-relative
   (package
     (name "emacs-linum-relative")
