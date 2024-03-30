@@ -249,9 +249,18 @@ browser for easy news reading.")
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (invoke "ctest" "-E"
-                             "(placetreemodeltest|historymodeltest|contextmanagertest|urlutilstest)")))))))
+                             (string-append
+                              "("
+                              (string-join '("placetreemodeltest"
+                                             "historymodeltest"
+                                             "contextmanagertest"
+                                             "urlutilstest")
+                                           "|")
+                              ")"))))))))
     (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config))
+     (list extra-cmake-modules
+           kdoctools
+           pkg-config))
     (inputs
      (list baloo
            cfitsio
