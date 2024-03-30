@@ -3757,7 +3757,7 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3766,7 +3766,7 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06p9gcnzgynsgfxxa1lk58pq5755px7sn00x2xh21qjnspwld1sy"))))
+                "03ajv1d034z6sjf2xapy8zq1mq2xkz5dqvn51vz2p26ws5axbzrn"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3776,24 +3776,13 @@ communication over HTTP.")
               "-DRESTINIO_DEP_LLHTTP=system"
               "-DRESTINIO_DEP_FMT=system"
               "-DRESTINIO_DEP_EXPECTED_LITE=system"
-              "-DRESTINIO_DEP_CATCH2=system"
-              ;; No support to use a system provided so_5
-              ;; (see:
-              ;; https://github.com/Stiffstream/restinio/issues/207).
-              "-DRESTINIO_WITH_SOBJECTIZER=OFF")
+              "-DRESTINIO_DEP_CATCH2=find"
+              "-DRESTINIO_DEP_SOBJECTIZER=find")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'change-directory
             (lambda _
-              (chdir "dev")))
-          (add-after 'change-directory 'use-system-catch2
-            ;; It's not currently possible to select a system-provided catch2,
-            ;; so patch the build system (see:
-            ;; https://github.com/Stiffstream/restinio/issues/208).
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("add_subdirectory\\(catch2\\)")
-                 "find_package(Catch2 REQUIRED)")))))))
+              (chdir "dev"))))))
     (native-inputs
      (list catch2-3
            expected-lite
