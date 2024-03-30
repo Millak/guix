@@ -47,13 +47,15 @@
   #:use-module (guix packages)
   #:use-module (guix profiles)
   #:use-module (guix derivations)
-  #:use-module (guix build-system)
+  #:autoload   (guix build-system) (build-system-name)
   #:use-module (guix serialization)
-  #:use-module ((guix licenses)
-                #:select (license? license-name license-uri))
-  #:use-module ((guix build syscalls)
-                #:select (free-disk-space terminal-columns terminal-rows
-                          with-file-lock/no-wait))
+  #:autoload   (guix licenses) (license?
+                                license-name
+                                license-uri)
+  #:autoload   (guix build syscalls) (free-disk-space
+                                      terminal-columns
+                                      terminal-rows
+                                      with-file-lock/no-wait)
   #:use-module ((guix build utils)
                 ;; XXX: All we need are the bindings related to
                 ;; '&invoke-error'.  However, to work around the bug described
