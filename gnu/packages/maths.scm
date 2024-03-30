@@ -4121,9 +4121,9 @@ book.")
                                (lambda (file)
                                  (member file (cons* "." ".." targets)))
                                (scandir ".")))
-                    (substitute* "libmzn.cmake"
-                      (("include\\(cmake/targets/(.*)\\)" all target)
-                       (if (member target targets) all "")))))
+                     (substitute* "libmzn.cmake"
+                       (("include\\(cmake/targets/(.*)\\)" all target)
+                        (if (member target targets) all "")))))
                   (with-directory-excursion "include/minizinc/solvers/MIP"
                     (for-each delete-file
                               (remove
@@ -4162,9 +4162,10 @@ book.")
        (modify-phases %standard-phases
          (add-after 'install 'install-solver-configs
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((gecode (assoc-ref inputs "gecode"))
+             (let ((chuffed (assoc-ref inputs "chuffed"))
+                   (gecode (assoc-ref inputs "gecode"))
                    (pkgdatadir (string-append (assoc-ref outputs "out")
-                                                  "/share/minizinc")))
+                                              "/share/minizinc")))
                (call-with-output-file (string-append pkgdatadir
                                                      "/Preferences.json")
                  (lambda (port)
@@ -4179,7 +4180,9 @@ book.")
                             port)
                    (newline port)))
 
-               (mkdir-p (string-append pkgdatadir "/solvers"))
+               (copy-recursively
+                 (string-append chuffed "/share/minizinc/solvers")
+                 (string-append pkgdatadir "/solvers"))
                (call-with-output-file (string-append pkgdatadir
                                                      "/solvers/gecode.msc")
                  (lambda (port)
@@ -4206,7 +4209,7 @@ book.")
     (native-inputs
      (list bison flex))
     (inputs
-     (list cbc gecode zlib))
+     (list cbc chuffed gecode zlib))
     (home-page "https://www.minizinc.org")
     (synopsis "High-level constraint modeling language")
     (description "MiniZinc is a high-level modeling language for constraint
