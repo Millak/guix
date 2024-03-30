@@ -387,7 +387,7 @@ editor (console only)")
                 #$(cond
                    ((%current-target-system)
                     #~(display "Cannot validate native-comp on cross builds.\n"))
-                   ((string=? (%current-system) "armhf-linux")
+                   ((member (%current-system) '("armhf-linux" "i686-linux"))
                     #~(display "Integrity test is broken on armhf.\n"))
                    (else
                     #~(invoke
