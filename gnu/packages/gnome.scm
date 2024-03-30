@@ -12629,7 +12629,7 @@ non-privileged user.")
 (define-public geary
   (package
     (name "geary")
-    (version "43.0")
+    (version "44.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12638,7 +12638,7 @@ non-privileged user.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05b8c5ljzx1ly7wq8jzpv8psxmsdlz395sr17xwj49nh495nflz5"))))
+                "1cx1jfaxsbkxm8774wf8n7ss2n73bzgk4yi2f9i3ab698ygh0h68"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
