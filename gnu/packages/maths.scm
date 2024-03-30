@@ -63,6 +63,7 @@
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -304,6 +305,42 @@ a mathematical research tool, and it comes with built in mathematical and
 programmatic functions.")
     (home-page "http://www.isthe.com/chongo/tech/comp/calc/")
     (license license:lgpl2.1)))
+
+(define-public chuffed
+  (package
+    (name "chuffed")
+    (version "0.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chuffed/chuffed")
+             (commit version)))
+       (sha256
+        (base32 "1c28q166qh84q4i5wz77fqvw7kld3fmhd245sgdvyxcbjpi2wr0m"))))
+    (build-system cmake-build-system)
+    (synopsis "Lazy clause generation solver")
+    (arguments
+     (list
+      #:tests? #f ;no 'test' target
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'patch-msc
+                     (lambda _
+                       (let ((out #$output))
+                         (substitute* "chuffed.msc"
+                           ;; Replace fzn-chuffed and chuffed paths
+                           ;; before build.
+                           (("\\.\\./../..")
+                            out)
+                           (("\\.\\.")
+                            (string-append out "/share/minizinc")))))))))
+    (description
+     "Chuffed is a state of the art lazy clause solver designed from the
+ground up with lazy clause generation in mind.  Lazy clause generation
+is a hybrid approach to constraint solving that combines features of
+finite domain propagation and Boolean satisfiability.")
+    (home-page "https://github.com/chuffed/chuffed")
+    (license license:expat)))
 
 (define-public coda
   (package
