@@ -251,23 +251,23 @@ provided, as well as a framework to add new color models and data types.")
      (list babl glib json-glib))
     (inputs
      ;; All inputs except libjpeg and libpng are optional.
-     `(("cairo" ,cairo)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gexiv2" ,gexiv2)
-       ("jasper" ,jasper)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libnsgif" ,libnsgif)
-       ("libpng" ,libpng)
-       ("libraw" ,libraw)
-       ("librsvg" ,(librsvg-for-system))
-       ("libspiro" ,libspiro)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("maxflow" ,maxflow)
-       ("openexr" ,openexr-2)
-       ("pango" ,pango)
-       ("poppler" ,poppler)
-       ("sdl2" ,sdl2)))
+     (list cairo
+           gdk-pixbuf
+           gexiv2
+           jasper
+           libjpeg-turbo
+           libnsgif
+           libpng
+           libraw
+           (librsvg-for-system)
+           libspiro
+           libtiff
+           libwebp
+           maxflow
+           openexr-2
+           pango
+           poppler
+           sdl2))
     (native-inputs
      (list `(,glib "bin")               ; for gtester
            gobject-introspection

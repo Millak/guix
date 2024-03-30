@@ -64,6 +64,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages rails)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages autotools)

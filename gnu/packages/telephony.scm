@@ -51,6 +51,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages sqlite)
@@ -94,6 +95,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system qt))
 
 (define-public phonesim
@@ -1157,3 +1159,106 @@ very useful to emulate thousands of user agents calling your SIP system.")
     (license (list license:gpl2+        ; sipp's main license
                    license:bsd-3        ; send_packets.c, send_packets.h
                    license:zlib)))) ; md5.c, md5.h
+
+(define-public sofia-sip
+  (package
+    (name "sofia-sip")
+    (version "1.13.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/freeswitch/sofia-sip")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "sofia-sip" version))
+              (sha256
+               (base32
+                "1hi9np49wcq91d1w93qi6by40qnr348hpzc2wkw3l955zh1n30lr"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; run_addrinfo requires /etc/services for the 'echo' service.
+      #:make-flags #~'("XFAIL_TESTS = run_addrinfo"
+                       ;; libsofia-sip-ua/nta/Makefile.am sets
+                       ;; TESTS_ENVIRONMENT = $(SHELL), which is odd, because
+                       ;; according to the Automake manual, it should be
+                       ;; AM_TESTS_ENVIRONMENT, and it should end with a
+                       ;; semicolon.
+                       "TESTS_ENVIRONMENT = \
+export CHECK_NTA_VERBOSE=10; \
+export CHECK_NUA_VERBOSE=10; ")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-shebangs
+            (lambda _
+              (patch-shebang "autogen.sh")))
+          (add-after 'unpack 'disable-failing-test
+            (lambda _
+              ;; run_test_nta is disabled because it fails randomly (not for a
+              ;; timeout-related reason).  The test suite is otherwise very
+              ;; long, most tests backed by libcheck timeout even with a ×100
+              ;; multiplier.  The tests are disabled here rather than put to
+              ;; XFAIL_TESTS because it saves compilation time.  (see:
+              ;; https://github.com/freeswitch/sofia-sip/issues/234)
+              (substitute* "libsofia-sip-ua/nta/Makefile.am"
+                (("TESTS =")
+                 "TESTS = run_test_nta_api\n# Disabled: "))
+              (substitute* "libsofia-sip-ua/nua/Makefile.am"
+                (("TESTS \\+=")
+                 "TESTS +=\n# Disabled: "))
+              ;; The glib tests both wait forever without a timeout.
+              (substitute* "libsofia-sip-ua-glib/su-glib/Makefile.am"
+                (("TESTS =")
+                 "TESTS =\n# Disabled: "))
+              ;; Another timeout failing test:
+              (substitute* "tests/Makefile.am"
+                (("TESTS = test_nua")
+                 "TESTS ="))
+              ;; This test fails for unknown reason:
+              (substitute* "tests/Makefile.am"
+                (("TESTS \\+= check_dlopen_sofia check_sofia")
+                 "TESTS += check_dlopen_sofia")))))))
+    (inputs
+     (list glib
+           openssl
+           zlib))
+    (native-inputs
+     (list autoconf
+           autoconf-archive
+           automake
+           check
+           libtool
+           pkg-config))
+    (home-page "https://sofia-sip.sourceforge.net/")
+    (synopsis "SIP user-agent library")
+    (description "Sofia-SIP is a @acronym{SIP, Session Initiation Protocol}
+User-Agent library, compliant with the
+@url{https://datatracker.ietf.org/doc/html/rfc3261, IETF RFC3261}
+specification.  It can be used as a building block for @acronym{SIP} client
+software foruses such as @acronym{VoIP, Voice over @acronym{IP, Internet
+Protocol}}, @acronym{IM, Instant Messaging}, and many other real-time and
+person-to-person communication services.")
+    (license license:lgpl2.1)))
+
+(define-public libcallaudio
+  (package
+    (name "libcallaudio")
+    (version "0.1.9")
+    (source (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/mobian1/callaudiod/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0qnllb28101c2ss1k3iwr04gljfyjqmbla5csj6vkq1y63aagr9s"))))
+    (build-system meson-build-system)
+    (inputs (list alsa-lib glib pulseaudio))
+    (native-inputs
+     (list `(,glib "bin")          ;for gdbus-codegen
+           pkg-config))
+    (home-page "https://gitlab.com/mobian1/callaudiod")
+    (synopsis "Library for audio routing during voice calls")
+    (description "This package provides @command{callaudiod}, a daemon to
+route audio during phone calls, and a library.")
+    (license license:gpl3+)))

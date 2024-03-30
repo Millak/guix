@@ -109,7 +109,7 @@ rendering vector based animations and art in realtime.")
                (base32
                 "1jnahpxvrdxrll7b7av3zxabm5j3nlz6m3vg4sib2278v1wf91yc"))))
     (build-system gnu-build-system)
-    (inputs (list glibmm-2.64))
+    (inputs (list glibmm-2.66))
     (native-inputs (list pkg-config))
     (home-page "https://www.synfig.org")
     (synopsis "Extended C++ template library")
@@ -149,7 +149,7 @@ C++ @dfn{Standard Template Library} (STL).")
            fftw
            fontconfig
            freetype
-           glibmm-2.64
+           glibmm-2.66
            imagemagick
            libxml++-2
            libsigc++

@@ -1,0 +1,22 @@
+Adapted from <https://gitlab.freedesktop.org/xdg/shared-mime-info/-/merge_requests/182>.
+
+diff --git a/meson.build b/meson.build
+index 3c75424..7058562 100644
+--- a/meson.build
++++ b/meson.build
+@@ -26,11 +26,11 @@ xmlto   = find_program('xmlto', required: false)
+ ###############################################################################
+ # Find xdgmime
+ 
+-xdgmime = get_option('xdgmime-path') / 'src'
++xdgmime = get_option('xdgmime-path')
+ 
+-xdgmime_print_mime_data = find_program(xdgmime/'print-mime-data', required: false)
+-xdgmime_test_mime_data  = find_program(xdgmime/'test-mime-data', required: false)
+-xdgmime_test_mime       = find_program(xdgmime/'test-mime', required: false)
++xdgmime_print_mime_data = find_program('print-mime-data', xdgmime/'print-mime-data', required: false)
++xdgmime_test_mime_data  = find_program('test-mime-data', xdgmime/'test-mime-data', required: false)
++xdgmime_test_mime       = find_program('test-mime', xdgmime/'test-mime', required: false)
+ xdgmime_found = (
+     xdgmime_print_mime_data.found() and
+     xdgmime_test_mime_data.found()  and

@@ -894,7 +894,7 @@ passphrase when @code{gpg} is run and needs it.")))
     (name "pinentry-gnome3")
     (inputs
      (modify-inputs (package-inputs pinentry-tty)
-       (prepend gtk+-2 gcr glib)))
+       (prepend gtk+-2 gcr-3 glib)))
     (arguments
      `(#:configure-flags '("--enable-pinentry-gnome3"
                            "--enable-fallback-curses")))

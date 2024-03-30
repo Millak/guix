@@ -45,6 +45,7 @@
   #:use-module (gnu packages browser-extensions)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)

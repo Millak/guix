@@ -1562,36 +1562,39 @@ reliably with @code{bmaptool} than with traditional tools, like @code{dd} or
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sglcn38rgn6y3m5ahngizyn3x2rzhqjphs7g0ppnlinkz56rcv4"))))
+                "0sglcn38rgn6y3m5ahngizyn3x2rzhqjphs7g0ppnlinkz56rcv4"))
+              (patches
+               (search-patches "duc-fix-test-sh.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (substitute* "src/duc/cmd-ui.c"
-                 (("ncursesw/ncurses.h") "ncurses.h"))
-               (substitute* "examples/index.cgi"
-                 (("/usr/local/bin/duc")
-                  (string-append out "/bin/duc"))))))
-         (add-after 'install 'install-examples
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (copy-recursively "examples" (string-append doc "/examples")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (substitute* "test.sh"
-               ;; Keep the test logs where --keep-failed can see them.
-               (("^(DUC_TEST_DIR=).*" _ assign)
-                (format #f "~a~a/test-directory~%" assign (getcwd)))
-               ;; XXX ‘actual size’ differed on my system (a consistent 348160
-               ;; bytes where the tests expect 540672).  However, the ‘apparent
-               ;; size’ matches, as does the actual test output.  Good enough…?
-               ((" [0-9]*B actual") " [0-9]*B actual"))
-             (when tests?
-               (invoke "./test.sh"))))))) ; no ‘check’ target
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out")))
+                (substitute* "src/duc/cmd-ui.c"
+                  (("ncursesw/ncurses.h") "ncurses.h"))
+                (substitute* "examples/index.cgi"
+                  (("/usr/local/bin/duc")
+                   (string-append out "/bin/duc"))))))
+          (add-after 'install 'install-examples
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (doc (string-append out "/share/doc/" #$name "-" #$version)))
+                (copy-recursively "examples" (string-append doc "/examples")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (substitute* "test.sh"
+                ;; Keep the test logs where --keep-failed can see them.
+                (("^(DUC_TEST_DIR=).*" _ assign)
+                 (format #f "~a~a/test-directory~%" assign (getcwd)))
+                ;; XXX ‘actual size’ differed on my system (a consistent 348160
+                ;; bytes where the tests expect 540672).  However, the ‘apparent
+                ;; size’ matches, as does the actual test output.  Good enough…?
+                ((" [0-9]*B actual") " [0-9]*B actual"))
+              (when tests?
+                (invoke "./test.sh"))))))) ; no ‘check’ target
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs

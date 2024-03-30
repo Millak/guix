@@ -61,6 +61,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
@@ -541,7 +542,7 @@ copy, move, delete, or edit your files.")
 (define-public gnome-shell-extension-unite-shell
   (package
     (name "gnome-shell-extension-unite-shell")
-    (version "69")
+    (version "72") ;Listed as compatible on extensions.gnome.org
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -550,7 +551,7 @@ copy, move, delete, or edit your files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10yh6ylyp43ykcza180iak08wfypay3raqf3p0vrj9ngm98qzq70"))))
+                "006m54ribfbqij0p3zzglzqjw1rbvw0f9468j7p6zdaf43vdvhgc"))))
     (build-system copy-build-system)
     (native-inputs (list `(,glib "bin") gettext-minimal))
     (inputs (list xprop))
@@ -579,7 +580,7 @@ Ubuntu Unity Shell.")
 (define-public gnome-shell-extension-appindicator
   (package
     (name "gnome-shell-extension-appindicator")
-    (version "42")
+    (version "53")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -588,7 +589,7 @@ Ubuntu Unity Shell.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1lf3aqb924nzhj87rhy2zvm5pcfqcklhfw21m6ic3i7wzd9r7cnc"))
+                "0lyfznsq5x287vpz133y593s7s4mz9i4x2491sgqvir891zwsivy"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list jq gnu-gettext
@@ -603,7 +604,7 @@ GNOME Shell.")
 (define-public gnome-shell-extension-clipboard-indicator
   (package
     (name "gnome-shell-extension-clipboard-indicator")
-    (version "42")
+    (version "47")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -615,7 +616,7 @@ GNOME Shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wf2k33pbwjdf8i4y3aw32fgvjbh751qh7504lwhnl02rcq5dc88"))
+                "00v0v454y6hblzsx06aaysxbs6aky89vnkf7ydzxrddns24c2wix"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove pre-compiled settings schemas and translations from
@@ -628,15 +629,16 @@ GNOME Shell.")
                             (find-files "locale" "\\.mo$"))))))
     (build-system copy-build-system)
     (arguments
-     '(#:install-plan
-       '(("." "share/gnome-shell/extensions/clipboard-indicator@tudmotu.com"
-          #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.mo$" "\\.xml$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
+     (list
+      #:install-plan
+      #~'(("." "share/gnome-shell/extensions/clipboard-indicator@tudmotu.com"
+           #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.mo$" "\\.xml$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "schemas"
+                (invoke "glib-compile-schemas" ".")))))))
     (native-inputs
      (list `(,glib "bin") gettext-minimal))
     (home-page "https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator")
@@ -648,7 +650,7 @@ that caches clipboard history.")
 (define-public gnome-shell-extension-customize-ibus
   (package
     (name "gnome-shell-extension-customize-ibus")
-    (version "82")
+    (version "86")
     (source
      (origin
        (method git-fetch)
@@ -657,21 +659,23 @@ that caches clipboard history.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00brnyahphl4ql9yh74wpb9kmzyb4b5k4rkw40hvxvqw4qwgs24r"))))
+        (base32 "1psnbhqbqrp68dri0q98y7ikwz9z3701lcy8vvgixb2bh71y7519"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "VERSION=" ,version)
-             (string-append "INSTALLBASE=" (assoc-ref %outputs "out")
-                            "/share/gnome-shell/extensions"))
+     (list
+      #:make-flags
+       #~(list (string-append "VERSION=" #$version)
+               (string-append "INSTALLBASE=" #$output
+                              "/share/gnome-shell/extensions"))
        #:tests? #f ; No test target
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (delete 'bootstrap)
          (delete 'configure))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")))
+     (list gettext-minimal `(,glib "bin")))
+    (propagated-inputs
+     (list ibus))
     (home-page "https://github.com/openSUSE/Customize-IBus")
     (synopsis "GNOME Shell Extension for IBus Customization")
     (description "Customize IBus provides full customization of appearance,
@@ -679,50 +683,13 @@ behavior, system tray and input source indicator for IBus.")
     (license license:gpl3+)))
 
 (define-public gnome-shell-extension-topicons-redux
-  (package
-    (name "gnome-shell-extension-topicons-redux")
-    (version "6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/pop-planet/TopIcons-Redux.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1dli9xb545n3xlj6q4wl0y5gzkm903zs47p8fiq71pdvbr6v38rj"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list `(,glib "bin")))
-    (arguments
-     `(#:tests? #f                      ;no test defined in the project
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "make"
-                       "install"
-                       (string-append
-                        "INSTALL_PATH="
-                        out
-                        "/share/gnome-shell/extensions"))))))))
-    (home-page "https://gitlab.com/pop-planet/TopIcons-Redux")
-    (synopsis "Display legacy tray icons in the GNOME Shell top panel")
-    (description "Many applications, such as chat clients, downloaders, and
-some media players, are meant to run long-term in the background even after you
-close their window.  These applications remain accessible by adding an icon to
-the GNOME Shell Legacy Tray.  However, the Legacy Tray was removed in GNOME
-3.26.  TopIcons Redux brings those icons back into the top panel so that it's
-easier to keep track of applications running in the background.")
-    (license license:gpl2+)))
+  (deprecated-package "gnome-shell-extension-topicons-redux"
+                      gnome-shell-extension-appindicator))
 
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "73")
+    (version "79")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -731,23 +698,25 @@ easier to keep track of applications running in the background.")
                                            version))))
               (sha256
                (base32
-                "1l0isbrgfc8v46l1yc5l4myz7qnlxzyfyiifipp86z9d79d8klzw"))
+                "0fsfhgpg8441x28jzhjspb9i9c5502c2fcgdvfggcsmz0sf3v95y"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
-       #:make-flags (list (string-append "INSTALLBASE="
-                                         (assoc-ref %outputs "out")
-                                         "/share/gnome-shell/extensions"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (delete 'configure))))
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "INSTALLBASE="
+                                          #$output
+                                          "/share/gnome-shell/extensions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("sassc" ,sassc)))
+     (list
+      `(,glib "bin")
+      intltool
+      pkg-config
+      sassc))
     (propagated-inputs
      (list glib))
     (synopsis "Transforms GNOME's dash into a dock")
@@ -760,7 +729,7 @@ faster window switching.")
 (define-public gnome-shell-extension-gsconnect
   (package
     (name "gnome-shell-extension-gsconnect")
-    (version "50")       ; See GNOME Shell supported versions in metadata.json
+    (version "55")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -770,77 +739,77 @@ faster window switching.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vg87fdihs5kp7apgyd32ldjmwzmrxaimsc005yjyy8m3f65sjmr"))))
+                "158qbjl6m807g0fy15dvhwwwy6z8r0g7kh9gjyhm7n3y14v5p8wz"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f ;; every test fails
-       #:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (name+version (strip-store-file-name out))
-              (gschema-dir (string-append out
-                                          "/share/gsettings-schemas/"
-                                          name+version
-                                          "/glib-2.0/schemas"))
-              (gnome-shell (assoc-ref %build-inputs "gnome-shell"))
-              (openssh (assoc-ref %build-inputs "openssh"))
-              (openssl (assoc-ref %build-inputs "openssl")))
-         (list
-          (string-append "-Dgnome_shell_libdir=" gnome-shell "/lib")
-          (string-append "-Dgsettings_schemadir=" gschema-dir)
-          (string-append "-Dopenssl_path=" openssl "/bin/openssl")
-          (string-append "-Dsshadd_path=" openssh "/bin/ssh-add")
-          (string-append "-Dsshkeygen_path=" openssh "/bin/ssh-keygen")
-          (string-append "-Dsession_bus_services_dir=" out "/share/dbus-1/services")
-          "-Dpost_install=true"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((glib (assoc-ref inputs "glib:bin"))
-                    (gapplication (string-append glib "/bin/gapplication"))
+     (list
+      #:tests? #f ;; every test fails
+      #:configure-flags
+      #~(let ((out #$output)
+              (gnome-shell #$(this-package-input "gnome-shell"))
+              (openssh #$(this-package-input "openssh"))
+              (openssl #$(this-package-input "openssl")))
+          (list
+           (string-append "-Dgnome_shell_libdir=" gnome-shell "/lib")
+           (string-append "-Dopenssl_path=" openssl "/bin/openssl")
+           (string-append "-Dsshadd_path=" openssh "/bin/ssh-add")
+           (string-append "-Dsshkeygen_path=" openssh "/bin/ssh-keygen")
+           (string-append "-Dsession_bus_services_dir=" out "/share/dbus-1/services")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-post-installation
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))))
+          (add-before 'configure 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gapplication (search-input-file inputs "/bin/gapplication"))
                     (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (substitute* "data/org.gnome.Shell.Extensions.GSConnect.desktop.in"
-                 (("gapplication") gapplication))
-               (for-each
-                (lambda (file)
-                  (substitute* file
-                    (("'use strict';")
-                     (string-append "'use strict';\n\n"
-                                    "'" gi-typelib-path "'.split(':').forEach("
-                                    "path => imports.gi.GIRepository.Repository."
-                                    "prepend_search_path(path));"))))
-                '("src/extension.js" "src/prefs.js"))
-               #t)))
-         (add-after 'install 'wrap-daemons
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (service-dir
-                     (string-append out "/share/gnome-shell/extensions"
-                                    "/gsconnect@andyholmes.github.io/service"))
-                    (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (wrap-program (string-append service-dir "/daemon.js")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))
-               #t))))))
+                (substitute* "data/org.gnome.Shell.Extensions.GSConnect.desktop.in"
+                  (("gapplication") gapplication))
+                (for-each
+                 (lambda (file)
+                   (substitute* file
+                     (("'use strict';")
+                      (string-append "'use strict';\n\n"
+                                     "'" gi-typelib-path "'.split(':').forEach("
+                                     "path => imports.gi.GIRepository.Repository."
+                                     "prepend_search_path(path));"))))
+                 '("src/extension.js" "src/prefs.js")))))
+          (add-after 'install 'wrap-daemons
+            (lambda _
+              (let* ((out #$output)
+                     (service-dir
+                      (string-append out "/share/gnome-shell/extensions"
+                                     "/gsconnect@andyholmes.github.io/service"))
+                     (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append service-dir "/daemon.js")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (inputs
-     `(("at-spi2-core" ,at-spi2-core)
-       ("caribou" ,caribou)
-       ("evolution-data-server" ,evolution-data-server)
-       ("gjs" ,gjs)
-       ("glib" ,glib)
-       ("glib:bin" ,glib "bin")
-       ("gsound" ,gsound)
-       ("gnome-shell" ,gnome-shell)
-       ("gtk+" ,gtk+)
-       ("nautilus" ,nautilus)
-       ("openssh" ,openssh)
-       ("openssl" ,openssl)
-       ("python-pygobject" ,python-pygobject)
-       ("upower" ,upower)))
+     (list
+      at-spi2-core
+      caribou
+      evolution-data-server
+      gjs
+      glib
+      `(,glib "bin") ;for /bin/gapplication
+      gsound
+      gnome-shell
+      gtk+
+      nautilus
+      openssh
+      openssl
+      python-pygobject
+      upower))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)))
+     (list
+      gettext-minimal
+      gobject-introspection
+      libxml2
+      pkg-config))
     (home-page "https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki")
     (synopsis "Connect GNOME Shell with your Android phone")
     (description "GSConnect is a complete implementation of KDE Connect
@@ -849,58 +818,10 @@ notifications or files, and other features like SMS messaging and remote
 control.")
     (license license:gpl2)))
 
-(define-public gnome-shell-extension-hide-app-icon
-  (let ((commit "4188aa5f4ba24901a053a0c3eb0d83baa8625eab")
-        (revision "0"))
-    (package
-      (name "gnome-shell-extension-hide-app-icon")
-      (version (git-version "2.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url (string-append "https://github.com/michael-rapp"
-                                   "/gnome-shell-extension-hide-app-icon.git"))
-               (commit commit)))
-         (sha256
-          (base32
-           "1i28n4bz6wrhn07vpxkr6l1ljyn7g8frp5xrr11z3z32h2hxxcd6"))
-         (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:tests? #f                ; no test target
-         #:make-flags (list (string-append "EXTENSIONS_DIR="
-                                           (assoc-ref %outputs "out")
-                                           "/share/gnome-shell/extensions"))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)      ; no configure script
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (pre "/share/gnome-shell/extensions/")
-                     (dir "hide-app-icon@mrapp.sourceforge.com"))
-                 (copy-recursively dir (string-append out pre dir))
-                 #t))))))
-      (native-inputs
-       (list `(,glib "bin") intltool))
-      (propagated-inputs
-       (list glib))
-      (synopsis "Hide app icon from GNOME's panel")
-      (description "This extension hides the icon and/or title of the
-currently focused application in the top panel of the GNOME shell.")
-      (home-page
-       "https://github.com/michael-rapp/gnome-shell-extension-hide-app-icon/")
-      (license
-        ;; README.md and LICENSE.txt disagree -- the former claims v3, the
-        ;; latter v2.  No mention of "or later" in either place or in the code.
-        (list license:gpl2
-              license:gpl3)))))
-
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "22.0")
+    (version "26.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -909,36 +830,37 @@ currently focused application in the top panel of the GNOME shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r4rflppcp05kwhzmh07dzi7znc4kch4nc8mzw61arj3qsfq2qqj"))))
+                "0dvq2mb04b557g9nz4pm90x2c2jc1dwwbg2is1gkx38yk0dsj6r3"))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("src"
-          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection"
-          #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.ui$"))
-         ("locale"
-          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'drop-executable-bits
-           (lambda _
-             (for-each
-              (lambda (file)
-                (let ((stat (lstat file)))
-                  (chmod file (logand (stat:mode stat) (lognot #o111)))))
-              (find-files "." #:directories? #f))))
-         (add-before 'install 'build
-           (lambda _
-             (invoke "glib-compile-schemas" "src/schemas")
-             (for-each
-              (lambda (file)
-                (let* ((base (basename file))
-                       (noext (substring base 0 (- (string-length base) 3)))
-                       (dest (string-append "locale/" noext "/LC_MESSAGES/"))
-                       (out (string-append dest "just-perfection.mo")))
-                  (mkdir-p dest)
-                  (invoke "msgfmt" "-c" file "-o" out)))
-              (find-files "po" "\\.po$")))))))
+     (list
+      #:install-plan
+      #~'(("src"
+           "share/gnome-shell/extensions/just-perfection-desktop@just-perfection"
+           #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.ui$"))
+          ("locale"
+           "share/gnome-shell/extensions/just-perfection-desktop@just-perfection/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'drop-executable-bits
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (let ((stat (lstat file)))
+                   (chmod file (logand (stat:mode stat) (lognot #o111)))))
+               (find-files "." #:directories? #f))))
+          (add-before 'install 'build
+            (lambda _
+              (invoke "glib-compile-schemas" "src/schemas")
+              (for-each
+               (lambda (file)
+                 (let* ((base (basename file))
+                        (noext (substring base 0 (- (string-length base) 3)))
+                        (dest (string-append "locale/" noext "/LC_MESSAGES/"))
+                        (out (string-append dest "just-perfection.mo")))
+                   (mkdir-p dest)
+                   (invoke "msgfmt" "-c" file "-o" out)))
+               (find-files "po" "\\.po$")))))))
     (native-inputs
      (list `(,glib "bin") gettext-minimal))
     (home-page "https://gitlab.gnome.org/jrahmatzadeh/just-perfection")
@@ -948,10 +870,14 @@ GNOME Shell itself does not provide out of the box, such as the ability to hide
 certain elements or change animation speeds.")
     (license license:gpl3)))
 
+(define-public gnome-shell-extension-hide-app-icon
+  (deprecated-package "gnome-shell-extension-hide-app-icon"
+                      gnome-shell-extension-just-perfection))
+
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "56")
+    (version "56") ;Compatible with GNOME 44
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -963,22 +889,24 @@ certain elements or change animation speeds.")
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "INSTALLBASE="
-                                         (assoc-ref %outputs "out")
-                                         "/share/gnome-shell/extensions")
-                          (string-append "VERSION="
-                                         ,(package-version
-                                           gnome-shell-extension-dash-to-panel)))
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "INSTALLBASE="
+                                          #$output
+                                          "/share/gnome-shell/extensions")
+                           (string-append "VERSION="
+                                          #$version))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (delete 'configure))))
+       #~(modify-phases %standard-phases
+           (delete 'bootstrap)
+           (delete 'configure))))
     (native-inputs
-     (list intltool pkg-config))
+     (list
+      `(,glib "bin")
+      intltool
+      pkg-config))
     (propagated-inputs
-     (list glib
-           `(,glib "bin")))
+     (list glib))
     (synopsis "Icon taskbar for GNOME Shell")
     (description "This extension moves the dash into the gnome main
 panel so that the application launchers and system tray are combined
@@ -987,26 +915,33 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
     (license license:gpl2+)))
 
 (define-public gnome-shell-extension-noannoyance
-  (let ((revision "1")
-        (commit "b759d10fd2799bc084007fdd927b62637c3dbd2c"))
+  ;; There are different forks of the NoAnnoyance extension. This is the one
+  ;; named “NoAnnoyance (fork)” at
+  ;; https://extensions.gnome.org/extension/6109/noannoyance-fork/ because it
+  ;; supports newer GNOME Shell versions than the previously used “NoAnnoyance
+  ;; v2”.
+  (let ((commit "5e9e6a1878d2a1d961f5d59505f15339c5b7e17e")
+        ;; “NoAnnoyance v2” version 17 correlates with
+        ;; c6804a47063659f9f48d13a0942b78ce98aac72b, from which we count
+        ;; commits.
+        (revision "6"))
     (package
       (name "gnome-shell-extension-noannoyance")
-      ;; XXX: There is no version noted anywhere in the source.  Thus, infer it
-      ;;      from <https://extensions.gnome.org/extension/2182/noannoyance/>.
-      (version (git-version "16" revision commit))
+      (version (git-version "17" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/bdaase/noannoyance")
+                      (url "https://github.com/jirkavrba/noannoyance")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0hh7fdqvx54h9j41ia2jl0nq1d5i66k7blw41ya6hkh7201r4anp"))
+                  "0br9zrwvn499kh3db84hhw1kl02jpchwb5ldfp892p15vwih8yrf"))
                 (file-name (git-file-name name version))))
       (build-system copy-build-system)
       (arguments
-       '(#:install-plan
-         '(("." "share/gnome-shell/extensions/noannoyance@daase.net"))))
+       (list
+        #:install-plan
+        #~'(("." "share/gnome-shell/extensions/noannoyance@vrba.dev"))))
       (synopsis "Remove 'Window is ready' annotation")
       (description "One of the many extensions that remove this message.
 It uses ES6 syntax and claims to be more actively maintained than others.")
@@ -1053,7 +988,7 @@ notebooks and tiling window managers.")
 (define-public gnome-shell-extension-night-theme-switcher
   (package
     (name "gnome-shell-extension-night-theme-switcher")
-    (version "65")
+    (version "74")
     (source
      (origin
        (method git-fetch)
@@ -1062,7 +997,7 @@ notebooks and tiling window managers.")
               "https://gitlab.com/rmnvgr/nightthemeswitcher-gnome-shell-extension")
              (commit version)))
        (sha256
-        (base32 "0qhi2g2lh6m8vhrmmfi60977f0i4k9x1zj68lrvpzzlqndz8cgh9"))
+        (base32 "1hiydjyn7shc32i81r70sqip9p3hhig7pqq1h7hsz9bc4qlyri7b"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config (list glib "bin")))
@@ -1090,7 +1025,7 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
     (native-inputs
-     (list gcr
+     (list gcr-3
            gettext-minimal
            gobject-introspection
            (list glib "bin")            ; for glib-compile-resources
@@ -1134,91 +1069,50 @@ store an history of everything you do, so that you can get back to older
 copies you now want to paste.")
     (license license:bsd-2)))
 
-(define-public gnome-shell-extension-vertical-overview
+(define-public gnome-shell-extension-v-shell
   (package
-    (name "gnome-shell-extension-vertical-overview")
-    (version "10")
+    (name "gnome-shell-extension-v-shell")
+    (version "37")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/RensAlthuis/vertical-overview")
+             (url "https://github.com/G-dH/vertical-workspaces")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1sqkbg93qqrq47wyfnh2flg7dpsmv5c2pmkx8kgqhnbl7j2kgi0l"))
-       (file-name (git-file-name name version))
-       (snippet
-        '(begin (delete-file "schemas/gschemas.compiled")))))
+         "1h9f3g1dswxkka0yyj51610w86mwl46ylch19b51gj5mmxlyvzlv"))
+       (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "vertical-overview@RensAlthuis.github.com")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
+     (list
+      #:install-plan
+      #~'(("." #$(string-append
+                  "share/gnome-shell/extensions/"
+                  "vertical-workspaces@G-dH.github.com")
+           #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                             "\\.xml$" "\\.compiled$" "\\.gresource$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build
+            (lambda _
+              (invoke "make" "all"))))))
     (native-inputs
-     (list `(,glib "bin")))  ; for glib-compile-resources
-    (home-page "https://github.com/RensAlthuis/vertical-overview")
-    (synopsis "Provides a vertical overview in Gnome 40 and upper")
-    (description "This Gnome extension replaces the new horizontally oriented
-Gnome overview with something that resembles the old vertically oriented
-style.")
+     (list gettext-minimal `(,glib "bin")))
+    (home-page "https://github.com/G-dH/vertical-workspaces")
+    (synopsis "Shell configuration with horizontal or vertical workspaces")
+    (description "V-Shell (Vertical Workspaces) lets the user configure different parts of the
+shell, including panels, corners, workspaces.")
     (license license:gpl3)))
 
-(define-public gnome-shell-extension-jiggle
-  (package
-    (name "gnome-shell-extension-jiggle")
-    (version "8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jeffchannell/jiggle/")
-             (commit version)))
-       (sha256
-        (base32
-         "1wbdx2bp22bdwj51ckgivwglkmckr7z8kfwvc8nv4y376hjz5jxz"))
-       (file-name (git-file-name name version))
-       (snippet
-        '(begin (delete-file "schemas/gschemas.compiled")))))
-    (build-system copy-build-system)
-    (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "jiggle@jeffchannell.com")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version
-           (lambda _
-             (substitute* "metadata.json"
-               (("\"40.0\"") "\"40\", \"41\""))))
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
-    (native-inputs
-     (list `(,glib "bin")))  ; for glib-compile-resources
-    (home-page "https://github.com/jeffchannell/jiggle")
-    (synopsis "Mouse cursor enlargement for small and fast movements")
-    (description "Jiggle is a Gnome Shell extension that highlights the cursor
-position when the mouse is moved rapidly.")
-    (license license:gpl2)))
+(define-public gnome-shell-extension-vertical-overview
+  (deprecated-package "gnome-shell-extension-vertical-overview"
+                      gnome-shell-extension-v-shell))
 
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "22")
+    (version "40")
     (source
      (origin
        (method git-fetch)
@@ -1227,25 +1121,26 @@ position when the mouse is moved rapidly.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "185xrf330d9bflmk0l61cnzlylnppb2v4yz6v6ygkk4zpwyil8np"))
+         "16n6ilszdn67835clqlr4flna69x9k00k5qrm55765dv2ny9jdcq"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "burn-my-windows@schneegans.github.com")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$" "\\.gresource$")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'compile-resources
-           (lambda _
-             (invoke "make" "resources/burn-my-windows.gresource")))
-         (add-before 'install 'compile-schemas
-           (lambda _
-             (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" ".")))))))
+     (list
+      #:install-plan
+      #~'(("." #$(string-append
+                  "share/gnome-shell/extensions/"
+                  "burn-my-windows@schneegans.github.com")
+           #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                             "\\.xml$" "\\.compiled$" "\\.gresource$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-resources
+            (lambda _
+              (invoke "make" "resources/burn-my-windows.gresource")))
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "schemas"
+                (invoke "glib-compile-schemas" ".")))))))
     (native-inputs
      (list `(,glib "bin")))  ; for glib-compile-resources
     (home-page "https://github.com/Schneegans/Burn-My-Windows")
@@ -1257,7 +1152,7 @@ animation of closing windowed applications.")
 (define-public gnome-shell-extension-blur-my-shell
   (package
     (name "gnome-shell-extension-blur-my-shell")
-    (version "44")
+    (version "47")
     (source
      (origin
        (method git-fetch)
@@ -1267,7 +1162,7 @@ animation of closing windowed applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0h7yfvrrg5r821mzrp42c09jws06mw6v9avvkfykqj8n8qnslmyx"))))
+         "1a8prh6893zk8rnfi9q7waga2x7kx564jzmsdyhiffdbazbv8p6y"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -1296,7 +1191,7 @@ GNOME Shell, including the top panel, dash and overview.")
 (define-public gnome-shell-extension-radio
   (package
     (name "gnome-shell-extension-radio")
-    (version "20")
+    (version "21")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1306,7 +1201,7 @@ GNOME Shell, including the top panel, dash and overview.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01dmziad9g7bs3hr59aaz3mivkc6rqfyb9bz2v202zk22vcr5a2y"))))
+                "1ghk95q3lhliz3his58hh2ql4p9csh6llzip412vwf29zdkr58s2"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -1325,69 +1220,6 @@ GNOME Shell, including the top panel, dash and overview.")
 directly inside GNOME Shell.  It can manage stations and play streams.")
     (license license:gpl3+)))
 
-(define-public gnome-shell-extension-sound-output-device-chooser
-  (package
-    (name "gnome-shell-extension-sound-output-device-chooser")
-    (version "43")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kgshank/gse-sound-output-device-chooser")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1qk6ypyqbv8zwwlky6cgk9hgp1zh32jmzw4wza200g4v94ifkwm9"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; no check target
-      #:make-flags #~(list (string-append "INSTALL_DIR="
-                                          #$output
-                                          "/share/gnome-shell/extensions"))
-      #:phases
-      #~(modify-phases %standard-phases (delete 'configure))))
-    (native-inputs (list gettext-minimal `(,glib "bin")))
-    (inputs (list python))
-    (home-page
-     "https://extensions.gnome.org/extension/906/sound-output-device-chooser")
-    (synopsis "Sound output chooser for GNOME Shell")
-    (description "This extension shows a list of sound output and input devices
-in the status menu below the volume slider.  Various active ports like HDMI,
-Speakers etc. of the same device are also displayed for selection.")
-    (license license:gpl3+)))
-
-(define-public gnome-shell-extension-transparent-window
-  (let ((commit "cc9bc70c192dd565fa6f1d1b28d9a20f99684f2a")
-        (revision "45"))
-    (package
-      (name "gnome-shell-extension-transparent-window")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url (string-append "https://github.com/pbxqdown/"
-                                   "gnome-shell-extension-transparent-window"))
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1f9iqqjpmmylqz0ws8cy5rs475bwzi7jy44q9ip44ig2acz2wxzp"))))
-      (build-system copy-build-system)
-      (arguments
-       (list
-        #:install-plan
-        #~'(("."
-             #$(string-append "/share/gnome-shell/extensions"
-                              "/transparent-window@pbxqdown.github.com")))))
-      (home-page
-       "https://github.com/pbxqdown/gnome-shell-extension-transparent-window")
-      (synopsis "Change the opacity of windows in GNOME Shell")
-      (description "This extension adds keybindings to change the opacity
-of windows.")
-      (license license:expat))))
 
 (define-public gnome-shell-extension-vitals
   (package
@@ -1707,7 +1539,7 @@ that are completely black and completely white.")
 (define-public eiciel
   (package
     (name "eiciel")
-    (version "0.9.13.1")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1716,19 +1548,27 @@ that are completely black and completely white.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rhhw0h1hyg5kvxhjxkdz03vylgax6912mg8j4lvcz6wlsa4wkvj"))))
+                "0lhnrxhbg80pqjy9f8yiqi7x48rb6m2cmkffv25ssjynsmdnar0s"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:tests? #f ; no tests
-       #:configure-flags
-       (list (string-append "-Dnautilus-extension-dir="
-                            (assoc-ref %outputs "out")
-                            "/lib/nautilus/site-extensions"))))
+     (list
+      #:glib-or-gtk? #t
+      #:tests? #f ; no tests
+      #:configure-flags
+      #~(list (string-append "-Dnautilus-extension-dir="
+                             #$output
+                             "/lib/nautilus/site-extensions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache : true")
+                 "gtk_update_icon_cache : false")))))))
     (native-inputs
-     (list gettext-minimal pkg-config))
+     (list gettext-minimal `(,glib "bin") itstool pkg-config))
     (inputs
-     (list acl attr glibmm-2.64 gtkmm-3 nautilus))
+     (list acl attr glibmm gtkmm nautilus))
     (home-page "https://rofi.roger-ferrer.org/eiciel")
     (synopsis "Manage extended file attributes")
     (description "Eiciel is a plugin for nautilus to graphically edit ACL and
@@ -1790,7 +1630,7 @@ track stocks, currencies and cryptocurrencies.")
     ;; Note to maintainer: VLS must be built with a Vala toolchain the same
     ;; version or newer. Therefore when you update this package you may need
     ;; to update Vala too.
-    (version "0.48.3")
+    (version "0.48.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1798,7 +1638,7 @@ track stocks, currencies and cryptocurrencies.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1gnvc91gdp3wj9r3r3xxfr09f9lw39cfypn2q5f0443dhhmp059j"))))
+               (base32 "1ini6nd5yim6mql13b9mb15gs02gm08x7zphd0vlv9jxl2646pjn"))))
     (build-system meson-build-system)
     (arguments '(#:glib-or-gtk? #t))
     (inputs

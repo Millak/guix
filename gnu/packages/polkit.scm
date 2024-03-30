@@ -158,7 +158,7 @@
            perl
            pkg-config
            python
-           python-dbusmock))
+           python-dbusmock-minimal))
     (home-page "https://www.freedesktop.org/wiki/Software/polkit/")
     (synopsis "Authorization API for privilege management")
     (description "Polkit is an application-level toolkit for defining and

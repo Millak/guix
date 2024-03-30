@@ -1579,7 +1579,7 @@ MIME type."
   "Return a derivation that builds the @file{mime.cache} database from manifest
 entries.  It's used to query the MIME type of a given file."
   (define shared-mime-info  ; lazy reference
-    (module-ref (resolve-interface '(gnu packages gnome)) 'shared-mime-info))
+    (module-ref (resolve-interface '(gnu packages freedesktop)) 'shared-mime-info))
 
   (mlet %store-monad ((glib (manifest-lookup-package manifest "glib")))
     (define build

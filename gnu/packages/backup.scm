@@ -121,6 +121,7 @@
     (build-system python-build-system)
     (native-inputs
      (list gettext-minimal ; for msgfmt
+           gobject-introspection
            util-linux ; setsid command, for the tests
            par2cmdline
            python-fasteners
@@ -135,7 +136,8 @@
     (propagated-inputs
      (list python-lockfile python-pygobject python-urllib3))
     (inputs
-     (list dbus ; dbus-launch (Gio backend)
+     (list bash-minimal ; to run the wrapped program
+           dbus ; dbus-launch (Gio backend)
            librsync
            lftp
            gnupg ; gpg executable needed
@@ -175,7 +177,12 @@
                                                    "share/zoneinfo"))
                    ;; Some things respect TMPDIR, others hard-code /tmp, and the
                    ;; defaults don't match up, breaking test_restart.  Fix it.
-                   (setenv "TMPDIR" "/tmp"))))))
+                   (setenv "TMPDIR" "/tmp")))
+               (add-after 'wrap 'gi-wrap
+                 (lambda _
+                   (let ((prog (string-append #$output "/bin/duplicity")))
+                     (wrap-program prog
+                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (home-page "https://duplicity.gitlab.io/duplicity-web/")
     (synopsis "Encrypted backup using rsync algorithm")
     (description

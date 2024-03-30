@@ -1048,7 +1048,7 @@ argument.")))
              (default (xinitrc)))
   (xdmcp? gdm-configuration-xdmcp?
           (default #f))
-  (wayland? gdm-configuration-wayland? (default #f))
+  (wayland? gdm-configuration-wayland? (default #t))
   (wayland-session gdm-configuration-wayland-session
                    (default gdm-wayland-session-wrapper)))
 

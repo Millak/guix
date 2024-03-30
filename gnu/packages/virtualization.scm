@@ -495,7 +495,7 @@ exec smbd $@")))
            ;; The following static libraries are required to build
            ;; the static output of QEMU.
            `(,glib "static")
-           `(,pcre "static")
+           `(,pcre2 "static")
            `(,zlib "static")))
     (home-page "https://www.qemu.org")
     (synopsis "Machine emulator and virtualizer")

@@ -470,7 +470,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "43.0")                    ;for libsoup 3 support
+    (version "44.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -478,7 +478,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1r1l6ajs6zz316m8zac5r0l3qgdv616xh376bfn2fflcnz7wys08"))))
+                "026488yb6azwb2sm0yy0iaipk914l3agvb7d8azks4kyjqlslyb8"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -520,11 +520,10 @@ topology functions.")
            glib-networking
            gnome-online-accounts
            gsettings-desktop-schemas
-           gtk+
+           gtk
            libadwaita
            libgee
            libgweather4
-           libhandy
            librsvg
            libsecret
            libshumate

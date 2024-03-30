@@ -194,6 +194,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
@@ -284,6 +285,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
@@ -14005,6 +14007,24 @@ file (e.g. @file{PKG-INFO}).")
 ;; pep621 was renamed to pyproject-metadata.
 (define-public python-pep621
   (deprecated-package "python-pep621" python-pyproject-metadata))
+
+(define-public python-meson-python
+  (package
+    (name "python-meson-python")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "meson_python" version))
+       (sha256
+        (base32 "0vyjhjabvm41hqijifk33idbdl62i76kfyf884f9rs29rpp77nzx"))))
+    (build-system meson-build-system)
+    (propagated-inputs (list python-pyproject-metadata python-tomli))
+    (home-page "https://github.com/mesonbuild/meson-python")
+    (synopsis "Meson Python build backend (PEP 517)")
+    (description "This package provides a PEP 517 build backend that makes
+use of the Meson build system.")
+    (license license:expat)))
 
 (define-public python-pyflakes
   (package
@@ -28929,17 +28949,50 @@ structure.")
 for YAML and JSON.")
     (license license:expat)))
 
+(define-public python-dbus-python
+  (package
+  (name "python-dbus-python")
+  (version "1.3.2")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (pypi-uri "dbus-python" version))
+     (sha256
+      (base32 "1y28h90v2ib8zqhs3r2yr7ycg8ccwvw3gqkvadlm12v1129q2rxd"))))
+  (build-system pyproject-build-system)
+  (arguments
+   (list #:phases #~(modify-phases %standard-phases
+                      (add-after 'unpack 'patch-requirements
+                        (lambda _
+                          (substitute* (list "pyproject.toml" "setup.py")
+                            (("'(ninja|patchelf)',?") ""))
+                          (substitute* "setup.cfg"
+                            (("(ninja|patchelf)") "")))))))
+  (inputs (list dbus glib))
+  (propagated-inputs (list python-pygobject))
+  (native-inputs (list pkg-config
+                       python-meson-python
+                       meson ninja patchelf
+                       python-sphinx python-sphinx-rtd-theme
+                       python-tappy
+                       python-wheel))
+  (home-page "https://dbus.freedesktop.org/doc/dbus-python/")
+  (synopsis "Python bindings for libdbus")
+  (description "This package provides Python bindings to libdbus, the
+reference implementation of the D-Bus protocol.")
+  (license license:expat)))
+
 (define-public python-dbusmock
   (package
     (name "python-dbusmock")
-    (version "0.25.0")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-dbusmock" version))
        (sha256
         (base32
-         "1nwl0gzzds2g1w1gfxfzlgrkb5hr1rrdyn619ml25c6b1rjyfk3g"))))
+         "1hanz6x76jq66ypdirga5h15zjs67kwysl6rmsf0i22dbdqrxdfv"))))
     (build-system python-build-system)
     (arguments
      (list #:modules `((guix build python-build-system)
@@ -28950,6 +29003,9 @@ for YAML and JSON.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
                  (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tests/test_api.py"
+                     (("/usr/bin/python3")
+                      (which "python3")))
                    (substitute* "tests/test_code.py"
                      (("/bin/bash")
                       (which "bash")))
@@ -28976,11 +29032,11 @@ for YAML and JSON.")
                                           status))
                                  (loop)))))))))))))
     (native-inputs
-     (list dbus python-pytest which))
+     (list dbus python-pytest upower which))
     (inputs
      (list dbus))
     (propagated-inputs
-     (list python-dbus python-pygobject))
+     (list python-dbus-python python-pygobject))
     (home-page "https://github.com/martinpitt/python-dbusmock")
     (synopsis "Python library for mock D-Bus objects")
     (description "python-dbusmock allows for the easy creation of mock objects on
@@ -28989,6 +29045,16 @@ services such as upower, systemd, logind, gnome-session or others, and it is
 hard (or impossible without root privileges) to set the state of the real
 services to what you expect in your tests.")
     (license license:lgpl3+)))
+
+(define-public python-dbusmock-minimal
+  (package
+    (inherit python-dbusmock)
+    (name "python-dbusmock-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-dbusmock)
+       ((#:tests? _ #t) #f)))
+    (native-inputs (list which))
+    (properties '((hidden? . #t)))))
 
 (define-public python-jsonplus
   (package

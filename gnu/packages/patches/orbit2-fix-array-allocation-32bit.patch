@@ -1,0 +1,40 @@
+From 28067b88ad91e794675734bc92bd9c8653b4a46a Mon Sep 17 00:00:00 2001
+Message-ID: <28067b88ad91e794675734bc92bd9c8653b4a46a.1709973702.git.vivien@planete-kraus.eu>
+From: Vivien Kraus <vivien@planete-kraus.eu>
+Date: Sat, 9 Mar 2024 09:36:56 +0100
+Subject: [PATCH] corba-loc: Do not allocate more tokens than necessary.
+
+To split the list of locations, the code calls g_strsplit with the
+last argument set to G_MAXINT.  It means that g_strsplit will try to
+allocate a huge array (G_MAXINT + 1, for the final NULL), mostly
+filled with NULL.  Unfortunately, on 32-bit systems, this is one past
+the authorized length for an array.  Previous versions of glib would
+not care, but the new version now raises an error if this happens.
+
+To get an array of the appropriate size, we can just pass -1 to the
+last argument.
+
+* src/orb/orb-core/corba-loc.c (ORBit_corbaloc_parse): Replace
+G_MAXINT with -1.
+---
+ src/orb/orb-core/corba-loc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/orb/orb-core/corba-loc.c b/src/orb/orb-core/corba-loc.c
+index abfcaa29..6492d392 100644
+--- a/src/orb/orb-core/corba-loc.c
++++ b/src/orb/orb-core/corba-loc.c
+@@ -309,7 +309,7 @@ ORBit_corbaloc_parse (const gchar       *corbaloc)
+ 	if (!(objkey = orbit_url_decode (okey)))
+ 		goto ret_error;
+ 	
+-	if (!(token = g_strsplit (loc, ",", G_MAXINT))) 
++	if (!(token = g_strsplit (loc, ",", -1)))
+ 		goto ret_error;
+ 
+ 	/* [ 'iiop' ]   ':' [ '//' ] [ version '@' ] host [ ':' port ] */
+
+base-commit: 144be2e9860286c83f009e7689250e0af977cc5e
+-- 
+2.41.0
+

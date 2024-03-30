@@ -36,6 +36,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)

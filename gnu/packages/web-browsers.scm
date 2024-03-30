@@ -141,7 +141,7 @@
        ("which" ,which))) ;for tests
     (inputs
      `(("adwaita-icon-theme" ,adwaita-icon-theme)
-       ("gcr" ,gcr)
+       ("gcr" ,gcr-3)
        ("glib" ,glib)
        ("glib-networking" ,glib-networking)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)

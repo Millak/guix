@@ -703,7 +703,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.5.2")
+    (version "0.5.4")
     (source (origin
               (method url-fetch)
               (uri
@@ -711,7 +711,28 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "15314m9chmh5jkrd9vk2h2gwcwkcffv2kjcxkd4v3wmckz5sfjy6"))))
+                "0ckgamf98sydq543arp865jg1afwzhpzcsbhv6zrch2dm5x7y0x3"))
+              (patches (search-patches "zathura-use-struct-initializers.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            ;; Tests require a running X server.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((display ":1"))
+                (setenv "DISPLAY" display)
+
+                ;; On busy machines, tests may take longer than
+                ;; the default of four seconds.
+                (setenv "CK_DEFAULT_TIMEOUT" "20")
+
+                ;; Don't fail due to missing '/etc/machine-id'.
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (zero? (system (string-append
+                                (search-input-file inputs "/bin/Xvfb")
+                                " " display " &")))))))))
     (native-inputs
      (list pkg-config
            gettext-minimal
@@ -733,24 +754,6 @@ by using the poppler rendering engine.")
      (list (search-path-specification
             (variable "ZATHURA_PLUGINS_PATH")
             (files '("lib/zathura")))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'start-xserver
-                    ;; Tests require a running X server.
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((display ":1"))
-                        (setenv "DISPLAY" display)
-
-                        ;; On busy machines, tests may take longer than
-                        ;; the default of four seconds.
-                        (setenv "CK_DEFAULT_TIMEOUT" "20")
-
-                        ;; Don't fail due to missing '/etc/machine-id'.
-                        (setenv "DBUS_FATAL_WARNINGS" "0")
-                        (zero? (system (string-append
-                                         (search-input-file inputs "/bin/Xvfb")
-                                         " " display " &")))))))))
     (home-page "https://pwmt.org/projects/zathura/")
     (synopsis "Lightweight keyboard-driven PDF viewer")
     (description "Zathura is a customizable document viewer.  It provides a
@@ -1523,22 +1526,24 @@ multiple files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))))
+        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))
+       (patches
+        (search-patches "pdfpc-build-with-vala-0.56.patch"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))           ; no test target
-    (inputs
-     `(("cairo" ,cairo)
-       ("discount" ,discount) ; libmarkdown
-       ("qrencode" ,qrencode)
-       ("gtk+" ,gtk+)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("json-glib" ,json-glib)
-       ("libgee" ,libgee)
-       ("poppler" ,poppler)
-       ("pango" ,pango)
-       ("vala" ,vala)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+    (inputs (list
+             cairo
+             discount ; libmarkdown
+             qrencode
+             gtk+
+             gstreamer
+             gst-plugins-base
+             json-glib
+             libgee
+             poppler
+             pango
+             vala
+             webkitgtk-with-libsoup2))
     (native-inputs
      (list pkg-config))
     (home-page "https://pdfpc.github.io/")

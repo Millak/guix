@@ -326,8 +326,8 @@
         (list abseil-cpp-cxxstd17
               crc32c
               ffmpeg
-              glib-next
-              glibmm-next
+              glib
+              glibmm
               libdrm
               libglvnd
               libjpeg-turbo
@@ -487,7 +487,7 @@ Telegram project, for its use in telegram desktop client.")
                (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
                  (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     (list `(,glib-next "bin")
+     (list `(,glib "bin")
            `(,gtk+ "bin")
            pkg-config
            python-wrapper))
@@ -499,8 +499,8 @@ Telegram project, for its use in telegram desktop client.")
            fcitx-qt5
            fcitx5-qt
            ffmpeg
-           glib-next
-           glibmm-next
+           glib
+           glibmm-2.76
            gtk+
            hime
            hunspell

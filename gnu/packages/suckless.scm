@@ -516,7 +516,7 @@ Vim bindings and Xresource compatibility.")
              #t)))))
     (inputs
      `(("dmenu" ,dmenu)
-       ("gcr" ,gcr)
+       ("gcr" ,gcr-3)
        ("glib-networking" ,glib-networking)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("webkitgtk" ,webkitgtk-with-libsoup2)

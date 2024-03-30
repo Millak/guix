@@ -163,7 +163,7 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
          (group "messagebus")
          (system? #t)
          (comment "D-Bus system bus user")
-         (home-directory "/var/run/dbus")
+         (home-directory "/run/dbus")
          (shell (file-append shadow "/sbin/nologin")))))
 
 (define dbus-setuid-programs
@@ -186,7 +186,38 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
         (let ((user (getpwnam "messagebus")))
           ;; This directory contains the daemon's socket so it must be
           ;; world-readable.
-          (mkdir-p/perms "/var/run/dbus" user #o755))
+          (mkdir-p/perms "/run/dbus" user #o755))
+
+        (catch 'system-error
+          (lambda ()
+            (symlink "/run/dbus" "/var/run/dbus"))
+          (lambda args
+            (let ((errno (system-error-errno args)))
+              (cond
+               ((= errno EEXIST)
+                (let ((existing-name
+                       (false-if-exception
+                        (readlink "/var/run/dbus"))))
+                  (unless (equal? existing-name "/run/dbus")
+                    ;; Move the content of /var/run/dbus to /run/dbus, and
+                    ;; retry.
+                    (let ((dir (opendir "/var/run/dbus")))
+                      (let loop ((next (readdir dir)))
+                        (cond
+                         ((eof-object? next) (closedir dir))
+                         ((member next '("." "..")) (loop (readdir dir)))
+                         (else
+                          (begin
+                            (rename-file (string-append "/var/run/dbus/" next)
+                                         (string-append "/run/dbus/" next))
+                            (loop (readdir dir)))))))
+                    (rmdir "/var/run/dbus")
+                    (symlink "/run/dbus" "/var/run/dbus"))))
+               (else
+                (format (current-error-port)
+                        "Failed to symlink /run/dbus to /var/run/dbus: ~s~%"
+                        (strerror errno))
+                (error "cannot create /var/run/dbus"))))))
 
         (unless (file-exists? "/etc/machine-id")
           (format #t "creating /etc/machine-id...~%")
@@ -210,7 +241,7 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
                              '(#:environment-variables '("DBUS_VERBOSE=1")
                                #:log-file "/var/log/dbus-daemon.log")
                              '())
-                      #:pid-file "/var/run/dbus/pid"))
+                      #:pid-file "/run/dbus/pid"))
             (stop #~(make-kill-destructor)))))))
 
 (define dbus-root-service-type

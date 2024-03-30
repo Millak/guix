@@ -19929,9 +19929,23 @@ Type of the service that runs udev, a service which populates the
 @file{/dev} directory dynamically, whose value is a
 @code{<udev-configuration>} object.
 
-This service type can be @emph{extended} using procedures
-@code{udev-rules-service} along with @code{file->udev-rule} or
-@code{udev-rule} which simplify the process of writing udev rules.
+Since the file names for udev rules and hardware description files
+matter, the configuration items for rules and hardware cannot simply be
+plain file-like objects with the rules content, because the name would
+be ignored.  Instead, they are directory file-like objects that contain
+optional rules in @file{lib/udev/rules.d} and optional hardware files in
+@file{lib/udev/hwdb.d}.  This way, the service can be configured with
+whole packages from which to take rules and hwdb files.
+
+The @code{udev-service-type} can be @emph{extended} with file-like
+directories that respect this hierarchy.  For convenience, the
+@code{udev-rule} and @code{file->udev-rule} can be used to construct
+udev rules, while @code{udev-hardware} and @code{file->udev-hardware}
+can be used to construct hardware description files.
+
+In an @code{operating-system} declaration, this service type can be
+@emph{extended} using procedures @code{udev-rules-service} and
+@code{udev-hardware-service}.
 @end defvar
 
 @deftp {Data Type} udev-configuration
@@ -19939,10 +19953,17 @@ Data type representing the configuration of udev.
 
 @table @asis
 @item @code{udev} (default: @code{eudev}) (type: file-like)
-Package object of the udev service.
+Package object of the udev service.  This package is used at run-time,
+when compiled for the target system.  In order to generate the
+@file{hwdb.bin} hardware index, it is also used when generating the
+system definition, compiled for the current system.
 
 @item @code{rules} (default: @var{'()}) (type: list-of-file-like)
-List of file-like objects denoting udev-rule files.
+List of file-like objects denoting udev rule files under a sub-directory.
+
+@item @code{hardware} (default: @var{'()}) (type: list-of-file-like)
+List of file-like objects denoting udev hardware description files under
+a sub-directory.
 
 @end table
 @end deftp
@@ -19965,6 +19986,11 @@ upon detecting a USB device with a given product identifier.
 @end lisp
 @end deffn
 
+@deffn {Procedure} udev-hardware @var{file-name} @var{contents}
+Return a udev hardware description file named @var{file-name} containing
+the hardware information @var{contents}.
+@end deffn
+
 @deffn {Procedure} udev-rules-service @var{name} @var{rules} [#:groups '()]
 Return a service that extends @code{udev-service-type} with @var{rules}
 and @code{account-service-type} with @var{groups} as system groups.
@@ -19982,6 +20008,11 @@ with the previously defined rule @code{%example-udev-rule}.
    (cons (udev-rules-service 'usb-thing %example-udev-rule)
          %desktop-services)))
 @end lisp
+@end deffn
+
+@deffn {Procedure} udev-hardware-service @var{name} @var{hardware}
+Return a service that extends @code{udev-service-type} with
+@var{hardware}.  The service name is @code{@var{name}-udev-hardware}.
 @end deffn
 
 @deffn {Procedure} file->udev-rule @var{file-name} @var{file}
@@ -20008,12 +20039,16 @@ The following example showcases how we can use an existing rule file.
 @end lisp
 @end deffn
 
-Additionally, Guix package definitions can be included in @var{rules} in
-order to extend the udev rules with the definitions found under their
-@file{lib/udev/rules.d} sub-directory.  In lieu of the previous
-@var{file->udev-rule} example, we could have used the
-@var{android-udev-rules} package which exists in Guix in the @code{(gnu
-packages android)} module.
+Since guix package definitions can be included in @var{rules} in order
+to use all their rules under the @file{lib/udev/rules.d} sub-directory,
+then in lieu of the previous @var{file->udev-rule} example, we could
+have used the @var{android-udev-rules} package which exists in Guix in
+the @code{(gnu packages android)} module.
+
+@deffn {Procedure} file->udev-hardware @var{file-name} @var{file}
+Return a udev hardware description file named @var{file-name} containing
+the rules defined within @var{file}, a file-like object.
+@end deffn
 
 The following example shows how to use the @var{android-udev-rules}
 package so that the Android tool @command{adb} can detect devices

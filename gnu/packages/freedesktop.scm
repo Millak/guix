@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -139,7 +140,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.15.6")
+    (version "0.16.4")
     (source
      (origin
        (method url-fetch)
@@ -148,11 +149,14 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "03pirmc5r4izl6mzff879g7pk1nxq03kgpr2yvnnqnlb6r0ckmi3"))))
+        (base32 "1val1b3dggn9g33q2r9q7wsl75a64x4lcvswvkcjjbvakkbj5xyl"))
+       (patches
+        (search-patches "appstream-force-reload-stemmer.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:configure-flags #~(list "-Dsystemd=false")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-libstemmer
@@ -162,11 +166,6 @@
               (substitute* "meson.build"
                 (("/usr/include")
                  (dirname libstemmer.h))))))
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (substitute* "tests/test-pool.c"
-                (("[ \t]*g_test_add_func \\(\"/AppStream/PoolRead?.*;")
-                 ""))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "HOME" (getcwd)))))))
@@ -481,6 +480,115 @@ method framework.")
      "This package provides virtual keyboard for Wayland and X11
 display servers.  It supports many different languages and emoji.")
     (license license:gpl3+)))
+
+;; Private package used by shared-mime-info.
+(define xdgmime
+  ;; No public release, match commit to the one used in the
+  ;; shared-mime-info release.
+  (let ((commit "179296748e92bd91bf531656632a1056307fb7b7")
+        (revision "2"))
+    (package
+      (name "xdgmime")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.freedesktop.org/xdg/xdgmime.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "04bpbqlkmwi2pqx1lj3awa9f9gwp4n91fpnz8hbbd0hl8x41przm"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f  ; no tests
+        #:make-flags #~(list (string-append "DESTDIR=" #$output)
+                             #$(string-append "CC=" (cc-for-target)))
+        #:imported-modules `((guix build copy-build-system)
+                             ,@%gnu-build-system-modules)
+        #:modules `((guix build gnu-build-system)
+                    ((guix build copy-build-system) #:prefix copy:)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Package uses a hand-crafted Makefile.
+            (delete 'configure)
+            (replace 'install
+              (lambda args
+                (apply (assoc-ref copy:%standard-phases 'install)
+                       #:install-plan
+                       '(("src" "bin/" #:include ("print-mime-data"
+                                                  "test-mime-data"
+                                                  "test-mime")))
+                       args))))))
+      (home-page "https://gitlab.freedesktop.org/xdg/xdgmime/")
+      (synopsis "Module that parses the freedesktop.org MIME spec")
+      (description "This module is used for shared-mime-info package tests.")
+      (license (list license:lgpl2.1+ license:artistic2.0)))))
+
+;; Note: when updating shared-mime-info, don't forget to update xdgmime's commit
+;; to the one used in the release.
+(define-public shared-mime-info
+  (package
+    (name "shared-mime-info")
+    (version "2.3")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://gitlab.freedesktop.org/xdg/shared-mime-info.git")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0w8sbhz00sk6k8pyiykfig4rm22jyibalj7g22j9qf3d2nfy8ivh"))
+             (patches (search-patches "shared-mime-info-xdgmime-path.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append
+               "-Dxdgmime-path="
+               (dirname
+                (search-input-file %build-inputs "/bin/test-mime")))
+              "-Dupdate-mimedb=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't patch shebangs for the test files.
+          (replace 'patch-source-shebangs
+            (lambda _
+              (let ((pred (lambda (file stat)
+                            (and (eq? 'regular (stat:type stat))
+                                 (not (string-prefix? "./tests/mime-detection"
+                                                      file))))))
+                (for-each patch-shebang
+                          (find-files "." pred #:stat lstat)))))
+          ;; The docs have no install rule.
+          (add-after 'install 'install-doc
+            (lambda* (#:key source #:allow-other-keys)
+              (let ((dest (string-append #$output:doc "/share/doc")))
+                (with-directory-excursion "data/shared-mime-info-spec-html"
+                  (install-file "shared-mime-info-spec.html"
+                                (string-append dest "/html")))
+                (install-file (string-append source
+                                             "/data/shared-mime-info-spec.xml")
+                              dest)))))))
+    (inputs
+     (list glib libxml2))
+    (native-inputs
+     (list gettext-minimal pkg-config python xdgmime
+           ;; For 'doc' output.
+           docbook-xml-4.1.2 docbook-xsl xmlto))
+    (outputs (list "out" "doc"))
+    (home-page "https://www.freedesktop.org/wiki/Software/shared-mime-info")
+    (synopsis "Database of common MIME types")
+    (description
+     "The shared-mime-info package contains the core database of common types
+and the update-mime-database command used to extend it.  It requires glib2 to
+be installed for building the update command.  Additionally, it uses intltool
+for translations, though this is only a dependency for the maintainers.  This
+database is translated at Transifex.")
+    (license license:gpl2+)))
 
 (define-public xdg-utils
   (package
@@ -1659,7 +1767,7 @@ message bus.")
 (define-public accountsservice
   (package
     (name "accountsservice")
-    (version "22.08.8")
+    (version "23.13.9")
     (source
      (origin
        (method url-fetch)
@@ -1667,7 +1775,7 @@ message bus.")
                            "accountsservice/accountsservice-"
                            version ".tar.xz"))
        (sha256
-        (base32 "14d3lwik048h62qrzg1djdd2sqmxf3m1r859730pvzhrd6krg6ch"))
+        (base32 "0kwjkff5m7gnzpns6cy27az90w7sxzwzygyzwy90kyi4mvg4rnmd"))
        (patches (search-patches "accountsservice-extensions.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -1708,6 +1816,7 @@ message bus.")
            docbook-xsl
            gettext-minimal
            `(,glib "bin")               ; for gdbus-codegen, etc.
+           glibc-locales                    ;for tests
            gobject-introspection
            gtk-doc
            libxml2                      ;for XML_CATALOG_FILES
