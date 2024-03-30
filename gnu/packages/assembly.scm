@@ -64,7 +64,7 @@
                 #:select (%current-system cc-for-target)))
 
 (define-public asl
-  (let ((build "247"))
+  (let ((build "267"))
     (package
       (name "asl")
       (version (string-append "1.42-beta-" build))
@@ -75,7 +75,7 @@
                "http://john.ccac.rwth-aachen.de:8000/ftp/as/source/c_version/"
                "asl-current-142-bld" build ".tar.bz2"))
          (sha256
-          (base32 "1qgz5yzg50vpwzrjqvw8bgnvm67dqhfb8ldxyqwaqmrj3icshp5s"))))
+          (base32 "13j2ccfgji4jiqbbqmcchhcps11ypz8aq8fq9vd83ngbhavh6c9s"))))
       (build-system gnu-build-system)
       (arguments
        (list
