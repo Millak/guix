@@ -2311,12 +2311,12 @@ user which package sets would they like to install from it.")
                              (invoke "guild" "compile" "-L" module-dir
                                      file "-o" go)))
                          (find-files module-dir "\\.scm$")))))
+         (add-after 'unpack 'make-autoloads
+           (assoc-ref emacs:%standard-phases 'make-autoloads))
          (add-after 'install 'install-emacs-files
            (assoc-ref emacs:%standard-phases 'install))
          (add-after 'install-emacs-files 'compile-emacs-files
-           (assoc-ref emacs:%standard-phases 'build))
-         (add-after 'compile-emacs-files 'make-autoloads
-           (assoc-ref emacs:%standard-phases 'make-autoloads)))))
+           (assoc-ref emacs:%standard-phases 'build)))))
     (home-page "https://www.draketo.de/english/wisp")
     (inputs
      (list guile-3.0))

@@ -1,0 +1,19 @@
+Index: emacs-29.2/src/comp.c
+===================================================================
+--- emacs-29.2.orig/src/comp.c
++++ emacs-29.2/src/comp.c
+@@ -5648,8 +5648,12 @@ For internal use. */);
+     doc: /* If non-nil, compile loaded .elc files asynchronously.
+ 
+ After compilation, each function definition is updated to use the
+-natively-compiled one.  */);
+-  native_comp_jit_compilation = true;
++natively-compiled one.  This variable is enabled by default upstream,
++but disabled in Guix to better make use of precompiled packages.
++Notably, Guix removes the hashes that prevent inadvertent shadowing
++frm the file names of compiled libraries in order to facilitate grafts.
++Enable at your own risk!  */);
++  native_comp_jit_compilation = false;
+ 
+   DEFSYM (Qnative_comp_speed, "native-comp-speed");
+   DEFSYM (Qnative_comp_debug, "native-comp-debug");

@@ -100,17 +100,19 @@
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
-    (version "29.1")
+    (version "29.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "009f7q08vg919b90k2jrsznq73s3n224avz80dd2y7i3rjjq3y6j"))
-              (patches (search-patches "emacs-exec-path.patch"
+                "1822swrk4ifmkd4h9l0h37zifcpa1w3sy3vsgyffsrp6mk9hak63"))
+              (patches (search-patches "emacs-disable-jit-compilation.patch"
+                                       "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
+                                       "emacs-native-comp-fix-filenames.patch"
                                        "emacs-pgtk-super-key-fix.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -376,7 +378,25 @@ editor (console only)")
                     (string-append
                      "-B" #$(this-package-input "libgccjit") "/lib/")
                     (string-append
-                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))))))
+                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))
+            (add-after 'build 'build-trampolines
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "trampolines" make-flags)))
+            (add-after 'validate-runpath 'validate-comp-integrity
+              (lambda* (#:key outputs #:allow-other-keys)
+                #$(cond
+                   ((%current-target-system)
+                    #~(display "Cannot validate native-comp on cross builds.\n"))
+                   ((string=? (%current-system) "armhf-linux")
+                    #~(display "Integrity test is broken on armhf.\n"))
+                   (else
+                    #~(invoke
+                       (string-append (assoc-ref outputs "out") "/bin/emacs")
+                       "--batch"
+                       "--load"
+                       #$(local-file
+                          (search-auxiliary-file "emacs/comp-integrity.el"))
+                       "-f" "ert-run-tests-batch-and-exit")))))))))
     (inputs
      (modify-inputs (package-inputs emacs-minimal)
        (prepend gnutls
@@ -533,8 +553,8 @@ editor (with wide ints)" )
         #~(cons "--with-wide-int" #$flags))))))
 
 (define-public emacs-next-minimal
-  (let ((commit "9d27b95b263473fb41a30e3f6ea5607c99e93a61")
-        (revision "1"))
+  (let ((commit "170c6557922dad7e6e9bc0d6dadf6c080108fd42")
+        (revision "2"))
    (package
     (inherit emacs-minimal)
     (name "emacs-next-minimal")
@@ -547,7 +567,7 @@ editor (with wide ints)" )
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00mwpq1msr3jij281w5piqmbwq968xr8dn9hqbf4r947ck754kn9"))
+        (base32 "04carva3b6h9fnlzazrsxsj41hcnjc26kxjij07l159azi40l6sk"))
        (patches
         (search-patches "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"

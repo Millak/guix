@@ -6316,7 +6316,6 @@ X11 servers, Windows, or macOS.")
                            (guix build emacs-utils))
        #:configure-flags
        (list "--with-anthy-utf8"
-             (string-append "--with-lispdir=" %output "/share/emacs")
              ;; Set proper runpath
              (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
              "CFLAGS=-O2 -g -fcommon")
@@ -6330,21 +6329,11 @@ X11 servers, Windows, or macOS.")
                  ("uim-el-agent" (string-append out "/bin/uim-el-agent"))
                  ("uim-el-helper-agent" (string-append out "/bin/uim-el-helper-agent"))))
              #t))
-         ;; Fix installation path by renaming share/emacs/uim-el to
-         ;; share/emacs/site-lisp
-         (add-after 'install 'fix-install-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((share-emacs (string-append (assoc-ref outputs "out")
-                                               "/share/emacs")))
-               (rename-file (string-append share-emacs "/uim-el")
-                            (string-append share-emacs "/site-lisp")))
-             #t))
-         ;; Generate emacs autoloads for uim.el
          (add-after 'fix-install-path 'make-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
              (emacs-generate-autoloads
               ,name (string-append (assoc-ref outputs "out")
-                                   "/share/emacs/site-lisp"))
+                                   "/share/emacs/site-lisp/uim-el"))
              #t)))))
     (home-page "https://github.com/uim/uim")
     (synopsis "Multilingual input method framework")
