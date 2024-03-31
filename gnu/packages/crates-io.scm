@@ -67802,6 +67802,27 @@ by dynamically growing the stack.")
                ((", path = \"../serde\"") ""))
              #t)))))))
 
+(define-public rust-serde-transcode-1
+  (package
+    (name "rust-serde-transcode")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-transcode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qlh34kw4knbs83xy6x0wwbb71pbiivcw6swpy2nxfx5q8jhw32r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/sfackler/serde-transcode")
+    (synopsis "Transcode from one Serde format to another")
+    (description "This package provides functions to transcode from one Serde
+format to another.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-untagged-0.1
   (package
     (name "rust-serde-untagged")
