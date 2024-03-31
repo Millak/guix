@@ -26,6 +26,7 @@
                            commit-difference
                            repository-info
                            commit-short-id
+                           tag->commit
                            with-repository)
   #:autoload   (guix git-authenticate) (authenticate-repository)
   #:autoload   (guix openpgp) (openpgp-public-key-fingerprint
@@ -1148,14 +1149,8 @@ the field its 'tag' refers to.  A 'git-error' exception is raised if the tag
 cannot be found."
   (if (channel-news-entry-commit entry)
       entry
-      (let* ((tag       (channel-news-entry-tag entry))
-             (reference (reference-lookup repository
-                                          (string-append "refs/tags/" tag)))
-             (target    (reference-target reference))
-             (oid       (let ((obj (object-lookup repository target)))
-                          (if (= OBJ-TAG (object-type obj)) ;annotated tag?
-                              (tag-target-id (tag-lookup repository target))
-                              target))))
+      (let* ((tag (channel-news-entry-tag entry))
+             (oid (object-id (tag->commit repository tag))))
         (channel-news-entry (oid->string oid) tag
                             (channel-news-entry-title entry)
                             (channel-news-entry-body entry)))))

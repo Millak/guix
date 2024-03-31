@@ -68,6 +68,7 @@
             commit-descendant?
             commit-id?
             commit-short-id
+            tag->commit
 
             remote-refs
 
@@ -237,6 +238,19 @@ is a tag name.  This is based on a simple heuristic so use with care!"
 (define commit-short-id
   (compose (cut string-take <> 7) oid->string commit-id))
 
+(define (tag->commit repository tag)
+  "Resolve TAG in REPOSITORY and return the corresponding object, usually a
+commit."
+  (let* ((oid (reference-name->oid repository
+                                   (string-append "refs/tags/" tag)))
+         (obj (object-lookup repository oid)))
+    ;; OID may designate an "annotated tag" object or a "commit" object.
+    ;; Return the commit object in both cases.
+    (if (= OBJ-TAG (object-type obj))
+        (object-lookup repository
+                       (tag-target-id (tag-lookup repository oid)))
+        obj)))
+
 (define (resolve-reference repository ref)
   "Resolve the branch, commit or tag specified by REF, and return the
 corresponding Git object."
@@ -283,15 +297,7 @@ corresponding Git object."
                   ;; There's no such tag, so it must be a commit ID.
                   (resolve `(commit . ,str)))))))
       (('tag    . tag)
-       (let* ((oid (reference-name->oid repository
-                                        (string-append "refs/tags/" tag)))
-              (obj (object-lookup repository oid)))
-         ;; OID may designate an "annotated tag" object or a "commit" object.
-         ;; Return the commit object in both cases.
-         (if (= OBJ-TAG (object-type obj))
-             (object-lookup repository
-                            (tag-target-id (tag-lookup repository oid)))
-             obj))))))
+       (tag->commit repository tag)))))
 
 (define (switch-to-ref repository ref)
   "Switch to REPOSITORY's branch, commit or tag specified by REF.  Return the
