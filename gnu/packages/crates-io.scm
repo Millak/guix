@@ -83467,6 +83467,26 @@ for emulating polymorphism in const fns.")
 localtime, gmtime and mktime.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tzdb-data-0.1
+  (package
+    (name "rust-tzdb-data")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tzdb_data" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mlqm5z8324hw2gnwhlgfn6as8cv5qhdahjwv70nb7f0zbgrz26i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-tz-rs" ,rust-tz-rs-0.6))))
+    (home-page "https://github.com/Kijewski/tzdb")
+    (synopsis "Static, #![no_std] time zone information for tz-rs")
+    (description
+     "This package provides static, #![no_std] time zone information for tz-rs.")
+    (license license:expat-0)))
+
 (define-public rust-ubyte-0.10
   (package
     (name "rust-ubyte")
