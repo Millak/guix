@@ -69,6 +69,7 @@
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
+;;; Copyright © 2024 Erik Eduardo Alonso Hernández <erik@erikeduardo.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1383,6 +1384,41 @@ Keybinder works with GTK-based applications using the X Window System.")
 
 (define-public keybinder-3.0
   (deprecated-package "keybinder-3.0" keybinder))
+
+(define-public sandbar
+  (package
+    (name "sandbar")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kolunmi/sandbar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0912cr2q2kg4nqdwy978kpmdcj2cjz3gnlcb28ny9z3cprxvyvxq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+             (delete 'configure))       ;no configure script
+           #:tests? #f             ;no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))))
+    (inputs (list fcft wayland))
+    (native-inputs (list pkg-config wayland-protocols))
+    (synopsis "DWM-like bar for the River Wayland compositor")
+    (description "Sandbar is a minimalist DWM-like bar designed for River,
+a Wayland compositor.  It is triggered through commands sent via standard
+input, providing extensive customization options.  This behavior allows users
+to dynamically adjust status text, visibility, and bar location, making
+Sandbar an ideal choice for those seeking a lightweight and hackable bar
+solution in their Wayland environment.")
+    ;;             LICENSE      LICENSE.dtao
+    (license (list license:gpl3 license:expat))
+    (home-page "https://github.com/kolunmi/sandbar")))
 
 (define-public spectrwm
   (package
