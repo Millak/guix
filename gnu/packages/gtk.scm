@@ -1163,6 +1163,17 @@ application suites.")
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
             (assoc-ref glib-or-gtk:%standard-phases
                        'generate-gdk-pixbuf-loaders-cache-file))
+          #$@(if (target-aarch64?)
+                 #~((add-after 'unpack 'skip-failing-test
+                      (lambda _
+                        ;; MESA: error: ZINK: failed to load libvulkan.so.1
+                        ;; libEGL warning: egl: failed to create dri2 screen
+                        ;; MESA: error: ZINK: failed to load libvulkan.so.1
+                        ;; glx: failed to create drisw screen
+                        ;; failed to load driver: zink
+                        (substitute* "testsuite/gsk/meson.build"
+                          ((".*big-checkerboard-scaled-down2',\n") "")))))
+                 #~())
           (add-after 'unpack 'patch-rst2man
             (lambda _
               (substitute* "docs/reference/gtk/meson.build"
