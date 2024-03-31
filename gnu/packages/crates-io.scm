@@ -83380,6 +83380,34 @@ implementation is incomplete.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-typetag-0.2
+  (package
+    (name "rust-typetag")
+    (version "0.2.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typetag" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bwswa9ah2sc6fmlfw2pim73rr1n6vhfwmidrsga8cn09r0ih7b6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-erased-serde" ,rust-erased-serde-0.4)
+                       ("rust-inventory" ,rust-inventory-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-typetag-impl" ,rust-typetag-impl-0.2))
+       #:cargo-development-inputs (("rust-postcard" ,rust-postcard-1)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/typetag")
+    (synopsis "Serde serializable and deserializable trait objects")
+    (description
+     "This package provides serde serializable and deserializable trait objects.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-typetag-impl-0.2
   (package
     (name "rust-typetag-impl")
