@@ -47733,6 +47733,23 @@ Things in odds may move to more appropriate crates if we find them.")
 spec in pure Rust.")
     (license license:expat)))
 
+(define-public rust-omnipath-0.1
+  (package
+    (name "rust-omnipath")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "omnipath" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xd5a4xwsfmhzk59v6wz65f59rk16d7gvkg90w1qhb0jg08b7bc0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/ChrisDenton/omnipath")
+    (synopsis "Path utility library")
+    (description "This package provides a path utility library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-onig-6
   (package
     (name "rust-onig")
