@@ -87419,14 +87419,14 @@ UTF-32 types are provided, including support for malformed encoding.")
 (define-public rust-wild-2
   (package
     (name "rust-wild")
-    (version "2.1.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x0a65qrifm3q1gp7cy74qw69nr6zz5k8cqhb8pwbq3bb9l1dc85"))))
+        (base32 "1q8hnhmv3fvgx0j7bv8qig00599a15mfsdhgx3hq2ljpiky1l4x3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-glob" ,rust-glob-0.3))
