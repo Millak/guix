@@ -52361,6 +52361,25 @@ provides comprehensive coverage of that portion of the specification
 along with strong support for variations and the core header tables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pipe-trait-0.4
+  (package
+    (name "rust-pipe-trait")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pipe-trait" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ql988sa4appx60q0wfmn1d6i2qrk7vadvw4zsp600wzwp4ixgn1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-futures" ,rust-futures-0.3))))
+    (home-page "https://github.com/KSXGitHub/pipe-trait.git")
+    (synopsis "Make it possible to chain regular functions")
+    (description "This package makes it possible to chain regular functions.")
+    (license license:expat)))
+
 (define-public rust-piper-0.2
   (package
     (name "rust-piper")
