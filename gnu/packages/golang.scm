@@ -10271,37 +10271,6 @@ serialiser for Go.")
 library bevacqua/fuzzysearch.")
     (license license:expat)))
 
-(define-public go-github-com-onsi-gomega
-  (package
-    (name "go-github-com-onsi-gomega")
-    (version "1.19.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/onsi/gomega")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "092phwk97sk4sv0nbx5pfhqs6x3x1lnrjwyda1m6b6zwrfmq5c6i"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/onsi/gomega"
-           ;; Unless we disable the tests, we have a circular dependency on
-           ;; ginkgo/v2.
-           #:tests? #f))
-    (propagated-inputs (list go-github-com-golang-protobuf-proto
-                             go-golang-org-x-net
-                             go-golang-org-x-sys
-                             go-golang-org-x-text
-                             go-google-golang-org-protobuf
-                             go-gopkg-in-yaml-v2))
-    (home-page "https://github.com/onsi/gomega")
-    (synopsis "Matcher library for Ginkgo")
-    (description
-     "Gomega is the preferred matcher library for the Ginkgo test framework.")
-    (license license:expat)))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
