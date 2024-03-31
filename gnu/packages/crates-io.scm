@@ -75830,6 +75830,30 @@ well.")
        #:cargo-development-inputs
        (("rust-itertools" ,rust-itertools-0.9))))))
 
+(define-public rust-tabled-derive-0.6
+  (package
+    (name "rust-tabled-derive")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tabled_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r1z7qj37h1x4nyqbxq9jvbd713qvgpjlf1w18pz1x2lifh8ixlr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/zhiburt/tabled")
+    (synopsis "Derive macros which is used by tabled crate")
+    (description
+     "This package provides derive macros which is used by tabled crate.")
+    (license license:expat)))
+
 (define-public rust-tabwriter-1
   (package
     (name "rust-tabwriter")
