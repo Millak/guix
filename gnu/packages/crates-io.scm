@@ -13271,6 +13271,30 @@ CMAKE environmental variable is set.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-cobs-0.2
+  (package
+    (name "rust-cobs")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cobs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05gd16mws4yd63h8jr3p08in8y8w21rpjp5jb55hzl9bgalh5fk7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.5))))
+    (home-page "https://github.com/jamesmunns/cobs.rs")
+    (synopsis
+     "Implementation of the Consistent Overhead Byte Stuffing (COBS) algorithm")
+    (description
+     "This is an implementation of the @acronym{Consistent Overhead Byte
+Stuffing, COBS} algorithm.  COBS is an algorithm for transforming a message into
+an encoding where a specific value (the \"sentinel\" value) is not used.  This
+value can then be used to mark frame boundaries in a serial communication channel.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-codegenrs-3
   (package
     (name "rust-codegenrs")
