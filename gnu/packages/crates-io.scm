@@ -83441,6 +83441,32 @@ for emulating polymorphism in const fns.")
     (description "Implementation detail of typewit.")
     (license license:zlib)))
 
+(define-public rust-tz-rs-0.6
+  (package
+    (name "rust-tz-rs")
+    (version "0.6.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tz-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d720z3p6g65awzv3924dipjnldrdsv6np0h9g7x5yj8r0aip19k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=timezone::test::test_time_zone_from_posix_tz"
+                            "--skip=src/lib.rs - (line 21)"
+                            "--skip=src/lib.rs - (line 60)")
+       #:cargo-inputs (("rust-const-fn" ,rust-const-fn-0.4))))
+    (home-page "https://github.com/x-hgg-x/tz-rs")
+    (synopsis
+     "Rust reimplementation of libc functions localtime, gmtime and mktime")
+    (description
+     "This package provides a pure Rust reimplementation of libc functions
+localtime, gmtime and mktime.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ubyte-0.10
   (package
     (name "rust-ubyte")
