@@ -423,47 +423,43 @@ Although the above appear simple to parse, RFC 2822's whitespace and comment
 rules are rather complex.  This crate implements the whole grammar." )
     (license license:gpl3)))
 
-(define-public rust-sequoia-wot-0.8
+(define-public rust-sequoia-wot-0.11
   (package
     (name "rust-sequoia-wot")
-    (version "0.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "sequoia-wot" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0rcp7ndjpdd4dkryhkkhakc8axbj93c1gr9qxxksdvrik803alfg"))))
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-wot" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hb17adcqz357ci3d4v57pmywy4giq8591p1vb7p83h56zdk0sfi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
-       #:cargo-test-flags
-       (list "--release" "--"
-             ;; Not all files included.
-             "--skip=gpg_trust_roots")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
-        ("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-dot-writer" ,rust-dot-writer-0.1)
-        ("rust-enumber" ,rust-enumber-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.1)
-        ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.3)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-predicates" ,rust-predicates-2)
-        ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
+       #:cargo-test-flags '("--release" "--"
+                            ;; Not all files included.
+                            "--skip=gpg_trust_roots")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                       ("rust-crossbeam" ,rust-crossbeam-0.8)
+                       ("rust-dot-writer" ,rust-dot-writer-0.1)
+                       ("rust-enumber" ,rust-enumber-0.3)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.5)
+                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-predicates" ,rust-predicates-2)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
     (inputs
      (list nettle openssl sqlite))
     (native-inputs
@@ -564,10 +560,10 @@ This Guix package is built to use the nettle cryptographic library.")
 
 (define-public sequoia-wot
   (package
-    (inherit rust-sequoia-wot-0.8)
+    (inherit rust-sequoia-wot-0.11)
     (name "sequoia-wot")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-sequoia-wot-0.8)
+     (substitute-keyword-arguments (package-arguments rust-sequoia-wot-0.11)
        ((#:install-source? _ #t) #f)
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
@@ -579,14 +575,16 @@ This Guix package is built to use the nettle cryptographic library.")
                  (for-each (lambda (file)
                              (install-file file man1))
                            (find-files "target/release" "\\.1$"))
-                 ;; TODO: Install _sq-wot.ps1, sq-wot.elv
                  (mkdir-p (string-append out "/etc/bash_completion.d"))
                  (mkdir-p (string-append share "/fish/vendor_completions.d"))
+                 (mkdir-p (string-append share "/elvish/lib"))
                  (copy-file (car (find-files "target/release" "sq-wot.bash"))
                             (string-append out "/etc/bash_completion.d/sq-wot"))
                  (copy-file (car (find-files "target/release" "sq-wot.fish"))
                             (string-append
                               share "/fish/vendor_completions.d/sq-wot.fish"))
+                 (copy-file (car (find-files "target/release" "sq-wot.elv"))
+                            (string-append share "/elvish/lib/sq-wot"))
                  (install-file (car (find-files "target/release" "_sq-wot"))
                                (string-append
                                  share "/zsh/site-functions")))))))))
