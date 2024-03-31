@@ -66591,6 +66591,38 @@ statistical guarantees.")
 in stable Rust.")
     (license license:asl2.0)))
 
+(define-public rust-selinux-0.4
+  (package
+    (name "rust-selinux")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "selinux" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02vy0n6rrhh8idxadi5xjmv5phvfg1f8jg5cwmjzvzxvkcg1ndsk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-reference-counted-singleton" ,rust-reference-counted-singleton-0.1)
+        ("rust-selinux-sys" ,rust-selinux-sys-0.6)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
+                                   ("rust-serial-test" ,rust-serial-test-3)
+                                   ("rust-socketpair" ,rust-socketpair-0.19)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs (list clang libselinux))
+    (home-page "https://codeberg.org/koutheir/selinux.git")
+    (synopsis "Flexible Mandatory Access Control for Linux")
+    (description "This package provides a Rust interface to the flexible
+Mandatory Access Control for Linux.")
+    (license license:expat)))
+
 (define-public rust-selinux-sys-0.6
   (package
     (name "rust-selinux-sys")
