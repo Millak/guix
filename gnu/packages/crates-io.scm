@@ -53926,6 +53926,34 @@ audio I/O library.")
 I/O library.")
     (license license:expat)))
 
+(define-public rust-postcard-1
+  (package
+    (name "rust-postcard")
+    (version "1.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "postcard" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y106iwjv6vm7s4zkszgxlhacca1xbw6qcwf8il7xc0ddkp52p55"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cobs" ,rust-cobs-0.2)
+                       ("rust-const-format" ,rust-const-format-0.2)
+                       ("rust-crc" ,rust-crc-3)
+                       ("rust-defmt" ,rust-defmt-0.3)
+                       ("rust-embedded-io" ,rust-embedded-io-0.4)
+                       ("rust-heapless" ,rust-heapless-0.7)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-postcard-derive" ,rust-postcard-derive-0.1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/jamesmunns/postcard")
+    (synopsis "A no_std + serde compatible message library for Rust")
+    (description
+     "This package provides a no_std + serde compatible message library for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-postcard-derive-0.1
   (package
     (name "rust-postcard-derive")
