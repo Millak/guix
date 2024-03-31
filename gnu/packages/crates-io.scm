@@ -19196,6 +19196,27 @@ for Rust.")
 hexadecimal, base32, and base64.")
     (license license:expat)))
 
+(define-public rust-data-encoding-macro-0.1
+  (package
+    (name "rust-data-encoding-macro")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "data-encoding-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gnkqpd3h24wy272vpdphp7z6gcbq9kyn8df5ggyyaglyl31rh10"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-data-encoding-macro-internal"
+                        ,rust-data-encoding-macro-internal-0.1))))
+    (home-page "https://github.com/ia0/data-encoding")
+    (synopsis "Macros for data-encoding")
+    (description "This package provides macros for data-encoding.")
+    (license license:expat)))
+
 (define-public rust-data-encoding-macro-internal-0.1
   (package
     (name "rust-data-encoding-macro-internal")
