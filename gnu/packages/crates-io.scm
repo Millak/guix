@@ -53830,6 +53830,25 @@ convert SQL to Polars logical plans.")
 overloading without macros in Rust.")
     (license license:expat)))
 
+(define-public rust-pori-0.0.0
+  (package
+    (name "rust-pori")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pori" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01p9g4fn3kasnmwj8i4plzk6nnnk7ak2qsfcv9b9y4zcilrkv9m4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-7))))
+    (home-page "https://github.com/olson-sean-k/pori")
+    (synopsis "Parser state and error extensions for nom")
+    (description "Parser state and error extensions for nom.")
+    (license license:expat)))
+
 (define-public rust-portable-atomic-1
   (package
     (name "rust-portable-atomic")
