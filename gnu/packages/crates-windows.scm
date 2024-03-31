@@ -1182,6 +1182,29 @@ color in a Windows console.")
 icons to windows executables and dynamic libraries.")
     (license license:expat)))
 
+(define-public rust-winresource-0.1
+  (package
+    (name "rust-winresource")
+    (version "0.1.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winresource" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0aakwh8llq2zvm7qihkrg7sz50hzccyl4x831j60g4psijpsmqkp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; failed to resolve: could not find `um` in `winapi`
+       #:cargo-inputs (("rust-toml" ,rust-toml-0.7)
+                       ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/BenjaminRi/winresource")
+    (synopsis "Create and set windows icons and metadata for executables")
+    (description "This package provides functions to create and set windows
+icons and metadata for executables.")
+    (license license:expat)))
+
 (define-public rust-winutil-0.1
   (package
     (name "rust-winutil")
