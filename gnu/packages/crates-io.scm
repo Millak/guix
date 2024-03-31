@@ -30822,8 +30822,35 @@ their key-value pairs in a user controllable order.")
     (description "This package provides a port of @code{HdrHistogram} to Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-heapless-0.8
+  (package
+    (name "rust-heapless")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "heapless" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b9zpdjv4qkl2511s2c80fz16fx9in4m9qkhbaa8j73032v9xyqb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-defmt" ,rust-defmt-0.3)
+                       ("rust-hash32" ,rust-hash32-0.3)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+                       ("rust-ufmt-write" ,rust-ufmt-write-0.1))
+       #:cargo-development-inputs (("rust-ufmt" ,rust-ufmt-0.2))))
+    (home-page "https://github.com/japaric/heapless")
+    (synopsis "Static friendly data structures")
+    (description "This package provides @code{static} friendly data structures
+that don't require dynamic memory allocation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-heapless-0.7
   (package
+    (inherit rust-heapless-0.8)
     (name "rust-heapless")
     (version "0.7.16")
     (source
@@ -30833,7 +30860,6 @@ their key-value pairs in a user controllable order.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hq7ifnzpdj9rc06rhys4qa3qkr6q3k01kwfca0ak7lbl4jbq16v"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--lib")
@@ -30846,13 +30872,7 @@ their key-value pairs in a user controllable order.")
         ("rust-spin" ,rust-spin-0.9)
         ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
         ("rust-ufmt-write" ,rust-ufmt-write-0.1))
-       #:cargo-development-inputs
-       (("rust-ufmt" ,rust-ufmt-0.1))))
-    (home-page "https://github.com/rust-embedded/heapless")
-    (synopsis "Static friendly data structures")
-    (description "This package provides @code{static} friendly data structures
-that don't require dynamic memory allocation.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-ufmt" ,rust-ufmt-0.1))))))
 
 (define-public rust-heapless-0.6
   (package
