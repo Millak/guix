@@ -8393,6 +8393,35 @@ streams in big-endian and little-endian formats.")
     (description "The package provides wrappers for BLAS (Fortran).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-blanket-0.3
+  (package
+    (name "rust-blanket")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "blanket" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zvffm82h5825lcf9c0xy76mj487il472cpvcbiidy8dzslj3cg0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests fail to compile.
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-impls" ,rust-impls-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-syn" ,rust-syn-2)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/althonos/blanket")
+    (synopsis "Macro to derive blanket implementations for your traits")
+    (description
+     "This package provides a simple macro to derive blanket implementations for
+your traits.")
+    (license license:expat)))
+
 (define-public rust-blobby-0.3
   (package
     (name "rust-blobby")
