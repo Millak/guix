@@ -5613,8 +5613,41 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
 SHA1 for Rust.")
     (license license:bsd-3)))
 
+(define-public rust-sha1collisiondetection-0.3
+  (package
+    (name "rust-sha1collisiondetection")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1collisiondetection" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jwnwrk1x78v9r16jnac2s4v1m2f5a19khwkx1vjh0d6whhn8q0z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                       ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                       ("rust-const-oid" ,rust-const-oid-0.9)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-generic-array" ,rust-generic-array-0.12))
+       #:cargo-development-inputs (("rust-getrandom" ,rust-getrandom-0.2)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.4)
+                                   ("rust-sha1" ,rust-sha1-0.10))))
+    (home-page "https://gitlab.com/sequoia-pgp/sha1collisiondetection")
+    (synopsis "SHA-1 hash function with collision detection and mitigation")
+    (description
+      "This package implementation of the SHA-1 cryptographic hash algorithm.
+
+This is a port of Marc Stevens' sha1collisiondetection algorithm to Rust.  The
+code is translated from C to Rust using c2rust.")
+    (license license:expat)))
+
 (define-public rust-sha1collisiondetection-0.2
   (package
+    (inherit rust-sha1collisiondetection-0.3)
     (name "rust-sha1collisiondetection")
     (version "0.2.3")
     (source
@@ -5625,7 +5658,6 @@ SHA1 for Rust.")
           (string-append name "-" version ".tar.gz"))
         (sha256
           (base32 "10nh7s3d02136kkz93pxyfv628ls5xz8ndg27pkb6na0ghccz9np"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
@@ -5633,15 +5665,7 @@ SHA1 for Rust.")
          ("rust-generic-array" ,rust-generic-array-0.14)
          ("rust-libc" ,rust-libc-0.2)
          ("rust-sha-1" ,rust-sha-1-0.9)
-         ("rust-structopt" ,rust-structopt-0.3))))
-    (home-page "https://docs.rs/sha1collisiondetection")
-    (synopsis "SHA-1 hash function with collision detection and mitigation")
-    (description
-      "This package implementation of the SHA-1 cryptographic hash algorithm.
-
-This is a port of Marc Stevens' sha1collisiondetection algorithm to Rust.  The
-code is translated from C to Rust using c2rust.")
-    (license license:expat)))
+         ("rust-structopt" ,rust-structopt-0.3))))))
 
 (define-public rust-sha2-0.10
   (package
