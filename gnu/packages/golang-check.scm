@@ -460,6 +460,33 @@ builds on top of Go's builtin @code{testing} library and is complemented by the
 Gomega matcher library.")
     (license license:expat)))
 
+(define-public go-github-com-onsi-ginkgo-v2
+  (package
+    (inherit go-github-com-onsi-ginkgo)
+    (name "go-github-com-onsi-ginkgo-v2")
+    (version "2.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/onsi/ginkgo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "089x6pz5563ldbxiwaqvd2g4dqfzlr25dflmas3gfq51ibwzh4vz"))))
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/onsi/ginkgo/v2"))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           ;; go-github-com-google-pprof ; not packed yet in Guix, for profiling
+           go-github-com-onsi-gomega
+           go-github-com-go-task-slim-sprig
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-tools))))
+
 (define-public go-github-com-prashantv-gostub
   (package
     (name "go-github-com-prashantv-gostub")
