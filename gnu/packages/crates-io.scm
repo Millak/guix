@@ -87219,6 +87219,38 @@ modifications.")
     (description "This package provides watchexec's signal types.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-wax-0.6
+  (package
+    (name "rust-wax")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wax" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mqk9qxsjlbwnjnj0gkaa29qm3mmgbgrc6pd4qpjvcmsl25af4ld"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-const-format" ,rust-const-format-0.2)
+                       ("rust-itertools" ,rust-itertools-0.11)
+                       ("rust-miette" ,rust-miette-5)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-pori" ,rust-pori-0.0.0)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-tardar" ,rust-tardar-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-build-fs-tree" ,rust-build-fs-tree-0.6)
+                                   ("rust-dunce" ,rust-dunce-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/olson-sean-k/wax")
+    (synopsis "Globs that can be matched against paths and directory trees")
+    (description
+     "This package provides opinionated and portable globs that can be matched
+against paths and directory trees.")
+    (license license:expat)))
+
 (define-public rust-wl-clipboard-rs-0.8
   (package
     (name "rust-wl-clipboard-rs")
