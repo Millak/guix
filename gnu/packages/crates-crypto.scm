@@ -2088,6 +2088,41 @@ ciphers implementations.")
 functions.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dsa-0.6
+  (package
+    (name "rust-dsa")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dsa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12bn5d0nnni4mlla24m3bwi4mhy2nfmyak2qjl0pdbc4j1525g28"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-digest" ,rust-digest-0.10)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-pkcs8" ,rust-pkcs8-0.10)
+                       ("rust-rfc6979" ,rust-rfc6979-0.4)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-signature" ,rust-signature-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-pkcs8" ,rust-pkcs8-0.10)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+                                   ("rust-sha1" ,rust-sha1-0.10))))
+    (home-page "https://github.com/RustCrypto/signatures/tree/master/dsa")
+    (synopsis
+     "Rust implementation of the Digital Signature Algorithm (DSA)")
+    (description
+     "This package provides a pure Rust implementation of the @acronym{Digital
+Signature Algorithm, DSA} as specified in FIPS 186-4 (Digital Signature
+Standard), providing RFC6979 deterministic signatures as well as support for
+added entropy.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-eax-0.5
   (package
     (name "rust-eax")
