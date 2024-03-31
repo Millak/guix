@@ -85045,6 +85045,57 @@ first byte.")
         (base32
          "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))))
 
+(define-public rust-uucore-0.0.25
+  (package
+    (name "rust-uucore")
+    (version "0.0.25")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uucore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d59qc3d2z9dkf89y22c5kj7l5izfb4p3qkpd32xnhyb59r4m693"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-blake2b-simd" ,rust-blake2b-simd-1)
+                       ("rust-blake3" ,rust-blake3-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-data-encoding" ,rust-data-encoding-2)
+                       ("rust-data-encoding-macro" ,rust-data-encoding-macro-0.1)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-dns-lookup" ,rust-dns-lookup-2)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-md-5" ,rust-md-5-0.10)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-nix" ,rust-nix-0.28)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-os-display" ,rust-os-display-0.1)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-sha3" ,rust-sha3-0.10)
+                       ("rust-sm3" ,rust-sm3-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-uucore-procs" ,rust-uucore-procs-0.0.25)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-wild" ,rust-wild-2)
+                       ("rust-winapi-util" ,rust-winapi-util-0.1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48)
+                       ("rust-xattr" ,rust-xattr-1)
+                       ("rust-z85" ,rust-z85-3))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis "uutils ~ 'core' uutils code library")
+    (description "This packge provides the core uutils code library.")
+    (license license:expat)))
+
 (define-public rust-uucore-procs-0.0.25
   (package
     (name "rust-uucore-procs")
