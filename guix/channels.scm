@@ -43,10 +43,10 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:autoload   (guix describe) (current-channels) ;XXX: circular dep
   #:autoload   (guix self) (whole-package make-config.scm)
   #:autoload   (guix inferior) (gexp->derivation-in-inferior) ;FIXME: circular dep
@@ -411,12 +411,11 @@ their relation.  When AUTHENTICATE? is false, CHANNEL is not authenticated."
     (and (string=? (basename file) ".git")
          (eq? 'directory (stat:type stat))))
 
-  (let-values (((channel)
-                (ensure-default-introduction channel))
-               ((checkout commit relation)
-                (update-cached-checkout (channel-url channel)
-                                        #:ref (channel-reference channel)
-                                        #:starting-commit starting-commit)))
+  (let ((channel (ensure-default-introduction channel))
+        (checkout commit relation
+                  (update-cached-checkout (channel-url channel)
+                                          #:ref (channel-reference channel)
+                                          #:starting-commit starting-commit)))
     (when relation
       (validate-pull channel starting-commit commit relation))
 
