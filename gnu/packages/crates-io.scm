@@ -22033,8 +22033,34 @@ floating-point primitives to an @code{io::Write}.")
      "Serialize float number and truncate to certain precision in Rust.")
     (license license:mpl2.0)))
 
+(define-public rust-dtparse-2
+  (package
+    (name "rust-dtparse")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dtparse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fg8h07m0z38c6i556dfmgnhl18i8w37cl235iyfzc9l3kz7r325"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1))
+       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.21))))
+    (home-page "https://github.com/bspeice/dtparse.git")
+    (synopsis "Dateutil-compatible timestamp parser for Rust")
+    (description
+     "This package provides a @code{dateutil}-compatible timestamp parser for
+Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-dtparse-1
   (package
+    (inherit rust-dtparse-2)
     (name "rust-dtparse")
     (version "1.3.0")
     (source
@@ -22044,21 +22070,12 @@ floating-point primitives to an @code{io::Write}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1awhyy58c28fhr5nvvfpikdzraihichkz3w1mzdg7smyffldi4w2"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-rust-decimal" ,rust-rust-decimal-1))
-       #:cargo-development-inputs
-       (("rust-base64" ,rust-base64-0.13))))
-    (home-page "https://github.com/bspeice/dtparse.git")
-    (synopsis "Dateutil-compatible timestamp parser for Rust")
-    (description
-     "This package provides a @code{dateutil}-compatible timestamp parser for
-Rust.")
-    (license license:asl2.0)))
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1))
+       #:cargo-development-inputs (("rust-base64" ,rust-base64-0.13))))))
 
 (define-public rust-duct-0.13
   (package
