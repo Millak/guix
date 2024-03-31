@@ -83604,8 +83604,30 @@ with the Unicode character database.")
 panic-free alternative to @code{core::fmt}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ufmt-macros-0.3
+  (package
+    (name "rust-ufmt-macros")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ufmt-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05ipcslk5bcpkw3j8405hhzxibr9wkn8sg33nif1cjblc6zd6dyk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/japaric/ufmt")
+    (synopsis "μfmt macros")
+    (description "This package provides μfmt macros.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ufmt-macros-0.2
   (package
+    (inherit rust-ufmt-macros-0.3)
     (name "rust-ufmt-macros")
     (version "0.2.0")
     (source
@@ -83616,17 +83638,12 @@ panic-free alternative to @code{core::fmt}.")
        (sha256
         (base32
          "1nfpgpimg04n08cxi0mcsz803kh3kzpmllmxm2a6768cyf96raz4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/japaric/ufmt")
-    (synopsis "μfmt macros")
-    (description "This package provides μfmt macros.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-ufmt-write-0.1
   (package
