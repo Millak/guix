@@ -85045,6 +85045,26 @@ first byte.")
         (base32
          "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))))
 
+(define-public rust-uuhelp-parser-0.0.25
+  (package
+    (name "rust-uuhelp-parser")
+    (version "0.0.25")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uuhelp_parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gsfy0dkwzlyyq4abwf0c7gks7m1qm0yzl58sl265n5dllr6hymc"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis
+     "Collection of functions to parse the markdown code of help files")
+    (description
+     "This package provides a collection of functions to parse the markdown code
+of help files.")
+    (license license:expat)))
+
 (define-public rust-uuid-1
   (package
     (name "rust-uuid")
