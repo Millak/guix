@@ -15546,8 +15546,29 @@ It supports signed and private (encrypted + signed) jars.")
 similar to the nom parser combinators library.")
     (license license:expat)))
 
+(define-public rust-coolor-0.8
+  (package
+    (name "rust-coolor")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "coolor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sjrs0k2ng69hilqrrkfayr2rjpwa6b6krp11y3da64zj10kxklm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency chain.
+       #:cargo-inputs (("rust-crossterm" ,rust-crossterm-0.23))))
+    (home-page "https://github.com/Canop/coolor")
+    (synopsis "Conversion between color formats")
+    (description "Conversion between color formats.")
+    (license license:expat)))
+
 (define-public rust-coolor-0.5
   (package
+    (inherit rust-coolor-0.8)
     (name "rust-coolor")
     (version "0.5.1")
     (source (origin
@@ -15557,17 +15578,12 @@ similar to the nom parser combinators library.")
               (sha256
                (base32
                 "11pvplrm51xjr0mmhwrjaif6vd7p2xpmdbwd0rbx2kr4iq4c4smd"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-crossterm" ,rust-crossterm-0.25))
        #:cargo-development-inputs
        (("rust-crossterm" ,rust-crossterm-0.25)
-        ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/Canop/coolor")
-    (synopsis "conversion between color formats")
-    (description "conversion between color formats")
-    (license license:expat)))
+        ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-copyless-0.1
   (package
