@@ -75172,8 +75172,36 @@ intelligence using Sublime Text's grammars.")
      "This Rust crate gathers system information.")
     (license license:expat)))
 
+(define-public rust-sys-locale-0.3
+  (package
+    (name "rust-sys-locale")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sys-locale" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c29m5z9bbg4ix5vy25jma83xlakvmkhs9rxy1qwsv6dkqiwy0g8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3))
+       #:cargo-development-inputs
+       (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/1Password/sys-locale")
+    (synopsis "Lightweight library to obtain the active system locale")
+    (description
+     "Sys-locale is small library for obtaining the current locale set for the
+system or application with the relevant platform APIs.  The library is also
+no_std compatible by default, only relying on alloc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sys-locale-0.1
   (package
+    (inherit rust-sys-locale-0.3)
     (name "rust-sys-locale")
     (version "0.1.0")
     (source
@@ -75183,22 +75211,13 @@ intelligence using Sublime Text's grammars.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1pv3hl604vnbk7fi5s47zmb555znjj7ddhmgbzvd8c7sb6xrxy4i"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-cstr-core" ,rust-cstr-core-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-web-sys" ,rust-web-sys-0.3)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/1Password/sys-locale")
-    (synopsis "Lightweight library to obtain the active system locale")
-    (description
-     "Sys-locale is small library for obtaining the current locale set for the
-system or application with the relevant platform APIs.  The library is also
-no_std compatible by default, only relying on alloc.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-cstr-core" ,rust-cstr-core-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-syscallz-0.17
   (package
