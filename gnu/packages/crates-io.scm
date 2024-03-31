@@ -33125,6 +33125,23 @@ for @code{uint} and @code{fixed_hash}.")
 a trait for tuples.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-impls-1
+  (package
+    (name "rust-impls")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "impls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g2i16vn99kmzfaag6df9bjg3k9p2p1jc3qdm5hqhlvhpmdn8iks"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/nvzqz/impls")
+    (synopsis "Determine if a type implements a logical trait expression")
+    (description "Determine if a type implements a logical trait expression.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-include-dir-0.7
   (package
     (name "rust-include-dir")
