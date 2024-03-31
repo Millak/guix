@@ -52704,6 +52704,23 @@ function data structures.")
      "Support code shared by PHF libraries.")
     (license license:expat)))
 
+(define-public rust-pico-args-0.5
+  (package
+    (name "rust-pico-args")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pico-args" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05d30pvxd6zlnkg2i3ilr5a70v3f3z2in18m67z25vinmykngqav"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/RazrFalcon/pico-args")
+    (synopsis "CLI arguments parser.")
+    (description "This package provides an ultra simple CLI arguments parser.")
+    (license license:expat)))
+
 (define-public rust-pikchr-0.1
   (package
     (name "rust-pikchr")
