@@ -973,17 +973,17 @@ and block modes.")
 (define-public rust-botan-sys-0.10
   (package
     (name "rust-botan-sys")
-    (version "0.10.3")
+    (version "0.10.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "botan-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1cbjr44gc5dhmgl43sfiqzbsma4anfi3h26m4yzsli23yd1lmyf8"))))
+                "1ji12rxvi4h7pap772cd2hw4xdgqdsgw6m8wqin9klpbp3hxsjcz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-botan-src" ,rust-botan-src-0.21903))))
+     `(#:cargo-inputs (("rust-botan-src" ,rust-botan-src-0.30101))))
     (inputs (list botan))
     (home-page "https://botan.randombit.net/")
     (synopsis "FFI wrapper for Botan cryptography library")
@@ -1006,20 +1006,20 @@ and block modes.")
        (("rust-botan-src" ,rust-botan-src-0.21703)
         ("rust-cty" ,rust-cty-0.2))))))
 
-(define-public rust-botan-src-0.21903
+(define-public rust-botan-src-0.30101
   (package
     (name "rust-botan-src")
-    (version "0.21903.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "botan-src" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "19fhll4g0v8hbyjxg8c790l9ln5xgf4r6xdcnw438mpy81hvrdxy"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin (delete-file-recursively "botan")))))
+    (version "0.30101.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "botan-src" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17xwnan8r21hzbxdailnidp9q54g787s9njhy63yqw83q0k09bxa"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "botan")))))
     (build-system cargo-build-system)
     (arguments '(#:skip-build? #t))
     (home-page "https://botan.randombit.net/")
@@ -1029,7 +1029,7 @@ and block modes.")
 
 (define-public rust-botan-src-0.21703
   (package
-    (inherit rust-botan-src-0.21903)
+    (inherit rust-botan-src-0.30101)
     (name "rust-botan-src")
     (version "0.21703.0")
     (source (origin
