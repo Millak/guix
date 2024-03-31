@@ -39,6 +39,37 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
 
+(define-public rust-openpgp-cert-d-0.3
+  (package
+    (name "rust-openpgp-cert-d")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "openpgp-cert-d" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kk2mr4rsib04cygv7jg55wvdxivakggqsfrn4apnaxxl5aknb0c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-fd-lock" ,rust-fd-lock-3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-sha1collisiondetection" ,rust-sha1collisiondetection-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-assert-fs" ,rust-assert-fs-1)
+                                   ("rust-predicates" ,rust-predicates-3))))
+    (home-page "https://gitlab.com/sequoia-pgp/pgp-cert-d")
+    (synopsis "Shared OpenPGP Certificate Directory")
+    (description "This package provides the shared code for a @code{OpenPGP}
+Certificate Directory.")
+    (license license:expat)))
+
 (define-public rust-sequoia-autocrypt-0.25
   (package
     (name "rust-sequoia-autocrypt")
