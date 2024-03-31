@@ -20930,8 +20930,43 @@ example.")
 Builder for PostgreSQL, SQLite, and MySQL.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-diesel-derives-2
+  (package
+    (name "rust-diesel-derives")
+    (version "2.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_derives" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "036f3i1hsl2m2c0basg28adc9rh3vnr2vp0xwvzi9rsah75yw0jx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=derive_insertable"
+         "--skip=derive_multiconnection"
+         "--skip=derive_queryable"
+         "--skip=derive_queryable_by_name")
+       #:cargo-inputs
+       (("rust-diesel-table-macro-syntax" ,rust-diesel-table-macro-syntax-0.1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                                   ("rust-diesel" ,rust-diesel-2)
+                                   ("rust-dotenvy" ,rust-dotenvy-0.15))))
+    (native-inputs (list sqlite))
+    (home-page "https://diesel.rs")
+    (synopsis "Crate internal to Diesel")
+    (description "You should not use this crate directly, it is internal to
+Diesel.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-diesel-derives-1
   (package
+    (inherit rust-diesel-derives-2)
     (name "rust-diesel-derives")
     (version "1.4.1")
     (source
@@ -20942,7 +20977,6 @@ Builder for PostgreSQL, SQLite, and MySQL.")
        (sha256
         (base32
          "1lsq133fwk0zj8xvxhdxqgg0xs31zf3abnwdyshaf0ldca7hkxa5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; cannot find type `SqliteConnection` in this scope
        #:cargo-test-flags
@@ -20957,13 +20991,7 @@ Builder for PostgreSQL, SQLite, and MySQL.")
        #:cargo-development-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-diesel" ,rust-diesel-1)
-        ("rust-dotenv" ,rust-dotenv-0.10))))
-    (native-inputs (list sqlite))
-    (home-page "https://diesel.rs")
-    (synopsis "Crate internal to Diesel")
-    (description "You should not use this crate directly, it is internal to
-Diesel.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-dotenv" ,rust-dotenv-0.10))))))
 
 (define-public rust-diesel-migrations-1
   (package
