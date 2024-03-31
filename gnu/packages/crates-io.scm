@@ -15053,7 +15053,7 @@ the browser's console.")
 (define-public rust-const-fn-0.4
   (package
     (name "rust-const-fn")
-    (version "0.4.2")
+    (version "0.4.9")
     (source
      (origin
        (method url-fetch)
@@ -15061,7 +15061,7 @@ the browser's console.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1wnhzyrhfcaawnzi172k98cfawwi5zwqql7pg0nz2qlccm6dz46f"))))
+         "0df9fv9jhnh9b4ni3s2fbfcvq77iia4lbb89fklwawbgv2vdrp7v"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/taiki-e/const_fn")
     (synopsis "Generate const functions with conditional compilations")
