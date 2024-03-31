@@ -734,20 +734,20 @@ portable \"best effort\" constant-time operation and embedded-friendly
 (define-public rust-blake2b-simd-1
   (package
     (name "rust-blake2b-simd")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "blake2b_simd" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1g04mc4gf6jyymyj41749jhhplm3ymnc6z7rhkc1fqwclv4hsbrw"))))
+                "102pfciq6g59hf47gv6kix42cgpqw8pjyf9hx0r3jyb94b9mla13"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arrayref" ,rust-arrayref-0.3)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
-        ("rust-constant-time-eq" ,rust-constant-time-eq-0.2))))
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.3))))
     (home-page "https://github.com/oconnor663/blake2_simd")
     (synopsis "Pure Rust BLAKE2b implementation with dynamic SIMD")
     (description
