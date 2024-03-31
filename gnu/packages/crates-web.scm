@@ -2245,6 +2245,32 @@ built on the Actix ecosystem.")
     (description "Macros for @code{axum}.")
     (license license:expat)))
 
+(define-public rust-chardetng-0.1
+  (package
+    (name "rust-chardetng")
+    (version "0.1.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chardetng" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1spikjcnblwa5n1nnk46fxkwn86yfiqxgs47h4yaw23vbfvg1f0l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; cannot find macro `println` in this scope
+       #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.5)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-rayon" ,rust-rayon-1))
+       #:cargo-development-inputs (("rust-detone" ,rust-detone-1))))
+    (home-page "https://docs.rs/chardetng/")
+    (synopsis "Character encoding detector for legacy Web content")
+    (description
+     "This package provides a character encoding detector for legacy Web content.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-chunked-transfer-1
   (package
     (name "rust-chunked-transfer")
