@@ -47720,17 +47720,17 @@ contents.")
         (base32
          "02942l2gc7w5r4js7i9063x99szic5mzzk1055j83v4diqpbpxck"))))))
 
-(define-public rust-open-4
+(define-public rust-open-5
   (package
     (name "rust-open")
-    (version "4.2.0")
+    (version "5.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "open" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04kw6xmsjm0wdqidjndhpzl79iksyrhwyik32z28wjjygq63q21s"))))
+        (base32 "0ciy22dh82rdgmmsiai2wksx7sj9abb4ddnmxpqxnpfqapw0z7s4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-is-wsl" ,rust-is-wsl-0.4)
@@ -47742,6 +47742,23 @@ contents.")
      "Use this library to open a path or URL using the program configured on
 the system.")
     (license license:expat)))
+
+(define-public rust-open-4
+  (package
+    (inherit rust-open-5)
+    (name "rust-open")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "open" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04kw6xmsjm0wdqidjndhpzl79iksyrhwyik32z28wjjygq63q21s"))))
+    (arguments
+     `(#:cargo-inputs (("rust-is-wsl" ,rust-is-wsl-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pathdiff" ,rust-pathdiff-0.2))))))
 
 (define-public rust-open-3
   (package
