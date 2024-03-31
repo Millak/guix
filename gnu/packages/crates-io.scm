@@ -54794,6 +54794,29 @@ losslessly as possible.")
        #:cargo-development-inputs
        (("rust-os-str-bytes" ,rust-os-str-bytes-2))))))
 
+(define-public rust-print-positions-0.6
+  (package
+    (name "rust-print-positions")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "print-positions" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "026jzdf63b37bb9ix3mpczln2pqylsiwkkxhikj05x9y1r3r7x8x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1))))
+    (home-page "https://github.com/bobhy/print-positions")
+    (synopsis "Library providing string segmentation on grapheme clusters")
+    (description
+     "This package provides a library providing string segmentation on grapheme
+clusters and ANSI escape sequences for accurate length arithmetic based on
+visible print positions.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-priority-queue-1
   (package
     (name "rust-priority-queue")
