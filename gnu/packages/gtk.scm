@@ -1157,7 +1157,12 @@ application suites.")
                             "--no-suite=failing"
                             "--no-suite=flaky"
                             "--no-suite=headless" ; requires mutter…
-                            "--no-suite=gsk-compare-broadway")
+                            "--no-suite=gsk-compare-broadway"
+                            ;; These seem to fail on aarch64, and Debian has
+                            ;; also disabled these, see:
+                            ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050075
+                            "--no-suite=wayland_failing"
+                            "--no-suite=wayland_gles_failing")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
