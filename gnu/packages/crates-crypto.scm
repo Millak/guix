@@ -1072,6 +1072,27 @@ and block modes.")
      "The ChaCha family of stream ciphers.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-camellia-0.1
+  (package
+    (name "rust-camellia")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "camellia" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c6f61rf0gzq7x9d2qmp0330pb397aldwdpmwqybbwly9rby4r1j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs (("rust-cipher" ,rust-cipher-0.4))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "Camellia block cipher")
+    (description "This package provides the camellia block cipher.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cast5-0.11
   (package
     (name "rust-cast5")
