@@ -13421,7 +13421,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.17.0")
+    (version "1.34.2")
     (source
      (origin
        (method git-fetch)
@@ -13431,7 +13431,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0snb6vdgb3l2mw0kr0yb4zjpq46w56rpi554vqn5ks6qwywvs58g"))))
+         "044m3z7h1hi2avx4z6qgjzhgn1fkf1iclxhr4j7pb6flbqvwnxhs"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13468,6 +13468,7 @@ profiler via Sysprof, debugging support, and more.")
            python-beautifulsoup4
            python-brotli
            python-cloudscraper
+           python-colorthief
            python-dateparser
            python-emoji
            python-keyring
@@ -13484,7 +13485,8 @@ profiler via Sysprof, debugging support, and more.")
            python-unidecode
            webkitgtk))
     (native-inputs
-     (list desktop-file-utils
+     (list blueprint-compiler
+           desktop-file-utils
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
