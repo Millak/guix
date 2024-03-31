@@ -84042,6 +84042,28 @@ of text element boundaries, such as user-perceived characters (a.k.a.
 grapheme clusters), words, and sentences.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unic-ucd-category-0.9
+  (package
+    (name "rust-unic-ucd-category")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unic-ucd-category" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h4ixzplc2s441vc8mc4zxliw6qfqh1ziaiv8pa1pzpwyn8lb38v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-matches" ,rust-matches-0.1)
+                       ("rust-unic-char-property" ,rust-unic-char-property-0.9)
+                       ("rust-unic-char-range" ,rust-unic-char-range-0.9)
+                       ("rust-unic-ucd-version" ,rust-unic-ucd-version-0.9))))
+    (home-page "https://github.com/open-i18n/rust-unic/")
+    (synopsis "UNIC Unicode Character Database General Category")
+    (description "UNIC Unicode Character Database General Category.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unic-ucd-segment-0.9
   (package
     (name "rust-unic-ucd-segment")
