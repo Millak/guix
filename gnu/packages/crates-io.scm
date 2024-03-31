@@ -22690,6 +22690,28 @@ Emacs' support for dynamic modules.")
      "This crate provides an implementation of RFC 5322 email messages.")
     (license license:expat)))
 
+(define-public rust-embedded-io-0.4
+  (package
+    (name "rust-embedded-io")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "embedded-io" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v9wrc5nsgaaady7i3ya394sik5251j0iq5rls7mrx7fv696h6pg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-defmt" ,rust-defmt-0.3)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rust-embedded/embedded-hal")
+    (synopsis "Embedded IO traits")
+    (description "This package provides embedded IO traits.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-emojis-0.5
   (package
     (name "rust-emojis")
