@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
@@ -2285,6 +2285,26 @@ for parameterized model creation and handling.  Its features include:
      "@command{GPy} is a Gaussian Process (GP) framework written in
 Python, from the Sheffield machine learning group.  GPy implements a range of
 machine learning algorithms based on GPs.")
+    (license license:bsd-3)))
+
+(define-public python-pods
+  (package
+    (name "python-pods")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pods" version))
+       (sha256
+        (base32 "157xxs12qbnz1g6agy0a4dqhsa4msbqryrxpg5w3r3pb8gxdl4dh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no test suite
+    (propagated-inputs (list python-pandas python-pyyaml python-scipy
+                             python-tables))
+    (home-page "https://github.com/lawrennd/ods")
+    (synopsis "Python software for Open Data Science")
+    (description "This package provides utilities and tools for open data
+science including tools for accessing data sets in Python.")
     (license license:bsd-3)))
 
 (define-public python-pyfma
