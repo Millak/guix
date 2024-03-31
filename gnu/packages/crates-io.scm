@@ -1744,6 +1744,29 @@ it outputs messages to Android's logcat.")
        (("rust-heapless" ,rust-heapless-0.5)
         ("rust-nom" ,rust-nom-4))))))
 
+(define-public rust-ansi-str-0.8
+  (package
+    (name "rust-ansi-str")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ansi-str" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07ddhqynv05xjyhw295w29qy77fi84sh5p2mm46ap0d94s4mgx0w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ansitok" ,rust-ansitok-0.2))
+       #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))
+    (home-page "https://github.com/zhiburt/ansi-str")
+    (synopsis
+     "Library which provides a set of methods to work with ANSI strings")
+    (description
+     "This package provides a library which provides a set of methods to work
+with ANSI strings.")
+    (license license:expat)))
+
 (define-public rust-ansi-width-0.1
   (package
     (name "rust-ansi-width")
