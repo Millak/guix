@@ -71130,6 +71130,33 @@ maximal amount of configuration possible intended.")
        #:cargo-development-inputs
        (("rust-tempdir" ,rust-tempdir-0.3))))))
 
+(define-public rust-socketpair-0.19
+  (package
+    (name "rust-socketpair")
+    (version "0.19.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "socketpair" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xln407qisgd1rrq54ff7b9dbm0mjwvkl17ry6bph4clz2vhvicx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-io-extras" ,rust-io-extras-0.18)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1))))
+    (home-page "https://github.com/sunfishcode/socketpair")
+    (synopsis "Cross-platform socketpair functionality")
+    (description
+     "This package provides cross-platform socketpair functionality.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-socks-0.3
   (package
     (name "rust-socks")
