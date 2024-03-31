@@ -1237,6 +1237,27 @@ be used with the stdlib.")
     (description "Mirror of Rust's allocator API.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-alphanumeric-sort-1
+  (package
+    (name "rust-alphanumeric-sort")
+    (version "1.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "alphanumeric-sort" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13vyx3cqpylvc0md4563rd42b7dvk3fv4wny0kpcc48gy72n0z6n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
+    (home-page "https://magiclen.org/alphanumeric-sort")
+    (synopsis "Sort order for files and folders whose names contain numerals")
+    (description
+     "This crate can help you sort order for files and folders whose names
+contain numerals.")
+    (license license:expat)))
+
 (define-public rust-alsa-0.8
   (package
     (name "rust-alsa")
