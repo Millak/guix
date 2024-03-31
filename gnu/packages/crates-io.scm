@@ -10842,8 +10842,32 @@ messages.")
        (("rust-capnp" ,rust-capnp-0.13)
         ("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
+(define-public rust-capnp-rpc-0.19
+  (package
+    (name "rust-capnp-rpc")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capnp-rpc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05hahpmfjnn49mzv4b2zp4y6si9g6yvjy6kgm2ia9apndjcbl78p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-capnp" ,rust-capnp-0.19)
+                       ("rust-capnp-futures" ,rust-capnp-futures-0.19)
+                       ("rust-futures" ,rust-futures-0.3))))
+    (native-inputs (list capnproto))
+    (home-page "https://github.com/capnproto/capnproto-rust")
+    (synopsis "Cap'n Proto remote procedure call protocol implementation")
+    (description "This package provides an implementation of the Cap'n Proto
+remote procedure call protocol")
+    (license license:expat)))
+
 (define-public rust-capnp-rpc-0.14
   (package
+    (inherit rust-capnp-rpc-0.19)
     (name "rust-capnp-rpc")
     (version "0.14.1")
     (source (origin
@@ -10853,19 +10877,11 @@ messages.")
               (sha256
                (base32
                 "0pm9bjw481lw1zp8lmzkpsjrb85lbjg5s46piqbc3wk8dzwifksc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-capnp" ,rust-capnp-0.14)
         ("rust-capnp-futures" ,rust-capnp-futures-0.14)
-        ("rust-futures" ,rust-futures-0.3))))
-    (native-inputs
-     (list capnproto))
-    (home-page "https://github.com/capnproto/capnproto-rust")
-    (synopsis "Cap'n Proto remote procedure call protocol implementation")
-    (description "This package provides an implementation of the Cap'n Proto
-remote procedure call protocol")
-    (license license:expat)))
+        ("rust-futures" ,rust-futures-0.3))))))
 
 (define-public rust-capnp-rpc-0.13
   (package
