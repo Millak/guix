@@ -578,22 +578,17 @@ rules are rather complex.  This crate implements the whole grammar." )
 (define-public sequoia-sq
   (package
     (name "sequoia-sq")
-    (version "0.30.0")
+    (version "0.34.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "sequoia-sq" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0l3mlhvh93b8s1853gyzzfh1dznjdhbsbyxxcm3bbyxmkyr74wkd"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-sq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0394xr4wxf5ymc8difnih5s9dpw7rpz9b0n7nnp6782gw65ch6lx"))))
     (build-system cargo-build-system)
-    (inputs
-     (list nettle openssl sqlite))
-    (native-inputs
-     (list clang pkg-config))
     (arguments
-     `(#:tests? #f  ; `(dyn std::fmt::Display + 'static)` cannot be sent between threads safely
-       #:install-source? #f
+     `(#:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-buffered-reader" ,rust-buffered-reader-1)
@@ -601,27 +596,73 @@ rules are rather complex.  This crate implements the whole grammar." )
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
         ("rust-dirs" ,rust-dirs-5)
         ("rust-dot-writer" ,rust-dot-writer-0.1)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-indicatif" ,rust-indicatif-0.17)
         ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-rpassword" ,rust-rpassword-6)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-roff" ,rust-roff-0.2)
+        ("rust-rpassword" ,rust-rpassword-7)
         ("rust-sequoia-autocrypt" ,rust-sequoia-autocrypt-0.25)
-        ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.3)
-        ("rust-sequoia-net" ,rust-sequoia-net-0.27)
+        ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.5)
+        ("rust-sequoia-keystore" ,rust-sequoia-keystore-0.2)
+        ("rust-sequoia-net" ,rust-sequoia-net-0.28)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-sequoia-wot" ,rust-sequoia-wot-0.8)
+        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6)
+        ("rust-sequoia-wot" ,rust-sequoia-wot-0.11)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-subplot-build" ,rust-subplot-build-0.7)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-term-size" ,rust-term-size-0.3)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-terminal-size" ,rust-terminal-size-0.2)
+        ("rust-textwrap" ,rust-textwrap-0.15)
         ("rust-tokio" ,rust-tokio-1))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-dircpy" ,rust-dircpy-0.3)
         ("rust-fehler" ,rust-fehler-1)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-predicates" ,rust-predicates-2)
-        ("rust-subplotlib" ,rust-subplotlib-0.7))))
+        ("rust-regex" ,rust-regex-1)
+        ("rust-subplotlib" ,rust-subplotlib-0.7))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-asset-out-dir
+           (lambda _
+             (setenv "ASSET_OUT_DIR" "target/assets")))
+         (add-after 'install 'install-more
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (bash-completions-dir
+                     (string-append out "/etc/bash_completion.d"))
+                    (zsh-completions-dir
+                     (string-append share "/zsh/site-functions"))
+                    (fish-completions-dir
+                     (string-append share "/fish/vendor_completions.d"))
+                    (elvish-completions-dir
+                     (string-append share "/elvish/lib"))
+                    (man1 (string-append share "/man/man1")))
+               ;; The completions are generated in build.rs.
+               (mkdir-p bash-completions-dir)
+               (mkdir-p elvish-completions-dir)
+               (for-each (lambda (file)
+                           (install-file file man1))
+                         (find-files "target/assets/man-pages" "\\.1$"))
+               (copy-file "target/assets/shell-completions/sq.bash"
+                          (string-append bash-completions-dir "/sq"))
+               (install-file "target/assets/shell-completions/_sq"
+                             zsh-completions-dir)
+               (install-file "target/assets/shell-completions/sq.fish"
+                             fish-completions-dir)
+               (copy-file "target/assets/shell-completions/sq.elv"
+                          (string-append elvish-completions-dir "/sq"))))))))
+    (inputs
+     (list nettle openssl sqlite))
+    (native-inputs
+     (list capnproto clang pkg-config))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Command-line frontend for Sequoia OpenPGP")
     (description "This package provides the command-line frontend for Sequoia
