@@ -9646,8 +9646,33 @@ of built-in fundamental numeric types.")
     (description "Bytes related utility functions.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-byte-unit-5
+  (package
+    (name "rust-byte-unit")
+    (version "5.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "byte-unit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gnnl92szl7d6bxz028n03ifflg96z4xp0lxqc3m8rmjy2yikb1k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rocket" ,rust-rocket-0.5)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-utf8-width" ,rust-utf8-width-0.1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://magiclen.org/byte-unit")
+    (synopsis "Library for interaction with units of bytes")
+    (description
+     "This package provides a library for interaction with units of bytes.")
+    (license license:expat)))
+
 (define-public rust-byte-unit-4
   (package
+    (inherit rust-byte-unit-5)
     (name "rust-byte-unit")
     (version "4.0.9")
     (source
@@ -9657,16 +9682,9 @@ of built-in fundamental numeric types.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0lxi11qf6h1rqr0yhsh7i6755l325qrkv9r4bgismyik531mi1qw"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-utf8-width" ,rust-utf8-width-0.1))))
-    (home-page "https://magiclen.org/byte-unit")
-    (synopsis "Library for interaction with units of bytes")
-    (description
-     "This package provides a library for interaction with units of bytes.")
-    (license license:expat)))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-utf8-width" ,rust-utf8-width-0.1))))))
 
 (define-public rust-bytecheck-0.6
   (package
