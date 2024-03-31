@@ -33971,6 +33971,32 @@ versions < 0.2.")
 @code{BufWriter}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-io-extras-0.18
+  (package
+    (name "rust-io-extras")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "io-extras" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vfi3dm8667naalicaaq1lqp8pvnjp805x5903k2k2hfp4zyf0f3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-mio" ,rust-mio-0.8)
+                       ("rust-os-pipe" ,rust-os-pipe-1)
+                       ("rust-socket2" ,rust-socket2-0.4)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-os-pipe" ,rust-os-pipe-1))))
+    (home-page "https://github.com/sunfishcode/io-extras")
+    (synopsis "File/socket handle/descriptor utilities")
+    (description "File/socket handle/descriptor utilities.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-io-lifetimes-2
   (package
     (name "rust-io-lifetimes")
