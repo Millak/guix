@@ -1881,7 +1881,7 @@ retry strategies, such as fixed delay, backoff delay, and random delay.")
       (build-system go-build-system)
       (arguments `(#:import-path "howett.net/plist"))
       (inputs
-       (list go-github.com-jessevdk-go-flags go-github-com-kr-pretty
+       (list go-github-com-jessevdk-go-flags go-github-com-kr-pretty
              go-gopkg-in-check-v1 go-gopkg-in-yaml-v2))
       (home-page "https://github.com/DHowett/go-plist")
       (synopsis "Apple property list transcoder")
@@ -2839,9 +2839,9 @@ Under Windows, the console APIs are used.  Otherwise, ANSI texts are output.")
 specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
     (license license:expat)))
 
-(define-public go-github.com-jessevdk-go-flags
+(define-public go-github-com-jessevdk-go-flags
   (package
-    (name "go-github.com-jessevdk-go-flags")
+    (name "go-github-com-jessevdk-go-flags")
     (version "1.5.0")
     (source (origin
               (method git-fetch)
