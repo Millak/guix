@@ -35365,6 +35365,29 @@ the jni-bindgen code generator for binding to JVM APIs from Rust.")
      "An implementation of the GNU make jobserver for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-joinery-2
+  (package
+    (name "rust-joinery")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "joinery" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xg4cjnz8cd6ya9hynb9wx79ijd3j6307f47aijviqzwyml7s5kj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/Lucretiel/joinery")
+    (synopsis
+     "Crate for generically joining iterators with a separator")
+    (description "This package provides a small crate for generically joining
+iterators with a separator.")
+    (license license:expat)))
+
 (define-public rust-jsonpath-lib-0.3
   (package
     (name "rust-jsonpath-lib")
