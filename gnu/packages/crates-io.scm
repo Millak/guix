@@ -61455,23 +61455,25 @@ network services using futures.")
 (define-public rust-ropey-1
   (package
     (name "rust-ropey")
-    (version "1.2.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ropey" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10qsj7m6hz953ar68q7iqwwizrh89jaclgffzglb7nwzb0bfzwzh"))))
+        (base32 "1dckf3likfi1my2ilqwhq2ifsm9iq8cayg6ws7fpa6nd1d11whck"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-smallvec" ,rust-smallvec-1))
+     `(#:cargo-inputs
+       (("rust-smallvec" ,rust-smallvec-1)
+        ("rust-str-indices" ,rust-str-indices-0.4))
        #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-proptest" ,rust-proptest-0.9)
-        ("rust-rand" ,rust-rand-0.7)
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
     (home-page "https://github.com/cessen/ropey")
     (synopsis "Fast and robust text rope for Rust")
