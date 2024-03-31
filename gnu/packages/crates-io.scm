@@ -34341,14 +34341,14 @@ language codes.")
 (define-public rust-itertools-0.12
   (package
     (name "rust-itertools")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "itertools" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1c07gzdlc6a1c8p8jrvvw3gs52bss3y58cs2s21d9i978l36pnr5"))))
+        (base32 "0s95jbb3ndj1lvfxyq5wanc0fm0r6hg6q4ngb92qlfdxvci10ads"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-either" ,rust-either-1))
