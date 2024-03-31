@@ -1315,42 +1315,45 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "1.7.12")
+    (version "1.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgmatic" version))
        (sha256
-        (base32 "0720wvs3h2w8h28d7mpvjfp0q37dnrwf1y2ik3y4yr9csih7fmgh"))))
+        (base32 "1xmqv0gg2ic7lp5kmygr9f6qkabsr86mma7pigan12vk2bcdbw31"))))
     (build-system python-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'configure
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Set absolute store path to borg.
-                   (substitute* "borgmatic/commands/borgmatic.py"
-                     (("\\.get\\('local_path', 'borg'\\)")
-                      (string-append ".get('local_path', '"
-                                     (search-input-file inputs "bin/borg")
-                                     "')")))
-                   (substitute* "tests/unit/commands/test_borgmatic.py"
-                     (("(module.get_local_path.+ == )'borg'" all start)
-                      (string-append start "'"
-                                     (search-input-file inputs "bin/borg")
-                                     "'")))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; Tests require the installed executable.
-                     (setenv "PATH" (string-append #$output "/bin"
-                                                   ":" (getenv "PATH")))
-                     (invoke "pytest")))))))
-    (inputs
-     (list borg python-colorama python-jsonschema python-requests
-           python-ruamel.yaml-0.16))
-    (native-inputs
-     (list python-flexmock python-pytest python-pytest-cov))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'configure
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       ;; Set absolute store path to borg.
+                       (substitute* "borgmatic/commands/borgmatic.py"
+                         (("\\.get\\('local_path', 'borg'\\)")
+                          (string-append ".get('local_path', '"
+                                         (search-input-file inputs "bin/borg")
+                                         "')")))
+                       (substitute* "tests/unit/commands/test_borgmatic.py"
+                         (("(module.get_local_path.+ == )'borg'" all start)
+                          (string-append start "'"
+                                         (search-input-file inputs "bin/borg")
+                                         "'")))))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         ;; Tests require the installed executable.
+                         (setenv "PATH"
+                                 (string-append #$output "/bin" ":"
+                                                (getenv "PATH")))
+                         (invoke "pytest")))))))
+    (inputs (list borg
+                  python-apprise
+                  python-colorama
+                  python-jsonschema
+                  python-requests
+                  python-ruamel.yaml))
+    (native-inputs (list python-flexmock python-pytest python-pytest-cov))
     (home-page "https://torsion.org/borgmatic/")
     (synopsis "Simple, configuration-driven backup software")
     (description
