@@ -3278,7 +3278,7 @@ the GNOME desktop environment.")
 (define-public blueprint-compiler
   (package
     (name "blueprint-compiler")
-    (version "0.4.0")
+    (version "0.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3288,7 +3288,7 @@ the GNOME desktop environment.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))
+                "15cm2bksmygf8sifryrawxxblvvw27p4w3m42gvp3jlq50a15xm6"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3303,13 +3303,15 @@ the GNOME desktop environment.")
       #~(modify-phases %standard-phases
           (add-after 'wrap 'wrap-python
             (assoc-ref python:%standard-phases 'wrap))
-          (add-after 'wrap-python 'wrap-gi
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out               (assoc-ref outputs "out"))
-                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-                (wrap-program (string-append out "/bin/blueprint-compiler")
-                  `("GI_TYPELIB_PATH" ":" suffix (,gi-typelib-path)))))))))
-    (native-inputs (list gtk python-pygobject python))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (native-inputs (list gtk
+                         libadwaita
+                         python
+                         python-pygobject
+                         xorg-server-for-tests))
     (inputs (list python))
     (synopsis "Template markup language")
     (description
