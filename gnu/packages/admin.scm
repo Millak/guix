@@ -5162,7 +5162,7 @@ disk utilization, priority, username, state, and exit code.")
      `((release-monitoring-url . "https://www.atoptool.nl/downloadatop.php")))
     (license license:gpl2+)))
 
-;; TODO: Unvendor u-root (pkg: forth, golang, testutil).
+;; TODO: Pack u-root for: forth, and some tests.
 (define fiano
   (package
     (name "fiano")
@@ -5172,28 +5172,26 @@ disk utilization, priority, username, state, and exit code.")
               (uri (git-reference
                     (url "https://github.com/linuxboot/fiano.git")
                     (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "03ihdwwhb7g6bihx141cn0924sjs5ps6q3ps58pk1cg0g0srrr9h"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "vendor/golang.org")
-                  (delete-file-recursively "vendor/github.com")
-                  #t))))
+               #~(begin
+                   ;; Remove all vendored sources.
+                   (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/linuxboot/fiano"
-       #:unpack-path "github.com/linuxboot/fiano"))
-    (native-inputs
-     `())
+     (list
+      #:import-path "github.com/linuxboot/fiano"
+      #:unpack-path "github.com/linuxboot/fiano"))
     (inputs
-     `(("go-golang-org-x-text" ,go-golang-org-x-text)
-       ("go-github-com-ulikunitz-xz" ,go-github-com-ulikunitz-xz)))
-    (synopsis "UEFI image editor")
-    (description "This package provides a command-line UEFI image editor.")
+     (list go-golang-org-x-text go-github-com-ulikunitz-xz))
     (home-page "https://github.com/linuxboot/fiano")
+    (synopsis "UEFI image editor")
+    (description
+     "This package provides a command-line UEFI image editor.")
     (license license:bsd-3)))
 
 (define-public fiano-utk
