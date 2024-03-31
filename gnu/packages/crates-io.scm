@@ -63079,6 +63079,27 @@ reading and writing BAM files.")
 suitable for financial calculations.")
     (license license:expat)))
 
+(define-public rust-rust-decimal-macros-1
+  (package
+    (name "rust-rust-decimal-macros")
+    (version "1.34.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust_decimal_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10kdmfm95z9yx3ypk3kfqjbvnr5dhfsg4md6wyayz6vji0ap0674"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-rust-decimal" ,rust-rust-decimal-1))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/paupino/rust-decimal")
+    (synopsis "Shorthand macros to assist creating Decimal types")
+    (description "Shorthand macros to assist creating Decimal types.")
+    (license license:expat)))
+
 (define-public rust-rust-embed-8
   (package
     (name "rust-rust-embed")
