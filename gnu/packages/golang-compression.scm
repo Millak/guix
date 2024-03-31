@@ -28,7 +28,8 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages golang-xyz))
 
 ;;; Commentary:
 ;;;
@@ -190,6 +191,52 @@ time, as otherwise the internal gzip library will likely be faster.")
      "This package provides a library for reading RAR archives with Golang.")
     (license license:bsd-2)))
 
+(define-public go-github-com-pierrec-lz4
+  (package
+    (name "go-github-com-pierrec-lz4")
+    (version "2.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pierrec/lz4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vfn01gd3hcpbj6gb4ig3pw6bv0g4j5780awr0fv4kf9id8gjvyy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pierrec/lz4"))
+    (home-page "https://github.com/pierrec/lz4")
+    (synopsis "LZ4 compression in pure Go")
+    (description
+     "@code{lz4} provides a streaming interface to
+@url{http://fastcompression.blogspot.fr/2013/04/lz4-streaming-format-final.html,
+LZ4 data streams} as well as low level compress and uncompress functions for
+LZ4 data blocks.  The implementation is based on the reference C
+@url{https://github.com/lz4/lz4, one}.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-pierrec-lz4-v4
+  (package
+    (inherit go-github-com-pierrec-lz4)
+    (name "go-github-com-pierrec-lz4-v4")
+    (version "4.1.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pierrec/lz4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nc2aprbw4s6cx2mijaqdswkgnizx8fqb0mzha82wrznl3gz69ni"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pierrec/lz4/v4"))))
+
 (define-public go-github-com-ulikunitz-xz
   (package
     (name "go-github-com-ulikunitz-xz")
@@ -215,6 +262,28 @@ compressed streams.  It includes also a gxz command for compressing and
 decompressing data.  The package is completely written in Go and doesn't have
 any dependency on any C code.")
     (license license:bsd-3)))
+
+;;;
+;;; Executables:
+;;;
+
+(define-public go-lz4c
+  (package
+    (inherit go-github-com-pierrec-lz4-v4)
+    (name "go-lz4c")
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/pierrec/lz4/cmd/lz4c"
+      #:unpack-path "github.com/pierrec/lz4"))
+    (native-inputs
+     (list go-code-cloudfoundry-org-bytefmt
+           go-github-com-pierrec-cmdflag
+           go-github-com-schollz-progressbar-v3))
+    (description
+     (string-append (package-description go-github-com-pierrec-lz4-v4)
+                    "  This package provides an additional command line
+interface tool to compress and decompress LZ4 files."))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
