@@ -49466,6 +49466,31 @@ sequence alignment library.")
 executable.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-papergrid-0.10
+  (package
+    (name "rust-papergrid")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "papergrid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j6hhk8lgzz53rzrlpxqrsq9gqi7cis445l7m7wn5nxny8avxk52"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `testing_table`
+       #:cargo-inputs (("rust-ansi-str" ,rust-ansi-str-0.8)
+                       ("rust-ansitok" ,rust-ansitok-0.2)
+                       ("rust-bytecount" ,rust-bytecount-0.6)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))
+    (home-page "https://github.com/zhiburt/tabled")
+    (synopsis "Core library to print a table")
+    (description "Papergrid is a core library to print a table.")
+    (license license:expat)))
+
 (define-public rust-parasailors-0.3
   (package
     (name "rust-parasailors")
