@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2043,7 +2044,8 @@ the boot loader configuration.")
        (sha256
         (base32 "0ij93vl9skcfdfgkmgd80q0q4c6q39dss4rds7phxizqqsr3d3sk"))
        (patches
-        (search-patches "flatpak-fix-path.patch"
+        (search-patches "flatpak-fix-fonts-icons.patch"
+                        "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
 
     ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
