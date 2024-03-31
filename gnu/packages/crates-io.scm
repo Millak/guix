@@ -42021,8 +42021,29 @@ possible over the OS abstractions.")
     (description "Macros that provide source code annotations for MIRAI")
     (license license:expat)))
 
+(define-public rust-mock-instant-0.3
+  (package
+    (name "rust-mock-instant")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mock_instant" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "180yr3i44a98w1mj36dd8xmym33rbzndpj0j1g13di52n8g8crlk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/museun/mock_instant")
+    (synopsis "Mock an std::time::Instant")
+    (description
+     "This package provides a simple way to mock an std::time::Instant in Rust.")
+    (license license:bsd-0)))
+
 (define-public rust-mock-instant-0.2
   (package
+    (inherit rust-mock-instant-0.3)
     (name "rust-mock-instant")
     (version "0.2.1")
     (source (origin
@@ -42031,14 +42052,8 @@ possible over the OS abstractions.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "0vg0kmz96zazjdq57l57nm24mc2in57y090ywcq827xq8fi2jzki"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))
-    (home-page "https://github.com/museun/mock_instant")
-    (synopsis "Mock an std::time::Instant")
-    (description
-     "This package provides a simple way to mock an std::time::Instant in rust.")
-    (license license:bsd-0)))
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))))
 
 (define-public rust-mockall-0.11
   (package
