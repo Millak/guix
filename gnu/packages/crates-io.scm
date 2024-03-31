@@ -75983,6 +75983,27 @@ memory all at once.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-tardar-0.1
+  (package
+    (name "rust-tardar")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tardar" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05imkznxr59dqp0s37i7qkrpyjx2zz9lmxy8ijcvka5nhcpr834h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-miette" ,rust-miette-5)
+                       ("rust-vec1" ,rust-vec1-1))))
+    (home-page "https://github.com/olson-sean-k/tardar")
+    (synopsis "Extensions for diagnostic error handling with `miette`")
+    (description "This package provides extensione for diagnostic error handling
+with `miette`.")
+    (license license:expat)))
+
 (define-public rust-target-2
   (package
     (name "rust-target")
