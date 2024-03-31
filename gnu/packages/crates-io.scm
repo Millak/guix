@@ -21508,6 +21508,28 @@ common subsequence.  The diff algorithms include Myer's diff and Patience
 diff.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-dircpy-0.3
+  (package
+    (name "rust-dircpy")
+    (version "0.3.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dircpy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jkj888b22ln6qcvjlrl6a2za1y5j1c8f021qjzq0jf3a6vrs999"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency chain.
+       #:cargo-inputs (("rust-jwalk" ,rust-jwalk-0.8)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/woelper/dircpy/")
+    (synopsis "Copy directories recursively with flexible options")
+    (description "Copy directories recursively with flexible options.")
+    (license license:expat)))
+
 (define-public rust-directories-5
   (package
     (name "rust-directories")
