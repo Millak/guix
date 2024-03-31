@@ -67,6 +67,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -24193,6 +24194,48 @@ blocking data structures.")
      `(#:cargo-inputs (("rust-event-listener" ,rust-event-listener-3)
                        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
        #:cargo-development-inputs (("rust-futures-lite" ,rust-futures-lite-1))))))
+
+(define-public rust-exacl-0.11
+  (package
+    (name "rust-exacl")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "exacl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17vd67mhppnw1kbb053c4bygilbdviz53zrzm4z1cxr73hn1b5f6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=acl::acl_tests::test_write_acl_posix"
+         "--skip=acl::acl_tests::test_write_default_acl"
+         "--skip=qualifier::qualifier_tests::test_group_named"
+         "--skip=qualifier::qualifier_tests::test_user_named"
+         "--skip=unix::unix_tests::test_gid_to_name"
+         "--skip=unix::unix_tests::test_name_to_gid"
+         "--skip=unix::unix_tests::test_name_to_uid"
+         "--skip=unix::unix_tests::test_uid_to_name")
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.68)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-ctor" ,rust-ctor-0.2)
+                                   ("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs (list acl))
+    (home-page "https://github.com/byllyfish/exacl")
+    (synopsis "Manipulate file system (ACL) on macOS, Linux, and FreeBSD")
+    (description
+     "This package provides functions to manipulate file system access control
+lists (ACL) on @code{macOS}, Linux, and @code{FreeBSD}.")
+    (license license:expat)))
 
 (define-public rust-executable-path-1
   (package
