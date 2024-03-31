@@ -85801,14 +85801,14 @@ specified across Unix and Windows platforms.")
 (define-public rust-walkdir-2
   (package
     (name "rust-walkdir")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "walkdir" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1vjl9fmfc4v8k9ald23qrpcbyb8dl1ynyq8d516cm537r1yqa7fp"))))
+         (base32 "0jsy7a710qv8gld5957ybrnc07gavppp963gs32xk4ag8130jy99"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
