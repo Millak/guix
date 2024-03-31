@@ -292,8 +292,33 @@ styles (bold, underline).")
     (description "This package provides FFI bindings to aom.")
     (license license:expat)))
 
+(define-public rust-ascii-canvas-3
+  (package
+    (name "rust-ascii-canvas")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ascii-canvas" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1in38ziqn4kh9sw89ys4naaqzvvjscfs0m4djqbfq7455v5fq948"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-term" ,rust-term-0.7))
+       #:cargo-development-inputs (("rust-diff" ,rust-diff-0.1))))
+    (home-page "https://github.com/nikomatsakis/ascii-canvas")
+    (synopsis "Simple canvas for drawing lines and styled text and emitting to
+the terminal")
+    (description "@code{ASCII} canvas is a simple Rust library that allows you
+to draw lines and colored text and then write them to the terminal.  It uses
+the term library to handle the ANSI nonsense and hence it works on Windows,
+Mac, and Unix.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ascii-canvas-2
   (package
+    (inherit rust-ascii-canvas-3)
     (name "rust-ascii-canvas")
     (version "2.0.0")
     (source
@@ -303,19 +328,9 @@ styles (bold, underline).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0a9s8vrbc5jr6ry5ygjyfqmbs9gyya1v6dsxzsczpai8z4nvg3pz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t  ;; TODO: failes due to an unresolved import
-       #:cargo-inputs
-       (("rust-term" ,rust-term-0.5))))
-    (home-page "https://github.com/nikomatsakis/ascii-canvas")
-    (synopsis "Simple canvas for drawing lines and styled text and emitting to
-the terminal")
-    (description "@code{ASCII} canvas is a simple Rust library that allows you
-to draw lines and colored text and then write them to the terminal.  It uses
-the term library to handle the ANSI nonsense and hence it works on Windows,
-Mac, and Unix.")
-    (license (list license:asl2.0 license:expat))))
+       #:cargo-inputs (("rust-term" ,rust-term-0.5))))))
 
 (define-public rust-ash-0.37
   (package
