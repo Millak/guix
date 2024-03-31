@@ -1078,6 +1078,25 @@ names for 256 color terminal setups.")
 as functions or string constants to form colored terminal output.")
     (license license:expat)))
 
+(define-public python-colorthief
+  (package
+    (name "python-colorthief")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "colorthief" version))
+       (sha256
+        (base32 "08bjsmmkihyksms2vgndslln02rvw56lkxz28d39qrnxbg4v1707"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pillow))
+    (home-page "https://github.com/fengsp/color-thief-py")
+    (synopsis "Grab the color palette of an image")
+    (description
+     "This package provides methods to determine the dominant color
+of an image, as well as constructing a representative color palette.")
+    (license license:bsd-3)))
+
 (define-public python-construct-classes
   (package
     (name "python-construct-classes")
