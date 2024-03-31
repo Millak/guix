@@ -186,6 +186,42 @@ than just headers; it requires tight integration with the MUA.")
      "This package provides interprocess communication infrastructure for Sequoia.")
     (license license:lgpl2.0+)))
 
+(define-public rust-sequoia-keystore-softkeys-0.2
+  (package
+    (name "rust-sequoia-keystore-softkeys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-keystore-softkeys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "151f1ai0bxvab8fi314qcybilv4vq26gfdcs3yp7r28xqn9hldw0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-sequoia-keystore-backend" ,rust-sequoia-keystore-backend-0.2)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-test-log" ,rust-test-log-0.2)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs (list clang pkg-config))
+    (inputs (list nettle))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "In-memory backend for Sequoia's private key store")
+    (description
+     "This package provides a soft key (in-memory key) backend for Sequoia's
+private key store.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-sequoia-net-0.28
   (package
     (name "rust-sequoia-net")
