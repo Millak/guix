@@ -85045,6 +85045,34 @@ first byte.")
         (base32
          "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))))
 
+(define-public rust-uu-cp-0.0.23
+  (package
+    (name "rust-uu-cp")
+    (version "0.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uu_cp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1snwk4fh6fvvvvqc1y660dr8lw95in9hazi49licnlgszh60k3jc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-exacl" ,rust-exacl-0.11)
+                       ("rust-filetime" ,rust-filetime-0.2)
+                       ("rust-indicatif" ,rust-indicatif-0.17)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-quick-error" ,rust-quick-error-2)
+                       ("rust-selinux" ,rust-selinux-0.4)
+                       ("rust-uucore" ,rust-uucore-0.0.25)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-xattr" ,rust-xattr-1))))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis "cp ~ (uutils) copy SOURCE to DESTINATION")
+    (description "This package provides the @code{cp} command from uutils.")
+    (license license:expat)))
+
 (define-public rust-uu-mkdir-0.0.23
   (package
     (name "rust-uu-mkdir")
