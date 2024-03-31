@@ -1764,6 +1764,27 @@ it outputs messages to Android's logcat.")
      "Calculate the width of a string when printed to the terminal.")
     (license license:expat)))
 
+(define-public rust-ansitok-0.2
+  (package
+    (name "rust-ansitok")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ansitok" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10vc2d1325qsbvbnqnj48zg55wv7jz929drx9vpdscdvl7k48012"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-7)
+                       ("rust-vte" ,rust-vte-0.10))))
+    (home-page "https://gitlab.com/zhiburt/ansitok")
+    (synopsis "Library for parsing ANSI Escape Codes")
+    (description
+     "This package provides a library for parsing ANSI Escape Codes.")
+    (license license:expat)))
+
 (define-public rust-anstream-0.6
   (package
     (name "rust-anstream")
