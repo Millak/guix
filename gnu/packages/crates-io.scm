@@ -10719,8 +10719,31 @@ brightness between monitors.")
 tracking memory usage and enabling limits to be set.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-capnp-0.19
+  (package
+    (name "rust-capnp")
+    (version "0.19.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capnp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v90fxhhwgcszxday345rmjp3nicpnbvshnccd55qsbszgk3465i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-embedded-io" ,rust-embedded-io-0.6)
+                       ("rust-quickcheck" ,rust-quickcheck-1))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/capnproto/capnproto-rust")
+    (synopsis "Runtime library for Cap'n Proto data encoding")
+    (description "This package provides a runtime library for Cap'n Proto data
+encoding.")
+    (license license:expat)))
+
 (define-public rust-capnp-0.14
   (package
+    (inherit rust-capnp-0.19)
     (name "rust-capnp")
     (version "0.14.11")
     (source (origin
@@ -10730,17 +10753,11 @@ tracking memory usage and enabling limits to be set.")
               (sha256
                (base32
                 "1wwp619sib07raykk93n6j7amvsinlchnicxfjnnb7bx5if0ijid"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))
        #:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.9))))
-    (home-page "https://github.com/capnproto/capnproto-rust")
-    (synopsis "Runtime library for Cap'n Proto data encoding")
-    (description "This package provides a runtime library for Cap'n Proto data
-encoding.")
-    (license license:expat)))
+       (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
 (define-public rust-capnp-0.13
   (package
