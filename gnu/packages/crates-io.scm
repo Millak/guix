@@ -25792,6 +25792,30 @@ prime field implementations in rust.")
     (description "An atomic utility for diffing files in testing.")
     (license license:bsd-3)))
 
+(define-public rust-file-id-0.2
+  (package
+    (name "rust-file-id")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "file-id" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jdg9xq830hghzrqkbnx8nda58a7z6mh8b6vlg5mj87v4l2ji135"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/notify-rs/notify")
+    (synopsis
+     "Utility for reading inode numbers (Linux, MacOS) and file IDs (Windows)")
+    (description
+     "This package provides a utility for reading inode numbers (Linux,
+@code{MacOS}) and file IDs (Windows).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-filedescriptor-0.8
   (package
     (name "rust-filedescriptor")
