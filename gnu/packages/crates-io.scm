@@ -85045,6 +85045,29 @@ first byte.")
         (base32
          "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))))
 
+(define-public rust-uu-whoami-0.0.23
+  (package
+    (name "rust-uu-whoami")
+    (version "0.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uu_whoami" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k9p305ph1nx29gr02alasj3y8xczhh8yaxj3zzcnd0znk1rsn3h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-uucore" ,rust-uucore-0.0.25)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis
+     "whoami ~ (uutils) display user name of current effective user ID")
+    (description "This package provides the @code{whoami} command from uutils.")
+    (license license:expat)))
+
 (define-public rust-uucore-0.0.25
   (package
     (name "rust-uucore")
