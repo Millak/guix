@@ -72479,6 +72479,27 @@ UTF-8.")
     (description "This package provides a static string buffer.")
     (license license:boost1.0)))
 
+(define-public rust-str-indices-0.4
+  (package
+    (name "rust-str-indices")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "str_indices" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p6kggjax1mx0niq22dsm5xq2jvg6l4nyrm8a6f0138yaav7qmg9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/cessen/str_indices")
+    (synopsis "Count and convert between indexing schemes on string slices")
+    (description
+     "Count and convert between indexing schemes on string slices.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-str-stack-0.1
   (package
     (name "rust-str-stack")
