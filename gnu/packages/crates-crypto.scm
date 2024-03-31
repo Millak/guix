@@ -5920,6 +5920,28 @@ for additional details.")
      "This package provides a simple DER/ASN.1 encoding/decoding library.")
     (license license:isc)))
 
+(define-public rust-sm3-0.4
+  (package
+    (name "rust-sm3")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sm3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q2qn4d7qhd8v5grr0xdq9jv3likcr2i8nnqqhxy79yh0avs7fgb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-digest" ,rust-digest-0.10))
+       #:cargo-development-inputs (("rust-digest" ,rust-digest-0.10)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "SM3 (OSCCA GM/T 0004-2012) hash function")
+    (description
+     "This package provides the SM3 (OSCCA GM/T 0004-2012) hash function.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-spki-0.7
   (package
     (name "rust-spki")
