@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -59,6 +59,7 @@
             with-repository
             with-git-error-handling
             false-if-git-not-found
+            repository-info
             update-cached-checkout
             url+commit->name
             latest-repository-commit
@@ -329,6 +330,22 @@ dynamic extent of EXP."
       body ...)
     (lambda (key err)
       (report-git-error err))))
+
+(define (repository-info directory)
+  "Open the Git repository in DIRECTORY or one of its parent and return three
+values: the working directory of that repository, its checked out commit ID,
+and its checked out reference (such as a branch name).  Return #f (three
+values) if DIRECTORY does not hold a readable Git repository."
+  (catch 'git-error
+    (lambda ()
+      (with-repository (repository-discover directory) repository
+        (let* ((head   (repository-head repository))
+               (commit (oid->string (reference-target head))))
+          (values (repository-working-directory repository)
+                  commit
+                  (reference-shorthand head)))))
+    (lambda _
+      (values #f #f #f))))
 
 (define* (update-submodules repository
                             #:key (log-port (current-error-port))

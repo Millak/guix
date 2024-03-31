@@ -24,6 +24,7 @@
   #:autoload   (guix git) (update-cached-checkout
                            url+commit->name
                            commit-difference
+                           repository-info
                            with-repository)
   #:autoload   (guix git-authenticate) (authenticate-repository)
   #:autoload   (guix openpgp) (openpgp-public-key-fingerprint
@@ -207,18 +208,13 @@ introduction, add it."
 channel that uses that repository and the commit HEAD currently points to; use
 INTRODUCTION as the channel's introduction.  Return #f if no Git repository
 could be found at DIRECTORY or one of its ancestors."
-  (catch 'git-error
-    (lambda ()
-      (with-repository (repository-discover directory) repository
-        (let* ((head   (repository-head repository))
-               (commit (oid->string (reference-target head))))
-          (channel
-           (inherit %default-guix-channel)
-           (url (repository-working-directory repository))
-           (commit commit)
-           (branch (reference-shorthand head))
-           (introduction introduction)))))
-    (const #f)))
+  (let ((directory commit branch (repository-info directory)))
+    (channel
+     (inherit %default-guix-channel)
+     (url directory)
+     (commit commit)
+     (branch branch)
+     (introduction introduction))))
 
 (define-record-type <channel-instance>
   (channel-instance channel commit checkout)
