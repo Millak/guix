@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -208,27 +208,23 @@ HKP protocol, and searching and publishing Web Key Directories.")
 (define-public rust-sequoia-openpgp-1
   (package
     (name "rust-sequoia-openpgp")
-    (version "1.16.0")
+    (version "1.19.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-openpgp" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1z0xl7hnm1p51pyhwdqyzcnl2dhzfjnvssz7hi15ps1hk4zzzvrh"))))
+         (base32 "1x3d4yj8mhra8yhcxz6z73pb77pzk0zl1vgxx0yrimzk9b759wgb"))))
     (build-system cargo-build-system)
-    (native-inputs
-     (list clang pkg-config))
-    (inputs
-     (list gmp nettle))
     (arguments
      `(#:features '("crypto-nettle")
        #:cargo-test-flags
        (list "--release" "--"
-             ;; TODO: Figure out how this test is supposed to fail.
-             "--skip=parse::test::panic_on_short_zip")
+             "--skip=leak_tests::test_ed25519")
        #:cargo-inputs
        (("rust-aes" ,rust-aes-0.8)
+        ("rust-aes-gcm" ,rust-aes-gcm-0.10)
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-base64" ,rust-base64-0.21)
         ("rust-block-padding" ,rust-block-padding-0.3)
@@ -236,25 +232,26 @@ HKP protocol, and searching and publishing Web Key Directories.")
         ("rust-botan" ,rust-botan-0.10)
         ("rust-buffered-reader" ,rust-buffered-reader-1)
         ("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-camellia" ,rust-camellia-0.1)
         ("rust-cast5" ,rust-cast5-0.11)
         ("rust-cfb-mode" ,rust-cfb-mode-0.8)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-cipher" ,rust-cipher-0.4)
         ("rust-des" ,rust-des-0.8)
         ("rust-digest" ,rust-digest-0.10)
+        ("rust-dsa" ,rust-dsa-0.6)
         ("rust-dyn-clone" ,rust-dyn-clone-1)
         ("rust-eax" ,rust-eax-0.5)
         ("rust-ecb" ,rust-ecb-0.1)
         ("rust-ecdsa" ,rust-ecdsa-0.16)
-        ("rust-ed25519" ,rust-ed25519-1)
-        ("rust-ed25519-dalek" ,rust-ed25519-dalek-1)
+        ("rust-ed25519" ,rust-ed25519-2)
+        ("rust-ed25519-dalek" ,rust-ed25519-dalek-2)
         ("rust-flate2" ,rust-flate2-1)
-        ("rust-generic-array" ,rust-generic-array-0.14)
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-idea" ,rust-idea-0.5)
-        ("rust-idna" ,rust-idna-0.3)
-        ("rust-lalrpop" ,rust-lalrpop-0.19)
-        ("rust-lalrpop-util" ,rust-lalrpop-util-0.19)
+        ("rust-idna" ,rust-idna-0.5)
+        ("rust-lalrpop" ,rust-lalrpop-0.20)
+        ("rust-lalrpop-util" ,rust-lalrpop-util-0.20)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-md-5" ,rust-md-5-0.10)
@@ -265,29 +262,30 @@ HKP protocol, and searching and publishing Web Key Directories.")
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-p256" ,rust-p256-0.13)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-rand" ,rust-rand-0.7)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-regex" ,rust-regex-1)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.8)
         ("rust-ripemd" ,rust-ripemd-0.1)
         ("rust-rsa" ,rust-rsa-0.9)
-        ("rust-sha-1" ,rust-sha-1-0.10)
-        ("rust-sha1collisiondetection" ,rust-sha1collisiondetection-0.2)
+        ("rust-sha1collisiondetection" ,rust-sha1collisiondetection-0.3)
         ("rust-sha2" ,rust-sha2-0.10)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-twofish" ,rust-twofish-0.7)
         ("rust-typenum" ,rust-typenum-1)
         ("rust-win-crypto-ng" ,rust-win-crypto-ng-0.5)
         ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-x25519-dalek-ng" ,rust-x25519-dalek-ng-1)
+        ("rust-x25519-dalek" ,rust-x25519-dalek-2)
         ("rust-xxhash-rust" ,rust-xxhash-rust-0.8))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
+       (("rust-criterion" ,rust-criterion-0.5)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-rpassword" ,rust-rpassword-6))))
+        ("rust-rpassword" ,rust-rpassword-7))))
+    (native-inputs
+     (list clang pkg-config))
+    (inputs
+     (list gmp nettle))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "OpenPGP data types and associated machinery")
     (description "This crate aims to provide a complete implementation of
@@ -573,7 +571,7 @@ This Guix package is built to use the nettle cryptographic library.")))
 (define-public sequoia
   (package
     (name "sequoia")
-    (version "1.16.0")
+    (version "1.19.0")
     (source #f)
     (build-system trivial-build-system)
     (arguments
