@@ -36,6 +36,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
 
@@ -184,6 +185,50 @@ than just headers; it requires tight integration with the MUA.")
     (synopsis "Interprocess communication infrastructure for Sequoia")
     (description
      "This package provides interprocess communication infrastructure for Sequoia.")
+    (license license:lgpl2.0+)))
+
+(define-public rust-sequoia-keystore-0.2
+  (package
+    (name "rust-sequoia-keystore")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-keystore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11rb2k5v2mc5nf2bafp78nydgcx4gizyxqa9b9lc3d1b73mqv2ad"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-capnp" ,rust-capnp-0.19)
+        ("rust-capnpc" ,rust-capnpc-0.19)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-sequoia-ipc" ,rust-sequoia-ipc-0.33)
+        ("rust-sequoia-keystore-backend" ,rust-sequoia-keystore-backend-0.2)
+        ("rust-sequoia-keystore-softkeys" ,rust-sequoia-keystore-softkeys-0.2)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7))
+       #:cargo-development-inputs
+       (("rust-dircpy" ,rust-dircpy-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-test-log" ,rust-test-log-0.2)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs (list capnproto clang pkg-config))
+    (inputs (list nettle))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Sequoia's private key store server")
+    (description "This package contains sequoia's private key store server.")
     (license license:lgpl2.0+)))
 
 (define-public rust-sequoia-keystore-backend-0.2
