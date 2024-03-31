@@ -1897,6 +1897,30 @@ comparison library, to Go.  Both a library and a command-line tool are
 included in this package.")
     (license license:expat)))
 
+(define-public go-github-com-pierrec-cmdflag
+  (package
+    (name "go-github-com-pierrec-cmdflag")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pierrec/cmdflag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nxmqkjwd7i3blmspvxib352vm6167h2ffqy4m9zc3fb9srvrpqc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pierrec/cmdflag"))
+    (home-page "https://github.com/pierrec/cmdflag")
+    (synopsis "Augment the flag package with commands")
+    (description
+     "Package @code{cmdflag} provides simple command line commands processing
+on top of the standard library @code{flag} package.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-prometheus-client-model
   (let ((commit "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016")
         (revision "2"))
