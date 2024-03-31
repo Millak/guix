@@ -85045,6 +85045,26 @@ first byte.")
         (base32
          "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))))
 
+(define-public rust-uu-mkdir-0.0.23
+  (package
+    (name "rust-uu-mkdir")
+    (version "0.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uu_mkdir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lf84gxjw1ii53xmlr4rnlgpqci5zw8scqf1qpmid3bkkry6bgyw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-uucore" ,rust-uucore-0.0.25))))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis "mkdir ~ (uutils) create DIRECTORY")
+    (description "This package provides the @code{mkdir} command from uutils.")
+    (license license:expat)))
+
 (define-public rust-uu-mktemp-0.0.23
   (package
     (name "rust-uu-mktemp")
