@@ -84085,6 +84085,33 @@ grapheme clusters), words, and sentences.")
      "UNIC Unicode Character Database Hangul Syllable Composition & Decomposition.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unic-ucd-normal-0.9
+  (package
+    (name "rust-unic-ucd-normal")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unic-ucd-normal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "044laqqf09xqv4gl27f328a2f780gkzabpar72qj4b90p1rxibl6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unic-char-property" ,rust-unic-char-property-0.9)
+                       ("rust-unic-char-range" ,rust-unic-char-range-0.9)
+                       ("rust-unic-ucd-category" ,rust-unic-ucd-category-0.9)
+                       ("rust-unic-ucd-hangul" ,rust-unic-ucd-hangul-0.9)
+                       ("rust-unic-ucd-version" ,rust-unic-ucd-version-0.9))
+       #:cargo-development-inputs
+       (("rust-unic-ucd-category" ,rust-unic-ucd-category-0.9))))
+    (home-page "https://github.com/open-i18n/rust-unic/")
+    (synopsis
+     "UNIC Unicode Character Database Normalization Properties")
+    (description
+     "UNIC Unicode Character Database Normalization Properties.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unic-ucd-segment-0.9
   (package
     (name "rust-unic-ucd-segment")
