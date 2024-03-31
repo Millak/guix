@@ -2077,12 +2077,11 @@ Metrics library.")
                      ;; The full test suite requires Internet access, so only
                      ;; run the short tests.
                      (invoke "go" "test" "-test.short" import-path)))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-davecgh-go-spew
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth
+     (list go-github-com-mattn-go-runewidth
            go-github-com-mitchellh-colorstring
-           go-github-com-stretchr-testify
            go-golang-org-x-term))
     (home-page "https://github.com/schollz/progressbar")
     (synopsis "Simple command-line interface (CLI) progress bar")
