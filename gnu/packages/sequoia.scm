@@ -186,42 +186,41 @@ than just headers; it requires tight integration with the MUA.")
      "This package provides interprocess communication infrastructure for Sequoia.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-net-0.27
+(define-public rust-sequoia-net-0.28
   (package
     (name "rust-sequoia-net")
-    (version "0.27.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "sequoia-net" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0gyk5765hi3s05l64a744f9a4vynfisja92l51az9dpqgfkiw3wn"))))
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-net" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jw1p8gwf505q6dh1281fl7kmh8mr1f4hswl5crrycwqlq5q3gva"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-base64" ,rust-base64-0.13)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-http" ,rust-http-0.2)
-        ("rust-hyper" ,rust-hyper-0.14)
-        ("rust-hyper-tls" ,rust-hyper-tls-0.5)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-native-tls" ,rust-native-tls-0.2)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-trust-dns-client" ,rust-trust-dns-client-0.22)
-        ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.22)
-        ("rust-url" ,rust-url-2)
-        ("rust-zbase32" ,rust-zbase32-0.1))
-       #:cargo-development-inputs
-       (("rust-hyper" ,rust-hyper-0.14)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-base64" ,rust-base64-0.21)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-hickory-client" ,rust-hickory-client-0.24)
+                       ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-hyper-tls" ,rust-hyper-tls-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-reqwest" ,rust-reqwest-0.11)
+                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-z-base-32" ,rust-z-base-32-0.1))
+       #:cargo-development-inputs (("rust-hyper" ,rust-hyper-0.14)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
     (native-inputs
      (list clang pkg-config))
     (inputs
