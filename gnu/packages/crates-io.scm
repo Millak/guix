@@ -8787,6 +8787,26 @@ program to verify sandboxing measures are adequate.")
         ("rust-rustls" ,rust-rustls-0.16)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
+(define-public rust-bracoxide-0.1
+  (package
+    (name "rust-bracoxide")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bracoxide" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j71fs71ss70rj7n4na8hg63w93czhrjdgi7di6nma12lrfg79xd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/atahabaki/bracoxide")
+    (synopsis "Library for brace pattern combination, etc.")
+    (description "This package provides a feature-rich library for brace pattern
+combination, permutation generation, and error handling.")
+    (license license:expat)))
+
 (define-public rust-branches-0.1
   (package
     (name "rust-branches")
