@@ -21066,6 +21066,25 @@ Diesel.")
     (description "This package provides migration management for Diesel.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-diesel-table-macro-syntax-0.1
+  (package
+    (name "rust-diesel-table-macro-syntax")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diesel_table_macro_syntax" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i9115qgsnargr6a707lqcjc45wqzq351a2gbvnnyw2kqkpmfmgw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-syn" ,rust-syn-2))))
+    (home-page "https://diesel.rs")
+    (synopsis "Internal diesel crate")
+    (description "Internal diesel crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-diff-0.1
   (package
     (name "rust-diff")
