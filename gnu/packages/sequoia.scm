@@ -73,19 +73,19 @@ Certificate Directory.")
 (define-public rust-sequoia-autocrypt-0.25
   (package
     (name "rust-sequoia-autocrypt")
-    (version "0.25.0")
+    (version "0.25.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "sequoia-autocrypt" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0796mn8kwrpfc8qzliwyyy62mrg2w0j6ax8929jwrkibvwy2axi2"))))
+                "0ns121ggmx690m8czhc7zbb7rwz0jjv3l5gw4igs6mn1hznc0kz2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
        #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
+       (("rust-base64" ,rust-base64-0.21)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))
        #:cargo-development-inputs
        (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
