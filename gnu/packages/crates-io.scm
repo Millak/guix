@@ -62856,39 +62856,49 @@ reading and writing BAM files.")
 (define-public rust-rust-decimal-1
   (package
     (name "rust-rust-decimal")
-    (version "1.17.0")
+    (version "1.35.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "rust_decimal" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1s3k05vpq9ba8mj1wx1fj52kdbq1n8y88zvkrbf0wh0zdbwpadrm"))))
+          "0ymlnlykg2k9cxxs6wcy41sz6xij6cbazq70k49j30faq32d340p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; not all test files included.
        #:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
-        ("rust-arrayvec" ,rust-arrayvec-0.5)
-        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-borsh" ,rust-borsh-1)
         ("rust-bytes" ,rust-bytes-1)
         ("rust-diesel" ,rust-diesel-1)
+        ("rust-diesel" ,rust-diesel-2)
+        ("rust-ndarray" ,rust-ndarray-0.15)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-postgres" ,rust-postgres-0.19)
+        ("rust-postgres-types" ,rust-postgres-types-0.2)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rkyv" ,rust-rkyv-0.7)
+        ("rust-rocket" ,rust-rocket-0.5)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tokio-postgres" ,rust-tokio-postgres-0.7))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
         ("rust-bytes" ,rust-bytes-1)
-        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-csv" ,rust-csv-1)
         ("rust-futures" ,rust-futures-0.3)
-        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-postgres" ,rust-postgres-0.19)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rust-decimal-macros" ,rust-rust-decimal-macros-1)
+        ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tokio" ,rust-tokio-1))))
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-postgres" ,rust-tokio-postgres-0.7)
+        ("rust-version-sync" ,rust-version-sync-0.9))))
     (home-page "https://github.com/paupino/rust-decimal")
     (synopsis "Decimal implementation suitable for financial calculations")
     (description
