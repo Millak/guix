@@ -60426,6 +60426,28 @@ initial value.")
 `static`s like using both of `lazy_static!` and `@code{RefCell`}")
     (license license:expat)))
 
+(define-public rust-reference-counted-singleton-0.1
+  (package
+    (name "rust-reference-counted-singleton")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "reference-counted-singleton" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fcc50l2xh74r2qn4nx2kk0h4i5ys3v4fhgpg5cz793g00gq8br4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
+                                   ("rust-serial-test" ,rust-serial-test-3))))
+    (home-page "https://codeberg.org/koutheir/reference-counted-singleton.git")
+    (synopsis "Reference-counted singleton with recreatable data")
+    (description
+     "This package provides a reference-counted singleton whose protected data
+can be recreated as needed.")
+    (license license:expat)))
+
 (define-public rust-refpool-0.4
   (package
     (name "rust-refpool")
