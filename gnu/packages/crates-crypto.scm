@@ -932,14 +932,14 @@ and block modes.")
 (define-public rust-botan-0.10
   (package
     (name "rust-botan")
-    (version "0.10.3")
+    (version "0.10.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "botan" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1vzl5pdysh848zpphsgvj9c40zdi3ynl32zzixsd8vg4vaflhb49"))))
+                "0gn5aznnaxwlf2500q5dk9c24sgy7dasqqzql7w86s1w3apq201m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
