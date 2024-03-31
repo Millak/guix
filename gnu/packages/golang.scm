@@ -9640,51 +9640,6 @@ kubernetes-sigs/yaml is a permanent fork of
      "Colorstring provides functions for colorizing strings for terminal output.")
     (license license:expat)))
 
-(define-public go-github-com-schollz-progressbar-v3
-  (package
-    (name "go-github-com-schollz-progressbar-v3")
-    (version "3.13.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/schollz/progressbar")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1hjahr5r52i7w6iyvl3rpzr46iignhfdh4694fl7m2b4gkaw9gd6"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/schollz/progressbar/v3"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-examples
-                 (lambda* (#:key import-path #:allow-other-keys)
-                   (delete-file-recursively
-                    (string-append "src/" import-path "/examples"))))
-               (replace 'check
-                 (lambda* (#:key tests? import-path #:allow-other-keys)
-                   (when tests?
-                     ;; The full test suite requires Internet access, so only
-                     ;; run the short tests.
-                     (invoke "go" "test" "-test.short" import-path)))))))
-    (propagated-inputs
-     (list go-golang-org-x-term
-           go-github-com-stretchr-testify
-           go-github-com-mitchellh-colorstring
-           go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-isatty
-           go-github-com-davecgh-go-spew))
-    (home-page "https://github.com/schollz/progressbar")
-    (synopsis "Simple command-line interface (CLI) progress bar")
-    (description
-     "This package provides a very simple thread-safe progress bar.  The
-@code{progressbar} implements an @code{io.Writer} so it can automatically
-detect the number of bytes written to a stream, so you can use it as a
-@code{progressbar} for an @code{io.Reader}.  When @code{progressbar}'s length
-is undetermined, a customizable spinner is shown.")
-    (license license:expat)))
-
 (define-public go-git-sr-ht-emersion-go-scfg
   (package
     (name "go-git-sr-ht-emersion-go-scfg")
