@@ -736,14 +736,14 @@ See winapi for types and constants.")
 (define-public rust-win-crypto-ng-0.5
   (package
     (name "rust-win-crypto-ng")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "win-crypto-ng" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0faf5bd4d5kaf642yw91lh0n2bfwnz0l70bm85ysmj3dsj4hg9mf"))))
+                "14mv2wsvji8x7ds72zsjpz6hdq57y4r8r38xjyr4mrbib91zpawr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Windows library
