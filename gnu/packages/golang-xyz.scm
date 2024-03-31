@@ -991,6 +991,42 @@ Differentiation between text and binary files}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-logr-logr
+  (package
+    (name "go-github-com-go-logr-logr")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-logr/logr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x0q9jkk2p5pz4lii1qs8ifnsib4ib5s8pigmjwdmagl976g8nhm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/go-logr/logr"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples"))
+              (delete-file-recursively
+               (string-append "src/" import-path "/funcr/example"))
+              (delete-file-recursively
+               (string-append "src/" import-path "/benchmark")))))))
+    (home-page "https://github.com/go-logr/logr")
+    (synopsis "Minimal logging API for Go")
+    (description
+     "Package @code{logr} defines a general-purpose logging API and abstract
+interfaces to back that API.  Packages in the Go ecosystem can depend on it,
+while callers can implement logging with whatever backend is appropriate.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-hashicorp-errwrap
   (package
     (name "go-github-com-hashicorp-errwrap")
