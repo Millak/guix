@@ -39342,6 +39342,31 @@ key-value pairs.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-lsp-server-0.7
+  (package
+    (name "rust-lsp-server")
+    (version "0.7.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lsp-server" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15bhdhkinhhw5fifrpmiiqdd4hwblac40jv0n7hxidbdiyvnb3r4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-ctrlc" ,rust-ctrlc-3)
+                                   ("rust-lsp-types" ,rust-lsp-types-0.95))))
+    (home-page
+     "https://github.com/rust-lang/rust-analyzer/tree/master/lib/lsp-server")
+    (synopsis "Generic LSP server scaffold")
+    (description "This package provides generic LSP server scaffold.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lsp-types-0.95
   (package
     (name "rust-lsp-types")
