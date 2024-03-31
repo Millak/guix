@@ -83380,6 +83380,28 @@ implementation is incomplete.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-typetag-impl-0.2
+  (package
+    (name "rust-typetag-impl")
+    (version "0.2.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typetag-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cabnvm526bcgh1sh34js5ils0gz4xwlgvwhm992acdr8xzqhwxc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/dtolnay/typetag")
+    (synopsis "Implementation detail of the typetag crate")
+    (description
+     "This package provides the implementation detail of the typetag crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-typewit-1
   (package
     (name "rust-typewit")
