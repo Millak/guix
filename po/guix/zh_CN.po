@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the guix package.
 # Mingye Wang <arthur200126@gmail.com>, 2016.
 # Boyuan Yang <073plan@gmail.com>, 2018.
-# 郑俊杰 <873216071@qq.com>, 2021, 2023.
+# 郑俊杰 <873216071@qq.com>, 2021, 2023, 2024.
 # Liu Tao <lyuutau@outlook.com>, 2021.
 # Whired Planck <fungdaat31@outlook.com>, 2021.
 # Went He <1437061699@qq.com>, 2021.
@@ -21,15 +21,15 @@ msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2024-01-29 03:18+0000\n"
-"PO-Revision-Date: 2024-02-04 18:36+0000\n"
-"Last-Translator: Jingge Chen <mariocanfly@hotmail.com>\n"
+"PO-Revision-Date: 2024-03-17 19:36+0000\n"
+"Last-Translator: 郑俊杰 <873216071@qq.com>\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/projects/guix/guix/zh_CN/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.3.1\n"
+"X-Generator: Weblate 5.4\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -487,11 +487,11 @@ msgstr ""
 
 #: gnu/services/base.scm:2463
 msgid "This service adds udev rules."
-msgstr ""
+msgstr "此服务添加了 udev 规则。"
 
 #: gnu/services/base.scm:2553
 msgid "Turn on the virtual memory swap area."
-msgstr ""
+msgstr "打开虚拟内存交换区。"
 
 #: gnu/services/base.scm:2595
 msgid ""
@@ -525,17 +525,17 @@ msgstr ""
 #: gnu/services/base.scm:2727
 #, scheme-format
 msgid "Value (~S) is not a symbol.~%"
-msgstr ""
+msgstr "值 (~S) 不是一个符号。~%"
 
 #: gnu/services/base.scm:2813
 #, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
-msgstr ""
+msgstr "当前在 GNU/Hurd 上网络链接被忽略~%"
 
 #: gnu/services/base.scm:2838
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr "'~a'~% 签名无效"
+msgstr "忽略'~a' 的网络路由~%"
 
 #: gnu/services/base.scm:2952
 #, fuzzy, scheme-format
@@ -568,7 +568,7 @@ msgstr ""
 #: gnu/services/certbot.scm:159
 #, scheme-format
 msgid "~a may need to be run~%"
-msgstr ""
+msgstr "可能需要运行~a~%"
 
 #: gnu/services/certbot.scm:213
 msgid ""
@@ -592,7 +592,7 @@ msgstr "'vm-image' 已被弃用：用 'image' 代替 ~%"
 #: gnu/services/configuration.scm:496
 #, scheme-format
 msgid "The GRAMMAR value must be 'infix or 'suffix, but ~a provided."
-msgstr ""
+msgstr "GRAMMAR 的值必须是 'infix 或者 'suffix, 但是提供了 ~a."
 
 #: gnu/services/file-sharing.scm:74
 #, scheme-format

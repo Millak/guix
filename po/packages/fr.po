@@ -8,20 +8,21 @@
 # Aurelien Coussat <acoussat@mail.fr>, 2022.
 # grimst <grimaitres@gmail.com>, 2023.
 # Robin CHARRON <robin.c1906@hotmail.com>, 2024.
+# Pascal Quach <quach.pascal@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix-packages 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2024-01-08 16:37+0000\n"
-"Last-Translator: Robin CHARRON <robin.c1906@hotmail.com>\n"
+"PO-Revision-Date: 2024-03-11 11:36+0000\n"
+"Last-Translator: Pascal Quach <quach.pascal@gmail.com>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/packages/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.3.1\n"
+"X-Generator: Weblate 5.4\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu/packages/abiword.scm:124
@@ -339,17 +340,12 @@ msgstr ""
 "outils d'analyse spectrale."
 
 #: gnu/packages/audio.scm:1099
-#, fuzzy
-#| msgid ""
-#| "Audacity is a multi-track audio editor designed for recording, playing\n"
-#| "and editing digital audio.  It features digital effects and spectrum analysis\n"
-#| "tools."
 msgid ""
 "Tenacity is a multi-track audio editor designed for recording, playing\n"
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
 "tools."
 msgstr ""
-"Audacity est un éditeur audio multi-pistes conçu pour enregistrer, jouer\n"
+"Tenacity est un éditeur audio multi-pistes conçu pour enregistrer, jouer\n"
 "et modifier des sons numériques. Il propose des effets numériques et des\n"
 "outils d'analyse spectrale."
 
@@ -637,10 +633,8 @@ msgid "This package provides a LADSPA plugin for a stereo reverb effect."
 msgstr "Ce paquet fournit un greffon LADSPA pour l'effet stereo reverb."
 
 #: gnu/packages/audio.scm:2098
-#, fuzzy
-#| msgid "Software Synthesizer"
 msgid "SoundFont synthesizer"
-msgstr "Synthétiseur logiciel"
+msgstr "Synthétiseur SoundFont"
 
 #: gnu/packages/audio.scm:2100
 msgid ""
