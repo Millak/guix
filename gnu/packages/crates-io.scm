@@ -36285,8 +36285,45 @@ language tags.")
 space, and comparing differences in color.")
     (license license:expat)))
 
+(define-public rust-lalrpop-0.20
+  (package
+    (name "rust-lalrpop")
+    (version "0.20.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lalrpop" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jn1qg7gs9kka6sy2sbxx8wp6z8lm892ksr414b9yaansrx0gjsm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ascii-canvas" ,rust-ascii-canvas-3)
+                       ("rust-bit-set" ,rust-bit-set-0.5)
+                       ("rust-ena" ,rust-ena-0.14)
+                       ("rust-itertools" ,rust-itertools-0.11)
+                       ("rust-lalrpop-util" ,rust-lalrpop-util-0.20)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-pico-args" ,rust-pico-args-0.5)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+                       ("rust-string-cache" ,rust-string-cache-0.8)
+                       ("rust-term" ,rust-term-0.7)
+                       ("rust-tiny-keccak" ,rust-tiny-keccak-2)
+                       ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-diff" ,rust-diff-0.1)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/lalrpop/lalrpop")
+    (synopsis "Convenient LR(1) parser generator for Rust")
+    (description "LALRPOP is a Rust parser generator framework with usability
+as its primary goal.  You should be able to write compact, DRY, readable
+grammars.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-lalrpop-0.19
   (package
+    (inherit rust-lalrpop-0.20)
     (name "rust-lalrpop")
     (version "0.19.1")
     (source
@@ -36296,7 +36333,6 @@ space, and comparing differences in color.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1j52sybjhn82ydgsmnw7nkywjyb7pvg50mvyb48m7vdq3wcmdyv0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -36317,14 +36353,7 @@ space, and comparing differences in color.")
        ("rust-string-cache" ,rust-string-cache-0.8)
        ("rust-term" ,rust-term-0.5)
        ("rust-unicode-xid" ,rust-unicode-xid-0.2))
-      #:cargo-development-inputs
-      (("rust-rand" ,rust-rand-0.7))))
-    (home-page "https://github.com/lalrpop/lalrpop")
-    (synopsis "Convenient LR(1) parser generator for Rust")
-    (description "LALRPOP is a Rust parser generator framework with usability
-as its primary goal.  You should be able to write compact, DRY, readable
-grammars.")
-    (license (list license:asl2.0 license:expat))))
+      #:cargo-development-inputs (("rust-rand" ,rust-rand-0.7))))))
 
 (define-public rust-lalrpop-0.17
   (package
