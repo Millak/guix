@@ -68,6 +68,37 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-code-cloudfoundry-org-bytefmt
+  (package
+    (name "go-code-cloudfoundry-org-bytefmt")
+    (version "0.0.0-20240329144308-0c372429d24b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cloudfoundry/bytefmt")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aqzbiy3idddyj39i7ydkjhnmpcbwr99g094kqiw72m9flrvrnxj"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "code.cloudfoundry.org/bytefmt"))
+    (native-inputs
+     (list go-github-com-onsi-gomega
+           go-github-com-onsi-ginkgo-v2))
+    (home-page "https://pkg.go.dev/code.cloudfoundry.org/bytefmt")
+    (synopsis "Human readable byte formatter for Golang")
+    (description
+     "Package bytefmt contains helper methods and constants for converting to and from
+a human-readable byte format.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-a8m-envsubst
   (package
     (name "go-github-com-a8m-envsubst")
