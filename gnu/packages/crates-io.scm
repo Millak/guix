@@ -84017,6 +84017,27 @@ Internationalization Crates (UNIC) project.")
 in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unic-normal-0.9
+  (package
+    (name "rust-unic-normal")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unic-normal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qmsdf7b902mmaslhwww0hzmzqn26mzh7sraphl4dac96p9n97gh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unic-ucd-normal" ,rust-unic-ucd-normal-0.9))
+       #:cargo-development-inputs
+       (("rust-unic-ucd-version" ,rust-unic-ucd-version-0.9))))
+    (home-page "https://github.com/open-i18n/rust-unic/")
+    (synopsis "UNIC Unicode Normalization Forms")
+    (description "UNIC Unicode Normalization Forms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unic-segment-0.9
   (package
     (name "rust-unic-segment")
