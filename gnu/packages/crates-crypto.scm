@@ -5755,6 +5755,32 @@ functions core functionality.")
        (sha256
         (base32 "0y4n8r4362y2fa6p2j0dgny4zfi194gdf01l6j850n9vf8ha3kwj"))))))
 
+(define-public rust-sha256-1
+  (package
+    (name "rust-sha256")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha256" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c35j1z4inpz7fwa6vy0xf3arffz5mykyj8nlc50g8sgj5m8y9qq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-sha2" ,rust-sha2-0.10)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tokio-test" ,rust-tokio-test-0.4))))
+    (home-page "https://github.com/baoyachi/sha256-rs")
+    (synopsis "Sha256 crypto digest")
+    (description "This package provides the sha256 crypto digest in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sha3-0.10
   (package
     (name "rust-sha3")
