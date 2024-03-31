@@ -9323,20 +9323,20 @@ UTF-8.")
 (define-public rust-buffered-reader-1
   (package
     (name "rust-buffered-reader")
-    (version "1.1.2")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "buffered-reader" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jf6iqxm3yllm9h3q5f90yj8y9qzr5h0a7aiw38cgk4hagh2s8d4"))))
+        (base32 "1m4hh3kv5lk4hx9lh6rh05r7m59v3rp86pcqpiwkbs06xcjhm6rb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bzip2" ,rust-bzip2-0.4)
         ("rust-flate2" ,rust-flate2-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Super-powered Reader")
