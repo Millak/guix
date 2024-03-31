@@ -76989,8 +76989,36 @@ writing colored text to a terminal.")
        #:cargo-inputs
        (("rust-wincolor" ,rust-wincolor-0.1))))))
 
+(define-public rust-termimad-0.25
+  (package
+    (name "rust-termimad")
+    (version "0.25.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termimad" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l27mr4pzg44sh150wapc22hq1yzv7fxlm7gj95phz4j5pz91l61"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph
+       #:cargo-inputs (("rust-coolor" ,rust-coolor-0.8)
+                       ("rust-crossbeam" ,rust-crossbeam-0.8)
+                       ("rust-crossterm" ,rust-crossterm-0.23)
+                       ("rust-lazy-regex" ,rust-lazy-regex-3)
+                       ("rust-minimad" ,rust-minimad-0.13)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/Canop/termimad")
+    (synopsis "Markdown Renderer for the Terminal")
+    (description "Markdown Renderer for the Terminal.")
+    (license license:expat)))
+
 (define-public rust-termimad-0.20
   (package
+    (inherit rust-termimad-0.25)
     (name "rust-termimad")
     (version "0.20.6")
     (source (origin
@@ -77005,7 +77033,6 @@ writing colored text to a terminal.")
                '(begin (substitute* "Cargo.toml"
                          (("=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)" _ version)
                           (string-append "^" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency graph
        #:cargo-inputs
@@ -77014,11 +77041,7 @@ writing colored text to a terminal.")
         ("rust-crossterm" ,rust-crossterm-0.23)
         ("rust-minimad" ,rust-minimad-0.9)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
-    (home-page "https://github.com/Canop/termimad")
-    (synopsis "Markdown Renderer for the Terminal")
-    (description "Markdown Renderer for the Terminal.")
-    (license license:expat)))
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
 (define-public rust-terminal-size-0.3
   (package
