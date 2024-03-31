@@ -7136,6 +7136,36 @@ that uses Serde for transforming structs into bytes and vice versa!")
 bindings to C and C++ libraries.")
     (license license:bsd-3)))
 
+(define-public rust-bindgen-0.68
+  (package
+    (inherit rust-bindgen-0.69)
+    (name "rust-bindgen")
+    (version "0.68.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y40gndyay1fj8d3d8gsd9fyfzjlbghx92i560kmvhvfxc9l6vkj"))))
+    (arguments
+     `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.9)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cexpr" ,rust-cexpr-0.6)
+                       ("rust-clang-sys" ,rust-clang-sys-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-lazycell" ,rust-lazycell-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-peeking-take-while" ,rust-peeking-take-while-0.1)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustc-hash" ,rust-rustc-hash-1)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-which" ,rust-which-4))))))
+
 (define-public rust-bindgen-0.66
   (package
     (inherit rust-bindgen-0.69)
