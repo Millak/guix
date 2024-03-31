@@ -10777,8 +10777,33 @@ encoding.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
+(define-public rust-capnp-futures-0.19
+  (package
+    (name "rust-capnp-futures")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capnp-futures" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06zvxipmy0xdsxxqr54gs4yi8rgl33iprfhx4nzc0fsfncy4ib2z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-capnp" ,rust-capnp-0.19)
+                       ("rust-futures" ,rust-futures-0.3))
+       #:cargo-development-inputs (("rust-capnp" ,rust-capnp-0.19)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/dwrensha/capnproto-rust")
+    (synopsis "Async serialization for Cap'n Proto messages")
+    (description "This package provides async serialization for Cap'n Proto
+messages.")
+    (license license:expat)))
+
 (define-public rust-capnp-futures-0.14
   (package
+    (inherit rust-capnp-futures-0.19)
     (name "rust-capnp-futures")
     (version "0.14.2")
     (source (origin
@@ -10788,7 +10813,6 @@ encoding.")
               (sha256
                (base32
                 "0fp6lr04w50mzfpxvvrbdm9pny8ch17514y7qgcsk6giqqf808cq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-capnp" ,rust-capnp-0.14)
@@ -10796,12 +10820,7 @@ encoding.")
        #:cargo-development-inputs
        (("rust-capnp" ,rust-capnp-0.14)
         ("rust-futures" ,rust-futures-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.9))))
-    (home-page "https://github.com/dwrensha/capnproto-rust")
-    (synopsis "Async serialization for Cap'n Proto messages")
-    (description "This package provides async serialization for Cap'n Proto
-messages.")
-    (license license:expat)))
+        ("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
 (define-public rust-capnp-futures-0.13
   (package
