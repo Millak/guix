@@ -48746,6 +48746,25 @@ under its new name.")
      "This package provides a Rust library for parsing orgmode files.")
     (license license:expat)))
 
+(define-public rust-os-display-0.1
+  (package
+    (name "rust-os-display")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "os_display" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xfgfqvfg5nyidv5p85fb87l0mif1nniisxarw6npd4jv2x2jqks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/blyxxyz/os_display")
+    (synopsis "Display strings in a safe platform-appropriate way")
+    (description "Display strings in a safe platform-appropriate way.")
+    (license license:expat)))
+
 (define-public rust-os-info-3
   (package
     (name "rust-os-info")
