@@ -39341,34 +39341,50 @@ key-value pairs.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-lsp-types-0.95
+  (package
+    (name "rust-lsp-types")
+    (version "0.95.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lsp-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ra36fd4yr7lf5igfrdvwjx9g87z3a99mrjgzk9nq04viqxd6d4f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-repr" ,rust-serde-repr-0.1)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/gluon-lang/lsp-types")
+    (synopsis "Types for interaction with a language server")
+    (description
+     "Types for interaction with a language server, using VSCode's Language
+Server Protocol.")
+    (license license:expat)))
+
 (define-public rust-lsp-types-0.91
   (package
+    (inherit rust-lsp-types-0.95)
     (name "rust-lsp-types")
     (version "0.91.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lsp-types" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1bk8iy7s80i2iqj1siyfm0rsdq2vwvz7lclsrcrx2pa2b4n32s13"))))
-    (build-system cargo-build-system)
+        (base32 "1bk8iy7s80i2iqj1siyfm0rsdq2vwvz7lclsrcrx2pa2b4n32s13"))))
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-repr" ,rust-serde-repr-0.1)
-        ("rust-url" ,rust-url-2))))
-    (home-page "https://github.com/gluon-lang/lsp-types")
-    (synopsis "Types for interaction with a language server")
-    (description
-     "This package provides types useful for interacting with a language
-server (LSP).")
-    (license license:expat)))
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-repr" ,rust-serde-repr-0.1)
+                       ("rust-url" ,rust-url-2))))))
 
 (define-public rust-lsp-types-0.89
   (package
