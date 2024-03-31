@@ -20610,6 +20610,25 @@ structs and enums.")
     (description "This package provides an Hjson deserializer for Serde.")
     (license license:expat)))
 
+(define-public rust-detone-1
+  (package
+    (name "rust-detone")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "detone" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "052mnp8qjp71ypcv0ixvlw7isn1yv79qn05jrcfi9j2r70clq47p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-unic-normal" ,rust-unic-normal-0.9))))
+    (home-page "https://docs.rs/detone/")
+    (synopsis "Decompose Vietnamese tone marks")
+    (description "Decompose Vietnamese tone marks.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-deunicode-0.4
   (package
     (name "rust-deunicode")
