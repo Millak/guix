@@ -100,37 +100,34 @@ and decoding of Autocrypt headers and setup messages.  Note: Autocrypt is more
 than just headers; it requires tight integration with the MUA.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-cert-store-0.3
+(define-public rust-sequoia-cert-store-0.5
   (package
     (name "rust-sequoia-cert-store")
-    (version "0.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "sequoia-cert-store" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0gmkqn2f23i2xwjwmnaj3dx9l4ir74dyylkw1qsxawxd95i8dk02"))))
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-cert-store" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rjakcnhwdvwrm0952rpi9ky8cxvv5bnmylval49s3a087jqcm76"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-dirs" ,rust-dirs-5)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.1)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-rusqlite" ,rust-rusqlite-0.29)
-        ("rust-sequoia-net" ,rust-sequoia-net-0.27)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1))
-       #:cargo-development-inputs
-       (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-crossbeam" ,rust-crossbeam-0.8)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.3)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rusqlite" ,rust-rusqlite-0.29)
+                       ("rust-sequoia-net" ,rust-sequoia-net-0.28)
+                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
      (list clang pkg-config))
     (inputs
