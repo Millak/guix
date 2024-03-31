@@ -83450,8 +83450,29 @@ arithmetic.")
      "This package provides a simple, fast, LRU cache implementation.")
     (license license:mpl2.0)))
 
+(define-public rust-umask-2
+  (package
+    (name "rust-umask")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "umask" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "071xszsd6znk0ik11pxl7mwhf07clsiq3qpzw1ac0dcyak14d6pc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Canop/umask")
+    (synopsis "Utility to deal with unix access mode")
+    (description
+     "This package provides an utility to deal with Unix access mode.")
+    (license license:expat)))
+
 (define-public rust-umask-1
   (package
+    (inherit rust-umask-2)
     (name "rust-umask")
     (version "1.0.0")
     (source
@@ -83461,13 +83482,7 @@ arithmetic.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ipyyv82lpy5xpqzmq3ra0d61vsd3bfh6b06c9w8zln41vvznblq"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/Canop/umask")
-    (synopsis "Utility to deal with unix access mode")
-    (description
-     "This package provides an utility to deal with Unix access mode.")
-    (license license:expat)))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-unarray-0.1
   (package
