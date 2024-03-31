@@ -112,6 +112,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages selinux)
   #:use-module (gnu packages sequoia)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
@@ -66589,6 +66590,29 @@ statistical guarantees.")
      "This package provides safe-to-use proc-macro-free self-referential structs
 in stable Rust.")
     (license license:asl2.0)))
+
+(define-public rust-selinux-sys-0.6
+  (package
+    (name "rust-selinux-sys")
+    (version "0.6.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "selinux-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v2z4002x3k7vzfq3z2p05xn85f0439iybmpxg47xh9x6yc59m49"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-dunce" ,rust-dunce-1)
+                       ("rust-walkdir" ,rust-walkdir-2))))
+    (inputs (list clang libselinux))
+    (home-page "https://codeberg.org/koutheir/selinux-sys.git")
+    (synopsis "Flexible Mandatory Access Control (MAC) for Linux")
+    (description "Flexible Mandatory Access Control (MAC) for Linux.")
+    (license license:expat)))
 
 (define-public rust-semver-1
   (package
