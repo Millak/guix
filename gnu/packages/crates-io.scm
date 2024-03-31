@@ -85045,6 +85045,28 @@ first byte.")
         (base32
          "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))))
 
+(define-public rust-uu-mktemp-0.0.23
+  (package
+    (name "rust-uu-mktemp")
+    (version "0.0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uu_mktemp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jrik3nawxcxxqbhlzjl9sb8xwwxmmb5lm7rkdi61hcyilh32i8m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-uucore" ,rust-uucore-0.0.25))))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis "mktemp ~ (uutils) create and display a temporary file or directory")
+    (description "This package provides the @code{mktemp} command from uutils.")
+    (license license:expat)))
+
 (define-public rust-uu-mv-0.0.23
   (package
     (name "rust-uu-mv")
