@@ -84064,6 +84064,27 @@ grapheme clusters), words, and sentences.")
     (description "UNIC Unicode Character Database General Category.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unic-ucd-hangul-0.9
+  (package
+    (name "rust-unic-ucd-hangul")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unic-ucd-hangul" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m001jjck7j34hsf6kw9aidzapms9hi175yv7r9f244hw68cc7gb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unic-ucd-version" ,rust-unic-ucd-version-0.9))))
+    (home-page "https://github.com/open-i18n/rust-unic/")
+    (synopsis
+     "UNIC Unicode Character Database Hangul Syllable Composition & Decomposition")
+    (description
+     "UNIC Unicode Character Database Hangul Syllable Composition & Decomposition.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unic-ucd-segment-0.9
   (package
     (name "rust-unic-ucd-segment")
