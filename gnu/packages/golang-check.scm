@@ -441,17 +441,17 @@ differently.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1hh6n7q92y0ai8k6rj2yzw6wwxikhyiyk4j92zgvf1zad0gmqqmz"))))
+        (base32 "1hh6n7q92y0ai8k6rj2yzw6wwxikhyiyk4j92zgvf1zad0gmqqmz"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/onsi/ginkgo"))
+     (list
+      #:import-path "github.com/onsi/ginkgo"))
     (propagated-inputs
-     (list go-golang-org-x-sys
-           go-golang-org-x-tools
-           go-github-com-go-task-slim-sprig
+     (list go-github-com-go-task-slim-sprig
            go-github-com-nxadm-tail
-           go-github-com-onsi-gomega))
+           go-github-com-onsi-gomega
+           go-golang-org-x-sys
+           go-golang-org-x-tools))
     (home-page "https://github.com/onsi/ginkgo")
     (synopsis "BDD-style testing framework for Go")
     (description
