@@ -45945,6 +45945,38 @@ notification library.")
     (description "This crate is notify mini debouncer for events.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-notify-debouncer-full-0.3
+  (package
+    (name "rust-notify-debouncer-full")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "notify-debouncer-full" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m31ad5wv0lhrncn6qqk4zmryf0fl9h1j9kzrx89p2rlkjsxmxa9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-file-id" ,rust-file-id-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-notify" ,rust-notify-6)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-deser-hjson" ,rust-deser-hjson-1)
+        ("rust-mock-instant" ,rust-mock-instant-0.3)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rstest" ,rust-rstest-0.17)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/notify-rs/notify")
+    (synopsis "Notify event debouncer optimized for ease of use")
+    (description
+     "This package provides a notify event debouncer optimized for ease of use.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-notmuch-0.8
   (package
     (name "rust-notmuch")
