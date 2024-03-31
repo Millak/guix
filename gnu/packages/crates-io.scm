@@ -78017,6 +78017,23 @@ unstable language features.")
     (description "Supports writing tests to verify `log` crate calls.")
     (license license:bsd-3)))
 
+(define-public rust-text-block-macros-0.1
+  (package
+    (name "rust-text-block-macros")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "text-block-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ja0p1vz33sakzyxb1n9j6nb9n59g40hzs0xmzg1f5qwvas5k2vz"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/KSXGitHub/text-block-macros.git")
+    (synopsis "Create a multiline string literal")
+    (description "Create a multiline string literal.")
+    (license license:expat)))
+
 (define-public rust-text-size-1
   (package
     (name "rust-text-size")
