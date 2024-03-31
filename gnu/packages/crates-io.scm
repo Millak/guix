@@ -20589,6 +20589,26 @@ structs and enums.")
     (description "Deriving with custom trait bounds.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-deser-hjson-1
+  (package
+    (name "rust-deser-hjson")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deser-hjson" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bacgp2zhyxj6m7hh00sl65b8bripw5nb80jwcniplglzscspq9h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency chain.
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/Canop/deser-hjson")
+    (synopsis "Hjson deserializer for Serde")
+    (description "This package provides an Hjson deserializer for Serde.")
+    (license license:expat)))
+
 (define-public rust-deunicode-0.4
   (package
     (name "rust-deunicode")
