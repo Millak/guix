@@ -75830,6 +75830,32 @@ well.")
        #:cargo-development-inputs
        (("rust-itertools" ,rust-itertools-0.9))))))
 
+(define-public rust-tabled-0.14
+  (package
+    (name "rust-tabled")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tabled" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08jx39f86941n5mklw387j5myriqxng3zmhy2fjsn0d15miw7sfz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `testing_table`
+       #:cargo-inputs (("rust-ansi-str" ,rust-ansi-str-0.8)
+                       ("rust-ansitok" ,rust-ansitok-0.2)
+                       ("rust-papergrid" ,rust-papergrid-0.10)
+                       ("rust-tabled-derive" ,rust-tabled-derive-0.6)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-owo-colors" ,rust-owo-colors-3))))
+    (home-page "https://github.com/zhiburt/tabled")
+    (synopsis "Library for pretty print tables of Rust `struct`s and `enum`s")
+    (description "This package provides a  library for pretty print tables of
+Rust @code{struct}s and @code{enum}s.")
+    (license license:expat)))
+
 (define-public rust-tabled-derive-0.6
   (package
     (name "rust-tabled-derive")
