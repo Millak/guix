@@ -12938,6 +12938,28 @@ stream of tokens.")
        (("rust-clap" ,rust-clap-3)
         ("rust-snapbox" ,rust-snapbox-0.2))))))
 
+(define-public rust-clap-utilities-0.2
+  (package
+    (name "rust-clap-utilities")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-utilities" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "163p99zc3wp02khfrqvn176c5bbprv03l8jrbrh16lgngs0gzg0m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-pipe-trait" ,rust-pipe-trait-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/KSXGitHub/clap-utilities.git")
+    (synopsis "Small utilities related to clap")
+    (description "This package provides small utilities related to clap.")
+    (license license:expat)))
+
 (define-public rust-clap-verbosity-flag-2
   (package
     (name "rust-clap-verbosity-flag")
