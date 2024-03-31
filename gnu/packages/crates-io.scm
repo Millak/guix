@@ -87704,21 +87704,27 @@ languages.")
 (define-public rust-xattr-1
   (package
     (name "rust-xattr")
-    (version "1.0.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xattr" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11b93igkwsq88b6m14x63c13zns418njh6ngvg2fbwqzyw4n0s7l"))))
+        (base32 "0kqxm36w89vc6qcpn6pizlhgjgzq138sx4hdhbv2g6wk4ld4za4d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Tries to access files outside of build environment.
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=test_fd"
+                            "--skip=test_multi"
+                            "--skip=test_path")
        #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2))
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-linux-raw-sys" ,rust-linux-raw-sys-0.4)
+        ("rust-rustix" ,rust-rustix-0.38))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
+       (("rust-rustix" ,rust-rustix-0.38)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/Stebalien/xattr")
     (synopsis "Unix extended file system attributes")
     (description
