@@ -32890,8 +32890,49 @@ or numerical index.  A corresponding hash set type is also provided.")
 of reference counted pointers.")
     (license license:expat)))
 
+(define-public rust-indicatif-0.17
+  (package
+    (name "rust-indicatif")
+    (version "0.17.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "indicatif" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18xyqxw9i5x4sbpzckhfz3nm984iq9r7nbi2lk76nz888n7mlfkn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=style::tests::wide_element_style")
+       #:cargo-inputs (("rust-console" ,rust-console-0.15)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-instant" ,rust-instant-0.1)
+                       ("rust-number-prefix" ,rust-number-prefix-0.4)
+                       ("rust-portable-atomic" ,rust-portable-atomic-1)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-vt100" ,rust-vt100-0.15))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/console-rs/indicatif")
+    (synopsis "Progress bar and cli reporting library for Rust")
+    (description
+     "This package provides a progress bar and cli reporting library for
+Rust.")
+    (license license:expat)))
+
 (define-public rust-indicatif-0.16
   (package
+    (inherit rust-indicatif-0.17)
     (name "rust-indicatif")
     (version "0.16.2")
     (source (origin
@@ -32901,7 +32942,6 @@ of reference counted pointers.")
               (sha256
                (base32
                 "06xyjs0kzqiqkjn60n1miwm2l87sa9p2lmzz0ymq18y72z37s81d"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-console" ,rust-console-0.15)
@@ -32911,15 +32951,8 @@ of reference counted pointers.")
         ("rust-regex" ,rust-regex-1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
         ("rust-unicode-width" ,rust-unicode-width-0.1))
-       #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.8)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/console-rs/indicatif")
-    (synopsis "Progress bar and cli reporting library for Rust")
-    (description
-     "This package provides a progress bar and cli reporting library for
-Rust.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-indicatif-0.15
   (package
