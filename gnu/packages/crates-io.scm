@@ -90054,6 +90054,28 @@ for locating fonts.")
        (("rust-const-cstr" ,rust-const-cstr-0.3)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
+(define-public rust-z-base-32-0.1
+  (package
+    (name "rust-z-base-32")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "z-base-32" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fqk028mzvgnx9phqzvhzrx3fbzv4r736cm3x3hid136g157pgr1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-pyo3" ,rust-pyo3-0.20))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/matusf/z-base-32")
+    (synopsis "Human-oriented base-32 encoding")
+    (description "This package provides human-oriented base-32 encoding.")
+    (license license:expat)))
+
 (define-public rust-zbase32-0.1
   (package
     (name "rust-zbase32")
