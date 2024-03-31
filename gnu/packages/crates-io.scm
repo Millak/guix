@@ -85772,6 +85772,29 @@ integer encoding implementation in Rust.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-vec1-1
+  (package
+    (name "rust-vec1")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vec1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dk9qlly3n6b5g71p9rxnnfyx7v1d31364x8wbabz2f1zz7hvdpz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/rustonaut/vec1/")
+    (synopsis "Vec wrapper assuring that it has at least 1 element")
+    (description "This package provides a std Vec wrapper assuring that it has
+at least 1 element.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-vek-0.15
   (package
     (name "rust-vek")
