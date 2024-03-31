@@ -20,7 +20,13 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix channels)
-  #:use-module (git)                              ;TODO: autoload
+  #:autoload   (git commit) (commit-lookup
+                             commit-id)
+  #:autoload   (git oid) (oid->string
+                          string->oid)
+  #:autoload   (git object) (object-id)
+  #:autoload   (git errors) (GIT_ENOTFOUND)
+  #:autoload   (git structs) (git-error-code)
   #:autoload   (guix git) (update-cached-checkout
                            url+commit->name
                            commit-difference
