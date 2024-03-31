@@ -6453,3 +6453,25 @@ Diffie-Hellman key exchange, with curve operations provided by
     (description "This package provides a fork x25519-dalek, with an updated
 rand_core.")
     (license license:bsd-3)))
+
+(define-public rust-z85-3
+  (package
+    (name "rust-z85")
+    (version "3.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "z85" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z10407jwvjfzpzaxwxgqsm9vcbyldzzh2qz2b0ijy2h3fprsn9a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/decafbad/z85")
+    (synopsis
+     "Rust implementation of ZeroMQ's Z85 encoding mechanism with padding")
+    (description
+     "This package provides a Rust implementation of @code{ZeroMQ's} Z85
+encoding mechanism with padding.")
+    (license (list license:expat license:asl2.0))))
