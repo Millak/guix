@@ -67,6 +67,7 @@
             commit-relation
             commit-descendant?
             commit-id?
+            commit-short-id
 
             remote-refs
 
@@ -232,6 +233,9 @@ of SHA1 string."
 is a tag name.  This is based on a simple heuristic so use with care!"
   (and (= (string-length str) 40)
        (string-every char-set:hex-digit str)))
+
+(define commit-short-id
+  (compose (cut string-take <> 7) oid->string commit-id))
 
 (define (resolve-reference repository ref)
   "Resolve the branch, commit or tag specified by REF, and return the

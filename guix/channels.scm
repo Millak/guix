@@ -25,6 +25,7 @@
                            url+commit->name
                            commit-difference
                            repository-info
+                           commit-short-id
                            with-repository)
   #:autoload   (guix git-authenticate) (authenticate-repository)
   #:autoload   (guix openpgp) (openpgp-public-key-fingerprint
@@ -338,9 +339,6 @@ result is unspecified."
        (when (applicable-patch? patch checkout commit)
          (apply-patch patch checkout))
        (loop rest)))))
-
-(define commit-short-id
-  (compose (cut string-take <> 7) oid->string commit-id))
 
 (define* (authenticate-channel channel checkout commit
                                #:key (keyring-reference-prefix "origin/"))
