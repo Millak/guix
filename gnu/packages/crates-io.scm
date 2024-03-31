@@ -53925,6 +53925,27 @@ audio I/O library.")
 I/O library.")
     (license license:expat)))
 
+(define-public rust-postcard-derive-0.1
+  (package
+    (name "rust-postcard-derive")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "postcard-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ycsfl3nb37syvlj92nl98lphykq78b7af7nv8h49pc7hwhh2jzw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/jamesmunns/postcard")
+    (synopsis "Derive crate for postcard")
+    (description "This package provides the implementation details for postcard.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-postgres-0.19
   (package
     (name "rust-postgres")
