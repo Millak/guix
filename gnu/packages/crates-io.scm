@@ -9464,6 +9464,31 @@ constants from build.rs or a script.")
 libraries and binaries.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-build-fs-tree-0.6
+  (package
+    (name "rust-build-fs-tree")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "build-fs-tree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11j2gv00zz4hpcsrnw519svchn7fml1m4hndfm2qc30xvnd36s2c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-clap-utilities" ,rust-clap-utilities-0.2)
+                       ("rust-derive-more" ,rust-derive-more-0.99)
+                       ("rust-pipe-trait" ,rust-pipe-trait-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+                       ("rust-text-block-macros" ,rust-text-block-macros-0.1))))
+    (home-page "https://github.com/KSXGitHub/build-fs-tree.git")
+    (synopsis "Generate a filesystem tree from a macro or a YAML tree")
+    (description "Generate a filesystem tree from a macro or a YAML tree.")
+    (license license:expat)))
+
 (define-public rust-built-0.7
   (package
     (name "rust-built")
