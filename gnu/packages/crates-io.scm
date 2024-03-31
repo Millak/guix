@@ -21690,6 +21690,35 @@ a vector.")
        #:cargo-inputs
        (("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-dns-lookup-2
+  (package
+    (name "rust-dns-lookup")
+    (version "2.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dns-lookup" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z74n2zij2gahycabm0gkmkyx574h76gwk7sz93yqpr3qa3n0xp5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Tries to access the network
+                            "--skip=nameinfo::test_getnameinfo"
+                            "--skip=src/lib.rs - (line 36)")
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/keeperofdakeys/dns-lookup/")
+    (synopsis "DNS resolving API")
+    (description
+     "This package provides a simple DNS resolving API, much like Rust's
+unstable api.  Also includes getaddrinfo and getnameinfo wrappers for libc
+variants.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dns-parser-0.8
   (package
     (name "rust-dns-parser")
