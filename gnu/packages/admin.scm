@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
@@ -379,14 +379,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.10
   (package
     (inherit shepherd-0.9)
-    (version "0.10.3")
+    (version "0.10.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1vxghlxnxajx2iciqmjia49c5hkir8li0gv29kl55frhn2zgxilf"))))
+                "0206r2l914qjahzd1qill57r1qcg1x8faj0f6qv3x42wqx6x28ky"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
                      (replace "guile-fibers"
                        ;; Work around
