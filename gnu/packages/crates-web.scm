@@ -4117,6 +4117,47 @@ which speaks Serde.")
     (description "Create and decode JWTs in a strongly typed way.")
     (license license:expat)))
 
+(define-public rust-mockito-1
+  (package
+    (name "rust-mockito")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mockito" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07mz6yyfnl1ka29wkl1qa6mvm66lwsjf8y3cl0m3kpsvm8iy1xnj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test_assert_with_last_unmatched_request"
+         "--skip=test_assert_with_last_unmatched_request_and_headers"
+         "--skip=test_assert_with_last_unmatched_request_and_query")
+       #:cargo-inputs (("rust-assert-json-diff" ,rust-assert-json-diff-2)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.7)
+                       ("rust-similar" ,rust-similar-2)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.8)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-reqwest" ,rust-reqwest-0.11)
+                                   ("rust-testing-logger" ,rust-testing-logger-0.1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/lipanski/mockito")
+    (synopsis "HTTP mocking for Rust")
+    (description "This package provides HTTP mocking for Rust.")
+    (license license:expat)))
+
 (define-public rust-multipart-0.18
   (package
     (name "rust-multipart")
