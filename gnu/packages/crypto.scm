@@ -1554,14 +1554,14 @@ SHA-3, and BLAKE2.")
 (define-public rust-blake3-1
   (package
     (name "rust-blake3")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "blake3" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11ysh12zcqq6xkjxh5cbrmnwzalprm3z552i5ff7wm5za9hz0c82"))))
+        (base32 "0lpgw3gl564wqwf98v9jsa29lp6nv7w7nn1cvw6w75s5cz9sdk1h"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -1573,7 +1573,7 @@ SHA-3, and BLAKE2.")
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-constant-time-eq" ,rust-constant-time-eq-0.3)
         ("rust-digest" ,rust-digest-0.10)
-        ("rust-memmap2" ,rust-memmap2-0.7)
+        ("rust-memmap2" ,rust-memmap2-0.9)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-zeroize" ,rust-zeroize-1))
