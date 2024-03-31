@@ -85661,17 +85661,16 @@ updated when the crate version changes.")
   (package
     (inherit rust-vte-0.11)
     (name "rust-vte")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "vte" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mnjw3f071xbvapdgdf8mcdglw60dadcc5hhvz5zpljm53nmzwid"))))
+        (base32 "10srmy9ssircrwsb5lpx3fbhx71460j77kvz0krz38jcmf9fdg3c"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.5)
         ("rust-utf8parse" ,rust-utf8parse-0.2)
         ("rust-vte-generate-state-changes"
