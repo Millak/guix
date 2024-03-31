@@ -186,6 +186,33 @@ than just headers; it requires tight integration with the MUA.")
      "This package provides interprocess communication infrastructure for Sequoia.")
     (license license:lgpl2.0+)))
 
+(define-public rust-sequoia-keystore-backend-0.2
+  (package
+    (name "rust-sequoia-keystore-backend")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sequoia-keystore-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07v6rc27v0di2v59mixshhc4fkkf1ig0yqkzgqz0v2si4z8slv3s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-blanket" ,rust-blanket-0.3)
+                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
+    (native-inputs (list clang pkg-config))
+    (inputs (list nettle))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Traits for private key store backends")
+    (description "This package contains traits for private key store backends.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-sequoia-keystore-softkeys-0.2
   (package
     (name "rust-sequoia-keystore-softkeys")
