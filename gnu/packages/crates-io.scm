@@ -83578,8 +83578,31 @@ with the Unicode character database.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-ufmt-0.2
+  (package
+    (name "rust-ufmt")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ufmt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17dbpq5r09mcpalra2hmpgb2ly282s6xjsb4il8fjmrbq1p88r0s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; method cannot be called on `String` due to unsatisfied trait bounds
+       #:cargo-inputs (("rust-ufmt-macros" ,rust-ufmt-macros-0.3)
+                       ("rust-ufmt-write" ,rust-ufmt-write-0.1))))
+    (home-page "https://github.com/japaric/ufmt")
+    (synopsis "Faster and panic-free alternative to @code{core::fmt}")
+    (description "This package provides a (6-40x) smaller, (2-9x) faster and
+panic-free alternative to @code{core::fmt}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ufmt-0.1
   (package
+    (inherit rust-ufmt-0.2)
     (name "rust-ufmt")
     (version "0.1.2")
     (source
@@ -83590,19 +83613,13 @@ with the Unicode character database.")
        (sha256
         (base32
          "1pbc0gcfi7m21ly00x460pv1k2h12zb184f7wpcckpqj6g3c1lri"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--lib" "--bins" "--tests")
        #:cargo-inputs
        (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
         ("rust-ufmt-macros" ,rust-ufmt-macros-0.2)
-        ("rust-ufmt-write" ,rust-ufmt-write-0.1))))
-    (home-page "https://github.com/japaric/ufmt")
-    (synopsis "Faster and panic-free alternative to @code{core::fmt}")
-    (description "This package provides a (6-40x) smaller, (2-9x) faster and
-panic-free alternative to @code{core::fmt}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-ufmt-write" ,rust-ufmt-write-0.1))))))
 
 (define-public rust-ufmt-macros-0.3
   (package
