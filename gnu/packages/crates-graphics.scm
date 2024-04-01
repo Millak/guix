@@ -1645,6 +1645,40 @@ EUI-64, also known as MAC-48 media access control addresses.")
         ("rust-windows-sys" ,rust-windows-sys-0.45)
         ("rust-x11-dl" ,rust-x11-dl-2))))))
 
+(define-public rust-glutin-0.29
+  (package
+    (inherit rust-glutin-0.31)
+    (name "rust-glutin")
+    (version "0.29.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glutin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04y7s5m74j9gns5bdja0alkm0m0b727vf9k7rw6g5jpxjk99lk24"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cgl" ,rust-cgl-0.3)
+                       ("rust-cocoa" ,rust-cocoa-0.24)
+                       ("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-glutin-egl-sys" ,rust-glutin-egl-sys-0.1)
+                       ("rust-glutin-gles2-sys" ,rust-glutin-gles2-sys-0.1)
+                       ("rust-glutin-glx-sys" ,rust-glutin-glx-sys-0.1)
+                       ("rust-glutin-wgl-sys" ,rust-glutin-wgl-sys-0.1)
+                       ("rust-libloading" ,rust-libloading-0.7)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-objc" ,rust-objc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-osmesa-sys" ,rust-osmesa-sys-0.1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+                       ("rust-wayland-client" ,rust-wayland-client-0.29)
+                       ("rust-wayland-egl" ,rust-wayland-egl-0.29)
+                       ("rust-winapi" ,rust-winapi-0.3)
+                       ("rust-winit" ,rust-winit-0.27))))
+    (native-inputs (list pkg-config))
+    (inputs (list expat fontconfig freetype))))
+
 (define-public rust-glutin-0.28
   (package
     (inherit rust-glutin-0.30)
