@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2018-2020, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -19,7 +19,7 @@
 
 (define-module (guix nar)
   #:use-module (guix serialization)
-  #:use-module (guix build syscalls)
+  #:autoload   (guix build syscalls) (lock-file unlock-file)
   #:use-module ((guix build utils)
                 #:select (delete-file-recursively with-directory-excursion))
 

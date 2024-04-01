@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2017, 2018, 2019, 2020, 2021, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017-2021, 2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Deck Pickard <deck.r.pickard@gmail.com>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -29,7 +29,10 @@
   #:use-module (guix packages)
   #:use-module (guix derivations)
   #:autoload   (guix describe) (current-profile-date)
-  #:use-module (guix build syscalls)
+  #:autoload   (guix build syscalls) (statfs
+                                      file-system-block-size
+                                      file-system-blocks-available
+                                      file-system-block-count)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-37)
