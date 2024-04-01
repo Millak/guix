@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 cage <cage-dev@twistfold.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -894,6 +895,38 @@ initially intended to be used on musl-based Linux distributions.
      "Extract colors from PNG files.  It is similar to
 strings(1) but for pictures.  For a given input file it outputs a
 colormap to stdout.")
+    (license license:isc)))
+
+(define-public libgrapheme
+  (package
+    (name "libgrapheme")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dl.suckless.org/libgrapheme/libgrapheme-"
+                           version
+                           ".tar.gz"))
+       (sha256
+        (base32 "099i2jm9c25nkbg5420wr12z0gd189gcw5j1ssjmpmbbwzfvv2x6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #true
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'configure 'post-configure
+                          (lambda _
+                            ;; Remove ldconfing invocation in Makefile, which
+                            ;; is not needed in Guix.
+                            (substitute* "config.mk"
+                              (("ldconfig") "")))))
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))))
+    (home-page "https://libs.suckless.org/libgrapheme/")
+    (synopsis "C99 library for Unicode strings")
+    (description "Libgrapheme is a simple freestanding C99 library providing
+utilities to handle strings according to the Unicode standard.")
     (license license:isc)))
 
 ;; No new releases were made at github, this repository is more active than
