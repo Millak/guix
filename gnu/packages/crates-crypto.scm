@@ -4015,7 +4015,7 @@ for constructing a Message Authentication Code (MAC).")
 (define-public rust-ppv-lite86-0.2
   (package
     (name "rust-ppv-lite86")
-    (version "0.2.8")
+    (version "0.2.17")
     (source
       (origin
         (method url-fetch)
@@ -4023,7 +4023,7 @@ for constructing a Message Authentication Code (MAC).")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1shj4q7jwj0azssr8cg51dk3kh7d4lg9rmbbz1kbqk971vc5wyi3"))))
+          "1pp6g52aw970adv3x2310n7glqnji96z0a9wiamzw89ibf0ayh2v"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/cryptocorrosion/cryptocorrosion")
     (synopsis "Implementation of the crypto-simd API for x86")
