@@ -907,7 +907,7 @@ create compilers, making them easier to understand and maintain.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (list (chez-scheme-for-system)))
+     (list chez-scheme))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -938,7 +938,7 @@ create compilers, making them easier to understand and maintain.")
           (base32 "1dq25qygyncbfq4kwwqqgyyakfqjwhp5q23vrf3bff1p66nyfl3b"))))
       (build-system gnu-build-system)
       (native-inputs
-       (list (chez-scheme-for-system)
+       (list chez-scheme
              ghostscript
              (texlive-updmap.cfg
               (list texlive-charter
@@ -1005,7 +1005,7 @@ programming in Scheme.")
           (base32 "1n5fbwwz51fdzvjackgmnsgh363g9inyxv7kmzi0469cwavwcx5m"))))
       (build-system gnu-build-system)
       (native-inputs
-       (list (chez-scheme-for-system)
+       (list chez-scheme
              chez-web
              (texlive-updmap.cfg)))
       (arguments
@@ -1091,7 +1091,7 @@ Chez Scheme.")
     (inputs
      (list chez-srfi)) ; for tests
     (native-inputs
-     (list (chez-scheme-for-system)))
+     (list chez-scheme))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -1123,7 +1123,7 @@ Chez Scheme.")
     (propagated-inputs
      (list chez-srfi)) ; for irregex-utils
     (native-inputs
-     (list (chez-scheme-for-system)))
+     (list chez-scheme))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -1154,7 +1154,7 @@ syntax, with various aliases for commonly used patterns.")
     (propagated-inputs
      (list chez-srfi)) ; for irregex-utils
     (native-inputs
-     (list (chez-scheme-for-system)))
+     (list chez-scheme))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "chez-check"
@@ -1217,7 +1217,7 @@ strings.")
     (inputs
      (list chez-srfi))       ; for tests
     (native-inputs
-     (list (chez-scheme-for-system)))
+     (list chez-scheme))
     (arguments
      (list #:make-flags (chez-make-flags name version)
            #:test-target "test"
@@ -1248,7 +1248,7 @@ required to port the program @code{Scmutils} to Chez Scheme.")
     (inputs
      (list chez-srfi))       ; for tests
     (native-inputs
-     (list (chez-scheme-for-system)))
+     (list chez-scheme))
     (propagated-inputs
      (list chez-mit chez-srfi))
     (arguments
