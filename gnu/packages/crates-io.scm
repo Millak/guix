@@ -54596,17 +54596,18 @@ convert SQL to Polars logical plans.")
 (define-public rust-pom-3
   (package
     (name "rust-pom")
-    (version "3.2.0")
+    (version "3.4.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "pom" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1v14c2p1irblagnljkw4n0f1w5r8mbybzycz0j1f5y79h0kikqh7"))))
+          "0jvlsxzzwwmfng3sk0drig8x36klbabfh10b5m9sshz9hs7jv5vc"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1))))
     (home-page "https://github.com/J-F-Liu/pom")
     (synopsis "PEG parser combinators using operator overloading without macros")
     (description "This package provides a PEG parser combinators using operator
