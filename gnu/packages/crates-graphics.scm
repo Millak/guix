@@ -1885,17 +1885,16 @@ EUI-64, also known as MAC-48 media access control addresses.")
   (package
     (inherit rust-glutin-glx-sys-0.4)
     (name "rust-glutin-glx-sys")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin_glx_sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0l8kk60kq5v6hl1qr6ym2arzvbsgkh71aa8485cp901bq27kqfby"))))
+        (base32 "0s14s3v2dddkx141w2x65s8ik54mrn432hisbc65i62hhrshagfr"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-gl-generator" ,rust-gl-generator-0.14)
         ("rust-x11-dl" ,rust-x11-dl-2))))))
 
