@@ -151,6 +151,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix modules)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -2257,7 +2258,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
 (define-public skopeo
   (package
     (name "skopeo")
-    (version "1.2.3")
+    (version "1.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2266,12 +2267,15 @@ Open Container Initiative (OCI) image layout and its tagged images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0n22sdif437ddg5ch0ipwim3fg0n6ihc9bfi52qkhy3r1grz04hs"))))
-    (build-system go-build-system)
+                "1f9n3ysdmll7vq8dmgpv03m8aqq3w9cfvbmxxpwmnv1nlfc67ihq"))))
+    (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config go-github-com-go-md2man))
+     (list go-1.21
+           go-github-com-go-md2man
+           pkg-config))
     (inputs
-     (list btrfs-progs
+     (list bash-minimal
+           btrfs-progs
            eudev
            libassuan
            libselinux
@@ -2280,27 +2284,52 @@ Open Container Initiative (OCI) image layout and its tagged images.")
            glib
            gpgme))
     (arguments
-     '(#:import-path "github.com/containers/skopeo"
-       #:install-source? #f
-       #:tests? #f                                ; The tests require Docker
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key import-path #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (invoke "make" "bin/skopeo"))))
-         (add-after 'build 'build-docs
-           (lambda* (#:key import-path #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (invoke "make" "docs"))))
-         (replace 'install
-           (lambda* (#:key import-path outputs #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (let ((out (assoc-ref outputs "out")))
-                 (install-file "default-policy.json"
-                               (string-append out "/etc/containers"))
-                 (invoke "make" "install-binary" "install-completions" "install-docs"
-                         (string-append "PREFIX=" out)))))))))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "PREFIX="
+              (string-append "DESTDIR=" #$output)
+              (string-append "GOMD2MAN="
+                             #$go-github-com-go-md2man "/bin/go-md2man"))
+      #:tests? #f                       ; The tests require Docker
+      #:test-target "test-unit"
+      #:imported-modules
+      (source-module-closure `(,@%gnu-build-system-modules
+                               (guix build go-build-system)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'set-env
+            (lambda _
+              ;; When running go, things fail because HOME=/homeless-shelter.
+              (setenv "HOME" "/tmp")
+              ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
+              ;; Make <4.4 causing CC not to be propagated into $(shell ...)
+              ;; calls.  Can be removed once we update to >4.3.
+              ;;
+              ;; This techically does nothing *now*, but after upstream
+              ;; issue[1] is solved and 'cc-to-gcc phase is removed, it will
+              ;; start being required.
+              ;; 1: https://github.com/containers/skopeo/issues/2278
+              (setenv "CC" #$(cc-for-target))))
+          (add-after 'unpack 'cc-to-gcc
+            (lambda _
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("^cc( -.*)" all rest)
+                             (string-append "\"$CC\"" rest))))
+                        '("hack/btrfs_tag.sh"
+                          "hack/btrfs_installed_tag.sh"
+                          "hack/libdm_tag.sh"
+                          "hack/libsubid_tag.sh"))))
+          (add-after 'install 'wrap-skopeo
+            (lambda _
+              (wrap-program (string-append #$output "/bin/skopeo")
+                `("PATH" suffix
+                  ;; We need at least newuidmap, newgidmap and mount.
+                  ("/run/setuid-programs")))))
+          (add-after 'install 'remove-go-references
+            (@@ (guix build go-build-system) remove-go-references)))))
     (home-page "https://github.com/containers/skopeo")
     (synopsis "Interact with container images and container image registries")
     (description
