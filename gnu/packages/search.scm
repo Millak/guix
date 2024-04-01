@@ -2,7 +2,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -422,35 +422,36 @@ Search Engine.  It is written in C and based on GTK3.")
 (define-public recoll
   (package
     (name "recoll")
-    (version "1.34.0")
+    (version "1.37.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.lesbonscomptes.com/recoll/"
-                           "recoll-" version ".tar.gz"))
+       (uri (string-append "https://www.recoll.org/recoll-" version ".tar.gz"))
        (sha256
-        (base32 "0s26b737brxp5hpqcwfxg19z40w6acnnr63ghrnzzjwxqz1ambkv"))))
+        (base32 "0m9ibpa27xrngk31kxhgqv878knw2xpigckx8pqvfzmfvqr81zdy"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--disable-webkit"
-             "--disable-python-module"
-             "--without-systemd"
-             "--with-inotify"
-             "--enable-recollq"
-             (string-append "QMAKEPATH=" (assoc-ref %build-inputs "qtbase")
-                            "/bin/qmake"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-default-data-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "python/recoll/recoll/rclconfig.py"
-               (("/opt/local")
-                (assoc-ref outputs "out")))))
-         (add-after 'install 'wrap-filters
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (mapping
+     (list
+      #:configure-flags
+      #~(list "--disable-webkit"
+              "--disable-python-module"
+              "--without-systemd"
+              "--with-inotify"
+              "--enable-recollq"
+              (string-append "QMAKEPATH=" #$(this-package-input "qtbase")
+                             "/bin/qmake"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-LDFLAGS
+            (lambda _
+              (setenv "LDFLAGS" (string-append "-Wl,-rpath=" #$output "/lib"))))
+          (add-after 'unpack 'patch-default-data-dir
+            (lambda _
+              (substitute* "python/recoll/recoll/rclconfig.py"
+                (("/opt/local") #$output))))
+          (add-after 'install 'wrap-filters
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((mapping
                      '(("rclps"
                         "poppler")
                        ("rclpdf.py"
@@ -471,19 +472,19 @@ Search Engine.  It is written in C and based on GTK3.")
                         "sed")
                        ("rclscribus"
                         "grep" "gawk" "sed"))))
-               (for-each
-                (lambda (program packages)
-                  (wrap-program (string-append out "/share/recoll/filters/" program)
-                    `("PATH" ":" prefix
-                      ,(map (lambda (i)
-                              (string-append (assoc-ref inputs i) "/bin"))
-                            packages))))
-                (map car mapping)
-                (map cdr mapping))
+                (for-each
+                 (lambda (program packages)
+                   (wrap-program (string-append #$output "/share/recoll/filters/" program)
+                     `("PATH" ":" prefix
+                       ,(map (lambda (i)
+                               (string-append (assoc-ref inputs i) "/bin"))
+                             packages))))
+                 (map car mapping)
+                 (map cdr mapping))
 
-               (wrap-program (string-append out "/share/recoll/filters/rclimg")
-                 `("PERL5LIB" ":" prefix
-                   (,(getenv "PERL5LIB"))))))))))
+                (wrap-program (string-append #$output "/share/recoll/filters/rclimg")
+                  `("PERL5LIB" ":" prefix
+                    (,(getenv "PERL5LIB"))))))))))
     (inputs
      (list aspell
            chmlib
@@ -507,8 +508,8 @@ Search Engine.  It is written in C and based on GTK3.")
            sed
            tar))
     (native-inputs
-     (list pkg-config which))
-    (home-page "https://www.lesbonscomptes.com/recoll/")
+     (list pkg-config qttools-5 which))
+    (home-page "https://www.recoll.org")
     (synopsis "Find documents based on their contents or file names")
     (description "Recoll finds documents based on their contents as well as
 their file names.  It can search most document formats, but you may need
