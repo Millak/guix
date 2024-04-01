@@ -50,7 +50,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (chez-scheme-for-system
-            racket-cs-native-supported-system?
+            nix-system->native-chez-machine-type
             nix-system->pbarch-machine-type
             unpack-nanopass))
 
@@ -93,6 +93,8 @@ Scheme machine types, or '#f' if none is defined."
     "ppc32")
    ((target-riscv64? system)
     "rv64")
+   ((string-prefix? "loongarch64-" system)
+    "la64")
    (else
     #f)))
 
@@ -127,111 +129,67 @@ in Chez Scheme machine types, or '#f' if none is defined."
    (else
     #f)))
 
-(define %chez-features-table
-  ;; An alist of alists mapping:
-  ;;   os -> arch -> (or/c #f (listof symbol?))
-  ;; where:
-  ;;  - `os` is a string for the OS part of a Chez Scheme machine type; and
-  ;;  - `arch` is a string for the architecture part of a Chez machine type.
-  ;;
-  ;; The absence of an entry for a given arch--os pair means that neither
-  ;; upstream Chez Scheme nor the Racket variant can generate native code for
-  ;; that system.  (The Racket variant can still provide support via its
-  ;; ``portable bytecode'' backends and optional compilation to C.)  A value
-  ;; of `#f` means that upstream Chez Scheme does not support the arch--os
-  ;; pair at all, but the Racket variant does.  A list has the same meaning as
-  ;; a result from `chez-upstream-features-for-system`.
-  ;;
-  ;; The arch--os pairs marked "commented out" have been commented out in the
-  ;; STeX source for the upstream release notes since the initial release as
-  ;; free software, but they are reported to work and/or have been described
-  ;; as supported by upstream maintainers.
-  ;;
-  ;; For this overall approach to make sense, we assume that Racket's variant
-  ;; of Chez Scheme can generate native code for a superset of the platforms
-  ;; supported upstream, supports threads on all platforms it supports at all
-  ;; (because they are needed for Racket), and doesn't need bootstrap
-  ;; bootfiles.  Those assumptions have held for several years.
-  '(;; Linux
-    ("le"
-     ("i3" threads bootstrap-bootfiles)
-     ("a6" threads bootstrap-bootfiles)
-     ("arm32" bootstrap-bootfiles)
-     ("arm64" . #f)
-     ("rv64" . #f)
-     ("ppc32" threads))
-    ;; Hurd
-    ("gnu"
-     ("i3" . #f))
-    ;; FreeBSD
-    ("fb"
-     ("i3" threads) ;; commented out
-     ("a6" threads) ;; commented out
-     ("arm32" . #f)
-     ("arm64" . #f)
-     ("ppc32" . #f))
-    ;; OpenBSD
-    ("ob"
-     ("i3" threads) ;; commented out
-     ("a6" threads) ;; commented out
-     ("arm32" . #f)
-     ("arm64" . #f)
-     ("ppc32" . #f))
-    ;; NetBSD
-    ("nb"
-     ("i3" threads) ;; commented out
-     ("a6" threads) ;; commented out
-     ("arm32" . #f)
-     ("arm64" . #f)
-     ("ppc32" . #f))
-    ;; OpenSolaris / OpenIndiana / Illumos
-    ("s2"
-     ("i3" threads) ;; commented out
-     ("a6" threads)) ;; commented out
-    ;; QNX
-    ("qnx"
-     ("i3" . #f))
-    ;; Windows
-    ("nt"
-     ("i3" threads bootstrap-bootfiles)
-     ("a6" threads bootstrap-bootfiles)
-     ;; ^ threads "experiemental", but reportedly fine
-     ("arm64" . #f))
-    ;; Darwin
-    ("osx"
-     ("i3" threads bootstrap-bootfiles)
-     ("a6" threads bootstrap-bootfiles)
-     ("arm64" . #f)
-     ("ppc32" . #f))))
-
-(define* (chez-upstream-features-for-system #:optional
-                                            (system
-                                             (or (%current-target-system)
-                                                 (%current-system))))
-  "Return a list of symbols naming features supported by upstream Chez Scheme
-for the Nix system identifier SYSTEM, or @code{#f} if upstream Chez Scheme
-does not support SYSTEM at all.
-
-If native threads are supported, the returned list will include
-@code{'threads}.  If bootstrap bootfiles for SYSTEM are distributed in the
-upstream Chez Scheme repository, the returned list will include
-@code{'bootstrap-bootfiles}.  Other feature symbols may be added in the
-future."
-  (let ((chez-arch (target-chez-arch system))
-        (chez-os (target-chez-os system)))
-    (and=> (assoc-ref %chez-features-table chez-os)
-           (cut assoc-ref <> chez-arch))))
+(define-syntax define-machine-types
+  (lambda (stx)
+    (syntax-case stx (any)
+      ((_ any id0 id ...)
+       #`(define #,(datum->syntax #'id0 '%machine-types)
+           '(id0 id ...))))))
+;; The following is copied from s/cmacros.ss, line 36, in the Chez source
+(define-machine-types
+  any
+  pb        tpb
+  pb32l     tpb32l
+  pb32b     tpb32b
+  pb64l     tpb64l
+  pb64b     tpb64b
+  i3nt      ti3nt
+  i3osx     ti3osx
+  i3le      ti3le
+  i3fb      ti3fb
+  i3ob      ti3ob
+  i3nb      ti3nb
+  i3s2      ti3s2
+  i3qnx     ti3qnx
+  i3gnu     ti3gnu
+  a6nt      ta6nt
+  a6osx     ta6osx
+  a6le      ta6le
+  a6fb      ta6fb
+  a6ob      ta6ob
+  a6nb      ta6nb
+  a6s2      ta6s2
+  ppc32osx  tppc32osx
+  ppc32le   tppc32le
+  ppc32fb   tppc32fb
+  ppc32ob   tppc32ob
+  ppc32nb   tppc32nb
+  arm32le   tarm32le
+  arm32fb   tarm32fb
+  arm32ob   tarm32ob
+  arm32nb   tarm32nb
+  arm64nt   tarm64nt
+  arm64osx  tarm64osx
+  arm64le   tarm64le
+  arm64fb   tarm64fb
+  arm64ob   tarm64ob
+  arm64nb   tarm64nb
+  rv64le    trv64le
+  rv64fb    trv64fb
+  rv64ob    trv64ob
+  rv64nb    trv64nb
+  la64le    tla64le
+)
 
 (define* (nix-system->pbarch-machine-type #:optional
                                           (system
                                            (or (%current-target-system)
                                                (%current-system)))
                                           #:key (threads? #t))
-  "Return a string naming the pseudo–machine type used by Racket's variant of
-Chez Scheme to represent the appropriate ``pbarch'' backend for SYSTEM: that
-is, the ``portable bytecode'' backend specialized for SYSTEM's word size and
-endianness.  The result will name the threaded machine type unless THREADS? is
-provided and is #f."
+  "Return a string naming the Chez Scheme machine type of the appropriate
+``pbarch'' backend for SYSTEM: that is, the ``portable bytecode'' backend
+specialized for SYSTEM's word size and endianness.  The result will name the
+threaded machine type unless THREADS? is provided as #f."
   (string-append (if threads?
                      "t"
                      "")
@@ -243,20 +201,23 @@ provided and is #f."
                      "l"
                      "b")))
 
-(define* (racket-cs-native-supported-system? #:optional
-                                             (system
-                                              (or (%current-target-system)
-                                                  (%current-system))))
-  "Can Racket's variant of Chez Scheme generate native code for SYSTEM?  If
-so, return the applicable machine type as a string.  Otherwise, when SYSTEM
-can use only the ``portable bytecode'' backends, return #f."
-  (let ((chez-arch (target-chez-arch system))
-        (chez-os (target-chez-os system)))
-    (and (and=> (assoc-ref %chez-features-table chez-os)
-                ;; NOT assoc-ref: supported even if cdr is #f
-                (cut assoc chez-arch <>))
-         (string-append "t" chez-arch chez-os))))
-
+(define* (nix-system->native-chez-machine-type #:optional
+                                               (system
+                                                (or (%current-target-system)
+                                                    (%current-system)))
+                                               #:key (threads? #t))
+  "Return a string naming the Chez Scheme machine type of the native-code
+backend for SYSTEM, if such a native-code backend exists.  Otherwise, when
+SYSTEM can use only the ``portable bytecode'' backends, return #f.  The result
+will name the threaded machine type unless THREADS? is provided as #f."
+  (let* ((chez-arch (target-chez-arch system))
+         (chez-os (target-chez-os system))
+         (machine
+          (and chez-arch chez-os
+               (string-append (if threads? "t" "") chez-arch chez-os))))
+    (and machine
+         (memq (string->symbol machine) %machine-types)
+         machine)))
 ;;
 ;; Chez Scheme:
 ;;
@@ -300,7 +261,7 @@ can use only the ``portable bytecode'' backends, return #f."
     (version "9.9.9-pre-release.23")
     (source #f)
     (build-system gnu-build-system)
-    (inputs `(,@(if (racket-cs-native-supported-system?)
+    (inputs `(,@(if (nix-system->native-chez-machine-type)
                     '()
                     (list libffi))
               ,chez-scheme-for-racket-bootstrap-bootfiles
@@ -353,10 +314,10 @@ can use only the ``portable bytecode'' backends, return #f."
                  (search-input-directory %build-inputs "/include/X11"))
                 '()
                 '("--disable-x11"))
-          #$(string-append "-m=" (or (racket-cs-native-supported-system?)
+          #$(string-append "-m=" (or (nix-system->native-chez-machine-type)
                                      (nix-system->pbarch-machine-type)))
           ;; ^ could skip -m= for non-cross non-pbarch builds
-          #$@(if (racket-cs-native-supported-system?)
+          #$@(if (nix-system->native-chez-machine-type)
                  #~()
                  ;; not inferred on non-native platforms: see
                  ;; https://racket.discourse.group/t/950/9
@@ -588,7 +549,7 @@ with reliability taking precedence over efficiency if necessary.")
                     (invoke "./configure"
                             "--force" ; don't complain about missing bootfiles
                             #$(string-append
-                               "-m=" (or (racket-cs-native-supported-system?)
+                               "-m=" (or (nix-system->native-chez-machine-type)
                                          (nix-system->pbarch-machine-type)))
                             "ZUO=zuo"
                             ;; ignore submodules:

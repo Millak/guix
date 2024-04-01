@@ -433,7 +433,7 @@ collector, 3M (``Moving Memory Manager'').")
     (inputs
      (let ((inputs (modify-inputs (package-inputs racket-vm-cgc)
                      (prepend zlib lz4))))
-       (if (racket-cs-native-supported-system?)
+       (if (nix-system->native-chez-machine-type)
            (modify-inputs inputs
              (delete "libffi"))
            inputs)))
@@ -461,7 +461,7 @@ collector, 3M (``Moving Memory Manager'').")
                                 #+(this-package-native-input
                                    "chez-scheme-for-racket")
                                 "/bin/scheme")
-                 #$@(if (racket-cs-native-supported-system?)
+                 #$@(if (nix-system->native-chez-machine-type)
                         #~()
                         #~(#$(string-append "--enable-mach="
                                             (nix-system->pbarch-machine-type))
