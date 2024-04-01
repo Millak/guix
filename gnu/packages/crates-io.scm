@@ -29279,27 +29279,27 @@ retrieving random data from system source.")
   (package
     (inherit rust-getrandom-0.2)
     (name "rust-getrandom")
-    (version "0.1.14")
+    (version "0.1.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "getrandom" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1sq30li71h19rhnhs1h6576ja68insajx8wvh1nn088r8pc8vg3s"))))
+        (base32 "1kjzmz60qx9mn615ks1akjbf36n3lkv27zfwbcam0fzmj56wphwg"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-stdweb" ,rust-stdweb-0.4)
         ("rust-wasi" ,rust-wasi-0.9)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.2))))))
 
 (define-public rust-getset-0.1
   (package
