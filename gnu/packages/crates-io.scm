@@ -15763,24 +15763,23 @@ It supports signed and private (encrypted + signed) jars.")
   (package
     (inherit rust-cookie-0.12)
     (name "rust-cookie")
-    (version "0.11.3")
+    (version "0.11.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cookie" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i2x04kx1ifljsnwsa83k7cpmajk9j4ayyx2h11y6lkji6hcv5ap"))))
+        (base32 "1mwbcygk9als9h7bfp8fhax2ah278qamaz9l9p64in6iirv1h85y"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-aes-gcm" ,rust-aes-gcm-0.5)
-        ("rust-base64" ,rust-base64-0.12)
-        ("rust-hkdf" ,rust-hkdf-0.8)
-        ("rust-hmac" ,rust-hmac-0.7)
+     `(#:cargo-inputs
+       (("rust-aes-gcm" ,rust-aes-gcm-0.8)
+        ("rust-base64" ,rust-base64-0.13)
+        ("rust-hkdf" ,rust-hkdf-0.10)
+        ("rust-hmac" ,rust-hmac-0.10)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-sha2" ,rust-sha2-0.8)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.9)
         ("rust-time" ,rust-time-0.1))))))
 
 (define-public rust-cookie-factory-0.3
