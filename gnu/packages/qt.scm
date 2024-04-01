@@ -2529,13 +2529,13 @@ also contains functionality to support data models and executable content.")))
 (define-public qtscxml
   (package
     (name "qtscxml")
-    (version "6.6.2")
+    (version "6.6.3")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0gm4805570ds3jmkbwrjigbg93zc561bd5rc52r71042zzq84j89"))
+                "1dbcw4qnss5rif97gdcimyzl3jqa508yph611dvvhc1xn16nl6qg"))
               (modules '((guix build utils)))
               (snippet
                '(begin
