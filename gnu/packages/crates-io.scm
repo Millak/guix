@@ -53377,30 +53377,53 @@ serialization.")
 (define-public rust-plotters-0.3
   (package
     (name "rust-plotters")
-    (version "0.3.1")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "plotters" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0akgmm5kqghl2b1q1qkzjggiqnb9smaz54fd5374k5qbqfggv8rj"))))
+        (base32 "0igxq58bx96gz58pqls6g3h80plf17rfl3b6bi6xvjnp02x29hnj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=src/lib.rs - (line 310)"
+         "--skip=src/lib.rs - (line 458)"
+         "--skip=src/lib.rs - (line 480)"
+         "--skip=src/lib.rs - (line 508)"
+         "--skip=src/lib.rs - (line 534)"
+         "--skip=src/lib.rs - (line 576)")
        #:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-font-kit" ,rust-font-kit-0.10)
-        ("rust-image" ,rust-image-0.23)
+       (("rust-ab-glyph" ,rust-ab-glyph-0.2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-font-kit" ,rust-font-kit-0.11)
+        ("rust-image" ,rust-image-0.24)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-pathfinder-geometry" ,rust-pathfinder-geometry-0.5)
         ("rust-plotters-backend" ,rust-plotters-backend-0.3)
         ("rust-plotters-bitmap" ,rust-plotters-bitmap-0.3)
         ("rust-plotters-svg" ,rust-plotters-svg-0.3)
-        ("rust-ttf-parser" ,rust-ttf-parser-0.12)
+        ("rust-ttf-parser" ,rust-ttf-parser-0.17)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-web-sys" ,rust-web-sys-0.3))))
+        ("rust-web-sys" ,rust-web-sys-0.3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-distr" ,rust-rand-distr-0.4)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list fontconfig))
     (home-page "https://github.com/38/plotters")
     (synopsis "Rust drawing library focus on data plotting")
     (description
