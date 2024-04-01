@@ -1875,13 +1875,13 @@ Vulkan, OpenGL and other main graphic APIs.")
 (define-public qtmultimedia
   (package
     (name "qtmultimedia")
-    (version "6.6.2")
+    (version "6.6.3")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1v0430jnv97ws6cizn9mi8zr9hcg7rixd0jg7smhdq8apacjb572"))
+                "1ciswpv8p71j9hwwdhfr5pmsrnizlaijp0dnyc99lk5is8qgh05y"))
               (modules '((guix build utils)))
               (snippet
                '(begin
