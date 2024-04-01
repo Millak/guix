@@ -665,6 +665,13 @@ which will be used as a snippet in origin."
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
 
+(define-public tree-sitter-latex
+  (tree-sitter-grammar
+   "latex" "LaTeX"
+   "0lc42x604f04x3kkp88vyqa5dx90wqyisiwl7nn861lyxl6phjnf"
+   "0.3.0"
+   #:repository-url "https://github.com/latex-lsp/tree-sitter-latex"))
+
 (define-public tree-sitter-lua
   (tree-sitter-grammar
    "lua" "Lua"
