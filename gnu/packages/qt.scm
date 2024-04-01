@@ -99,6 +99,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages networking)
@@ -110,6 +111,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -248,6 +250,49 @@ settings (such as icons, themes, and fonts) in desktop environments or
 window managers, that don't provide Qt integration by themselves.")
     (home-page "https://qt5ct.sourceforge.io/")
     (license license:bsd-2)))
+
+(define-public kddockwidgets
+  (package
+    (name "kddockwidgets")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/KDAB/KDDockWidgets")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fcmfz9my3219r0kh2y8yfvq372pd65z4s6hm0js7j8qb47lr02p"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DKDDockWidgets_TESTS=ON")))
+    (inputs
+     (list fmt
+           nlohmann-json
+           qtbase-5
+           qtdeclarative-5
+           qtquickcontrols2-5
+           qtx11extras
+           spdlog))
+    (home-page "https://github.com/KDAB/KDDockWidgets")
+    (synopsis "KDAB's Dock Widget Framework for Qt")
+    (description "KDDockWidgets is a Qt dock widget library suitable for
+replacing QDockWidget and implementing advanced functionalities missing in
+Qt.  Some of its features include:
+@itemize
+@item Advanced docking that QDockWidget doesn't support
+@item Layout engine honouring size constraints and some size policies
+@item Lazy separator resize
+@item Reordering tabs with mouse
+@item Partial layout save/restore, affecting only a chosen subset
+@item Double-click on title bar to maximize
+@item Double-click on separator to distribute equally
+@item Show close button on tabs
+@item Allow to make a dock widget non-closable and/or non-dockable
+@item Optional minimize and maximize button on the title bar
+@item FloatingWindows can be utility windows or full native ones.
+@end itemize")
+    (license (list license:gpl2 license:gpl3)))) ;dual-licensed
 
 (define-public kvantum
   (package
