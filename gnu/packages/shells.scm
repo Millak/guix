@@ -22,6 +22,8 @@
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,8 +47,11 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-web)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages groff)
@@ -120,7 +125,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "3.6.1")
+    (version "3.7.0")
     (source
      (origin
        (method url-fetch)
@@ -128,7 +133,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "1cj91fyba259vhbxvq55w2yf2p2vj201gr15pa59swx6gjs2nh2m"))))
+        (base32 "1c9slg6azhc9jn1sb75wip4hl9zyibjy9nay505nkw0lnxw766yz"))))
     (build-system cmake-build-system)
     (inputs
      (list fish-foreign-env ncurses pcre2
@@ -273,16 +278,16 @@ and syntax highlighting.")
 (define-public fish-foreign-env
   (package
     (name "fish-foreign-env")
-    (version "0.20190116")
+    (version "0.20230823")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/oh-my-fish/plugin-foreign-env")
-             (commit "dddd9213272a0ab848d474d0cbde12ad034e65bc")))
+             (commit "7f0cf099ae1e1e4ab38f46350ed6757d54471de7")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00xqlyl3lffc5l0viin1nyp819wf81fncqyz87jx8ljjdhilmgbs"))))
+        (base32 "0d16mdgjdwln41zk44qa5vcilmlia4w15r8z2rc3p49i5ankksg3"))))
     (build-system trivial-build-system)
     (arguments
      '(#:modules ((guix build utils))
@@ -298,7 +303,6 @@ and syntax highlighting.")
 
            ;; Embed absolute paths.
            (substitute* `(,(string-append func-path "/fenv.fish")
-                          ,(string-append func-path "/fenv.apply.fish")
                           ,(string-append func-path "/fenv.main.fish"))
              (("bash")
               (search-input-file %build-inputs "/bin/bash"))
@@ -543,14 +547,14 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.14.2")
+    (version "0.15.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "0fddxzd45zvfr687mvd90f5s376yz0a8ln7qbpl94q89z7l0y77k"))
+           "0427mimr4k75myg5mnig564kq7xbb5f5hws2ly3gxxl6g8mk79il"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
@@ -857,7 +861,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.17.0")
+    (version "0.20.0")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -870,7 +874,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "01b67dq56iam44d7c81ba9w62jjnjx2z7wm928rkc1ff6bacm37r"))))
+        (base32 "1jpxhixwq29ik01jx372g9acib59wmww8lrdlcypq7jpg5b0b7pi"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary
@@ -1035,8 +1039,56 @@ directory.  These values can be piped through a series of steps, in a series
 of commands called a ``pipeline''.")
     (license license:expat)))
 
+(define-public rust-nu-ansi-term-0.49
+  (package
+    (name "rust-nu-ansi-term")
+    (version "0.49.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nu-ansi-term" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s2svfnircd9jp06wk55qcbb9v5cadkfcjfg99vm21qdjg0x6wy0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://www.nushell.sh")
+    (synopsis "Library for ANSI terminal colors and styles (bold, underline)")
+    (description
+     "This package is a library for ANSI terminal colors and styles (bold,
+underline).")
+    (license license:expat)))
+
+(define-public rust-nu-ansi-term-0.46
+  (package
+    (inherit rust-nu-ansi-term-0.49)
+    (name "rust-nu-ansi-term")
+    (version "0.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nu-ansi-term" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "115sywxh53p190lyw97alm14nc004qj5jm5lvdj608z84rbida3p"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-overload" ,rust-overload-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-nu-ansi-term-0.44
   (package
+    (inherit rust-nu-ansi-term-0.49)
     (name "rust-nu-ansi-term")
     (version "0.44.0")
     (source
@@ -1053,13 +1105,7 @@ of commands called a ``pipeline''.")
        (("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-overload" ,rust-overload-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://www.nushell.sh")
-    (synopsis "Library for ANSI terminal colors and styles (bold, underline)")
-    (description
-     "This package is a library for ANSI terminal colors and styles (bold,
-underline).")
-    (license license:expat)))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-nu-cli-0.44
   (package

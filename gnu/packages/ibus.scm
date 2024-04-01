@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -454,7 +455,7 @@ Japanese language input in most graphical applications.")
 (define-public librime
   (package
     (name "librime")
-    (version "1.7.3")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -464,25 +465,8 @@ Japanese language input in most graphical applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pqk0i3zcii3fx5laj9qzbgd58jvq6wn31j76w4zix2i4b1lqcqv"))
-       (patches (search-patches "librime-fix-build-with-gcc10.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (delete-file-recursively "thirdparty/src")
-           (delete-file-recursively "thirdparty/bin")
-           (delete-file-recursively "thirdparty/include/X11")
-           #t))))
+         "0p4ybmn2syhf30vwzrd6ms77xadhl2lh7d2apq2m1yzmy42mdydm"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("include_directories\\($\\{PROJECT_SOURCE_DIR\\}/thirdparty/include\\)") "")
-               (("link_directories\\($\\{PROJECT_SOURCE_DIR\\}/thirdparty/lib\\)") ""))
-             #t)))))
     (inputs
      (list boost
            capnproto

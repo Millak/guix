@@ -2,6 +2,7 @@
 ;;; Copyright © 2022 Maya Tomasek <maya.tomasek@disroot.org>
 ;;; Copyright © 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,7 +53,17 @@
     (build-system zig-build-system)
     (arguments
      (list
-      #:zig-build-flags #~(list "-Dxwayland")   ;experimental xwayland support
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-wayland-session
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (wayland-sessions
+                      (string-append out "/share/wayland-sessions")))
+                (mkdir-p wayland-sessions)
+                (install-file "contrib/river.desktop"
+                              wayland-sessions)))))
+      #:zig-build-flags #~(list "-Dxwayland") ;experimental xwayland support
       #:zig-release-type "safe"))
     (native-inputs (list libevdev
                          libxkbcommon
@@ -61,7 +72,7 @@
                          scdoc
                          wayland
                          wayland-protocols
-                         wlroots))
+                         wlroots-0.16))
     (home-page "https://github.com/riverwm/river")
     (synopsis "Dynamic tiling Wayland compositor")
     (description
@@ -97,7 +108,7 @@ mission-critical safety and performance for financial services.")
 (define-public zig-zls
   (package
     (name "zig-zls")
-    (version "0.9.0")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -107,24 +118,12 @@ mission-critical safety and performance for financial services.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hhs7dz9rpshfd1a7x5swmix2rmh53vsqskh3mzqlrj2lgb3cnii"))))
-    (build-system gnu-build-system)
-    (inputs (list zig-0.9 python))
+                "1lsks7h3z2m4psyn9mwdylv1d6a9i3z54ssadiz76w0clbh8ch9k"))))
+    (build-system zig-build-system)
+    (inputs (list zig-0.10 python))
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (replace 'build
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (let ((out (assoc-ref outputs "out")))
-                              (setenv "ZIG_GLOBAL_CACHE_DIR"
-                                      (string-append (getcwd) "/zig-cache"))
-                              (invoke "zig" "build" "install"
-                                      "-Drelease-safe" "--prefix" out))))
-                        (delete 'install)
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "zig" "build" "test")))))))
+     ;; The tests fail with memory leaks.
+     (list #:tests? #f))
     (synopsis "Zig language server")
     (description
      "Zig Language Server is a language server implementing the @acronym{LSP,

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;;
@@ -24,6 +24,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
@@ -37,6 +38,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -47,14 +49,14 @@
 (define-public toot
   (package
     (name "toot")
-    (version "0.38.1")
+    (version "0.42.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "toot" version))
         (sha256
-         (base32 "1cn646jzys9vjaw20sxmgzc7zq5a5ma8vabvrw9zpa0yl9wm97my"))))
-    (build-system python-build-system)
+         (base32 "1vw3j504dxmq22s40kysps3d09hl7l48cwznwrfr9zqif67i4v3g"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -64,12 +66,17 @@
                (add-installed-pythonpath inputs outputs)
                (invoke "py.test")))))))
     (native-inputs
-     (list python-psycopg2 python-pytest))
+     (list python-psycopg2-binary
+           python-pytest
+           python-pyyaml
+           python-typing-extensions))
     (inputs
      (list python-beautifulsoup4
-           python-tomlkit
+           python-click
            python-requests
+           python-tomlkit
            python-urwid
+           python-urwidgets
            python-wcwidth))
     (home-page "https://github.com/ihabunek/toot/")
     (synopsis "Mastodon CLI client")
@@ -87,7 +94,7 @@ Features include:
 (define-public tuba
   (package
     (name "tuba")
-    (version "0.4.1")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -96,7 +103,7 @@ Features include:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v2ihp1dkp13jklp3kysv4blflhx3w0hwcyink4mb7hwsaqy0xnm"))))
+        (base32 "1s1iq9bwv6wp4dyvrdjdbmj9sqj9zxa0c78swcw7nhmm3fksh3vz"))))
     (build-system meson-build-system)
     (arguments
       (list

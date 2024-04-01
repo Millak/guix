@@ -71,7 +71,10 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -118,6 +121,7 @@
     (build-system python-build-system)
     (native-inputs
      (list gettext-minimal ; for msgfmt
+           gobject-introspection
            util-linux ; setsid command, for the tests
            par2cmdline
            python-fasteners
@@ -132,7 +136,8 @@
     (propagated-inputs
      (list python-lockfile python-pygobject python-urllib3))
     (inputs
-     (list dbus ; dbus-launch (Gio backend)
+     (list bash-minimal ; to run the wrapped program
+           dbus ; dbus-launch (Gio backend)
            librsync
            lftp
            gnupg ; gpg executable needed
@@ -172,7 +177,12 @@
                                                    "share/zoneinfo"))
                    ;; Some things respect TMPDIR, others hard-code /tmp, and the
                    ;; defaults don't match up, breaking test_restart.  Fix it.
-                   (setenv "TMPDIR" "/tmp"))))))
+                   (setenv "TMPDIR" "/tmp")))
+               (add-after 'wrap 'gi-wrap
+                 (lambda _
+                   (let ((prog (string-append #$output "/bin/duplicity")))
+                     (wrap-program prog
+                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (home-page "https://duplicity.gitlab.io/duplicity-web/")
     (synopsis "Encrypted backup using rsync algorithm")
     (description
@@ -1270,27 +1280,28 @@ backup.")
 (define-public disarchive
   (package
     (name "disarchive")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.ngyro.com/disarchive/"
                                   "disarchive-" version ".tar.gz"))
               (sha256
                (base32
-                "16sjplkn9nr7zhfrqll7l1m2b2j4hg8k29p6bqjap9fkj6zpn2q2"))))
+                "1s4lyhhh1zsaxgn11hy2b1kdvnvpipii68wba0hwr471rd43m08k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
            automake
            pkg-config
            guile-3.0 ;for cross-compilation
+           guile-bzip2
            guile-gcrypt
            guile-lzma
            guile-quickcheck))
     (inputs
      (list guile-3.0 zlib))
     (propagated-inputs
-     (list guile-gcrypt guile-lzma))
+     (list guile-bzip2 guile-gcrypt guile-lzma))
     (home-page "https://ngyro.com/software/disarchive.html")
     (synopsis "Software archive disassembler")
     (description "Disarchive can disassemble software archives into data
@@ -1304,42 +1315,45 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "1.7.12")
+    (version "1.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgmatic" version))
        (sha256
-        (base32 "0720wvs3h2w8h28d7mpvjfp0q37dnrwf1y2ik3y4yr9csih7fmgh"))))
+        (base32 "1xmqv0gg2ic7lp5kmygr9f6qkabsr86mma7pigan12vk2bcdbw31"))))
     (build-system python-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'configure
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Set absolute store path to borg.
-                   (substitute* "borgmatic/commands/borgmatic.py"
-                     (("\\.get\\('local_path', 'borg'\\)")
-                      (string-append ".get('local_path', '"
-                                     (search-input-file inputs "bin/borg")
-                                     "')")))
-                   (substitute* "tests/unit/commands/test_borgmatic.py"
-                     (("(module.get_local_path.+ == )'borg'" all start)
-                      (string-append start "'"
-                                     (search-input-file inputs "bin/borg")
-                                     "'")))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; Tests require the installed executable.
-                     (setenv "PATH" (string-append #$output "/bin"
-                                                   ":" (getenv "PATH")))
-                     (invoke "pytest")))))))
-    (inputs
-     (list borg python-colorama python-jsonschema python-requests
-           python-ruamel.yaml))
-    (native-inputs
-     (list python-flexmock python-pytest python-pytest-cov))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'configure
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       ;; Set absolute store path to borg.
+                       (substitute* "borgmatic/commands/borgmatic.py"
+                         (("\\.get\\('local_path', 'borg'\\)")
+                          (string-append ".get('local_path', '"
+                                         (search-input-file inputs "bin/borg")
+                                         "')")))
+                       (substitute* "tests/unit/commands/test_borgmatic.py"
+                         (("(module.get_local_path.+ == )'borg'" all start)
+                          (string-append start "'"
+                                         (search-input-file inputs "bin/borg")
+                                         "'")))))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         ;; Tests require the installed executable.
+                         (setenv "PATH"
+                                 (string-append #$output "/bin" ":"
+                                                (getenv "PATH")))
+                         (invoke "pytest")))))))
+    (inputs (list borg
+                  python-apprise
+                  python-colorama
+                  python-jsonschema
+                  python-requests
+                  python-ruamel.yaml))
+    (native-inputs (list python-flexmock python-pytest python-pytest-cov))
     (home-page "https://torsion.org/borgmatic/")
     (synopsis "Simple, configuration-driven backup software")
     (description

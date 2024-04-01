@@ -1382,6 +1382,23 @@ void DerivationGoal::buildDone()
                 % drvPath % statusToString(status));
         }
 
+	if (fixedOutput) {
+	    /* Replace the output, if it exists, by a fresh copy of itself to
+               make sure that there's no stale file descriptor pointing to it
+               (CVE-2024-27297).  */
+	    foreach (DerivationOutputs::iterator, i, drv.outputs) {
+		Path output = chrootRootDir + i->second.path;
+		if (pathExists(output)) {
+		    Path pivot = output + ".tmp";
+		    copyFileRecursively(output, pivot, true);
+		    int err = rename(pivot.c_str(), output.c_str());
+		    if (err != 0)
+			throw SysError(format("renaming `%1%' to `%2%'")
+				       % pivot % output);
+		}
+	    }
+	}
+
         /* Compute the FS closure of the outputs and register them as
            being valid. */
         registerOutputs();

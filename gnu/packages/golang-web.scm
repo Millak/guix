@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
@@ -21,7 +22,9 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,21 +47,32 @@
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
 
 ;;; Commentary:
 ;;;
 ;;; Golang modules (libraries) related to HTML, CSS, SCSS, JavaScript, JSON,
-;;; Web-framework, REST-API or similar functionality.
+;;; Web-framework, REST-API or similar functionality. They may provide
+;;; executables and libraries, for which there are marked sections.
+
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
 ;;;
 ;;; Code:
 
+;;;
+;;; Libraries:
+;;;
+
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
@@ -84,6 +98,45 @@
      "This package provides access to Google Compute Engine (GCE) metadata and
 API service accounts for Go.")
     (license license:asl2.0)))
+
+(define-public go-github-com-alexliesenfeld-health
+  (package
+    (name "go-github-com-alexliesenfeld-health")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alexliesenfeld/health")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fchlvxwidsscskwq07vhxfwcn5wbigbizi51619l8gg09mr158q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alexliesenfeld/health"
+      #:phases #~(modify-phases %standard-phases
+                   ;; Examples requires additional dependencies and comes with
+                   ;; their own go.mod, consider to pack it as separate
+                   ;; package if required.
+                   (add-after 'unpack 'remove-examples
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/examples")))))))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/alexliesenfeld/health")
+    (synopsis "Simple and flexible health check library for Go")
+    (description
+     "This library provides a @code{http.Handler} that acts as a health
+endpoint.  It can be used by cloud infrastructure or other services to
+determine the availability of an application.
+
+Rather than simply returning a response with HTTP status code 200, this
+library allows building health checks that test the availability of all
+required dependencies.  The HTTP response contains the aggregated health
+result and details about the health status of each component.")
+    (license license:expat)))
 
 (define-public go-github-com-andybalholm-cascadia
   (package
@@ -576,6 +629,35 @@ logging system.")
 decompose request handling into many smaller layers.")
     (license license:expat)))
 
+(define-public go-github-com-go-jose-go-jose-v3
+  (package
+    (name "go-github-com-go-jose-go-jose-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-jose/go-jose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fnw0p49wc9gmd2xcji2x9jf97dgg9igagd5m6bmq3nw9jjfqdc5"))))
+    (build-system go-build-system)
+    (arguments
+     '( #:import-path "github.com/go-jose/go-jose/v3"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (native-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-jose/go-jose")
+    (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
+    (description
+     "This package provides a Golang implementation of the Javascript Object
+Signing and Encryption set of standards.  This includes support for JSON Web
+Encryption, JSON Web Signature, and JSON Web Token standards.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-telegram-bot-api-telegram-bot-api
   (package
     (name "go-github-com-go-telegram-bot-api-telegram-bot-api")
@@ -604,7 +686,7 @@ decompose request handling into many smaller layers.")
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
-    (version "0.9.10")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch)
@@ -613,13 +695,16 @@ decompose request handling into many smaller layers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bg8p4c6r8r0kixdxv2m8xmdsmb1zl5sd8czswpccldjk3c358wp"))))
+        (base32 "1krid2hlvs808jl9zmv7m6zx92samc60gymhwr2mwwykicwbnks8"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "benchmarks"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/goccy/go-json"))
     (home-page "https://github.com/goccy/go-json")
     (synopsis "JSON encoder/decoder in Go")
-    (description "Fast JSON encoder/decoder compatible with encoding/json for Go.")
+    (description
+     "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
 
 (define-public go-github-com-google-go-github
@@ -647,6 +732,29 @@ decompose request handling into many smaller layers.")
     (description "@code{go-github} is a Go client library for accessing the
 GitHub API v3.")
     (license license:bsd-3)))
+
+;; For chezmoi-1.8.10
+(define-public go-github-com-google-go-github-v33
+  (package
+    (inherit go-github-com-google-go-github)
+    (name "go-github-com-google-go-github-v33")
+    (version "33.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-github")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-google-go-github)
+       ((#:unpack-path _ "github.com/google/go-github/v26")
+        "github.com/google/go-github/v33")
+       ((#:import-path _ "github.com/google/go-github/v26/github")
+        "github.com/google/go-github/v33/github")))))
 
 (define-public go-github-com-google-safehtml
   (package
@@ -868,6 +976,63 @@ sessions, flash messages, custom backends, and more.")
 protocol.")
     (license license:bsd-2)))
 
+(define-public go-github-com-gregjones-httpcache
+  (let ((commit "901d90724c7919163f472a9812253fb26761123d")
+        (revision "0"))
+    (package
+      (name "go-github-com-gregjones-httpcache")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gregjones/httpcache")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05r0xq51vfb55di11m7iv19341d73f7in33vq1ihcqs1nffdwiq0"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/gregjones/httpcache"))
+      (home-page "https://github.com/gregjones/httpcache")
+      (synopsis "Transport for @code{http.Client} that will cache responses")
+      (description
+       "Package @code{httpcache} provides a @code{http.RoundTripper}
+implementation that works as a mostly @url{https://tools.ietf.org/html/rfc7234, RFC 7234}
+compliant cache for HTTP responses.  It is only suitable for use as a
+\"private\" cache (i.e. for a web-browser or an API-client and not for a
+shared proxy).")
+      (license license:expat))))
+
+(define-public go-github-com-hashicorp-go-cleanhttp
+  (package
+    (name "go-github-com-hashicorp-go-cleanhttp")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-cleanhttp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i5xslizzwd966w81bz6dxjwzgml4q9bwqa186bsxd1vi8lqxl9p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-cleanhttp"))
+    (home-page "https://github.com/hashicorp/go-cleanhttp")
+    (synopsis "Functions for accessing clean Go @code{http.Client} values")
+    (description
+     "The Go standard library contains a default @code{http.Client} and it is
+a common idiom to tweak it as necessary.  Unfortunately, this is a shared
+value, and it is not uncommon for libraries to assume that they are free to
+modify it at will.  This package provides some simple functions to get a
+\"clean\" @code{http.Client}, namely one that uses the same default values as
+the Go standard library, but returns a client that does not share any state
+with other clients.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hjson-hjson-go
   (package
     (name "go-github-com-hjson-hjson-go")
@@ -1014,6 +1179,7 @@ Microsoft AD PAC authorization data.")
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-objx
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/jmespath/go-jmespath")
     (synopsis "Golang implementation of JMESPath")
@@ -1069,6 +1235,94 @@ router.")
     (description "@code{bluemonday} is a HTML sanitizer implemented in Go.")
     (license license:bsd-3)))
 
+(define-public go-github-com-multiformats-go-multiaddr
+  ;; This commit is from <2018-10-01> and associated with GX package manager,
+  ;; since that time the project has changed versing stile and GX is dropped.
+  ;; Current versioned tag is v0.12.2 <2024-01-26>.
+  (let ((commit "fe1c46f8be5af4aff4db286e08839295bd922efb")
+        (revision "0"))
+    (package
+      (name "go-github-com-multiformats-go-multiaddr")
+      (version (git-version "1.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/multiformats/go-multiaddr")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0p5f8h098a4yjjmzsgqs7vhx1iqifb8izwg3559cr4h7clkpzznh"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/multiformats/go-multiaddr"))
+      (native-inputs
+       (list go-github-com-gxed-hashland-keccakpg
+             go-github-com-minio-blake2b-simd
+             go-github-com-minio-sha256-simd
+             go-github-com-mr-tron-base58
+             go-github-com-multiformats-go-multihash
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
+      (home-page "https://github.com/multiformats/go-multiaddr")
+      (synopsis "Composable and future-proof network addresses")
+      (description
+       "Multiaddr is a standard way to represent addresses that does the
+following:
+
+@itemize
+@item Support any standard network protocols.
+@item Self-describe (include protocols).
+@item Have a binary packed format.
+@item Have a nice string representation.
+@item Encapsulate well.
+@end itemize\n")
+      (license license:expat))))
+
+(define-public go-github-com-multiformats-go-multiaddr-net
+  ;; This commit is from <2018-10-01> and associated with GX package manager,
+  ;; since that time the project has changed versing stile and GX is dropped.
+  ;; The latest versioned tag is v0.1.5 <2020-04-30>. The project is archved
+  ;; on <2021-10-05>.
+  (let ((commit "1cb9a0e8a6de3c8a10f6cee60d01d793603c4f7e")
+        (revision "0"))
+    (package
+      (name "go-github-com-multiformats-go-multiaddr-net")
+      (version (git-version "1.6.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/multiformats/go-multiaddr-net")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ypgi47xdz3bh8lh7f8cmk7w3ql9g4izx5l3kzdg9gda1xn5zxq3"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        ;; TODO: Tests fail because they try to access the network.
+        #:tests? #f
+        #:import-path "github.com/multiformats/go-multiaddr-net"))
+      (native-inputs
+       (list go-github-com-gxed-hashland-keccakpg
+             go-github-com-minio-blake2b-simd
+             go-github-com-minio-sha256-simd
+             go-github-com-mr-tron-base58
+             go-github-com-multiformats-go-multiaddr
+             go-github-com-multiformats-go-multihash
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
+      (home-page "https://github.com/multiformats/go-multiaddr-net")
+      (synopsis "Multiaddress net tools")
+      (description
+       "This package provides Multiaddr specific versions of common functions
+in stdlib's @command{net} package.  This means wrappers of standard net
+symbols like @command{net.Dial} and @command{net.Listen}, as well as
+conversion to and from @command{net.Addr}.")
+      (license license:expat))))
+
 (define-public go-github-com-nwidger-jsoncolor
   (package
     (name "go-github-com-nwidger-jsoncolor")
@@ -1119,6 +1373,59 @@ which produce colorized output using github.com/fatih/color.")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pkg-sftp
+  (package
+    (name "go-github-com-pkg-sftp")
+    (version "1.13.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/sftp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n35lzfrnrffjqy34ny6gxs27kq81s67ply6q8s1g19mhfzm6my7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pkg/sftp"))
+    (propagated-inputs (list go-golang-org-x-crypto go-github-com-kr-fs))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/pkg/sftp")
+    (synopsis "SFTP implementation for Go")
+    (description
+     "This package provides an @acronym{SFTP, SSH File Transfer Protocol}
+implementation, as described in
+@url{https://filezilla-project.org/specs/draft-ietf-secsh-filexfer-02.txt},
+for Go.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-pquerna-cachecontrol
+  (package
+    (name "go-github-com-pquerna-cachecontrol")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pquerna/cachecontrol")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d5zgv2w0sinh9m41pw3n015zzyabk7awgwwga7nmhjz452c9r5n"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/pquerna/cachecontrol"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/pquerna/cachecontrol")
+    (synopsis "Golang HTTP Cache-Control Parser and Interpretation")
+    (description
+     "This package implements RFC 7234 Hypertext Transfer Protocol (HTTP/1.1):
+Caching.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
@@ -1142,6 +1449,81 @@ which produce colorized output using github.com/fatih/color.")
     (description "@code{goquery} brings a syntax and a set of features similar
 to jQuery to the Go language.")
     (license license:bsd-3)))
+
+(define-public go-github-com-quic-go-qpack
+  (package
+    (name "go-github-com-quic-go-qpack")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/qpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00mjz445hhx4yar5l8p21bpp4d06jyg2ajw0ax7bh64d37l4kx39"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests require ginkgo v2.
+      #:tests? #f
+      #:go go-1.20
+      #:import-path "github.com/quic-go/qpack"))
+    (propagated-inputs
+     (list go-github-com-onsi-ginkgo
+           go-github-com-onsi-gomega
+           go-golang-org-x-net))
+    (home-page "https://github.com/quic-go/qpack")
+    (synopsis "Minimal QPACK (RFC 9204) implementation for Go")
+    (description
+     "A minimal QPACK (RFC 9204) implementation in Go.  It is minimal in the sense
+that it doesn't use the dynamic table at all, but just the static table and (Huffman
+encoded) string literals.  Wherever possible, it reuses code from the
+@url{https://github.com/golang/net/tree/master/http2/hpack, HPACK implementation in
+the Go standard library}.")
+    (license license:expat)))
+
+(define-public go-github-com-quic-go-quic-go
+  (package
+    (name "go-github-com-quic-go-quic-go")
+    (version "0.39.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/quic-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0acabl3cz48nxpggc5s7fwxpmr5amyi09jygn5m5xxkkbhqs2cxq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX More packages required...
+      #:tests? #f
+      #:go go-1.20
+      #:import-path "github.com/quic-go/quic-go"))
+    (propagated-inputs
+     (list go-github-com-cheekybits-genny
+           go-github-com-golang-protobuf-proto
+           go-github-com-marten-seemann-chacha20
+           go-github-com-quic-go-qpack
+           go-github-com-quic-go-qtls-go1-20
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/quic-go/quic-go")
+    (synopsis "QUIC in Go")
+    (description
+     "This package provides a Go language implementation of the QUIC network
+protocol.")
+    (license license:expat)))
+
+(define-public go-github-com-lucas-clemente-quic-go
+  (deprecated-package "go-github-com-lucas-clemente-quic-go" go-github-com-quic-go-quic-go))
 
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
@@ -1272,6 +1654,38 @@ an interface to implement any other minifier.")
 sockets.")
       (license license:expat))))
 
+(define-public go-github-com-ugorji-go-codec
+  (package
+    (name "go-github-com-ugorji-go-codec")
+    (version "1.2.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ugorji/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11j0sd7kli2bh2npfr2znnvdjsk118rs8khqzfdp6pb5jm0l20ib"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ugorji/go/codec"
+      #:unpack-path "github.com/ugorji/go"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-benchmarks
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively (string-append "src/"
+                                                               import-path
+                                                               "/bench")))))))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/ugorji/go")
+    (synopsis "Codec and encoding library for various serialization formats")
+    (description
+     "This package provides a high performance and feature rich codec and
+encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
+    (license license:expat)))
+
 (define-public go-github-com-valyala-fasthttp
   (package
     (name "go-github-com-valyala-fasthttp")
@@ -1304,7 +1718,8 @@ sockets.")
            go-github-com-valyala-tcplisten
            go-golang-org-x-crypto
            go-golang-org-x-net
-           go-golang-org-x-sys))
+           go-golang-org-x-sys
+           go-golang-org-x-text))
     (home-page "https://github.com/valyala/fasthttp")
     (synopsis "Provides fast HTTP server and client API")
     (description
@@ -1459,6 +1874,29 @@ programming language, which supports draft-04, draft-06 and draft-07.")
 Signing and Encryption set of standards.  This includes support for JSON Web
 Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:asl2.0)))
+
+;;;
+;;; Executables:
+;;;
+
+(define-public go-minify
+  (package
+    (inherit go-github-com-tdewolff-minify-v2)
+    (name "go-minify")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-tdewolff-minify-v2)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/tdewolff/minify/v2")
+        "github.com/tdewolff/minify/cmd/minify")))
+    (inputs
+     (list go-github-com-djherbis-atime
+           go-github-com-dustin-go-humanize
+           go-github-com-fsnotify-fsnotify
+           go-github-com-matryer-try
+           go-github-com-spf13-pflag))
+    (description "This package provides a CLI binary executible built from
+go-github-com-tdewolff-minify-v2 source.")))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

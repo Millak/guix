@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2014, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
@@ -9,11 +9,11 @@
 ;;; Copyright © 2018 Lprndn <guix@lprndn.info>
 ;;; Copyright © 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Oleh Malyi <astroclubzp@gmail.com>
-;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -52,6 +52,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -97,6 +98,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -494,7 +496,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "4.8.0")
+    (version "4.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -519,7 +521,6 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                                 "libjpeg"
                                 "libjpeg-turbo"
                                 "libpng"
-                                "libtengine"
                                 "libtiff"
                                 "libwebp"
                                 "openexr"
@@ -534,7 +535,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                   (for-each delete-file (find-files "." "\\.jar$"))))
               (sha256
                (base32
-                "14bjpb0ahhaqnim8g6vs0gyd6jgnmly1amx25a0rk1a6ii2aiywn"))))
+                "1s3d2bzf74biz18flb33533dfx3j31305ddh4gzgvg55hpr1zp55"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -717,7 +718,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
            (file-name (git-file-name "opencv_extra" version))
            (sha256
             (base32
-             "11y9b35j74gg4gqll4v366qmhvjkcqml45khiajd8zsk1fraf70l"))))
+             "1x095sgc0fkl8zzpxlswpnmxkf80cvzab1ddcq792dys5qm2s1x4"))))
        ("opencv-contrib"
         ,(origin
            (method git-fetch)
@@ -726,7 +727,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
            (file-name (git-file-name "opencv_contrib" version))
            (sha256
             (base32
-             "16crcca9r4y4rby0dqdhc06qi84hjk6qxy2sql2dhh35hfs856rr"))))))
+             "17xrvzllbcrprxn6c0g4x25i2wa7yqa0ycv177wah3if9s30dgib"))))))
     (inputs
      (list eigen
            ffmpeg-4
@@ -832,14 +833,14 @@ due to its architecture which automatically parallelises the image workflows.")
 (define-public gmic
   (package
     (name "gmic")
-    (version "3.0.0")
+    (version "3.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gmic.eu/files/source/gmic_"
                            version ".tar.gz"))
        (sha256
-        (base32 "080inz0wisv3rhvbnzrgcs3j25wq86gybp68yi56gw6vwswnn19z"))))
+        (base32 "06vcwn8c8zhr1j0jy79an1f6vvjh47ipm19a20g3qsnxv7h5c905"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -865,7 +866,6 @@ due to its architecture which automatically parallelises the image workflows.")
            libpng
            libtiff
            libx11
-           ;;opencv ;OpenCV is currently broken in the CI
            openexr
            zlib))
     (home-page "https://gmic.eu/")
@@ -899,18 +899,6 @@ including 2D color images.")
        (prepend gmic qtbase-5)))
     (synopsis "Qt frontend for the G'MIC image processing framework")
     (license license:gpl3+)))
-
-(define-public gmic-qt-krita
-  (package
-    (inherit gmic-qt)
-    (name "gmic-qt-krita")
-    (arguments
-     (substitute-keyword-arguments (package-arguments gmic-qt)
-       ((#:configure-flags flags)
-        '(list "-DGMIC_QT_HOST=krita" "-DENABLE_DYNAMIC_LINKING=ON"
-               (string-append "-DGMIC_LIB_PATH="
-                              (assoc-ref %build-inputs "gmic") "/lib")))))
-    (synopsis "Krita plugin for the G'MIC image processing framework")))
 
 (define-public gmic-qt-gimp
   (package
@@ -1252,7 +1240,7 @@ programmatically.")
 (define-public vxl
   (package
     (name "vxl")
-    (version "2.0.2")
+    (version "3.5.0")
     (source
      (origin
        (method git-fetch)
@@ -1261,7 +1249,7 @@ programmatically.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0949hw57szq8943f1whwqaz591xjmb19kj803hcv74hdai2b0ycg"))
+        (base32 "0iqq4lm51l5gvkax6r79ypifqmgir3p3vman9gsc2085d2agjvbs"))
        (modules '((guix build utils)))
        ;; TODO: vxl includes an old version of dcmtk.  It won't build with
        ;; version 3.6.x.
@@ -1331,24 +1319,42 @@ libraries designed for computer vision research and implementation.")
        (sha256
         (base32 "0bs63mk4q8jmx38f031jy5w5n9yy5ng9x8ijwinvjyvas8cichqi"))))
     (build-system cmake-build-system)
+    (outputs '("out" "python"))
     (arguments
-     (list #:tests? #f ; tests require network access and external data
-           #:configure-flags #~'("-DITK_USE_GPU=ON"
-                                 "-DITK_USE_SYSTEM_LIBRARIES=ON"
-                                 "-DITK_USE_SYSTEM_GOOGLETEST=ON"
-                                 "-DITK_BUILD_SHARED=ON"
-                                 ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
-                                 ;; variable in the installed CMake files.  This is necessary as other
-                                 ;; packages using insight-toolkit could not be configured otherwise.
-                                 "-DGTEST_ROOT=gtest"
-                                 "-DCMAKE_CXX_STANDARD=17")
+     (list #:tests? #f        ; tests require network access and external data
+           #:configure-flags
+           #~(list "-DITK_USE_GPU=ON"
+                   "-DITK_USE_SYSTEM_LIBRARIES=ON"
+                   "-DITK_USE_SYSTEM_GOOGLETEST=ON"
+                   "-DITK_USE_SYSTEM_CASTXML=ON"
+                   "-DITK_BUILD_SHARED=ON"
+                   "-DITK_WRAPPING=ON"
+                   "-DITK_WRAP_PYTHON=ON"
+                   "-DITK_DYNAMIC_LOADING=ON"
+                   (let* ((python-version
+                           #$(version-major+minor
+                              (package-version (this-package-input "python"))))
+                          (python-lib-path
+                           (string-append #$output:python
+                                          "/lib/python" python-version
+                                          "/site-packages")))
+                     (string-append "-DPY_SITE_PACKAGES_PATH=" python-lib-path))
+                   ;; This prevents "GTest::GTest" from being added to the ITK_LIBRARIES
+                   ;; variable in the installed CMake files.  This is necessary as other
+                   ;; packages using insight-toolkit could not be configured otherwise.
+                   "-DGTEST_ROOT=gtest"
+                   "-DCMAKE_CXX_STANDARD=17")
 
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'do-not-tune
                           (lambda _
                             (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
                               (("-mtune=native")
-                               "")))))))
+                               ""))))
+                        (add-after 'unpack 'ignore-warnings
+                          (lambda _
+                            (substitute* "Wrapping/Generators/Python/CMakeLists.txt"
+                              (("-Werror") "")))))))
     (inputs
      (list eigen
            expat
@@ -1365,7 +1371,7 @@ libraries designed for computer vision research and implementation.")
            vxl-1
            zlib))
     (native-inputs
-     (list googletest pkg-config))
+     (list castxml googletest pkg-config swig which))
 
     ;; The 'CMake/ITKSetStandardCompilerFlags.cmake' file normally sets
     ;; '-mtune=native -march=corei7', suggesting there's something to be
@@ -1395,13 +1401,16 @@ combine the information contained in both.")
                            version ".tar.xz"))
        (sha256
         (base32 "19cgfpd63gqrvc3m27m394gy2d7w79g5y6lvznb5qqr49lihbgns"))))
+    (outputs '("out"))
     (arguments
-     (list #:tests? #f ; tests require network access and external data
+     (list #:tests? #f        ; tests require network access and external data
            #:configure-flags #~'("-DITKV3_COMPATIBILITY=ON" ; needed for itk-snap
                                  "-DITK_USE_GPU=ON"
                                  "-DITK_USE_SYSTEM_LIBRARIES=ON"
                                  "-DITK_USE_SYSTEM_GOOGLETEST=ON"
-                                 "-DITK_USE_SYSTEM_VXL=ON")))))
+                                 "-DITK_USE_SYSTEM_VXL=ON")))
+    (native-inputs
+     (list googletest pkg-config))))
 
 (define-public insight-toolkit-4.12
   (package (inherit insight-toolkit-4)

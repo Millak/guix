@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen@protonmail.com>
-;;; Copyright © 2020, 2021, 2023 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -50,7 +50,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
@@ -154,6 +154,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -161,6 +162,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages music)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
@@ -217,7 +219,7 @@
 (define-public ani-cli
   (package
     (name "ani-cli")
-    (version "4.6")
+    (version "4.8")
     (source
      (origin
        (method git-fetch)
@@ -226,7 +228,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ni9pzjb5qh87iz7c8252bx79qadr1qx6jnkqvvjcqrchh7q473a"))))
+        (base32 "1xfcn51yyzjc7gr2xzhz2i1i500ad1877dmdadipfdlfcs4l4yxy"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -842,7 +844,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.25")
+    (version "0.26")
     (source
      (origin
        (method url-fetch)
@@ -850,7 +852,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/releases/download/v" version
                            "/celluloid-" version ".tar.xz"))
        (sha256
-        (base32 "0an98lz90s4hhvrvqd1ja814mav9md9n843vhknjgcv4zmrwn0sg"))))
+        (base32 "1pjxmvjjvw9k0kvhhqp4x73x6a0mslffsdil431q8m3iwasffwb1"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -914,7 +916,7 @@ television and DVD.  It is also known as AC-3.")
 (define-public libaom
   (package
     (name "libaom")
-    (version "3.5.0")
+    (version "3.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -923,10 +925,10 @@ television and DVD.  It is also known as AC-3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0arn8a88jz4mj69n8cs4qmrdjwhbvzsqgnx20wr9mq01b06kqich"))))
+                "04zfgvzi4h4ybvjc4zfpfsmldz8w6vasjlrry7j4p6g3g7wk64r7"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list perl pkg-config python)) ; to detect the version
+     (list perl pkg-config python))     ; to detect the version
     (arguments
      `(#:tests? #f                      ; downloads many video clips
        #:configure-flags
@@ -1564,13 +1566,10 @@ libebml is a C++ library to read and write EBML files.")
                                   "/share/vulkan/registry/vk.xml"))))
     (native-inputs
      (list glad python python-mako pkg-config))
-    (inputs
-     (list lcms
-           libepoxy
-           mesa
-           shaderc
-           vulkan-headers
-           vulkan-loader))
+    (inputs (list libepoxy mesa vulkan-headers))
+    ;; These are propagated as they are listed in 'Requires.private' of
+    ;; libplacebo.pc.
+    (propagated-inputs (list lcms shaderc vulkan-loader))
     (home-page "https://code.videolan.org/videolan/libplacebo")
     (synopsis "GPU-accelerated image/video processing library")
     (description "libplacebo is, in a nutshell, the core rendering algorithms
@@ -2000,6 +1999,265 @@ audio/video codec library.")
                  "--enable-static"))))
      (inputs '()))))
 
+;;; Custom ffmpeg package used by Jami, which incorporates custom patches.
+(define-public ffmpeg-jami
+  (package
+    (inherit ffmpeg)
+    (name "ffmpeg-jami")
+    (source (let ((ffmpeg-origin (package-source ffmpeg)))
+              (origin
+                (inherit ffmpeg-origin)
+                ;; These patches originate come from
+                ;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/>.
+                ;; Make sure to keep them update and/or register any new ones
+                ;; here.
+                (patches
+                 (append
+                  (origin-patches ffmpeg-origin)
+                  (search-patches
+                   "ffmpeg-jami-remove-mjpeg-log.patch"
+                   "ffmpeg-jami-change-RTCP-ratio.patch"
+                   "ffmpeg-jami-rtp_ext_abs_send_time.patch"
+                   "ffmpeg-jami-libopusdec-enable-FEC.patch"
+                   "ffmpeg-jami-libopusenc-reload-packet-loss-at-encode.patch"
+                   "ffmpeg-jami-screen-sharing-x11-fix.patch"))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments ffmpeg)
+       ((#:configure-flags _ '())
+        ;; The base configure flags preserved from ffmpeg appear first.
+        #~(list "--disable-static"
+                "--enable-shared"
+                "--disable-stripping"
+
+                ;; Extra Guix-added flags that make sense for this custom
+                ;; package; these could be contributed upstream.
+                "--disable-doc"
+
+                ;; The following flags are those specified by Jami.
+                ;; They're from the jami/daemon/contrib/src/ffmpeg/rules.mak
+                ;; file.  We try to keep it as close to the official Jami
+                ;; package as possible, to provide all the codecs and extra
+                ;; features that are expected (see:
+                ;; https://review.jami.net/plugins/gitiles/jami-daemon/+/
+                ;; refs/heads/master/contrib/src/ffmpeg/rules.mak).
+                "--disable-everything"
+                "--enable-zlib"
+                "--enable-gpl"
+                "--enable-swscale"
+                "--enable-bsfs"
+                "--disable-filters"
+                "--disable-programs"
+                "--disable-postproc"
+
+                "--disable-protocols"
+                "--enable-protocol=crypto"
+                "--enable-protocol=file"
+                "--enable-protocol=rtp"
+                "--enable-protocol=srtp"
+                "--enable-protocol=tcp"
+                "--enable-protocol=udp"
+                "--enable-protocol=unix"
+                "--enable-protocol=pipe"
+
+                ;; Enable muxers/demuxers.
+                "--disable-demuxers"
+                "--disable-muxers"
+                "--enable-muxer=rtp"
+                "--enable-muxer=g722"
+                "--enable-muxer=g723_1"
+                "--enable-muxer=g726"
+                "--enable-muxer=g726le"
+                "--enable-muxer=h263"
+                "--enable-muxer=h264"
+                "--enable-muxer=hevc"
+                "--enable-muxer=matroska"
+                "--enable-muxer=webm"
+                "--enable-muxer=ogg"
+                "--enable-muxer=pcm_s16be"
+                "--enable-muxer=pcm_s16le"
+                "--enable-muxer=wav"
+                "--enable-demuxer=rtp"
+                "--enable-demuxer=mjpeg"
+                "--enable-demuxer=mjpeg_2000"
+                "--enable-demuxer=mpegvideo"
+                "--enable-demuxer=gif"
+                "--enable-demuxer=image_jpeg_pipe"
+                "--enable-demuxer=image_png_pipe"
+                "--enable-demuxer=image_webp_pipe"
+                "--enable-demuxer=matroska"
+                "--enable-demuxer=m4v"
+                "--enable-demuxer=mp3"
+                "--enable-demuxer=ogg"
+                "--enable-demuxer=flac"
+                "--enable-demuxer=wav"
+                "--enable-demuxer=ac3"
+                "--enable-demuxer=g722"
+                "--enable-demuxer=g723_1"
+                "--enable-demuxer=g726"
+                "--enable-demuxer=g726le"
+                "--enable-demuxer=pcm_mulaw"
+                "--enable-demuxer=pcm_alaw"
+                "--enable-demuxer=pcm_s16be"
+                "--enable-demuxer=pcm_s16le"
+                "--enable-demuxer=h263"
+                "--enable-demuxer=h264"
+                "--enable-demuxer=hevc"
+
+                ;; Enable parsers.
+                "--enable-parser=h263"
+                "--enable-parser=h264"
+                "--enable-parser=hevc"
+                "--enable-parser=mpeg4video"
+                "--enable-parser=vp8"
+                "--enable-parser=vp9"
+                "--enable-parser=opus"
+
+                ;; Encoders/decoders.
+                "--enable-encoder=adpcm_g722"
+                "--enable-decoder=adpcm_g722"
+                "--enable-encoder=adpcm_g726"
+                "--enable-decoder=adpcm_g726"
+                "--enable-encoder=adpcm_g726le"
+                "--enable-decoder=adpcm_g726le"
+                "--enable-decoder=g729"
+                "--enable-encoder=g723_1"
+                "--enable-decoder=g723_1"
+                "--enable-encoder=rawvideo"
+                "--enable-decoder=rawvideo"
+                "--enable-encoder=libx264"
+                "--enable-decoder=h264"
+                "--enable-encoder=pcm_alaw"
+                "--enable-decoder=pcm_alaw"
+                "--enable-encoder=pcm_mulaw"
+                "--enable-decoder=pcm_mulaw"
+                "--enable-encoder=mpeg4"
+                "--enable-decoder=mpeg4"
+                "--enable-encoder=libvpx_vp8"
+                "--enable-decoder=vp8"
+                "--enable-decoder=vp9"
+                "--enable-encoder=h263"
+                "--enable-encoder=h263p"
+                "--enable-decoder=h263"
+                "--enable-encoder=mjpeg"
+                "--enable-decoder=mjpeg"
+                "--enable-decoder=mjpegb"
+                "--enable-libspeex"
+                "--enable-libopus"
+                "--enable-libvpx"
+                "--enable-libx264"
+                "--enable-encoder=libspeex"
+                "--enable-decoder=libspeex"
+                "--enable-encoder=libopus"
+                "--enable-decoder=libopus"
+
+                ;; Encoders/decoders for ringtones and audio streaming.
+                "--enable-decoder=flac"
+                "--enable-decoder=vorbis"
+                "--enable-decoder=aac"
+                "--enable-decoder=ac3"
+                "--enable-decoder=eac3"
+                "--enable-decoder=mp3"
+                "--enable-decoder=pcm_u24le"
+                "--enable-decoder=pcm_u32le"
+                "--enable-decoder=pcm_u8"
+                "--enable-decoder=pcm_f16le"
+                "--enable-decoder=pcm_f32le"
+                "--enable-decoder=pcm_f64le"
+                "--enable-decoder=pcm_s16le"
+                "--enable-decoder=pcm_s24le"
+                "--enable-decoder=pcm_s32le"
+                "--enable-decoder=pcm_s64le"
+                "--enable-decoder=pcm_u16le"
+                "--enable-encoder=pcm_u8"
+                "--enable-encoder=pcm_f32le"
+                "--enable-encoder=pcm_f64le"
+                "--enable-encoder=pcm_s16le"
+                "--enable-encoder=pcm_s32le"
+                "--enable-encoder=pcm_s64le"
+
+                ;; Encoders/decoders for images.
+                "--enable-encoder=gif"
+                "--enable-decoder=gif"
+                "--enable-encoder=jpegls"
+                "--enable-decoder=jpegls"
+                "--enable-encoder=ljpeg"
+                "--enable-decoder=jpeg2000"
+                "--enable-encoder=png"
+                "--enable-decoder=png"
+                "--enable-encoder=bmp"
+                "--enable-decoder=bmp"
+                "--enable-encoder=tiff"
+                "--enable-decoder=tiff"
+
+                ;; Filters.
+                "--enable-filter=scale"
+                "--enable-filter=overlay"
+                "--enable-filter=amix"
+                "--enable-filter=amerge"
+                "--enable-filter=aresample"
+                "--enable-filter=format"
+                "--enable-filter=aformat"
+                "--enable-filter=fps"
+                "--enable-filter=transpose"
+                "--enable-filter=pad"
+
+                ;; Decoders for ringtones and audio streaming.
+                "--enable-decoder=pcm_s16be"
+                "--enable-decoder=pcm_s16be_planar"
+                "--enable-decoder=pcm_s16le_planar"
+                "--enable-decoder=pcm_s24be"
+                "--enable-decoder=pcm_s24le_planar"
+                "--enable-decoder=pcm_s32be"
+                "--enable-decoder=pcm_s32le_planar"
+                "--enable-decoder=pcm_s64be"
+                "--enable-decoder=pcm_s8"
+                "--enable-decoder=pcm_s8_planar"
+                "--enable-decoder=pcm_u16be"
+
+                ;; More filters.
+                "--enable-filter=afir"
+                "--enable-filter=split"
+                "--enable-filter=drawbox"
+                "--enable-filter=drawtext"
+                "--enable-filter=rotate"
+                "--enable-filter=loop"
+                "--enable-filter=setpts"
+                "--enable-filter=movie"
+                "--enable-filter=alphamerge"
+                "--enable-filter=boxblur"
+                "--enable-filter=lut"
+                "--enable-filter=negate"
+                "--enable-filter=colorkey"
+                "--enable-filter=transpose"
+
+                "--enable-libfreetype"
+
+                #$@(if (string-contains (%current-system) "linux")
+                       ;; Leave out the '--enable-cuvid' ... '--enable-encoder=hevc_nvenc'
+                       ;; flags, as there's no support for ffnvcodec in Guix;
+                       ;; it would not work with Mesa anyway.
+                       '("--enable-pic"
+                         "--extra-cxxflags=-fPIC"
+                         "--extra-cflags=-fPIC"
+                         "--target-os=linux"
+                         "--enable-indev=v4l2"
+                         "--enable-indev=xcbgrab"
+                         "--enable-vdpau"
+                         "--enable-hwaccel=h264_vdpau"
+                         "--enable-hwaccel=mpeg4_vdpau"
+                         "--enable-vaapi"
+                         "--enable-hwaccel=h264_vaapi"
+                         "--enable-hwaccel=mpeg4_vaapi"
+                         "--enable-hwaccel=h263_vaapi"
+                         "--enable-hwaccel=vp8_vaapi"
+                         "--enable-hwaccel=mjpeg_vaapi"
+                         "--enable-hwaccel=hevc_vaapi"
+                         "--enable-encoder=h264_vaapi"
+                         "--enable-encoder=vp8_vaapi"
+                         "--enable-encoder=mjpeg_vaapi"
+                         "--enable-encoder=hevc_vaapi")
+                       '())))))))
+
 (define-public ffmpegthumbnailer
   (package
     (name "ffmpegthumbnailer")
@@ -2383,31 +2641,43 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
               "-Ddvdnav=enabled"
               "-Dbuild-date=false")))
     (native-inputs
-     (list perl ; for zsh completion file
-           pkg-config python-docutils python-wrapper))
+     (list perl                         ;for zsh completion file
+           pkg-config
+           python-docutils
+           python-wrapper))
     ;; Missing features: libguess, V4L2.
     (inputs
-     (list alsa-lib
-           enca
-           ffmpeg
-           jack-1
+     (list enca
            ladspa
            lcms
+           libbs2b
+           mpg123
+           rsound
+           vulkan-headers
+           vulkan-loader
+           yt-dlp))
+    ;; XXX: These are propagated for the mpv pkg-config package, as they are
+    ;; listed in Requires.private and would break 'pkg-config --exists mpv' if
+    ;; unavailable.
+    (propagated-inputs
+     (list alsa-lib
+           ffmpeg
+           jack-1
            libass
            libbluray
            libcaca
-           libbs2b
            libcdio-paranoia
-           libdvdread
+           libdrm
            libdvdnav
+           libdvdread
            libjpeg-turbo
            libplacebo
            libva
            libvdpau
            libx11
            libxext
-           libxkbcommon
            libxinerama
+           libxkbcommon
            libxpresent
            libxrandr
            libxscrnsaver
@@ -2415,15 +2685,10 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            ;; XXX: lua > 5.2 is not currently supported; see meson.build
            lua-5.2
            mesa
-           mpg123
            pulseaudio
-           rsound
            shaderc
-           vulkan-headers
-           vulkan-loader
            wayland
            wayland-protocols
-           yt-dlp
            zimg
            zlib))
     (home-page "https://mpv.io/")
@@ -2487,6 +2752,78 @@ possibility to play Youtube videos, download subtitles, remember
 the last played position, etc.")
     (license license:gpl2+)))
 
+(define-public jellyfin-mpv-shim
+  (package
+    (name "jellyfin-mpv-shim")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jellyfin-mpv-shim" version))
+       (sha256
+        (base32 "1cy2sfv84k5nw8bqy4aa7v0hdawp7gk5s7wq850xizqk0sz7cipp"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; There is no test suite, but the code is ill-behaved and tries
+      ;; to open network connections at module import time, which makes
+      ;; `python setup.py test' fail.
+      #:tests? #f
+      #:phases
+        #~(modify-phases %standard-phases
+           ;; sanity-check loads console_scripts endpoints, which launches
+           ;; the program, which makes the build hang. Disable it.
+           (delete 'sanity-check)
+           (add-after 'unpack 'disable-updates
+             (lambda _
+               (substitute* "jellyfin_mpv_shim/conf.py"
+                 (("check_updates: bool = True")
+                   "check_updates: bool = False")
+                 (("notify_updates: bool = True")
+                   "notify_updates: bool = False"))))
+           (add-after 'install 'install-desktop-file
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (apps (string-append out "/share/applications"))
+                      (desktop-base "jellyfin_mpv_shim/integration/")
+                      (package-id
+                       "com.github.iwalton3.jellyfin-mpv-shim"))
+                 (for-each (lambda (size)
+                             (install-file (format #f
+                                                   "~ajellyfin-~a.png"
+                                                   desktop-base size) apps))
+                           '(256 128 64 48 32 16))
+                 (install-file (string-append desktop-base package-id
+                                              ".appdata.xml") apps)
+                 (install-file (string-append desktop-base package-id
+                                              ".desktop") apps)))))))
+    (inputs (list `(,python "tk")
+                  python-jellyfin-apiclient
+                  python-jinja2
+                  python-mpv
+                  python-mpv-jsonipc
+                  python-pypresence
+                  python-pystray
+                  python-requests))
+    (home-page "https://github.com/jellyfin/jellyfin-mpv-shim")
+    (synopsis "Cast media from Jellyfin Mobile and Web apps to MPV")
+    (description "Jellyfin MPV Shim is a cross-platform cast client for
+Jellyfin.  It has support for various media files without transcoding.")
+    (license (list
+              ;; jellyfin-mpv-shim
+              license:gpl3
+
+              ;; jellyfin-mpv-shim, and Anime4K, FSRCNNX, NVIDIA Image
+              ;; Scaling, AMD FidelityFX Super Resolution, AMD
+              ;; FidelityFX Contrast Adaptive Sharpening shaders.
+              license:expat
+
+              ;; Static Grain shader.
+              license:public-domain
+
+              ;; KrigBilatera, SSimDownscaler, and NNEDI3 shaders.
+              license:lgpl3+))))
+
 (define-public gallery-dl
   (package
     (name "gallery-dl")
@@ -2522,18 +2859,35 @@ images and image hosting sites.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "1384y8n3l0xk8hbad1nsj9ljzb1h02g3ln3jysd8bd6shbl0x4mx"))))
-    (build-system copy-build-system)
+    (build-system gnu-build-system)
     (arguments
-     '(#:install-plan
-       '(("mpris.so" "lib/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'build
-           (lambda _
-             (setenv "CC" (which "gcc"))
-             (invoke "make"))))))
+     (list
+      #:make-flags
+      #~(list (string-append "SCRIPTS_DIR=" #$output "/lib")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key inputs native-inputs tests? #:allow-other-keys)
+              (if tests?
+                  (begin
+                    (setenv
+                     "MPV_MPRIS_TEST_PLAY"
+                     (search-input-file
+                      (or native-inputs inputs)
+                      "share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"))
+                    (invoke "make" "test"))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list pkg-config))
+     (list dbus
+           jq
+           pkg-config
+           playerctl
+           socat
+           sound-theme-freedesktop
+           xorg-server-for-tests
+           xvfb-run))
     (inputs
      (list ffmpeg glib mpv))
     (home-page "https://github.com/hoyon/mpv-mpris")
@@ -3073,10 +3427,8 @@ MPEG-2 stream containing VOB packets.")
                (base32
                 "0cv7j8irsv1n2dadlnhr6i1b8pann2ah6xpxic41f04my6ba6rp5"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libdvdread))
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list libdvdread)) ;in 'Requires.private' of dvdnav.pc
     (home-page "http://dvdnav.mplayerhq.hu/")
     (synopsis "Library for video DVD navigation features")
     (description
@@ -3642,7 +3994,10 @@ be used for realtime video capture via Linux-specific APIs.")
              (lambda* _
                (let ((plugin-path (getenv "QT_PLUGIN_PATH")))
                  (wrap-program (string-append #$output "/bin/obs")
-                   `("QT_PLUGIN_PATH" ":" prefix (,plugin-path)))))))))
+                   `("QT_PLUGIN_PATH" ":" prefix (,plugin-path))
+                   `("LD_LIBRARY_PATH" ":" prefix
+                     (,(string-append #$(this-package-input "vlc")
+                                      "/lib"))))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "OBS_PLUGINS_DIRECTORY")
@@ -3672,7 +4027,7 @@ be used for realtime video capture via Linux-specific APIs.")
       libxcomposite
       libxkbcommon
       luajit
-      mbedtls-apache
+      mbedtls-lts
       mesa
       pciutils
       pipewire
@@ -4280,6 +4635,39 @@ of modern, widely supported codecs.")
     ;; Some under GPLv2+, some under LGPLv2.1+, and portions under BSD3.
     ;; Combination under GPLv2.  See LICENSE.
     (license license:gpl2)))
+
+(define-public h264bitstream
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
+  (let ((commit "ae72f7395f328876199a7e928d3b4a6dc6a7ce14")
+        (revision "1"))
+    (package
+      (name "h264bitstream")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/aizvorski/h264bitstream")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pqzfzkgqk5zjh5ywc7l7mffs2vh6wlzssvq2jxildygvqxs3pjp"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no test suite
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'install 'fix-include-bs-h
+                            (lambda _
+                              (symlink (string-append #$output
+                                        "/include/h264bitstream/bs.h")
+                                       (string-append #$output "/include/bs.h")))))))
+      (native-inputs (list autoconf automake libtool pkg-config))
+      (inputs (list ffmpeg))
+      (synopsis "Library to read and write H.264 video bitstreams")
+      (description
+       "This package provides the GameStream code shared between Moonlight clients.")
+      (home-page "https://github.com/aizvorski/h264bitstream")
+      (license license:lgpl2.1+))))
 
 (define-public intel-vaapi-driver
   (package
@@ -5260,7 +5648,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
       (origin
         (method git-fetch)
@@ -5269,9 +5657,12 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0jkvb5as7danpalzlwd0w1dc9i2vijvmf39z0j6fwqvialsgnnj5"))))
+         (base32 "17r6qdijdnqfciqa0ia2y4gyhaav6y5gc4d9xj4dg9h7xnpyxc3k"))))
     (build-system meson-build-system)
-    (native-inputs (list nasm))
+    (native-inputs
+     (if (target-x86?)
+         (list nasm)
+         '()))
     (home-page "https://code.videolan.org/videolan/dav1d")
     (synopsis "AV1 decoder")
     (description "dav1d is a new AV1 cross-platform decoder, and focused on
@@ -5536,84 +5927,76 @@ result in several formats:
 (define-public rav1e
   (package
     (name "rav1e")
-    (version "0.6.6")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rav1e" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h9fhmamb7mh3cv86y1qja9qb7r6w2jv3p8ydngvsyjy59lq7hqn"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                   (string-append "\"^" version)))))))
+        (base32 "1sawva6nmj2fvynydbcirr3nb7wjyg0id2hz2771qnv6ly0cx1yd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-aom-sys" ,rust-aom-sys-0.3)
-        ("rust-arbitrary" ,rust-arbitrary-0.4)
+        ("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-arg-enum-proc-macro" ,rust-arg-enum-proc-macro-0.3)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-av-metrics" ,rust-av-metrics-0.9)
         ("rust-av1-grain" ,rust-av1-grain-0.2)
         ("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bitstream-io" ,rust-bitstream-io-1)
-        ("rust-built" ,rust-built-0.5)
+        ("rust-bitstream-io" ,rust-bitstream-io-2)
+        ("rust-built" ,rust-built-0.7)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-lex" ,rust-clap-lex-0.3)
         ("rust-console" ,rust-console-0.15)
         ("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-dav1d-sys" ,rust-dav1d-sys-0.7)
         ("rust-fern" ,rust-fern-0.6)
         ("rust-image" ,rust-image-0.24)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
-        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools" ,rust-itertools-0.12)
         ("rust-ivf" ,rust-ivf-0.1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-libfuzzer-sys" ,rust-libfuzzer-sys-0.3)
+        ("rust-libdav1d-sys" ,rust-libdav1d-sys-0.6)
+        ("rust-libfuzzer-sys" ,rust-libfuzzer-sys-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-maybe-rayon" ,rust-maybe-rayon-0.1)
         ("rust-nasm-rs" ,rust-nasm-rs-0.2)
         ("rust-new-debug-unreachable" ,rust-new-debug-unreachable-1)
         ("rust-nom" ,rust-nom-7)
         ("rust-noop-proc-macro" ,rust-noop-proc-macro-0.3)
-        ("rust-num-derive" ,rust-num-derive-0.3)
+        ("rust-num-derive" ,rust-num-derive-0.4)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-paste" ,rust-paste-1)
+        ("rust-profiling" ,rust-profiling-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
-        ("rust-rust-hawktracer" ,rust-rust-hawktracer-0.7)
-        ("rust-rustc-version" ,rust-rustc-version-0.4)
         ("rust-scan-fmt" ,rust-scan-fmt-0.2)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-big-array" ,rust-serde-big-array-0.4)
+        ("rust-serde-big-array" ,rust-serde-big-array-0.5)
         ("rust-signal-hook" ,rust-signal-hook-0.3)
         ("rust-simd-helpers" ,rust-simd-helpers-0.1)
         ("rust-system-deps" ,rust-system-deps-6)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-toml" ,rust-toml-0.5)
+        ("rust-toml" ,rust-toml-0.8)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-chrome" ,rust-tracing-chrome-0.7)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-v-frame" ,rust-v-frame-0.3)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-winnow" ,rust-winnow-0.4)
         ("rust-y4m" ,rust-y4m-0.8))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-criterion" ,rust-criterion-0.5)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
         ("rust-nom" ,rust-nom-7)
-        ("rust-predicates" ,rust-predicates-2)
-        ("rust-predicates-core" ,rust-predicates-core-1)
-        ("rust-predicates-tree" ,rust-predicates-tree-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
         ("rust-semver" ,rust-semver-1))
@@ -5627,14 +6010,19 @@ result in several formats:
                        "--library-type" "cdylib"
                        (string-append "--prefix=" out))))))))
     (native-inputs
-     (list nasm pkg-config rust-cargo-c))
+     (append (if (target-x86?)
+                 (list nasm)
+                 '())
+             (list pkg-config rust-cargo-c)))
     (inputs
-     (list libgit2 zlib))
+     (list libgit2-1.7 zlib))
     (home-page "https://github.com/xiph/rav1e/")
     (synopsis "Fast and safe AV1 encoder")
     (description "@code{rav1e} is an AV1 video encoder.  It is designed to
 eventually cover all use cases, though in its current form it is most suitable
 for cases where libaom (the reference encoder) is too slow.")
+    ;; This package shows a large speed boost when tuned for newer architectures.
+    (properties `((tunable? . #t)))
     (license license:bsd-2)))
 
 (define-public peek

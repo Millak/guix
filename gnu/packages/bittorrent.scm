@@ -529,7 +529,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.6.2")
+    (version "4.6.3")
     (source
      (origin
        (method git-fetch)
@@ -538,7 +538,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wps17iv4gj7y751fibvcxk51v09wyniv6xm2yx429dj7z8rfmzs"))))
+        (base32 "01d393v0v4c9rp909l3ddif984pp1z6sym74yc0kgxqq2kplj5g1"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DTESTING=ON")
@@ -547,7 +547,7 @@ desktops.")
      (list qttools-5))
     (inputs
      (list boost
-           libtorrent-rasterbar-1.2
+           libtorrent-rasterbar
            openssl
            python-wrapper
            qtsvg-5
@@ -574,7 +574,7 @@ features.")
           #~(cons "-DGUI=OFF" #$configure-flags))))
       (inputs
        (modify-inputs (package-inputs base)
-         (delete "qtsvg-5"))))))
+         (delete "qtsvg"))))))
 
 (define-public qbittorrent-nox
   (deprecated-package "qbittorrent-nox" qbittorrent-no-x))
@@ -583,7 +583,7 @@ features.")
   (package
     (inherit qbittorrent)
     (name "qbittorrent-enhanced")
-    (version "4.6.1.10")
+    (version "4.6.3.10")
     (source
      (origin
        (method git-fetch)
@@ -593,7 +593,7 @@ features.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "101a9n2vk9d6b4vc3schkmpc56l0i0i60fcjh8hwadc6amc2ymvy"))))
+         "09b8237h0gn6y3s0a7qg247hsdra5f5kg6xhirnhhfvjd8k6qviv"))))
     (home-page "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
     (description
      "qBittorrent Enhanced is a bittorrent client based on qBittorrent with
@@ -607,12 +607,15 @@ the following features:
 @item Peer whitelist/blacklist
 @end itemize")))
 
-(define-public qbittorrent-enhanced-nox
+(define-public qbittorrent-enhanced-no-x
   (package
     (inherit qbittorrent-enhanced)
-    (name "qbittorrent-enhanced-nox")
-    (arguments (package-arguments qbittorrent-nox))
-    (inputs (package-inputs qbittorrent-nox))))
+    (name "qbittorrent-enhanced-no-x")
+    (arguments (package-arguments qbittorrent-no-x))
+    (inputs (package-inputs qbittorrent-no-x))))
+
+(define-public qbittorrent-enhanced-nox
+  (deprecated-package "qbittorrent-enhanced-nox" qbittorrent-enhanced-no-x))
 
 (define-public deluge
   (package

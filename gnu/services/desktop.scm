@@ -37,6 +37,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services base)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services dbus)
   #:use-module (gnu services avahi)
   #:use-module (gnu services xorg)
@@ -60,6 +61,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages xdisorg)
@@ -79,6 +81,7 @@
   #:use-module (guix ui)
   #:use-module (guix utils)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 format)
@@ -139,6 +142,11 @@
 
             gnome-desktop-configuration
             gnome-desktop-configuration?
+            gnome-desktop-configuration-core-services
+            gnome-desktop-configuration-shell
+            gnome-desktop-configuration-utilities
+            gnome-desktop-configuration-extra-packages
+            gnome-desktop-configuration-udev-ignorelist
             gnome-desktop-service
             gnome-desktop-service-type
 
@@ -1382,11 +1390,45 @@ rules.")
 ;;; GNOME desktop service.
 ;;;
 
-(define-record-type* <gnome-desktop-configuration> gnome-desktop-configuration
-  make-gnome-desktop-configuration
-  gnome-desktop-configuration?
-  (gnome gnome-desktop-configuration-gnome
-         (default gnome)))
+(define-maybe/no-serialization package)
+
+(define (extract-propagated-inputs package)
+  ;; Drop input labels.  Attempt to support outputs.
+  (map
+   (match-lambda
+     ((_ (? package? pkg)) pkg)
+     ((_ (? package? pkg) output) (list pkg output)))
+   (package-propagated-inputs package)))
+
+(define-configuration/no-serialization gnome-desktop-configuration
+  (core-services
+   (list-of-packages (extract-propagated-inputs gnome-meta-core-services))
+   "A list of packages that the GNOME Shell and applications may rely on.")
+  (shell
+   (list-of-packages (extract-propagated-inputs gnome-meta-core-shell))
+   "A list of packages that constitute the GNOME Shell, without applications.")
+  (utilities
+   (list-of-packages (extract-propagated-inputs gnome-meta-core-utilities))
+   "A list of packages that serve as applications to use on top of the \
+GNOME Shell.")
+  (gnome (maybe-package) "Deprecated.  Do not use.")
+  (extra-packages
+   (list-of-packages (extract-propagated-inputs gnome-essential-extras))
+   "A list of GNOME-adjacent packages to also include.  This field is intended
+for users to add their own packages to their GNOME experience.  Note, that it
+already includes some packages that are considered essential by some (most?)
+GNOME users.")
+  (udev-ignorelist
+   (list-of-strings '())
+   "A list of regular expressions denoting udev rules or hardware file names
+provided by any package that should not be installed.  By default, every udev
+rule and hardware file specified by any package referenced in the other fields
+are installed.")
+  (polkit-ignorelist
+   (list-of-strings '())
+   "A list of regular expressions denoting polkit rules provided by any package
+that should not be installed.  By default, every polkit rule added by any package
+referenced in the other fields are installed."))
 
 (define (gnome-package gnome name)
   "Return the package NAME among the GNOME package inputs.  NAME can be a
@@ -1398,31 +1440,84 @@ denote the spice-gtk input of the gnome-boxes input of the GNOME meta-package."
   "Return the package NAMES among the GNOME package inputs."
   (map (cut gnome-package gnome <>) names))
 
-(define (gnome-udev-rules config)
-  "Return the list of GNOME dependencies that provide udev rules."
-  (let ((gnome (gnome-desktop-configuration-gnome config)))
-    (gnome-packages gnome '("gnome-settings-daemon"))))
+(define (gnome-udev-configuration-files config)
+  "Return the GNOME udev rules and hardware files as computed from its
+dependencies by filtering out the ignorelist."
+  (list
+   (computed-file
+    "gnome-udev-configurations"
+    (with-imported-modules
+        (source-module-closure '((guix build utils)
+                                 (guix build union)))
+      #~(begin
+          (use-modules (guix build utils)
+                       (guix build union))
+          ;; If rules.d or hwdb.d is not a proper directory but a symlink,
+          ;; then it will not be possible to delete individual files in this
+          ;; directory.
+          (union-build #$output
+                       (search-path-as-list
+                        (list "lib/udev" "libexec/udev")
+                        (list #$@(gnome-profile config)))
+                       #:create-all-directories? #t)
+          (for-each
+           (lambda (pattern)
+             (for-each
+              delete-file-recursively
+              (find-files #$output pattern)))
+           (list #$@(gnome-desktop-configuration-udev-ignorelist config))))))))
 
 (define (gnome-polkit-settings config)
   "Return the list of GNOME dependencies that provide polkit actions and
 rules."
-  (let ((gnome (gnome-desktop-configuration-gnome config)))
-    (gnome-packages gnome
-                    '("gnome-settings-daemon"
-                      "gnome-control-center"
-                      "gnome-system-monitor"
-                      "gvfs"))))
+  (list
+   (computed-file
+    "gnome-polkit-settings"
+    (with-imported-modules
+        (source-module-closure '((guix build utils)
+                                 (guix build union)))
+      #~(let ((output (string-append #$output "/share/polkit-1")))
+          (use-modules (guix build utils)
+                       (guix build union))
+          (mkdir-p (dirname output))
+          (union-build output
+                       (search-path-as-list
+                        (list "share/polkit-1")
+                        (list #$@(gnome-profile config)))
+                       #:create-all-directories? #t)
+          (for-each
+           (lambda (pattern)
+             (for-each
+              delete-file-recursively
+              (find-files output pattern)))
+           (list #$@(gnome-desktop-configuration-polkit-ignorelist config))))))))
+
+(define (gnome-profile config)
+  "Return a list of packages propagated through CONFIG."
+  (append
+   (gnome-desktop-configuration-core-services config)
+   (gnome-desktop-configuration-shell config)
+   (gnome-desktop-configuration-utilities config)
+   (let ((gnome-meta (gnome-desktop-configuration-gnome config)))
+     (if (maybe-value-set? gnome-meta)
+         (begin
+           (warning
+            (gnome-desktop-configuration-source-location config)
+            (G_ "Using a meta-package for gnome-desktop is discouraged.~%"))
+           (list gnome-meta))
+         (list)))
+   (gnome-desktop-configuration-extra-packages config)))
 
 (define gnome-desktop-service-type
   (service-type
    (name 'gnome-desktop)
    (extensions
     (list (service-extension udev-service-type
-                             gnome-udev-rules)
+                             gnome-udev-configuration-files)
           (service-extension polkit-service-type
                              gnome-polkit-settings)
           (service-extension profile-service-type
-                             (compose list gnome-desktop-configuration-gnome))))
+                             gnome-profile)))
    (default-value (gnome-desktop-configuration))
    (description "Run the GNOME desktop environment.")))
 

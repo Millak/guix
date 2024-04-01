@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014-2024 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2019, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
@@ -20,6 +20,7 @@
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 SeerLite <seerlite@disroot.org>
+;;; Copyright © 2024 Aleksandr Vityazev <avityazew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
@@ -374,31 +376,6 @@ from collections.abc import MutableSequence"))))
      (list icu4c-69 readline zlib))))
 
 
-;;
-;; Needed for IceCat 115.
-;;
-(define icu4c-73-promise
-  (delay
-    (package
-      (inherit icu4c)
-      (version "73.1")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append
-                      "https://github.com/unicode-org/icu/releases/download/release-"
-                      (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                      "/icu4c-"
-                      (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                      "-src.tgz"))
-                (sha256
-                 (base32
-                  "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
-                (patches
-                 (cons
-                  (search-patch
-                   "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
-                  (origin-patches (package-source icu4c)))))))))
-
 ;;;
 ;;; Localization helper procedures.
 ;;;
@@ -546,9 +523,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.6.0")
+(define %icecat-base-version "115.9.1")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20231219000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20240323000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -568,12 +545,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0rmw486yhkb1is1j2fy51djl5p5qggf2fhp2hgzfdj4s2bjydmv6"))))
+              "0agr8s42lpbq5gixsgj5kpcvimbnyx6msr4il4rvmf7gpw47hr93"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.6.0")
-         (gnuzilla-commit "6a76a10682b6e63f562e4b9f26f3ef12f88bd839")
+         (upstream-icecat-base-version "115.9.1")
+         (gnuzilla-commit "a59b8a2c2e4c8b8de47b3ae4d10032154a47a01e")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -585,7 +562,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "15bvlz7c4d8mk10zc317rai91hd96wnchikcfdfxzl35zdnd315r"))))
+              "0l07x59c0bmj72n0pdhb4mlphw9nmd88i9jg39xvxcw0cv7bw6qm"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -756,7 +733,7 @@ variable defined below.  It requires guile-json to be installed."
            ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
            ffmpeg-5
            libvpx
-           (force icu4c-73-promise)
+           icu4c-73
            pixman
            pulseaudio
            mesa
@@ -787,7 +764,7 @@ variable defined below.  It requires guile-json to be installed."
       ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
       rust
       `(,rust "cargo")
-      rust-cbindgen-0.24
+      rust-cbindgen
       llvm-15
       clang-15
       perl
@@ -1874,7 +1851,7 @@ ca495991b7852b855"))
            pkg-config
            python-wrapper
            rust
-           rust-cbindgen-0.23
+           rust-cbindgen
            which
            yasm))
     (home-page "https://www.thunderbird.net")
@@ -2091,7 +2068,7 @@ associated with their name."))
             (call-with-output-file exe
               (lambda (port)
                 (format port "#!~a
- MOZ_ENABLE_WAYLAND=1 exec ~a $@"
+ MOZ_ENABLE_WAYLAND=1 exec ~a \"$@\""
                         #$(file-append bash-minimal "/bin/bash")
                         #$(file-append icedove "/bin/icedove"))))
             (chmod exe #o555)

@@ -58,6 +58,7 @@
   #:use-module (guix scripts system reconfigure)
   #:use-module (guix build utils)
   #:use-module (guix progress)
+  #:use-module ((guix docker) #:select (%docker-image-max-layers))
   #:use-module (gnu build image)
   #:use-module (gnu build install)
   #:autoload   (gnu build file-systems)
@@ -1053,6 +1054,8 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (show-native-build-options-help)
   (newline)
+  (show-docker-format-options)
+  (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
@@ -1060,12 +1063,21 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (show-bug-report-information))
 
+(define %docker-format-options
+  (list (option '("max-layers") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'max-layers (string->number* arg)
+                               result)))))
+
 (define %options
   ;; Specifications of the command-line options.
   (cons* (option '(#\h "help") #f #f
                  (lambda args
                    (leave-on-EPIPE (show-help))
                    (exit 0)))
+         (option '("help-docker-format") #f #f
+                 (lambda args
+                   (show-docker-format-options/detailed)))
          (option '(#\V "version") #f #f
                  (lambda args
                    (show-version-and-exit "guix system")))
@@ -1154,7 +1166,8 @@ Some ACTIONS support additional ARGS.\n"))
                    (alist-cons 'list-installed (or arg "") result)))
          (append %standard-build-options
                  %standard-cross-build-options
-                 %standard-native-build-options)))
+                 %standard-native-build-options
+                 %docker-format-options)))
 
 (define %default-options
   ;; Alist of default option values.
@@ -1175,13 +1188,25 @@ Some ACTIONS support additional ARGS.\n"))
     (label . #f)
     (volatile-image-root? . #f)
     (volatile-vm-root? . #t)
-    (graph-backend . "graphviz")))
+    (graph-backend . "graphviz")
+    (max-layers . ,%docker-image-max-layers)))
 
 (define (verbosity-level opts)
   "Return the verbosity level based on OPTS, the alist of parsed options."
   (or (assoc-ref opts 'verbosity)
       (if (eq? (assoc-ref opts 'action) 'build)
           3 1)))
+
+(define (show-docker-format-options)
+  (display (G_ "
+      --help-docker-format list options specific to the docker image type.")))
+
+(define (show-docker-format-options/detailed)
+  (display (G_ "
+      --max-layers=N
+                         Number of image layers"))
+  (newline)
+  (exit 0))
 
 
 ;;;
@@ -1245,6 +1270,7 @@ resulting from command-line parsing."
                                            ((docker-image) docker-image-type)
                                            (else image-type)))
                             (image-size (assoc-ref opts 'image-size))
+                            (image-max-layers (assoc-ref opts 'max-layers))
                             (volatile?
                              (assoc-ref opts 'volatile-image-root?))
                             (shared-network?
@@ -1258,6 +1284,7 @@ resulting from command-line parsing."
                                       (image-with-label base-image label)
                                       base-image))
                          (size image-size)
+                         (max-layers image-max-layers)
                          (volatile-root? volatile?)
                          (shared-network? shared-network?))))
          (os          (or (image-operating-system image)

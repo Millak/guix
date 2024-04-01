@@ -6,7 +6,7 @@
 ;;; Copyright © 2016-2018, 2021-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -716,22 +716,26 @@ tree binary files.  These are board description files used by Linux and BSD.")
   ;; https://lists.denx.de/pipermail/u-boot/2021-October/462728.html
   (search-patch "u-boot-allow-disabling-openssl.patch"))
 
+(define %u-boot-build-without-libcrypto-patch
+  ;; Upstream commit to fix Amlogic builds in u-boot 2024.01.
+  (search-patch "u-boot-build-without-libcrypto.patch"))
+
 (define u-boot
   (package
     (name "u-boot")
-    (version "2023.10")
+    (version "2024.01")
     (source (origin
               (patches
                (list %u-boot-rockchip-inno-usb-patch
-                     %u-boot-allow-disabling-openssl-patch
-                     (search-patch "u-boot-patman-change-id.patch")))
+                     %u-boot-build-without-libcrypto-patch
+                     %u-boot-allow-disabling-openssl-patch))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "0039rravvjq9yi41645fynycw4c869px024xfc0n212f05pnq3p0"))))
+                "1czmpszalc6b8cj9j7q6cxcy19lnijv3916w3dag6yr3xpqi35mr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -1126,7 +1130,7 @@ removed so that it fits within common partitioning schemes.")))
               (add-after 'unpack 'set-environment
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
                   (setenv "SCP" (search-input-file
-                                 native-inputs "libexec/scp.bin"))
+                                 (or native-inputs inputs) "libexec/scp.bin"))
                   (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
       (native-inputs
        (modify-inputs (package-native-inputs base)

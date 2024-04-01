@@ -61,7 +61,7 @@
 (define-public arcan
   (package
     (name "arcan")
-    (version "0.6.2.1")
+    (version "0.6.3")
     (source (origin
               (method git-fetch)
               (file-name (git-file-name name version))
@@ -70,7 +70,7 @@
                     (commit version)))
               (sha256
                (base32
-                "14wwb7mgq8ab39dfprps7hzdz7a37r3cl8dc5q6m1r8n5daxyzgc"))
+                "1aj8hffxsf6vg1al2v29cn35wnh7wir5x9krk4h68sy5va88w8k5"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove some bundled packages.
@@ -171,7 +171,7 @@ engine with a Lua scripting interface.")
     (inputs
      (modify-inputs (package-inputs arcan)
        (delete "libdrm")
-       (prepend sdl)))
+       (prepend glu libglvnd mesa sdl)))
     (arguments
      `(,@(ensure-keyword-arguments
           (package-arguments arcan)
@@ -186,7 +186,7 @@ engine with a Lua scripting interface.")
 (define-public xarcan
   (package
     (name "xarcan")
-    (version "0.6.1")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -195,7 +195,7 @@ engine with a Lua scripting interface.")
              (url "https://github.com/letoram/xarcan")
              (commit version)))
        (sha256
-        (base32 "1z4sf101i2y6rg2vcxfwmp1nkzfa3rw1pp48ym1ds1ka513vy128"))))
+        (base32 "1g24mmwnc45ig0x8jk0v91488k8933w07vxi4305sla56q4n82p4"))))
     (build-system meson-build-system)
     (arguments
      (list

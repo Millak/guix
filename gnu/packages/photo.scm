@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
@@ -54,6 +54,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -75,6 +76,7 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
@@ -303,7 +305,7 @@ MTP, and much more.")
 (define-public perl-image-exiftool
   (package
     (name "perl-image-exiftool")
-    (version "12.50")
+    (version "12.70")
     (source
      (origin
        (method url-fetch)
@@ -315,7 +317,7 @@ MTP, and much more.")
                             "Image-ExifTool-" version ".tar.gz")))
        (sha256
         (base32
-         "1a605rz00d7p866a22sw0s63m5a6y4xqqrzp7q7jyc0hbky43s5w"))))
+         "1zmg5jsdqmr9mnmxg614brdgr9ddmspcc11rs4xkygnc8lj55cjc"))))
     (build-system perl-build-system)
     (arguments
      (list #:phases
@@ -528,7 +530,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.4.2")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
@@ -536,7 +538,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "167sdj8m3srj9h5hh9cf2kvfpp349sygkcdrfbjrqbnz9x1jh7f1"))))
+        (base32 "1zbsrx5cfyifzbi657izw8rfkgd9pm4hx8afv8y2sgi9f2hc1v8n"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -553,17 +555,6 @@ photographic equipment.")
                  (string-append "\""
                                 (search-input-file inputs "/lib/libOpenCL.so")
                                 "\"")))))
-          (add-before 'configure 'prepare-build-environment
-            (lambda _
-              ;; Rawspeed fails to build with GCC due to OpenMP error:
-              ;; "undefined reference to `GOMP_loop_nonmonotonic_dynamic_next'"
-              (setenv "CC" "clang")
-              (setenv "CXX" "clang++")
-              ;; Darktable looks for opencl-c.h in the LLVM dir. Guix installs
-              ;; it to the Clang dir. We fix this by patching CMakeLists.txt.
-              (substitute* "CMakeLists.txt"
-                (("\\$\\{LLVM_INSTALL_PREFIX\\}")
-                 #$(this-package-native-input "clang")))))
           (add-before 'configure 'set-LDFLAGS
             (lambda _
               (setenv "LDFLAGS"
@@ -576,13 +567,13 @@ photographic equipment.")
                   (,(string-append #$(this-package-input "gtk+")
                                    "/share/glib-2.0/schemas")))))))))
     (native-inputs
-     (list clang
-           cmocka
+     (list cmocka
            desktop-file-utils
+           gcc-13             ; gcc-11 too old for darktable, 12+ required
            `(,glib "bin")
            gobject-introspection
            intltool
-           llvm                         ;should match the Clang version
+           llvm
            opencl-headers
            perl
            pkg-config
@@ -610,6 +601,7 @@ photographic equipment.")
            libgphoto2                ;optional, for camera tethering
            libavif                   ;optional, for AVIF support
            libjpeg-turbo
+           libjxl                    ;optional, for JPEG-XL support
            libomp
            libpng
            (librsvg-for-system)
@@ -625,6 +617,7 @@ photographic equipment.")
            openexr                      ;optional, for EXR import/export
            openjpeg                     ;optional, for JPEG2000 export
            osm-gps-map                  ;optional, for geotagging view
+           portmidi                 ;optional, for hardware MIDI input devices
            pugixml
            python-jsonschema
            sdl2

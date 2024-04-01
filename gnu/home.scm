@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,7 +67,8 @@
                                 this-home-environment)))
 
   (services           home-environment-user-services
-                      (default '()))
+                      (default '())
+                      (sanitize validate-service-list))
 
   (location           home-environment-location            ; <location>
                       (default (and=> (current-source-location)

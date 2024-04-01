@@ -1,0 +1,40 @@
+The bios-tables-test may fail; disable it (see: https://gitlab.com/qemu-project/qemu/-/issues/1098)
+
+diff --git a/tests/qtest/meson.build b/tests/qtest/meson.build
+index f096cf3ecd..82f6e1ffeb 100644
+--- a/tests/qtest/meson.build
++++ b/tests/qtest/meson.build
+@@ -1,7 +1,6 @@
+ slow_qtests = {
+   'ahci-test' : 60,
+   'aspeed_smc-test': 360,
+-  'bios-tables-test' : 120,
+   'boot-serial-test' : 60,
+   'migration-test' : 150,
+   'npcm7xx_pwm-test': 150,
+@@ -82,9 +81,6 @@ qtests_i386 = \
+    config_all_devices.has_key('CONFIG_Q35') and                                             \
+    config_all_devices.has_key('CONFIG_VIRTIO_PCI') and                                      \
+    slirp.found() ? ['virtio-net-failover'] : []) +                                          \
+-  (unpack_edk2_blobs and                                                                    \
+-   config_all_devices.has_key('CONFIG_HPET') and                                            \
+-   config_all_devices.has_key('CONFIG_PARALLEL') ? ['bios-tables-test'] : []) +             \
+   qtests_pci +                                                                              \
+   qtests_cxl +                                                                              \
+   ['fdc-test',
+@@ -213,7 +209,6 @@ qtests_arm = \
+ 
+ # TODO: once aarch64 TCG is fixed on ARM 32 bit host, make bios-tables-test unconditional
+ qtests_aarch64 = \
+-  (cpu != 'arm' and unpack_edk2_blobs ? ['bios-tables-test'] : []) +                            \
+   (config_all.has_key('CONFIG_TCG') and config_all_devices.has_key('CONFIG_TPM_TIS_SYSBUS') ?            \
+     ['tpm-tis-device-test', 'tpm-tis-device-swtpm-test'] : []) +                                         \
+   (config_all_devices.has_key('CONFIG_XLNX_ZYNQMP_ARM') ? ['xlnx-can-test', 'fuzz-xlnx-dp-test'] : []) + \
+@@ -304,7 +299,6 @@ if gnutls.found()
+ endif
+ 
+ qtests = {
+-  'bios-tables-test': [io, 'boot-sector.c', 'acpi-utils.c', 'tpm-emu.c'],
+   'cdrom-test': files('boot-sector.c'),
+   'dbus-vmstate-test': files('migration-helpers.c') + dbus_vmstate1,
+   'erst-test': files('erst-test.c'),

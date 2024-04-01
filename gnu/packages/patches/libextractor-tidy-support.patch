@@ -1,0 +1,81 @@
+Upstream status: submitted to bug-libextractor@gnu.org.
+
+From 1fc6daaeaf829fb941a176831c011888a73c43b9 Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Mon, 11 Mar 2024 09:36:26 -0400
+Subject: [PATCH] html_extractor: Add support for modern tidy-html.
+
+* configure.ac: Use PKG_PROG_PKG_CONFIG to initialize pkg-config detection.
+<tidy>: Check for library via pkg-config.
+* src/plugins/html_extractor.c: Standardize tidy include file names.
+---
+ configure.ac                 | 28 +++++++++-------------------
+ src/plugins/html_extractor.c |  4 ++--
+ 2 files changed, 11 insertions(+), 21 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index d17ff39..e89d70c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -176,6 +176,8 @@ AS_CASE(["$target_os"],
+ 
+ AM_ICONV
+ 
++PKG_PROG_PKG_CONFIG()
++
+ # We define the paths here, because MinGW/GCC expands paths
+ # passed through the command line ("-DLOCALEDIR=..."). This would
+ # lead to hard-coded paths ("C:\mingw\mingw\bin...") that do
+@@ -424,25 +426,13 @@ AC_CHECK_LIB(magic, magic_open,
+    AM_CONDITIONAL(HAVE_MAGIC, false))],
+   AM_CONDITIONAL(HAVE_MAGIC, false))
+ 
+-AC_MSG_CHECKING(for tidyNodeGetValue -ltidy)
+-AC_LANG_PUSH(C++)
+-SAVED_LIBS=$LIBS
+-LIBS="$LIBS -ltidy"
+-AC_LINK_IFELSE(
+-  [AC_LANG_PROGRAM([[#include <tidy/tidy.h>]],
+-    [[ Bool b = tidyNodeGetValue (NULL, NULL, NULL); ]])],
+-  [AC_MSG_RESULT(yes)
+-   AM_CONDITIONAL(HAVE_TIDY, true)
+-   AC_DEFINE(HAVE_TIDY,1,[Have tidyNodeGetValue in libtidy])],
+-  [AC_MSG_RESULT(no)
+-   AM_CONDITIONAL(HAVE_TIDY, false)])
+-LIBS=$SAVED_LIBS
+-AC_LANG_POP(C++)
+-
+-# restore LIBS
+-LIBS=$LIBSOLD
+-
+-
++dnl tidyNodeGetValue was already available in 5.0.0, released in 2015.
++PKG_CHECK_MODULES([TIDY], [tidy >= 5.0.0],
++ [AC_DEFINE(HAVE_TIDY, 1, [Have tidy])
++  AM_CONDITIONAL(HAVE_TIDY, true)],
++ [AM_CONDITIONAL(HAVE_TIDY, false)])
++CFLAGS="$CFLAGS $TIDY_CFLAGS"
++LIBS="$LIBS $TIDY_LIBS"
+ 
+ # should 'make check' run tests?
+ AC_MSG_CHECKING(whether to run tests)
+diff --git a/src/plugins/html_extractor.c b/src/plugins/html_extractor.c
+index 5ebf97b..88100d3 100644
+--- a/src/plugins/html_extractor.c
++++ b/src/plugins/html_extractor.c
+@@ -26,8 +26,8 @@
+ #include "platform.h"
+ #include "extractor.h"
+ #include <magic.h>
+-#include <tidy/tidy.h>
+-#include <tidy/tidybuffio.h>
++#include <tidy.h>
++#include <tidybuffio.h>
+ 
+ /**
+  * Mapping of HTML META names to LE types.
+
+base-commit: a75f40b64b5868967c95ea214e8eaac4f7088b23
+-- 
+2.41.0
+

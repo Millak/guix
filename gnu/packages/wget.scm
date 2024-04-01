@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -78,7 +78,7 @@ in downloaded documents to relative links.")
 (define-public wgetpaste
   (package
     (name "wgetpaste")
-    (version "2.33")
+    (version "2.34")
     (source
       (origin
         (method git-fetch)
@@ -87,7 +87,7 @@ in downloaded documents to relative links.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0gx5y3f0qf3hrah1z0q243hyldshaq6mvbg1lnjzciviv1vc8zx0"))))
+         (base32 "1z70wfzkrzlhhqm82i5gdk6clmsc06n9gsf2wizb1kzk3h61h296"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -97,12 +97,6 @@ in downloaded documents to relative links.")
        (modify-phases %standard-phases
          (delete 'configure)
          (delete 'build)
-         (add-after 'unpack 'change-unfriendly-default
-           (lambda _
-             (substitute* "wgetpaste"
-               ;; dpaste blocks Tor users.  Use a better default.
-               (("DEFAULT_SERVICE:-dpaste")
-                "DEFAULT_SERVICE-bpaste"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))

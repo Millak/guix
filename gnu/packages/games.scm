@@ -6,7 +6,7 @@
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2014, 2015, 2016, 2024 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2014, 2015, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
@@ -30,14 +30,14 @@
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Madalin Ionel-Patrascu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2019, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
@@ -60,7 +60,7 @@
 ;;; Copyright © 2021 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021 David Pflug <david@pflug.io>
+;;; Copyright © 2021, 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Noisytoot <ron@noisytoot.org>
@@ -72,7 +72,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022, 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -80,6 +80,7 @@
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Vagrant Cascadian <vagrant@debian.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,6 +150,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
@@ -936,6 +938,41 @@ original rogue game found on 4.2BSD.")
     (home-page "https://github.com/Davidslv/rogue")
     (license license:bsd-3)))
 
+(define-public sgt-puzzles
+  (let ((commit "80aac3104096aee4057b675c53ece8e60793aa90")
+        (revision "0"))
+    (package
+      (name "sgt-puzzles")
+      (version (git-version "20240302" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.tartarus.org/simon/puzzles.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0z4clv0xi98q28riz323ppn165cm62gj1c6h3xdd2sym4v8gy65z"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;No tests.
+        #:configure-flags #~(list "-DNAME_PREFIX=sgt-")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-xdg-open-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "gtk.c"
+                  (("(#define HELP_BROWSER_PATH).+" all define)
+                   (format #f "~a ~s~%" define
+                           (search-input-file inputs "/bin/xdg-open")))))))))
+      (inputs (list gtk+ xdg-utils))
+      (native-inputs (list pkg-config perl imagemagick halibut))
+      (home-page "https://www.chiark.greenend.org.uk/~sgtatham/puzzles/")
+      (synopsis "Simon Tatham's portable puzzle collection")
+      (description "Simon Tatham's Portable Puzzle Collection contains a number of
+popular puzzle games for one player.")
+      (license license:expat))))
 
 (define-public bzflag
   (package
@@ -2128,14 +2165,14 @@ It is similar to standard chess but this variant is far more complicated.")
 (define-public ltris
   (package
     (name "ltris")
-    (version "1.2.6")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/ltris/"
                            "ltris-" version ".tar.gz"))
        (sha256
-        (base32 "1xj65kn815x2hq1ynzjyc90dj178xwa2xvx7jx99qf60ahaf4g62"))))
+        (base32 "144zvnnky79z5ychyyb2wsp7h2pcbl50fbzd9w9dvxkw6adz4yip"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -4118,7 +4155,8 @@ Widgets, and allows users to create more.")
                                   "fifengine/tar.gz/" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (patches (search-patches "fifengine-swig-compat.patch"
-                                       "fifengine-boost-compat.patch"))
+                                       "fifengine-boost-compat.patch"
+                                       "fifengine-python-3.9-compat.patch"))
               (sha256
                (base32
                 "1y4grw25cq5iqlg05rnbyxw1njl11ypidnlsm3qy4sm3xxdvb0p8"))))
@@ -4453,7 +4491,9 @@ also available.")
               (sha256
                (base32
                 "1n747p7h0qp48szgp262swg0xh8kxy1bw8ag1qczs4i26hyzs5x4"))
-              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"))))
+              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"
+                                       "unknown-horizons-python-3.9.patch"
+                                       "unknown-horizons-python-3.10.patch"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -4573,30 +4613,45 @@ falling, themeable graphics and sounds, and replays.")
 (define-public wesnoth
   (package
     (name "wesnoth")
-    (version "1.16.9")
+    (version "1.18.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wesnoth/wesnoth")
                     (commit version)))
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "06gfgkg8f98jsj9vnbglw5lqflqzf0229n6wf3xl12carjzgaq9g"))))
+                "0ar0zkyl4rzqgambmdqhklscx478liql1k458ax64bp4xw441kfc"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f)) ;no test target
+     (list #:tests? #f                  ;no test target
+           #:configure-flags #~'("-DENABLE_SYSTEM_LUA=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   ;; XXX: Our Lua doesn't have a C++ library, force C linkage.
+                   (substitute* '("src/lua/wrapper_lua.h"
+                                  "src/lua/wrapper_lualib.h"
+                                  "src/lua/wrapper_lauxlib.h")
+                     (("#include \"(lua|lualib|lauxlib)\\.h\"")
+                      "#include \"lua.hpp\"")))))))
     (inputs
      (list boost
+           curl
            dbus
-           fribidi
            libvorbis
+           lua-5.4
            openssl
            pango
-           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
+           sdl2
+           sdl2-image
+           sdl2-mixer))
     (native-inputs
      (list gettext-minimal
-           pkg-config))
+           pkg-config
+           python-minimal))
     (home-page "https://www.wesnoth.org/")
     (synopsis "Turn-based strategy game")
     (description
@@ -4615,10 +4670,13 @@ next campaign.")
     (inherit wesnoth)
     (name "wesnoth-server")
     (inputs
-     (list boost icu4c openssl sdl2))
+     (list boost icu4c lua-5.4 openssl))
+    (native-inputs
+     (list pkg-config))
     (arguments
-     `(#:configure-flags '("-DENABLE_GAME=OFF")
-       ,@(package-arguments wesnoth)))
+     (substitute-keyword-arguments (package-arguments wesnoth)
+       ((#:configure-flags _)
+        #~'("-DENABLE_SYSTEM_LUA=ON" "-DENABLE_GAME=OFF"))))
     (synopsis "Dedicated @emph{Battle for Wesnoth} server")
     (description "This package contains a dedicated server for @emph{The
 Battle for Wesnoth}.")))
@@ -4671,7 +4729,7 @@ on the screen and keyboard to display letters.")
 (define-public manaplus
   (package
     (name "manaplus")
-    (version "1.9.3.23")
+    (version "2.1.3.17")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4679,18 +4737,15 @@ on the screen and keyboard to display letters.")
                     version "/manaplus-" version ".tar.xz"))
               (sha256
                (base32
-                "1ky182p4svwdqm6cf7jbns85hidkhkhq4s17cs2p381f0klapfjz"))))
+                "0ggswsa3xq7lss3j4k7fyzn56sw7hlrwk744i3d9w0n4932nmlg8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list (string-append "CPPFLAGS=-I"
-                            (assoc-ref %build-inputs "sdl-union")
-                            "/include/SDL"))))
+     (list #:configure-flags #~'("--with-sdl2")))
     (native-inputs
      (list pkg-config))
     (inputs
      (list glu curl libxml2 mesa
-           (sdl-union)))
+           sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf))
     (home-page "https://manaplus.org")
     (synopsis "Client for 'The Mana World' and similar games")
     (description
@@ -6227,6 +6282,106 @@ application that locks the keyboard and mouse and instead displays bright
 colors, pictures, and sounds.")
     (license license:gpl3+)))
 
+(define-public moonlight-qt
+  (package
+    (name "moonlight-qt")
+    (version "5.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/moonlight-stream/moonlight-qt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g1y736vw36lmh2bjymsf4b4ypr76x9lqz7frzpj7sn0vb9y5315"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* _
+              (symlink (string-append
+                        #$(this-package-input "sdl2-gamecontrollerdb")
+                        "/share/sdl2/gamecontrollerdb.txt")
+                       "app/SDL_GameControllerDB/gamecontrollerdb.txt")
+              ;; Unbundle libraries.
+              (substitute* "moonlight-qt.pro"
+                (("    moonlight-common-c.*\n") "")
+                (("    qmdnsengine.*\n") "")
+                (("    h264bitstream.*\n") "")
+                (("    app \\\\") "    app")
+                (("app.depends") "INCLUDEPATH +="))
+              (invoke "qmake" (string-append "PREFIX=" #$output)))))))
+    (native-inputs (list pkg-config qttools-5))
+    (inputs (list ffmpeg
+                  h264bitstream
+                  libva
+                  libvdpau
+                  moonlight-common
+                  openssl
+                  opus
+                  qmdnsengine
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtsvg-5
+                  sdl2
+                  sdl2-ttf
+                  sdl2-gamecontrollerdb))
+    (synopsis "GameStream client")
+    (description
+     "Moonlight is an implementation of NVIDIA's GameStream, as used by the
+NVIDIA Shield.")
+    (home-page "https://moonlight-stream.org")
+    (license license:gpl3+)))
+
+(define-public moonlight-common
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight
+  (let ((commit "5de4a5b85a28d8d639482a1a105c3a06eb67a2fd")
+        (revision "1"))
+    (package
+      (name "moonlight-common")
+      (version (git-version "5.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/moonlight-stream/moonlight-common-c")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "05jm0vhyb6pizd8yj89rp6ak7bf5j9w06rrmbxh8jccxwqjgll92"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'use-system-enet-package
+                            (lambda _
+                              (substitute* "CMakeLists.txt"
+                                (("add_subdirectory\\(enet\\)")
+                                 ""))))
+                          (replace 'install
+                            (lambda* (#:key outputs source #:allow-other-keys)
+                              (let* ((include (string-append #$output
+                                                             "/include"))
+                                     (lib (string-append #$output "/lib")))
+                                (mkdir-p include)
+                                (mkdir-p lib)
+                                (install-file (string-append source
+                                               "/src/Limelight.h") include)
+                                (install-file "libmoonlight-common-c.so" lib)))))))
+      (native-inputs (list pkg-config))
+      (inputs (list enet-moonlight openssl qtbase-5))
+      (synopsis "GameStream protocol core implementation")
+      (description
+       "This package provides the GameStream core code for the protocol.")
+      (home-page "https://github.com/moonlight-stream/moonlight-common-c")
+      (license license:gpl3+))))
+
 (define-public mrrescue
   (package
     (name "mrrescue")
@@ -6984,7 +7139,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.30.1")
+    (version "0.31.0")
     (source
      (origin
        (method git-fetch)
@@ -6993,7 +7148,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rlp8z1n7ziv7aaa3fb4h4nnq24pfz1m23a99c1ra582fh0yx1pl"))
+        (base32 "0igrl0a9qd2g27q3wr86xjkpqcqs4y7bh3na1saqvpd4vc8mbayk"))
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -7096,27 +7251,26 @@ monsters in a quest to find the mystifyingly fabulous Orb of Zot.")
     (version "1.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://bitbucket.org/osslugaru/lugaru/downloads/"
-                                  "lugaru-" version ".tar.xz"))
+              (uri (string-append "https://github.com/osslugaru/lugaru/releases"
+                                  "/download/" version
+                                  "/lugaru-" version ".tar.xz"))
               (sha256
-               (base32
-                "15zgcshy22q51rm72zi6y9z7qlgnz5iw3gczjdlir4bqmxy4gspk"))))
+               (base32 "15zgcshy22q51rm72zi6y9z7qlgnz5iw3gczjdlir4bqmxy4gspk"))
+              (patches
+               (search-patches "lugaru-fix-sound.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DSYSTEM_INSTALL=ON")
-       ;; no test target
-       #:tests? #f))
-    (native-inputs
-     (list pkg-config))
+     (list #:configure-flags #~(list "-DSYSTEM_INSTALL=ON")
+           #:tests? #f))                ;no test suite
+    (native-inputs (list pkg-config))
     (inputs
-     `(("sdl2" ,sdl2)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("openal" ,openal)
-       ("vorbis" ,libvorbis)
-       ("zlib" ,zlib)))
+     (list glu
+           libjpeg-turbo
+           libpng
+           libvorbis
+           openal
+           sdl2
+           zlib))
     (home-page "https://osslugaru.gitlab.io")
     (synopsis "Cross-platform third-person action game")
     (description "Lugaru is a third-person action game.  The main character,
@@ -7125,7 +7279,7 @@ In his quest to find those responsible for slaughtering his village, he uncovers
 a far-reaching conspiracy involving the corrupt leaders of the rabbit republic
 and the starving wolves from a nearby den.  Turner takes it upon himself to
 fight against their plot and save his fellow rabbits from slavery.")
-    (license (list license:gpl2+ ; code
+    (license (list license:gpl2+        ; code
                    ;; assets:
                    license:cc-by-sa3.0
                    license:cc-by-sa4.0))))
@@ -7166,6 +7320,7 @@ fight against their plot and save his fellow rabbits from slavery.")
     (synopsis "Data files for 0ad")
     (description "0ad-data provides the data files required by the game 0ad.")
     (home-page "https://play0ad.com")
+    (properties '((hidden? . #t)))
     (license (list (license:fsdg-compatible
                     "http://tavmjong.free.fr/FONTS/ArevCopyright.txt"
                     "Similar to the license of the Bitstream Vera fonts.")
@@ -7321,7 +7476,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.16")
+    (version "1.18")
     (source
      (origin
        (method git-fetch)
@@ -7330,7 +7485,7 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0spciwqcyldalzdd813zwigbldcnyaxi7kfslq1yp0fg4c4a10aa"))))
+        (base32 "1zl72lsp443aryzmwzh5w4j439jgf5njvh9xig6vjvmzhfcjkk9q"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7359,10 +7514,13 @@ at their peak of economic growth and military prowess.
                 (install-file "advent.6" man)))))))
     (native-inputs
      (list asciidoc
+           cppcheck
            libedit
            pkg-config
+           python-pylint
            python-pyyaml
-           python-wrapper))
+           python-wrapper
+           ruby-asciidoctor))
     (home-page "https://gitlab.com/esr/open-adventure")
     (synopsis "Colossal Cave Adventure")
     (description
@@ -7993,26 +8151,49 @@ Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom.")
 (define-public odamex
   (package
     (name "odamex")
-    (version "0.9.5")
+    (version "10.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "mirror://sourceforge/odamex/Odamex/" version "/"
-             "odamex-src-" version ".tar.bz2"))
+             "odamex-src-" version ".tar.xz"))
        (sha256
-        (base32 "1x0c9vnwn336inkfamh4na8xjyfjmzfxfn49j4snqymkypjqw6jq"))))
+        (base32 "1isrmki18471yry48mmm7lxzp1kiqma9cc7fx38cvpm2mpgfyvzk"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; XXX: Unbundle more, they are not replaced by the ones provided
+           ;; in inputs: fltk, jsoncpp, miniupnp, protobuf.
+           ;;
+           ;; Remove some bundled libraries.
+           (with-directory-excursion "libraries"
+             (for-each delete-file-recursively
+                       '("curl" "libpng" "portmidi" "zlib")))))))
     (build-system cmake-build-system)
-    (arguments `(#:tests? #f))          ; no tests
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:configure-flags
+      #~(list "-DBUILD_CLIENT=1"
+              "-DBUILD_MASTER=1"
+              "-DBUILD_SERVER=1"
+              "-DUSE_INTERNAL_LIBS=0"
+              "-DUSE_INTERNAL_MINIUPNP=0")))
     (native-inputs
-     (list deutex))
+     (list deutex pkg-config))
     (inputs
-     `(("sdl" ,sdl2)
-       ("sdl-mixer" ,sdl2-mixer)
-       ("zlib" ,zlib)
-       ("libpng" ,libpng)
-       ("curl" ,curl)
-       ("alsa-lib" ,alsa-lib)))
+     (list alsa-lib
+           curl
+           fltk
+           jsoncpp
+           libpng
+           miniupnpc
+           portmidi
+           protobuf
+           sdl2
+           sdl2-mixer
+           zlib))
     (home-page "https://odamex.net/")
     (synopsis "Multiplayer Doom port")
     (description "Odamex is a modification of the Doom engine that
@@ -8324,7 +8505,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.10.4")
+    (version "0.11.4")
     (source
      (origin
        (method git-fetch)
@@ -8334,7 +8515,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lg8cmzdzzpmqgmh9a1v190vv4d15hwa0inyzdwsq5x8lyc13hyr"))))
+        (base32 "1gd7jgb996fgnlrlqkfyx416g1kd458vik3nviazwwj83ksafaqb"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
@@ -8657,7 +8838,7 @@ your score gets higher, you level up and the blocks fall faster.")
 (define-public endless-sky
   (package
     (name "endless-sky")
-    (version "0.10.2")
+    (version "0.10.6")
     (source
      (origin
        (method git-fetch)
@@ -8666,7 +8847,7 @@ your score gets higher, you level up and the blocks fall faster.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07br25cij6g284p53nclcvw4y6mgn93milynpxa5ahrjdl5yfnsn"))))
+        (base32 "1iaiyv9fqgg269wjcyfn1akhh0wfrf64gh5jg3wzxwn24pm77flw"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DES_USE_VCPKG=0"
@@ -10455,8 +10636,8 @@ ChessX.")
       (license license:gpl3+))))
 
 (define-public moonfish
-  (let ((commit "4f8829009e8c26e6a878261e0bc4c7e7617ef6b6")
-        (revision "1"))
+  (let ((commit "fb2cb4f53876b1b0c6060464e0dd5a05ab00e502")
+        (revision "2"))
     (package
       (name "moonfish")
       (version (git-version "0" revision commit))
@@ -10467,40 +10648,23 @@ ChessX.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1ksg42x9cyn3pbfryy9raqb355k47cqcisascpy157c3cgdr2z60"))
+                  "1rbhdahp0s2qm1zi7lpr0bb6zq02y76fc9d9nc2k5n03zh2as97i"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
        (list
-        #:make-flags
-        #~(list (string-append "CC=" #$(cc-for-target)))
-        #:tests? #f                     ;no check target
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)         ;no configure script
-            (replace 'install           ;no 'install' target
-              (lambda _
-                (let* ((out-bin (string-append #$output "/bin"))
-                       (tools-bin (string-append #$output:tools "/bin"))
-                       (tool (string-append tools-bin "/moonfish-")))
-                  (mkdir-p out-bin)
-                  (mkdir-p tools-bin)
-                  (copy-file "moonfish"
-                             (string-append out-bin "/moonfish"))
-                  (copy-file "play"
-                             (string-append tool "play"))
-                  (copy-file "lichess"
-                             (string-append tool "lichess"))
-                  (copy-file "analyse"
-                             (string-append tool "analyse"))))))))
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                             (string-append "PREFIX=" %output))
+        #:tests? #f ;no check target
+        #:phases #~(modify-phases %standard-phases
+                     (delete 'configure)))) ;no configure script
       (inputs (list bearssl cjson))
-      (outputs '("out" "tools"))
       (home-page "https://git.sr.ht/~zamfofex/moonfish")
       (synopsis "Simple chess engine written in C")
       (description
-       "moonfish is a toy UCI chess engine made for fun.  It is inspired by
-sunfish, but is written in C rather than Python.  It also has TUI tools for
-using any UCI engine and also to connect UCI engines to Lichess.")
+       "moonfish is a toy UCI chess engine written in C for fun.  It has TUI/CLI
+tools for using any UCI engine and also to connect UCI engines to Lichess, as
+well as for converting engines between UCI and UGI.")
       (license license:agpl3+))))
 
 (define-public morris
@@ -11220,7 +11384,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "1.0.5")
+    (version "1.0.11")
     (source
      (origin
        (method git-fetch)
@@ -11229,7 +11393,7 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v7dxzb5cfjb55jydd8f61zzlvxq9mrgdy51hq19b06dmrx1dnc7"))))
+        (base32 "1i1a4dynlb5kl55rmfmib2jha1b2igw5jyiiyla1fxgkbkjnbf27"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -11251,7 +11415,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.3.2")
+    (version "1.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11260,7 +11424,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x1bzd89h0j4xci91d2v5aj5vgkx6vm12iml805wkia4hy1jp4ff"))
+                "1z4vy3drj6dra8rb243pyryr61jnlw3l7yxsxwl9rddv8cdk69lz"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments

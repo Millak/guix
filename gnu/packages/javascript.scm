@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Frank Pursel <frank.pursel@gmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -835,15 +836,16 @@ roots, or wrestle with obscure build systems.")
                 "06pywwpmfwjz225h59wf90q96a2fd66qfcw5xa6m6y9k9k7glnx4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list "prefix="
-             (string-append "DESTDIR=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'check
-           (lambda _
-             (invoke "make" "microbench"))))))
+     (list #:make-flags
+           #~(list "prefix="
+                   (string-append "DESTDIR=" #$output)
+                   #$@(if (target-riscv64?) '("LDFLAGS=-latomic") '()))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "make" "microbench")))))))
     (home-page "https://bellard.org/quickjs/")
     (synopsis "Small embeddable Javascript engine")
     (description "QuickJS supports the ES2020 specification including modules,

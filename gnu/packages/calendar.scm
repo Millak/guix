@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016, 2017, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016, 2021 Stefan Reichoer <stefan@xsteve.at>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -123,7 +123,7 @@ the <tz.h> library for handling time zones and leap seconds.")
 (define-public libical
   (package
     (name "libical")
-    (version "3.0.16")
+    (version "3.0.17")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -131,7 +131,7 @@ the <tz.h> library for handling time zones and leap seconds.")
                     version "/libical-" version ".tar.gz"))
               (sha256
                (base32
-                "0cqc1wpalxmxjx8dmcaga9w8kd5l7944hqmidz43hifaf7fhaixl"))))
+                "06vqbxg4f3i03087grjncfy9pbvmlhg4v1ajhwr400l7nrnrmnmw"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -177,13 +177,13 @@ data units.")
 (define-public khal
   (package
     (name "khal")
-    (version "0.11.2")
+    (version "0.11.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "khal" version))
               (sha256
                (base32
-                "1flrz01nsmvphiv673b8ia279qcp3gj6a1rsjlsj4gp5f69xif4g"))))
+                "0pijq7crjpak1rq3hzx68fz34n7ikkcz3xsk9r3brny17z2brk58"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; The test suite is unreliable. See <https://bugs.gnu.org/44197>
@@ -292,7 +292,11 @@ proper handling of holidays.")
                             version "/" name "-" version ".tar.bz2"))
         (sha256
          (base32
-          "0qkpq412p78znw8gckwcx3l0wcss9s0dgw1pvjb1ih2pxf6hm4rw"))))
+          "0qkpq412p78znw8gckwcx3l0wcss9s0dgw1pvjb1ih2pxf6hm4rw"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "libhdate.pc.in"
+                    (("prefix=/usr") "prefix=@prefix@"))))))
     (build-system gnu-build-system)
     (home-page "http://libhdate.sourceforge.net/")
     (synopsis "Library to use Hebrew dates")

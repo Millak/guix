@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -17,6 +17,8 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,20 +108,16 @@ data in a standard way.")
        (uri (pypi-uri "beartype" version))
        (sha256
         (base32 "0amzckgw9c93bl4jf0q6322j9wyyf3i8vl03yixfkrpllzv6kv14"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv" "beartype_test"
-                             ;; These tests rely on git through the
-                             ;; "get_main_readme_file" helper.
-                             "-k"
-                             (string-append "not test_doc_readme "
-                                            "and not test_sphinx "
-                                            "and not test_pep561_mypy"))))))))
+     (list
+      #:test-flags
+      #~(list
+         "beartype_test"
+         ;; These tests rely on git through the "get_main_readme_file" helper.
+         "-k" (string-append "not test_doc_readme "
+                             "and not test_sphinx "
+                             "and not test_pep561_mypy"))))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/beartype/beartype")
@@ -182,15 +180,7 @@ tests in cram.")
        (sha256
         (base32
          "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest-flake8 python-pytest-xdist python-tabulate))
     (propagated-inputs
@@ -331,27 +321,35 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
 (define-public python-pyinstrument
   (package
     (name "python-pyinstrument")
-    (version "4.1.1")
+    (version "4.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyinstrument" version))
        (sha256
-        (base32 "18n3waxsxcd48pmcp8158s5rlancll2000amrdck9zfj5hfpkhhx"))))
-    (build-system python-build-system)
+        (base32 "1xnp1pjhcj1xl4dq20yzzj9599cmiyxb2azblsyjnl6qgr8yw0h0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable some failing tests.
+                    "not test_script_execution_details"
+                    " and not test_path_execution_details"
+                    " and not test_module_execution_details"
+                    " and not test_program_passed_as_string_execution_details"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-flaky
+           python-greenlet
            python-pytest
            python-pytest-asyncio
            python-pytest-trio))
-    (arguments
-     `(;; TODO: Get tests to work.
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
     (home-page "https://github.com/joerick/pyinstrument")
     (synopsis "Call stack profiler for Python")
     (description
@@ -429,31 +427,20 @@ interactions, which will update them to correspond to the new API.")
               (sha256
                (base32
                 "1dkr86nxkxc0ka3rdnpmk335m8gl1zh1sy8i7w4w1jsidbf82jvw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Tests fail a lot, probably requiring Internet access.
-     (list #:tests? #f
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'build
-                          (lambda _
-                            (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                                    #$version)
-                            (setenv "SOURCE_DATE_EPOCH" "315532800")
-                            (invoke "python"
-                                    "-m"
-                                    "build"
-                                    "--wheel"
-                                    "--no-isolation"
-                                    ".")))
-                        (add-before 'check 'disable-unsupported-test
-                          (lambda _
-                            (substitute* "tests/test_async.py"
-                              (("def test_asynctest")
-                               "def __off_test_asynctest"))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "pytest" "-vvv")))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable test requiring network access.
+                    "not test_disable_socket_urllib"
+                    " and not test_parametrize_with_socket_enabled_and_allow_hosts"
+                    " and not test_global_disable_and_allow_host"
+                    " and not test_asynctest"
+                    " and not test_httpx_fails"
+                    " and not test_disabled_urllib_fails"
+                    " and not test_urllib_succeeds_by_default"
+                    " and not test_enabled_urllib_succeeds"))))
     (native-inputs (list python-httpx
                          python-poetry-core
                          python-pypa-build
@@ -559,20 +546,25 @@ astropy related packages.")
 (define-public python-pytest-arraydiff
   (package
     (name "python-pytest-arraydiff")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-arraydiff" version))
        (sha256
-        (base32 "1livzfbi7ag17hskd5845dh1kdir24f7jrbw8y2s1pyhzyz4jhbi"))))
-    (build-system python-build-system)
+        (base32 "1pk7v96rkypx4ld59f6p8fh5bq371ka8g7bh4h7n4df91x2v2dr9"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; Tests require python-astropy, which itself requires this package.
-     ;; Disable tests to avoid the circular dependency problem.
-     '(#:tests? #f))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable tests requiring python-astropy, to break cycle.
+                    "not test_succeeds_func_fits_hdu"
+                    " and not test_fails"
+                    " and not test_generate"
+                    " and not test_default_format"))))
     (native-inputs
-     (list python-pytest python-setuptools-scm)) ; for sanity-check
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/astropy/pytest-arraydiff")
@@ -618,26 +610,29 @@ running the tests.")
 (define-public python-pytest-doctestplus
   (package
     (name "python-pytest-doctestplus")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-doctestplus" version))
        (sha256
-        (base32 "17ylfnrcvvp6sd13bfj40jl40paqmjsbywysszb3xqgdr86l8l7n"))))
+        (base32 "0cmrkgpib869kpy8h8hfkg20w16lakkmbkw8cxdywpmf5wx7dbf5"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
            #~(list "-k" (string-append
+                         ;; Tests requiring network access.
                          "not test_remote_data_url"
                          " and not test_remote_data_float_cmp"
                          " and not test_remote_data_ignore_whitespace"
                          " and not test_remote_data_ellipsis"
                          " and not test_remote_data_requires"
-                         " and not test_remote_data_ignore_warnings"))))
+                         " and not test_remote_data_ignore_warnings"
+                         ;; Requiring git available.
+                         " and not test_generate_diff_basic"))))
     (native-inputs
      (list python-numpy python-pytest python-setuptools-scm))
-    (home-page "https://github.com/astropy/pytest-doctestplus")
+    (home-page "https://github.com/scientific-python/pytest-doctestplus")
     (synopsis "Pytest plugin with advanced doctest features")
     (description
      "This package contains a plugin for the Pytest framework that provides
@@ -674,13 +669,13 @@ for interactively selecting and running Pytest tests.")
 (define-public python-pytest-filter-subpackage
   (package
     (name "python-pytest-filter-subpackage")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-filter-subpackage" version))
        (sha256
-        (base32 "10hpl3f7g2bm29lakmp8492b7lr0dp90khfni12m4gl02xks7bhz"))))
+        (base32 "0mmgg2n8qk6s2kprycjl70lxcpm43dkapplmkf32i0ai6qdqyiiz"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
@@ -1105,6 +1100,28 @@ of the project to ensure it renders properly.")
     (description
      "@code{re-assert} provides a helper class to make assertions of regexes
 simpler.")
+    (license license:expat)))
+
+(define-public python-pytest-testmon
+  (package
+    (name "python-pytest-testmon")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tarpas/pytest-testmon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01qhbkb3n8c5c4id94w6b06q9wb7b6a33mqwyrkdfzk5pzv1gcyd"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (native-inputs (list python-coverage python-pytest))
+    (home-page "https://github.com/tarpas/pytest-testmon")
+    (synopsis "Selects tests affected by changed files and methods")
+    (description
+     "This plug-in auto-selects and reruns tests impacted by recent changes.")
     (license license:expat)))
 
 (define-public python-pytest-trio
@@ -2140,20 +2157,29 @@ help in debugging failures and optimizing the scheduler to improve speed.")
               (method url-fetch)
               (uri (pypi-uri "pytest-sanic" version))
               (sha256
-                (base32
-                  "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
+               (base32
+                "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
+    ;; We don't use pyproject-build-system because that would require
+    ;; poetry.masonry.
     (build-system python-build-system)
     (arguments
      ;; Tests depend on python-sanic.
-     `(#:tests? #f))
+     (list
+      #:tests? #f
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("websockets.*<11.0")
+                "websockets<12.0")))))))
     (propagated-inputs
-      (list python-httpx python-async-generator python-pytest
-            python-websockets))
-    (home-page
-      "https://github.com/yunstanford/pytest-sanic")
+     (list python-httpx python-async-generator python-pytest
+           python-websockets))
+    (home-page "https://github.com/yunstanford/pytest-sanic")
     (synopsis "Pytest plugin for Sanic")
-    (description "A pytest plugin for Sanic.  It helps you to test your
-code asynchronously.")
+    (description "This package provides a pytest plugin for Sanic.  It helps
+you to test your code asynchronously.")
     (license license:expat)))
 
 (define-public python-allpairspy
@@ -2328,6 +2354,31 @@ Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
 Avocado machine readable outputs this one is streamlined (per test results).
 @end table")
     (license license:gpl2)))            ;some files are under GPLv2 only
+
+(define-public python-pandas-vet
+  (package
+    (name "python-pandas-vet")
+    ;; Newer versions require flake8>=6.0.0.
+    (version "0.2.3")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/deppen8/pandas-vet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b3pqcargv68p2lpv72q49siq6mxfh3znxhz9vd91rp6fd6lf2cz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-attrs python-flake8))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/deppen8/pandas-vet")
+    (synopsis "Opionated @code{flake8} plugin for @code{pandas} code")
+    (description
+     "This package provides a @code{flake8} plugin to lint @code{pandas} code
+in an opinionated way.")
+    (license license:expat)))
 
 (define-public python-parameterizedtestcase
   (package

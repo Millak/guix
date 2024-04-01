@@ -15,6 +15,10 @@
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -219,8 +223,60 @@ such as compact binary encodings, XML, or JSON.")
      (list doxygen gcc-10
            (package-source cereal)))))
 
-(define-public msgpack
+(define-public msgpack-c
   (package
+    (name "msgpack-c")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append
+         "https://github.com/msgpack/msgpack-c/releases/download/"
+         "c-" version "/" name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fmf08babfsjq5qkgw034wk2nw6mayxp1qlkm7h55p2jqvigam1n"))
+       (snippet
+        '(let ((p (open-file "msgpack-c.pc.in" "a")))
+           (display "Requires: zlib\n" p)
+           (close-output-port p)))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DMSGPACK_BUILD_TESTS=ON")))
+    (native-inputs (list googletest))
+    (propagated-inputs (list zlib))  ;zbuffer.h includes zlib.h
+    (home-page "https://www.msgpack.org")
+    (synopsis "Binary serialization library")
+    (description "Msgpack is a library for C that implements binary
+serialization.")
+    (license license:boost1.0)))
+
+(define-public msgpack-cxx
+  (package
+    (inherit msgpack-c)
+    (name "msgpack-cxx")
+    (version "6.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append
+         "https://github.com/msgpack/msgpack-c/releases/download/"
+         "cpp-" version "/" name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rrrf3nskcv994z3pbq6a5z2021piz118rccmm1y7zlf7klygv93"))))
+    (build-system cmake-build-system)
+    (propagated-inputs (list boost zlib)) ;included in headers
+    (description "Msgpack is a library for C++ that implements binary
+serialization.")))
+
+;;; The msgpack package was split into msgpack-c and msgpack-cxx starting from
+;;; version 4.0.0.
+(define-public msgpack
+  (deprecated-package "msgpack" msgpack-c))
+
+(define-public msgpack-3
+  (package
+    (inherit msgpack-c)
     (name "msgpack")
     (version "3.3.0")
     (source
@@ -234,23 +290,13 @@ such as compact binary encodings, XML, or JSON.")
         '(let ((p (open-file "msgpack.pc.in" "a")))
            (display
             (string-append "Requires: " "zlib" "\n") p)
-           (close-output-port p)
-           #t))
+           (close-output-port p)))
        (sha256
         (base32 "0yzhq50ijvwrfkr97knhvn54lj3f4hr3zy39yq8wpf6xll94s4bf"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list googletest-1.8 pkg-config))
-    (propagated-inputs
-     (list zlib)) ;; Msgpack installs two headers (zbuffer.h,
-    ;; zbuffer.hpp) which #include <zlib.h>.  However, 'guix gc --references'
-    ;; does not detect a store reference to zlib since these headers are not
-    ;; compiled.
-    (home-page "https://www.msgpack.org")
-    (synopsis "Binary serialization library")
+    (native-inputs (list googletest-1.8))
     (description "Msgpack is a library for C/C++ that implements binary
-serialization.")
-    (license license:boost1.0)))
+serialization.  This is the legacy version that predates the split into C and
+C++ specific packages.")))
 
 (define-public libmpack
   (package
@@ -469,16 +515,16 @@ character limit for implicit keys.")
 (define-public yaml-cpp
   (package
     (name "yaml-cpp")
-    (version "0.6.3")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/jbeder/yaml-cpp")
-             (commit (string-append "yaml-cpp-" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ykkxzxcwwiv8l8r697gyqh1nl582krpvi7m7l6b40ijnk4pw30s"))))
+        (base32 "0whdn6pqa56532ml20h89p6rchcrrazdrvi5fz6zpmrkl15yiki7"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DYAML_BUILD_SHARED_LIBS=ON")))
@@ -578,6 +624,29 @@ object, without whitespace.")
       (home-page "https://github.com/dominictarr/JSON.sh")
       (license (list license:expat license:asl2.0))))) ;dual-licensed
 
+(define-public ckdl
+  (package
+    (name "ckdl")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tjol/ckdl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zdpil61lm141lcxmfrg7jvfjp2n98v5q2rfqzm4wiqcdprgmasv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DDOWNLOAD_TEST_DATA=OFF")))
+    (home-page "https://ckdl.readthedocs.io/en/latest/")
+    (synopsis "C library for parsing and emitting KDL")
+    (description "@samp{ckdl} is a C library for parsing and emitting KDL.
+This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
+    (license license:expat)))
+
 (define-public capnproto
   (package
     (name "capnproto")
@@ -676,14 +745,14 @@ includes the following features:
 (define-public python-ruamel.yaml
   (package
     (name "python-ruamel.yaml")
-    (version "0.16.13")
+    (version "0.18.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ruamel.yaml" version))
        (sha256
         (base32
-         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))
+         "06rimidc9nb3i3r90n3a1zwf0qxw24zqykb3wpxwd1p72yifc9wb"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
@@ -702,10 +771,22 @@ and has round-trip loaders and dumpers.  It supports comments.  Block
 style and key ordering are kept, so you can diff the source.")
     (license license:expat)))
 
+(define-public python-ruamel.yaml-0.16
+  (package
+    (inherit python-ruamel.yaml)
+    (version "0.16.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ruamel.yaml" version))
+       (sha256
+        (base32
+         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))))
+
 (define-public python-ruamel.yaml.clib
   (package
     (name "python-ruamel.yaml.clib")
-    (version "0.2.6")
+    (version "0.2.8")
     (source
       (origin
         ;; pypi release code has cythonized code without corresponding source.
@@ -716,7 +797,7 @@ style and key ordering are kept, so you can diff the source.")
         (file-name (string-append name "-" version "-checkout"))
         (sha256
          (base32
-          "05m3y7pjfbaarqbbgw1k6gs6cnnmxnwadjipxvw1aaaqk3s236cs"))
+          "0qspqnk72xrjj17b00hjibbzjk3krsrakzf08wxwz7z908cv6278"))
         (modules '((guix build utils)))
         (snippet
          '(begin

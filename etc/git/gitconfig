@@ -20,6 +20,7 @@
 [b4]
         attestation-check-dkim = off
         attestation-policy = off
+        shazam-am-flags = --signoff --3way
         linkmask = https://yhetil.org/guix/%s
         linktrailermask = https://yhetil.org/guix/%s
         midmask = https://yhetil.org/guix/%s

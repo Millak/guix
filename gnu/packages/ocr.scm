@@ -3,8 +3,8 @@
 ;;; Copyright © 2016, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2021 Andy Tai <atai@atai.org>
-;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021, 2024 Andy Tai <atai@atai.org>
+;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -56,14 +56,14 @@
 (define-public ocrad
   (package
     (name "ocrad")
-    (version "0.28")
+    (version "0.29")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/ocrad/ocrad-"
                                  version ".tar.lz"))
              (sha256
               (base32
-               "0bmzpcv7sjf8f5pvd9wwh9yp6s7zqd226876g5csmbdxdmbymk1l"))))
+               "1sfrs9jg102malg09cnjdji7lkv9xxccpp3j9a41dfmpn330q80i"))))
     (build-system gnu-build-system)
     (native-inputs (list libpng lzip))
     (home-page "https://www.gnu.org/software/ocrad/")
@@ -210,7 +210,7 @@ default.  To add support for more languages, the
 (define-public gimagereader
   (package
     (name "gimagereader")
-    (version "3.4.1")
+    (version "3.4.2")
     (source
      (origin
        (method url-fetch)
@@ -219,7 +219,7 @@ default.  To add support for more languages, the
              "/download/v" version "/"
              "gimagereader-" version ".tar.xz"))
        (sha256
-        (base32 "1972bvnk2bkgbh70vy2prcmdzf4wlna862p2vja9yjxi2c0scmwc"))))
+        (base32 "0r52j5q2d0mvzw6qkds6vrapcqhdgyj2jvp7bh8w9zw6gpjsyk0q"))))
     (build-system cmake-build-system)
     (arguments
      (list

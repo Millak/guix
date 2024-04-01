@@ -31,6 +31,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix memoization)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -283,21 +284,27 @@ driver.")
                          `(,glib "bin")
                          help2man
                          gettext-minimal))
-    (inputs (list bash-completion
-                  libgudev
-                  libxmlb
-                  sqlite
-                  polkit
-                  eudev
-                  libelf
-                  tpm2-tss
-                  cairo
-                  efivar
-                  pango
-                  protobuf-c
-                  mingw-w64-tools
-                  libsmbios
-                  gnu-efi))
+    (inputs (append
+             (list bash-completion
+                   libgudev
+                   libxmlb
+                   sqlite
+                   polkit
+                   eudev
+                   libelf
+                   tpm2-tss
+                   cairo
+                   efivar
+                   pango
+                   protobuf-c
+                   mingw-w64-tools
+                   gnu-efi)
+             (if (supported-package? libsmbios
+                                     (or (and=> (%current-target-system)
+                                                platform-target->system)
+                                         (%current-system)))
+                 (list libsmbios)
+                 '())))
     ;; In Requires of fwupd*.pc.
     (propagated-inputs (list curl
                              gcab
@@ -1190,81 +1197,51 @@ such as:
           ;; Adding debug symbols causes the size to exceed limits.
           #~(delete "DEBUG=1" #$flags)))))))
 
-(define (make-crust-package platform)
-  (package
-    (name (string-append "crust-"
-                         (string-replace-substring platform "_" "-")))
-    (version "0.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             ;; There are only GitHub generated release snapshots.
-             (url "https://github.com/crust-firmware/crust")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "crust" version))
-       (sha256
-        (base32
-         "0xgbbhifg3miwd3yp6jq9kp7nqgz5gzy00w95vba45j8jk5vjvvz"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:make-flags
-      (let ((triplet-without-vendor
-             (and (%current-target-system)
-                  ;; TODO: Is there a use case for allowing this?
-                  (not (target-avr?))
-                  (match (string-split (nix-system->gnu-triplet
-                                        (%current-target-system)) #\-)
-                    ((arch vendor os ..1)
-                     (string-join `(,arch ,@os) "-"))))))
-        #~(list "CROSS_COMPILE=or1k-elf-"
-                "V=1"
-                #$@(if triplet-without-vendor
-                       ;; We are cross-compiling the tools, intended to be
-                       ;; executable for the target system.
-                       (list (string-append "HOSTAR=" triplet-without-vendor
-                                            "-ar")
-                             (string-append "HOSTCC=" triplet-without-vendor
-                                            "-gcc"))
-                       ;; Not cross-compiling.
-                       (list "HOSTAR=ar"
-                             "HOSTCC=gcc"))
-                "LEX=flex"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'do-not-build-tests
-            (lambda _
-              ;; Attempting to build the tools test binary on a non-aarch64
-              ;; architecture fails with: "No cache cleaning implementation
-              ;; available for this architecture".  Avoid building it (see:
-              ;; https://github.com/crust-firmware/crust/issues/182).
-              (substitute* "tools/Makefile"
-                (("tools-y \\+= test") ""))))
-          (delete 'configure)
-          (add-before 'build 'defconfig
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (let ((config-name (string-append #$platform "_defconfig")))
-                (apply invoke "make" (cons config-name make-flags)))))
-          (replace 'install
-            (lambda _
-              (for-each (lambda (file)
-                          (install-file file (string-append #$output
-                                                            "/libexec")))
-                        (find-files "." "(scp\\.bin|\\.config)$"))
-              (install-file "build/tools/load"
-                            (string-append #$output "/bin")))))))
-    ;; The firmware is cross-compiled using a "bare bones" compiler (no libc).
-    ;; Use our own tool chain for that.
-    (native-inputs
-     (list bison
-           (cross-gcc "or1k-elf")
-           (cross-binutils "or1k-elf")
-           flex))
-    (home-page "https://github.com/crust-firmware/crust")
-    (synopsis "System control processor firmware for Allwinner sunxi boards")
-    (description "Crust improves battery life and thermal performance by
+(define make-crust-firmware
+  (mlambda (platform)
+    (package
+      (name (string-append "crust-"
+                           (string-replace-substring platform "_" "-")
+                           "-firmware"))
+      (version "0.6")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; There are only GitHub generated release snapshots.
+               (url "https://github.com/crust-firmware/crust")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name "crust" version))
+         (sha256
+          (base32
+           "1blq6bi2rmg4qqwwr07pamv28b50mwcsybhpn9bws8vbzxa43afd"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:target "or1k-elf"
+        #:tests? #f                       ;no test suite
+        #:make-flags #~'("CROSS_COMPILE=or1k-elf-"
+                         "V=1"
+                         "HOSTAR=ar"
+                         "HOSTCC=gcc"
+                         "LEX=flex")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'build 'defconfig
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (let ((config-name (string-append #$platform "_defconfig")))
+                  (apply invoke "make" (cons config-name make-flags)))))
+            (replace 'install
+              (lambda _
+                (for-each (lambda (file)
+                            (install-file file (string-append #$output
+                                                              "/libexec")))
+                          (find-files "." "(scp\\.bin|\\.config)$")))))))
+      (native-inputs (list bison flex))
+      (home-page "https://github.com/crust-firmware/crust")
+      (synopsis "Firmware for Allwinner sunxi SoCs")
+      (description "Crust improves battery life and thermal performance by
 implementing a deep sleep state.  During deep sleep, the CPU cores, the DRAM
 controller, and most onboard peripherals are powered down, reducing power
 consumption by 80% or more compared to an idle device.  On boards without a
@@ -1273,8 +1250,75 @@ device.  For this to work, Crust runs outside the main CPU and DRAM, on a
 dedicated always-on microprocessor called a System Control Processor (SCP).
 Crust is designed to run on a specific SCP implementation, Allwinner's
 AR100.")
-    ;; Most files are dual-licensed "BSD-3 OR GPL2", a few are GPL2 only.
-    (license (list license:bsd-3 license:gpl2))))
+      ;; Most files are dual-licensed "BSD-3 OR GPL2", a few are GPL2 only.
+      (license (list license:bsd-3 license:gpl2)))))
+
+(define make-crust-tools
+  (mlambda (platform firmware)
+    (package
+      (inherit firmware)
+      (name (string-append "crust-"
+                           (string-replace-substring platform "_" "-")
+                           "-tools"))
+      (arguments
+       (list #:make-flags
+             #~(list "V=1"
+                     "LEX=flex"
+                     (string-append "HOSTAR=" #$(ar-for-target))
+                     (string-append "HOSTCC=" #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'do-not-build-tests
+                   (lambda _
+                     ;; Attempting to build the tools test binary on a
+                     ;; non-aarch64 architecture fails with: "No cache
+                     ;; cleaning implementation available for this
+                     ;; architecture".  Avoid building it (see:
+                     ;; https://github.com/crust-firmware/crust/issues/182).
+                     (substitute* "tools/Makefile"
+                       (("tools-y \\+= test") ""))))
+                 (replace 'configure
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     (copy-file (search-input-file inputs "/libexec/.config")
+                                ".config")))
+                 (replace 'build
+                   (lambda* (#:key make-flags parallel-build?
+                             #:allow-other-keys)
+                     (apply invoke "make" "tools"
+                            `(,@(if parallel-build?
+                                    `("-j"
+                                      ,(number->string (parallel-job-count)))
+                                     '())
+                              ,@make-flags))))
+                 (replace 'install
+                   (lambda _
+                     (install-file "build/tools/load"
+                                   (string-append #$output "/bin")))))))
+      (synopsis "Firmware for Allwinner sunxi SoCs (tools)")
+      (inputs (list firmware)))))
+
+(define make-crust-package
+  (mlambda (platform)
+    (let* ((firmware (make-crust-firmware platform))
+           (tools (make-crust-tools platform firmware)))
+      (package
+        (inherit firmware)
+        (name (string-append "crust-"
+                             (string-replace-substring platform "_" "-")))
+        (source #f)
+        (build-system trivial-build-system)
+        (arguments
+         (list #:modules '((guix build union))
+               #:builder
+               #~(begin
+                   (use-modules (ice-9 match)
+                                (guix build union))
+
+                   (match %build-inputs
+                     (((names . directory) ...)
+                      (union-build #$output directory))))))
+        (native-inputs '())
+        (inputs (list firmware tools))))))
 
 (define-public crust-pinebook
   (make-crust-package "pinebook"))

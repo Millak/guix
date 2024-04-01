@@ -4,6 +4,7 @@
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,7 +25,10 @@
   #:use-module (guix import crate)
   #:use-module (guix base32)
   #:use-module (guix build-system cargo)
-  #:use-module (gcrypt hash)
+  #:use-module ((gcrypt hash)
+                #:select ((sha256 . gcrypt-sha256)))
+  #:use-module (guix packages)
+  #:use-module (guix read-print)
   #:use-module (guix tests)
   #:use-module (gnu packages)
   #:use-module (ice-9 iconv)
@@ -37,13 +41,18 @@
 ;; foo-1.0.0
 ;; foo-1.0.3
 ;; 	leaf-alice 0.7.5
+;; bar-1.0.0
+;;      leaf-bob   3.0.1
+;;      leaf-bob   3.0.2 (dev-dependency)
+;;      leaf-bob   4.0.0 (dev-dependency)
 ;;
 ;; root-1.0.0
 ;; root-1.0.4
-;; 	intermediate-a  1.0.42
-;; 	intermeidate-b ^1.0.0
+;; 	intermediate-a 1.0.42
+;; 	intermediate-b ^1.0.0
 ;; 	leaf-alice     ^0.7
-;; 	leaf-bob     ^3
+;; 	leaf-bob       ^3
+;; 	intermediate-c 1 (dev-dependency)
 ;;
 ;; intermediate-a-1.0.40
 ;; intermediate-a-1.0.42
@@ -55,10 +64,15 @@
 ;; intermediate-b-1.2.3
 ;; 	leaf-bob	3.0.1
 ;;
+;; intermediate-c-1.0.1
+;;      leaf-alice      0.7.5 (dev-dependency)
+;;
 ;; leaf-alice-0.7.3
 ;; leaf-alice-0.7.5
 ;;
 ;; leaf-bob-3.0.1
+;; leaf-bob-3.0.2 (yanked)
+;; leaf-bob-4.0.0 (yanked)
 
 
 (define test-foo-crate
@@ -107,6 +121,50 @@
        \"crate_id\": \"leaf-alice\",
        \"kind\": \"normal\",
        \"req\": \"0.7.5\"
+     }
+  ]
+}")
+
+(define test-bar-crate
+  "{
+  \"crate\": {
+    \"max_version\": \"1.0.0\",
+    \"name\": \"bar\",
+    \"description\": \"summary\",
+    \"homepage\": \"http://example.com\",
+    \"repository\": \"http://example.com\",
+    \"keywords\": [\"dummy\", \"test\"],
+    \"categories\": [\"test\"],
+    \"actual_versions\": [
+      { \"id\": 234100,
+        \"num\": \"1.0.0\",
+        \"license\": \"MIT OR Apache-2.0\",
+        \"links\": {
+          \"dependencies\": \"/api/v1/crates/bar/1.0.0/dependencies\"
+        },
+        \"yanked\": false
+      }
+    ]
+  }
+}")
+
+(define test-bar-dependencies
+  "{
+  \"dependencies\": [
+     {
+       \"crate_id\": \"leaf-bob\",
+       \"kind\": \"normal\",
+       \"req\": \"3.0.1\"
+     },
+     {
+       \"crate_id\": \"leaf-bob\",
+       \"kind\": \"dev\",
+       \"req\": \"^3.0.2\"
+     },
+     {
+       \"crate_id\": \"leaf-bob\",
+       \"kind\": \"dev\",
+       \"req\": \"^4.0.0\"
      }
   ]
 }")
@@ -164,6 +222,11 @@
        \"crate_id\": \"leaf-bob\",
        \"kind\": \"normal\",
        \"req\": \"^3\"
+     },
+     {
+       \"crate_id\": \"intermediate-c\",
+       \"kind\": \"dev\",
+       \"req\": \"1\"
      }
   ]
 }")
@@ -262,6 +325,40 @@
   ]
 }")
 
+(define test-intermediate-c-crate
+  "{
+  \"crate\": {
+    \"max_version\": \"1.0.1\",
+    \"name\": \"intermediate-c\",
+    \"description\": \"summary\",
+    \"homepage\": \"http://example.com\",
+    \"repository\": \"http://example.com\",
+    \"keywords\": [\"dummy\", \"test\"],
+    \"categories\": [\"test\"],
+    \"actual_versions\": [
+      { \"id\": 234290,
+        \"num\": \"1.0.1\",
+        \"license\": \"MIT OR Apache-2.0\",
+        \"links\": {
+          \"dependencies\": \"/api/v1/crates/intermediate-c/1.0.1/dependencies\"
+        },
+        \"yanked\": false
+      }
+    ]
+  }
+}")
+
+(define test-intermediate-c-dependencies
+  "{
+  \"dependencies\": [
+     {
+       \"crate_id\": \"leaf-alice\",
+       \"kind\": \"dev\",
+       \"req\": \"0.7.5\"
+     }
+  ]
+}")
+
 (define test-leaf-alice-crate
   "{
   \"crate\": {
@@ -316,6 +413,22 @@
           \"dependencies\": \"/api/v1/crates/leaf-bob/3.0.1/dependencies\"
         },
         \"yanked\": false
+      },
+      { \"id\": 234281,
+        \"num\": \"3.0.2\",
+        \"license\": \"MIT OR Apache-2.0\",
+        \"links\": {
+          \"dependencies\": \"/api/v1/crates/leaf-bob/3.0.2/dependencies\"
+        },
+        \"yanked\": true
+      },
+      { \"id\": 234282,
+        \"num\": \"4.0.0\",
+        \"license\": \"MIT OR Apache-2.0\",
+        \"links\": {
+          \"dependencies\": \"/api/v1/crates/leaf-bob/4.0.0/dependencies\"
+        },
+        \"yanked\": true
       }
     ]
   }
@@ -355,7 +468,7 @@
              ("https://crates.io/api/v1/crates/foo/1.0.3/download"
               (set! test-source-hash
                     (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
               (open-input-string "empty file\n"))
              ("https://crates.io/api/v1/crates/foo/1.0.3/dependencies"
               (open-input-string test-foo-dependencies))
@@ -364,7 +477,7 @@
              ("https://crates.io/api/v1/crates/leaf-alice/0.7.5/download"
               (set! test-source-hash
                     (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
               (open-input-string "empty file\n"))
              ("https://crates.io/api/v1/crates/leaf-alice/0.7.5/dependencies"
               (open-input-string test-leaf-alice-dependencies))
@@ -398,7 +511,7 @@
            (pk 'fail x #f)))))
 
 (unless have-guile-semver? (test-skip 1))
-(test-assert "cargo-recursive-import"
+(test-assert "crate-recursive-import"
   ;; Replace network resources with sample data.
   (mock ((guix http-client) http-fetch
          (lambda (url . rest)
@@ -408,7 +521,7 @@
              ("https://crates.io/api/v1/crates/root/1.0.4/download"
               (set! test-source-hash
                     (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
               (open-input-string "empty file\n"))
              ("https://crates.io/api/v1/crates/root/1.0.4/dependencies"
               (open-input-string test-root-dependencies))
@@ -417,7 +530,7 @@
              ("https://crates.io/api/v1/crates/intermediate-a/1.0.42/download"
               (set! test-source-hash
                     (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
               (open-input-string "empty file\n"))
              ("https://crates.io/api/v1/crates/intermediate-a/1.0.42/dependencies"
               (open-input-string test-intermediate-a-dependencies))
@@ -426,16 +539,25 @@
              ("https://crates.io/api/v1/crates/intermediate-b/1.2.3/download"
               (set! test-source-hash
                     (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
               (open-input-string "empty file\n"))
              ("https://crates.io/api/v1/crates/intermediate-b/1.2.3/dependencies"
               (open-input-string test-intermediate-b-dependencies))
+             ("https://crates.io/api/v1/crates/intermediate-c"
+              (open-input-string test-intermediate-c-crate))
+             ("https://crates.io/api/v1/crates/intermediate-c/1.0.1/download"
+              (set! test-source-hash
+                    (bytevector->nix-base32-string
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+              (open-input-string "empty file\n"))
+             ("https://crates.io/api/v1/crates/intermediate-c/1.0.1/dependencies"
+              (open-input-string test-intermediate-c-dependencies))
              ("https://crates.io/api/v1/crates/leaf-alice"
               (open-input-string test-leaf-alice-crate))
              ("https://crates.io/api/v1/crates/leaf-alice/0.7.5/download"
               (set! test-source-hash
                     (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
               (open-input-string "empty file\n"))
              ("https://crates.io/api/v1/crates/leaf-alice/0.7.5/dependencies"
               (open-input-string test-leaf-alice-dependencies))
@@ -444,7 +566,7 @@
              ("https://crates.io/api/v1/crates/leaf-bob/3.0.1/download"
               (set! test-source-hash
                     (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
+                     (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
               (open-input-string "empty file\n"))
              ("https://crates.io/api/v1/crates/leaf-bob/3.0.1/dependencies"
               (open-input-string test-leaf-bob-dependencies))
@@ -452,7 +574,27 @@
         (match (crate-recursive-import "root")
           ;; rust-intermediate-b has no dependency on the rust-leaf-alice
           ;; package, so this is a valid ordering
-          (((define-public 'rust-leaf-alice-0.7
+          (((define-public 'rust-intermediate-c-1
+              (package
+                (name "rust-intermediate-c")
+                (version "1.0.1")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "intermediate-c" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (arguments
+                 ('quasiquote (#:skip-build? #t)))
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-leaf-alice-0.7
               (package
                 (name "rust-leaf-alice")
                 (version "0.7.5")
@@ -563,7 +705,154 @@
                                 ("rust-leaf-alice"
                                  ('unquote 'rust-leaf-alice-0.7))
                                 ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3)))
+                               #:cargo-development-inputs
+                               (("rust-intermediate-c"
+                                 ('unquote rust-intermediate-c-1))))))
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0)))))
+           #t)
+          (x
+           (pk 'fail x #f)))
+        (match (crate-recursive-import "root"
+                                       #:recursive-dev-dependencies? #t)
+          ;; rust-intermediate-b has no dependency on the rust-leaf-alice
+          ;; package, so this is a valid ordering
+          (((define-public 'rust-intermediate-c-1
+              (package
+                (name "rust-intermediate-c")
+                (version "1.0.1")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "intermediate-c" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (arguments
+                 ('quasiquote (#:cargo-development-inputs
+                               (("rust-leaf-alice"
+                                 ('unquote rust-leaf-alice-0.7))))))
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-leaf-alice-0.7
+              (package
+                (name "rust-leaf-alice")
+                (version "0.7.5")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "leaf-alice" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-leaf-bob-3
+              (package
+                (name "rust-leaf-bob")
+                (version "3.0.1")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "leaf-bob" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-intermediate-b-1
+              (package
+                (name "rust-intermediate-b")
+                (version "1.2.3")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "intermediate-b" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (arguments
+                 ('quasiquote (#:cargo-inputs
+                               (("rust-leaf-bob"
                                  ('unquote rust-leaf-bob-3))))))
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-intermediate-a-1
+              (package
+                (name "rust-intermediate-a")
+                (version "1.0.42")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "intermediate-a" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (arguments
+                 ('quasiquote (#:cargo-inputs
+                               (("rust-intermediate-b"
+                                 ('unquote rust-intermediate-b-1))
+                                ("rust-leaf-alice"
+                                 ('unquote 'rust-leaf-alice-0.7))
+                                ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3))))))
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-root-1
+              (package
+                (name "rust-root")
+                (version "1.0.4")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "root" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (arguments
+                 ('quasiquote (#:cargo-inputs
+                               (("rust-intermediate-a"
+                                 ('unquote rust-intermediate-a-1))
+                                ("rust-intermediate-b"
+                                 ('unquote rust-intermediate-b-1))
+                                ("rust-leaf-alice"
+                                 ('unquote 'rust-leaf-alice-0.7))
+                                ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3)))
+                               #:cargo-development-inputs
+                               (("rust-intermediate-c"
+                                 ('unquote rust-intermediate-c-1))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "summary")
@@ -594,69 +883,209 @@
 
 
 
-(define test-doctool-crate
-  "{
-  \"crate\": {
-    \"max_version\": \"2.2.2\",
-    \"name\": \"leaf-bob\",
-    \"description\": \"summary\",
-    \"homepage\": \"http://example.com\",
-    \"repository\": \"http://example.com\",
-    \"keywords\": [\"dummy\", \"test\"],
-    \"categories\": [\"test\"]
-    \"actual_versions\": [
-      { \"id\": 234280,
-        \"num\": \"2.2.2\",
-        \"license\": \"MIT OR Apache-2.0\",
-        \"links\": {
-          \"dependencies\": \"/api/v1/crates/doctool/2.2.2/dependencies\"
-        },
-        \"yanked\": false
-      }
-    ]
-  }
-}")
+(define rust-leaf-bob-3
+  (package
+    (name "rust-leaf-bob")
+    (version "3.0.1")
+    (source #f)
+    (build-system #f)
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
 
-;; FIXME: This test depends on some existing packages
-(define test-doctool-dependencies
-  "{
-  \"dependencies\": [
-     {
-       \"crate_id\": \"docopt\",
-       \"kind\": \"normal\",
-       \"req\": \"^0.8.1\"
-     }
-  ]
-}")
-
-
-(test-assert "self-test: rust-docopt 0.8.x is gone, please adjust the test case"
-  (not (null? (find-packages-by-name "rust-docopt" "0.8"))))
+(define rust-leaf-bob-3.0.2-yanked
+  (package
+    (name "rust-leaf-bob")
+    (version "3.0.2")
+    (source #f)
+    (properties '((crate-version-yanked? . #t)))
+    (build-system #f)
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
 
 (unless have-guile-semver? (test-skip 1))
-(test-assert "cargo-recursive-import-hoors-existing-packages"
-  (mock ((guix http-client) http-fetch
-         (lambda (url . rest)
-           (match url
-             ("https://crates.io/api/v1/crates/doctool"
-              (open-input-string test-doctool-crate))
-             ("https://crates.io/api/v1/crates/doctool/2.2.2/download"
-              (set! test-source-hash
-                    (bytevector->nix-base32-string
-                     (sha256 (string->bytevector "empty file\n" "utf-8"))))
-              (open-input-string "empty file\n"))
-             ("https://crates.io/api/v1/crates/doctool/2.2.2/dependencies"
-              (open-input-string test-doctool-dependencies))
-             (_ (error "Unexpected URL: " url)))))
-        (match (crate-recursive-import "doctool")
-          (((define-public 'rust-doctool-2
+(test-assert "crate-recursive-import-honors-existing-packages"
+  (mock
+   ((gnu packages) find-packages-by-name
+    (lambda* (name #:optional version)
+      (match name
+        ("rust-leaf-bob"
+         (list rust-leaf-bob-3 rust-leaf-bob-3.0.2-yanked))
+        (_ '()))))
+   (mock
+    ((guix http-client) http-fetch
+     (lambda (url . rest)
+       (match url
+         ("https://crates.io/api/v1/crates/bar"
+          (open-input-string test-bar-crate))
+         ("https://crates.io/api/v1/crates/bar/1.0.0/download"
+          (set! test-source-hash
+                (bytevector->nix-base32-string
+                 (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+          (open-input-string "empty file\n"))
+         ("https://crates.io/api/v1/crates/bar/1.0.0/dependencies"
+          (open-input-string test-bar-dependencies))
+         ("https://crates.io/api/v1/crates/leaf-bob"
+          (open-input-string test-leaf-bob-crate))
+         ("https://crates.io/api/v1/crates/leaf-bob/3.0.2/download"
+          (set! test-source-hash
+                (bytevector->nix-base32-string
+                 (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+          (open-input-string "empty file\n"))
+         ("https://crates.io/api/v1/crates/leaf-bob/3.0.2/dependencies"
+          (open-input-string test-leaf-bob-dependencies))
+         ("https://crates.io/api/v1/crates/leaf-bob/4.0.0/download"
+          (set! test-source-hash
+                (bytevector->nix-base32-string
+                 (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+          (open-input-string "empty file\n"))
+         ("https://crates.io/api/v1/crates/leaf-bob/4.0.0/dependencies"
+          (open-input-string test-leaf-bob-dependencies))
+         (_ (error "Unexpected URL: " url)))))
+    (match (crate-recursive-import "bar"
+                                   #:allow-yanked? #t)
+      (((define-public 'rust-bar-1
+          (package
+            (name "rust-bar")
+            (version "1.0.0")
+            (source
+             (origin
+               (method url-fetch)
+               (uri (crate-uri "bar" version))
+               (file-name
+                (string-append name "-" version ".tar.gz"))
+               (sha256
+                (base32
+                 (?  string? hash)))))
+            (build-system cargo-build-system)
+            (arguments
+             ('quasiquote (#:cargo-inputs
+                           (("rust-leaf-bob"
+                             ('unquote 'rust-leaf-bob-3)))
+                           #:cargo-development-inputs
+                           (("rust-leaf-bob"
+                             ('unquote 'rust-leaf-bob-3.0.2-yanked))
+                            ("rust-leaf-bob"
+                             ('unquote 'rust-leaf-bob-4.0.0-yanked))))))
+            (home-page "http://example.com")
+            (synopsis "summary")
+            (description "summary")
+            (license (list license:expat license:asl2.0)))))
+       #t)
+      (x
+       (pk 'fail x #f))))))
+
+(unless have-guile-semver? (test-skip 1))
+(test-assert "crate-import-only-yanked-available"
+  (mock
+   ((guix http-client) http-fetch
+    (lambda (url . rest)
+      (match url
+        ("https://crates.io/api/v1/crates/bar"
+         (open-input-string test-bar-crate))
+        ("https://crates.io/api/v1/crates/bar/1.0.0/download"
+         (set! test-source-hash
+               (bytevector->nix-base32-string
+                (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+         (open-input-string "empty file\n"))
+        ("https://crates.io/api/v1/crates/bar/1.0.0/dependencies"
+         (open-input-string test-bar-dependencies))
+        ("https://crates.io/api/v1/crates/leaf-bob"
+         (open-input-string test-leaf-bob-crate))
+        ("https://crates.io/api/v1/crates/leaf-bob/3.0.1/download"
+         (set! test-source-hash
+               (bytevector->nix-base32-string
+                (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+         (open-input-string "empty file\n"))
+        ("https://crates.io/api/v1/crates/leaf-bob/3.0.1/dependencies"
+         (open-input-string test-leaf-bob-dependencies))
+        ("https://crates.io/api/v1/crates/leaf-bob/3.0.2/download"
+         (set! test-source-hash
+               (bytevector->nix-base32-string
+                (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+         (open-input-string "empty file\n"))
+        ("https://crates.io/api/v1/crates/leaf-bob/3.0.2/dependencies"
+         (open-input-string test-leaf-bob-dependencies))
+        ("https://crates.io/api/v1/crates/leaf-bob/4.0.0/download"
+         (set! test-source-hash
+               (bytevector->nix-base32-string
+                (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+         (open-input-string "empty file\n"))
+        ("https://crates.io/api/v1/crates/leaf-bob/4.0.0/dependencies"
+         (open-input-string test-leaf-bob-dependencies))
+        (_ (error "Unexpected URL: " url)))))
+        (match (crate-recursive-import "bar"
+                                       #:recursive-dev-dependencies? #t
+                                       #:allow-yanked? #t)
+          (((define-public 'rust-leaf-bob-4.0.0-yanked
               (package
-                (name "rust-doctool")
-                (version "2.2.2")
+                (name "rust-leaf-bob")
+                (version "4.0.0")
+                ($ <comment> "; This version was yanked!\n" #t)
                 (source
                  (origin
                    (method url-fetch)
-                   (uri (crate-uri "doctool" version))
+                   (uri (crate-uri "leaf-bob" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (properties ('quote (('crate-version-yanked? . #t))))
+                (build-system cargo-build-system)
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-leaf-bob-3.0.2-yanked
+              (package
+                (name "rust-leaf-bob")
+                (version "3.0.2")
+                ($ <comment> "; This version was yanked!\n" #t)
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "leaf-bob" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (properties ('quote (('crate-version-yanked? . #t))))
+                (build-system cargo-build-system)
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-leaf-bob-3
+              (package
+                (name "rust-leaf-bob")
+                (version "3.0.1")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "leaf-bob" version))
+                   (file-name
+                    (string-append name "-" version ".tar.gz"))
+                   (sha256
+                    (base32
+                     (?  string? hash)))))
+                (build-system cargo-build-system)
+                (home-page "http://example.com")
+                (synopsis "summary")
+                (description "summary")
+                (license (list license:expat license:asl2.0))))
+            (define-public 'rust-bar-1
+              (package
+                (name "rust-bar")
+                (version "1.0.0")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (crate-uri "bar" version))
                    (file-name
                     (string-append name "-" version ".tar.gz"))
                    (sha256
@@ -665,14 +1094,19 @@
                 (build-system cargo-build-system)
                 (arguments
                  ('quasiquote (#:cargo-inputs
-                               (("rust-docopt"
-                                 ('unquote 'rust-docopt-0.8))))))
+                               (("rust-leaf-bob"
+                                 ('unquote 'rust-leaf-bob-3)))
+                               #:cargo-development-inputs
+                               (("rust-leaf-bob"
+                                 ('unquote 'rust-leaf-bob-3.0.2-yanked))
+                                ("rust-leaf-bob"
+                                 ('unquote 'rust-leaf-bob-4.0.0-yanked))))))
                 (home-page "http://example.com")
                 (synopsis "summary")
                 (description "summary")
                 (license (list license:expat license:asl2.0)))))
             #t)
           (x
-           (pk 'fail x #f)))))
+           (pk 'fail (pretty-print-with-comments (current-output-port) x) #f)))))
 
 (test-end "crate")

@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -61,6 +61,9 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
+;;; Copyright © 2024 Alexey Abramov <levenson@mmer.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,6 +116,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
@@ -123,7 +127,11 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -164,11 +172,14 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages telephony)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages upnp)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
@@ -270,13 +281,12 @@ protocols.")
                 "1m29p4bsafzbchnkidyrnglfdf1c9pnq6akkmivi23qdv9kj51dg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))
-                            (string-append "PREFIX="
-                                           (assoc-ref %outputs "out"))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"))
     (home-page "https://librecast.net/lcrq.html")
     (synopsis "Librecast RaptorQ library")
     (description
@@ -341,13 +351,11 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
         (base32 "1rhk80ybd2zranay76z1ysifnnm786lg9kiiijcwv76qy95in9ks"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:configure-flags (list (string-append "--prefix="
-                                              (assoc-ref %outputs "out")))
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:configure-flags #~(list (string-append "--prefix=" #$output))
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:test-target "test"))
     (inputs (list lcrq librecast libsodium libbsd))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
@@ -521,13 +529,12 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
         (base32 "01m0q4n2hy3csbzil8ivjyzb1mh4w9jlh9iiv6z53kasl7aas27i"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:make-flags (let ((target ,(%current-target-system)))
-                      (list ,(string-append "CC="
-                                            (cc-for-target))
-                            (string-append "PREFIX="
-                                           (assoc-ref %outputs "out"))))
-       #:test-target "test"))
+     (list
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"))
     (inputs (list libsodium lcrq libbsd))
     (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
@@ -828,7 +835,7 @@ at the link-layer level.")
              (substitute* "src/supplemental/websocket/CMakeLists.txt"
                (("nng_test\\(wssfile_test\\)") "")))))))
     (native-inputs (list oksh))
-    (inputs (list mbedtls-apache))
+    (inputs (list mbedtls-lts))
     (synopsis "Lightweight messaging library")
     (description "NNG project is a rewrite of the scalability protocols library
 known as libnanomsg, and adds significant new capabilities, while retaining
@@ -1414,39 +1421,50 @@ files contain direct mappings of the abstractions provided by the ØMQ C API.")
     (license license:expat)))
 
 (define-public libnatpmp
-  (package
-    (name "libnatpmp")
-    (version "20230423")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://miniupnp.free.fr/files/"
-                    name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0w7wvf4yi8qv659dg9d3ndqvh3bqhgm21gd135spwhq6hhnfv106"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)) ; no tests
-       #:make-flags
-       (let* ((target ,(%current-target-system))
-              (gcc (if target
-                       (string-append target "-gcc")
-                       "gcc")))
-         (list
-          (string-append "CC=" gcc)
-          (string-append "INSTALLPREFIX=" (assoc-ref %outputs "out"))
-          (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")))))
-    (home-page "http://miniupnp.free.fr/libnatpmp.html")
-    (synopsis "C library implementing NAT-PMP")
-    (description
-     "@code{libnatpmp} is a portable and asynchronous implementation of
+  ;; Install the latest commit as it provides a pkg-config (.pc) file.
+  (let ((base-version "20230423")
+        (commit "6a850fd2bd9b08e6edc886382a1dbae2a7df55ec")
+        (revision "0"))
+    (package
+      (name "libnatpmp")
+      (version (git-version base-version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/miniupnp/libnatpmp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "18hf9a3i3mncl3w80nzi1684iac3by86bv0hgmbm1v2w8gbfjyw0"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-build-system
+              ;; Have CMake install the natpmp_declspec.h missing header file
+              ;; that is referenced by natpmp.h (see:
+              ;; https://github.com/miniupnp/libnatpmp/issues/41).
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("install\\(FILES natpmp.h")
+                   "install(FILES natpmp.h natpmp_declspec.h"))))
+            (add-after 'unpack 'fix-version
+              (lambda _
+                (with-output-to-file "VERSION"
+                  (lambda ()
+                    (display #$base-version))))))))
+      (native-inputs (list which))
+      (home-page "https://miniupnp.tuxfamily.org/libnatpmp.html")
+      (synopsis "C library implementing NAT-PMP")
+      (description
+       "@code{libnatpmp} is a portable and asynchronous implementation of
 the Network Address Translation - Port Mapping Protocol (NAT-PMP)
 written in the C programming language.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public librdkafka
   (package
@@ -1753,23 +1771,23 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.7")
+    (version "4.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0xw7iagh37y02qgzgmb2xf1qagbphv5lpgra8lq3x0pzrc27p7x7"))))
-    (build-system cmake-build-system)
+        (base32 "034cmp6wv6k1gc5zw90z7782cap72j7jvyqn12rl8w9kfi20zga6"))))
+    (build-system qt-build-system)
     (arguments
      (list
       ;; This causes the plugins to register runpaths for the wireshark
       ;; libraries, which would otherwise cause the validate-runpath phase to
       ;; fail.
-      #:configure-flags #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS="
-                                               "-Wl,-rpath=" #$output "/lib")
-                                "-DUSE_qt6=ON")
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath=" #$output "/lib"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -1778,11 +1796,7 @@ of the same name.")
                 (invoke "ctest" "-VV"
                         "-j" (if parallel-tests?
                                  (number->string (parallel-job-count))
-                                 "1")
-                        ;; Skip the suite_extcaps.case_extcaps.test_sdjournal
-                        ;; test as it requires sdjournal (from systemd) and
-                        ;; fails.
-                        "-E" "suite_extcaps")))))))
+                                 "1"))))))))
     (inputs
      (list c-ares
            glib
@@ -1795,7 +1809,7 @@ of the same name.")
            libssh
            libxml2
            lz4
-           lua
+           lua-5.2
            mit-krb5
            `(,nghttp2 "lib")
            minizip
@@ -1806,6 +1820,7 @@ of the same name.")
            qtsvg
            sbc
            snappy
+           speexdsp
            zlib
            `(,zstd "lib")))
     (native-inputs
@@ -1821,7 +1836,7 @@ of the same name.")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of
 network frames.")
-    (home-page "https://www.wireshark.org/")
+    (home-page "https://www.wireshark.org")
     (license license:gpl2+)))
 
 (define-public fping
@@ -2609,6 +2624,45 @@ library remains flexible, portable, and easily embeddable.")
     (home-page "http://enet.bespin.org")
     (license license:expat)))
 
+(define-public enet-moonlight
+  (let ((commit "4cde9cc3dcc5c30775a80da1de87f39f98672a31")
+        (revision "1"))
+    (package
+      (inherit enet)
+      (name "enet")
+      (version (git-version "1.3.17" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/cgutman/enet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "07sr32jy989ja23fwg8bvrq2slgm7bhfw6v3xq7yczbw86c1dndv"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f ;no test suite
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'build-share-lib
+                            (lambda* _
+                              ;;  -DBUILD_SHARED_LIBS=ON not working
+                              (substitute* "CMakeLists.txt"
+                                (("STATIC")
+                                 "SHARED"))))
+                          (replace 'install
+                            (lambda* (#:key outputs source #:allow-other-keys)
+                              (let* ((include (string-append #$output
+                                                             "/include"))
+                                     (lib (string-append #$output "/lib")))
+                                (mkdir-p include)
+                                (mkdir-p lib)
+                                (copy-recursively (string-append source
+                                                                 "/include")
+                                                  include)
+                                (install-file "libenet.so" lib)))))))
+      (native-inputs (list pkg-config)))))
+
 (define-public sslh
   (package
     (name "sslh")
@@ -3382,14 +3436,14 @@ eight bytes) tools
 (define-public asio
   (package
     (name "asio")
-    (version "1.22.2")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asio/asio/"
                            version " (Stable)/asio-" version ".tar.bz2"))
        (sha256
-        (base32 "0v5w9j4a02j2rkc7mrdj3ms0kfpqbgq2ipkixlz2l0p8xs0vfsvp"))))
+        (base32 "0cp2c4v0kz0ln4bays0s3fr1mcxl527ay2lp7s14qbxx38vc5pfh"))))
     (build-system gnu-build-system)
     (inputs
      (list boost openssl))
@@ -3701,61 +3755,103 @@ communication over HTTP.")
     (license license:agpl3+)))
 
 (define-public restinio
-  ;; Temporarily use an unreleased commit, which includes fixes to be able to
-  ;; run the test suite in the resolver-less Guix build environment.
-  (let ((revision "0")
-        (commit "eda471ec3a2815965ca02ec93a1124a342b7601d"))
-    (package
-      (name "restinio")
-      (version (git-version "0.6.18" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Stiffstream/restinio")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0f4w7714r0ic7csgxydw2vzfh35ssk34pns9jycmc08dzc3r7whb"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
-                                  "-DRESTINIO_INSTALL=ON"
-                                  "-DRESTINIO_TEST=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'change-directory
-              (lambda _
-                (chdir "dev"))))))
-      (native-inputs
-       (list catch2
-             clara
-             json-dto))
-      (inputs
-       (list openssl
-             sobjectizer))
-      (propagated-inputs
-       ;; These are all #include'd by restinio's .hpp header files.
-       (list asio
-             fmt
-             http-parser
-             pcre
-             pcre2
-             zlib))
-      (home-page "https://stiffstream.com/en/products/restinio.html")
-      (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
-      (description "RESTinio is a header-only C++14 library that gives you an embedded
+  (package
+    (name "restinio")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06p9gcnzgynsgfxxa1lk58pq5755px7sn00x2xh21qjnspwld1sy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DRESTINIO_INSTALL=ON"
+              "-DRESTINIO_TEST=ON"
+              "-DRESTINIO_DEP_LLHTTP=system"
+              "-DRESTINIO_DEP_FMT=system"
+              "-DRESTINIO_DEP_EXPECTED_LITE=system"
+              "-DRESTINIO_DEP_CATCH2=system"
+              ;; No support to use a system provided so_5
+              ;; (see:
+              ;; https://github.com/Stiffstream/restinio/issues/207).
+              "-DRESTINIO_WITH_SOBJECTIZER=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev")))
+          (add-after 'change-directory 'use-system-catch2
+            ;; It's not currently possible to select a system-provided catch2,
+            ;; so patch the build system (see:
+            ;; https://github.com/Stiffstream/restinio/issues/208).
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(catch2\\)")
+                 "find_package(Catch2 REQUIRED)")))))))
+    (native-inputs
+     (list catch2-3
+           expected-lite
+           json-dto))
+    (inputs
+     (list openssl
+           sobjectizer))
+    (propagated-inputs
+     ;; These are all #include'd by restinio's .hpp header files.
+     (list asio
+           fmt
+           llhttp
+           pcre
+           pcre2
+           zlib))
+    (home-page "https://stiffstream.com/en/products/restinio.html")
+    (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
+    (description "RESTinio is a header-only C++14 library that gives you an embedded
 HTTP/Websocket server.  It is based on standalone version of ASIO
 and targeted primarily for asynchronous processing of HTTP-requests.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
+
+(define-public restinio-0.6
+  (package
+    (inherit restinio)
+    (name "restinio")
+    (version "0.6.19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qrb1qr075r5059w984c4slgpsiwv94j6fmi9naa5l48dbi1p7jz"))))
+    (arguments
+     (list
+      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                "-DRESTINIO_INSTALL=ON"
+                                "-DRESTINIO_TEST=ON"
+                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev"))))))
+    (native-inputs (list catch2 clara json-dto))
+    ;; These are all #include'd by restinio's .hpp header files.
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs restinio)
+       (replace "llhttp" http-parser)))))
 
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.4.12")
+    (version "3.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3764,7 +3860,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yji5pziqxfvyfizk3fn9j59bqlfdwfa1a0y9jjfknb2mmlwwb9w"))))
+                "15jx62fm1frbbvpkxysvvwz1a8d605xi53aacf0bvp4mb1dzpddn"))))
     (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
@@ -3792,6 +3888,14 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (substitute* "tests/Makefile.am"
                 (("\\bdhtrunnertester\\.(h|cpp)\\b")
                  ""))))
+          (add-after 'unupack 'relax-test-timeouts
+            (lambda _
+              ;; At least the 'test_send_json' has been seen to fail
+              ;; non-deterministically, but it seems hard to reproducible that
+              ;; failure.
+              (substitute* "tests/httptester.cpp"
+                (("std::chrono::seconds\\(10)")
+                 "std::chrono::seconds(30)"))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
@@ -3835,8 +3939,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            fmt
            readline))
     (propagated-inputs
-     (list msgpack                      ;included in several installed headers
-           restinio                     ;included in opendht/http.h
+     (list msgpack-cxx                  ;included in several installed headers
+           restinio-0.6                 ;included in opendht/http.h
            ;; The following are listed in the 'Requires.private' field of
            ;; opendht.pc:
            argon2
@@ -3879,6 +3983,61 @@ library (get, put, etc.) with text values.
 A very simple IM client working over the DHT.
 @end table")
     (license license:gpl3+)))
+
+(define-public dhtnet
+  ;; There is no tag nor release; use the latest available commit.
+  (let ((revision "1")
+        (commit "41848a2c770d7eb0940d731014b81643f85e0d07"))
+    (package
+      (name "dhtnet")
+      ;; The base version is taken from the CMakeLists.txt file.
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/savoirfairelinux/dhtnet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "18v2pjrxfrd26p2z27s90marx7b593nz1xwi47lnp2ja7lm1pj4m"))))
+      (outputs (list "out" "debug"))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DBUILD_DEPENDENCIES=OFF"
+                                  "-DBUILD_SHARED_LIBS=ON"
+                                  "-DBUILD_TESTING=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'delete-problematic-tests
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  ;; The connectionManager test currently segfaults (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/18).
+                  ((".*tests_connectionManager.*") "")
+                  ;; The fileutils test fail, asserting an unexpected returned
+                  ;; value for the removeAll call when the directory to be
+                  ;; removed is missing (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/17).
+                  ((".*tests_fileutils.*") "")))))))
+      (native-inputs (list cppunit pkg-config))
+      ;; This library depends on the Jami fork of pjproject that adds ICE
+      ;; support.
+      (inputs
+       (list asio
+             fmt
+             msgpack-cxx
+             opendht
+             libupnp
+             pjproject-jami
+             readline
+             yaml-cpp))
+      (home-page "https://github.com/savoirfairelinux/dhtnet/")
+      (synopsis "OpenDHT network library for C++")
+      (description "The @code{dhtnet} is a C++ library providing abstractions
+for interacting with an OpenDHT distributed network.")
+      (license license:gpl3+))))
 
 (define-public frrouting
   (package
@@ -3937,7 +4096,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "2.8")
+    (version "2.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3946,10 +4105,10 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bpksqyaqr624bj7zm9hi22rnp6wnjbngx4q08l7lbd0r7r93vcb"))))
+                "199pcs20054xhp5c0dnxf9ny5cf5cynkqpx68dpn46nq8ly76n2y"))))
     (build-system gnu-build-system)
     (inputs
-     (list dbus ell (package-source ell) readline))
+     (list dbus ell (package-source ell) openresolv readline))
     (native-inputs
      (list autoconf
            automake
@@ -3959,38 +4118,45 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
            python-docutils
            openssl))
     (arguments
-     `(#:configure-flags
-       ,#~(list "--disable-systemd-service"
-                "--enable-external-ell"
-                "--enable-hwsim"
-                "--enable-tools"
-                "--enable-wired"
-                "--localstatedir=/var"
-                (string-append "--with-dbus-datadir=" #$output "/share/")
-                (string-append "--with-dbus-busdir="
-                               #$output "/share/dbus-1/system-services"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'copy-ell-header-files
-           ;; Copy into the source tree two of ell's private header files that
-           ;; it shares with iwd, as is required to build with the
-           ;; "--enable-external-ell" configure option.
-           ;; See the definition of "ell_shared" in iwd's Makefile.am.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ell-header-dir (search-input-directory inputs "/ell"))
-                   (target-dir "ell"))
-               (mkdir target-dir)
-               (for-each
-                (lambda (file-name)
-                  (copy-file (string-append ell-header-dir "/" file-name)
-                             (string-append target-dir "/" file-name)))
-                '("asn1-private.h" "useful.h")))))
-         (add-after 'configure 'patch-Makefile
-           (lambda _
-             (substitute* "Makefile"
-               ;; Don't try to 'mkdir /var'.
-               (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
-    (home-page "https://git.kernel.org/pub/scm/network/wireless/iwd.git/")
+     (list #:configure-flags
+           #~(list "--disable-systemd-service"
+                   "--enable-external-ell"
+                   "--enable-hwsim"
+                   "--enable-tools"
+                   "--enable-wired"
+                   "--localstatedir=/var"
+                   (string-append "--with-dbus-datadir=" #$output "/share/")
+                   (string-append "--with-dbus-busdir="
+                                  #$output "/share/dbus-1/system-services"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-ell-header-files
+                 ;; Copy into the source tree two of ell's private header files
+                 ;; that it shares with iwd, as is required to build with the
+                 ;; "--enable-external-ell" configure option.  See the
+                 ;; definition of "ell_shared" in iwd's Makefile.am.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((ell-header-dir (search-input-directory inputs "/ell"))
+                         (target-dir "ell"))
+                     (mkdir target-dir)
+                     (for-each
+                      (lambda (file-name)
+                        (copy-file (string-append ell-header-dir "/" file-name)
+                                   (string-append target-dir "/" file-name)))
+                      '("asn1-private.h" "useful.h")))))
+               (add-after 'unpack 'patch-resolvconf-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/resolve.c"
+                     (("getenv\\(\"PATH\"\\)")
+                      (format #f "\"~a\""
+                              (dirname (search-input-file
+                                        inputs "sbin/resolvconf")))))))
+               (add-after 'configure 'patch-Makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     ;; Don't try to 'mkdir /var'.
+                     (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
+    (home-page "https://iwd.wiki.kernel.org/")
     (synopsis "iNet Wireless Daemon")
     (description "iwd is a wireless daemon for Linux that aims to replace WPA
 Supplicant.  It optimizes resource utilization by not depending on any external
@@ -4385,7 +4551,7 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.0.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
@@ -4393,9 +4559,15 @@ network.")
                            "releases/download/v" version "/"
                            "ngtcp2-" version ".tar.xz"))
        (sha256
-        (base32 "0l84hnj9n4bfxjizgmqsqbz71jx7m00a7l1z43fg5ls3apx9ij11"))))
+        (base32 "16qkik9185ygkr351a7q59l1rv6dzw51j4f7vkzfvzh385kqdqy3"))))
     (build-system gnu-build-system)
-    (native-inputs (list cunit))
+    (arguments
+     (list
+      #:configure-flags
+      ;; openssl package does not support QUIC interface, so just gnutls
+      #~(list "--with-gnutls")))
+    (native-inputs (list pkg-config))
+    (inputs (list gnutls))
     (home-page "https://nghttp2.org/ngtcp2/")
     (synopsis "QUIC protocol implementation")
     (description
@@ -4406,7 +4578,7 @@ QUIC protocol.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.5.2")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)
@@ -4417,7 +4589,7 @@ QUIC protocol.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ahgb94s30sq1wwyc8h53mjj3j43ifr0aanj8262rsm6rqk04kzq"))
+        (base32 "0yzgs4b0q945ygrqlc5hnmh78awl5p35azx83fz61bzfg20d52b4"))
       (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
@@ -4498,6 +4670,91 @@ IPv6 Internet connectivity - it also works over IPv4.")
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
 
+(define-public nebula
+  (package
+    (name "nebula")
+    (version "1.8.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/slackhq/nebula")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ly1axgmskrkmxhzymqis6gxf2wd7rvhycm94wfb8k0hirndvg5m"))
+              ;; Remove windows-related binary blobs and files
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "dist/windows")
+                   (delete-file-recursively "wintun")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/slackhq/nebula"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              ;; Suggested option to provide build time flags is not supported
+              ;; in Guix for go-build-system.
+              ;; -ldflags "-X main.Build=SOMEVERSION"
+              (substitute* (string-append "src/" import-path "/cmd/nebula/main.go")
+                (("Version: ")
+                 (string-append "Version: " #$version)))
+              ;; Build nebula and nebula-cert
+              (let* ((dir "github.com/slackhq/nebula")
+                     (nebula-cmd (string-append dir "/cmd/nebula"))
+                     (cert-cmd (string-append dir "/cmd/nebula-cert")))
+                (invoke "go" "build" nebula-cmd)
+                (invoke "go" "build" cert-cmd))))
+          (replace 'install
+            (lambda _
+              (let* ((out #$output)
+                     (bindir (string-append out "/bin")))
+                (install-file "nebula" bindir)
+                (install-file "nebula-cert" bindir)))))))
+    (inputs
+     (list go-dario-cat-mergo
+           go-github-com-anmitsu-go-shlex
+           go-github-com-armon-go-radix
+           go-github-com-cespare-xxhash
+           go-github-com-cyberdelia-go-metrics-graphite
+           go-github-com-flynn-noise
+           go-github-com-gogo-protobuf
+           go-github-com-google-gopacket
+           go-github-com-miekg-dns
+           go-github-com-nbrownus-go-metrics-prometheus
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-procfs
+           go-github-com-rcrowley-go-metrics
+           go-github-com-sirupsen-logrus
+           go-github-com-skip2-go-qrcode
+           go-github-com-songgao-water
+           go-github-com-stretchr-testify
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2
+           go-netlink
+           go-netns))
+    (home-page "https://github.com/slackhq/nebula")
+    (synopsis "Scalable, peer-to-peer overlay networking tool")
+    (description
+     "Nebula is a peer-to-peer networking tool based on the
+@url{https://noiseprotocol.org/, Noise Protocol Framework}.  It is not a fully
+decentralized network, but instead uses central discovery nodes and a
+certificate authority to facilitate direct, encrypted peer-to-peer connections
+from behind most firewalls and @acronym{NAT, Network Address Translation}
+layers.")
+    (license license:expat)))
+
 (define-public netdiscover
   (package
    (name "netdiscover")
@@ -4529,7 +4786,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public phantomsocks
   (package
     (name "phantomsocks")
-    (version "0.0.0-20231031033204-8b0ac27fc450")
+    (version "0.0.0-20240125140126-2576269ca69a")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4538,10 +4795,10 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q4i8pgj6hzry9wzlczx729dmmgqdqfb26rfaim2ngmp1dyy9drl"))))
+                "1kbcr6580a9pi0a3wssnfr3mnxqq2k9w1fg4khikn82lqaljab2f"))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.20
+     (list #:go go-1.21
            #:install-source? #f
            #:import-path "github.com/macronut/phantomsocks"
            #:build-flags #~'("-tags" #$(if (target-linux?)
@@ -4606,6 +4863,7 @@ Transfer Protocol} and older @acronym{SCP, Secure Copy Protocol}
 implementations.")
     (home-page "https://www.chiark.greenend.org.uk/~sgtatham/putty/")
     (license license:expat)))
+
 
 (define-public vnstat
   (package

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -83,7 +83,9 @@
   #:use-module ((gnu build file-systems)
                 #:select (mount-flags->bit-mask
                           swap-space->flags-bit-mask))
+  #:autoload   (guix channels) (%default-channels channel->code)
   #:use-module (guix gexp)
+  #:use-module ((guix packages) #:select (package-version))
   #:use-module (guix records)
   #:use-module (guix modules)
   #:use-module (guix pki)
@@ -154,11 +156,15 @@
             udev-configuration
             udev-configuration?
             udev-configuration-rules
+            udev-configuration-hardware
             udev-service-type
             udev-service  ; deprecated
             udev-rule
+            udev-hardware
             file->udev-rule
+            file->udev-hardware
             udev-rules-service
+            udev-hardware-service
 
             login-configuration
             login-configuration?
@@ -211,6 +217,7 @@
             guix-configuration-use-substitutes?
             guix-configuration-substitute-urls
             guix-configuration-generate-substitute-key?
+            guix-configuration-channels
             guix-configuration-extra-options
             guix-configuration-log-file
             guix-configuration-environment
@@ -1740,6 +1747,31 @@ archive' public keys, with GUIX."
         ;; Installed the declared ACL.
         (symlink #+default-acl acl-file))))
 
+(define (install-channels-file channels)
+  "Return a gexp with code to install CHANNELS, a list of channels, in
+/etc/guix/channels.scm."
+  (define channels-file
+    (scheme-file "channels.scm"
+                 `(list ,@(map channel->code channels))))
+
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+
+        ;; If channels.scm already exists, move it out of the way. Create a
+        ;; backup if it's a regular file: it's likely that the user
+        ;; manually defined it.
+        (if (file-exists? "/etc/guix/channels.scm")
+            (if (and (symbolic-link? "/etc/guix/channels.scm")
+                     (store-file-name? (readlink "/etc/guix/channels.scm")))
+                (delete-file "/etc/guix/channels.scm")
+                (rename-file "/etc/guix/channels.scm"
+                             "/etc/guix/channels.scm.bak"))
+            (mkdir-p "/etc/guix"))
+
+        ;; Installed the declared channels.
+        (symlink #+channels-file "/etc/guix/channels.scm"))))
+
 (define %default-authorized-guix-keys
   ;; List of authorized substitute keys.
   (list (file-append guix "/share/guix/berlin.guix.gnu.org.pub")
@@ -1795,6 +1827,8 @@ archive' public keys, with GUIX."
                     (default %default-substitute-urls))
   (generate-substitute-key? guix-configuration-generate-substitute-key?
                             (default #t))         ;Boolean
+  (channels         guix-configuration-channels ;file-like
+                    (default %default-channels))
   (chroot-directories guix-configuration-chroot-directories ;list of file-like/strings
                       (default '()))
   (max-silent-time  guix-configuration-max-silent-time ;integer
@@ -1988,7 +2022,7 @@ proxy of 'guix-daemon'...~%")
 (define (guix-activation config)
   "Return the activation gexp for CONFIG."
   (match-record config <guix-configuration>
-    (guix generate-substitute-key? authorize-key? authorized-keys)
+    (guix generate-substitute-key? authorize-key? authorized-keys channels)
     #~(begin
         ;; Assume that the store has BUILD-GROUP as its group.  We could
         ;; otherwise call 'chown' here, but the problem is that on a COW overlayfs,
@@ -2004,6 +2038,9 @@ proxy of 'guix-daemon'...~%")
         #$(if authorize-key?
               (substitute-key-authorization authorized-keys guix)
               #~#f)
+
+        ;; ... and /etc/guix/channels.scm...
+        #$(and channels (install-channels-file channels))
 
         ;; ... and /etc/guix/machines.scm.
         #$(if (guix-build-machines config)
@@ -2174,15 +2211,10 @@ raise a deprecation warning if the 'compression-level' field was used."
 
              ;; Use lazy socket activation unless ADVERTISE? is true: in that
              ;; case the process should start right away to advertise itself.
-             (start #~(if (and (defined? 'make-systemd-constructor) ;> 0.9.0?
-                               #$(not advertise?))
-                          (make-systemd-constructor
-                           #$command #$endpoints #$@options)
-                          (make-forkexec-constructor #$command #$@options)))
-             (stop #~(if (and (defined? 'make-systemd-destructor)
-                              #$(not advertise?))
-                         (make-systemd-destructor)
-                         (make-kill-destructor))))))))
+             (start #~(make-systemd-constructor
+                       #$command #$endpoints #$@options
+                       #:lazy-start? #$(not advertise?)))
+             (stop #~(make-systemd-destructor)))))))
 
 (define %guix-publish-accounts
   (list (user-group (name "guix-publish") (system? #t))
@@ -2241,11 +2273,13 @@ command that allows you to share pre-built binaries with others over HTTP.")))
   (udev   udev-configuration-udev                 ;file-like
           (default eudev))
   (rules  udev-configuration-rules                ;list of file-like
-          (default '())))
+          (default '()))
+  (hardware  udev-configuration-hardware          ;list of file-like
+             (default '())))
 
-(define (udev-rules-union packages)
-  "Return the union of the @code{lib/udev/rules.d} directories found in each
-item of @var{packages}."
+(define (udev-configurations-union subdirectory packages)
+  "Return the union of the lib/udev/SUBDIRECTORY directories found in each
+item of PACKAGES."
   (define build
     (with-imported-modules '((guix build union)
                              (guix build utils))
@@ -2256,50 +2290,63 @@ item of @var{packages}."
                        (srfi srfi-26))
 
           (define %standard-locations
-            '("/lib/udev/rules.d" "/libexec/udev/rules.d"))
+            '(#$(string-append "/lib/udev/" subdirectory)
+                #$(string-append "/libexec/udev/" subdirectory)))
 
-          (define (rules-sub-directory directory)
-            ;; Return the sub-directory of DIRECTORY containing udev rules, or
-            ;; #f if none was found.
+          (define (configuration-sub-directory directory)
+            ;; Return the sub-directory of DIRECTORY containing udev
+            ;; configurations, or #f if none was found.
             (find directory-exists?
                   (map (cut string-append directory <>) %standard-locations)))
 
           (union-build #$output
-                       (filter-map rules-sub-directory '#$packages)))))
+                       (filter-map configuration-sub-directory '#$packages)))))
 
-  (computed-file "udev-rules" build))
+  (computed-file (string-append "udev-" subdirectory) build))
+
+(define (udev-rules-union packages)
+  "Return the union of the lib/udev/rules.d directories found in each
+item of PACKAGES."
+  (udev-configurations-union "rules.d" packages))
+
+(define (udev-configuration-file subdirectory file-name contents)
+  "Return a directory with a udev configuration file FILE-NAME containing CONTENTS."
+  (file->udev-configuration-file subdirectory file-name (plain-file file-name contents)))
 
 (define (udev-rule file-name contents)
   "Return a directory with a udev rule file FILE-NAME containing CONTENTS."
+  (udev-configuration-file "rules.d" file-name contents))
+
+(define (udev-hardware file-name contents)
+  "Return a directory with a udev hardware file FILE-NAME containing CONTENTS."
+  (udev-configuration-file "hwdb.d" file-name contents))
+
+(define (file->udev-configuration-file subdirectory file-name file)
+  "Return a directory with a udev configuration file FILE-NAME which is a copy
+ of FILE."
   (computed-file file-name
                  (with-imported-modules '((guix build utils))
                    #~(begin
                        (use-modules (guix build utils))
 
-                       (define rules.d
-                         (string-append #$output "/lib/udev/rules.d"))
+                       (define configuration-directory
+                         (string-append #$output
+                                        "/lib/udev/"
+                                        #$subdirectory))
 
-                       (mkdir-p rules.d)
-                       (call-with-output-file
-                           (string-append rules.d "/" #$file-name)
-                         (lambda (port)
-                           (display #$contents port)))))))
+                       (define file-copy-dest
+                         (string-append configuration-directory "/" #$file-name))
+
+                       (mkdir-p configuration-directory)
+                       (copy-file #$file file-copy-dest)))))
 
 (define (file->udev-rule file-name file)
   "Return a directory with a udev rule file FILE-NAME which is a copy of FILE."
-  (computed-file file-name
-                 (with-imported-modules '((guix build utils))
-                   #~(begin
-                       (use-modules (guix build utils))
+  (file->udev-configuration-file "rules.d" file-name file))
 
-                       (define rules.d
-                         (string-append #$output "/lib/udev/rules.d"))
-
-                       (define file-copy-dest
-                         (string-append rules.d "/" #$file-name))
-
-                       (mkdir-p rules.d)
-                       (copy-file #$file file-copy-dest)))))
+(define (file->udev-hardware file-name file)
+  "Return a directory with a udev hardware file FILE-NAME which is a copy of FILE."
+  (file->udev-configuration-file "hwdb.d" file-name file))
 
 (define kvm-udev-rule
   ;; Return a directory with a udev rule that changes the group of /dev/kvm to
@@ -2408,13 +2455,27 @@ item of @var{packages}."
 
 (define (udev-etc config)
   (match-record config <udev-configuration>
-    (udev rules)
+    (udev rules hardware)
+    (let* ((hardware
+            (udev-configurations-union "hwdb.d" (cons* udev hardware)))
+           (hwdb.bin
+            (computed-file
+             "hwdb.bin"
+             (with-imported-modules '((guix build utils))
+               #~(begin
+                   (use-modules (guix build utils))
+                   (setenv "UDEV_HWDB_PATH" #$hardware)
+                   (invoke #+(file-append udev "/bin/udevadm")
+                           "hwdb"
+                           "--update"
+                           "-o" #$output))))))
     `(("udev"
        ,(file-union "udev"
                     `(("udev.conf" ,udev.conf)
                       ("rules.d"
                        ,(udev-rules-union (cons* udev kvm-udev-rule
-                                                 rules)))))))))
+                                                 rules)))
+                      ("hwdb.bin" ,hwdb.bin))))))))
 
 (define udev-service-type
   (service-type (name 'udev)
@@ -2423,12 +2484,15 @@ item of @var{packages}."
                                           udev-shepherd-service)
                        (service-extension etc-service-type udev-etc)))
                 (compose concatenate)           ;concatenate the list of rules
-                (extend (lambda (config rules)
+                (extend (lambda (config extensions)
                           (let ((initial-rules
-                                 (udev-configuration-rules config)))
+                                 (udev-configuration-rules config))
+                                (initial-hardware
+                                 (udev-configuration-hardware config)))
                             (udev-configuration
                              (inherit config)
-                             (rules (append initial-rules rules))))))
+                             (rules (append initial-rules extensions))
+                             (hardware (append initial-hardware extensions))))))
                 (default-value (udev-configuration))
                 (description
                  "Run @command{udev}, which populates the @file{/dev}
@@ -2461,6 +2525,19 @@ instance."
                              (service-extension
                               udev-service-type udev-extension)))
                 (description "This service adds udev rules."))))
+    (service type #f)))
+
+(define (udev-hardware-service name hardware-files)
+  "Return a service that extends udev-service-type with HARDWARE-FILES, named
+NAME-udev-hardware."
+  (let* ((name (symbol-append name '-udev-hardware))
+         (udev-extension (const (list hardware-files)))
+         (type (service-type
+                (name name)
+                (extensions (list
+                             (service-extension
+                              udev-service-type udev-extension)))
+                (description "This service adds udev hardware files."))))
     (service type #f)))
 
 (define (swap-space->shepherd-service-name space)

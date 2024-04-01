@@ -371,7 +371,7 @@ more.")
                        (string-append "-Dprefix=" out)
                        (string-append "-Dman1dir=" out "/share/man/man1")
                        (string-append "-Dman3dir=" out "/share/man/man3")
-                       "-de" "-Dcc=gcc"
+                       "-de" "-Dcc=gcc -std=c90"
                        "-Uinstallusrbinperl"
                        "-Dinstallstyle=lib/perl5"
                        "-Duseshrplib"
@@ -404,8 +404,7 @@ more.")
                (for-each (lambda (dso)
                            (chmod dso #o755))
                          (find-files lib "\\.so$"))))))))
-    (native-inputs
-     (list gcc-5))))
+    (native-inputs '())))
 
 (define-public perl-algorithm-c3
   (package
@@ -927,14 +926,14 @@ compiling the surrounding scope.")
 (define-public perl-b-keywords
   (package
     (name "perl-b-keywords")
-    (version "1.22")
+    (version "1.26")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/R/RU/RURBAN/B-Keywords-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0i2ksp0w9wv1qc22hrdl3k48cww64syhmv8zf6x0kgyd4081hr56"))))
+        (base32 "0d7dgbw3wdaqw8g7nl86q6gqfqsnzg2a9y47vpgb0zr65xfibaid"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/B-Keywords")
     (synopsis "Lists of reserved barewords and symbol names")

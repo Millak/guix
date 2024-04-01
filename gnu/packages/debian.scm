@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
@@ -87,7 +89,7 @@ contains the archive keys used for that.")
 (define-public debian-ports-archive-keyring
   (package
     (name "debian-ports-archive-keyring")
-    (version "2023.02.01")
+    (version "2024.01.05")
     (source
       (origin
         (method url-fetch)
@@ -96,7 +98,7 @@ contains the archive keys used for that.")
                             "/debian-ports-archive-keyring_" version ".tar.xz"))
         (sha256
          (base32
-          "1xq7i6plgfbf4drqdmmk1yija48x11jmhnk2av3cajn2cdhkw73s"))))
+          "010yaxc6ngq4ygh7mjyz2bk3w8ialxzya1bqwc7knavaixz9gfpp"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f              ; No test suite.
@@ -146,6 +148,29 @@ contains the archive keys used for that.")
     ;; "The keys in the keyrings don't fall under any copyright."
     (license license:public-domain)))
 
+(define-public trisquel-keyring
+  (package
+    (name "trisquel-keyring")
+    (version "2022.10.19")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://archive.trisquel.info/trisquel/"
+                    "pool/main/t/trisquel-keyring/trisquel-keyring_"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1qkqm3wb945i2izm47xni21hi3ad807bvl106r2mnwdxnjs4ij08"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("keyrings/trisquel-archive-keyring.gpg"
+                         "share/keyrings/"))))
+    (home-page "http://archive.trisquel.info/trisquel/pool/main/t/trisquel-keyring")
+    (synopsis "GnuPG archive keys of the Trisquel archive")
+    (description "The Trisquel distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license license:gpl2+)))     ;; see debian/copyright
+
 (define-public ubuntu-keyring
   (package
     (name "ubuntu-keyring")
@@ -189,7 +214,7 @@ contains the archive keys used for that.")
 (define-public debootstrap
   (package
     (name "debootstrap")
-    (version "1.0.132")
+    (version "1.0.134")
     (source
       (origin
         (method git-fetch)
@@ -198,7 +223,7 @@ contains the archive keys used for that.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1l6mc3i2wqfhmhj85x9qiiqchqp9br6gg54hv1xs08h8xndmfchf"))))
+         (base32 "0k9gi6gn8qlqs81r2q1hx5wfyax3nvpkk450girdra7dh54iidr4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -208,11 +233,10 @@ contains the archive keys used for that.")
            (add-after 'unpack 'patch-source
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let ((debian #$(this-package-input "debian-archive-keyring"))
+                     (trisquel #$(this-package-input "trisquel-keyring"))
                      (ubuntu #$(this-package-input "ubuntu-keyring")))
                  (substitute* "Makefile"
-                   (("/usr") "")
-                   (("-o root -g root") "")
-                   (("chown root.*") "\n"))
+                   (("/usr") ""))
                  (substitute* '("scripts/etch"
                                 "scripts/potato"
                                 "scripts/sarge"
@@ -222,6 +246,11 @@ contains the archive keys used for that.")
                    (("/usr") debian))
                  (substitute* "scripts/gutsy"
                    (("/usr") ubuntu))
+                 (substitute* "scripts/robur"
+                   (("/usr/share/keyrings/trisquel-archive-keyring.gpg")
+                    (string-append
+                     trisquel
+                     "/share/keyrings/trisquel-archive-keyring.gpg")))
                  (substitute* "debootstrap"
                    (("=/usr") (string-append "=" #$output))
                    (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
@@ -229,6 +258,8 @@ contains the archive keys used for that.")
                  (substitute* (find-files "scripts")
                    (("keyring.*(debian-archive-keyring.gpg)"_ keyring)
                     (string-append "keyring " debian "/share/keyrings/" keyring))
+                   (("keyring.*(trisquel-archive-keyring.gpg)" _ keyring)
+                    (string-append "keyring " trisquel "/share/keyrings/" keyring))
                    (("keyring.*(ubuntu-archive-keyring.gpg)" _ keyring)
                     (string-append "keyring " ubuntu "/share/keyrings/" keyring)))
                  ;; Ensure PATH works both in guix and within the debian chroot
@@ -253,11 +284,14 @@ contains the archive keys used for that.")
          #:tests? #f))  ; no tests
     (inputs
      (list debian-archive-keyring
+           trisquel-keyring
            ubuntu-keyring
            bash-minimal
            dpkg
            tzdata
-
+           ;; Needed by dpkg-deb in extract_dpkg_deb_data for at least
+           ;; Trisquel 11 (aramo).
+           zstd
            ;; Called at run-time from various places, needs to be in PATH.
            gnupg
            wget))

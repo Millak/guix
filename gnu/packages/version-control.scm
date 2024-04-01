@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015-2023 Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -50,6 +50,8 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -81,6 +83,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -94,6 +97,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cook)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
@@ -106,8 +110,11 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -823,10 +830,56 @@ on @command{git}, and use any regular Git hosting service.")
 to GitHub contributions calendar.")
     (license license:expat)))
 
-(define-public libgit2
+(define-public xdiff
+  (let ((revision "0")
+        (commit "a137bc7ee6c76618ed1737c257548eaa10ac0089"))
+    (package
+      (name "xdiff")
+      ;; The base version is taken from the CMakeLists.txt file.
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libgit2/xdiff")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rxzpag2pih64qlgq40xg1z6mz0bzvps4baxw7bmykyhjhc2gx75"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:modules '((guix build cmake-build-system)
+                    (guix build utils)
+                    (srfi srfi-26))
+        #:tests? #f                     ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'create-shared-library
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("add_library\\(xdiff STATIC")
+                   "add_library(xdiff SHARED"))))
+            (replace 'install           ;no install target
+              (lambda _
+                (with-directory-excursion "../source"
+                  (for-each (cute install-file <>
+                                  (string-append #$output "/include"))
+                            (list "xdiff.h"
+                                  "git-xdiff.h"))) ;included by xdiff.h
+                (install-file "libxdiff.so"
+                              (string-append #$output "/lib")))))))
+      (home-page "https://github.com/libgit2/xdiff")
+      (synopsis "File differential library used by git")
+      (description "@code{xdiff} is the file differential library used by git,
+which has been extracted into a standalone library for compatibility with
+other git-like projects such as @code{libgit2}.")
+      (license license:lgpl2.1+))))
+
+(define-public libgit2-1.5
   (package
     (name "libgit2")
-    (version "1.5.1")
+    (version "1.5.2")
     (source (origin
               ;; Since v1.1.1, release artifacts are no longer offered (see:
               ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
@@ -837,7 +890,7 @@ to GitHub contributions calendar.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04ypzpicpgq1wh6anwcmjjyh2b854lvjhxq0hq2hbsx7kb14qc1b"))
+                "0v9jdaxmqrzbs9v5vhh2xf5xv9h29q8qqn8vmns279ljx1zav5yd"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -860,8 +913,10 @@ to GitHub contributions calendar.")
                    '()))
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-arm32?)
+         ,@(if (or (target-arm32?) (target-hurd?))
              ;; Some tests are flaky on armhf.
+             ;; On GNU/Hurd, the 'diff/workdir' test in libgit2 1.7.1 fails
+             ;; while comparing st.st_size to zero.
              '((add-before 'check 'pre-check
                  (lambda _
                    (setenv "GITTEST_FLAKY_STAT" "true"))))
@@ -889,10 +944,14 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
+(define-public libgit2
+  ;; Default version of libgit2.
+  libgit2-1.5)
+
 (define-public libgit2-1.7
   (package
     (inherit libgit2)
-    (version "1.7.1")
+    (version "1.7.2")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -902,7 +961,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "1wq6a91k97gbsyafla39yvn1lnr559hqc41ksz1qxv7flf5kyvfx"))
+                "0i95jwrwx4svh5l4dpa5r4a99f813hlm7nzzkbqzmnw4pkyxhlvx"))
               ;; We need to use the bundled xdiff until an option is given
               ;; to use the one from git.
               (modules '((guix build utils)))
@@ -919,7 +978,7 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2-1.6
   (package
     (inherit libgit2)
-    (version "1.6.4")
+    (version "1.6.5")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -929,12 +988,12 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "078jnis7lwzb38ha5lcrs8hzi4br3c8v7c9xaqkvkcaa8nifcvcm"))))))
+                "1v8sndvknsknf0i967qidmz73q9jx928iq7fqqgx3rbwn2g1gn6s"))))))
 
 (define-public libgit2-1.4
   (package
     (inherit libgit2)
-    (version "1.4.5")
+    (version "1.4.6")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -944,7 +1003,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0q754ipc6skagszi93lcy6qr09ibavivm2q5i5fhpdblvlnv2p7x"))))))
+                "0iv7h2fdnlv5vj4dx09w71xbj004hidbpsbgv02gbvlpvsz3jpcf"))))))
 
 (define-public libgit2-1.3
   (package
@@ -1072,8 +1131,8 @@ collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
 
 (define-public cgit
-  (let ((commit "793c420897e18eb3474c751d54cf4e0983f85433")
-        (rev "1"))
+  (let ((commit "8905003cba637e5b18069e625cd4f4c05ac30251")
+        (rev "2"))
     (package
       (name "cgit")
       ;; Update the ‘git-source’ input as well.
@@ -1085,7 +1144,7 @@ collaboration using typical untrusted file hosts or services.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1mhrm14wpqvralf9j33ih5ai6naiq3g2jg2z91gnw9dhh8f9ilwz"))
+                  "1ha8d2n59mv89vv4bqgg3dk82n1rqh8kd8y654vqx7v1v7m645qz"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -1102,7 +1161,7 @@ collaboration using typical untrusted file hosts or services.")
                 (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
                         (assoc-ref inputs "git-source"))))
             (add-after 'unpack 'patch-absolute-file-names
-              (lambda* (#:key inputs #:allow-other-keys)
+              (lambda* (#:key inputs outputs #:allow-other-keys)
                 (define (quoted-file-name input path)
                   (string-append "\"" input path "\""))
                 (substitute* "ui-snapshot.c"
@@ -1114,7 +1173,7 @@ collaboration using typical untrusted file hosts or services.")
                    (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
 
                 (substitute* "filters/about-formatting.sh"
-                  (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
+                  (("\\$\\(dirname \\$0\\)") (string-append (assoc-ref outputs "out")
                                                         "/lib/cgit/filters"))
                   (("\\| tr") (string-append "| " (which "tr"))))
 
@@ -1161,9 +1220,9 @@ collaboration using typical untrusted file hosts or services.")
              (method url-fetch)
              ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
              ;; which may not match the current (package-version git).
-             (uri "mirror://kernel.org/software/scm/git/git-2.43.0.tar.xz")
+             (uri "mirror://kernel.org/software/scm/git/git-2.44.0.tar.xz")
              (sha256
-              (base32 "1v3nkfm3gw8wr7595qy86qla8xyjvi85fmly4lfph4frfcz60ijl"))))
+              (base32 "1qqxd3pdsca6m93lxxkz9s06xs1sq0ah02lhrr0a6pjvrf6p6n73"))))
          ("bash-minimal" ,bash-minimal)
          ("openssl" ,openssl)
          ("python" ,python)
@@ -2841,13 +2900,13 @@ based on a manifest file published by servers.")
 (define-public patatt
   (package
     (name "patatt")
-    (version "0.4.9")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "patatt" version))
        (sha256
-        (base32 "0fpbkmdlnz9s1lakw11jlrzpz4mb6f4dksdiir9g1ppq0g34sy58"))))
+        (base32 "0a0a5ndlnv7dk2smn8algss6q17gbd6mc7yacz17c9cxabv2c24q"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; No tests.
     (propagated-inputs
@@ -2863,26 +2922,42 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.12.3")
+    (version "0.13.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "b4" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/utils/b4/b4.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qpa0ahw1d86mdgs09ykq5pd0lm8083ds6j0knalw757yh31akmn"))))
-    (build-system python-build-system)
+        (base32
+         "1dijszinn00r6d0lxii3jz36h2c23zavbgz1m8finp5v6kaiafcg"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f                  ;no tests
+     (list #:tests? (not (%current-target-system)) ;git path hardcoded.
            #:phases
            #~(modify-phases %standard-phases
                ;; XXX: dnspython attempts to read /etc/resolv.conf when loading
                ;; resolver.py, which breaks the sanity check in dependent
                ;; packages.  This should rather be fixed in dnspython.
-               (delete 'sanity-check))))
+               (delete 'sanity-check)
+               ;; This ensures git is present when called.
+               (add-after 'unpack 'hardcode-git-bin
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (find-files "b4" "\\.py$")
+                     (("\\['git'")
+                      (string-append
+                       "['" (search-input-file inputs "bin/git") "'"))))))))
     (inputs
-     (list python-dkimpy python-dnspython python-requests))
-    (propagated-inputs
-     (list patatt))
+     (list git-filter-repo
+           git-minimal
+           patatt
+           python-dkimpy
+           python-dnspython
+           python-requests))
+    (native-inputs
+     (list python-pytest))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
     (synopsis "Tool for working with patches in public-inbox archives")
     (description
@@ -3572,24 +3647,24 @@ defects faster.")
                (invoke git-exe "config" "--global" "user.name" "GitHub Actions")
                #t)
              #t)))))
-    (native-inputs
-     `(("go-github-com-emirpasic-gods" ,go-github-com-emirpasic-gods)
-       ("go-github-com-go-git-gcfg" ,go-github-com-go-git-gcfg)
-       ("go-github-com-go-git-go-billy" ,go-github-com-go-git-go-billy)
-       ("go-github-com-imdario-mergo" ,go-github-com-imdario-mergo)
-       ("go-github-com-jbenet-go-context" ,go-github-com-jbenet-go-context)
-       ("go-github-com-kevinburke-ssh-config" ,go-github-com-kevinburke-ssh-config)
-       ("go-github-com-mitchellh-go-homedir" ,go-github-com-mitchellh-go-homedir)
-       ("go-github-com-sergi-go-diff" ,go-github-com-sergi-go-diff)
-       ("go-github-com-xanzy-ssh-agentf" ,go-github-com-xanzy-ssh-agent)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-gopkg-in-warnings" ,go-gopkg-in-warnings)
-       ("go-github-com-go-git-go-git-fixtures" ,go-github-com-go-git-go-git-fixtures)
-       ("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)
-       ("go-github-com-alcortesm-tgz" ,go-github-com-alcortesm-tgz)
-       ("go-golang-org-x-text" ,go-golang-org-x-text)
-       ("git" ,git)))
+    (propagated-inputs
+     (list go-github-com-alcortesm-tgz
+           go-github-com-emirpasic-gods
+           go-github-com-go-git-gcfg
+           go-github-com-go-git-go-billy
+           go-github-com-go-git-go-git-fixtures
+           go-github-com-imdario-mergo
+           go-github-com-jbenet-go-context
+           go-github-com-kevinburke-ssh-config
+           go-github-com-mitchellh-go-homedir
+           go-github-com-sergi-go-diff
+           go-github-com-xanzy-ssh-agent
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-text
+           go-gopkg-in-check-v1
+           go-gopkg-in-warnings))
+    (native-inputs (list git))
     (home-page "https://github.com/go-git/")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
@@ -3671,33 +3746,34 @@ If several repos are related, it helps to see their status together.")
                 "155sfmhmh4ia3iinm1s8fk7fxyn5dxdryad9xkbg7mr3i3ikqjwh"))))
     (build-system go-build-system)
     (arguments
-     '(#:install-source? #f
-       #:import-path "github.com/x-motemen/ghq"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-completions
-           (lambda* (#:key outputs import-path #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash-completion (string-append out "/etc/bash_completion.d"))
-                    (zsh-completion (string-append out "/share/zsh/site-functions")))
-               (with-directory-excursion (string-append "src/" import-path)
-                 (mkdir-p bash-completion)
-                 (copy-file "misc/bash/_ghq"
-                            (string-append bash-completion "/ghq"))
-                 (mkdir-p zsh-completion)
-                 (copy-file "misc/zsh/_ghq"
-                            (string-append zsh-completion "/_ghq"))))
-             #t)))))
+     (list
+      #:install-source? #f
+      #:go go-1.21
+      #:import-path "github.com/x-motemen/ghq"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key outputs import-path #:allow-other-keys)
+              (let* ((out #$output)
+                     (bash-completion (string-append out "/etc/bash_completion.d"))
+                     (zsh-completion (string-append out "/share/zsh/site-functions")))
+                (with-directory-excursion (string-append "src/" import-path)
+                  (mkdir-p bash-completion)
+                  (copy-file "misc/bash/_ghq"
+                             (string-append bash-completion "/ghq"))
+                  (mkdir-p zsh-completion)
+                  (copy-file "misc/zsh/_ghq"
+                             (string-append zsh-completion "/_ghq")))))))))
     (native-inputs
-     `(("git" ,git-minimal)))
+     (list git-minimal))
     (inputs
-     `(("github.com/songmu/gitconfig" ,go-github-com-songmu-gitconfig)
-       ("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
-       ("github.com/motemen/go-colorine" ,go-github-com-motemen-go-colorine)
-       ("github.com/saracen/walker" ,go-github-com-saracen-walker)
-       ("github.com/urfave/cli/v2" ,go-github-com-urfave-cli-v2)
-       ("golang.org/x/net/html" ,go-golang-org-x-net-html)
-       ("golang.org/x/sync/errgroup" ,go-golang.org-x-sync-errgroup)))
+     (list go-github-com-songmu-gitconfig
+           go-github-com-mattn-go-isatty
+           go-github-com-motemen-go-colorine
+           go-github-com-saracen-walker
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-net-html
+           go-golang.org-x-sync-errgroup))
     (synopsis "Manage remote repository clones")
     (description
      "@code{ghq} provides a way to organize remote repository clones, like
@@ -3789,25 +3865,64 @@ TkDiff is included for browsing and merging your changes.")
 (define-public git-filter-repo
   (package
     (name "git-filter-repo")
-    (version "2.29.0")
+    (version "2.38.0")
     (source
      (origin
-       ;; Use a release tarball instead of 'git-fetch' because it contains
-       ;; pre-compiled man-pages which are too hard to build in this context
-       ;; as it depends on Git's Makefile.
-       (method url-fetch)
-       (uri (string-append "https://github.com/newren/git-filter-repo/releases/"
-                           "download/v" version
-                           "/git-filter-repo-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/newren/git-filter-repo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "00nn7k9jqrybb762486fmigsnbcn9lbvimgpfvvarz4ikdp9y9pb"))))
-    (build-system copy-build-system)
+         "1al43zpw1mdfy9i05w4xw178abypjwnkk52lqvmbl19lr1l47r4i"))
+       ;; Modified from <https://github.com/newren/git-filter-repo/pull/477>.
+       ;; Used with 'unpack-git-source phase.
+       (patches (search-patches "git-filter-repo-generate-doc.patch"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:install-plan
-       '(("git-filter-repo" "libexec/git-core/")
-         ("Documentation/man1/" "share/man/man1")
-         ("/" "" #:include ()))))
+     (list
+      #:tests? #f                       ;No tests.
+      #:imported-modules
+      `(,@%gnu-build-system-modules
+        (guix build python-build-system))
+      #:modules
+      '((guix build gnu-build-system)
+        ((guix build python-build-system) #:select (site-packages))
+        (guix build utils)
+        (srfi srfi-26))
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              (string-append "VERSION=" #$(package-version this-package)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'unpack-git-source
+            (lambda _
+              (let* ((old-path (getcwd))
+                     (doc-source (string-append old-path "/Documentation")))
+                (mkdir-p "git-source")
+                (chdir "git-source")
+                ((assoc-ref %standard-phases 'unpack)
+                 #:source #+(package-source git))
+                (for-each
+                 (cut install-file <> doc-source)
+                 (find-files "." "asciidoc\\.conf$|manpage.*\\.xsl$"))
+                (chdir old-path)
+                (delete-file-recursively "git-source"))))
+          (add-before 'build 'set-pythondir
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("(pythondir = ).*" _ pre)
+                 (string-append pre (site-packages inputs outputs))))))
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "doc" make-flags))))))
+    (native-inputs
+     (list asciidoc
+           docbook-xsl
+           libxml2                        ;for XML_CATALOG_FILES
+           xmlto))
     (inputs (list python))                ;for the shebang
     (home-page "https://github.com/newren/git-filter-repo")
     (synopsis "Quickly rewrite Git repository history")
@@ -3953,3 +4068,53 @@ file into Darcs, Git, Mercurial, Bazaar, Subversion, or CVS repositories.  It
 comes as a command line app and also an Emacs interface.")
     (home-page "https://porkrind.org/commit-patch/")
     (license license:gpl2+)))
+
+(define-public git-sizer
+  (package
+    (name "git-sizer")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/github/git-sizer")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b4sl4djnfaxwph41y4bh9yal4bpd1nz4403ryp7nzna7h2x0zis"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/github/git-sizer"
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* '("src/github.com/github/git-sizer/git_sizer_test.go")
+               (("bin/git-sizer")
+                (string-append (assoc-ref outputs "out")
+                               "/bin/git-sizer")))))
+         (replace 'check
+           (lambda* (#:key tests? import-path #:allow-other-keys)
+             (when tests?
+               (for-each (lambda (test)
+                           (invoke "go" "test" "-v" "-run" test import-path))
+                         ;; TestExec and TestSubmodule require a copy of the
+                         ;; Git repository.
+                         '("TestBomb" "TestFromSubdir" "TestRefgroups"
+                           "TestRefSelections" "TestTaggedTags"))))))))
+    (native-inputs (list git))
+    (propagated-inputs
+     (list go-github-com-cli-safeexec
+           go-github-com-davecgh-go-spew
+           go-github-com-pmezard-go-difflib
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-go-uber-org-goleak
+           go-golang-org-x-sync
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/github/git-sizer")
+    (synopsis "Analyze size of a Git repo")
+    (description "Compute various size metrics for a Git repository, flagging
+those that might cause problems or inconvenience.")
+    (license license:expat)))

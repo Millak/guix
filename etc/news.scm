@@ -1,6 +1,6 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
@@ -18,6 +18,11 @@
 ;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;; Copyright © 2021, 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
+;; Copyright © 2024 Oleg Pykhalov <go.wigust@gmail.com>
+;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
+;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;; Copyright © 2024 Vivien Kraus <vivien@planete-kraus.eu>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -25,6 +30,215 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "523f3def65ab061a87f4fc9e6f9008e6a78fafb5")
+        (title
+         (en "GNOME updated to version 44 with a more modular desktop service")
+         (de "GNOME auf Version 44 aktualisiert mit modularem Dienst")
+         (fr "Mise à jour de GNOME en version 44 avec un service plus modulaire")
+         (zh "GNOME 44 更新，帶來更加模塊化的桌面服務"))
+        (body
+         (en "The @code{gnome-desktop-service-type} now differentiates between
+shell, utilities, and extra-packages among other fields to bring more structure
+in its configuration.
+
+With the update to GNOME 44, some shell extensions have been deprecated and
+others removed.  If any @code{gnome-shell-extension-@dots{}} package causes
+an error while running your usual update routine, make sure to remove it from
+your profile.")
+         (de "Der Dienst @code{gnome-desktop-service-type} unterscheidet nun
+unter anderem zwischen den Feldern shell, utilities und extra-packages, und
+bringt so etwas mehr Struktur in die Konfiguration.
+
+Mit dem Update zu GNOME 44 wurden einige Erweiterungen als obsolet deklariert
+und andere entfernt.  Falls ein Paket, dessen Name mit
+@code{gnome-shell-extension-} beginnt, zu einem Fehler während Ihrer
+Update-Routine führt, entfernen Sie es von Ihrem Profil.")
+         (fr "Le service @code{gnome-desktop-service-type} sépare
+maintenant les champs @code{shell}, @code{utilities} et @code{extra-
+packages} (entre autres) pour donner plus de structure à sa
+configuration.
+
+Pendant la mise à jour vers GNOME 44, certaines extensions du shell ont
+été dépréciées et d’autres supprimées. Si un paquet nommé
+@code{gnome-shell-extension-@dots{}} émet une erreur quand vous
+effectuez la mise à jour, vous devriez l’enlever de votre profil.")
+         (zh "@code{gnome-desktop-service-type} 設置新增 @code{shell}、
+@code{utilities}、@code{extra-packages} 等字段，使得 GNOME 桌面配置更加模塊化。
+
+隨着 GNOME 44 更新，一些 GNOME Shell 拓展已被棄用或刪除。更新中若有關於
+@code{gnome-shell-extension-@dots{}} 軟件包的錯誤，請將對應軟件包從 profile 中
+刪除。")))
+
+ (entry (commit "06d01c610e3bee61e38a177aecda5982d5b338ae")
+        (title
+         (en "The GNOME Display Manager uses Wayland by default")
+         (de "GNOME Display Manager nutzt nun Wayland als Vorgabe")
+         (fr "GDM utilise Wayland par défaut")
+         (zh "GNOME 顯示管理器（GDM）服務默認啓用 Wayland 支持"))
+        (body
+         (en "The @code{gdm-service-type} is configured to use Wayland instead
+of Xorg by default.")
+         (de "Der Dienst @code{gdm-service-type} verwendet nun Wayland
+als Vorgabe anstelle von Xorg.")
+         (fr "Le service @code{gdm-service-type} est configuré par défaut pour
+utiliser Wayland au lieu de Xorg.")
+         (zh "@code{gdm-service-type} 預設已由 Xorg 改爲 Wayland。")))
+
+ (entry (commit "498db4de1f09414adf68a3a383f0178434035179")
+        (title
+         (en "The udev service also manages hardware configuration files")
+         (de "Udev verwaltet nun auch Hardwarekonfigurationen")
+         (fr "Le service udev gère maintenant les configurations de matériel")
+         (zh "udev 服務現可管理硬件配置文件"))
+        (body
+         (en "The @code{udev-service-type} can now be configured and extended
+with eudev hardware configuration files (named @dfn{hwdb} by the eudev
+project).")
+         (de "Der Udev-Dienst kann nun mit Hardwaredatenbanken (auch als
+@dfn{hwdb} bekannt) konfiguriert und erweitert werden.")
+         (fr "Le type de service @code{udev-service-type} peut maintenant être
+configuré et étendu avec des fichiers de configuration de matériel (appelés
+@dfn{hwdb} par le projet eudev).")
+         (zh "現可使用 eudev 的硬件配置文件（@dfn{hwdb}）設置及拓展
+@code{udev-service-type}。")))
+
+ (entry (commit "ff1251de0bc327ec478fc66a562430fbf35aef42")
+        (title
+         (en "Daemon vulnerability allowing store corruption has been fixed")
+         (de "Schwachstelle im Daemon behoben, durch die der Store verfälscht werden konnte")
+         (fr "Une faille du démon permettant de corrompre le dépôt a été corrigée"))
+        (body
+         (en "A vulnerability in the build daemon, @command{guix-daemon}, was
+identified and fixed.  The vulnerability would allow unprivileged users to
+corrupt the result of @dfn{fixed-output derivations} such as source code
+tarballs and Git checkouts, which in turn could lead to local privilege
+escalation.
+
+This bug is fixed and Guix System users are advised to upgrade their system,
+with a command along the lines of:
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+If you are using Guix on another distro, run @command{info \"(guix) Upgrading
+Guix\"} or visit
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Upgrading-Guix.html} to
+learn how to upgrade Guix.
+
+See @uref{https://issues.guix.gnu.org/69728} for more information on this
+issue.")
+         (de "Eine Sicherheitslücke im Erstellungs-Daemon,
+@command{guix-daemon}, wurde gefunden und geschlossen.  Sie hatte es
+unprivilegierten Nutzern ermöglicht, das Ergebnis einer @dfn{Ableitung mit
+fester Ausgabe}, wie Quellcode-Tarballs und Git-Checkouts, zu manipulieren.
+So war eine lokale Rechteausweitung möglich.
+
+Der Fehler ist behoben und wir raten Nutzern von Guix System, ihr System zu
+aktualisieren mit einem Befehl wie:
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+Wenn Sie Guix auf einer anderen Distribution verwenden, erfahren Sie mit dem
+Befehl @command{info \"(guix.de) Aktualisieren von Guix\"} oder auf
+@uref{https://guix.gnu.org/manual/devel/de/html_node/Aktualisieren-von-Guix.html},
+wie Sie Guix aktualisieren.
+
+Siehe @uref{https://issues.guix.gnu.org/69728} für mehr Informationen zu dem
+Fehler.")
+         (fr "Une faille de sécurité du démon de compilation,
+@command{guix-daemon}, a été identifiée et corrigée.  La faille permettait à
+un·e utilisateur·rice sans privilège de corrompre le résultat d'une
+@dfn{dérivation à sortie fixe} telle qu'une archive ou un @i{checkout} Git, ce
+qui peut ensuite permettre une élévation locale de privilèges.
+
+Ce problème est corrigé et les utilisateur·rices de Guix System sont invité·es
+à mettre à jour leur système avec une commande telle que :
+
+@example
+sudo guix system reconfigure /run/current-system/configuration.scm
+sudo herd restart guix-daemon
+@end example
+
+Pour voir comment mettre à jour Guix sur une autre distribution, lancer
+@command{info \"(guix.fr) Mettre à niveau Guix\"} ou visiter
+@uref{https://guix.gnu.org/manual/devel/fr/html_node/Mettre-a-niveau-Guix.html}.
+
+Voir @uref{https://issues.guix.gnu.org/69728} pour plus d'informations sur
+cette anomalie.")))
+
+ (entry (commit "10a193596368443f441077525ebbddf787d91e4b")
+        (title
+          (en "Linux-libre 4.14 removed due to end of upstream support")
+          (de "Linux-libre 4.14 wurde entfernt"))
+        (body
+          (en "The linux-libre 4.14 kernel series has reached the end of
+             its life, and is no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+          (de "Die @code{linux-libre} 4.14-Versionsreihe hat ihr
+Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
+Versionsreihe aus GNU Guix entfernt worden.")))
+
+ (entry (commit "519e1e3eb88ec532fc83ebb742d9919269b57c87")
+        (title
+         (de "Neue Option @samp{--max-layers=N} für den Befehl @command{guix pack}")
+         (en "New @samp{--max-layers=N} option for the @command{guix pack} command")
+         (ru "Новая опция @samp{--max-layers=N} для @command{guix pack} команды"))
+        (body
+         (de "Sie können jetzt auch mehrschichtige Docker-Abbilder mit dem Befehl
+@command{guix pack --format=docker --max-layers=N} erzeugen. Damit bekommen Sie ein
+Docker-Abbild, bei dem Store-Pfade auf getrennten Schichten („Layer“)
+untergebracht sind, die sich mehrere Abbilder teilen können.  Das Abbild wird
+im Store als gzip-komprimierter Tarball erzeugt.  Hier ist ein einfaches
+Beispiel, wo ein mehrschichtiges Docker-Abbild für das Paket @code{hello}
+angelegt wird:
+
+@example
+guix pack --format=docker --max-layers=N --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+@command{guix system image} kann jetzt geschichtete Docker-Abbilder erzeugen,
+indem Sie @code{--max-layers=N} übergeben.
+
+Siehe @command{info \"(guix.de) Aufruf von guix pack\"} und
+@command{info \"(guix.de) Systemabbilder\"} für weitere Informationen.")
+         (en "Docker layered images can now be produced via the @command{guix
+pack --format=docker --max-layers=N} command, providing a Docker image with
+many of the store paths being on their own layer to improve sharing between
+images.  The image is realized into the GNU store as a gzipped tarball.  Here
+is a simple example that generates a layered Docker image for the @code{hello}
+package:
+
+@example
+guix pack --format=docker --max-layers=N --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+The @command{guix system image} can now produce layered Docker image by passing
+@code{--max-layers=N}.
+
+See @command{info \"(guix) Invoking guix pack\"} and
+@command{info \"(guix) System Images\"} for more information.")
+         (ru "Появилась команда создания многослойных Docker образов с помощью
+@command{guix pack --format=docker --max-layers=N}, которая соберет Docker образ с
+путями в store расположенными на отдельных слоях, ускоряя таким образом
+передачу образов.  Образ будет создан в GNU store в качестве gzipped tarball.
+
+Пример создания Docker layered образ с @code{hello} пакетом:
+@example
+guix pack --format=docker --max-layers=N --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+@command{guix system image} теперь может создавать layered Docker образ путем
+указания опции @option{--max-layers=N}.
+
+Смотрите @command{info \"(guix) Invoking guix pack\"} и
+@command{info \"(guix) System Images\"} для получения более детальных
+сведений.")))
 
  (entry (commit "953c65ffdd43c02c934518fb7a1c68542584b223")
         (title

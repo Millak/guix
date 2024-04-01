@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -54,6 +54,7 @@
             visit-snapshot-url
             visit-status
             visit-number
+            visit-type
             visit-snapshot
 
             snapshot?
@@ -77,6 +78,14 @@
             revision-directory
             lookup-revision
             lookup-origin-revision
+
+            external-id?
+            external-id-value
+            external-id-type
+            external-id-version
+            external-id-target
+            lookup-external-id
+            lookup-directory-by-nar-hash
 
             content?
             content-checksums
@@ -115,6 +124,7 @@
             commit-id?
 
             swh-download-directory
+            swh-download-directory-by-nar-hash
             swh-download))
 
 ;;; Commentary:
@@ -303,6 +313,7 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (url visit-url "origin_visit_url")
   (snapshot-url visit-snapshot-url "snapshot_url" string*) ;string | #f
   (status visit-status "status" string->symbol)   ;'full | 'partial | 'ongoing
+  (type   visit-type "type" string->symbol)       ;'git | 'git-checkout | ...
   (number visit-number "visit"))
 
 ;; <https://archive.softwareheritage.org/api/1/snapshot/4334c3ed4bb208604ed780d8687fe523837f1bd1/>
@@ -382,6 +393,15 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (permissions   directory-entry-permissions "perms")
   (target-url    directory-entry-target-url "target_url"))
 
+;; <https://archive.softwareheritage.org/api/1/extid/doc/>
+(define-json-mapping <external-id> make-external-id external-id?
+  json->external-id
+  (value         external-id-value "extid")
+  (type          external-id-type "extid_type")
+  (version       external-id-version "extid_version")
+  (target        external-id-target)
+  (target-url    external-id-target-url "target_url"))
+
 ;; <https://archive.softwareheritage.org/api/1/origin/save/>
 (define-json-mapping <save-reply> make-save-reply save-reply?
   json->save-reply
@@ -428,7 +448,7 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   json->revision)
 
 (define-query (lookup-directory id)
-  "Return the directory with the given ID."
+  "Return the list of entries of the directory with the given ID."
   (path "/api/1/directory" id)
   json->directory-entries)
 
@@ -436,10 +456,29 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (map json->directory-entry
        (vector->list (json->scm port))))
 
-(define (origin-visits origin)
-  "Return the list of visits of ORIGIN, a record as returned by
-'lookup-origin'."
-  (call (swh-url (origin-visits-url origin))
+(define (lookup-external-id type id)
+  "Return the external ID record for ID, a bytevector, of the given TYPE
+(currently one of: \"bzr-nodeid\", \"hg-nodeid\", \"nar-sha256\",
+\"checksum-sha512\")."
+  (call (swh-url "/api/1/extid" type
+                 (string-append "hex:" (bytevector->base16-string id)))
+        json->external-id))
+
+(define* (lookup-directory-by-nar-hash hash #:optional (algorithm 'sha256))
+  "Return the SWHID of a directory---i.e., prefixed by \"swh:1:dir\"---for the
+directory that with the given HASH (a bytevector), assuming nar serialization
+and use of ALGORITHM."
+  ;; example:
+  ;; https://archive.softwareheritage.org/api/1/extid/nar-sha256/base64url:0jD6Z4TLMm5g1CviuNNuVNP31KWyoT_oevfr8TQwc3Y/
+  (and=> (lookup-external-id (string-append "nar-" (symbol->string algorithm))
+                             hash)
+         external-id-target))
+
+(define* (origin-visits origin #:optional (max 10))
+  "Return the list of the up to MAX latest visits of ORIGIN, a record as
+returned by 'lookup-origin'."
+  (call (string-append (swh-url (origin-visits-url origin))
+                       "?per_page=" (number->string max))
         (lambda (port)
           (map json->visit (vector->list (json->scm port))))))
 
@@ -477,14 +516,20 @@ could not be found."
           (_ #f)))))
 
 (define (branch-target branch)
-  "Return the target of BRANCH, either a <revision> or a <release>."
+  "Return the target of BRANCH: a <revision>, a <release>, or the SWHID of a
+directory."
   (match (branch-target-type branch)
     ('release
      (call (swh-url (branch-target-url branch))
            json->release))
     ('revision
      (call (swh-url (branch-target-url branch))
-           json->revision))))
+           json->revision))
+    ((or 'directory 'alias)
+     (match (string-tokenize (branch-target-url branch)
+                             (char-set-complement (char-set #\/)))
+       ((_ ... "directory" id)
+        (string-append "swh:1:dir:" id))))))
 
 (define (lookup-origin-revision url tag)
   "Return a <revision> corresponding to the given TAG for the repository
@@ -498,31 +543,31 @@ URL could not be found."
   (match (lookup-origin url)
     (#f #f)
     (origin
-      (match (filter (lambda (visit)
-                       ;; Return #f if (visit-snapshot VISIT) would return #f.
-                       (and (visit-snapshot-url visit)
-                            (eq? 'full (visit-status visit))))
-                     (origin-visits origin))
-        ((visit . _)
-         (let ((snapshot (visit-snapshot visit)))
-           (match (and=> (find (lambda (branch)
-                                 (or
-                                  ;; Git specific.
-                                  (string=? (string-append "refs/tags/" tag)
-                                            (branch-name branch))
-                                  ;; Hg specific.
-                                  (string=? tag
-                                            (branch-name branch))))
-                               (snapshot-branches snapshot))
-                         branch-target)
-             ((? release? release)
-              (release-target release))
-             ((? revision? revision)
-              revision)
-             (#f                                  ;tag not found
-              #f))))
-        (()
-         #f)))))
+      (any (lambda (visit)
+             (and (visit-snapshot-url visit)
+                  (eq? 'full (visit-status visit))
+                  (let ((snapshot (visit-snapshot visit)))
+                    (match (and=> (find (lambda (branch)
+                                          (or
+                                           ;; Git specific.
+                                           (string=? (string-append "refs/tags/" tag)
+                                                     (branch-name branch))
+                                           ;; Hg specific.
+                                           (string=? tag
+                                                     (branch-name branch))))
+                                        (snapshot-branches snapshot))
+                                  branch-target)
+                      ((? release? release)
+                       (release-target release))
+                      ((? revision? revision)
+                       revision)
+                      (_
+                       ;; Either the branch points to a directory rather than
+                       ;; a revision (this is the case for visits of type
+                       ;; 'git-checkout, 'hg-checkout, 'tarball-directory,
+                       ;; etc.), or TAG was not found.
+                       #f)))))
+           (origin-visits origin 30)))))
 
 (define (release-target release)
   "Return the revision that is the target of RELEASE."
@@ -583,6 +628,41 @@ directory identifier is deprecated."
         json->vault-reply
         http-post*))
 
+(define* (http-get/follow url
+                          #:key
+                          (verify-certificate? (%verify-swh-certificate?)))
+  "Like 'http-get' but follow redirects (HTTP 30x).  On success, return two
+values: an input port to read the response body and its 'Content-Length'.  On
+failure return #f and #f."
+  (define uri
+    (if (string? url) (string->uri url) url))
+
+  (let loop ((uri uri))
+    (define (resolve-uri-reference target)
+      (if (and (uri-scheme target) (uri-host target))
+          target
+          (build-uri (uri-scheme uri) #:host (uri-host uri)
+                     #:port (uri-port uri)
+                     #:path (uri-path target))))
+
+    (let*-values (((response port)
+                   (http-get* uri #:streaming? #t
+                              #:verify-certificate? verify-certificate?))
+                  ((code)
+                   (response-code response)))
+      (case code
+        ((200)
+         (values port (response-content-length response)))
+        ((301                                     ; moved permanently
+          302                                     ; found (redirection)
+          303                                     ; see other
+          307                                     ; temporary redirection
+          308)                                    ; permanent redirection
+         (close-port port)
+         (loop (resolve-uri-reference (response-location response))))
+        (else
+         (values #f #f))))))
+
 (define* (vault-fetch id
                       #:optional kind
                       #:key
@@ -604,16 +684,11 @@ for a tarball containing a bare Git repository corresponding to a revision."
        (match (vault-reply-status reply)
          ('done
           ;; Fetch the bundle.
-          (let-values (((response port)
-                        (http-get* (swh-url (vault-reply-fetch-url reply))
-                                   #:streaming? #t
-                                   #:verify-certificate?
-                                   (%verify-swh-certificate?))))
-            (if (= (response-code response) 200)
-                port
-                (begin                            ;shouldn't happen
-                  (close-port port)
-                  #f))))
+          (let-values (((port length)
+                        (http-get/follow (swh-url (vault-reply-fetch-url reply))
+                                         #:verify-certificate?
+                                         (%verify-swh-certificate?))))
+            port))
          ('failed
           ;; Upon failure, we're supposed to try again.
           (format log-port "SWH vault: failure: ~a~%"
@@ -740,3 +815,26 @@ wait until it becomes available, which could take several minutes."
              "SWH: revision ~s originating from ~a could not be found~%"
              reference url)
      #f)))
+
+(define* (swh-download-directory-by-nar-hash hash algorithm output
+                                             #:key
+                                             (log-port (current-error-port)))
+  "Download from Software Heritage the directory with the given nar HASH for
+ALGORITHM (a symbol such as 'sha256), and unpack it in OUTPUT.  Return #t on
+success and #f on failure.
+
+This procedure uses the \"vault\", which contains \"cooked\" directories in
+the form of tarballs.  If the requested directory is not cooked yet, it will
+wait until it becomes available, which could take several minutes."
+  (match (lookup-directory-by-nar-hash hash algorithm)
+    (#f
+     (format log-port
+             "SWH: directory with nar-~a hash ~a not found~%"
+             algorithm (bytevector->base16-string hash))
+     #f)
+    (swhid
+     (format log-port "SWH: found directory with nar-~a hash ~a at '~a'~%"
+             algorithm (bytevector->base16-string hash) swhid)
+     (swh-download-archive swhid output
+                           #:archive-type 'flat   ;SWHID denotes a directory
+                           #:log-port log-port))))

@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +38,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -54,6 +55,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
@@ -68,307 +70,33 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20230323.0")
+;;; We use nightlies as stable versions are a bit far in-between, and often
+;;; have bugs anyway.  When the nightly version change, do not forget to
+;;; retrieve the associated daemon submodule commit and update it in
+;;; %jami-daemon-commit variable below.
 
-(define %jami-sources
-  ;; Return an origin object of the tarball release sources archive of the
-  ;; Jami project.
-  (origin
-    (method url-fetch)
-    (uri (string-append "https://dl.jami.net/release/tarballs/jami-"
-                        %jami-version ".tar.gz"))
-    (modules '((guix build utils)))
-    (snippet
-     ;; Delete multiple MiBs of bundled tarballs.  The daemon/contrib
-     ;; directory contains the custom patches for pjproject and other
-     ;; libraries used by Jami.
-     '(delete-file-recursively "daemon/contrib/tarballs"))
-    (sha256
-     (base32
-      "0vjsjr37cb87j9hqbmipyxn4877k1wn3l0vzca3l3ldgknglz7v2"))
-    (patches (search-patches "jami-disable-integration-tests.patch"
-                             "jami-libjami-headers-search.patch"))))
-
-;; Jami maintains a set of patches for some key dependencies (currently
-;; pjproject and ffmpeg) of Jami that haven't yet been integrated upstream.
-;; This procedure simplifies the process of applying them.
-(define jami-apply-custom-patches
-  #~(lambda* (#:key dep-name patches)
-      (let ((patches-directory "patches"))
-        (mkdir-p patches-directory)
-        (invoke "tar" "-xvf" #$%jami-sources
-                "-C" patches-directory
-                "--strip-components=5"
-                "--wildcards"
-                (string-append "jami-*/daemon/contrib/src/" dep-name))
-        (for-each (lambda (f)
-                    (invoke "patch" "--force" "--ignore-whitespace" "-p1" "-i"
-                            (string-append patches-directory "/" f ".patch")))
-                  patches))))
-
-(define-public pjproject-jami
-  (let ((commit "e4b83585a0bdf1523e808a4fc1946ec82ac733d0")
-        (revision "3"))
-    (package
-      (inherit pjproject)
-      (name "pjproject-jami")
-      (version (git-version "2.12" revision commit))
-      (source (origin
-                (inherit (package-source pjproject))
-                ;; The Jami development team regularly issues patches to
-                ;; pjproject to extend the its functionality and fix bugs;
-                ;; they are submitted for inclusion upstream but larger
-                ;; patches take time to be reviewed and merged, hence this
-                ;; forked repository.
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/savoirfairelinux/pjproject")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0gky5idyyqxhqk959lzys5l7x1i925db773lfdpvxxmkmfizdq21"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments pjproject)
-         ((#:phases phases '%standard-phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'apply-patches
-                (lambda _
-                  (#$jami-apply-custom-patches
-                   #:dep-name "pjproject"
-                   #:patches
-                   ;; This adds a config_site.h configuration file that sets
-                   ;; constants such as PJ_ICE_MAX_CAND that cannot be
-                   ;; configured at build time.
-                   '("0009-add-config-site")))))))))))
-
-;; The following variables are configure flags used by ffmpeg-jami.  They're
-;; from the jami/daemon/contrib/src/ffmpeg/rules.mak file.  We try to keep it
-;; as close to the official Jami package as possible, to provide all the
-;; codecs and extra features that are expected (see:
-;; https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak).
-;; An exception are the ffnvcodec-related switches, which is not packaged in
-;; Guix and would not work with Mesa.
-(define %ffmpeg-default-configure-flags
-  '("--disable-everything"
-    "--enable-zlib"
-    "--enable-gpl"
-    "--enable-swscale"
-    "--enable-bsfs"
-    "--disable-filters"
-    "--disable-programs"
-    "--disable-postproc"
-    "--disable-protocols"
-    "--enable-protocol=crypto"
-    "--enable-protocol=file"
-    "--enable-protocol=rtp"
-    "--enable-protocol=srtp"
-    "--enable-protocol=tcp"
-    "--enable-protocol=udp"
-    "--enable-protocol=unix"
-    "--enable-protocol=pipe"
-
-    ;; Enable muxers/demuxers.
-    "--disable-demuxers"
-    "--disable-muxers"
-    "--enable-muxer=rtp"
-    "--enable-muxer=g722"
-    "--enable-muxer=g726"
-    "--enable-muxer=g726le"
-    "--enable-muxer=h263"
-    "--enable-muxer=h264"
-    "--enable-muxer=hevc"
-    "--enable-muxer=matroska"
-    "--enable-muxer=wav"
-    "--enable-muxer=webm"
-    "--enable-muxer=ogg"
-    "--enable-muxer=pcm_s16be"
-    "--enable-muxer=pcm_s16le"
-    "--enable-demuxer=rtp"
-    "--enable-demuxer=mjpeg"
-    "--enable-demuxer=mjpeg_2000"
-    "--enable-demuxer=mpegvideo"
-    "--enable-demuxer=gif"
-    "--enable-demuxer=image_jpeg_pipe"
-    "--enable-demuxer=image_png_pipe"
-    "--enable-demuxer=image_webp_pipe"
-    "--enable-demuxer=matroska"
-    "--enable-demuxer=m4v"
-    "--enable-demuxer=mp3"
-    "--enable-demuxer=ogg"
-    "--enable-demuxer=flac"
-    "--enable-demuxer=wav"
-    "--enable-demuxer=ac3"
-    "--enable-demuxer=g722"
-    "--enable-demuxer=g723_1"
-    "--enable-demuxer=g726"
-    "--enable-demuxer=g726le"
-    "--enable-demuxer=pcm_mulaw"
-    "--enable-demuxer=pcm_alaw"
-    "--enable-demuxer=pcm_s16be"
-    "--enable-demuxer=pcm_s16le"
-    "--enable-demuxer=h263"
-    "--enable-demuxer=h264"
-    "--enable-demuxer=hevc"
-
-    ;; Enable parsers.
-    "--enable-parser=h263"
-    "--enable-parser=h264"
-    "--enable-parser=hevc"
-    "--enable-parser=mpeg4video"
-    "--enable-parser=vp8"
-    "--enable-parser=vp9"
-    "--enable-parser=opus"
-
-    ;; Encoders/decoders.
-    "--enable-encoder=adpcm_g722"
-    "--enable-decoder=adpcm_g722"
-    "--enable-encoder=adpcm_g726"
-    "--enable-decoder=adpcm_g726"
-    "--enable-encoder=adpcm_g726le"
-    "--enable-decoder=adpcm_g726le"
-    "--enable-decoder=g729"
-    "--enable-encoder=g723_1"
-    "--enable-decoder=g723_1"
-    "--enable-encoder=rawvideo"
-    "--enable-decoder=rawvideo"
-    "--enable-encoder=libx264"
-    "--enable-decoder=h264"
-    "--enable-encoder=pcm_alaw"
-    "--enable-decoder=pcm_alaw"
-    "--enable-encoder=pcm_mulaw"
-    "--enable-decoder=pcm_mulaw"
-    "--enable-encoder=mpeg4"
-    "--enable-decoder=mpeg4"
-    "--enable-encoder=libvpx_vp8"
-    "--enable-decoder=vp8"
-    "--enable-decoder=vp9"
-    "--enable-encoder=h263"
-    "--enable-encoder=h263p"
-    "--enable-decoder=h263"
-    "--enable-encoder=mjpeg"
-    "--enable-decoder=mjpeg"
-    "--enable-decoder=mjpegb"
-    "--enable-libspeex"
-    "--enable-libopus"
-    "--enable-libvpx"
-    "--enable-libx264"
-    "--enable-encoder=libspeex"
-    "--enable-decoder=libspeex"
-    "--enable-encoder=libopus"
-    "--enable-decoder=libopus"
-
-    ;; Encoders/decoders for ringtones and audio streaming.
-    "--enable-decoder=flac"
-    "--enable-decoder=vorbis"
-    "--enable-decoder=aac"
-    "--enable-decoder=ac3"
-    "--enable-decoder=eac3"
-    "--enable-decoder=mp3"
-    "--enable-decoder=pcm_u24le"
-    "--enable-decoder=pcm_u32le"
-    "--enable-decoder=pcm_u8"
-    "--enable-decoder=pcm_f16le"
-    "--enable-decoder=pcm_f32le"
-    "--enable-decoder=pcm_f64le"
-    "--enable-decoder=pcm_s16le"
-    "--enable-decoder=pcm_s24le"
-    "--enable-decoder=pcm_s32le"
-    "--enable-decoder=pcm_s64le"
-    "--enable-decoder=pcm_u16le"
-    "--enable-encoder=pcm_u8"
-    "--enable-encoder=pcm_f32le"
-    "--enable-encoder=pcm_f64le"
-    "--enable-encoder=pcm_s16le"
-    "--enable-encoder=pcm_s32le"
-    "--enable-encoder=pcm_s64le"
-
-    ;; Encoders/decoders for images.
-    "--enable-encoder=gif"
-    "--enable-decoder=gif"
-    "--enable-encoder=jpegls"
-    "--enable-decoder=jpegls"
-    "--enable-encoder=ljpeg"
-    "--enable-decoder=jpeg2000"
-    "--enable-encoder=png"
-    "--enable-decoder=png"
-    "--enable-encoder=bmp"
-    "--enable-decoder=bmp"
-    "--enable-encoder=tiff"
-    "--enable-decoder=tiff"
-
-    ;; Filters.
-    "--enable-filter=scale"
-    "--enable-filter=overlay"
-    "--enable-filter=amix"
-    "--enable-filter=amerge"
-    "--enable-filter=aresample"
-    "--enable-filter=format"
-    "--enable-filter=aformat"
-    "--enable-filter=fps"
-    "--enable-filter=transpose"
-    "--enable-filter=pad"))
-
-(define %ffmpeg-linux-configure-flags
-  '("--enable-pic"
-    "--extra-cxxflags=-fPIC"
-    "--extra-cflags=-fPIC"
-    "--target-os=linux"
-    "--enable-indev=v4l2"
-    "--enable-indev=xcbgrab"
-    "--enable-vdpau"
-    "--enable-hwaccel=h264_vdpau"
-    "--enable-hwaccel=mpeg4_vdpau"
-    "--enable-vaapi"
-    "--enable-hwaccel=h264_vaapi"
-    "--enable-hwaccel=mpeg4_vaapi"
-    "--enable-hwaccel=h263_vaapi"
-    "--enable-hwaccel=vp8_vaapi"
-    "--enable-hwaccel=mjpeg_vaapi"
-    "--enable-hwaccel=hevc_vaapi"
-    "--enable-encoder=h264_vaapi"
-    "--enable-encoder=vp8_vaapi"
-    "--enable-encoder=mjpeg_vaapi"
-    "--enable-encoder=hevc_vaapi"))
-
-(define (ffmpeg-compose-configure-flags)
-  "Compose the configure flag lists of ffmpeg-jami."
-  #~(append '#$%ffmpeg-default-configure-flags
-            (if (string-contains #$(%current-system) "linux")
-                '#$%ffmpeg-linux-configure-flags
-                '())))
-
-(define-public ffmpeg-jami
-  (package
-    (inherit ffmpeg)
-    (name "ffmpeg-jami")
-    (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg)
-       ((#:configure-flags _ '())
-        #~(cons* "--disable-static"
-                 "--enable-shared"
-                 "--disable-stripping"
-                 #$(ffmpeg-compose-configure-flags)))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'apply-patches
-              (lambda _
-                ;; These patches come from:
-                ;; "jami-project/daemon/contrib/src/ffmpeg/rules.mak".
-                (#$jami-apply-custom-patches
-                 #:dep-name "ffmpeg"
-                 #:patches '("remove-mjpeg-log"
-                             "change-RTCP-ratio"
-                             "rtp_ext_abs_send_time"
-                             "libopusdec-enable-FEC"
-                             "libopusenc-reload-packet-loss-at-encode"
-                             "screen-sharing-x11-fix"))))))))))
+;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
+;;; to date with those listed in
+;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
+(define %jami-nightly-version "20240124.3")
+(define %jami-daemon-commit "205904ed4dd736b8a0ea6c913ecb91d637b79867")
 
 (define-public libjami
   (package
     (name "libjami")
-    (version %jami-version)
-    (source %jami-sources)
+    (version %jami-nightly-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://review.jami.net/jami-daemon")
+                    (commit %jami-daemon-commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0knq84c5f11bgan0076mhi0kpc7l6wwxj41jpssdy0y1lfzgqd8a"))
+              (patches (search-patches
+                        "libjami-ac-config-files.patch"
+                        "jami-disable-integration-tests.patch"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
@@ -378,13 +106,25 @@
       ;; user scripts too, until more general purpose Scheme bindings are made
       ;; available (see: test/agent/README.md).
       #:configure-flags #~(list "--enable-agent" "--enable-debug")
-      #:make-flags #~(list "V=1")       ;build verbosely
+      #:make-flags
+      #~(list
+         "V=1"                 ;build verbosely
+         ;; The 'ut_media_player' is known to fail (see:
+         ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/935).
+         "XFAIL_TESTS=ut_media_player")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'change-directory/maybe
             (lambda _
               ;; Allow building from the tarball or a git checkout.
               (false-if-exception (chdir "daemon"))))
+          (add-after 'change-directory/maybe 'extend-scheduler-test-timeout
+            (lambda _
+              ;; The ut_scheduler unit test may fail on slower machines (see:
+              ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/939).
+              (substitute* "test/unitTest/scheduler.cpp"
+                (("std::chrono::seconds\\(3)")
+                 "std::chrono::seconds(30)"))))
           (add-after 'install 'delete-static-libraries
             ;; Remove 100+ MiB of static libraries.  "--disable-static" cannot
             ;; be used as the test suite requires access to private symbols
@@ -409,14 +149,14 @@
     (inputs
      (list alsa-lib
            asio
-           dbus-c++
+           dhtnet
            eudev
            ffmpeg-jami
            guile-3.0
            jack-1
            jsoncpp
            libarchive
-           libgit2
+           libgit2-1.6
            libnatpmp
            libsecp256k1
            libupnp
@@ -424,6 +164,7 @@
            openssl
            pjproject-jami
            pulseaudio
+           sdbus-c++
            speex
            speexdsp
            webrtc-audio-processing
@@ -447,18 +188,71 @@ service definitions.")
     (home-page "https://jami.net/")
     (license license:gpl3+)))
 
+;;; Private package; this is used in source form: the project build system has
+;;; no install target.
+(define sortfilterproxymodel
+  ;; Use the latest commit available from the 'qt-6' branch.
+  (let ((commit "6cc21205dbf36640613f0e6e67b2b13b1855c377")
+        (revision "0"))
+    (package
+      (name "sortfilterproxymodel")
+      ;; There are no recent release tag; the module version defined in the
+      ;; source is used (see:
+      ;; https://github.com/oKcerG/SortFilterProxyModel/blob/
+      ;; 5a930885b7ea99f7f41c25fce08bf8006ee54e3f/
+      ;; qqmlsortfilterproxymodel.cpp#L574C15-L574C15).
+      (version (git-version "0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      ;; The upstream is
+                      ;; https://github.com/oKcerG/SortFilterProxyModel, but
+                      ;; it lacks Qt 6 support, so use this fork, which is the
+                      ;; one used by Jami.
+                      (url "https://github.com/atraczyk/SortFilterProxyModel")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n54jkimr3a818i3w7w3lnbqn47x72nnr5xi9vk0mdnbwri3viwy"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase            ;use Qt 6
+             #:tests? #f                ;no test suite
+             #:configure-flags #~(list "BUILD_SFPM_PIC=ON")))
+      (inputs (list qtdeclarative))
+      (home-page "https://github.com/oKcerG/SortFilterProxyModel")
+      (synopsis "Improved QSortFilterProxyModel implementation for QML")
+      (description "SortFilterProxyModel is an implementation of
+QSortFilterProxyModel conveniently exposed for QML.")
+      (license license:expat))))
+
 (define-public jami
   (package
     (name "jami")
-    (version %jami-version)
-    (source %jami-sources)
+    (version %jami-nightly-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://review.jami.net/jami-client-qt")
+                    (commit (string-append "nightly/" %jami-nightly-version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06q4cdizpix12yzjrnhdwqwybskhc58cissffdnf1zw5pbv0mqag"))
+              (patches (search-patches
+                        "jami-libjami-headers-search.patch"
+                        "jami-qml-tests-discovery.patch"
+                        "jami-skip-tests-requiring-internet.patch"
+                        "jami-unbundle-dependencies.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
      (list
       #:qtbase qtbase
       #:configure-flags
-      #~(list "-DENABLE_TESTS=ON"
+      #~(list "-DWITH_DAEMON_SUBMODULE=OFF"
+              "-DENABLE_TESTS=ON"
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.
               "-DWITH_WEBENGINE=OFF"
@@ -467,11 +261,7 @@ service definitions.")
               "-DENABLE_LIBWRAP=ON")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory/maybe
-            (lambda _
-              ;; Allow building from the tarball or a git checkout.
-              (false-if-exception (chdir "client-qt"))))
-          (add-after 'change-directory/maybe 'fix-version-string
+          (add-after 'unpack 'fix-version-string
             (lambda _
               (substitute* "src/app/version.h"
                 (("VERSION_STRING")
@@ -480,6 +270,17 @@ service definitions.")
                  (string-append "const char VERSION_STRING[] = \""
                                 #$version "\";\n"
                                 anchor)))))
+          (add-after 'unpack 'copy-3rdparty-source-dependencies
+            (lambda _
+              (copy-recursively #$(package-source sortfilterproxymodel)
+                                "3rdparty/SortFilterProxyModel")))
+          (add-before 'configure 'fake-x11-environment
+            (lambda _
+              ;; This works around the lack of configuration for the X11
+              ;; push-to-talk feature, which is auto-detected via the
+              ;; XDG_SESSION_TYPE environment variable (see:
+              ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1504).
+              (setenv "XDG_SESSION_TYPE" "x11")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -488,22 +289,13 @@ service definitions.")
                 ;; The tests require a writable HOME.
                 (setenv "HOME" "/tmp")
 
-                (display "Running unittests...\n")
-                (invoke "tests/unittests" "-mutejamid")
+                (display "Running unit tests...\n")
+                (invoke "tests/unit_tests")
 
-                ;; XXX: There are currently multiple failures with the
-                ;; functional tests (see:
-                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/883),
-                ;; so the code below is disabled for now.
-                ;;
+                ;; XXX: The QML test suite fails, exiting with status code 1 (see:
+                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/883).
                 ;; (display "Running functional tests...\n")
-                ;; ;; This is to allow building from the source tarball or
-                ;; ;; directly from the git repository.
-                ;; (let  ((tests-qml (if (file-exists? "../client-qt/tests")
-                ;;                       "../client-qt/tests/qml"
-                ;;                       "../tests/qml")))
-                ;;   (invoke "tests/qml_tests" "-mutejamid"
-                ;;           "-input" tests-qml))
+                ;; (invoke "tests/qml_tests")
                 ))))))
     (native-inputs
      (list googletest
@@ -518,6 +310,7 @@ service definitions.")
            libnotify
            libxcb
            libxkbcommon
+           md4c
            network-manager
            qrencode
            qt5compat
@@ -526,6 +319,7 @@ service definitions.")
            qtnetworkauth
            qtpositioning
            qtsvg
+           tidy-html                    ;used by src/app/htmlparser.h
            vulkan-loader))
     (home-page "https://jami.net")
     (synopsis "Qt Jami client")
@@ -538,8 +332,8 @@ P2P-DHT.")
 
 (define-public jami-docs
   ;; There aren't any tags, so use the latest commit.
-  (let ((revision "1")
-        (commit "ff466ebadb9b99a1672a814126793de670c3099b"))
+  (let ((revision "2")
+        (commit "a48997de84cc4933bd111fa93fbf6a58189b166d"))
     (package
       (name "jami-docs")
       (version (git-version "0.0.0" revision commit))
@@ -551,7 +345,7 @@ P2P-DHT.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1n8a9dk8mi617rk3ycz5jrzbwv9ybfynlci5faz1klckx0aqdf6q"))))
+                  "0a1kcflvk39aag2vk83cn4m0ifkgb3gvwkr8pbbvf0hcd2cj2j31"))))
       (build-system copy-build-system)
       (arguments
        (list

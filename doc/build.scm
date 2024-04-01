@@ -365,7 +365,7 @@ actual file name."
                                                             #:languages
                                                             languages))
                                   (syntax-css-url
-                                   "/static/base/css/code.css"))
+                                   "/themes/initial/css/code.css"))
   "Return a derivation called NAME that processes all the HTML files in INPUT
 to (1) add them a link to SYNTAX-CSS-URL, and (2) highlight the syntax of all
 its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
@@ -624,7 +624,7 @@ its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
                         #:key
                         (languages %languages)
                         (manual %manual)
-                        (manual-css-url "/static/base/css/manual.css"))
+                        (manual-css-url "/themes/initial/css/manual.css"))
   "Process all the HTML files in INPUT; add them MANUAL-CSS-URL as a <style>
 link, and add a menu to choose among LANGUAGES.  Use the Guix PO files found
 in SOURCE."
@@ -741,7 +741,7 @@ in SOURCE."
                             (list (menu-dropdown
                                    #:label
                                    `(img (@ (alt "Language")
-                                            (src "/static/base/img/language-picker.svg")))
+                                            (src "/themes/initial/img/language-picker.svg")))
                                    #:items
                                    (language-menu-items file)))
                             #:split-node? split-node?)
@@ -1141,16 +1141,16 @@ must be the Guix top-level source directory, from which PO files are taken."
                     ;; Menu prefetch.
                     (link (@ (rel "prefetch") (href ,(guix-url "menu/index.html"))))
                     ;; Base CSS.
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/elements.css"))))
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/common.css"))))
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/messages.css"))))
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/navbar.css"))))
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/breadcrumbs.css"))))
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/buttons.css"))))
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/footer.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/elements.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/common.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/messages.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/navbar.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/breadcrumbs.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/buttons.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/footer.css"))))
 
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/page.css"))))
-                    (link (@ (rel "stylesheet") (href ,(guix-url "static/base/css/post.css")))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/page.css"))))
+                    (link (@ (rel "stylesheet") (href ,(guix-url "themes/initial/css/post.css")))))
                    (body
                     (header (@ (class "navbar"))
                             (h1 (a (@ (class "branding")

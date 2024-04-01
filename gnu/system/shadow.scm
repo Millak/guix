@@ -64,6 +64,13 @@
                user-group-system?)
 
   #:export (%default-bashrc
+            %default-bash-profile
+            %default-zprofile
+            %default-xdefaults
+            %default-gdbinit
+            %default-nanorc
+            %default-dotguile
+            %default-skeleton-home-config
             default-skeletons
             skeleton-directory
             %base-groups
@@ -147,11 +154,8 @@ alias ll='ls -l'
 alias grep='grep --color=auto'
 alias ip='ip -color=auto'\n"))
 
-(define (default-skeletons)
-  "Return the default skeleton files for /etc/skel.  These files are copied by
-'useradd' in the home directory of newly created user accounts."
-
-  (let ((profile (plain-file "bash_profile" "\
+(define %default-bash-profile
+  (plain-file "bash_profile" "\
 # Set up Guix Home profile
 if [ -f ~/.profile ]; then . ~/.profile; fi
 
@@ -161,31 +165,30 @@ if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
 # Merge search-paths from multiple profiles, the order matters.
 eval \"$(guix package --search-paths \\
 -p $HOME/.config/guix/current \\
+-p $HOME/.guix-home/profile \\
 -p $HOME/.guix-profile \\
 -p /run/current-system/profile)\"
 
 # Prepend setuid programs.
 export PATH=/run/setuid-programs:$PATH
 "))
-        (bashrc  %default-bashrc)
-        (zprofile    (plain-file "zprofile" "\
-# Honor system-wide environment variables
+
+(define %default-zprofile
+  (plain-file "zprofile" "\
+# Set up the system, user profile, and related variables.
 source /etc/profile
-
-# Merge search-paths from multiple profiles, the order matters.
-eval \"$(guix package --search-paths \\
--p $HOME/.config/guix/current \\
--p $HOME/.guix-profile \\
--p /run/current-system/profile)\"
-
-# Prepend setuid programs.
-export PATH=/run/setuid-programs:$PATH
+# Set up the home environment profile.
+source ~/.profile
 "))
-        (xdefaults (plain-file "Xdefaults" "\
+
+(define %default-xdefaults
+  (plain-file "Xdefaults" "\
 XTerm*utf8: always
 XTerm*metaSendsEscape: true\n"))
-        (gdbinit   (plain-file "gdbinit" "\
-# Tell GDB where to look for separate debugging files.
+
+(define %default-gdbinit
+  (plain-file "gdbinit"
+              "# Tell GDB where to look for separate debugging files.
 guile
 (use-modules (gdb))
 (execute (string-append \"set debug-file-directory \"
@@ -203,19 +206,16 @@ end
 
 # Authorize extensions found in the store, such as the
 # pretty-printers of libstdc++.
-set auto-load safe-path /gnu/store/*/lib\n")))
-    `((".bash_profile" ,profile)
-      (".bashrc" ,bashrc)
-      ;; Zsh sources ~/.zprofile before ~/.zshrc, and it sources ~/.zlogin
-      ;; after ~/.zshrc.  To avoid interfering with any customizations a user
-      ;; may have made in their ~/.zshrc, put this in .zprofile, not .zlogin.
-      (".zprofile" ,zprofile)
-      (".nanorc" ,(plain-file "nanorc" "\
-# Include all the syntax highlighting modules.
+set auto-load safe-path /gnu/store/*/lib\n"))
+
+(define %default-nanorc
+  (plain-file "nanorc"
+              "# Include all the syntax highlighting modules.
 include /run/current-system/profile/share/nano/*.nanorc\n"))
-      (".Xdefaults" ,xdefaults)
-      (".guile" ,(plain-file "dot-guile"
-                             "(cond ((false-if-exception (resolve-interface '(ice-9 readline)))
+
+(define %default-dotguile
+  (plain-file "dot-guile"
+              "(cond ((false-if-exception (resolve-interface '(ice-9 readline)))
        =>
        (lambda (module)
          ;; Enable completion and input history at the REPL.
@@ -233,7 +233,58 @@ convenient interactive line editing and input history.\\n\\n\")))
               (else
                (display \"Consider installing the 'guile-colorized' package
 for a colorful Guile experience.\\n\\n\"))))\n"))
-      (".gdbinit" ,gdbinit))))
+
+(define %default-skeleton-home-config
+  (plain-file "default-home-config" "\
+;; This is a sample Guix Home configuration which can help setup your
+;; home directory in the same declarative manner as Guix System.
+;; For more information, see the Home Configuration section of the manual.
+(define-module (guix-home-config)
+  #:use-module (gnu home)
+  #:use-module (gnu home services)
+  #:use-module (gnu home services shells)
+  #:use-module (gnu services)
+  #:use-module (gnu system shadow))
+
+(define home-config
+  (home-environment
+    (services
+      (list
+        ;; Uncomment the shell you wish to use for your user:
+        ;(service home-bash-service-type)
+        ;(service home-fish-service-type)
+        ;(service home-zsh-service-type)
+
+        (service home-files-service-type
+         `((\".guile\" ,%default-dotguile)
+           (\".Xdefaults\" ,%default-xdefaults)))
+
+        (service home-xdg-configuration-files-service-type
+         `((\"gdb/gdbinit\" ,%default-gdbinit)
+           (\"nano/nanorc\" ,%default-nanorc)))))))
+
+home-config"))
+
+(define (default-skeletons)
+  "Return the default skeleton files for /etc/skel.  These files are copied by
+'useradd' in the home directory of newly created user accounts."
+
+  (let ((profile   %default-bash-profile)
+        (bashrc    %default-bashrc)
+        (zprofile  %default-zprofile)
+        (xdefaults %default-xdefaults)
+        (gdbinit   %default-gdbinit))
+    `((".bash_profile" ,profile)
+      (".bashrc" ,bashrc)
+      ;; Zsh sources ~/.zprofile before ~/.zshrc, and it sources ~/.zlogin
+      ;; after ~/.zshrc.  To avoid interfering with any customizations a user
+      ;; may have made in their ~/.zshrc, put this in .zprofile, not .zlogin.
+      (".zprofile" ,zprofile)
+      (".nanorc" ,%default-nanorc)
+      (".Xdefaults" ,xdefaults)
+      (".guile" ,%default-dotguile)
+      (".gdbinit" ,gdbinit)
+      ("guix-home-config.scm" ,%default-skeleton-home-config))))
 
 (define (skeleton-directory skeletons)
   "Return a directory containing SKELETONS, a list of name/derivation tuples."

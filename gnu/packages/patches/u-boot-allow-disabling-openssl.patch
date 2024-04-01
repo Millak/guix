@@ -8,7 +8,8 @@ This reverts commit b4f3cc2c42d97967a3a3c8796c340f6b07ecccac.
 Addendum 2022-12-08, Ricardo Wurmus: This patch has been updated to introduce
 CONFIG_FIT_PRELOAD to remove fit_pre_load_data, which depends on openssl.
 
-Addendum 2023-10-17, Herman Rimm: Update patch for u-boot v2023.10.
+Addendum 2024-01-18, Herman Rimm: Patch updated to leave out upstreamed
+diffs with CONFIG_FIT_PRELOAD.
 
 diff --git a/tools/kwbimage.c b/tools/kwbimage.c
 index 4dce495ff0..976174ae77 100644
@@ -145,64 +146,3 @@ index 4dce495ff0..976174ae77 100644
  
  	/* Calculate and set the header checksum */
  	main_hdr->checksum = image_checksum8(main_hdr, headersz);
---- a/tools/image-host.c
-+++ b/tools/image-host.c
-@@ -14,8 +14,10 @@
- #include <image.h>
- #include <version.h>
- 
-+#ifdef CONFIG_FIT_PRELOAD
- #include <openssl/pem.h>
- #include <openssl/evp.h>
-+#endif
- 
- /**
-  * fit_set_hash_value - set hash value in requested has node
-@@ -1119,6 +1121,7 @@ static int fit_config_add_verification_data(const char *keydir,
- 	return 0;
- }
- 
-+#ifdef CONFIG_FIT_PRELOAD
- /*
-  * 0) open file (open)
-  * 1) read certificate (PEM_read_X509)
-@@ -1227,6 +1230,7 @@ int fit_pre_load_data(const char *keydir, void *keydest, void *fit)
-  out:
- 	return ret;
- }
-+#endif
- 
- int fit_cipher_data(const char *keydir, void *keydest, void *fit,
- 		    const char *comment, int require_keys,
---- a/tools/fit_image.c
-+++ b/tools/fit_image.c
-@@ -61,9 +61,10 @@ static int fit_add_file_data(struct image_tool_params *params, size_t size_inc,
- 		ret = fit_set_timestamp(ptr, 0, time);
- 	}
- 
-+#ifdef CONFIG_FIT_PRELOAD
- 	if (!ret)
- 		ret = fit_pre_load_data(params->keydir, dest_blob, ptr);
--
-+#endif
- 	if (!ret) {
- 		ret = fit_cipher_data(params->keydir, dest_blob, ptr,
- 				      params->comment,
---- a/include/image.h
-+++ b/include/image.h
-@@ -1182,6 +1182,7 @@ int fit_image_hash_get_value(const void *fit, int noffset, uint8_t **value,
- 
- int fit_set_timestamp(void *fit, int noffset, time_t timestamp);
- 
-+#ifdef CONFIG_FIT_PRELOAD
- /**
-  * fit_pre_load_data() - add public key to fdt blob
-  *
-@@ -1196,6 +1197,7 @@ int fit_set_timestamp(void *fit, int noffset, time_t timestamp);
-  *	< 0, on failure
-  */
- int fit_pre_load_data(const char *keydir, void *keydest, void *fit);
-+#endif
- 
- int fit_cipher_data(const char *keydir, void *keydest, void *fit,
- 		    const char *comment, int require_keys,

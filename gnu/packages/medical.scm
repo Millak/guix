@@ -83,32 +83,34 @@ Health Federation.")
 
 (define-public openmolar-1
   (package
-   (name "openmolar")
-   (version "1.0.15-gd81f9e5")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://static.openmolar.com/om1/releases/openmolar-"
-                   version ".tar.gz"))
-             (sha256
-              (base32
-               "1cfdzfbi6wslw7k0dc6ad6xrgs75iwsl91cg73w4myswaqqkfk3z"))))
-   (build-system python-build-system)
-   (arguments
-    `(#:use-setuptools? #f
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'patch-/usr
-          (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* "setup.py"
-              (("/usr") (assoc-ref outputs "out")))
-            #t)))))
-   (inputs
-    (list python-pyqt+qscintilla python-mysqlclient qscintilla))
-   (home-page "https://openmolar.com/om1")
-   (synopsis "Dental practice management software")
-   (description "Openmolar is a dental practice management suite.  Its
+    (name "openmolar")
+    (version "1.1.6-g81838c85")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://static.openmolar.com/om1/releases/openmolar-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "09vrfqn511vswnj2q9m7srlwdgz066qvqpmja6sg1yl1ibh3cbpr"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:use-setuptools? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-/usr
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (substitute* '("setup.py"
+                                     "src/openmolar/settings/localsettings.py")
+                        (("/usr")
+                         (assoc-ref outputs "out"))) #t)))))
+    (inputs (list python-pyqtwebengine python-pyqt+qscintilla
+                  python-mysqlclient qscintilla))
+    (propagated-inputs (list qtwebengine-5))
+    (home-page "https://openmolar.com/om1")
+    (synopsis "Dental practice management software")
+    (description
+     "Openmolar is a dental practice management suite.  Its
 functionality includes appointments, patient records, treatment planning,
 billing etc.  It is a full featured, reliable and thoroughly tested
 application and has been translated into many languages.")
-   (license gpl3+)))
+    (license gpl3+)))

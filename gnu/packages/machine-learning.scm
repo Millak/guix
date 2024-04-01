@@ -15,12 +15,18 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022 Kiran Shila <me@kiranshila.com>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 David Pflug <david@pflug.io>
+;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
+;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +76,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -103,6 +110,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rdf)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages serialization)
@@ -516,8 +524,8 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((commit "f31b5397143009d682db90fd2a6cde83f1ef00eb")
-        (revision "0"))
+  (let ((commit "03bf161eb6dea6400ee49c6dc6b69bdcfa9fd3fc")
+        (revision "1"))
     (package
       (name "llama-cpp")
       (version (git-version "0.0.0" revision commit))
@@ -526,10 +534,10 @@ Performance is achieved by using the LLVM JIT compiler.")
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/ggerganov/llama.cpp")
-               (commit (string-append "master-" (string-take commit 7)))))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ys6n53n032zq1ll9f3vgxk8sw0qq7x3fi7awsyy13adzp3hn08p"))))
+          (base32 "1ag1jash84hasz10h0piw72a8ginm8kzvhihbzzljz96gq2kjm88"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -556,8 +564,10 @@ Performance is achieved by using the LLVM JIT compiler.")
                                       (get-string-all input))))))
                       (chmod (string-append bin script) #o555)))
                   (mkdir-p bin)
-                  (make-script "convert-pth-to-ggml")
+                  (make-script "convert-hf-to-gguf")
+                  (make-script "convert-llama-ggml-to-gguf")
                   (make-script "convert-lora-to-ggml")
+                  (make-script "convert-persimmon-to-gguf")
                   (make-script "convert"))))
             (add-after 'install-python-scripts 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
@@ -655,6 +665,53 @@ networks) based on simulation of (stochastic) flow in graphs.")
      "This package provides OCaml bindings for the MCL graph clustering
 algorithm.")
     (license license:gpl3)))
+
+(define-public openmm
+  (package
+    (name "openmm")
+    (version "8.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openmm/openmm")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "064vv6zaci30pj38z5lwfqscxssm67jqxkz30hcya9vm4ng831d5"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DOPENMM_BUILD_SHARED_LIB=TRUE"
+             "-DOPENMM_BUILD_C_AND_FORTRAN_WRAPPERS=TRUE"
+             "-DOPENMM_BUILD_PYTHON_WRAPPERS=TRUE"
+             "-DOPENMM_BUILD_CUDA_LIB=FALSE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-python-build-system
+            (lambda _
+              (substitute* "wrappers/python/CMakeLists.txt"
+                (("install --root=\\\\\\$ENV\\{DESTDIR\\}/")
+                 (string-append "install --prefix=" #$output
+                                " --root=/ --single-version-externally-managed")))))
+          (add-after 'install 'install-python
+            (lambda _
+              (invoke "make" "PythonInstall"))))))
+    (inputs
+     (list python-wrapper))
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list doxygen gfortran opencl-headers python-cython swig))
+    (home-page "https://github.com/openmm/openmm/")
+    (synopsis "Toolkit for molecular simulation")
+    (description
+     "OpenMM is a toolkit for molecular simulation.  It can be used either as
+a stand-alone application for running simulations, or as a library you call
+from your own code.")
+    ;; See https://github.com/openmm/openmm/issues/4278#issuecomment-1772982471
+    (license license:expat)))
 
 (define-public randomjungle
   (package
@@ -811,6 +868,94 @@ model---with the extension of direct training from raw sentences.
 SentencePiece allows us to make a purely end-to-end system that does not
 depend on language-specific pre- or post-processing.")
     (license license:asl2.0)))
+
+(define-public python-hopcroftkarp
+  ;; This commit fixes a broken import, but has not been released to PyPI.
+  (let ((commit "2846e1dd3265d95d2bddb0cf4190b830cbb4efe6")
+        (revision "1"))
+    (package
+      (name "python-hopcroftkarp")
+      (version (git-version "1.2.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sofiatolaosebikan/hopcroftkarp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "018ilrp41fcclmb5lsml3aijwbmhbq3m7wy65hr1fryj0avic8fr"))))
+      (build-system pyproject-build-system)
+      (home-page "https://github.com/sofiatolaosebikan/hopcroftkarp")
+      (synopsis "Implementation of the Hopcroft-Karp algorithm")
+      (description
+       "This package implements the Hopcroft-Karp algorithm, producing a maximum
+cardinality matching from a bipartite graph.")
+      (license license:gpl3))))
+
+(define-public python-persim
+  (package
+    (name "python-persim")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "persim" version))
+       (sha256
+        (base32 "0q8wfakx8q4h3ryvw8cba0v6z7xn9139qkrzs3mi1ggyzacnx9d7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-deprecated
+                             python-hopcroftkarp
+                             python-joblib
+                             python-matplotlib
+                             python-numpy
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov))
+    (home-page "https://persim.scikit-tda.org")
+    (synopsis "Tools for analyzing persistence diagrams in Python")
+    (description
+     "This package includes a variety of tools used to analyze persistence diagrams.
+It currently houses implementations of
+@itemize
+@item Persistence images
+@item Persistence landscapes
+@item Bottleneck distance
+@item Modified Gromov–Hausdorff distance
+@item Sliced Wasserstein kernel
+@item Heat kernel
+@item Diagram plotting
+@end itemize
+")
+    (license license:expat))) ; MIT License
+
+(define-public python-ripser
+  (package
+    (name "python-ripser")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ripser" version))
+       (sha256
+        (base32 "1575nwsn6b29z7w1mjk23ri83bxq2b4ld979hpgm174642a3x6vs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-persim python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://ripser.scikit-tda.org")
+    (synopsis "Persistent homology library for Python")
+    (description
+     "This package implements a variety of persistent homology algorithms.  It
+provides an interface for
+@itemize
+@item computing persistence cohomology of sparse and dense data sets
+@item visualizing persistence diagrams
+@item computing lowerstar filtrations on images
+@item computing representative cochains
+@end itemize
+")
+    (license license:expat))) ; MIT License
 
 (define-public python-sacrebleu
   (package
@@ -1524,7 +1669,7 @@ computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.2.2")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1534,20 +1679,28 @@ computing environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0x7gfzvcdadf8jnvpz8m373bi37bc6sndfbjh9lzmn3p39pwm2hl"))))
-    (build-system python-build-system)
+         "1hr024vcilbjwlwn32ppadri0ypnzjmkfxhkkw8gih0qjvcvjbs7"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-m" "not network"
+             "-k" (string-append
+                   ;; This test tries to access the internet.
+                   "not test_load_boston_alternative"
+                   ;; DID NOT RAISE <class 'ValueError'>
+                   " and not test_singular_matrix"))
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'build 'configure
            (lambda _
              (setenv "SKLEARN_BUILD_PARALLEL"
                      (number->string (parallel-job-count)))))
          (add-after 'build 'build-ext
            (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace"
-                             "-j" (number->string (parallel-job-count)))))
+                        "-j" (number->string (parallel-job-count)))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
              (when tests?
                ;; Restrict OpenBLAS threads to prevent segfaults while testing!
                (setenv "OPENBLAS_NUM_THREADS" "1")
@@ -1558,14 +1711,11 @@ computing environments.")
                ;; Step out of the source directory to avoid interference;
                ;; we want to run the installed code with extensions etc.
                (with-directory-excursion "/tmp"
-                 (invoke "pytest" "-vv" "--pyargs" "sklearn"
-                         "-m" "not network"
-                         "-n" (number->string (parallel-job-count))
-                         ;; This test tries to access the internet.
-                         "-k" "not test_load_boston_alternative"))))))))
+                 (apply invoke "pytest" "--pyargs" "sklearn"
+                        test-flags))))))))
     (inputs (list openblas))
     (native-inputs
-     (list python-cython
+     (list python-cython-0.29.35
            python-pandas
            python-pytest
            python-pytest-xdist))
@@ -1579,51 +1729,83 @@ data analysis.")
     (license license:bsd-3)))
 
 (define-public python-scikit-learn-extra
-  (package
-    (name "python-scikit-learn-extra")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/scikit-learn-contrib/scikit-learn-extra")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0yy6ka94ss88f3r7b6mpjf1l8lnv7aabhsg844pigfj8lfiv0wvl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'build 'build-ext
-                 (lambda _
-                   (invoke "python" "setup.py" "build_ext"
-                           "--inplace")))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; Restrict OpenBLAS threads to prevent segfaults while testing!
-                     (setenv "OPENBLAS_NUM_THREADS" "1")
+  ;; This commit fixes an incompatibility with newer versions of scikit-learn
+  (let ((commit "0f95d8dda4c69f9de4fb002366041adcb1302f3b")
+        (revision "1"))
+    (package
+      (name "python-scikit-learn-extra")
+      (version (git-version "0.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a248sff1psfwzmngj465gzyisq20d83nzpwpq2cspxhih51m6j9"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        ;; ignore tests that require network
+        '(list "--pyargs" "sklearn_extra"
+               "-k" "not test_build")
+        #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'build 'build-ext
+                   (lambda _
+                     (invoke "python" "setup.py" "build_ext"
+                             "--inplace")))
+                 (replace 'check
+                   (lambda* (#:key tests? test-flags #:allow-other-keys)
+                     (when tests?
+                       ;; Restrict OpenBLAS threads to prevent segfaults while testing!
+                       (setenv "OPENBLAS_NUM_THREADS" "1")
 
-                     ;; Some tests require write access to $HOME.
-                     (setenv "HOME" "/tmp")
+                       ;; Some tests require write access to $HOME.
+                       (setenv "HOME" "/tmp")
 
-                     ;; Step out of the source directory to avoid interference;
-                     ;; we want to run the installed code with extensions etc.
-                     (with-directory-excursion "/tmp"
-                       (invoke "pytest" "-vv" "--pyargs"
-                               "sklearn_extra"
-                               ;; ignore tests that require network
-                               "-k" "not test_build"))))))))
-    (propagated-inputs (list python-numpy python-scikit-learn python-scipy))
-    (native-inputs (list python-pytest python-pytest-cov python-cython))
-    (home-page "https://github.com/scikit-learn-contrib/scikit-learn-extra")
-    (synopsis "Set of tools for scikit-learn")
-    (description
-     "This package provides a Python module for machine learning that extends
+                       ;; Step out of the source directory to avoid interference;
+                       ;; we want to run the installed code with extensions etc.
+                       (with-directory-excursion "/tmp"
+                         (apply invoke "pytest" "-vv" test-flags))))))))
+      (propagated-inputs
+       (list python-numpy
+             python-scikit-learn
+             python-scipy
+             python-packaging))
+      (native-inputs (list python-pytest python-pytest-cov python-cython))
+      (home-page "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+      (synopsis "Set of tools for scikit-learn")
+      (description
+       "This package provides a Python module for machine learning that extends
 scikit-learn.  It includes algorithms that are useful but do not satisfy the
 scikit-learn inclusion criteria, for instance due to their novelty or lower
 citation number.")
+      (license license:bsd-3))))
+
+(define-public python-mord
+  (package
+    (name "python-mord")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mord" version))
+       (sha256
+        (base32 "1cvv9b9w69v0inq0zgcw0vmkiq3zn9q9r6clkynpzjik9rrh405n"))))
+    (build-system pyproject-build-system)
+    ;; v0.7 does not provide any test cases
+    ;; v0.6 relies on deprecated scikit-learn functionality
+    (arguments `(#:tests? #f))
+    (inputs (list python-numpy python-scipy python-scikit-learn))
+    (home-page "https://pypi.org/project/mord/")
+    (synopsis "Ordinal regression models for scikit-learn")
+    (description
+     "This package provides a collection of ordinal regression models for
+machine learning in Python.  They are intended to be used with scikit-learn
+and are compatible with its API.")
     (license license:bsd-3)))
 
 (define-public python-thinc
@@ -1687,73 +1869,6 @@ number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
 
-(define-public python-tslearn
-  (package
-    (name "python-tslearn")
-    (version "0.6.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tslearn-team/tslearn")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0l9l21jy78mhajdfwyx8rskw08597vg55ff22bjkv6xrjjr9g4ac"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-              ;; This one fails because of a difference in accuracy.
-              "not test_all_estimators[LearningShapelets-LearningShapelets]"
-              ;; XXX: It's embarrassing to disable these two, but the truth is
-              ;; that there's only so much we can do to force this package to
-              ;; work with Tensorflow 1.9.  It's still worth having this
-              ;; package, because it can be used without the Tensorflow
-              ;; backend.
-              ;; TypeError: cannot pickle '_thread.RLock' object
-              " and not test_shapelets"
-              ;; TypeError: Expected binary or unicode string, got 2
-              " and not test_serialize_shapelets"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             (substitute* "tslearn/tests/sklearn_patches.py"
-               (("_pairwise_estimator_convert_X")
-                "_enforce_estimator_tags_X")
-               (("pairwise_estimator_convert_X\\(([^,]+), ([^,\\)]+)" _ a b)
-                (string-append "pairwise_estimator_convert_X(" b ", " a)))
-             (substitute* "tslearn/tests/test_shapelets.py"
-               (("tf.optimizers.Adam")
-                "tf.keras.optimizers.Adam"))
-             (substitute* "tslearn/shapelets/shapelets.py"
-               (("tf.keras.utils.set_random_seed")
-                "tf.set_random_seed")
-               (("def __call__\\(self, shape, dtype=None\\):")
-                "def __call__(self, shape, dtype=None, partition_info=None):")
-               (("tf.math.is_finite")
-                "tf.is_finite")))))))
-    (propagated-inputs (list python-cesium
-                             python-h5py
-                             python-joblib
-                             python-numba
-                             python-numpy
-                             python-pandas
-                             python-scipy
-                             python-scikit-learn
-                             tensorflow
-                             python-wheel))
-    (native-inputs (list python-pytest))
-    (home-page "https://github.com/tslearn-team/tslearn")
-    (synopsis "Machine learning toolkit for time series data")
-    (description "This is a Python library for time series data mining.
-It provides tools for time series classification, clustering
-and forecasting.")
-    (license license:bsd-2)))
-
 (define-public python-imbalanced-learn
   (package
     (name "python-imbalanced-learn")
@@ -1797,30 +1912,59 @@ techniques commonly used in datasets showing strong between-class imbalance.
 It is compatible with @code{scikit-learn}.")
     (license license:expat)))
 
+(define-public python-hdbscan
+  (package
+    (name "python-hdbscan")
+    (version "0.8.33")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hdbscan" version))
+       (sha256
+        (base32 "03gr70ys1zrnp15pxzhichvrdj5bj88p6p5k0wj8vx251rgvryjp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-joblib
+                             python-numpy
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-cython
+                         python-nose
+                         python-pytest
+                         python-pandas
+                         python-networkx))
+    (home-page "https://github.com/scikit-learn-contrib/hdbscan")
+    (synopsis "High performance implementation of HDBSCAN clustering")
+    (description "HDBSCAN - Hierarchical Density-Based Spatial Clustering of
+Applications with Noise.  Performs DBSCAN over varying epsilon values and
+integrates the result to find a clustering that gives the best stability over
+epsilon.  This allows HDBSCAN to find clusters of varying densities (unlike
+DBSCAN), and be more robust to parameter selection.  HDBSCAN is ideal for
+exploratory data analysis; it's a fast and robust algorithm that you can trust
+to return meaningful clusters (if there are any).")
+    (license license:bsd-3)))
+
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.10")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "1bc8aa6jfw28y6sb0nvfdrfgh66a42bqb4znvpimzx9yq21wcpax"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent"
-                       ;; wminkowski no longer exists in scipy 1.8.0 (see:
-                       ;; https://github.com/lmcinnes/pynndescent/issues/177)
-                       "-k" "not test_weighted_minkowski")))))))
+        (base32 "0l5dpdsk5vg7rpay81bncp04119hnl5z7zxjv63jrnm9spcwwi3g"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest))
     (propagated-inputs
-     (list python-joblib
+     (list python-importlib-metadata
+           python-joblib
            python-llvmlite
            python-numba
            python-scikit-learn
@@ -1835,7 +1979,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI release
@@ -1844,7 +1988,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05qzpq1zjs42bl0z8girfwcj3nfxs1a99c5525vp3589sglk351g"))))
+        (base32 "0xjp0l4rxk1s685skbx50m3m9hwlj78w74qwgswnkmkk6f7c8dsi"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1913,16 +2057,14 @@ standard feature selection algorithms.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX This requires pytest lazy_fixture
-             (delete-file "tests/test_multilabel_classification.py")
-             ;; Requires tensorflow
-             (delete-file "tests/test_frameworks.py")
+      #:test-flags
+      ;; This test fails because the newer version of scikit learn returns one
+      ;; more classification result than expected.  This should be harmless.
+      '(list "-k" "not test_aux_inputs"
+             ;; Requires Tensorflow
+             "--ignore=tests/test_frameworks.py"
              ;; Tries to download datasets from the internet at runtime.
-             (delete-file "tests/test_dataset.py"))))))
+             "--ignore=tests/test_dataset.py")))
     (propagated-inputs
      (list python-numpy
            python-pandas
@@ -1931,6 +2073,7 @@ standard feature selection algorithms.")
            python-tqdm))
     (native-inputs
      (list python-pytest
+           python-pytest-lazy-fixture
            python-pytorch
            python-torchvision))
     (home-page "https://cleanlab.ai")
@@ -1994,7 +2137,7 @@ and a few related numerical optimization tools.")
 (define-public python-cmaes
   (package
     (name "python-cmaes")
-    (version "0.9.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch) ;no tests in PyPI
@@ -2002,7 +2145,7 @@ and a few related numerical optimization tools.")
              (url "https://github.com/CyberAgentAILab/cmaes")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1f3143w8ii6i93bdh65iazrq1lryccd805ndnqww5l8h7qnnzpkm"))
+        (base32 "17bk60mhkglz6s7wz6xcyhw1h4mvghc1iid0805dra7jdyafwrfn"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (native-inputs (list python-hypothesis))
@@ -2188,13 +2331,13 @@ discrete, and conditional dimensions.")
 (define-public python-deepxde
   (package
     (name "python-deepxde")
-    (version "1.10.0")
+    (version "1.11.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "DeepXDE" version))
               (sha256
                (base32
-                "0fdxrjrm7l19yx6n8vaklxlhwzx0bw9n08vp8idikzdifybz5gij"))))
+                "0qx6iq8n2j8ab80bs2n85v8g6xi2bnq83vfiaj7a4nsmf62rhkzg"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests
@@ -3392,57 +3535,79 @@ in a fast and accurate way.")
     (inherit xgboost)
     (name "python-xgboost")
     (source (package-source xgboost))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'preparations
-           (lambda _
-             ;; Move python-package content to parent directory to silence
-             ;; some warnings about files not being found if we chdir.
-             (rename-file "python-package/xgboost" "xgboost")
-             (rename-file "python-package/README.rst" "README.rst")
-             (rename-file "python-package/setup.cfg" "setup.cfg")
-             (rename-file "python-package/setup.py" "setup.py")
-             ;; Skip rebuilding libxgboost.so.
-             (substitute* "setup.py"
-               (("ext_modules=\\[CMakeExtension\\('libxgboost'\\)\\],") "")
-               (("'install_lib': InstallLib,") ""))))
-         (add-after 'install 'install-version-and-libxgboost
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pylib (string-append out "/lib/python"
-                                          ,(version-major+minor
-                                            (package-version python))
-                                          "/site-packages"))
-                    (xgbdir (string-append pylib "/xgboost"))
-                    (version-file (string-append xgbdir "/VERSION"))
-                    (libxgboost (string-append (assoc-ref inputs "xgboost")
-                                               "/lib/libxgboost.so")))
-               (with-output-to-file version-file
-                 (lambda ()
-                   (display ,(package-version xgboost))))
-               (mkdir-p (string-append xgbdir "/lib"))
-               (symlink libxgboost (string-append xgbdir "/lib"
-                                                  "/libxgboost.so")))))
-         (replace 'check
-           ;; Python-specific tests are located in tests/python.
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests/python"
-                       ;; FIXME: CLI tests fail with PermissionError.
-                       "--ignore" "tests/python/test_cli.py" "-k"
-                       (string-append
-                        "not test_cli_regression_demo"
-                        ;; The tests below open a network connection.
-                        " and not test_model_compatibility"
-                        " and not test_get_group"
-                        " and not test_cv_no_shuffle"
-                        " and not test_cv"
-                        " and not test_training"
-                        ;; "'['./runexp.sh']' returned non-zero exit status 1"
-                        " and not test_cli_binary_classification"))))))))
+     (list
+      #:test-flags
+      '(list "tests/python"
+             ;; FIXME: CLI tests fail with PermissionError.
+             "--ignore" "tests/python/test_cli.py"
+             "-k"
+             (string-append
+              "not test_cli_regression_demo"
+              ;; These tests use the Boston dataset that has been
+              ;; removed from scipy.
+              " and not test_sklearn_demo"
+              " and not test_sklearn_parallel_demo"
+              " and not test_predict_shape"
+              " and not test_num_parallel_tree"
+              " and not test_boston_housing_regression"
+              " and not test_boston_housing_rf_regression"
+              " and not test_parameter_tuning"
+              " and not test_regression_with_custom_objective"
+              " and not test_RFECV"
+              ;; Pandas incompatibility? Says:
+              ;; '_CalibratedClassifier' object has no attribute
+              ;; 'base_estimator'
+              " and not test_pandas_input"
+              ;; Accuracy problems?
+              " and not test_exact"
+              " and not test_approx"
+              " and not test_hist"
+              ;; The tests below open a network connection.
+              " and not test_model_compatibility"
+              " and not test_get_group"
+              " and not test_cv_no_shuffle"
+              " and not test_cv"
+              " and not test_training"
+              ;; "'['./runexp.sh']' returned non-zero exit status 1"
+              " and not test_cli_binary_classification"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _
+              ;; Move python-package content to parent directory to silence
+              ;; some warnings about files not being found if we chdir.
+              (rename-file "python-package/xgboost" "xgboost")
+              (rename-file "python-package/README.rst" "README.rst")
+              (rename-file "python-package/setup.cfg" "setup.cfg")
+              (rename-file "python-package/setup.py" "setup.py")
+              ;; Skip rebuilding libxgboost.so.
+              (substitute* "setup.py"
+                (("ext_modules=\\[CMakeExtension\\('libxgboost'\\)\\],") "")
+                (("'install_lib': InstallLib,") ""))
+              ;; Remove bad dataset.  This has been removed in scipy.
+              (substitute* "tests/python/testing.py"
+                (("TestDataset\\('boston', get_boston, 'reg:squarederror', 'rmse'\\),")
+                 "")
+                (("datasets.load_boston")
+                 "datasets.load_digits"))))
+          (add-after 'install 'install-version-and-libxgboost
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((pylib (string-append #$output "/lib/python"
+                                           #$(version-major+minor
+                                              (package-version python))
+                                           "/site-packages"))
+                     (xgbdir (string-append pylib "/xgboost"))
+                     (version-file (string-append xgbdir "/VERSION"))
+                     (libxgboost (string-append (assoc-ref inputs "xgboost")
+                                                "/lib/libxgboost.so")))
+                (with-output-to-file version-file
+                  (lambda ()
+                    (display #$(package-version xgboost))))
+                (mkdir-p (string-append xgbdir "/lib"))
+                (symlink libxgboost (string-append xgbdir "/lib"
+                                                   "/libxgboost.so"))))))))
     (native-inputs
      (list python-pandas python-pytest python-scikit-learn))
     (inputs
@@ -3772,46 +3937,26 @@ methodxs at scale on CPU or GPU.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.5.3")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
        (uri (git-reference
              (url "https://github.com/lmcinnes/umap")
-             (commit version)))
+             (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1315jkb0h1b579y9m59632f0nnpksilm01nxx46in0rq8zna8vsb"))))
-    (build-system python-build-system)
+         "0ijyiaqycynwj1383cxp519c765gjbg1f6fjwbvqj1gims710w3d"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'numpy-compatibility
-            (lambda _
-              (substitute* "umap/tests/test_umap_metrics.py"
-                ;; See commit a714b59bd9e2ca2e63312bc3491b2b037a42f2f2
-                (("sparse_binary_data.todense\\(\\),")
-                 "np.asarray(sparse_binary_data.todense()),")
-                ;; See commit c7d05683325589ad432a55e109cacb9d631cfaa9
-                (("sparse_spatial_data.todense\\(\\),")
-                 "np.asarray(sparse_spatial_data.todense()),"))
-              ;; See commit 949abd082524fce8c45dfb147bcd8e8ef49eade3
-              (substitute* "umap/tests/test_umap_ops.py"
-                (("np.random,") "None,"))))
           ;; Numba needs a writable dir to cache functions.
           (add-before 'check 'set-numba-cache-dir
             (lambda _
-              (setenv "NUMBA_CACHE_DIR" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv" "umap"
-                        ;; This test can fail because trust may only be
-                        ;; 0.9679405204460967 >= 0.97
-                        "-k" "not test_densmap_trustworthiness_on_iris_supervised")))))))
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs (list python-pytest))
     (propagated-inputs
      (list python-numba
@@ -4101,6 +4246,61 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
+(define-public python-pytorch2
+  (package
+    (inherit python-pytorch)
+    (name "python-pytorch")
+    (version "2.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hdr0d6n072qd0nq2dkxhc9pva6vggj9hpzc0glpc60vfgk0cgzb"))
+              (patches (search-patches "python-pytorch2-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-peachpy"
+                              "tbb" "XNNPACK" "zstd"))
+                  (substitute* "caffe2/CMakeLists.txt"
+                    (("target_link_libraries\\(\\$\\{test_name\\}_\\$\\{CPU_CAPABILITY\\} c10 sleef gtest_main\\)")
+                     "target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest gtest_main)"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))
+    (inputs
+     (modify-inputs (package-inputs python-pytorch)
+       (replace "xnnpack" xnnpack-for-torch2)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytorch)
+       (append python-filelock
+               python-fsspec
+               python-jinja2
+               python-networkx
+               python-opt-einsum
+               python-sympy)
+       (replace "onnx" onnx-for-torch2)
+       (replace "onnx-optimizer" onnx-optimizer-for-torch2)))))
+
 (define-public python-pytorch-for-r-torch
   (package
     (inherit python-pytorch)
@@ -4155,6 +4355,86 @@ Note: currently this package does not provide GPU support.")
        (replace "onnx" onnx-for-torch2)
        (replace "onnx-optimizer" onnx-optimizer-for-torch2)))))
 
+(define-public python-pytorch-geometric
+  (package
+    (name "python-pytorch-geometric")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pyg-team/pytorch_geometric/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hrs579asjsph16hyb4ablkbgfwd5j9y5s6ny7ahn3qrbkl2ji1g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Hangs with AttributeError: 'NoneType' object has no attribute 'rpc_async'
+      '(list "--ignore=test/distributed/test_rpc.py"
+             ;; A message passing jinja template is missing
+             "--ignore=test/nn/conv/test_message_passing.py"
+             "--ignore=test/nn/test_sequential.py"
+             "--ignore=test/nn/models/test_basic_gnn.py"
+             ;; These all fail with a size mismatch error such as
+             ;; RuntimeError: shape '[-1, 2, 1, 1]' is invalid for input of size 3
+             "--ignore=test/explain/algorithm/test_captum_explainer.py"
+             "-k" (string-append
+                   ;; Permissions error
+                   "not test_packaging"
+                   ;; This can fail due to accuracy problems
+                   " and not test_gdc"
+                   ;; These refuse to be run on CPU and really want a GPU
+                   " and not test_add_random_walk_pe"
+                   " and not test_asap"
+                   " and not test_two_hop"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-top-level-directories
+           (lambda _
+             ;; The presence of these directories confuses the pyproject build
+             ;; system.
+             (for-each delete-file-recursively
+                       '("conda" "docker" "graphgym")))))))
+    (propagated-inputs
+     (list onnx
+           python-captum
+           python-graphviz
+           python-h5py
+           python-jinja2
+           python-matplotlib
+           python-networkx
+           python-numba
+           python-numpy
+           python-opt-einsum
+           python-pandas
+           python-protobuf
+           python-psutil
+           python-pyparsing
+           python-pytorch-lightning
+           python-rdflib
+           python-requests
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-statsmodels
+           python-sympy
+           python-tabulate
+           python-torchmetrics
+           python-tqdm))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-pytest-cov))
+    (home-page "https://pyg.org")
+    (synopsis "Graph Neural Network library for PyTorch")
+    (description
+     "PyG is a library built upon PyTorch to easily write and train Graph
+Neural Networks for a wide range of applications related to structured data.")
+    (license license:expat)))
+
 (define-public python-lightning-cloud
   (package
     (name "python-lightning-cloud")
@@ -4205,7 +4485,7 @@ Actions for the Lightning suite of libraries.")
 (define-public python-captum
   (package
     (name "python-captum")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4214,7 +4494,7 @@ Actions for the Lightning suite of libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h4n91ivhjxm6wj0vgqpfss2dmq4sjcp0appd08cd5naisabjyb5"))))
+                "0bgfwnlsi50hbmknn7qljiy93fi6ggwz3k7yk9kj7s37mhzaylym"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4224,7 +4504,8 @@ Actions for the Lightning suite of libraries.")
              ;; accuracy problems.
              "not test_softmax_classification_batch_multi_target\
  and not test_softmax_classification_batch_zero_baseline")))
-    (propagated-inputs (list python-matplotlib python-numpy python-pytorch))
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pytorch python-tqdm))
     (native-inputs (list jupyter
                          python-annoy
                          python-black
@@ -4738,24 +5019,23 @@ and Numpy.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0n1vsih99pvswcaygdxkc6kq6r48ny130z6ca8pp3281396r2ykw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+     (list
+      #:test-flags
+      '(list "-vv" "--stage=unit"
              ;; This tests features that are only implemented when non-free
              ;; software is available (Intel MKL or CUDA).
-             (for-each delete-file
-                       (list "tests/distributions/test_spanning_tree.py"
-                             "tests/infer/mcmc/test_mcmc_api.py"))
-
+             "--ignore=tests/distributions/test_spanning_tree.py"
+             "--ignore=tests/infer/mcmc/test_mcmc_api.py"
+             ;; This test fails sometimes.
+             "--ignore=tests/optim/test_optim.py"
              ;; Four test_gamma_elbo tests fail with bad values for unknown
              ;; reasons.
-             (delete-file "tests/distributions/test_rejector.py")
-             ;; This test fails sometimes.
-             (delete-file "tests/optim/test_optim.py")
-             (invoke "pytest" "-vv" "--stage=unit"))))))
+             "--ignore=tests/distributions/test_rejector.py"
+             ;; This looks like a test system failure.  All of these fail
+             ;; because x is an array of functions, not an array of numbers.
+             "-k" "not test_sample")))
     (propagated-inputs
      (list python-numpy
            python-opt-einsum
@@ -5168,3 +5448,54 @@ Brian 2 simulator.")
      "OneAPI Deep Neural Network Library (oneDNN) is a cross-platform
 performance library of basic building blocks for deep learning applications.")
     (license license:asl2.0)))
+
+(define-public python-gguf
+  (package
+    (name "python-gguf")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gguf" version))
+       (sha256
+        (base32 "0rbyc2h3kpqnrvbyjvv8a69l577jv55a31l12jnw21m1lamjxqmj"))))
+    (build-system pyproject-build-system)
+    (arguments
+      (list #:tests? #false))
+    (inputs (list poetry python-pytest))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://ggml.ai")
+    (synopsis "Read and write ML models in GGUF for GGML")
+    (description "A Python library for reading and writing GGUF & GGML format ML models.")
+    (license license:expat)))
+
+(define-public python-gymnasium
+  (package
+    (name "python-gymnasium")
+    (version "0.29.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gymnasium" version))
+       (sha256
+        (base32 "1cab4wsnlsxn2z90qmymv8ppmsq8yq2amiqwid3r0xfbxx92flqs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cloudpickle python-farama-notifications
+                             python-importlib-metadata python-numpy
+                             python-typing-extensions))
+    (native-inputs (list python-pytest python-scipy))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-tests-module
+            (lambda _
+              (with-output-to-file "tests/__init__.py"
+                (lambda _ (display ""))))))))
+    (home-page "https://gymnasium.farama.org/")
+    (synopsis
+     "Standard API for reinforcement learning and a set of reference environments")
+    (description
+     "This package provides a standard API for reinforcement learning and a
+diverse set of reference environments (formerly Gym).")
+    (license license:expat)))

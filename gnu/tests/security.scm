@@ -20,6 +20,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages admin)
   #:use-module (gnu services)
+  #:use-module (gnu services base)
   #:use-module (gnu services security)
   #:use-module (gnu services ssh)
   #:use-module (gnu system)
@@ -176,7 +177,9 @@
    (simple-operating-system
     (service (fail2ban-jail-service openssh-service-type (fail2ban-jail-configuration
                                                           (name "sshd") (enabled? #t)))
-             (openssh-configuration)))
+             (openssh-configuration))
+    (service static-networking-service-type
+             (list %qemu-static-networking)))
 
    (test-equal "fail2ban sshd jail running status output"
      '("Status for the jail: sshd"

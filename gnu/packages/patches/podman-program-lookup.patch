@@ -1,0 +1,120 @@
+From 914aed3e04f71453fbdc30f4287e13ca3ce63a36 Mon Sep 17 00:00:00 2001
+From: Tomas Volf <~@wolfsden.cz>
+Date: Wed, 14 Feb 2024 20:02:03 +0100
+Subject: [PATCH] Modify search for binaries to fit Guix model
+
+Podman basically looked into the $PATH and into its libexec.  That does not fit
+Guix's model very well, to an additional option to specify additional
+directories during compilation was added.
+
+* pkg/rootless/rootless_linux.go
+(tryMappingTool): Also check /run/setuid-programs.
+* vendor/github.com/containers/common/pkg/config/config.go
+(extraGuixDir): New function.
+(FindHelperBinary): Use it.
+* vendor/github.com/containers/storage/pkg/unshare/unshare_linux.go
+(guixLookupSetuidPath): New function.
+(Start): Use it.
+---
+ pkg/rootless/rootless_linux.go                |  3 +++
+ .../containers/common/pkg/config/config.go    | 23 +++++++++++++++++++
+ .../storage/pkg/unshare/unshare_linux.go      | 14 +++++++++--
+ 3 files changed, 38 insertions(+), 2 deletions(-)
+
+diff --git a/pkg/rootless/rootless_linux.go b/pkg/rootless/rootless_linux.go
+index d303c8b..0191d90 100644
+--- a/pkg/rootless/rootless_linux.go
++++ b/pkg/rootless/rootless_linux.go
+@@ -102,6 +102,9 @@ func tryMappingTool(uid bool, pid int, hostID int, mappings []idtools.IDMap) err
+ 		idtype = "setgid"
+ 	}
+ 	path, err := exec.LookPath(tool)
++	if err != nil {
++		path, err = exec.LookPath("/run/setuid-programs/" + tool)
++	}
+ 	if err != nil {
+ 		return fmt.Errorf("command required for rootless mode with multiple IDs: %w", err)
+ 	}
+diff --git a/vendor/github.com/containers/common/pkg/config/config.go b/vendor/github.com/containers/common/pkg/config/config.go
+index 75b917f..ed2f131 100644
+--- a/vendor/github.com/containers/common/pkg/config/config.go
++++ b/vendor/github.com/containers/common/pkg/config/config.go
+@@ -1102,6 +1102,24 @@ func findBindir() string {
+ 	return bindirCached
+ }
+ 
++func extraGuixDir(bin_name string) string {
++	if (bin_name == "slirp4netns") {
++		return "@SLIRP4NETNS_DIR@";
++	} else if (bin_name == "pasta") {
++		return "@PASST_DIR@";
++	} else if (strings.HasPrefix(bin_name, "qemu-")) {
++		return "@QEMU_DIR@";
++	} else if (bin_name == "gvproxy") {
++		return "@GVPROXY_DIR@";
++	} else if (bin_name == "netavark") {
++		return "@NETAVARK_DIR@";
++	} else if (bin_name == "aardvark-dns") {
++		return "@AARDVARK_DNS_DIR@";
++	} else {
++		return "";
++	}
++}
++
+ // FindHelperBinary will search the given binary name in the configured directories.
+ // If searchPATH is set to true it will also search in $PATH.
+ func (c *Config) FindHelperBinary(name string, searchPATH bool) (string, error) {
+@@ -1109,6 +1127,11 @@ func (c *Config) FindHelperBinary(name string, searchPATH bool) (string, error)
+ 	bindirPath := ""
+ 	bindirSearched := false
+ 
++	if dir := extraGuixDir(name); dir != "" {
++		/* If there is a Guix dir, skip the PATH search. */
++		dirList = append([]string{dir}, dirList...)
++	}
++
+ 	// If set, search this directory first. This is used in testing.
+ 	if dir, found := os.LookupEnv("CONTAINERS_HELPER_BINARY_DIR"); found {
+ 		dirList = append([]string{dir}, dirList...)
+diff --git a/vendor/github.com/containers/storage/pkg/unshare/unshare_linux.go b/vendor/github.com/containers/storage/pkg/unshare/unshare_linux.go
+index a8dc1ba..0b0d755 100644
+--- a/vendor/github.com/containers/storage/pkg/unshare/unshare_linux.go
++++ b/vendor/github.com/containers/storage/pkg/unshare/unshare_linux.go
+@@ -26,6 +26,16 @@ import (
+ 	"github.com/syndtr/gocapability/capability"
+ )
+ 
++func guixLookupSetuidPath(prog string) (string, error) {
++	path, err := exec.LookPath(prog)
++	if err != nil {
++		path, err = exec.LookPath("/run/setuid-programs/" + prog)
++	}
++	return path, err
++}
++
++
++
+ // Cmd wraps an exec.Cmd created by the reexec package in unshare(), and
+ // handles setting ID maps and other related settings by triggering
+ // initialization code in the child.
+@@ -237,7 +247,7 @@ func (c *Cmd) Start() error {
+ 			gidmapSet := false
+ 			// Set the GID map.
+ 			if c.UseNewgidmap {
+-				path, err := exec.LookPath("newgidmap")
++				path, err := guixLookupSetuidPath("newgidmap")
+ 				if err != nil {
+ 					return fmt.Errorf("finding newgidmap: %w", err)
+ 				}
+@@ -297,7 +307,7 @@ func (c *Cmd) Start() error {
+ 			uidmapSet := false
+ 			// Set the UID map.
+ 			if c.UseNewuidmap {
+-				path, err := exec.LookPath("newuidmap")
++				path, err := guixLookupSetuidPath("newuidmap")
+ 				if err != nil {
+ 					return fmt.Errorf("finding newuidmap: %w", err)
+ 				}
+-- 
+2.41.0
+

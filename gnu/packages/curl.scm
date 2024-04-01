@@ -49,6 +49,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages logging)
@@ -421,7 +422,7 @@ sugar and output formatting inspired from @code{httpie}.")
 (define-public trurl
   (package
     (name "trurl")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -430,7 +431,7 @@ sugar and output formatting inspired from @code{httpie}.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19zdpjp01n7s7zgixq3irqfnx66dmqf8zyp0dlb6y7ga673lqwi8"))))
+        (base32 "10gsl0fdpybfcffmgf3qww7cpw3ifczl601042a2mqmwwrlx5zj7"))))
     (build-system gnu-build-system)
     (arguments
      (list

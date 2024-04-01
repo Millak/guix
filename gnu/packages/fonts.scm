@@ -58,7 +58,8 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 chris <chris@bumblehead.com>
-;;; Copyright © 2023 Luis Felipe López Acevedo <sirgazil@zoho.com>
+;;; Copyright © 2023, 2024 Luis Felipe López Acevedo <sirgazil@zoho.com>
+;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -216,7 +217,7 @@ in print.  With attention to detail for high resolution rendering.")
 (define-public font-intel-one-mono
   (package
     (name "font-intel-one-mono")
-    (version "1.2.1")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -225,8 +226,26 @@ in print.  With attention to detail for high resolution rendering.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1md57997nzkz75ambsahawzy1x71qvkp6f87zcqibksm66yvcjdc"))))
+                "0w9isn8az1k3a3q4m2llwnryy79i5v30dx1hfaf90x0zkj98ky5h"))))
+    (outputs '("out" "ttf" "woff"))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'split-outputs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out-fonts (string-append (assoc-ref outputs "out")
+                                                   "/share/fonts"))
+                         (ttf-fonts (string-append (assoc-ref outputs "ttf")
+                                                   "/share/fonts"))
+                         (woff-fonts (string-append (assoc-ref outputs "woff")
+                                                    "/share/fonts")))
+                     (mkdir-p ttf-fonts)
+                     (mkdir-p woff-fonts)
+                     (rename-file (string-append out-fonts "/truetype")
+                                  (string-append ttf-fonts "/truetype"))
+                     (rename-file (string-append out-fonts "/web")
+                                  (string-append woff-fonts "/web"))))))))
     (home-page "https://github.com/intel/intel-one-mono")
     (synopsis "Expressive monospaced font family")
     (description
@@ -586,6 +605,30 @@ The unified Libertinus family consists of:
 @item Libertinus Math, an original matching OpenType math font.
 @end enumerate\n")
     (license license:silofl1.1)))
+
+(define-public font-libre-franklin
+  (let ((commit "bfc61d6e403771c2e90aa6e0bd54975633974fb2")
+        (revision "0"))
+    (package
+      (name "font-libre-franklin")
+      (version (git-version "1.015" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/impallari/Libre-Franklin")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "07rm9fkhm8ckxpaj0zixl4vgzmj6bj4xzbaqm5hngdjds1bjv1ls"))))
+      (build-system font-build-system)
+      (home-page "https://fonts.google.com/specimen/Libre+Franklin")
+      (synopsis "Font family based on Franklin Gothic")
+      (description
+       "The Libre Franklin font family is an open source interpretation and
+expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
+      (license license:silofl1.1))))
 
 (define-public font-terminus
   (package
@@ -970,7 +1013,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "15.1.01")
+    (version "15.1.05")
     (source
      (origin
        (method url-fetch)
@@ -980,7 +1023,7 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "1dydcqa2nvmnij5jzj10carrzssd3ar24i8zd18pk4zpl84l4pz1"))
+        (base32 "1yi33kxlgw7ds99za5bclh537sw8ggl94nrhhq7hwxaq8dgzaxfj"))
        (snippet
         '(begin
            (use-modules (guix build utils))
@@ -1038,7 +1081,7 @@ utilities to ease adding new glyphs to the font.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "23.11.1")
+    (version "24.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1047,8 +1090,53 @@ utilities to ease adding new glyphs to the font.")
              (commit (string-append "noto-monthly-release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vvxhky35l4i0ha60yw0gj26f3v33hpf2zax17yyj16mww4cn4d8"))))
+        (base32 "087jg8ahpq35xwyrmvm9ivxl0wjic2j4r28bbrwqmgdva9brms40"))))
     (build-system font-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build font-build-system)
+        (guix build utils)
+        (ice-9 ftw))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (define* (install source #:optional (output #$output))
+                (let ((%install (assoc-ref %standard-phases 'install)))
+                  (with-directory-excursion source
+                    (%install #:outputs `(("out" . ,output))))))
+
+              (define (scan-directory name)
+                (scandir name (lambda (file)
+                                (not (member file '("." ".." "LICENSE"))))))
+
+              (define (install-font-variant variant)
+                "Given font variant VARIANT, install one of its formats,
+variable TTF or OTF or TTF."
+                (with-directory-excursion variant
+                  (let ((formats (scan-directory ".")))
+                    (cond
+                     ((member "variable-ttf" formats)
+                      (install "variable-ttf"))
+                     ((member "otf" formats)
+                      (install "otf"))
+                     ((member "ttf" formats)
+                      (install "ttf"))))))
+
+              (define (install-font font)
+                "Given FONT, install one of its variants, either full or
+unhinted, and install its hinted variant into 'ttf' output.  According to the
+source, unhinted and hinted variants are always available."
+                (with-directory-excursion font
+                  (if (member "full" (scan-directory "."))
+                      (install-font-variant "full")
+                      (install-font-variant "unhinted"))
+                  (install "hinted" #$output:ttf)))
+
+              (with-directory-excursion "fonts"
+                (for-each install-font (scan-directory "."))))))))
+    (outputs '("out" "ttf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
@@ -1059,7 +1147,7 @@ display all Unicode symbols.")
 (define-public font-google-noto-emoji
   (package
     (name "font-google-noto-emoji")
-    (version "2.038")
+    (version "2.042")
     (source
      (origin
        (method git-fetch)
@@ -1069,7 +1157,7 @@ display all Unicode symbols.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rgmcc6nqq805iqr8kvxxlk5cf50q714xaxk3ld6rjrd69kb8ix9"))))
+         "17i7awyqz9jv0j2blcf0smmpas375c3pdhjv1zqzl861g8qm1lm2"))))
     (build-system font-build-system)
     (arguments
      (list
@@ -1079,11 +1167,10 @@ display all Unicode symbols.")
             (lambda _
               ;; Note this ensures the correct license file is installed.
               (chdir "fonts")))
-          (add-after 'enter-font-directory 'remove-unsupported
-            (lambda* _
-              (delete-file "NotoColorEmoji_WindowsCompatible.ttf")
-              (delete-file "Noto-COLRv1-noflags.ttf")
-              (delete-file "Noto-COLRv1.ttf"))))))
+          (replace 'install
+            (lambda _
+              (let ((dir (string-append #$output "/share/fonts/truetype")))
+                (install-file "NotoColorEmoji.ttf" dir)))))))
     (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
     (synopsis "Font for rendering color emoji characters")
     (description
@@ -1100,11 +1187,23 @@ family.")
        (method url-fetch)
        (uri (string-append
              "https://github.com/googlefonts/noto-cjk/releases/download/Sans"
-             version "/03_NotoSansCJK-OTC.zip"))
+             version "/01_NotoSansCJK-OTF-VF.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1v9yda7r98g4a3pk0y3cjbgc1i2lv4ax0f0v6aqasfzz4ldlx3sj"))))
+        (base32 "1ka37kqyd0sfqwk485nv6ihrdjl5xycr38m4jq40r2lzmpmkmqym"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (chdir "..")         ;For license.
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "Variable/OTC"
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "Variable/OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))))))))
+    (outputs '("out" "otf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
@@ -1116,17 +1215,29 @@ CJK fonts.")
 (define-public font-google-noto-serif-cjk
   (package
     (name "font-google-noto-serif-cjk")
-    (version "2.001")
+    (version "2.002")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://github.com/googlefonts/noto-cjk/releases/download/Serif"
-             version "/04_NotoSerifCJKOTC.zip"))
+             version "/02_NotoSerifCJK-OTF-VF.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32 "1l6r3sz2s0vcyfx6ria7wqcq45zp40gxgg97lh8hpmajhzw301ig"))))
+        (base32 "007jk7rmfapq5zq4ji9d1l5gpp34p98l9ylhiw33q42d66v2g717"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (chdir "..")         ;For license.
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "Variable/OTC"
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "Variable/OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))))))))
+    (outputs '("out" "otf"))
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
@@ -1975,7 +2086,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "1.0.3")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
@@ -1983,7 +2094,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
                            "/releases/download/v" version
                            "/Sarasa-TTC-" version ".7z"))
        (sha256
-        (base32 "1cgqf15fhg567s2bwjpal3xfcdnbgyy0iav5181zkn6b4k56dgl4"))))
+        (base32 "0sfmqrjfzjy2zxd26kjrdbp59ahxj7p2qr1z5qy512j2cgl1gyiq"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2638,6 +2749,61 @@ It comes in seven weights and Roman, Italic and Oblique styles.")
    (home-page "https://rubjo.github.io/victor-mono/")
    (license license:expat)))
 
+(define-public font-dongle
+  (let ((commit "f7127c4d2450e1cad20254ec692591347e2fc260")
+        (revision "1"))
+    (package
+      (name "font-dongle")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/yangheeryu/Dongle")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gwrjv468bqfa3nxh01vprk7rp24cnhk3zlkrv5mzqcbcdf96nqp"))))
+      (build-system font-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'build
+             (lambda _
+               (begin
+                 (chdir "sources")
+                 (invoke "unzip" "Dongle.zip")
+                 (chdir "..")
+                 (invoke "python3" "build.py")))))))
+      (native-inputs
+       (list python
+             python-glyphslib
+             python-fonttools
+             python-ufolib2
+             python-ufo2ft
+             zip))
+      (synopsis
+       "Rounded sans-serif typeface, supporting Hangeul and Latin glyphs")
+      (description
+       "Dongle(동글) is a rounded sans-serif typeface for display.  It is a
+modular Hangeul with the de-square frame, creating a playful and rhythmic
+movement.  The name, Dongle comes from a Korean onomatopoeia, meaning 'rounded
+or curved shape (with adorable impression)’.
+
+Dongle was originally designed as a 'Jamo (consonant and vowel in Hangeul)
+typing module' for the author's student project.  Later it revised into
+‘syllabic module’ to be released to the public.  As the character size varies
+according to the syllable structure, Dongle typeface is much smaller compared
+to other square frame Korean typefaces.  Therefore, it is better to adjust the
+font size visually to your liking, rather than relying on the point size of
+the editing program.
+
+It is designed especially for Hangeul typography, but it also includes Latin
+alphabet as a part of KS X 1001.  This typeface has a light, regular, and bold
+weight.")
+      (home-page "https://github.com/yangheeryu/Dongle")
+      (license license:silofl1.1))))
+
 (define-public font-meera-inimai
   (package
     (name "font-meera-inimai")
@@ -3182,7 +3348,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.315")
+    (version "1.320")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3190,7 +3356,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "0isb7rbg8yb6hv8xk1ngngkgzpyb3papkl19jczwrwm373m8bn3f"))))
+                "1wvab2g2hcy8wqi23zva17rymqfrrfwd7yh0wbhfb67mz18wbjpm"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -3204,7 +3370,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "1.011")
+    (version "1.320")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3212,7 +3378,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "0x83a7zg1w82bpilk84ajlisccf90kl01gz89fipgqji9nii71bv"))))
+                "0lzfci4zpia62vbnyv22ajlrd8gvwj1ff7iaa0mxs66dbb0p6pq8"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description
@@ -3223,7 +3389,7 @@ dialects in Hong Kong and Taiwan.")))
 (define-public font-chiron-sung-hk
   (package
     (name "font-chiron-sung-hk")
-    (version "1.010")
+    (version "1.011")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3232,8 +3398,22 @@ dialects in Hong Kong and Taiwan.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "065p1gc5xjwc4kfw8bqpsbhaf1p4w0k4l0j04vjsjhcl4k9vyvfz"))))
+                "1916bb834y4r4312g14zid7w3pbx1i70jcgkkfbf4z20grrj891m"))))
     (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (let ((install (assoc-ref %standard-phases 'install)))
+                     (with-directory-excursion "VAR"
+                       (for-each delete-file (find-files "." "\\.ttf$"))
+                       (install #:outputs `(("out" . ,#$output))))
+                     (with-directory-excursion "OTF"
+                       (install #:outputs `(("out" . ,#$output:otf))))
+                     (with-directory-excursion "TTF"
+                       (install #:outputs `(("out" . ,#$output:ttf))))))))))
+    (outputs '("out" "otf" "ttf"))
     (home-page "https://chiron-fonts.github.io/")
     (synopsis "Traditional Chinese Song typeface")
     (description
@@ -3247,7 +3427,7 @@ prevalent typefaces in Traditional Chinese regions.")
   (package
     (inherit font-chiron-sung-hk)
     (name "font-chiron-hei-hk")
-    (version "2.508")
+    (version "2.509")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3256,7 +3436,7 @@ prevalent typefaces in Traditional Chinese regions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0drvkqk629z63k62v3ds559phl82dmkyvpx2r8mi99nnsz22a8ps"))))
+                "0bwx909sijpnc474355hlfjwgxin0m9yxd5k9qwmgxkp2rzqiwnk"))))
     (synopsis "Traditional Chinese Gothic typeface")
     (description
      "Chiron Hei HK is a Traditional Chinese Gothic typeface based on the Hong
@@ -3520,4 +3700,32 @@ that it can be a reference implementation.")
 for display purposes.  It features four weights (light, medium, bold,
 and black), a stylistic alternative, small caps, and many alternate
 glyphs.")
+      (license license:silofl1.1))))
+
+(define-public font-oswald
+  (let ((version "0")
+        (commit "6e65651c229e897dc55fb8d17097ee7f75b2769b")
+        (revision "0"))
+    (package
+      (name "font-oswald")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/OswaldFont")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0m5c98crw6df6hbhxv4smh6ldzk5fx434fyri8xgnsjjcrkqxy0h"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/OswaldFont")
+      (synopsis "Gothic typeface")
+      (description "Oswald is a reworking of the classic gothic typeface
+style historically represented by designs such as 'Alternate Gothic'.
+The characters of Oswald have been re-drawn and reformed to better fit
+the pixel grid of standard digital screens.  Oswald is designed to be
+used freely across the internet by web browsers on desktop computers,
+laptops and mobile devices.")
       (license license:silofl1.1))))

@@ -77,6 +77,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
@@ -112,7 +113,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "2.6.0")
+    (version "2.6.2")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -123,7 +124,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19wmzpbc23515ab4v4pw792x68y7bgsqhd2pmlqiq6bp6jxfrykg"))))
+        (base32 "05zcs0avyjn1dlxxsrc47ld3iddls22g1bc4mk0g8ldxvcwra05g"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -742,14 +743,14 @@ preloading.")
 (define-public chafa
   (package
     (name "chafa")
-    (version "1.12.5")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hpjansson.org/chafa/releases/chafa-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1wjp75l0qbikbdbvj8nlhl1gsakhx3309k0mdww6n2jh5bar0m0g"))))
+                "1170g2qkcj2amsfl7sn81r42lwb2hy4z15xxhy0lrkayig15a3k7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -766,7 +767,7 @@ displayed in a terminal.")
 (define-public imv
   (package
     (name "imv")
-    (version "4.4.0")
+    (version "4.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -774,7 +775,7 @@ displayed in a terminal.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1zlds43z17jrnsrfz3rf3sb3pa5gkmxaibq87509ikc7p1p09c9c"))
+                "0988rpgzyhb27sbhrh5f2zqccqirmq7xb0naqh9nbl8j1dg897b8"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -791,13 +792,15 @@ displayed in a terminal.")
                        (("imv") (string-append bin "/imv")))))))))
     (native-inputs
      (list asciidoc
+           cmocka
            pkg-config))
     (inputs
      (list freeimage
            glu
            libheif
-           libjpeg-turbo
            libinih
+           libjpeg-turbo
+           libjxl
            libnsgif
            (librsvg-for-system)
            libtiff

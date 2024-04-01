@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Rodion Goritskov <rodion.goritskov@gmail.com>
+;;; Copyright © 2023, 2024 Rodion Goritskov <rodion.goritskov@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,7 +30,7 @@
 (define-public clifm
   (package
     (name "clifm")
-    (version "1.15")
+    (version "1.17")
     (source
      (origin
        (method git-fetch)
@@ -39,7 +39,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r9pxlyn8jg0wmzbmbc71l42098lz5k32k6yid09yz6d0gaax7g1"))))
+        (base32 "00f5x0352dsf8f9ixkcwma7wr5pg78maavmd950nni38m647clm6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list (string-append "CC="
@@ -53,8 +53,8 @@
     (inputs (list readline acl libcap))
     (home-page "https://github.com/leo-arch/clifm")
     (synopsis "Command-line file manager")
-    (description "Clifm a shell-like, text-based terminal file manager that
-sits on the command line.
+    (description "Clifm is a shell-like, text-based terminal file manager
+that sits on the command line.
 
 It is built with command line principles in mind: instead of navigating
 through a big menu of files, it lets you type, exactly as you do in your

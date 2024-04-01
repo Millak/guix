@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
@@ -28,6 +28,8 @@
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>;;
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,16 +48,16 @@
 
 (define-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
+  #:use-module (guix build-system ant)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
+  #:use-module (guix build-system perl)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module (guix build-system ant)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system go)
-  #:use-module (guix build-system cmake)
-  #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
+  #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -63,9 +65,11 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages golang)
-  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages java)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
@@ -80,19 +84,20 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages slang)
   #:use-module (gnu packages syncthing)
-  #:use-module (gnu packages web))
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages xorg))
 
 (define-public dos2unix
   (package
     (name "dos2unix")
-    (version "7.5.1")
+    (version "7.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://waterlan.home.xs4all.nl/dos2unix/"
                            "dos2unix-" version ".tar.gz"))
        (sha256
-        (base32 "05gwq7asks48l4iliw9cvbcaqa45yrkd2wb47zbb0ag0na5ph1ys"))))
+        (base32 "0fmzqhwq5y14gv5p4kin5flv6g1hvbv0mhlniys2wi08cr244ir6"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -940,13 +945,24 @@ Filter, list, or split a tar file.
                 "0dyflzvxq2wvs0rgqfyi5yzzrb6r4bzw2dm8cl304dakxk38ddys"))))
     (build-system ant-build-system)
     (arguments
-     `(;; FIXME: some tests fail because locale resources cannot be found.
-       ;; Even when I add them to the class path,
-       ;; RSyntaxTextAreaEditorKitDumbCompleteWordActionTest fails.
-       #:tests? #f
-       #:jar-name "rsyntaxtextarea.jar"))
+     (list
+      #:jar-name "rsyntaxtextarea.jar"
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'build 'copy-resources
+           (lambda _
+             (copy-recursively "src/main/resources" "build/classes")))
+         (add-before 'check 'start-xorg-server
+           (lambda _
+             ;; The test suite requires a running X server.
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1")
+             ;; Prevent irrelevant errors that cause test output mismatches:
+             ;; ‘Fontconfig error: No writable cache directories’
+             (setenv "XDG_CACHE_HOME" (getcwd)))))))
     (native-inputs
-     (list java-junit java-hamcrest-core))
+     (list java-junit java-hamcrest-core
+           xorg-server-for-tests))
     (home-page "https://bobbylight.github.io/RSyntaxTextArea/")
     (synopsis "Syntax highlighting text component for Java Swing")
     (description "RSyntaxTextArea is a syntax highlighting, code folding text
@@ -1357,9 +1373,9 @@ This package provides Python bindings.")
 of a Unix terminal to HTML code.")
     (license (list license:lgpl2.0+ license:mpl1.1))))
 
-(define-public go-github-com-errata-ai-vale
+(define-public vale
   (package
-    (name "go-github-com-errata-ai-vale")
+    (name "vale")
     (version "2.4.0")
     (source
      (origin
@@ -1372,10 +1388,10 @@ of a Unix terminal to HTML code.")
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (native-inputs
-     `(("github.com/sp13/afero" ,go-github-com-spf13-afero)
-       ("github.com/urfave/cli" ,go-github-com-urfave-cli)
-       ("github.com/olekukonko/tablewriter" ,go-github-com-olekukonko-tablewriter)
-       ("github.com/mitchellh/mapstructure" ,go-github-com-mitchellh-mapstructure)))
+     (list go-github-com-mitchellh-mapstructure
+           go-github-com-olekukonko-tablewriter
+           go-github-com-spf13-afero
+           go-github-com-urfave-cli))
     (arguments
      `(#:import-path "github.com/errata-ai/vale"
        #:install-source? #f))
@@ -1388,6 +1404,9 @@ languages such as HTML, Markdown, Asciidoc, and reStructuredText.  The community
 around it also has a list of style guides implemented with Vale in
 @url{https://github.com/errata-ai/styles, their styles repo}.")
     (license license:expat)))
+
+(define-public go-github-com-errata-ai-vale
+  (deprecated-package "go-github-com-errata-ai-vale" vale))
 
 (define-public utf-8-lineseparator
   (package

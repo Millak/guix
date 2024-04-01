@@ -109,6 +109,28 @@ C/C++ part.")
     (license x11)
     (home-page "http://site.icu-project.org/")))
 
+(define-public icu4c-73
+  (package
+    (inherit icu4c)
+    (name "icu4c")
+    (version "73.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/unicode-org/icu/releases/download/release-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
+                    "/icu4c-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
+                    "-src.tgz"))
+              (sha256
+               (base32
+                "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
+              (patches
+               (cons
+                (search-patch
+                 "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
+                (origin-patches (package-source icu4c))))))))
+
 (define-public icu4c-70
   (package
     (inherit icu4c)

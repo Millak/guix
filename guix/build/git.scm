@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2016, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2016, 2019, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -19,8 +19,12 @@
 
 (define-module (guix build git)
   #:use-module (guix build utils)
+  #:use-module ((guix build download)
+                #:select (download-method-enabled?))
   #:autoload   (guix build download-nar) (download-nar)
-  #:autoload   (guix swh) (%verify-swh-certificate? swh-download)
+  #:autoload   (guix swh) (%verify-swh-certificate?
+                           swh-download
+                           swh-download-directory-by-nar-hash)
   #:use-module (srfi srfi-34)
   #:use-module (ice-9 format)
   #:export (git-fetch
@@ -90,27 +94,42 @@ fetched, recursively.  Return #t on success, #f otherwise."
 
 
 (define* (git-fetch-with-fallback url commit directory
-                                  #:key (git-command "git")
+                                  #:key (item directory)
+                                  (git-command "git")
+                                  hash hash-algorithm
                                   lfs? recursive?)
   "Like 'git-fetch', fetch COMMIT from URL into DIRECTORY, but fall back to
-alternative methods when fetching from URL fails: attempt to download a nar,
-and if that also fails, download from the Software Heritage archive."
-  (or (git-fetch url commit directory
-                 #:lfs? lfs?
-                 #:recursive? recursive?
-                 #:git-command git-command)
-      (download-nar directory)
+alternative methods when fetching from URL fails: attempt to download a nar
+for ITEM, and if that also fails, download from the Software Heritage archive.
+When HASH and HASH-ALGORITHM are provided, they are interpreted as the nar
+hash of the directory of interested and are used as its content address at
+SWH."
+  (or (and (download-method-enabled? 'upstream)
+           (git-fetch url commit directory
+                      #:lfs? lfs?
+                      #:recursive? recursive?
+                      #:git-command git-command))
+      (and (download-method-enabled? 'nar)
+           (download-nar item directory))
 
       ;; As a last resort, attempt to download from Software Heritage.
       ;; Disable X.509 certificate verification to avoid depending
       ;; on nss-certs--we're authenticating the checkout anyway.
       ;; XXX: Currently recursive checkouts are not supported.
       (and (not recursive?)
+           (download-method-enabled? 'swh)
            (parameterize ((%verify-swh-certificate? #f))
              (format (current-error-port)
                      "Trying to download from Software Heritage...~%")
 
-             (swh-download url commit directory)
+             ;; First try to look up and download the directory corresponding
+             ;; to HASH: this is fundamentally more reliable than looking up
+             ;; COMMIT, especially when COMMIT denotes a tag.
+             (or (and hash hash-algorithm
+                      (swh-download-directory-by-nar-hash hash hash-algorithm
+                                                          directory))
+                 (swh-download url commit directory))
+
              (when (file-exists?
                     (string-append directory "/.gitattributes"))
                ;; Perform CR/LF conversion and other changes

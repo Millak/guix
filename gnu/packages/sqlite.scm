@@ -13,6 +13,7 @@
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2024 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -115,10 +116,10 @@ is in the public domain.")
 (define-public sqlite-next
   (package
     (inherit sqlite)
-    (version "3.42.0")
+    (version "3.45.1")
     (source (origin
               (method url-fetch)
-              (uri (sqlite-uri version 2022))
+              (uri (sqlite-uri version 2024))
               (sha256
                (base32
-                "19lc11fwl7jfv94hnjih0gr41jakz38ra23cbk5449vf3hbgvg3s"))))))
+                "02lssjiwyvsrr80rp62n0msds0f7hq5y4lbni74k4nbs3f22g76d"))))))

@@ -8,6 +8,7 @@
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2023 B. Wilson <x@wilsonb.com>
@@ -30,19 +31,20 @@
 
 (define-module (gnu packages flashing-tools)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
+  #:use-module (guix build-system meson)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module (guix build-system cmake)
-  #:use-module (guix build-system copy)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system meson)
-  #:use-module (guix build-system python)
-  #:use-module (gnu packages autotools)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -55,15 +57,16 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
+  #:use-module (gnu packages libftdi)
+  #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages libusb)
-  #:use-module (gnu packages libftdi)
-  #:use-module (gnu packages linux)
-  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
@@ -625,6 +628,42 @@ formats, and can perform many different manipulations.")
     (description "@code{uuu} is a command line tool, evolved out of MFGTools.
 It can be used to upload images to I.MX SoC's using at least their boot ROM.")
     (license license:bsd-3)))
+
+(define-public wally-cli
+  ;; Version with updated dependencies is not released yet, see
+  ;; <https://github.com/zsa/wally-cli/pull/7>.
+  (let ((commit "b0fafe52cc7fb9d55f2b968d4548c99917c7325c")
+        (revision "0"))
+    (package
+      (name "wally-cli")
+      (version (git-version "2.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zsa/wally-cli")
+               (commit commit)))
+         (sha256
+          (base32 "09phq2g51x7rlalzb87aqf48p3j4s7s5jdf5vdf48l9805hi2yha"))
+         (file-name (git-file-name name version))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:import-path "github.com/zsa/wally-cli"))
+      (native-inputs
+       (list go-github-com-briandowns-spinner
+             go-github-com-google-gousb
+             go-github-com-logrusorgru-aurora
+             go-github-com-marcinbor85-gohex
+             go-gopkg-in-cheggaaa-pb-v1
+             pkg-config))
+      (home-page "https://ergodox-ez.com/pages/wally")
+      (synopsis "Flashing tool for ZSA keyboards")
+      (description
+       "This tool is for flashing custom layouts to
+@url{https://ergodox-ez.com/,ZSA keyboards}.")
+      (license license:expat))))
 
 (define-public qdl
   (let ((commit "13681fcb359c9f9c32a17a91d3dd20df2e413b6d")

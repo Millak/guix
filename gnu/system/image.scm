@@ -5,6 +5,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +72,7 @@
   #:export (root-offset
             root-label
             image-without-os
+            operating-system-for-image
 
             esp-partition
             esp32-partition
@@ -534,7 +536,8 @@ used in the image."
 
     (when (and (gpt-image? image)
                (not
-                (memq (bootloader-name bootloader) '(grub-efi grub-efi32))))
+                (memq (bootloader-name bootloader)
+                      '(grub-efi grub-efi32 grub-efi-removable-bootloader))))
       (raise
        (formatted-message
         (G_ "EFI bootloader required with GPT partitioning"))))
@@ -686,7 +689,8 @@ returns an image record where the first partition's label is set to <label>."
 
 (define* (system-docker-image image
                               #:key
-                              (name "docker-image"))
+                              (name "docker-image")
+                              (archiver tar))
   "Build a docker image for IMAGE.  NAME is the base name to use for the
 output file."
   (define boot-program
@@ -731,6 +735,7 @@ output file."
               (use-modules (guix docker)
                            (guix build utils)
                            (gnu build image)
+                           (srfi srfi-1)
                            (srfi srfi-19)
                            (guix build store-copy)
                            (guix store database))
@@ -754,18 +759,30 @@ output file."
                                            #:register-closures? #$register-closures?
                                            #:deduplicate? #f
                                            #:system-directory #$os)
-                (build-docker-image
-                 #$output
-                 (cons* image-root
-                        (map store-info-item
-                             (call-with-input-file #$graph
-                               read-reference-graph)))
-                 #$os
-                 #:entry-point '(#$boot-program #$os)
-                 #:compressor '(#+(file-append gzip "/bin/gzip") "-9n")
-                 #:creation-time (make-time time-utc 0 1)
-                 #:system #$image-target
-                 #:transformations `((,image-root -> ""))))))))
+                (when #$(image-max-layers image)
+                  (setenv "PATH"
+                          (string-join (list #+(file-append archiver "/bin")
+                                             #+(file-append gzip "/bin"))
+                                       ":")))
+                (apply build-docker-image
+                       (append (list #$output
+                                     (append (if #$(image-max-layers image)
+                                                 '()
+                                                 (list image-root))
+                                             (map store-info-item
+                                                  (call-with-input-file #$graph
+                                                    read-reference-graph)))
+                                     #$os
+                                     #:entry-point '(#$boot-program #$os)
+                                     #:compressor
+                                     '(#+(file-append gzip "/bin/gzip") "-9n")
+                                     #:creation-time (make-time time-utc 0 1)
+                                     #:system #$image-target
+                                     #:transformations `((,image-root -> "")))
+                               (if #$(image-max-layers image)
+                                   (list #:root-system image-root
+                                         #:max-layers #$(image-max-layers image))
+                                   '()))))))))
 
     (computed-file name builder
                    ;; Allow offloading so that this I/O-intensive process

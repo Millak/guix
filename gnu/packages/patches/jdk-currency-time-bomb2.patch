@@ -1,0 +1,13 @@
+Fix a time bomb present in the jdk "drop" of IcedTea 8.
+
+--- a/make/src/classes/build/tools/generatecurrencydata/GenerateCurrencyData.java
++++ b/make/src/classes/build/tools/generatecurrencydata/GenerateCurrencyData.java
+@@ -284,7 +284,7 @@ public class GenerateCurrencyData {
+             String timeString = currencyInfo.substring(4, length - 4);
+             long time = format.parse(timeString).getTime();
+             if (Math.abs(time - System.currentTimeMillis()) > ((long) 10) * 365 * 24 * 60 * 60 * 1000) {
+-                throw new RuntimeException("time is more than 10 years from present: " + time);
++                System.err.println("note: time is more than 10 years from \"present\": " + time);
+             }
+             specialCaseCutOverTimes[specialCaseCount] = time;
+             specialCaseOldCurrencies[specialCaseCount] = oldCurrency;

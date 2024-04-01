@@ -272,12 +272,12 @@ and a Python library.")
                                                 curl "/bin:"
                                                 fribidi "/bin:"
                                                 rlwrap "/bin")))))))
+         (add-after 'unpack 'emacs-make-autoloads
+           (assoc-ref emacs:%standard-phases 'make-autoloads))
          (add-after 'install 'emacs-install
            (assoc-ref emacs:%standard-phases 'install))
-         (add-after 'emacs-install 'emacs-make-autoloads
-           (assoc-ref emacs:%standard-phases 'make-autoloads))
-         (add-after 'emacs-make-autoloads 'emacs-autoloads-compilation
-           (assoc-ref emacs:%standard-phases 'enable-autoloads-compilation)))
+         (add-after 'emacs-install 'emacs-build
+           (assoc-ref emacs:%standard-phases 'build)))
        #:make-flags (list (string-append "PREFIX=" %output)
                           "NETWORK_ACCESS=no test")
        #:imported-modules (,@%gnu-build-system-modules

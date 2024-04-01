@@ -46,6 +46,7 @@
             page-break
             page-break?
 
+            <comment>
             comment
             comment?
             comment->string

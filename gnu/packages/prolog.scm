@@ -171,3 +171,48 @@ compiler with a rich set of built-in predicates.  It offers a fast, robust and
 small environment which enables substantial applications to be developed with
 it.")
     (license license:bsd-2)))
+
+(define-public logtalk
+  (package
+    (name "logtalk")
+    (version "3.75.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://logtalk.org/files/logtalk-"
+                           version ".tar.bz2"))
+       (sha256 (base32 "0w35br03l307wk2fwh67rybqjgvjlwpy9j5r4c3pkrywd7lhrc54"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ;no configure script and Makefile
+               (delete 'build)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (mkdir #$output)
+                   (invoke "./scripts/install.sh" "-p" #$output))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LOGTALKHOME")
+            (separator #f)              ;single valued
+            (files '("share/logtalk")))))
+    (home-page "https://logtalk.org/")
+    (synopsis "Object-oriented logic programming language")
+    (description "Logtalk is a declarative object-oriented logic programming language
+that extends and leverages the Prolog language with a feature set suitable for
+programming in the large.  As a multi-paradigm language, Logtalk includes support for
+both prototypes and classes, protocols (interfaces), categories (components and
+hot-patching), event-driven programming, coinduction, lambda expressions, and
+high-level multi-threading programming.")
+    ;; Most are under Apache License 2.0, some contributed libraries and ports are
+    ;; under other licenses.
+    (license (list license:asl2.0
+                   license:artistic2.0
+                   license:bsd-2
+                   license:bsd-3
+                   license:cc0
+                   license:expat
+                   license:gpl2+
+                   license:osl2.1))))

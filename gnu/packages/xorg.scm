@@ -6,7 +6,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Cyrill Schenkel <cyrill.schenkel@gmail.com>
-;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023, 2024 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5017,7 +5018,7 @@ by the Xorg server.")
 (define-public xorg-server
   (package
     (name "xorg-server")
-    (version "21.1.10")
+    (version "21.1.11")
     (source
      (origin
        (method url-fetch)
@@ -5025,7 +5026,7 @@ by the Xorg server.")
                            "/xserver/xorg-server-" version ".tar.xz"))
        (sha256
         (base32
-         "1l0iaq83vbl9jr34sa7v7630c5bnp64drlw8yg6c6yn5xyib7c6f"))
+         "1vr6sc38sqipazsm61bcym2ggbgfgaamz7wf05mb31pvayyssg8x"))
        (patches
         (list
          ;; See:
@@ -5216,10 +5217,33 @@ application-facing EGL functions.")
     (home-page "https://github.com/NVIDIA/eglexternalplatform")
     (license license:expat)))
 
+(define-public egl-gbm
+  (package
+    (name "egl-gbm")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/NVIDIA/egl-gbm")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "125h1751vdg60klci0cbmcqj46spxalzqawvvd469qvx69bm30da"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list eglexternalplatform mesa))
+    (synopsis "GBM EGL external platform library")
+    (description
+     "This package provides an EGL External Platform library implementation for
+GBM EGL support.")
+    (home-page "https://github.com/NVIDIA/egl-gbm")
+    (license license:expat)))
+
 (define-public egl-wayland
   (package
     (name "egl-wayland")
-    (version "1.1.11")
+    (version "1.1.13")
     (source
      (origin
        (method git-fetch)
@@ -5228,7 +5252,7 @@ application-facing EGL functions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11a3j2rjai2vsway9ki5y3ncvhrwd300pz2zcq36mq3brbr1vgf5"))))
+        (base32 "0irmvp8g2wn18q6k3vcmg4a57q4ddmqccv3g7hbysqnsdsps63rl"))))
     (build-system meson-build-system)
     (native-inputs
      (cons* libglvnd ;needed for headers
@@ -5250,7 +5274,7 @@ EGLStream families of extensions.")
 (define-public xorg-server-xwayland
   (package
     (name "xorg-server-xwayland")
-    (version "23.2.3")
+    (version "23.2.4")
     (source
      (origin
        (method url-fetch)
@@ -5258,7 +5282,7 @@ EGLStream families of extensions.")
                            "/xserver/xwayland-" version ".tar.xz"))
        (sha256
         (base32
-         "00p30yyikh7h9xsqgir66xb06pspgjlibv1mi0n42irc4fkrm7gb"))))
+         "0sxlh43cnpf56p2p5jnhp7427knfpy42mcka7f5hjcqddndib7m9"))))
     (inputs (list font-dejavu
                   dbus
                   egl-wayland
@@ -5935,7 +5959,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
 (define-public xterm
   (package
     (name "xterm")
-    (version "384")
+    (version "390")
     (source
      (origin
        (method url-fetch)
@@ -5945,7 +5969,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
              (string-append "ftp://ftp.invisible-island.net/xterm/"
                             "xterm-" version ".tgz")))
        (sha256
-        (base32 "0wy3rdj5smis44nsy6iccx3gsyzlqw0rcjjb7h605bnf803qgvri"))
+        (base32 "03wwdwnpj5dg1ah5sfp00ppzawjd81lnw47g4p20jjhpqly7q4bm"))
        (patches
          (search-patches "xterm-370-explicit-xcursor.patch"))))
     (build-system gnu-build-system)
@@ -6133,14 +6157,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "5.0.4")
+    (version "5.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0zb49adrjrdsmf0k9xdc6j2idqy5lgzsjjrb4awjh5i4r3wc58m0"))
+        (base32 "0rkcsv0b55xbvkqi38nm01yxc09f7l9nj7xnp8v23rn6bp86m8mr"))
        (patches (search-patches "xpra-5.0-systemd-run.patch"
                                 "xpra-5.0-install_libs.patch"))))
     (build-system python-build-system)
@@ -6292,7 +6316,6 @@ X11 servers, Windows, or macOS.")
                            (guix build emacs-utils))
        #:configure-flags
        (list "--with-anthy-utf8"
-             (string-append "--with-lispdir=" %output "/share/emacs")
              ;; Set proper runpath
              (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
              "CFLAGS=-O2 -g -fcommon")
@@ -6306,21 +6329,11 @@ X11 servers, Windows, or macOS.")
                  ("uim-el-agent" (string-append out "/bin/uim-el-agent"))
                  ("uim-el-helper-agent" (string-append out "/bin/uim-el-helper-agent"))))
              #t))
-         ;; Fix installation path by renaming share/emacs/uim-el to
-         ;; share/emacs/site-lisp
-         (add-after 'install 'fix-install-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((share-emacs (string-append (assoc-ref outputs "out")
-                                               "/share/emacs")))
-               (rename-file (string-append share-emacs "/uim-el")
-                            (string-append share-emacs "/site-lisp")))
-             #t))
-         ;; Generate emacs autoloads for uim.el
          (add-after 'fix-install-path 'make-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
              (emacs-generate-autoloads
               ,name (string-append (assoc-ref outputs "out")
-                                   "/share/emacs/site-lisp"))
+                                   "/share/emacs/site-lisp/uim-el"))
              #t)))))
     (home-page "https://github.com/uim/uim")
     (synopsis "Multilingual input method framework")

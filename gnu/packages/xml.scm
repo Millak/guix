@@ -88,7 +88,7 @@
 (define-public libxmlb
   (package
     (name "libxmlb")
-    (version "0.3.12")
+    (version "0.3.14")
     (source
      (origin
        (method git-fetch)
@@ -98,7 +98,7 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v9s2k5saxrs0ssjyg1zxaibybikvaw7fip6sy0b8ixzax9r5y0c"))))
+        (base32 "0qcp881s559wc73db91vjccrv0d3zva87l5jdp5w0ygzz6bmg5cn"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
@@ -107,7 +107,7 @@
     (inputs
      (list appstream-glib glib))
     (propagated-inputs
-     (list `(,zstd "lib")))             ; in Requires.private of xmlb.pc
+     (list xz `(,zstd "lib")))             ; in Requires.private of xmlb.pc
     (synopsis "Library to help create and query binary XML blobs")
     (description "Libxmlb library takes XML source, and converts it to a
 structured binary representation with a deduplicated string table; where the

@@ -36,7 +36,11 @@
 (define* (check #:key tests? inputs with-prove6? #:allow-other-keys)
   (if (and tests? (assoc-ref inputs "perl6-tap-harness"))
   ;(if (and tests? with-prove6?)
-      (invoke "prove6" "-I=lib" "t/")
+      (let ((test-files (find-files "t/" "\\.(rakutest|t|t6)$")))
+        (invoke "raku" "-MTAP" "-e"
+                (string-append
+                 "my @tests = <" (string-join test-files " ") ">; "
+                 "TAP::Harness.new().run(@tests);")))
       (format #t "test suite not run~%"))
   #t)
 
@@ -59,7 +63,7 @@
           #t)
         (begin
           (let ((inst (string-append (assoc-ref inputs "rakudo")
-                                     "/share/perl6/tools/install-dist.p6")))
+                                     "/share/perl6/tools/install-dist.raku")))
             (setenv "RAKUDO_RERESOLVE_DEPENDENCIES" "0")
             (setenv "RAKUDO_MODULE_DEBUG" "1") ; be verbose while building
             (invoke inst (string-append "--to=" perl6) "--for=site"))))))

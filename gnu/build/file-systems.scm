@@ -7,6 +7,7 @@
 ;;; Copyright © 2019 David C. Trudgian <dave@trudgian.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1021,8 +1022,8 @@ were found."
 
 (define (canonicalize-device-spec spec)
   "Return the device name corresponding to SPEC, which can be a <uuid>, a
-<file-system-label>, or a string (typically a /dev file name or an nfs-root
-containing ':/')."
+<file-system-label>, the string 'none' or another string (typically a /dev
+file name or an nfs-root containing ':/')."
   (define max-trials
     ;; Number of times we retry partition label resolution, 1 second per
     ;; trial.  Note: somebody reported a delay of 16 seconds (!) before their
@@ -1046,8 +1047,8 @@ containing ':/')."
 
   (match spec
     ((? string?)
-     (if (string-contains spec ":/")
-         spec                  ; do not resolve NFS devices
+     (if (or (string-contains spec ":/") (string=? spec "none"))
+         spec                  ; do not resolve NFS / tmpfs devices
          ;; Nothing to do, but wait until SPEC shows up.
          (resolve identity spec identity)))
     ((? file-system-label?)

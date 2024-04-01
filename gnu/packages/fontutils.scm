@@ -7,11 +7,11 @@
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -232,7 +234,11 @@ them as it goes.")
               (when tests?
                 (setenv "HOME" "/tmp")
                 (invoke "pytest" "-vv" "--dist" "loadfile" "-n"
-                        (number->string (parallel-job-count))))))
+                        (number->string (parallel-job-count))
+                        ;; This test fails because of a different date in the
+                        ;; copyright header of an expected file since an
+                        ;; update to ffmpeg.
+                        "-k" "not test_alt_missing_glyph"))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
@@ -1907,6 +1913,7 @@ maintain the Noto Fonts project.")
      (list check pkg-config scdoc))
     (propagated-inputs
      (list ;; Required by fcft.pc.
+           utf8proc
            fontconfig
            freetype
            harfbuzz
@@ -2042,7 +2049,7 @@ Unicode Charts.  It was developed for use with DejaVu Fonts project.")
 (define-public libraqm
   (package
     (name "libraqm")
-    (version "0.8.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -2051,7 +2058,7 @@ Unicode Charts.  It was developed for use with DejaVu Fonts project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qrdw67n14n0km2f8l0gk8scgj3ybz662s9x8jwj3rrj33nl2d1a"))))
+        (base32 "1bzdrvacgj9629r4mgmag9sm5ay5914fbs8pnxf8xphvrbnbxm8z"))))
     (build-system meson-build-system)
     (native-inputs
      (list gtk-doc/stable pkg-config python-wrapper))

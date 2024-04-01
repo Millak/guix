@@ -1,0 +1,23 @@
+From 5eb1faf8ee2eac3057ef55c99dd3083242559b9e Mon Sep 17 00:00:00 2001
+From: dbpercival <dbpercival@gmail.com>
+Date: Sat, 8 Jul 2023 16:26:35 -0700
+Subject: [PATCH] Update sapa_lapack.c
+
+Stephen's suggested change
+---
+ src/sapa_lapack.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/sapa_lapack.c b/src/sapa_lapack.c
+index eff4851..a520e33 100644
+--- a/src/sapa_lapack.c
++++ b/src/sapa_lapack.c
+@@ -102,7 +102,7 @@ SEXP R_sapa_dpss(SEXP nsample, SEXP ntaper, SEXP bandwidth)
+     ISPLIT,
+     WORK1,
+     IWORK1,
+-    &INFO);
++    &INFO FCONE FCONE);
+   //  if (INFO != 0)
+   //  error(_("error code %d from LAPACK routine '%s'"), info, "dstebz");
+ 

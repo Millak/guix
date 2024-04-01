@@ -7,6 +7,8 @@
 ;;; Copyright © 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2021 Oskar Köök <oskar@maatriks.ee>
 ;;; Copyright © 2021 Cees de Groot <cg@evrl.com>
+;;; Copyright © 2024 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2024 Ivan Sokolov <ivan-p-sokolov@ya.ru>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -101,12 +103,26 @@
           (add-after 'install 'wrap-programs
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
-                     (programs '("elixir" "elixirc" "iex" "mix")))
+                     (programs '("elixir" "elixirc" "iex")))
+                ;; mix can be sourced as an elixir script by other elixir
+                ;; program, for example `iex -S mix`, so we should not wrap
+                ;; mix into shell script.
+                (substitute* (string-append out "/bin/mix")
+                  (("Mix.start\\(\\)")
+                   (format #f "\
+~~w[GUIX_ELIXIR_LIBS ERL_LIBS]
+|> Enum.map(&System.get_env/1)
+|> Enum.reject(&is_nil/1)
+|> Enum.join(\":\")
+|> case do \"\" -> :ok; erl_libs -> System.put_env(\"ERL_LIBS\", erl_libs) end
+System.put_env(\"MIX_REBAR3\", System.get_env(\"MIX_REBAR3\", \"~a\"))
+Mix.start()"
+                           (search-input-file inputs "/bin/rebar3"))))
                 (for-each (lambda (program)
                             (wrap-program (string-append out "/bin/" program)
                               '("ERL_LIBS" prefix ("${GUIX_ELIXIR_LIBS}"))))
                           programs)))))))
-    (inputs (list erlang git))
+    (inputs (list erlang rebar3 git))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_ELIXIR_LIBS")

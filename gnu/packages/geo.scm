@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017, 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
@@ -13,11 +13,12 @@
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020–2024 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2022 Patrick Noll <patrick@patricknoll.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -61,6 +62,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
@@ -139,7 +141,7 @@
 (define-public gmt
   (package
     (name "gmt")
-    (version "6.4.0")
+    (version "6.5.0")
     (source
      (origin
        (method url-fetch)
@@ -147,7 +149,7 @@
                            "releases/download/"
                            version "/gmt-" version "-src.tar.xz"))
        (sha256
-        (base32 "0wh694cwcw2dz5rsh6pdn9irx08d65iih0vbxz350vzrkkjzyvml"))))
+        (base32 "07hlqg3adxrz7wqih8pydr44v7j40savcxfjlkaw3y9k82sas8j0"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #false)) ;tests need costline data and caches
     (inputs
@@ -223,15 +225,15 @@ BUFR and WMO GTS abbreviated header formats.")
 (define-public cdo
   (package
     (name "cdo")
-    (version "2.1.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://code.mpimet.mpg.de/attachments/download/27481/cdo-"
+             "https://code.mpimet.mpg.de/attachments/download/29313/cdo-"
              version ".tar.gz"))
        (sha256
-        (base32 "1k18llghpf3jnjn0xcnhmbg7arb1fiy854qqn9m5c1abjin38wdq"))))
+        (base32 "0b2d1d8r1lxs422dxajnmvjyhjwfichlkglv3yqm7wq7rjw0yyd4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -256,7 +258,7 @@ BUFR and WMO GTS abbreviated header formats.")
     (inputs
      (list curl eccodes fftw hdf5 libxml2 netcdf proj udunits))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python-wrapper))
     (home-page "https://code.mpimet.mpg.de/projects/cdo")
     (synopsis "Climate data operators")
     (description "@acronym{CDO, Climate Data Operators} is a collection of command-line
@@ -432,7 +434,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.11.2")
+    (version "3.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -440,7 +442,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1k744nwfa5sj4amzsdjxgac83wh6xfb9xi7z5bka7ic1jik7gw5i"))))
+                "00qdk9a4048pzfj2rhzkfw3lvm642znf6kr4x29i3d94494pxsnn"))))
     (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -448,7 +450,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                     'unpack 'patch-test-shebangs
                     (lambda _
                       (substitute* '("tests/xmltester/testrunner.sh"
-                                     "tests/geostest/testrunner.sh")
+                                     "tests/xmltester/safe_to_xml.sh")
                         (("/bin/sh") (which "sh"))))))))
     (inputs
      (list glib))
@@ -468,7 +470,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "43.0")                    ;for libsoup 3 support
+    (version "44.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -476,7 +478,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1r1l6ajs6zz316m8zac5r0l3qgdv616xh376bfn2fflcnz7wys08"))))
+                "026488yb6azwb2sm0yy0iaipk914l3agvb7d8azks4kyjqlslyb8"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -518,11 +520,10 @@ topology functions.")
            glib-networking
            gnome-online-accounts
            gsettings-desktop-schemas
-           gtk+
+           gtk
            libadwaita
            libgee
            libgweather4
-           libhandy
            librsvg
            libsecret
            libshumate
@@ -546,7 +547,11 @@ and driving.")
        (method url-fetch)
        (uri (string-append "http://download.osgeo.org/geotiff/libgeotiff/libgeotiff-"
                            version ".tar.gz"))
-       (patches (search-patches "libgeotiff-fix-tests-with-proj-9.1.1.patch"))
+       (patches
+         (search-patches "libgeotiff-fix-tests-with-proj-9.1.1.patch"
+                         "libgeotiff-fix-tests-with-proj-9.3.0.patch"
+                         "libgeotiff-fix-tests-with-proj-9.3.1.patch"
+                         "libgeotiff-fix-tests-on-i386.patch"))
        (sha256
         (base32 "1mjmgv48x51ppax5dnb6lq7z600czxll53bx6jbzqwd4m93i7aq5"))
        (modules '((guix build utils)))
@@ -738,7 +743,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "9.2.0")
+    (version "9.3.1")
     (source
      (origin
        (method url-fetch)
@@ -746,7 +751,7 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "03nm1sgvh237my7ss6kayn6887cbnayvjxrrxsrfcakkmbsida6y"))))
+         "1g0hkpiablvhsmw0kn5frwgdir3q7avc45p6lc1zhhhzkv5ikydh"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config))
     (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
@@ -842,31 +847,36 @@ projections.")
 (define-public python-pyproj
   (package
     (name "python-pyproj")
-    (version "3.5.0")
+    (version "3.6.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyproj" version))
         (sha256
           (base32
-            "1xhvr0n5gb7v6x0wd7cqmc0zrky2fag7bq2shx6l2qqq3icx2ncq"))))
+            "1gq1spm5zdq9k8kl9cb31b9m08ybyrdggfw3sjrqyz9b9iq7raj4"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-proj-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((proj (assoc-ref inputs "proj")))
-               (setenv "PROJ_DIR" proj)
-               (substitute* "pyproj/datadir.py"
-                 (("(internal_datadir = ).*$" all var)
-                  (string-append var "Path(\"" proj "/share/proj\")\n")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-proj-path
+            (lambda* (#:key #:allow-other-keys)
+              (let ((proj #$(this-package-input "proj")))
+                (setenv "PROJ_DIR" proj)
+                (substitute* "pyproj/datadir.py"
+                  (("(internal_datadir = ).*$" all var)
+                   (string-append var "Path(\"" proj
+                                  "/share/proj\")\n")))))))))
     (inputs
       (list proj))
     (propagated-inputs
       (list python-certifi))
     (native-inputs
-      (list python-cython python-numpy python-pandas python-pytest
+      (list python-cython
+            python-numpy
+            python-pandas
+            python-pytest
             python-xarray))
     (home-page "https://github.com/pyproj4/pyproj")
     (synopsis
@@ -939,14 +949,14 @@ pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "0.13.2")
+    (version "0.14.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "0s59jjk02l1zajz95n1c7fr3fyj44wzxn569q2y7f34042f6vdg5"))))
+            "1nycf79nzris058lz1fyg0byj874wxq33an3y74zvybnhdxxawbf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -955,6 +965,8 @@ pyproj, Rtree, and Shapely.")
          ;; Test files are missing
          "--ignore=geopandas/tests/test_overlay.py"
          "--ignore=geopandas/io/tests/test_file.py"
+         ;; Number of open figures changed during test
+         "-k" "not test_pandas_kind"
          ;; Disable tests that require internet access.
          "-m" "not web")))
     (propagated-inputs
@@ -972,56 +984,106 @@ enables you to easily do operations in Python that would otherwise
 require a spatial database such as PostGIS.")
     (license license:bsd-3)))
 
+(define-public python-ogr2osm
+  (package
+    (name "python-ogr2osm")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in PyPi package
+       (uri
+        (git-reference
+         (url "https://github.com/roelderickx/ogr2osm/")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hwqnx3cdqxmniydpj1v31kglq1xjsx41d8p10c9j4hg8kb43j80"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; There are tests in git checkout but non of the examples taken from
+      ;; GitHub Actions worked for me. Disabling them to be checked later
+      ;; <https://github.com/roelderickx/ogr2osm/blob/main/.github/workflows/test.yml>.
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; TODO: Fix provided tests.
+                ;; (invoke "cram" "test/basic_usage.t")
+                ;; (invoke "cram" "test/osm_output.t")
+                ;; (invoke "cram" "test/pbf_output.t")
+
+                ;; Run simple tests to ensure that the command is working.
+                (invoke "ogr2osm" "--help")
+                (invoke
+                 "ogr2osm" "-f" "test/shapefiles/basic_geometries.kml")))))))
+    (inputs
+     (list gdal))
+    (native-inputs
+     (list coreutils
+           diffutils
+           libxml2
+           python-cram
+           which))
+    (propagated-inputs
+     (list python-lxml
+           python-protobuf))
+    (home-page "https://github.com/roelderickx/ogr2osm")
+    (synopsis "Convert ogr-readable files like shapefiles into OSM or PDF formats")
+    (description
+     "@code{ogr2osm} is a tool for converting ogr-readable files into
+@acronym{OSM, OpenStreetMap} format.  It supports reading from OGR files like
+shapefiles or PostgresSQL database and converts data into @code{osm} or
+@code{osm.pbf} formats.  A translation file can be used to manipulate the data
+during conversion.")
+    (license license:expat)))
+
 (define-public python-osmnx
   (package
     (name "python-osmnx")
-    (version "1.1.2")
+    (version "1.8.1")
     (source
      (origin
-       ; Fetch from github as the pypi package is missing the tests dir.
+       ;; Fetch from github as the pypi package is missing the tests dir.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/gboeing/osmnx")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n8qjn184p5a2s3j6x6iyc1i7p3l3xnbqqxm6ajwgwv6j5fw1d5a"))))
+        (base32 "0n238n07pp5jw9cg8nqw9qhpkw8plzb5imz1gxbliw2l1idqyjcl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-               ;; The following tests require network access.
-               "not test_geocode_to_gdf"
-               " and not test_stats"
-               " and not test_osm_xml"
-               " and not test_elevation"
-               " and not test_routing"
-               " and not test_plots"
-               " and not test_find_nearest"
-               " and not test_api_endpoints"
-               " and not test_graph_save_load"
-               " and not test_graph_from_functions"
-               " and not test_geometries"))))
-    (propagated-inputs
-      (list python-folium
-            python-geopandas
-            python-matplotlib
-            python-networkx
-            python-numpy
-            python-pandas
-            python-pyproj
-            python-requests
-            python-rtree
-            python-shapely))
-    (native-inputs
-      (list python-numpy python-pytest))
+      #:test-flags '(list "-k"
+                          (string-append
+                           ;; The following tests require network access.
+                           "not test_stats"
+                           " and not test_geocoder"
+                           " and not test_osm_xml"
+                           " and not test_elevation"
+                           " and not test_routing"
+                           " and not test_plots"
+                           " and not test_find_nearest"
+                           " and not test_api_endpoints"
+                           " and not test_graph_save_load"
+                           " and not test_graph_from_functions"
+                           " and not test_features"))))
+    (propagated-inputs (list python-folium
+                             python-geopandas
+                             python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-pandas
+                             python-requests
+                             python-shapely))
+    (native-inputs (list python-hatchling python-pytest))
     (home-page "https://github.com/gboeing/osmnx")
     (synopsis
-      "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
+     "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
     (description
-      "OSMnx is a Python library that lets you download geospatial data
+     "OSMnx is a Python library that lets you download geospatial data
 from OpenStreetMap and model, project, visualize, and analyze real-world
 street networks and any other geospatial geometries.  You can download
 and model walkable, drivable, or bikeable urban networks with a single
@@ -1260,7 +1322,7 @@ utilities for data translation and processing.")
 (define-public python-pyshp
   (package
     (name "python-pyshp")
-    (version "2.1.3")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1269,16 +1331,13 @@ utilities for data translation and processing.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jsraqzq82pw19wvx84x7w5cs8agr44a9b5y0jjw540wim4xa73r"))))
-    (build-system python-build-system)
+        (base32 "02pbr091p8v4kfv1p6p2aa4asgm9r74dc12r35lvgmhs9y163z69"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This is the only test file.
-               (invoke "python" "-m" "pytest" "test_shapefile.py")))))))
+     (list
+      #:test-flags
+      ;; This test requires internet access.
+      '(list "--deselect" "test_shapefile.py::test_reader_url")))
     (native-inputs
      (list python-pytest python-pytest-runner))
     (home-page "https://github.com/GeospatialPython/pyshp")
@@ -1290,40 +1349,46 @@ utilities for data translation and processing.")
 (define-public python-cartopy
   (package
     (name "python-cartopy")
-    ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.21.1")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "02i5rjhvrsi3vgj8kfsdx77g1xl59jh2a671qqqj4n682abn9mc9"))))
-    (build-system python-build-system)
+        (base32 "0jdv92az0b7qxdvalh29kasw3knsl570cz7q3vql67ck400zj05k"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "cartopy"
-                       ;; These tests require online data.
-                       "-m" "not natural_earth and not network"
-                       "-k"
-                       (string-append
-                         ;; This one too but it's not marked as such.
-                         "not test_gridliner_labels_bbox_style"
-                         ;; Those tests fail with proj 9.2.0
-                         ;; https://github.com/SciTools/cartopy/issues/2145
-                         " and not test_epsg"
-                         " and not test_default"
-                         " and not test_eccentric_globe"
-                         " and not test_ellipsoid_transform"
-                         " and not test_eccentric_globe"))))))))
+     (list
+      #:test-flags
+      '(list
+        "--pyargs" "cartopy"
+        ;; These tests require online data.
+        "-m" "not natural_earth and not network"
+        "-k"
+        (string-append
+         ;; This one too but it's not marked as such.
+         "not test_gridliner_labels_bbox_style"
+         ;; Accuracy problems
+         " and not test_single_spole"
+         " and not test_single_npole"
+         ;; Incomplete shapefile definition
+         " and not test_gshhs"
+         " and not test_geometry"
+         " and not test_record"
+         " and not test_bounds"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We don't want to create an entrypoint for
+         ;; tools/cartopy_feature_download.py, because that file is not
+         ;; installed.
+         (add-after 'unpack 'remove-endpoint
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^feature_download = .*") "")))))))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
-           python-pykdtree
+           python-packaging
            python-pyproj
            python-pyshp
            python-scipy
@@ -1331,10 +1396,12 @@ utilities for data translation and processing.")
     (inputs
      (list geos))
     (native-inputs
-     (list python-cython
-           python-flufl-lock
+     (list python-coveralls
+           python-cython
            python-pytest
-           python-pytest-mpl))
+           python-pytest-cov
+           python-pytest-mpl
+           python-pytest-xdist))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
     (synopsis "Cartographic library for visualisation")
     (description
@@ -1485,13 +1552,13 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public python-metpy
   (package
     (name "python-metpy")
-    (version "1.5.1")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MetPy" version))
               (sha256
                (base32
-                "1is6rradl97k04hf27dhzla4y4j98hibran3rbz6xh226q1r9vmb"))))
+                "1pzzanar797wkn6ljs47vni1fwli570d5qsiw1kpw0j1xymcmfsm"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Too many of the tests in the files below require online data.
@@ -1514,7 +1581,23 @@ to create databases that are optimized for rendering/tile/map-services.")
                     " and not test_zoom_xarray"
                     " and not test_parse_wpc_surface_bulletin"
                     " and not test_add_timestamp_xarray"
-                    " and not test_parse_wpc_surface_bulletin_highres"))))
+                    " and not test_parse_wpc_surface_bulletin_highres"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-version-check
+           (lambda _
+             (substitute* "src/metpy/testing.py"
+               (("^( +)match = pattern.*" m indent)
+                (string-append indent "\
+version_spec = re.sub('[()]', '', version_spec)\n" m)))))
+         ;; The deprecation warning from python-future's use of imp breaks the
+         ;; tests.
+         (add-after 'unpack 'hide-imp-deprecation-warnings
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("\"ignore:numpy.ndarray size changed:RuntimeWarning\"," m)
+                (string-append m "
+\"ignore:the imp module is deprecated\","))))))))
     (propagated-inputs (list python-importlib-resources
                              python-matplotlib
                              python-numpy
@@ -1525,8 +1608,8 @@ to create databases that are optimized for rendering/tile/map-services.")
                              python-scipy
                              python-traitlets
                              python-xarray))
-    (native-inputs (list python-cartopy python-netcdf4 python-pytest
-                         python-pytest-mpl python-shapely))
+    (native-inputs (list python-netcdf4 python-packaging python-pytest
+                         python-pytest-mpl))
     (home-page "https://github.com/Unidata/MetPy")
     (synopsis "Collection of tools to deal with weather data")
     (description "MetPy is a collection of tools in Python for reading,
@@ -1593,7 +1676,7 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.9.2")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1602,7 +1685,7 @@ based on the Osmium library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "198qcgl42pb8lk1bn41ncp8hc9gcg9k2p0ny42vak019w5l6jcj7"))
+                "135vqahlcrhwa3b9hfgbiqkzbbsjd4i79fp41cd0rp4zarcpi47p"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled libraries.
@@ -1610,20 +1693,21 @@ based on the Osmium library.")
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;tests fail because we need to setup a database
-           #:configure-flags #~(list "-DUSE_PROJ_LIB=4" ;use API version 4
+           #:configure-flags #~(list "-DUSE_PROJ_LIB=6" ;use API version 6
                                      "-DWITH_LUAJIT=ON"
                                      "-DEXTERNAL_LIBOSMIUM=ON"
                                      "-DEXTERNAL_PROTOZERO=ON"
                                      "-DEXTERNAL_FMT=ON")))
     (inputs (list boost
                   bzip2
+                  cli11
                   expat
                   fmt-8
                   libosmium
                   luajit
                   nlohmann-json
                   postgresql
-                  proj-7
+                  proj
                   protozero
                   zlib))
     (native-inputs (list pandoc python python-argparse-manpage))
@@ -2233,7 +2317,7 @@ data.")
 (define-public qmapshack
   (package
     (name "qmapshack")
-    (version "1.16.1")
+    (version "1.17.1")
     (source
      (origin
        (method git-fetch)
@@ -2242,7 +2326,7 @@ data.")
              (commit (string-append "V_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "184fqmsfzr3b333ssizjk6gvv7mncmygq8dj5r7rsvs5md26z2ys"))))
+        (base32 "1ckadklk67dp1pvkacfkr8379g2pwk73q85jfzm8viclcqmfvb62"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config qttools-5))
@@ -2482,19 +2566,19 @@ track your position right from your laptop.")
         "-DLICENSING_PROVIDER:BOOL=OFF"
         "-DMapper_MANUAL_QTHELP:BOOL=OFF")))
     (inputs
-     `(("clipper" ,clipper)
-       ("cups" ,cups)
-       ("curl" ,curl)
-       ("gdal" ,gdal)
-       ("proj" ,proj)
-       ("qtbase" ,qtbase-5)
-       ("qtimageformats" ,qtimageformats-5)
-       ("qtlocation" ,qtlocation)
-       ("qtsensors" ,qtsensors)
-       ("zlib" ,zlib)))
+     (list clipper
+           cups
+           curl
+           gdal
+           proj
+           qtbase-5
+           qtimageformats-5
+           qtlocation
+           qtsensors
+           zlib))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("qttools-5" ,qttools-5)))
+     (list doxygen
+           qttools-5))
     (home-page "https://www.openorienteering.org/apps/mapper/")
     (synopsis "OpenOrienteering Mapper (OOM)")
     (description
@@ -2503,7 +2587,7 @@ orienteering sport.")
     (license license:gpl3+)))
 
 (define-public grass
-  (let* ((version "7.8.7")
+  (let* ((version "7.8.8")
          (majorminor (string-join (list-head (string-split version #\.) 2) ""))
          (grassxx (string-append "grass" majorminor)))
     (package
@@ -2515,7 +2599,7 @@ orienteering sport.")
          (uri (string-append "https://grass.osgeo.org/" grassxx
                              "/source/grass-" version ".tar.gz"))
          (sha256
-          (base32 "0sbz0ba9p963phvd0gmvfqq1fg4ixpipzcjbf20ys86qavjppzsg"))))
+          (base32 "1gpfbppfajc8d6b9alw9fdzgaa83w26kl6fff1395bc9gal215ms"))))
       (build-system gnu-build-system)
       (inputs
        `(("bzip2" ,bzip2)
@@ -2789,6 +2873,7 @@ growing set of geoscientific methods.")
                              "test_core_pointcloudlayerexporter"
                              "test_core_projectstorage"
                              "test_core_coordinatereferencesystem"
+                             "test_core_overlayexpression"
                              "test_gui_queryresultwidget"
                              "test_provider_copcprovider"
                              "test_provider_eptprovider"
@@ -2812,6 +2897,7 @@ growing set of geoscientific methods.")
                              "PyQgsOGRProviderGpkg"
                              "PyQgsProcessExecutablePt1"
                              "PyQgsProcessExecutablePt2"
+                             "PyQgsProjectionSelectionWidgets"
                              "PyQgsProviderConnectionGpkg"
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsOGRProvider"
@@ -3020,6 +3106,30 @@ path loss.")
      "This is a python implementation of the geodesic routines in GeographicLib.")
     (license license:expat)))
 
+(define-public python-geoip2fast
+  (package
+    (name "python-geoip2fast")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "geoip2fast" version))
+       (sha256
+        (base32 "1cmdjlwjd4pg3qvsb8d4vghqj1im58npxb6dmrd5q90wjga4rfvm"))))
+    (build-system pyproject-build-system)
+    ;; The tests are speed tests or development tests to compare results with
+    ;; a different library.
+    (arguments (list #:tests? #false))
+    (home-page "https://github.com/rabuchaim/geoip2fast")
+    (synopsis
+     "Fast GeoIP2 country/city/asn lookup library")
+    (description
+     "@code{GeoIP2Fast} is a fast @code{GeoIP2} country/city/asn lookup
+library that supports IPv4 and IPv6.  A search takes less than 0.00003
+seconds.  It has its own data file updated twice a week with
+Maxmind-Geolite2-CSV, supports IPv4/IPv6 and is pure Python.")
+    (license license:expat)))
+
 (define-public python-geopy
   (package
     (name "python-geopy")
@@ -3065,15 +3175,8 @@ using third-party geocoders and other data sources.")
               (sha256
                (base32
                 "0inxyj5n4jzgg5xiadqx9sk83gdx5ff989l9s04smdzbd3b8c0c8"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-numpy))
-    (arguments
-      (list #:phases
-            #~(modify-phases %standard-phases
-                (replace 'check
-                  (lambda* (#:key tests? inputs #:allow-other-keys)
-                    (when tests?
-                      (invoke "pytest")))))))
     (home-page "https://github.com/mapado/haversine")
     (synopsis "Calculate the distance between 2 points on Earth")
     (description "This package provides functions to calculate the
@@ -3084,23 +3187,19 @@ latitude and longitude.")
 (define-public gplates
   (package
     (name "gplates")
-    ;; Note: use a pre-release to cope with newer Boost, ref
-    ;; https://discourse.gplates.org/t/compilation-error-with-boost-1-77/452/3
-    (version "2.3.01-beta.3")
+    (version "2.4")
     (source (origin
-              (method url-fetch)
-              (uri "https://cloudstor.aarnet.edu.au/plus/s\
-/ojsYNOyUYE3evNp/download?path=%2F&files=gplates_2.3.1-beta.3_src.zip")
-              (file-name (string-append name "-" version ".zip"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/GPlates/GPlates")
+                    (commit (string-append "GPlates-" version))))
               (sha256
                (base32
-                "06i87dfab0cq9gdi5mh6sf9wigawpp0d05zbyslv910443i26gwv"))))
+                "1awb4igchgpmrvj6blxd1w81c617bs66w6cfrwvf30n6rjlyn6q5"))
+              (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DBoost_NO_BOOST_CMAKE=ON")
-       #:tests? #f))                    ;no test target
-    (native-inputs
-     (list unzip))                      ;for the beta
+     (list #:tests? #f))                    ;no test target
     (inputs
      (list boost
            cgal

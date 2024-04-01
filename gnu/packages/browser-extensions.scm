@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2023, 2024 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,8 +58,8 @@ supported content to the Kodi media center.")
   ;; Arbitrary commit of branch master,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-main-assets")
-         (commit "76bd7cb53036a36f7e7df5ee9173f588ba8aa966")
-         (revision "1")
+         (commit "13715d6deb2ab7e384ac79368fd53c9fd8a7ef64")
+         (revision "2")
          (version (git-version "0" revision commit)))
     (origin
       (method git-fetch)
@@ -68,14 +68,14 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1kdzvflr1yxykyva5vsjqr0p2ik1200xbhxwpl3cx2jsiv8l95sk")))))
+       (base32 "124gw4wiwgnhyz0dhrwqp2rykap0ffw0cccjq9askxl0n90yswyr")))))
 
 (define ublock-prod-assets
   ;; Arbitrary commit of branch gh-pages,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-prod-assets")
-         (commit "a379a168fc149ffbd6d10cd0700d4ab4801e57f2")
-         (revision "1")
+         (commit "3da96ce3dd494202656cbc95e1de8baabc0ab7b2")
+         (revision "2")
          (version (git-version "0" revision commit)))
     (origin
       (method git-fetch)
@@ -84,12 +84,12 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0syf3kbhvsbn5xka5knpclxby2kp92my1w7ixvf5fs9n08ylcip1")))))
+       (base32 "0wbg14zbj1kpmacfyn53kwbnb2g80jp04i9m3ydliq3cs8i04gzy")))))
 
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.54.0")
+    (version "1.57.0")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
@@ -99,7 +99,7 @@ supported content to the Kodi media center.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yacqpf9z8lprwsj194bhlp2ba9ywzbagd6lwxj3h6g405s7zp2k"))))
+                "1nlc96m4xyrynlxhx2l1dl84givy3knmjk1hgywgsp84z6ii78pv"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (properties '((addon-id . "uBlock0@raymondhill.net")))

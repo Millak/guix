@@ -35,6 +35,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages commencement)       ;for 'guile-final'
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages emacs)
@@ -67,6 +68,7 @@
             %test-raid-root-os
             %test-encrypted-root-os
             %test-encrypted-home-os
+            %test-encrypted-home-os-key-file
             %test-encrypted-root-not-boot-os
             %test-btrfs-root-os
             %test-btrfs-root-on-subvolume-os
@@ -749,11 +751,11 @@ export GUIX_BUILD_OPTIONS=--no-grafts
 ls -l /run/current-system/gc-roots
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.6G \\
+  mkpart primary ext2 3M 2G \\
   set 1 boot on \\
   set 1 bios_grub on
 echo -n " %luks-passphrase " | \\
-  cryptsetup luksFormat --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb2 -
+  cryptsetup luksFormat -i 1 --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb2 -
 echo -n " %luks-passphrase " | \\
   cryptsetup open --type luks --key-file - /dev/vdb2 the-root-device
 mkfs.ext4 -L my-root /dev/mapper/the-root-device
@@ -962,19 +964,31 @@ guix --version
 export GUIX_BUILD_OPTIONS=--no-grafts
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.6G \\
-  mkpart primary 1.6G 2.0G \\
+  mkpart primary ext2 3M 2G \\
+  mkpart primary 2G 2.4G \\
   set 1 boot on \\
   set 1 bios_grub on
 
 echo -n " %luks-passphrase " | \\
-  cryptsetup luksFormat --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb3 -
+  cryptsetup luksFormat -i 1 --uuid=12345678-1234-1234-1234-123456789abc -q /dev/vdb3 -
 echo -n " %luks-passphrase " | \\
   cryptsetup open --type luks --key-file - /dev/vdb3 the-home-device
 
 mkfs.ext4 -L root-fs /dev/vdb2
 mkfs.ext4 -L home-fs /dev/mapper/the-home-device
 mount /dev/vdb2 /mnt
+
+# This script is used for both encrypted-home-os and encrypted-home-os-key-file
+# tests.  So we also add the keyfile here.
+dd if=/dev/zero of=/key-file.bin bs=4096 count=1
+( cd /mnt;
+  echo /key-file.bin | cpio -oH newc > key-file.cpio
+  chmod 0000 key-file.cpio
+  mv /key-file.bin .
+)
+echo -n " %luks-passphrase " | \\
+  cryptsetup luksAddKey --key-file - -i 1 /dev/vdb3 /mnt/key-file.bin
+
 mkdir /mnt/home
 mount /dev/mapper/the-home-device /mnt/home
 df -h /mnt /mnt/home
@@ -1018,10 +1032,72 @@ launched as a shepherd service."
     (mlet* %store-monad ((images (run-install %encrypted-home-os
                                               %encrypted-home-os-source
                                               #:script
-                                              %encrypted-home-installation-script))
+                                              %encrypted-home-installation-script
+                                              #:packages (list cpio)
+                                              #:target-size
+                                              (* 3000 MiB)))
                          (command (qemu-command* images)))
       (run-basic-test %encrypted-home-os command "encrypted-home-os"
                       #:initialization enter-luks-passphrase-for-home)))))
+
+
+;;;
+;;; LUKS-encrypted /home, unencrypted root.  The unlock is done using a key
+;;; file.
+;;;
+(define-os-with-source (%encrypted-home-os-key-file
+                        %encrypted-home-os-key-file-source)
+  (use-modules (gnu) (gnu tests))
+
+  (operating-system
+    (host-name "cipherhome")
+    (timezone "Europe/Prague")
+    (locale "en_US.utf8")
+
+    (bootloader (bootloader-configuration
+                 (bootloader grub-bootloader)
+                 (targets (list "/dev/vdb"))
+                 (extra-initrd "/key-file.cpio")))
+    (kernel-arguments '("console=ttyS0"))
+
+    (mapped-devices (list (mapped-device
+                           (source (uuid "12345678-1234-1234-1234-123456789abc"))
+                           (target "the-home-device")
+                           (type (luks-device-mapping-with-options
+                                  #:key-file "/key-file.bin")))))
+    (file-systems (cons* (file-system
+                           (device (file-system-label "root-fs"))
+                           (mount-point "/")
+                           (type "ext4"))
+                         (file-system
+                           (device (file-system-label "home-fs"))
+                           (mount-point "/home")
+                           (type "ext4")
+                           (dependencies mapped-devices))
+                        %base-file-systems))
+    (services (cons (service marionette-service-type
+                             (marionette-configuration
+                              (imported-modules '((gnu services herd)
+                                                  (guix combinators)))))
+                    %base-services))))
+
+(define %test-encrypted-home-os-key-file
+  (system-test
+   (name "encrypted-home-os-key-file")
+   (description
+    "Test functionality of an OS installed with a LUKS /home partition with
+unlock done using a key file")
+   (value
+    (mlet* %store-monad ((images (run-install %encrypted-home-os-key-file
+                                              %encrypted-home-os-key-file-source
+                                              #:script
+                                              %encrypted-home-installation-script
+                                              #:packages (list cpio)
+                                              #:target-size
+                                              (* 3000 MiB)))
+                         (command (qemu-command* images)))
+      (run-basic-test %encrypted-home-os-key-file
+                      command "encrypted-home-os-key-file")))))
 
 
 ;;;
@@ -1083,7 +1159,7 @@ parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 50M 1.6G \\
   set 1 boot on \\
   set 1 bios_grub on
-echo -n \"~a\" | cryptsetup luksFormat --uuid=\"~a\" -q /dev/vdb3 -
+echo -n \"~a\" | cryptsetup luksFormat -i 1 --uuid=\"~a\" -q /dev/vdb3 -
 echo -n \"~a\" | cryptsetup open --type luks --key-file - /dev/vdb3 root
 mkfs.ext4 -L my-root /dev/mapper/root
 mkfs.ext4 -L my-boot /dev/vdb2
@@ -1118,7 +1194,9 @@ store a couple of full system images.")
         ((images (run-install %encrypted-root-not-boot-os
                               %encrypted-root-not-boot-os-source
                               #:script
-                              %encrypted-root-not-boot-installation-script))
+                              %encrypted-root-not-boot-installation-script
+                              #:target-size
+                              (* 1600 MiB)))
          (command (qemu-command* images)))
       (run-basic-test %encrypted-root-not-boot-os command
                       "encrypted-root-not-boot-os"

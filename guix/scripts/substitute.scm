@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
@@ -494,7 +494,9 @@ STATUS-PORT."
   (define (try-fetch choices)
     (match choices
       (((uri compression file-size) rest ...)
-       (guard (c ((and (pair? rest) (http-get-error? c))
+       (guard (c ((and (pair? rest)
+                       (or (http-get-error? c)
+                           (network-error? c)))
                   (warning (G_ "download from '~a' failed, trying next URL~%")
                            (uri->string uri))
                   (try-fetch rest)))

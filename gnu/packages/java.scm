@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,6 +93,7 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages texinfo)
   #:use-module ((srfi srfi-1) #:select (fold alist-delete))
@@ -100,13 +102,14 @@
 
 (define-public icedtea-7
   (let* ((version "2.6.13")
-         (drop (lambda (name hash)
+         (drop (lambda* (name hash #:optional (patches '()))
                  (origin
                    (method url-fetch)
                    (uri (string-append
                          "http://icedtea.classpath.org/download/drops"
                          "/icedtea7/" version "/" name ".tar.bz2"))
-                   (sha256 (base32 hash))))))
+                   (sha256 (base32 hash))
+                   (patches patches)))))
     (package
       (name "icedtea")
       (version version)
@@ -614,7 +617,8 @@
                  "110j7jlz47x2gg6f7653x12mssan5kvj9l9h1m1c8c92drfxbqyk"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "0d1mca38ksxvdskp9im3pp7fdijhj1n3lwq9w13r9s4v3qyskgdd"))
+                 "0d1mca38ksxvdskp9im3pp7fdijhj1n3lwq9w13r9s4v3qyskgdd"
+                 (search-patches "jdk-currency-time-bomb.patch")))
          ("langtools-drop"
           ,(drop "langtools"
                  "0nq5236fzxn3p6x8cgncl56mzcmsj07q9gymysnws4c8byc6n0qj"))
@@ -687,13 +691,14 @@ IcedTea build harness.")
 
 (define-public icedtea-8
   (let* ((version "3.19.0")
-         (drop (lambda (name hash)
+         (drop (lambda* (name hash #:optional (patches '()))
                  (origin
                    (method url-fetch)
                    (uri (string-append
                          "http://icedtea.classpath.org/download/drops"
                          "/icedtea8/" version "/" name ".tar.xz"))
-                   (sha256 (base32 hash))))))
+                   (sha256 (base32 hash))
+                   (patches patches)))))
     (package (inherit icedtea-7)
       (version "3.19.0")
       (source (origin
@@ -839,7 +844,8 @@ new Date();"))
                  "1pc0pv4v2mn2mjc0vp19d94v2150xigyhxsmckqasy647zcm6w0r"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "1742lcm55l8zhi522x83v65ccr0rd6511q9rj7crw44x3ymdrhrv"))
+                 "1742lcm55l8zhi522x83v65ccr0rd6511q9rj7crw44x3ymdrhrv"
+                 (search-patches "jdk-currency-time-bomb2.patch")))
          ("langtools-drop"
           ,(drop "langtools"
                  "08iz7p2xcddlphipf6gahyabr5cawlnydap12p1n4f0md069b50b"))
@@ -869,14 +875,14 @@ new Date();"))
                                  (changeset "jdk-9+181")))
               (file-name (hg-file-name name version))
               (modules '((guix build utils)))
-              (snippet `(begin
-                          (for-each delete-file
-                                    (find-files "." ".*.(bin|exe|jar)$"))))
+              (snippet '(for-each delete-file
+                                  (find-files "." ".*.(bin|exe|jar)$")))
               (sha256
                (base32
                 "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))
               (patches (search-patches "openjdk-9-pointer-comparison.patch"
-                                       "openjdk-9-setsignalhandler.patch"))))
+                                       "openjdk-9-setsignalhandler.patch"
+                                       "openjdk-currency-time-bomb.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
@@ -911,8 +917,7 @@ new Date();"))
              ;; This file was "fixed" by patch-source-shebangs, but it requires
              ;; this exact first line.
              (substitute* "jdk/make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
-             #t))
+               (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; TODO: unbundle libpng and lcms
@@ -928,14 +933,12 @@ new Date();"))
                      "--disable-hotspot-gtest"
                      "--with-giflib=system"
                      "--with-libjpeg=system"
-                     (string-append "--prefix=" (assoc-ref outputs "out")))
-             #t))
+                     (string-append "--prefix=" (assoc-ref outputs "out")))))
          (add-before 'build 'write-source-revision-file
            (lambda _
              (with-output-to-file ".src-rev"
                (lambda _
-                 (display ,version)))
-             #t))
+                 (display ,version)))))
          (replace 'build
            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
              (apply invoke "make"
@@ -978,8 +981,7 @@ new Date();"))
                               "warning: failed to substitute: ~a~%"
                               file))))
                 (find-files "."
-                            "\\.c$|\\.h$"))
-               #t)))
+                            "\\.c$|\\.h$")))))
            ;; By default OpenJDK only generates an empty keystore.  In order to
            ;; be able to use certificates in Java programs we need to generate a
            ;; keystore from a set of certificates.  For convenience we use the
@@ -1073,8 +1075,7 @@ new Date();"))
                (symlink (string-append lib-jdk "/server/libjvm.so")
                         (string-append lib-jdk "/libjvm.so"))
                (symlink (string-append lib-out "/server/libjvm.so")
-                        (string-append lib-out "/libjvm.so")))
-             #t))
+                        (string-append lib-out "/libjvm.so")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -1084,8 +1085,7 @@ new Date();"))
                                             #:directories? #t))))
                (copy-recursively (string-append images "/images/jdk") jdk)
                (copy-recursively (string-append images "/images/jre") out)
-               (copy-recursively (string-append images "/images/docs") doc))
-             #t))
+               (copy-recursively (string-append images "/images/docs") doc))))
          (add-after 'install 'strip-zip-timestamps
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (zip)
@@ -1102,8 +1102,7 @@ new Date();"))
                            (with-directory-excursion dir
                              (let ((files (find-files "." ".*" #:directories? #t)))
                                (apply invoke "zip" "-0" "-X" zip files)))))
-                       (find-files (assoc-ref outputs "doc") ".*.zip$"))
-             #t)))))
+                       (find-files (assoc-ref outputs "doc") ".*.zip$")))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cups" ,cups)
@@ -1157,7 +1156,8 @@ new Date();"))
               (patches (search-patches
                         "openjdk-10-idlj-reproducibility.patch"
                         "openjdk-10-pointer-comparison.patch"
-                        "openjdk-10-setsignalhandler.patch"))))
+                        "openjdk-10-setsignalhandler.patch"
+                        "openjdk-currency-time-bomb2.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk9)
        ((#:phases phases)
@@ -1179,8 +1179,7 @@ new Date();"))
                ;; This file was "fixed" by patch-source-shebangs, but it requires
                ;; this exact first line.
                (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))
-               #t))
+                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))
            (replace 'configure
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (invoke "bash" "./configure"
@@ -1218,7 +1217,7 @@ new Date();"))
 (define-public openjdk11
   (package
     (name "openjdk")
-    (version "11.0.17")
+    (version "11.0.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://openjdk-sources.osci.io/openjdk11/openjdk-"
@@ -1226,10 +1225,12 @@ new Date();"))
               (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1prvqy0ysz0999wrhsrbz6vrknpqfihl9l74l16ph93g89dqi5ia"))
+                "18ca4syp9xlrqjgyjkb1sp9835riy6aym5xs81r8byrz6jlb2473"))
               (modules '((guix build utils)))
               (snippet
-               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
+               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
+              (patches (search-patches
+                        "openjdk-currency-time-bomb2.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
@@ -1299,10 +1300,10 @@ new Date();"))
                    (catch 'decoding-error
                      (lambda ()
                        (substitute* file
-                         (("VERSIONED_JNI_LIB_NAME\\(\"(.*)\", \"(.*)\"\\)"
+                         (("VERSIONED_JNI_LIB_NAME\\(\"([^\"]*)\", \"([^\"]*)\"\\)"
                            _ name version)
                           (string-append "\"" (find-library name) "\""))
-                         (("JNI_LIB_NAME\\(\"(.*)\"\\)" _ name)
+                         (("JNI_LIB_NAME\\(\"([^\"]*)\"\\)" _ name)
                           (string-append "\"" (find-library name) "\""))))
                      (lambda _
                        ;; Those are safe to skip.
@@ -1533,7 +1534,7 @@ new Date();"))
 
 (define-public openjdk12
   (make-openjdk
-   openjdk11 "12.33" "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"
+   openjdk11 "12.33" "0pi2gwib3j2imi4l623iaywrmvfh9rqzh82lj2gxqbrmg55swvjf"
    (source
     (origin
       (method url-fetch)
@@ -1541,7 +1542,7 @@ new Date();"))
       (file-name (string-append name "-" version ".tar.bz2"))
       (sha256
        (base32
-        "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"))
+        "0pi2gwib3j2imi4l623iaywrmvfh9rqzh82lj2gxqbrmg55swvjf"))
       (modules '((guix build utils)))
       (snippet
        '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
@@ -1572,8 +1573,8 @@ blacklisted.certs.pem"
                   "#! java BlacklistedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk13
-  (make-openjdk openjdk12 "13.0.13"
-                "0pxf4dlig61k0pg7amg4mi919hzam7nzwckry01avgq1wj8ambji"
+  (make-openjdk openjdk12 "13.0.14"
+                "1v92i5rhahqkjw8mz09c9qasnxqc67ygy0y266kdmm534z0da755"
   (source (origin
             (inherit (package-source base))
             (patches '())))))
@@ -1595,8 +1596,8 @@ blacklisted.certs.pem"
 
 (define-public openjdk15
   (make-openjdk
-   openjdk14 "15.0.9"
-   "1k3x06fv89l84ysjsyw8s89q8blghq85m6xjzv373x6297ln8n7a"
+   openjdk14 "15.0.10"
+   "0hdllv348bws6m992bh73jik18x0sv0k2m9l817b3zb7q802sp7x"
    (source (origin
              (inherit (package-source base))
              (modules '())
@@ -1622,8 +1623,8 @@ blacklisted.certs.pem"
 
 (define-public openjdk17
   (make-openjdk
-   openjdk16 "17.0.5"
-   "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
+   openjdk16 "17.0.10"
+   "1bq1rqnipz6wdr05s20gm8nlpb3328ljxckzvc5ag0gf7fzlhn5f"
    (source (origin
              (inherit (package-source base))
              (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
@@ -1638,8 +1639,8 @@ blacklisted.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk18
-  (make-openjdk openjdk17 "18.0.2"
-                "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
+  (make-openjdk openjdk17 "18.0.2.1"
+                "0zxanjzz4p3psqahlidh55vx1ldanq70c2ygk3gcfn9a94vnr9rg"))
 
 (define-public openjdk19
   (make-openjdk openjdk18 "19.0.2"
@@ -1659,12 +1660,12 @@ blacklisted.certs.pem"
                (setenv "SOURCE_DATE_EPOCH" "1234567890")))))))))
 
 (define-public openjdk20
-  (make-openjdk openjdk19 "20"
-                "0pk5lpwijfv9qv7vwpsq2xfklbnqdfs6xbdhc5aamrpar4xi4ykx"))
+  (make-openjdk openjdk19 "20.0.2"
+                "1af1v2c3d8x4c6shzl6cv9qwq7a4hn5map5pjh9vjcky0hkzd489"))
 
 (define-public openjdk21
-  (make-openjdk openjdk20 "21"
-                "06wjfwrkqykjdkis2s1nh91cy8vwincnmc699cxvyk3fc12jf3vw"
+  (make-openjdk openjdk20 "21.0.2"
+                "0d1g3wnzr5whjpq8gvxq0h7kd7lxd3xgc6bh3kg8vzz096asn0kj"
    (source (origin
              (inherit (package-source base))
              (patches (search-patches "openjdk-21-fix-rpath.patch"
@@ -1723,16 +1724,16 @@ OpenJDK.")
   (package
     (inherit openjdk17)
     (name "jbr")
-    (version "17.0.7-b1020")
+    (version "17.0.10b1207.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/JetBrains/JetBrainsRuntime.git")
-                     (commit (string-append "jb" version))))
+                     (commit (string-append "jbr-release-" version))))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0wh9xhqgcjk0jgvpvlvf78dy3r8m0vgqd0f54whpx0qqbmyavgdw"))
+                "1n9i07i243wrnnnvj05j81qhx3b5dry8y423pnbrrdn8fcwm1f2d"))
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk17)
@@ -1757,20 +1758,21 @@ OpenJDK.")
   (package
     (inherit openjdk21)
     (name "jbr")
-    (version "21-b240.22")
+    (version "21.0.2b375.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/JetBrains/JetBrainsRuntime.git")
-                     (commit (string-append "jb" version))))
+                     (commit (string-append "jbr-release-" version))))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1sx48mm5vap4ab1qr6hy25wlgxljmhvpvrqiqiq692izr8dh7j4c"))
+                "15rcwbch0xxzcgggc34lna9dwimwqsc0z4mvw5hd428414gz71iy"))
               (patches (search-patches "openjdk-21-fix-rpath.patch"
                                        "jbr-17-xcursor-no-dynamic.patch"))))
     (inputs
      `(("wayland" ,wayland)
+       ("libxkbcommon" ,libxkbcommon) ; for wayland
        ,@(package-inputs openjdk21)))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk21)
@@ -3406,9 +3408,10 @@ declaratively, to be used in other frameworks.  Typical scenarios include
 testing frameworks, mocking libraries and UI validation rules.")
     (license license:bsd-2)))
 
-(define java-hamcrest-parent-pom
+(define-public java-hamcrest-parent-pom
   (package
     (inherit java-hamcrest-core)
+    (properties '((hidden? . #t)))
     (name "java-hamcrest-parent-pom")
     (propagated-inputs '())
     (native-inputs '())
@@ -4966,7 +4969,7 @@ transformations and analysis algorithms allow easily assembling custom
 complex transformations and code analysis tools.")
     (license license:bsd-3)))
 
-(define java-org-ow2-parent-pom-1.3
+(define-public java-org-ow2-parent-pom-1.3
   (package
     (name "java-org-ow2-parent-pom")
     (version "1.3")
@@ -4990,12 +4993,14 @@ complex transformations and code analysis tools.")
     (synopsis "Ow2.org parent pom")
     (description "This package contains the parent pom for projects from ow2.org,
 including java-asm.")
+    (properties '((hidden? . #t)))
     (license license:lgpl2.1+)))
 
-(define java-asm-bootstrap
+(define-public java-asm-bootstrap
   (package
     (inherit java-asm)
     (name "java-asm-bootstrap")
+    (properties '((hidden? . #t)))
     (arguments
      (substitute-keyword-arguments (package-arguments java-asm)
        ((#:tests? _) #f)))
@@ -13574,14 +13579,14 @@ network protocols, and core version control algorithms.")
                                      ":"
                                      share "abcl-contrib.jar")))
                      (display (string-append
-                               "#!" (which "sh") "\n"
+                               "#!" (which "bash") "\n"
                                "if [[ -z $CLASSPATH ]]; then\n"
                                "  cp=\"" classpath "\"\n"
                                "else\n"
                                "  cp=\"" classpath ":$CLASSPATH\"\n"
                                "fi\n"
                                "exec " (which "java")
-                               " -cp $cp org.armedbear.lisp.Main $@\n")))))
+                               " -cp \"$cp\" org.armedbear.lisp.Main \"$@\"\n")))))
                (chmod (string-append bin "abcl") #o755)
                #t))))))
     (home-page "https://abcl.org/")

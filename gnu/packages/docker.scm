@@ -42,6 +42,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
@@ -54,7 +55,7 @@
 
 ;; Note - when changing Docker versions it is important to update the versions
 ;; of several associated packages (docker-libnetwork and go-sctp).
-(define %docker-version "20.10.25")
+(define %docker-version "20.10.27")
 
 (define-public python-docker
   (package
@@ -264,9 +265,9 @@ network attachments.")
   ;; the branch that Docker uses, as can be seen in the 'vendor.conf' Docker
   ;; source file.  NOTE - It is important that this version is kept in sync
   ;; with the version of Docker being used.
-  (let ((commit "3f0048413d95802b9c6c836eba06bfc54f9dbd03")
+  (let ((commit "3797618f9a38372e8107d8c06f6ae199e1133ae8")
         (version (version-major+minor %docker-version))
-        (revision "2"))
+        (revision "3"))
     (package
       (name "docker-libnetwork")
       (version (git-version version revision commit))
@@ -279,7 +280,7 @@ network attachments.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "185i5ji7dwkv41zmb8s3d7i5gg72wivcj1l4bhr1lb3a1vy2hcxc"))
+                  "1km3p6ya9az0ax2zww8wb5vbifr1gj5n9l82i273m9f3z9f2mq2p"))
                 ;; Delete bundled ("vendored") free software source code.
                 (modules '((guix build utils)))
                 (snippet '(delete-file-recursively "vendor"))))
@@ -333,7 +334,7 @@ built-in registry server of Docker.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q5vc6f5fzzxsvv1kwdky56fr1jiy9199m3vxqh4mz85qr067cmn"))))
+        (base32 "017frilx35w3m4dz3n6m2f293q4fq4jrk6hl8f7wg5xs3r8hswvq"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -594,7 +595,7 @@ runcexecutor/executor.go"
            xz))
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)
-           go-1.19 gotestsum pkg-config))
+           go-1.20 gotestsum pkg-config))
     (synopsis "Container component library and daemon")
     (description "This package provides a framework to assemble specialized
 container systems.  It includes components for orchestration, image
@@ -615,7 +616,7 @@ provisioning etc.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qy35vvnl4lf9w6dr9n7yfqvzhzm7m3sl2ai275apbhygwgcsbss"))))
+        (base32 "0szwaxiasy77mm90wj2qg747zb9lyiqndg5halg7qbi41ng6ry0h"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/docker/cli"

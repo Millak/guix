@@ -885,9 +885,9 @@ exception-handling library.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.com/inkscape/lib2geom.git")
+                    (url "https://gitlab.com/inkscape/lib2geom")
                     (commit version)))
-              (file-name (git-file-name name version))
+              (file-name (git-file-name "lib2geom" version))
               (sha256
                (base32
                 "0dq981g894hmvhd6rmfl1w32mksg9hpvpjs1qvfxrnz87rhkknj8"))))

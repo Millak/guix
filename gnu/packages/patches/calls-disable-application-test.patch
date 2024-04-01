@@ -1,0 +1,72 @@
+From e0fdae20840ffe3aeca7190eb8b1bcae70f0c93b Mon Sep 17 00:00:00 2001
+From: Vivien Kraus <vivien@planete-kraus.eu>
+Date: Sun, 29 Oct 2023 21:03:27 +0100
+Subject: [PATCH] Disable the application test.
+
+The application test does not work in a Guix container, because an actual
+sound card is required to run this integration test.
+
+* tests/meson.build: Disable test-application.
+---
+ tests/meson.build | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/tests/meson.build b/tests/meson.build
+index c9bdc3d..65f9b93 100644
+--- a/tests/meson.build
++++ b/tests/meson.build
+@@ -165,24 +165,24 @@ test('dbus', t, env: test_env)
+ 
+ dbus_run_session = find_program('dbus-run-session')
+ 
+-if dbus_run_session.found ()
+-  test_sources = [ 'test-application.c' ]
+-  t = executable('application', test_sources, calls_resources,
+-                 c_args : test_cflags,
+-                 link_args: test_link_args,
+-                 pie: true,
+-                 link_with : [calls_vala, libcalls],
+-                 dependencies: calls_deps,
+-                 include_directories : [
+-                     calls_includes,
+-                   ]
+-                 )
+-  test('application',
+-      dbus_run_session,
+-      args: t.full_path(),
+-      env: test_env,
+-      timeout : 300
+-      )
+-endif
++# if dbus_run_session.found ()
++#   test_sources = [ 'test-application.c' ]
++#   t = executable('application', test_sources, calls_resources,
++#                  c_args : test_cflags,
++#                  link_args: test_link_args,
++#                  pie: true,
++#                  link_with : [calls_vala, libcalls],
++#                  dependencies: calls_deps,
++#                  include_directories : [
++#                      calls_includes,
++#                    ]
++#                  )
++#   test('application',
++#       dbus_run_session,
++#       args: t.full_path(),
++#       env: test_env,
++#       timeout : 300
++#       )
++# endif
+ 
+ endif
+
+base-commit: 936d36287324163b958c6ea0c4297c7a607ee18c
+prerequisite-patch-id: 20f8a81da35ce1797635eb310e1f85ac5ff814f6
+prerequisite-patch-id: 96768617d0a8ee8c66faa00220a1612e0f527292
+prerequisite-patch-id: 444c1ee57c24ba4b8165497b0a5885844110c59b
+prerequisite-patch-id: 9415b848ca9ee277bccbad7c3fff23230d5016f1
+prerequisite-patch-id: 3ca2a45be430041875b21f6c8dfac0bc17916abf
+prerequisite-patch-id: e8302846f4650dba9e0072c18be3459ce903fe2e
+-- 
+2.41.0
+

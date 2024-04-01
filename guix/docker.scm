@@ -3,6 +3,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,16 +30,27 @@
                           with-directory-excursion
                           invoke))
   #:use-module (gnu build install)
+  #:use-module ((guix build store-copy)
+                #:select (file-size))
   #:use-module (json)                             ;guile-json
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-71)
   #:use-module ((texinfo string-utils)
                 #:select (escape-special-chars))
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
-  #:export (build-docker-image))
+  #:export (%docker-image-max-layers
+            build-docker-image))
+
+;; The maximum number of layers allowed in a Docker image is typically around
+;; 128, although it may vary depending on the Docker daemon. However, we
+;; recommend setting the limit to 100 to ensure sufficient room for future
+;; extensions.
+(define %docker-image-max-layers
+  #f)
 
 ;; Generate a 256-bit identifier in hexadecimal encoding for the Docker image.
 (define docker-id
@@ -92,12 +104,12 @@ Return a version of TAG that follows these rules."
                       (make-string (- min-length l) padding-character)))
       (_ normalized-name))))
 
-(define* (manifest path id #:optional (tag "guix"))
+(define* (manifest path layers #:optional (tag "guix"))
   "Generate a simple image manifest."
   (let ((tag (canonicalize-repository-name tag)))
     `#(((Config . "config.json")
         (RepoTags . #(,(string-append tag ":latest")))
-        (Layers . #(,(string-append id "/layer.tar")))))))
+        (Layers . ,(list->vector layers))))))
 
 ;; According to the specifications this is required for backwards
 ;; compatibility.  It duplicates information provided by the manifest.
@@ -106,8 +118,8 @@ Return a version of TAG that follows these rules."
   `((,(canonicalize-repository-name tag) . ((latest . ,id)))))
 
 ;; See https://github.com/opencontainers/image-spec/blob/master/config.md
-(define* (config layer time arch #:key entry-point (environment '()))
-  "Generate a minimal image configuration for the given LAYER file."
+(define* (config layers-diff-ids time arch #:key entry-point (environment '()))
+  "Generate a minimal image configuration for the given LAYERS files."
   ;; "architecture" must be values matching "platform.arch" in the
   ;; runtime-spec at
   ;; https://github.com/opencontainers/runtime-spec/blob/v1.0.0-rc2/config.md#platform
@@ -125,7 +137,7 @@ Return a version of TAG that follows these rules."
     (container_config . #nil)
     (os . "linux")
     (rootfs . ((type . "layers")
-               (diff_ids . #(,(layer-diff-id layer)))))))
+               (diff_ids . ,(list->vector layers-diff-ids))))))
 
 (define directive-file
   ;; Return the file or directory created by a 'evaluate-populate-directive'
@@ -135,6 +147,26 @@ Return a version of TAG that follows these rules."
      (string-trim source #\/))
     (('directory name _ ...)
      (string-trim name #\/))))
+
+(define (size-sorted-store-items items max-layers)
+  "Split list of ITEMS at %MAX-LAYERS and sort by disk usage."
+  (let* ((items-length (length items))
+         (head tail
+               (split-at
+                (map (match-lambda ((size . item) item))
+                     (sort (map (lambda (item)
+                                  (cons (file-size item) item))
+                                items)
+                           (lambda (item1 item2)
+                             (< (match item2 ((size . _) size))
+                                (match item1 ((size . _) size))))))
+                (if (>= items-length max-layers)
+                    (- max-layers 2)
+                    (1- items-length)))))
+    (list head tail)))
+
+(define (create-empty-tar file)
+  (invoke "tar" "-cf" file "--files-from" "/dev/null"))
 
 (define* (build-docker-image image paths prefix
                              #:key
@@ -146,11 +178,13 @@ Return a version of TAG that follows these rules."
                              entry-point
                              (environment '())
                              compressor
-                             (creation-time (current-time time-utc)))
-  "Write to IMAGE a Docker image archive containing the given PATHS.  PREFIX
-must be a store path that is a prefix of any store paths in PATHS.  REPOSITORY
-is a descriptive name that will show up in \"REPOSITORY\" column of the output
-of \"docker images\".
+                             (creation-time (current-time time-utc))
+                             max-layers
+                             root-system)
+  "Write to IMAGE a layerer Docker image archive containing the given PATHS.
+PREFIX must be a store path that is a prefix of any store paths in PATHS.
+REPOSITORY is a descriptive name that will show up in \"REPOSITORY\" column of
+the output of \"docker images\".
 
 When DATABASE is true, copy it to /var/guix/db in the image and create
 /var/guix/gcroots and friends.
@@ -172,7 +206,14 @@ non-empty directory, then its contents will be recursively added, as well.
 SYSTEM is a GNU triplet (or prefix thereof) of the system the binaries in
 PATHS are for; it is used to produce metadata in the image.  Use COMPRESSOR, a
 command such as '(\"gzip\" \"-9n\"), to compress IMAGE.  Use CREATION-TIME, a
-SRFI-19 time-utc object, as the creation time in metadata."
+SRFI-19 time-utc object, as the creation time in metadata.
+
+When MAX-LAYERS is not false build layered image, providing a Docker
+image with store paths splitted in their own layers to improve sharing
+between images.
+
+ROOT-SYSTEM is a directory with a provisioned root file system, which will be
+added to image as a layer."
   (define (sanitize path-fragment)
     (escape-special-chars
      ;; GNU tar strips the leading slash off of absolute paths before applying
@@ -203,6 +244,59 @@ SRFI-19 time-utc object, as the creation time in metadata."
     (if (eq? '() transformations)
         '()
         `("--transform" ,(transformations->expression transformations))))
+  (define (seal-layer)
+    ;; Add 'layer.tar' to 'image.tar' under the right name.  Return its hash.
+    (let* ((file-hash (layer-diff-id "layer.tar"))
+           (file-name (string-append file-hash "/layer.tar")))
+      (mkdir file-hash)
+      (rename-file "layer.tar" file-name)
+      (invoke "tar" "-rf" "image.tar" file-name)
+      (delete-file file-name)
+      file-hash))
+  (define layers-hashes
+    ;; Generate a tarball that includes container image layers as tarballs,
+    ;; along with a manifest.json file describing the layer and config file
+    ;; locations.
+    (match-lambda
+      (((head ...) (tail ...) id)
+       (create-empty-tar "image.tar")
+       (let* ((head-layers
+               (map
+                (lambda (file)
+                  (invoke "tar" "cf" "layer.tar" file)
+                  (seal-layer))
+                head))
+              (tail-layer
+               (begin
+                 (create-empty-tar "layer.tar")
+                 (for-each (lambda (file)
+                             (invoke "tar" "-rf" "layer.tar" file))
+                           tail)
+                 (let* ((file-hash (layer-diff-id "layer.tar"))
+                        (file-name (string-append file-hash "/layer.tar")))
+                   (mkdir file-hash)
+                   (rename-file "layer.tar" file-name)
+                   (invoke "tar" "-rf" "image.tar" file-name)
+                   (delete-file file-name)
+                   file-hash)))
+              (customization-layer
+               (let* ((file-id (string-append id "/layer.tar"))
+                      (file-hash (layer-diff-id file-id))
+                      (file-name (string-append file-hash "/layer.tar")))
+                 (mkdir file-hash)
+                 (rename-file file-id file-name)
+                 (invoke "tar" "-rf" "image.tar" file-name)
+                 file-hash))
+              (all-layers
+               (append head-layers (list tail-layer customization-layer))))
+         (with-output-to-file "manifest.json"
+           (lambda ()
+             (scm->json (manifest prefix
+                                  (map (cut string-append <> "/layer.tar")
+                                       all-layers)
+                                  repository))))
+         (invoke "tar" "-rf" "image.tar" "manifest.json")
+         all-layers))))
   (let* ((directory "/tmp/docker-image") ;temporary working directory
          (id (docker-id prefix))
          (time (date->string (time-utc->date creation-time) "~4"))
@@ -229,26 +323,39 @@ SRFI-19 time-utc object, as the creation time in metadata."
         (with-output-to-file "json"
           (lambda () (scm->json (image-description id time))))
 
-        ;; Create a directory for the non-store files that need to go into the
-        ;; archive.
-        (mkdir "extra")
+        (if root-system
+            (let ((directory (getcwd)))
+              (with-directory-excursion root-system
+                (apply invoke "tar"
+                       "-cf" (string-append directory "/layer.tar")
+                       `(,@transformation-options
+                         ,@(tar-base-options)
+                         ,@(scandir "."
+                                    (lambda (file)
+                                      (not (member file '("." "..")))))))))
+            (begin
+              ;; Create a directory for the non-store files that need to go
+              ;; into the archive.
+              (mkdir "extra")
 
-        (with-directory-excursion "extra"
-          ;; Create non-store files.
-          (for-each (cut evaluate-populate-directive <> "./")
-                    extra-files)
+              (with-directory-excursion "extra"
+                ;; Create non-store files.
+                (for-each (cut evaluate-populate-directive <> "./")
+                          extra-files)
 
-          (when database
-            ;; Initialize /var/guix, assuming PREFIX points to a profile.
-            (install-database-and-gc-roots "." database prefix))
+                (when database
+                  ;; Initialize /var/guix, assuming PREFIX points to a
+                  ;; profile.
+                  (install-database-and-gc-roots "." database prefix))
 
-          (apply invoke "tar" "-cf" "../layer.tar"
-                 `(,@transformation-options
-                   ,@(tar-base-options)
-                   ,@paths
-                   ,@(scandir "."
-                              (lambda (file)
-                                (not (member file '("." ".."))))))))
+                (apply invoke "tar" "-cf" "../layer.tar"
+                       `(,@transformation-options
+                         ,@(tar-base-options)
+                         ,@(if max-layers '() paths)
+                         ,@(scandir "."
+                                    (lambda (file)
+                                      (not (member file '("." ".."))))))))
+              (delete-file-recursively "extra")))
 
         ;; It is possible for "/" to show up in the archive, especially when
         ;; applying transformations.  For example, the transformation
@@ -261,24 +368,37 @@ SRFI-19 time-utc object, as the creation time in metadata."
         ;; error messages.
         (with-error-to-port (%make-void-port "w")
           (lambda ()
-            (system* "tar" "--delete" "/" "-f" "layer.tar")))
-
-        (delete-file-recursively "extra"))
+            (system* "tar" "--delete" "/" "-f" "layer.tar"))))
 
       (with-output-to-file "config.json"
         (lambda ()
-          (scm->json (config (string-append id "/layer.tar")
-                             time arch
-                             #:environment environment
-                             #:entry-point entry-point))))
-      (with-output-to-file "manifest.json"
-        (lambda ()
-          (scm->json (manifest prefix id repository))))
-      (with-output-to-file "repositories"
-        (lambda ()
-          (scm->json (repositories prefix id repository)))))
-
-    (apply invoke "tar" "-cf" image "-C" directory
-           `(,@(tar-base-options #:compressor compressor)
-             "."))
+          (scm->json
+           (config (if max-layers
+                       (layers-hashes
+                        (append (size-sorted-store-items paths max-layers)
+                                (list id)))
+                       (list (layer-diff-id (string-append id "/layer.tar"))))
+                   time arch
+                   #:environment environment
+                   #:entry-point entry-point))))
+      (if max-layers
+          (begin
+            (invoke "tar" "-rf" "image.tar" "config.json")
+            (if compressor
+                (begin
+                  (apply invoke `(,@compressor "image.tar"))
+                  (copy-file "image.tar.gz" image))
+                (copy-file "image.tar" image)))
+          (begin
+            (with-output-to-file "manifest.json"
+              (lambda ()
+                (scm->json (manifest prefix
+                                     (list (string-append id "/layer.tar"))
+                                     repository))))
+            (with-output-to-file "repositories"
+              (lambda ()
+                (scm->json (repositories prefix id repository))))
+            (apply invoke "tar" "-cf" image
+                   `(,@(tar-base-options #:compressor compressor)
+                     ".")))))
     (delete-file-recursively directory)))

@@ -194,7 +194,8 @@ services as defined by OS."
                             (filter live-service-running live-services)))
            (to-start   (lset-difference eqv?
                                         (map shepherd-service-canonical-name
-                                             target-services)
+                                             (filter shepherd-service-auto-start?
+                                                     target-services))
                                         running))
            (service-files (map shepherd-service-file target-services)))
       (eval #~(parameterize ((current-warning-port (%make-void-port "w")))

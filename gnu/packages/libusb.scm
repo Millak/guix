@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2022 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
@@ -31,19 +32,20 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libusb)
-  #:use-module (guix gexp)
-  #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
-  #:use-module (guix utils)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+  #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -175,6 +177,38 @@ version of libusb to run with newer libusb.")
        "This package provides Java JNI bindings to the libusb library for use
 with usb4java.")
       (license license:expat))))
+
+(define-public go-github-com-google-gousb
+  (package
+    ;; See <https://github.com/google/gousb/issues/124> for picking up the
+    ;; correct version.
+    (name "go-github-com-google-gousb")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/gousb")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1rl43y2nn1fysnlvkkcba2rb4d4pqbab8v4v9zw0xv9j4x2r5hv1"))
+       (file-name (git-file-name name version))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/gousb"))
+    (native-inputs
+     (list pkg-config))
+    ;; It's for purpose to prevent failing of missing libusb when this package
+    ;; is included as inputs to build others.
+    (propagated-inputs
+     (list libusb))
+    (home-page "https://github.com/google/gousb")
+    (synopsis "Low-level interface for accessing USB devices in Golang")
+    (description
+     "The gousb package is an attempt at wrapping the libusb library into a
+Go-like binding.")
+    (license license:asl2.0)))
 
 (define-public java-usb4java
   (package

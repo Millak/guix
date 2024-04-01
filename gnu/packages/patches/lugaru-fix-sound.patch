@@ -1,0 +1,32 @@
+From 3adfb088eed81fc2c9e40ac55018378d4975f469 Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Sun, 28 Jan 2024 19:50:51 -0500
+Subject: [PATCH] audio: Look extension from right, not left.
+
+* Source/Audio/openal_wrapper.cpp (decode_to_pcm): Find extension from
+the right (strrchr), not from the left, to avoid eagerly truncating a
+file name.
+
+Fixes: https://gitlab.com/osslugaru/lugaru/-/issues/124#note_1746570172
+---
+ Source/Audio/openal_wrapper.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Source/Audio/openal_wrapper.cpp b/Source/Audio/openal_wrapper.cpp
+index cc4fc36..072fcb8 100644
+--- a/Source/Audio/openal_wrapper.cpp
++++ b/Source/Audio/openal_wrapper.cpp
+@@ -316,7 +316,7 @@ static void* decode_to_pcm(const char* _fname, ALenum& format, ALsizei& size, AL
+     // !!! FIXME: if it's not Ogg, we don't have a decoder. I'm lazy.  :/
+     char* fname = (char*)alloca(strlen(_fname) + 16);
+     strcpy(fname, _fname);
+-    char* ptr = strchr(fname, '.');
++    char* ptr = strrchr(fname, '.');
+     if (ptr) {
+         *ptr = '\0';
+     }
+
+base-commit: 6a58b62858d9c3c3630abf00bf43075f65a09d38
+-- 
+2.41.0
+

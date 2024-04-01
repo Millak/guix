@@ -4,7 +4,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,8 +29,12 @@
   #:use-module (guix download)
   #:use-module (guix build-system go)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages python)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages syncthing))
@@ -223,7 +227,7 @@ written in Go.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.15.0")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -231,16 +235,19 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0ss5k8xnzn9qk977dni5ja89yygcysdw7r3mdk67cac2dpa9hhqs"))
+        (base32 "0p8iaa56lnac1lxnbzp4fbjqzps50z5yqs34szcp53xjq8rmjzjd"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
                            ;; TODO: unbundle the rest as well
                            '("vendor/github.com/alecthomas"
-                             ;; "vendor/github.com/blang"
+                             "vendor/github.com/benbjohnson/clock"
+                             "vendor/github.com/beorn7/perks"
+                             "vendor/github.com/blang"
                              "vendor/github.com/cespare"
-                             ;; TODO: Go files not found
-                             ;; "vendor/github.com/cheggaaa"
+                             ;; TODO: kubo depends on v1.0.29 which is way too
+                             ;; hard to back port.
+                             ; "vendor/github.com/cheggaaa/pb"
                              "vendor/github.com/davecgh"
                              "vendor/github.com/dustin"
                              "vendor/github.com/flynn"
@@ -257,8 +264,6 @@ written in Go.")
                              ;; "vendor/github.com/ipld"
                              "vendor/github.com/jackpal"
                              "vendor/github.com/klauspost"
-                             ;; TODO: Go files not found
-                             ;; "vendor/github.com/lucas-clemente"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
                              "vendor/github.com/minio"
@@ -286,6 +291,7 @@ written in Go.")
      (list
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
+      #:go go-1.20
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
@@ -301,20 +307,20 @@ written in Go.")
                                   #~(string-append #$output "/bin/ipfs"))
                             "commands" "completion" "bash")))))))))
     (inputs (list go-github-com-alecthomas-units
-                  ;; TODO: needs to be updated first
-                  ;; go-github-com-blang-semver
+                  go-github-com-benbjohnson-clock
+                  go-github-com-blang-semver-v4
                   go-github-com-cespare-xxhash
                   go-github-com-cheekybits-genny
-                  go-github-com-cheggaaa-pb-v3
                   go-github-com-davecgh-go-spew
                   go-github-com-dustin-go-humanize
                   go-github-com-flynn-noise
                   go-github-com-francoispqt-gojay
                   go-github-com-fsnotify-fsnotify
                   go-github-com-gogo-protobuf
-                  go-github-com-google-uuid
                   go-github-com-golang-groupcache-lru
                   go-github-com-golang-snappy
+                  go-github-com-google-uuid
+                  go-github-com-gorilla-mux
                   go-github-com-gorilla-websocket
                   go-github-com-jackpal-go-nat-pmp
                   go-github-com-klauspost-compress
@@ -338,12 +344,11 @@ written in Go.")
                   go-github-com-spaolacci-murmur3
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb
-                  go-gopkg-in-yaml-v2
-                  go-gopkg-in-yaml-v3
                   go-go-uber-org-atomic
                   go-go-uber-org-multierr
                   go-go-uber-org-zap
                   go-golang-org-x-crypto
+                  go-golang-org-x-exp
                   go-golang-org-x-lint
                   go-golang-org-x-mod
                   go-golang-org-x-net
@@ -351,17 +356,18 @@ written in Go.")
                   go-golang-org-x-sync
                   go-golang-org-x-sys
                   go-golang-org-x-term
+                  go-golang-org-x-text
                   go-golang-org-x-tools
                   go-golang-org-x-xerrors
-                  go-golang-org-x-exp
-                  go-golang-org-x-text
+                  go-gopkg-in-yaml-v2
+                  go-gopkg-in-yaml-v3
                   go-lukechampine-com-blake3))
     (native-inputs
      (append (if (%current-target-system)
                  (list this-package)
                  '())
              (list python-minimal-wrapper zsh)))
-    (home-page "https://ipfs.io")
+    (home-page "https://ipfs.tech")
     (synopsis "Go implementation of IPFS, a peer-to-peer hypermedia protocol")
     (description "IPFS is a global, versioned, peer-to-peer file system.  It
 combines good ideas from Git, BitTorrent, Kademlia, SFS, and the Web.  It is

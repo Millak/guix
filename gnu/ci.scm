@@ -191,6 +191,7 @@ SYSTEM."
   (define (pointless? target)
     ;; Return #t if it makes no sense to cross-build to TARGET from SYSTEM.
     (or (string=? target "avr") ; Nothing for AVR at this time.
+        (string=? target "or1k-elf") ;; Nothing for or1k-elf at this time.
         (match system
           ((or "x86_64-linux" "i686-linux")
            (if (string-contains target "mingw")

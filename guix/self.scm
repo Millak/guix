@@ -65,6 +65,7 @@
       ("guile-gnutls"       . ,(ref 'tls 'guile-gnutls))
       ("guix-daemon"        . ,(ref 'package-management 'guix-daemon))
       ("disarchive"         . ,(ref 'backup 'disarchive))
+      ("guile-bzip2"        . ,(ref 'guile 'guile-bzip2))
       ("guile-lzma"         . ,(ref 'guile 'guile-lzma))
       ("gzip"               . ,(ref 'compression 'gzip))
       ("bzip2"              . ,(ref 'compression 'bzip2))
@@ -827,6 +828,9 @@ itself."
   (define disarchive
     (specification->package "disarchive"))
 
+  (define guile-bzip2
+    (specification->package "guile-bzip2"))
+
   (define guile-lzma
     (specification->package "guile-lzma"))
 
@@ -1058,6 +1062,7 @@ itself."
                                         #:source source
                                         #:dependencies
                                         (cons* disarchive
+                                               guile-bzip2
                                                guile-lzma
                                                dependencies)
                                         #:guile guile-for-build

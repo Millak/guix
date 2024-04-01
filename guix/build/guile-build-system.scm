@@ -184,39 +184,38 @@ installed; this is useful for files that are meant to be included."
                              (#f "")
                              (path (string-append ":" path)))))
 
-  (let ((source-files
+    (let ((source-files
            (with-directory-excursion source-directory
              (find-files "." scheme-file-regexp))))
-    (invoke-each
-     (filter-map (lambda (file)
-                   (and (or (not not-compiled-file-regexp)
-                            (not (string-match not-compiled-file-regexp
-                                               file)))
-                        (cons* guild
-                               "guild" "compile"
-                               "-L" source-directory
-                               "-o" (string-append go-dir
-                                                   (file-sans-extension file)
-                                                   ".go")
-                               (string-append source-directory "/" file)
-                               flags)))
-                 source-files)
-     #:max-processes (parallel-job-count)
-     #:report-progress report-build-progress)
-
-    (for-each
-     (lambda (file)
+      (for-each
+       (lambda (file)
          (install-file (string-append source-directory "/" file)
                        (string-append module-dir
                                       "/" (dirname file))))
-     source-files))
+       source-files)
+      (invoke-each
+       (filter-map (lambda (file)
+                     (and (or (not not-compiled-file-regexp)
+                              (not (string-match not-compiled-file-regexp
+                                                 file)))
+                          (cons* guild
+                                 "guild" "compile"
+                                 "-L" source-directory
+                                 "-o" (string-append go-dir
+                                                     (file-sans-extension file)
+                                                     ".go")
+                                 (string-append source-directory "/" file)
+                                 flags)))
+                   source-files)
+       #:max-processes (parallel-job-count)
+       #:report-progress report-build-progress))
     #t))
 
 (define* (install-documentation #:key outputs
                                 (documentation-file-regexp
                                  %documentation-file-regexp)
                                 #:allow-other-keys)
-  "Install files that mactch DOCUMENTATION-FILE-REGEXP."
+  "Install files that match DOCUMENTATION-FILE-REGEXP."
   (let* ((out (assoc-ref outputs "out"))
          (doc (string-append out "/share/doc/"
                              (strip-store-file-name out))))

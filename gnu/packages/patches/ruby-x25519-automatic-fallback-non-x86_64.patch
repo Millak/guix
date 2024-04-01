@@ -1,0 +1,45 @@
+from https://patch-diff.githubusercontent.com/raw/RubyCrypto/x25519/pull/36.patch
+
+From 5886507e08488c0ed116b1979a073b78b9495683 Mon Sep 17 00:00:00 2001
+From: Eric Long <i@hack3r.moe>
+Date: Sat, 15 Apr 2023 02:58:26 +0800
+Subject: [PATCH] Add automatic fallback for non-x86_64 targets
+
+---
+ Rakefile                          | 2 +-
+ ext/x25519_precomputed/extconf.rb | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Rakefile b/Rakefile
+index 535697c..6e4f4d3 100644
+--- a/Rakefile
++++ b/Rakefile
+@@ -7,7 +7,7 @@ CLEAN.include("**/*.o", "**/*.so", "**/*.bundle", "pkg", "tmp")
+ 
+ require "rake/extensiontask"
+ %w[precomputed ref10].each do |provider|
+-  next if provider == "precomputed" && RUBY_PLATFORM =~ /arm64-darwin/
++  next if provider == "precomputed" && RUBY_PLATFORM !~ /x86_64|x64/
+ 
+   Rake::ExtensionTask.new("x25519_#{provider}") do |ext|
+     ext.ext_dir = "ext/x25519_#{provider}"
+diff --git a/ext/x25519_precomputed/extconf.rb b/ext/x25519_precomputed/extconf.rb
+index 7f2ba4d..b049f98 100644
+--- a/ext/x25519_precomputed/extconf.rb
++++ b/ext/x25519_precomputed/extconf.rb
+@@ -4,12 +4,12 @@
+ 
+ require "mkmf"
+ 
+-if RUBY_PLATFORM =~ /arm64-darwin|aarch64-linux/
+-  File.write("Makefile", "install clean: ;")
+-else
++if RUBY_PLATFORM =~ /x86_64|x64/
+   $CFLAGS << " -Wall -O3 -pedantic -std=c99 -mbmi -mbmi2 -march=haswell"
+ 
+   create_makefile "x25519_precomputed"
++else
++  File.write("Makefile", "install clean: ;")
+ end
+ 
+ # rubocop:enable Style/GlobalVars

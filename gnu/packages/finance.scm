@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 ZmnSCPxj jxPCSnmZ <ZmnSCPxj@protonmail.com>
@@ -31,11 +31,14 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2023 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2024 Saku Laesvuori <saku@laesvuori.fi>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,6 +97,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
@@ -292,20 +296,20 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.6.6")
+    (version "5.7.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://homebank.free.fr/public/sources/"
-                                  "homebank-" version ".tar.gz"))
+              (uri (string-append "https://www.gethomebank.org/public/sources"
+                                  "/homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "03nwcpxmsw82gnhy1dialky1d9mfb2jqdzlgc79bxwhlhpqwsvv5"))))
+                "1r2lpf2qjvyc9l4llgy6453dn527pylvd49kr6ihrskmr1373kj2"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list gtk+ libofx libsoup-minimal-2))
-    (home-page "http://homebank.free.fr/")
+     (list gtk+ libofx libsoup-minimal))
+    (home-page "https://gethomebank.org/en/index.php")
     (synopsis "Graphical personal accounting application")
     (description "HomeBank allows you to manage your personal accounts at
 home.  The seeks to be lightweight, simple and easy to use.  It brings
@@ -607,7 +611,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.3.1")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -616,7 +620,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0slx7hmlw2gpcqg951vwvnyl7j52pfzqyaldphghhfxbfzjs7v64"))))
+        (base32 "1hfkp24m1yipadanjf5wm6clmyllkcbh7fbw8whnrvxa2v7sa4l8"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -683,7 +687,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.3.1")
+    (version "0.18.3.3")
     (source
      (origin
        (method git-fetch)
@@ -701,7 +705,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "1k6mrgsvmqsfk95w8kjmp9v2fghjmmpj40667zndrw9jx1h85mwx"))))
+        (base32 "1d3dnkz18v0mlspafnzm301lmdiz6pwjzdbsdq23mn7cyynzgnc9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -788,7 +792,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.3.1")
+    (version "0.18.3.3")
     (source
      (origin
        (method git-fetch)
@@ -804,7 +808,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "1fjx8gdzc1pmfsi14r09gfmkglvh560pnxk70p0k82a4gbs1vyz2"))))
+        (base32 "1yy98y37l5nfxj921h6rbhni6fk0fic9bs4gqbnq2n4397h7jamj"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -1308,7 +1312,7 @@ agent.")
 (define-public kitsas
   (package
     (name "kitsas")
-    (version "4.0.3")
+    (version "5.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1317,17 +1321,24 @@ agent.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hrbsqqm6v2pmjq17s7i4akjgclz3d051mg02vcykq80xgxvbkgf"))))
+                "16zkfpl5d9ia202fqg5vrhjqdw0g6wp044ih6n7nz2hbxj9y3m1z"))))
     (build-system qt-build-system)
-    (inputs (list qtbase-5 libzip poppler-qt5 qtsvg-5))
+    (inputs (list libzip qtsvg qtwebengine qt5compat))
     (arguments
-     (list #:tests? #f               ;XXX: some tests fail and others segfault
+     (list #:tests? #f           ; tests do not even build with Qt6 anymore
            #:test-target "check"
+           #:qtbase qtbase       ; use Qt6
            #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
                  (lambda* _
                    (invoke "qmake" "kitsasproject.pro" "CONFIG+=release")))
+               ;; The tests are not maintained and some don't even build
+               (add-before 'configure 'disable-broken-tests
+                 (lambda _
+                   (substitute* "kitsasproject.pro"
+                     ((" *(unittest|testit).*") "")
+                     (("\\\\") ""))))
                (replace 'install
                  (lambda* _
                    (install-file "kitsas/kitsas"
@@ -1742,7 +1753,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "2.0.0.0")
+    (version "2.0.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1751,7 +1762,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s4iyjfhjx21xa3z7433m4skfr115565k0ckza87ha2d4nl8kz5h"))))
+        (base32 "1kkmg0gp86qz3ya8y5a00yic1mals138b9fv2cjlm7683sfjjljx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1961,35 +1972,54 @@ that allows you to run services and through them access the Bitcoin Cash network
     (version "2.3.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "beancount" version))
+       (method git-fetch) ; no test data files in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/beancount/beancount")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0nj7sdh7wxc0hv8wxwqhw9v1zgx1sn4w92368ci2wzdmssz967w0"))
-       (patches (search-patches "beancount-disable-googleapis-fonts.patch"))))
-    (build-system python-build-system)
+        (base32 "1slxsjw29cyr2kbirdpijhpqspk55k38rpmk3zc02pr1wll62qsv"))
+       (patches (search-patches "beancount-disable-googleapis-fonts.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Remove broken experiments.
+            (delete-file-recursively "experiments")
+            ;; Remove bundled packages.
+            (delete-file-recursively "third_party")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f  ; Says test is missing, not sure why
-       #:phases
-       (modify-phases %standard-phases
-         ;; Not importing the googleapis package for now
-         (add-after 'unpack 'ignore-googleapis
-           (lambda _
-             (substitute* "setup.py"
-               (("'google-api-python-client',") ""))
-             #t))
-         ;; No module named 'google_auth_oauthlib'
-         (delete 'sanity-check))))
-    (inputs
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; ModuleNotFoundError: No module named 'pytest'
+                    "not test_parse_stdin"
+                    ;; AssertionError: 5 not greater than 20
+                    " and not test_setup"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; Use compatible fork, and do not fail during sanity check.
+                (("\"pdfminer2\",") ""))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
      (list python-beautifulsoup4
            python-bottle
            python-chardet
            python-dateutil
+           python-google-api-client
+           python-google-auth-oauthlib
            python-lxml
            python-magic
+           python-oauth2client
            python-ply
            python-requests))
     (native-inputs
-     (list python-pytest))
+     (list gnupg python-pdfminer-six python-pytest))
     (home-page "https://beancount.github.io/")
     (synopsis "Command-line double-entry accounting tool")
     (description
@@ -1997,6 +2027,55 @@ that allows you to run services and through them access the Bitcoin Cash network
 define financial transaction records in a text file, read them in memory,
 generate a variety of reports from them, and provides a web interface.")
     (license license:gpl2)))
+
+(define-public fava
+  (package
+    (name "fava")
+    ;; XXX: A newer version requires Flask > 2.2, which is not available in
+    ;; Guix yet.
+    (version "1.24.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fava" version))
+       (sha256
+        (base32 "1iwha9vx223iiyjqbixpz1lp8q766ikhi7xcap3pscjhldxlym4j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.cfg"
+               ((">=8,<10") ">8"))))
+          ;; Tests write to $HOME.
+          ;; FileNotFoundError: [Errno 2] No such file or directory
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list beancount
+           python-babel
+           python-cheroot
+           python-click
+           python-flask
+           python-flask-babel
+           python-jinja2
+           python-markdown2
+           python-ply
+           python-simplejson
+           python-werkzeug))
+    (native-inputs
+     (list python-pytest
+           python-chardet
+           python-dateutil
+           python-setuptools-scm))
+    (home-page "https://beancount.github.io/fava/")
+    (synopsis "Web interface for the accounting tool Beancount")
+    (description "Fava is a web interface for the double-entry bookkeeping
+software Beancount with a focus on features and usability.")
+    (license license:expat)))
 
 (define-public emacs-beancount
   ;; Note that upstream has not made any release since this project moved
@@ -2243,7 +2322,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.20.0")
+    (version "6.21.0")
     (source
      (origin
        (method git-fetch)
@@ -2251,7 +2330,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "02clipcixn0g4sm3b5r1cxx56ddhjkm8sqnq40jy1zm66ad5zhkj"))
+       (sha256 (base32 "1nmzgwd2r7ra7g4p0s5b77bgh099hf1kisbv4d946c9yiwbdzqgc"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
@@ -2351,11 +2430,11 @@ pool.")
 
 (define-public opentaxsolver
   ;; The OTS version is formatted like tax-year_version. So, at time of
-  ;; writing, the version is 2022_20.00. Each part of this is used in
+  ;; writing, the version is 2023_21.03. Each part of this is used in
   ;; different places in the source uri, so it's convenient to have them
   ;; separately like this.
-  (let ((tax-year "2022")
-        (ots-version "20.00"))
+  (let ((tax-year "2023")
+        (ots-version "21.03"))
     (package
       (name "opentaxsolver")
       (version (string-append tax-year "_" ots-version))
@@ -2367,7 +2446,7 @@ pool.")
                              "_linux/OpenTaxSolver" version "_linux64.tgz"))
          (sha256
           (base32
-           "06k0a72bmwdmr71dvrp8b4vl8vilnggsh92hrp7wjdgcjj9m074w"))
+           "1i543bvclnyiwnyjlskhr2bxlsigggvwdhg2519rf12lsghgfszq"))
          (patches (search-patches "opentaxsolver-file-browser-fix.patch"))))
       (build-system glib-or-gtk-build-system)
       (arguments

@@ -38,5 +38,8 @@
 (define-public gcc-cross-i686-w64-mingw32-toolchain
   (cross-gcc-toolchain "i686-w64-mingw32"))
 
+(define-public gcc-cross-or1k-elf-toolchain
+  (cross-gcc-toolchain "or1k-elf"))
+
 (define-public gcc-cross-x86_64-w64-mingw32-toolchain
   (cross-gcc-toolchain "x86_64-w64-mingw32"))

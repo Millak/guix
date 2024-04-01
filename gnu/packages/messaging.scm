@@ -40,6 +40,7 @@
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,6 +87,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
@@ -142,6 +144,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system go)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -1576,11 +1579,18 @@ system on which to rapidly develop added functionality, or prototype new
 protocols.")
     (license license:x11)))
 
-(define-public prosody-http-upload
-  (let ((changeset "765735bb590b")
-        (revision "1"))
+(define (prosody-module module-name)
+  (let ((changeset "fba64b043c52")
+        (revision "2")
+        (package-name (string-append
+                       "prosody-"
+                       (string-replace-substring
+                        (if (string-prefix? "mod_" module-name)
+                            (substring module-name 4)
+                            module-name)
+                        "_" "-"))))
     (package
-      (name "prosody-http-upload")
+      (name package-name)
       (version (string-append "0-" revision "." (string-take changeset 7)))
       (source (origin
                 (method hg-fetch)
@@ -1590,56 +1600,37 @@ protocols.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "142wrcism70nf8ffahhd961cqg2pi1h7ic8adfs3zwh0j3pnf41f"))))
-      (build-system trivial-build-system)
+                  "1nvka8s3zqs97jqsknhp2q956rrdga1qaxa1y3i0h8zx3g9vgdch"))))
+      (build-system copy-build-system)
       (arguments
-       '(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let ((out (assoc-ref %outputs "out"))
-                 (source (assoc-ref %build-inputs "source")))
-             (with-directory-excursion (in-vicinity source "mod_http_upload")
-               (install-file "mod_http_upload.lua" out))
-             #t))))
-      (home-page "https://modules.prosody.im/mod_http_upload.html")
-      (synopsis "XEP-0363: Allow clients to upload files over HTTP")
-      (description "This module implements XEP-0363: it allows clients to
-upload files over HTTP.")
+       `(#:install-plan '((,(string-append module-name "/") "."))))
+      (home-page (string-append "https://modules.prosody.im/"
+                                module-name ".html"))
+      (synopsis #f)
+      (description #f)
       (license (package-license prosody)))))
 
+(define-public prosody-http-upload
+  (package
+    (inherit (prosody-module "mod_http_upload"))
+    (synopsis "XEP-0363: Allow clients to upload files over HTTP")
+    (description "This module implements XEP-0363: it allows clients to
+upload files over HTTP.")))
+
 (define-public prosody-smacks
-  (let ((changeset "67f1d1f22625")
-        (revision "1"))
-    (package
-      (name "prosody-smacks")
-      (version (string-append "0-" revision "." (string-take changeset 7)))
-      (source (origin
-                (method hg-fetch)
-                (uri (hg-reference
-                      (url "https://hg.prosody.im/prosody-modules/")
-                      (changeset changeset)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "020ngpax30fgarah98yvlj0ni8rcdwq60if03a9hqdw8mic0nxxs"))))
-      (build-system trivial-build-system)
-      (arguments
-       '(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let ((out (assoc-ref %outputs "out"))
-                 (source (assoc-ref %build-inputs "source")))
-             (with-directory-excursion (in-vicinity source "mod_smacks")
-               (install-file "mod_smacks.lua" out))
-             #t))))
-      (home-page "https://modules.prosody.im/mod_smacks.html")
-      (synopsis "XEP-0198: Reliability and fast reconnects for XMPP")
-      (description "This module implements XEP-0198: when supported by both
+  (package
+    (inherit (prosody-module "mod_smacks"))
+    (synopsis "XEP-0198: Reliability and fast reconnects for XMPP")
+    (description "This module implements XEP-0198: when supported by both
 the client and server, it can allow clients to resume a disconnected session,
-and prevent message loss.")
-      (license (package-license prosody)))))
+and prevent message loss.")))
+
+(define-public prosody-vcard-muc
+  (package
+    (inherit (prosody-module "mod_vcard_muc"))
+    (synopsis "Support for MUC vCards and avatars")
+    (description "This module adds the ability to set vCard for MUC rooms. One
+of the most common use cases is to define avatars for MUC rooms.")))
 
 (define-public libtoxcore
   (let ((revision "2")
@@ -2636,11 +2627,11 @@ replacement.")
     (license license:gpl2+)))
 
 (define-public tdlib
-  (let ((commit "27c3eaeb4964bd5f18d8488e354abde1a4383e49")
+  (let ((commit "c5c55092dd61b9eb15d6bbfd0f02c04c593450e7")
         (revision "0"))
     (package
       (name "tdlib")
-      (version (git-version "1.8.23" revision commit))
+      (version (git-version "1.8.24" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2648,7 +2639,7 @@ replacement.")
                (url "https://github.com/tdlib/td")
                (commit commit)))
          (sha256
-          (base32 "14f65dfmg2p5hyvi3lffvvazwcd3i3jrrw3c2pwrc5yfgxk3662g"))
+          (base32 "1kwbp4ay4zvk9jscp0xv9rv4jz2krm9jya8q81wnvn9qd0ybg94f"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments

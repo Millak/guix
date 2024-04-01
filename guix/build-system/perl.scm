@@ -133,7 +133,9 @@ provides a `Makefile.PL' file as its build system."
                                                     search-paths))
                             #:make-maker? #$make-maker?
                             #:make-maker-flags #$make-maker-flags
-                            #:module-build-flags #$(sexp->gexp module-build-flags)
+                            #:module-build-flags #$(if (pair? module-build-flags)
+                                                       (sexp->gexp module-build-flags)
+                                                       module-build-flags)
                             #:phases #$(if (pair? phases)
                                            (sexp->gexp phases)
                                            phases)
@@ -195,7 +197,9 @@ XS or similar."
                                native-search-paths))
                       #:make-maker? #$make-maker?
                       #:make-maker-flags #$make-maker-flags
-                      #:module-build-flags #$(sexp->gexp module-build-flags)
+                      #:module-build-flags #$(if (pair? module-build-flags)
+                                                 (sexp->gexp module-build-flags)
+                                                 module-build-flags)
                       #:phases #$phases
                       #:build #$build
                       #:system #$system

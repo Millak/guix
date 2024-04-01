@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -23,6 +23,7 @@
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,6 +120,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages version-control)
   #:autoload   (guix build-system channel) (channel-build-system)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
@@ -174,8 +176,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "aeb494322ca9dec4a4d66a7d063239c8536bd538")
-        (revision 16))
+        (commit "4c94b9e983bc51d9504655f1e7727c4f6d14b6b7")
+        (revision 18))
     (package
       (name "guix")
 
@@ -191,7 +193,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1xl769lkpvkjpvq4vwkxm4dp77sr9finvr6izvf4kvyi6s3hbsys"))
+                  "19lqlfafs5mrnciw4jz4iccx5zzhj4pyb20bz6cdqcqbf9nmkfp1"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -411,11 +413,12 @@ $(prefix)/etc/openrc\n")))
                                (ssh    (assoc-ref inputs "guile-ssh"))
                                (gnutls (assoc-ref inputs "guile-gnutls"))
                                (disarchive (assoc-ref inputs "disarchive"))
+                               (bzip2 (assoc-ref inputs "guile-bzip2"))
                                (lzma (assoc-ref inputs "guile-lzma"))
                                (locales (assoc-ref inputs "glibc-utf8-locales"))
                                (deps   (list gcrypt json sqlite gnutls git
                                              bs ssh zlib lzlib zstd guile-lib
-                                             disarchive lzma))
+                                             disarchive bzip2 lzma))
                                (deps*  (if avahi (cons avahi deps) deps))
                                (effective
                                 (read-line
@@ -520,6 +523,7 @@ $(prefix)/etc/openrc\n")))
          ("bootstrap/xz" ,(bootstrap-executable "xz" (%current-system)))
 
          ("disarchive" ,disarchive)               ;for 'guix perform-download'
+         ("guile-bzip2" ,guile-bzip2)             ;for Disarchive
          ("guile-lzma" ,guile-lzma)               ;for Disarchive
 
          ("git-minimal" ,git-minimal)             ;for 'guix perform-download'
@@ -679,15 +683,12 @@ overridden by setting the 'current-guix-package' parameter."
 
 (define-public guix-icons
   (package
-    (inherit guix)
     (name "guix-icons")
     (version "0.1")
     (source %artwork-repository)
     (build-system trivial-build-system)
     (native-inputs
      (list imagemagick))
-    (inputs
-     '())
     (arguments
      `(#:modules ((guix build utils)
                   (gnu build svg))
@@ -735,10 +736,29 @@ overridden by setting the 'current-guix-package' parameter."
                                #:width size
                                #:height size)))
                  sizes))))))
+    (home-page "https://www.gnu.org/software/guix/")
     (synopsis "GNU Guix icons")
     (description "This package contains GNU Guix icons organized according to
 the Icon Theme Specification.  They can be used by applications querying the
-GTK icon cache for instance.")))
+GTK icon cache for instance.")
+    (license license:cc-by-sa4.0)))
+
+(define-public guix-backgrounds
+  (package
+    (name "guix-backgrounds")
+    (version "0.1")
+    (source %artwork-repository)
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("backgrounds" "share/backgrounds/guix" #:exclude ("README")))))
+    (home-page "https://www.gnu.org/software/guix/")
+    (synopsis "Background images for GNU Guix")
+    (description "The SVG files in this directory are intended to be used as
+backgrounds for different components of the GNU system like login managers and
+desktop environments.  The backgrounds are available in different aspect ratios
+which are indicated in the file name.")
+    (license (list license:public-domain license:cc-by-sa4.0))))
 
 (define-public guix-modules
   (package
@@ -971,8 +991,8 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "722c37ec8a23835edfc85cba3d89868592a2ed2d")
-        (revision "2"))
+  (let ((commit "bdfaab91e82d7d43c35405da3b18c46cde8096de")
+        (revision "5"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
@@ -983,7 +1003,7 @@ transactions from C or Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "05i4awyirp440pk4vwa0sf46gi801zv839qm1i2z7jipm1xfwaxx"))
+                  "0qwnd49apwdx8wrfms2spii1kdg5ashf4591kyfyr89070jjmpa7"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
@@ -998,7 +1018,7 @@ transactions from C or Python.")
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers-1.3
+             guile-fibers
              guile-prometheus
              guile-lib))
       (propagated-inputs
@@ -1007,7 +1027,7 @@ transactions from C or Python.")
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers-1.3
+             guile-fibers
              guile-prometheus
              guile-lib))
       (home-page "https://git.cbaines.net/guix/bffe")
@@ -1249,7 +1269,7 @@ extracting, creating, and converting between formats.")
            python-pyyaml
            python-requests
            python-responses
-           python-ruamel.yaml
+           python-ruamel.yaml-0.16
            python-tqdm
            ;; XXX: This is dragged in by libarchive and is needed at runtime.
            zstd))
@@ -1366,6 +1386,8 @@ tools_locations = {
                          ;; https://github.com/conan-io/conan/issues/13577).
                          "and not test_other_client_can_link_autotools "
                          "and not test_autotools_lib_template "
+                         ;; Sometimes fail: https://github.com/conan-io/conan/issues/15936
+                         "and not test_basic_parallel_install "
                          (if (not (string-prefix? "x86_64" system))
                              ;; These tests either assume the machine is
                              ;; x86_64, or require a cross-compiler to target
@@ -1510,8 +1532,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "e4af682452580298b34681d37818a16771a17c66")
-        (revision "93"))
+  (let ((commit "14e18eed98d1836662d8787d08f7a37cf8c2f69d")
+        (revision "100"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1522,7 +1544,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1i8x9nfpvg832lxwbpjl1kadldpkcnjlxdxl4c5jqx2hz680ylf3"))
+                  "1vv1l6y80ymqi7qz70bfq4is4y1xh21jm4d4gapn63931ac4fiij"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1606,9 +1628,9 @@ environments.")
              guile-prometheus
              guile-fibers
              guile-lib
-             (first (assoc-ref (package-native-inputs guix) "guile"))))
+             guile-next))
       (inputs
-       (list (first (assoc-ref (package-native-inputs guix) "guile"))
+       (list guile-next
              sqlite
              bash-minimal
              (libc-utf8-locales-for-target)
@@ -1648,9 +1670,9 @@ outputs of those builds.")
            guix
            guile-prometheus
            guile-lib
-           (first (assoc-ref (package-native-inputs guix) "guile"))))
+           guile-next))
     (inputs
-     (list (first (assoc-ref (package-native-inputs guix) "guile"))
+     (list guile-next
            bash-minimal
            (libc-utf8-locales-for-target)))
     (propagated-inputs
@@ -1759,8 +1781,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "5ccd6cbbdf5fc41e43a491d3414c1663e1fba64d")
-        (revision "23"))
+  (let ((commit "50de312c3a818afd6a93adc17d16ae4ff97ba436")
+        (revision "25"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1771,7 +1793,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1lid5k4wgghl9lzhazx1c473qv18yxp0xxrvj04b33pdvxnaawl8"))
+                  "0nrgh75509ys9cb0p9w5gbsakyz4pcbx6mbfhq47pcjf6h69phb2"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015-2017, 2019-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -90,7 +90,7 @@
   (map (lambda (input)
          (case (%input-style)
            ((specification)
-            `(specification->package ,(upstream-input-name input)))
+            `(specification->package ,(upstream-input-downstream-name input)))
            (else
             ((compose string->symbol
                        upstream-input-downstream-name)
@@ -270,7 +270,7 @@ bioconductor package NAME, or #F if the package is unknown."
             ;; of the URLs is the /Archive CRAN URL.
             (any (cut download-to-store store <>) urls)))))))))
 
-(define (fetch-description-from-tarball url)
+(define* (fetch-description-from-tarball url #:key (download download))
   "Fetch the tarball at URL, extra its 'DESCRIPTION' file, parse it, and
 return the resulting alist."
   (match (download url)
@@ -288,7 +288,7 @@ return the resulting alist."
                 (call-with-input-file (string-append dir "/DESCRIPTION")
                   read-string)))))))))
 
-(define* (fetch-description repository name #:optional version)
+(define* (fetch-description repository name #:optional version replacement-download)
   "Return an alist of the contents of the DESCRIPTION file for the R package
 NAME at VERSION in the given REPOSITORY, or #f in case of failure.  NAME is
 case-sensitive."
@@ -310,7 +310,9 @@ from ~a: ~a (~a)~%")
                              (string-append "mirror://cran/src/contrib/Archive/"
                                             name "/"
                                             name "_" version ".tar.gz"))))
-             (fetch-description-from-tarball urls))
+             (fetch-description-from-tarball
+              urls #:download (or replacement-download
+                                  download)))
            (let* ((url    (string-append %cran-url name "/DESCRIPTION"))
                   (port   (http-fetch url))
                   (result (description->alist (read-string port))))
@@ -327,7 +329,9 @@ from ~a: ~a (~a)~%")
                 ;; TODO: Honor VERSION.
                 (version (latest-bioconductor-package-version name type))
                 (url     (car (bioconductor-uri name version type)))
-                (meta    (fetch-description-from-tarball url)))
+                (meta    (fetch-description-from-tarball
+                          url #:download (or replacement-download
+                                             download))))
        (if (boolean? type)
            meta
            (cons `(bioconductor-type . ,type) meta))))
@@ -400,7 +404,8 @@ empty list when the FIELD cannot be found."
 ;; The field for system dependencies is often abused to specify non-package
 ;; dependencies (such as c++11).  This list is used to ignore them.
 (define invalid-packages
-  (list "c++"
+  (list "build-essential"
+        "c++"
         "c++11"
         "c++14"
         "c++17"
@@ -411,7 +416,9 @@ empty list when the FIELD cannot be found."
         "linux"
         "libR"
         "none"
+        "rtools"
         "unix"
+        "use_c17"
         "windows"
         "xcode"
         "xquartz"))
@@ -428,6 +435,9 @@ empty list when the FIELD cannot be found."
     ("freetype2" "freetype")
     ("gettext" "gnu-gettext")
     ("gmake" "gnu-make")
+    ("h5py" "python-h5py")
+    ("hmmer3" "hmmer")
+    ("leidenalg" "python-leidenalg")
     ("libarchive-devel" "libarchive")
     ("libarchive_dev" "libarchive")
     ("libbz2" "bzip2")
@@ -435,13 +445,27 @@ empty list when the FIELD cannot be found."
     ("libjpeg" "libjpeg-turbo")
     ("liblz4" "lz4")
     ("liblzma" "xz")
+    ("libssl-dev" "openssl")
+    ("libssl_dev" "openssl")
     ("libzstd" "zstd")
     ("libxml2-devel" "libxml2")
+    ("libxml2-dev" "libxml2")
     ("libz" "zlib")
+    ("libz-dev" "zlib")
     ("mariadb-devel" "mariadb")
     ("mysql56_dev" "mariadb")
+    ("nodejs" "node")
+    ("numpy" "python-numpy")
+    ("openssl-devel" "openssl")
+    ("openssl@1.1" "openssl-1.1")
+    ("packaging" "python-packaging")
+    ("pandas" "python-pandas")
     ("pandoc-citeproc" "pandoc")
     ("python3" "python-3")
+    ("pytorch" "python-pytorch")
+    ("scikit-learn" "python-scikit-learn")
+    ("scipy" "python-scipy")
+    ("sklearn" "python-scikit-learn")
     ("sqlite3" "sqlite")
     ("svn" "subversion")
     ("tcl/tk" "tcl")
@@ -450,6 +474,7 @@ empty list when the FIELD cannot be found."
     ("x11" "libx11")
     ("xml2" "libxml2")
     ("zlib-devel" "zlib")
+    ("zlib1g-dev" "zlib")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
@@ -648,6 +673,54 @@ of META, a package in REPOSITORY."
             (string<? (upstream-input-downstream-name input1)
                       (upstream-input-downstream-name input2))))))
 
+(define (phases-for-inputs input-names)
+  "Generate a list of build phases based on the provided INPUT-NAMES, a list
+of package names for all input packages."
+  (let ((rules
+         (list (lambda ()
+                 (and (any (lambda (name)
+                             (member name '("styler" "ExperimentHub")))
+                           input-names)
+                      '(add-after 'unpack 'set-HOME
+                         (lambda _ (setenv "HOME" "/tmp")))))
+               (lambda ()
+                 (and (member "esbuild" input-names)
+                      '(add-after 'unpack 'process-javascript
+                         (lambda* (#:key inputs #:allow-other-keys)
+                           (with-directory-excursion "inst/"
+                             (for-each (match-lambda
+                                         ((source . target)
+                                          (minify source #:target target)))
+                                       '())))))))))
+    (fold (lambda (rule phases)
+            (let ((new-phase (rule)))
+              (if new-phase (cons new-phase phases) phases)))
+          (list)
+          rules)))
+
+(define (maybe-arguments inputs)
+  "Generate a list for the arguments field that can be spliced into a package
+S-expression."
+  (let ((input-names (map upstream-input-name inputs))
+        (esbuild-modules '(#:modules
+                           '((guix build r-build-system)
+                             (guix build minify-build-system)
+                             (guix build utils)
+                             (ice-9 match))
+                           #:imported-modules
+                           `(,@%r-build-system-modules
+                             (guix build minify-build-system)))))
+    (match (phases-for-inputs input-names)
+      (() '())
+      (phases
+       `((arguments
+          (list
+           ,@(if (member "esbuild" input-names)
+                 esbuild-modules '())
+           #:phases
+           '(modify-phases %standard-phases
+              ,@phases))))))))
+
 (define* (description->package repository meta #:key (license-prefix identity)
                                (download-source download))
   "Return the `package' s-expression for an R package published on REPOSITORY
@@ -727,7 +800,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                     `((properties ,`(,'quasiquote ((,'upstream-name . ,name)))))
                     '())
               (build-system r-build-system)
-
+              ,@(maybe-arguments inputs)
               ,@(maybe-inputs (filter (upstream-input-type-predicate 'regular)
                                       inputs)
                               'inputs)
@@ -858,15 +931,25 @@ s-expression corresponding to that package, or #f on failure."
   (define upstream-name
     (package->upstream-name pkg))
 
+  (define type
+    (cond
+     ((bioconductor-data-package? pkg)
+      'annotation)
+     ((bioconductor-experiment-package? pkg)
+      'experiment)
+     ((bioconductor-package? pkg)
+      #true)
+     (else #false)))
+
   (define latest-version
-    (latest-bioconductor-package-version upstream-name))
+    (latest-bioconductor-package-version upstream-name type))
 
   (and latest-version
        ;; Bioconductor does not provide signatures.
        (upstream-source
         (package (package-name pkg))
         (version latest-version)
-        (urls (bioconductor-uri upstream-name latest-version))
+        (urls (bioconductor-uri upstream-name latest-version type))
         (inputs
          (let ((meta (fetch-description 'bioconductor upstream-name)))
            (cran-package-inputs meta 'bioconductor))))))
@@ -920,7 +1003,10 @@ s-expression corresponding to that package, or #f on failure."
   (upstream-updater
    (name 'bioconductor)
    (description "Updater for Bioconductor packages")
-   (pred bioconductor-package?)
+   (pred (lambda (pkg)
+           (or (bioconductor-package? pkg)
+               (bioconductor-data-package? pkg)
+               (bioconductor-experiment-package? pkg))))
    (import latest-bioconductor-release)))
 
 ;;; cran.scm ends here

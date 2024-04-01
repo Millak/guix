@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system waf)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -43,6 +45,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gnupg)
@@ -279,25 +282,17 @@ and triple stores.")
 (define-public serd
   (package
     (name "serd")
-    (version "0.30.16")
+    (version "0.32.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/serd-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0ilimkczibiwwvc12i14b8zi6ng42hjf9j907g8dik8rlmnlh3zm"))))
+               "18cwj8xxsaq6iw45kcljbhrral0cqvav80p4mdv2l7g0d2a6ks6i"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-ldflags
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
-    (home-page "https://drobilla.net/software/serd/")
+    (native-inputs (list python-minimal))
+    (home-page "https://drobilla.net/software/serd.html")
     (synopsis "Library for RDF syntax supporting Turtle and NTriples")
     (description
      "Serd is a lightweight C library for RDF syntax which supports reading
@@ -311,31 +306,22 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 (define-public sord
   (package
     (name "sord")
-    (version "0.16.14")
+    (version "0.16.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/sord-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "06vkqk3dnn15zdnzklahib2pvbfspy2zcrnvhmxnw8fbbxyxj3r2"))))
+               "1l2zjz6gypxbf1z32zyqkljdcn9mz452djc4xq1dlhv1fmnqfzr5"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-ldflags
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (inputs
      (list pcre))
     (native-inputs
      (list pkg-config))
     (propagated-inputs
-     (list serd))                 ; required by sord-0.pc
-    (home-page "https://drobilla.net/software/sord/")
+     (list serd zix))                 ;required by sord-0.pc
+    (home-page "https://drobilla.net/software/sord.html")
     (synopsis "C library for storing RDF data in memory")
     (description
      "Sord is a lightweight C library for storing RDF data in memory.")
@@ -380,45 +366,6 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 powerful language for representing information.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
-
-(define-public python-rdflib-5
-  (package
-    (inherit python-rdflib)
-    (version "5.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "rdflib" version))
-        (sha256
-         (base32
-          "0mdi7xh4zcr3ngqwlgqdqf0i5bxghwfddyxdng1zwpiqkpa9s53q"))))
-    ;; XXX: Lazily disable tests because they require a lot of work
-    ;; and this package is only transitional.
-    (arguments '(#:tests? #f))))
-
-;; Note: This package is only needed for rdflib < 6.0; supersede when
-;; the above are removed.
-(define-public python-rdflib-jsonld
-  (package
-    (name "python-rdflib-jsonld")
-    (version "0.6.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "rdflib-jsonld" version))
-        (sha256
-         (base32
-          "0qrshlqzv5g5bign7kjja3xf7hyk7xgayr3yd0qlqda1kl0x6z0h"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-nose))
-    (propagated-inputs
-     (list python-rdflib))
-    (home-page "https://github.com/RDFLib/rdflib-jsonld")
-    (synopsis "rdflib extension adding JSON-LD parser and serializer")
-    (description "This package provides an rdflib extension adding JSON-LD
-parser and serializer.")
-    (license license:bsd-3)))
 
 (define-public python-cfgraph
   (package
@@ -468,33 +415,16 @@ C++ library as well as various command-line tools to to work with HDT.")
 (define-public python-pyrdfa3
   (package
     (name "python-pyrdfa3")
-    (version "3.5.3")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyRdfa3" version))
        (sha256
-        (base32 "1biif5lav3gswkhjzq882s4rgxzmvwsy5gb9dxdk9pw75fln6xhm"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-python-3-issues
-            (lambda _
-              ;; Delete files that appear to be versions for older Pythons;
-              ;; they fail to byte compile (see:
-              ;; https://github.com/RDFLib/pyrdfa3/issues/41).
-              (with-directory-excursion "pyRdfaExtras/serializers"
-                (for-each delete-file
-                          (list "prettyXMLserializer_3.py"
-                                "prettyXMLserializer_3_2.py")))
-              ;; See https://github.com/RDFLib/pyrdfa3/issues/42.
-              (substitute* "pyRdfaExtras/__init__.py"
-                (("from StringIO import StringIO")
-                 "from io import StringIO")))))))
-    (propagated-inputs (list python-html5lib python-rdflib))
+        (base32 "1hhlhgqkc3igzdpxllf41drrqxm5aswqhwvnjqb90q3zjnmiss3k"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no test suite
+    (propagated-inputs (list python-html5lib python-rdflib python-requests))
     (home-page "https://www.w3.org/2012/pyRdfa/")
     (synopsis "RDFa Python distiller/parser library")
     (description "This library can extract RDFa 1.1 from (X)HTML, SVG, or XML.

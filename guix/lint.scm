@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -67,6 +67,10 @@
                                     svn-multi-reference-url
                                     svn-multi-reference-user-name
                                     svn-multi-reference-password)
+  #:autoload   (guix hg-download)  (hg-reference?
+                                    hg-reference-url)
+  #:autoload   (guix bzr-download) (bzr-reference?
+                                    bzr-reference-url)
   #:use-module (guix import stackage)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -84,10 +88,10 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-6)                      ;Unicode string ports
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 rdelim)
   #:export (check-description-style
             check-inputs-should-be-native
@@ -823,8 +827,8 @@ for connections to complete; when TIMEOUT is #f, wait as long as needed."
                   ;; Return RESPONSE, unless the final response as we follow
                   ;; redirects is not 200.
                   (if location
-                      (let-values (((status response2)
-                                    (loop location (cons location visited))))
+                      (let ((status response2 (loop location
+                                                    (cons location visited))))
                         (case status
                           ((http-response)
                            (values 'http-response
@@ -926,8 +930,7 @@ display a message including MESSAGE and return ERROR-VALUE."
 (define (validate-uri uri package field)
   "Return #t if the given URI can be reached, otherwise return a warning for
 PACKAGE mentioning the FIELD."
-  (let-values (((status argument)
-                (probe-uri uri #:timeout 3)))     ;wait at most 3 seconds
+  (let ((status argument (probe-uri uri #:timeout 3))) ;wait at most 3 seconds
     (case status
       ((http-response)
        (cond ((= 200 (response-code argument))
@@ -1633,6 +1636,69 @@ directory identifiers the spec refers to.  Otherwise return #f."
               (extract-swh-id spec)))))
        %disarchive-mirrors))
 
+(define (swh-response->warning package url method response)
+  "Given RESPONSE, the response of METHOD on URL, return a suitable warning
+list for PACKAGE."
+  (if (request-rate-limit-reached? url method)
+      (list (make-warning package
+                          (G_ "Software Heritage rate limit reached; \
+try again later")
+                          #:field 'source))
+      (list (make-warning package
+                          (G_ "'~a' returned ~a")
+                          (list url (response-code response))
+                          #:field 'source))))
+
+(define (vcs-origin origin)
+  "Return two values: the URL and type (a string) of the version-control used
+for ORIGIN.  Return #f and #f if ORIGIN is not a version-control checkout."
+  (match (and=> origin origin-uri)
+    ((? git-reference? ref)
+     (values (git-reference-url ref) "git"))
+    ((? svn-reference? ref)
+     (values (svn-reference-url ref) "svn"))
+    ((? svn-multi-reference? ref)
+     (values (svn-multi-reference-url ref) "svn"))
+    ((? hg-reference? ref)
+     (values (hg-reference-url ref) "hg"))
+    ((? bzr-reference? ref)
+     (values (bzr-reference-url ref) "bzr"))
+    ;; XXX: Not sure what to do with the weird CVS URIs (:pserver: etc.).
+    (_
+     (values #f #f))))
+
+(define (save-package-source package)
+  "Attempt to save the source of PACKAGE on SWH.  Return a list of warnings."
+  (let* ((origin (package-source package))
+         (url type (if origin (vcs-origin origin) (values #f #f))))
+    (cond ((and url type)
+           (catch 'swh-error
+             (lambda ()
+               (save-origin url type)
+               (list (make-warning
+                      package
+                      ;; TRANSLATORS: "Software Heritage" is a proper noun that
+                      ;; must remain untranslated.  See
+                      ;; <https://www.softwareheritage.org>.
+                      (G_ "scheduled Software Heritage archival")
+                      #:field 'source)))
+             (lambda (key url method response . _)
+               (cond ((= 429 (response-code response))
+                      (list (make-warning
+                             package
+                             (G_ "archival rate limit exceeded; \
+try again later")
+                             #:field 'source)))
+                     (else
+                      (swh-response->warning package url method response))))))
+          ((not origin)
+           '())
+          (else
+           (list (make-warning
+                  package
+                  (G_ "source code cannot be archived")
+                  #:field 'source))))))
+
 (define (check-archival package)
   "Check whether PACKAGE's source code is archived on Software Heritage.  If
 it's not, and if its source code is a VCS snapshot, then send a \"save\"
@@ -1641,22 +1707,15 @@ request to Software Heritage.
 Software Heritage imposes limits on the request rate per client IP address.
 This checker prints a notice and stops doing anything once that limit has been
 reached."
-  (define (response->warning url method response)
-    (if (request-rate-limit-reached? url method)
-        (list (make-warning package
-                            (G_ "Software Heritage rate limit reached; \
-try again later")
-                            #:field 'source))
-        (list (make-warning package
-                            (G_ "'~a' returned ~a")
-                            (list url (response-code response))
-                            #:field 'source))))
-
   (define skip-key (gensym "skip-archival-check"))
 
   (define (skip-when-limit-reached url method)
     (or (not (request-rate-limit-reached? url method))
         (throw skip-key #t)))
+
+  (define (lookup-by-nar-hash hash)
+    (lookup-directory-by-nar-hash (content-hash-value hash)
+                                  (content-hash-algorithm hash)))
 
   (parameterize ((%allow-request? skip-when-limit-reached))
     (catch #t
@@ -1664,71 +1723,59 @@ try again later")
         (match (package-source package)
           (#f                                     ;no source
            '())
-          ((and (? origin?)
+          ((and (? origin? origin)
                 (= origin-uri (? git-reference? reference)))
            (define url
              (git-reference-url reference))
            (define commit
              (git-reference-commit reference))
+           (define hash
+             (origin-hash origin))
 
-           (match (if (commit-id? commit)
-                      (or (lookup-revision commit)
-                          (lookup-origin-revision url commit))
-                      (lookup-origin-revision url commit))
-             ((? revision? revision)
+           (match (or (lookup-by-nar-hash hash)
+                      (if (commit-id? commit)
+                          (or (lookup-revision commit)
+                              (lookup-origin-revision url commit))
+                          (lookup-origin-revision url commit)))
+             ((or (? string?) (? revision?))
               '())
              (#f
               ;; Revision is missing from the archive, attempt to save it.
-              (catch 'swh-error
-                (lambda ()
-                  (save-origin (git-reference-url reference) "git")
-                  (list (make-warning
-                         package
-                         ;; TRANSLATORS: "Software Heritage" is a proper noun
-                         ;; that must remain untranslated.  See
-                         ;; <https://www.softwareheritage.org>.
-                         (G_ "scheduled Software Heritage archival")
-                         #:field 'source)))
-                (lambda (key url method response . _)
-                  (cond ((= 429 (response-code response))
-                         (list (make-warning
-                                package
-                                (G_ "archival rate limit exceeded; \
-try again later")
-                                #:field 'source)))
-                        (else
-                         (response->warning url method response))))))))
+              (save-package-source package))))
           ((? origin? origin)
-           ;; Since "save" origins are not supported for non-VCS source, all
-           ;; we can do is tell whether a given tarball is available or not.
            (if (and=> (origin-hash origin)          ;XXX: for ungoogled-chromium
                       content-hash-value)           ;& icecat
                (let ((hash (origin-hash origin)))
-                 (match (lookup-content (content-hash-value hash)
-                                        (symbol->string
-                                         (content-hash-algorithm hash)))
+                 (match (or (lookup-by-nar-hash hash)
+                            (lookup-content (content-hash-value hash)
+                                            (symbol->string
+                                             (content-hash-algorithm hash))))
                    (#f
-                    ;; If SWH doesn't have HASH as is, it may be because it's
-                    ;; a hand-crafted tarball.  In that case, check whether
-                    ;; the Disarchive database has an entry for that tarball.
-                    (match (lookup-disarchive-spec hash)
-                      (#f
-                       (list (make-warning package
-                                           (G_ "source not archived on Software \
+                    ;; If ORIGIN is a version-control checkout, save it now.
+                    ;; If not, check whether HASH is in the Disarchive
+                    ;; database ("Save Code Now" does not accept tarballs).
+                    (if (vcs-origin origin)
+                        (save-package-source package)
+                        (match (lookup-disarchive-spec hash)
+                          (#f
+                           (list (make-warning package
+                                               (G_ "source not archived on Software \
 Heritage and missing from the Disarchive database")
-                                           #:field 'source)))
-                      (directory-ids
-                       (match (find (lambda (id)
-                                      (not (lookup-directory id)))
-                                    directory-ids)
-                         (#f '())
-                         (id
-                          (list (make-warning package
-                                              (G_ "\
+                                               #:field 'source)))
+                          (directory-ids
+                           (match (find (lambda (id)
+                                          (not (lookup-directory id)))
+                                        directory-ids)
+                             (#f '())
+                             (id
+                              (list (make-warning package
+                                                  (G_ "\
 Disarchive entry refers to non-existent SWH directory '~a'")
-                                              (list id)
-                                              #:field 'source)))))))
+                                                  (list id)
+                                                  #:field 'source))))))))
                    ((? content?)
+                    '())
+                   ((? string? swhid)
                     '())))
                '()))
           ((? local-file?)
@@ -1740,7 +1787,7 @@ source is not an origin, it cannot be archived")
                                #:field 'source)))))
       (match-lambda*
         (('swh-error url method response)
-         (response->warning url method response))
+         (swh-response->warning package url method response))
         ((key . args)
          (if (eq? key skip-key)
              '()

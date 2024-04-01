@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -17,7 +17,7 @@
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2021 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018, 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2022, 2023, 2024 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -31,7 +31,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
@@ -74,6 +74,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
@@ -115,6 +117,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)  ;libsndfile, libsamplerate
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
@@ -129,6 +132,7 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -256,6 +260,41 @@ softsynth library that can be used with other applications.")
       license:lgpl3+
       ;; Player.
       license:gpl3+))))
+
+(define-public alsa-midi-latency-test
+  (let ((version "0.0.5")
+        (revision "0")
+        (commit "07e43f8a1e6fd6d3bd97a00f2ee5afb74cb66f95"))
+    (package
+      (name "alsa-midi-latency-test")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/koppi/alsa-midi-latency-test")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b3xd4z7zx6mmh6q2q7wnyd0hzikny2cikwzhaab3q86b551vb9n"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                               ;there are no tests
+        #:phases #~(modify-phases %standard-phases
+                     (replace 'bootstrap
+                       (lambda _
+                         (invoke "sh" "./autogen.sh"))))))
+      (native-inputs (list automake autoconf libtool))
+      (inputs (list alsa-lib))
+      (synopsis "Measure the roundtrip time of MIDI messages")
+      (description
+       "@code{alsa-midi-latency-test} measures the roundtrip time of a MIDI
+message in the alsa subsystem of the Linux kernel using a high precision timer.
+It calculates the worst case roundtrip time of all sent MIDI messages and
+displays a histogram of the roundtrip time jitter.")
+      (home-page "https://github.com/koppi/alsa-midi-latency-test")
+      (license license:gpl2+))))
 
 (define-public webrtc-audio-processing
   (package
@@ -1420,6 +1459,35 @@ performances.  The plugins include a cellular automaton synthesizer, an
 envelope follower, distortion effects, tape effects and more.")
     (license license:gpl2+)))
 
+(define-public omins-lv2
+  (let ((commit "058f341053067b69a84d4081107fda5058290ff9")
+	(revision "1"))
+    (package
+      (name "omins-lv2")
+      ;; No release despite being perfectly usable. 0.0.0 seems to be the only
+      ;; version the author ever specified:
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin (method git-fetch)
+	       (uri
+	        (git-reference
+	         (url "https://git.drobilla.net/cgit.cgi/omins.lv2.git/")
+	         (commit commit)))
+	       (file-name (git-file-name name version))
+	       (sha256
+	        (base32
+                 "01hnx4hhbz3ap3bw15s42q4q1mw1mhdjwygq4550wvjfg6k4ga8w"))))
+      (build-system waf-build-system)
+      (arguments (list #:tests? #false)) ;There are no tests.
+      (inputs (list lv2))
+      (native-inputs (list pkg-config))
+      (home-page "https://git.drobilla.net/cgit.cgi/omins.lv2.git/")
+      (synopsis "LV2 audio plugins for modular synthesis")
+      (description
+       "Omins-lv2 is a small collection of LV2 audio plugins for modular
+synthesis.")
+      (license license:gpl2+))))
+
 (define-public snapcast
   (package
     (name "snapcast")
@@ -1529,7 +1597,7 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
 (define-public libdjinterop
   (package
     (name "libdjinterop")
-    (version "0.16.0")
+    (version "0.20.2")
     (source
      (origin
        (method git-fetch)
@@ -1538,15 +1606,8 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16nrqpr90vb9ggmp9j73m0hspd7pmfdhh0g6iyp8vd7kx7g17qnk"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; crate_test writes a database file to the source tree.
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files ".")))))))
+        (base32 "0gbaji3d105vwshjfmnbxqrs42jjjxp41jqj5srncrfv3xmzsfkr"))))
+    (build-system cmake-build-system)
     (native-inputs
      (list boost pkg-config))
     (inputs
@@ -3041,36 +3102,30 @@ frequencies.  This data is then formatted to MIDI and written to disk.")
 (define-public lilv
   (package
     (name "lilv")
-    (version "0.24.12")
+    (version "0.24.22")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/lilv-"
-                                 version ".tar.bz2"))
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "0qchfsyrsrp2pdpd59025kllycr04ddpzd03ha1iz70ci687g8r6"))))
-    (build-system waf-build-system)
+               "1wwzkz91zv0cj8dkr7aqsryznihhbkhwaplv81ik7j4zwp84kybn"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-ldflags
-          (lambda* (#:key outputs #:allow-other-keys)
-            (setenv "LDFLAGS"
-                    (string-append "-Wl,-rpath="
-                                   (assoc-ref outputs "out") "/lib"))))
-         (add-after 'unpack 'full-store-path-to-shared-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion "bindings/python"
-               (substitute* "lilv.py"
-                 (("liblilv-0.so") (string-append (assoc-ref outputs "out")
-                                                  "/lib/liblilv-0.so")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'full-store-path-to-shared-library
+            (lambda _
+              (with-directory-excursion "bindings/python"
+                (substitute* "lilv.py"
+                  (("liblilv-0.so") (string-append #$output "/lib/liblilv-0.so")))))))))
     ;; Required by lilv-0.pc.
     (propagated-inputs
      (list lv2 serd sord sratom))
     (native-inputs
      (list python pkg-config))
-    (home-page "https://drobilla.net/software/lilv")
+    (home-page "https://drobilla.net/software/lilv.html")
     (synopsis "Library to simplify use of LV2 plugins in applications")
     (description
      "Lilv is a C library to make the use of LV2 plugins as simple as possible
@@ -3081,18 +3136,15 @@ significantly faster and have minimal dependencies.")
 (define-public lv2
   (package
     (name "lv2")
-    (version "1.18.2")
+    (version "1.18.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://lv2plug.in/spec/lv2-"
-                                 version ".tar.bz2"))
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "0pp0n9x1rg8d4fw853z9cvfifjdi4bl85yjxxddqa1acfjy1z2af"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f                      ; no check target
-       #:configure-flags '("--no-plugins")))
+               "0gwm63jrvg9lww0rl3sjkgbjwfz0vascpb19cfxmhkmm477ipibq"))))
+    (build-system meson-build-system)
     (inputs
      ;; Leaving off cairo and gtk+-2.0 which are needed for example plugins
      (list libsndfile))
@@ -3650,33 +3702,35 @@ filters using the so-called @emph{window method}.")
 (define-public rubberband
   (package
     (name "rubberband")
-    (version "1.8.2")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri
-               (string-append "https://bitbucket.org/breakfastquay/rubberband/get/v"
-                              version
-                              ".tar.bz2"))
-              (file-name (string-append name "-" version ".tar.bz2"))
+               (string-append "https://breakfastquay.com/files/releases/"
+                              "rubberband-" version ".tar.bz2"))
               (sha256
                (base32
-                "0462fmjnfqpv2qi0s6ny42drqarkr0xy9lw8frjmfgzyzl5n9294"))))
-    (build-system gnu-build-system)
+                "0v2pbv4jnzv3rr2qr71skwncy2p263ngmhn37aqqb7zgp3i8kvyr"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-jni-installation
-           ;; ‘make install’ unconditionally installs librubberband-jni.so,
-           ;; which is never built by ‘make all’.  Skip it.
-           (lambda _
-             (substitute* "Makefile.in"
-               ((".*cp -f \\$\\(JNI_TARGET\\).*") ""))
-             #t)))))
+     (list
+      #:configure-flags
+      '(list "-Dresampler=libsamplerate"
+             "-Dfft=fftw"                  ;To avoid using bundled version
+             "-Ddefault_library=shared"))) ;Don't build static library
     (inputs
-     (list ladspa libsamplerate vamp))
+     (list ladspa lv2 vamp))
+    (propagated-inputs
+     (list fftw libsamplerate)) ;required by rubberband.pc
     (native-inputs
      (list pkg-config))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))
+           (search-path-specification
+            (variable "LADSPA_PATH")
+            (files '("lib/ladspa")))))
     (home-page "https://breakfastquay.com/rubberband/")
     (synopsis "Audio time-stretching and pitch-shifting library")
     (description
@@ -3725,22 +3779,21 @@ input/output.")
 (define-public sratom
   (package
     (name "sratom")
-    (version "0.6.6")
+    (version "0.6.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/sratom-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "178v90qvsp6lw4sqdmdz0bzyjkgwhv9m75ph1d1z8say5bv0p4gv"))))
-    (build-system waf-build-system)
-    (arguments `(#:tests? #f))          ;no check target
+                "1i12wcnv52r05zr5wjmpvbsvbjbm3hkv8frral2kvrc326cmghbi"))))
+    (build-system meson-build-system)
     (propagated-inputs
      ;; In Requires of sratom-0.pc.
      (list lv2 serd sord))
     (native-inputs
      (list pkg-config))
-    (home-page "https://drobilla.net/software/sratom/")
+    (home-page "https://drobilla.net/software/sratom.html")
     (synopsis "Library for serialising LV2 atoms to/from RDF")
     (description
      "Sratom is a library for serialising LV2 atoms to/from RDF, particularly
@@ -3867,16 +3920,16 @@ disks as various audio file formats.")
 (define-public vamp
   (package
     (name "vamp")
-    (version "2.6")
+    (version "2.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://code.soundsoftware.ac.uk"
-                    "/attachments/download/1520/vamp-plugin-sdk-"
-                    version ".tar.gz"))
+                    "https://code.soundsoftware.ac.uk/attachments/download/"
+                    "2691" ; This mysterious number changes with each update
+                    "/vamp-plugin-sdk-" version ".tar.gz"))
               (sha256
                (base32
-                "0pzq0yy2kdl3jgfc2aqmh5m55nk1ild0hq8mydiiw35c6y0mglyh"))))
+                "0pzpkxrz71fzqd2m83kjyafzqzrifzsq5phcn7mqq52blii3gbxf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
@@ -6229,20 +6282,15 @@ systems.")
 (define-public mda-lv2
   (package
     (name "mda-lv2")
-    (version "1.2.6")
+    (version "1.2.10")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "http://download.drobilla.net/mda-lv2-"
-                            version ".tar.bz2"))
+                            version ".tar.xz"))
         (sha256
-         (base32 "1nspk2j11l65m5r9z5isw8j749vh9a89wgx8mkrrq15f4iq12rnd"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f  ; There are no tests.
-       #:configure-flags
-       (list (string-append "--prefix="
-                            (assoc-ref %outputs "out")))))
+         (base32 "0nm7qahkrxjydv1wii46ca6948srwhjilhlp54z9bpcnln35ksmf"))))
+    (build-system meson-build-system)
     (inputs
      (list lv2))
     (native-inputs
@@ -6251,7 +6299,7 @@ systems.")
      (list (search-path-specification
             (variable "LV2_PATH")
             (files '("lib/lv2")))))
-    (home-page "https://drobilla.net/software/mda-lv2")
+    (home-page "https://drobilla.net/software/mda-lv2.html")
     (synopsis "Audio plug-in pack for LV2")
     (description
      "MDA-LV2 is an LV2 port of the MDA plugins.  It includes effects and a few
@@ -6320,7 +6368,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.6.0")
+    (version "0.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6329,7 +6377,7 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17jl347rwagdyx6pgnp83l1ffhlyfl0s4jf7ii2i1j3s1m9sz7y0"))))
+                "0185hxbwqxhjiyym0s7bmrm50f3p4bnvx92qqmgvg3zd7r1x8m8s"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f))                ; no tests
@@ -6409,3 +6457,96 @@ be separated.")
       (description "Cubeb is Mozilla's cross-platform audio library.")
       (home-page "https://github.com/mozilla/cubeb")
       (license license:isc))))
+
+(define-public easyeffects
+  (package
+    (name "easyeffects")
+    (version "7.0.1") ; later version require gtk 4.10
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wwmm/easyeffects")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0c49yd4dfh7qarq5h651dgxdbs71is4pp1sl8r0gfswqji6bv39w"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list `(,glib "bin") ;for glib-compile-resources
+           gettext-minimal
+           itstool
+           pkg-config))
+    (inputs
+     (list fftwf
+           fmt
+           gsl
+           gtk
+           json-modern-cxx ;nlohmann_json
+           libadwaita
+           libbs2b
+           libebur128
+           libportal
+           libsamplerate
+           libsigc++
+           libsndfile
+           lilv
+           pango
+           pipewire
+           rnnoise
+           speex
+           speexdsp
+           tbb
+           zita-convolver))
+    ;; Propagating these allows EasyEffects to find the plugins via their
+    ;; search-path specification
+    (propagated-inputs
+     (list calf
+           lsp-plugins
+           lv2
+           mda-lv2
+           rubberband
+           zam-plugins))
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _ ; Remove dependency on needless desktop cache stuff.
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true") "gtk_update_icon_cache: false")
+               (("update_desktop_database: true") "update_desktop_database: false")))))))
+    (home-page "https://github.com/wwmm/easyeffects")
+    (synopsis "Realtime Audio effects interface for Pipewire")
+    (description "EasyEffects is an advanced audio manipulation tool providing
+a graphical user interface to apply various effects and filters to audio
+streams using Pipewire.  Effects can be applied in real time to audio inputs or
+outputs such as a microphone to reduce noise or apply many other effects
+including:
+
+@itemize
+@item Auto gain
+@item Bass enhancer
+@item Bass loudness
+@item Compressor
+@item Convolver
+@item Crossfeed
+@item Crystalizer
+@item De-esser
+@item Delay
+@item Echo Canceller
+@item Equalizer
+@item Exciter
+@item Filter (low-pass, high-pass, band-pass and band-reject modes)
+@item Gate
+@item Limiter
+@item Loudness
+@item Maximizer
+@item Multiband compressor
+@item Multiband gate
+@item Noise reduction
+@item Pitch
+@item Reverberation
+@item Speech Processor
+@item Stereo tools
+@end itemize")
+    (license license:gpl3+)))

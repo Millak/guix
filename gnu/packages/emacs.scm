@@ -9,7 +9,7 @@
 ;;; Copyright © 2016 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017, 2019, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2019, 2020, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -59,6 +59,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
@@ -99,17 +100,19 @@
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
-    (version "29.1")
+    (version "29.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "009f7q08vg919b90k2jrsznq73s3n224avz80dd2y7i3rjjq3y6j"))
-              (patches (search-patches "emacs-exec-path.patch"
+                "1822swrk4ifmkd4h9l0h37zifcpa1w3sy3vsgyffsrp6mk9hak63"))
+              (patches (search-patches "emacs-disable-jit-compilation.patch"
+                                       "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
+                                       "emacs-native-comp-fix-filenames.patch"
                                        "emacs-pgtk-super-key-fix.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -157,13 +160,60 @@
                 (delete-file "configure"))))
           (add-after 'unpack 'patch-program-file-names
             (lambda* (#:key inputs #:allow-other-keys)
+              ;; Substitute "sh" command.
               (substitute* '("src/callproc.c"
                              "lisp/term.el"
                              "lisp/htmlfontify.el"
+                             "lisp/mail/feedmail.el"
+                             "lisp/obsolete/pgg-pgp.el"
+                             "lisp/obsolete/pgg-pgp5.el"
+                             "lisp/obsolete/terminal.el"
+                             "lisp/org/ob-eval.el"
                              "lisp/textmodes/artist.el"
-                             "lisp/progmodes/sh-script.el")
+                             "lisp/progmodes/sh-script.el"
+                             "lisp/textmodes/artist.el"
+                             "lisp/htmlfontify.el"
+                             "lisp/term.el")
                 (("\"/bin/sh\"")
-                 (format #f "~s" (search-input-file inputs "/bin/sh"))))
+                 (format #f "~s" (search-input-file inputs "bin/sh"))))
+              (substitute* '("lisp/gnus/mm-uu.el"
+                             "lisp/gnus/nnrss.el"
+                             "lisp/mail/blessmail.el")
+                (("\"#!/bin/sh\\\n\"")
+                 (format #f "\"#!~a~%\"" (search-input-file inputs "bin/sh"))))
+              (substitute* '("lisp/jka-compr.el"
+                             "lisp/man.el")
+                (("\"sh\"")
+                 (format #f "~s" (search-input-file inputs "bin/sh"))))
+
+              ;; Substitute "awk" command.
+              (substitute* '("lisp/gnus/nnspool.el"
+                             "lisp/org/ob-awk.el"
+                             "lisp/man.el")
+                (("\"awk\"")
+                 (format #f "~s" (search-input-file inputs "bin/awk"))))
+
+              ;; Substitute "find" command.
+              (substitute* '("lisp/gnus/gnus-search.el"
+                             "lisp/obsolete/nnir.el"
+                             "lisp/progmodes/executable.el"
+                             "lisp/progmodes/grep.el"
+                             "lisp/filecache.el"
+                             "lisp/ldefs-boot.el"
+                             "lisp/mpc.el")
+                (("\"find\"")
+                 (format #f "~s" (search-input-file inputs "bin/find"))))
+
+              ;; Substitute "sed" command.
+              (substitute* "lisp/org/ob-sed.el"
+                (("org-babel-sed-command \"sed\"")
+                 (format #f "org-babel-sed-command ~s"
+                         (search-input-file inputs "bin/sed"))))
+              (substitute* "lisp/man.el"
+                (("Man-sed-command \"sed\"")
+                 (format #f "Man-sed-command ~s"
+                         (search-input-file inputs "bin/sed"))))
+
               (substitute* "lisp/doc-view.el"
                 (("\"(gs|dvipdf|ps2pdf|pdftotext)\"" all what)
                  (let ((replacement (false-if-exception
@@ -254,7 +304,7 @@
                 (copy-file
                  (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
                  "bin/emacs")))))))
-    (inputs (list bash-minimal coreutils gzip ncurses))
+    (inputs (list bash-minimal coreutils findutils gawk gzip ncurses sed))
     (native-inputs (list autoconf pkg-config texinfo))
     (home-page "https://www.gnu.org/software/emacs/")
     (synopsis "The extensible text editor (minimal build for byte-compilation)")
@@ -281,7 +331,8 @@ languages.")
            ;; Most variants support tree-sitter, so let's include it here.
            (search-path-specification
             (variable "TREE_SITTER_GRAMMAR_PATH")
-            (files '("lib/tree-sitter")))))))
+            (files '("lib/tree-sitter")))))
+    (properties `((upstream-name . "emacs")))))
 
 (define-public emacs-no-x
   (package/inherit emacs-minimal
@@ -327,7 +378,25 @@ editor (console only)")
                     (string-append
                      "-B" #$(this-package-input "libgccjit") "/lib/")
                     (string-append
-                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))))))
+                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))
+            (add-after 'build 'build-trampolines
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "trampolines" make-flags)))
+            (add-after 'validate-runpath 'validate-comp-integrity
+              (lambda* (#:key outputs #:allow-other-keys)
+                #$(cond
+                   ((%current-target-system)
+                    #~(display "Cannot validate native-comp on cross builds.\n"))
+                   ((member (%current-system) '("armhf-linux" "i686-linux"))
+                    #~(display "Integrity test is broken on armhf.\n"))
+                   (else
+                    #~(invoke
+                       (string-append (assoc-ref outputs "out") "/bin/emacs")
+                       "--batch"
+                       "--load"
+                       #$(local-file
+                          (search-auxiliary-file "emacs/comp-integrity.el"))
+                       "-f" "ert-run-tests-batch-and-exit")))))))))
     (inputs
      (modify-inputs (package-inputs emacs-minimal)
        (prepend gnutls
@@ -484,8 +553,8 @@ editor (with wide ints)" )
         #~(cons "--with-wide-int" #$flags))))))
 
 (define-public emacs-next-minimal
-  (let ((commit "9d27b95b263473fb41a30e3f6ea5607c99e93a61")
-        (revision "1"))
+  (let ((commit "170c6557922dad7e6e9bc0d6dadf6c080108fd42")
+        (revision "2"))
    (package
     (inherit emacs-minimal)
     (name "emacs-next-minimal")
@@ -498,7 +567,7 @@ editor (with wide ints)" )
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00mwpq1msr3jij281w5piqmbwq968xr8dn9hqbf4r947ck754kn9"))
+        (base32 "04carva3b6h9fnlzazrsxsj41hcnjc26kxjij07l159azi40l6sk"))
        (patches
         (search-patches "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"

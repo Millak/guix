@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2016, 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2016 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
@@ -41,7 +41,7 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
-;;; Copyright © 2021, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
@@ -64,7 +64,11 @@
 ;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,6 +92,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system asdf)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -105,11 +110,14 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages calendar)
-  #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
@@ -179,13 +187,13 @@
            xcb-util-keysyms
            xcb-util-wm))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:tests? #f                      ; no check target
-       #:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" %output))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))           ; no configure script
+           #:tests? #f                      ; no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))))
     (home-page "https://github.com/baskerville/bspwm")
     (synopsis "Tiling window manager based on binary space partitioning")
     (description "bspwm is a tiling window manager that represents windows as
@@ -205,8 +213,10 @@ the leaves of a full binary tree.")
        (file-name (git-file-name name version))
        (sha256 (base32 "11sg9x08zl2nr7a723h462knz5lf58sgvkhv1mgc9z3hhkhvbsja"))))
     (build-system meson-build-system)
-    (native-inputs (list pkg-config scdoc))
-    (inputs (list wayland wlroots libxkbcommon))
+    (native-inputs (list pkg-config scdoc
+                         ;; for wayland-scanner
+                         wayland))
+    (inputs (list wayland wlroots-0.16 libxkbcommon))
     (home-page "https://github.com/cage-kiosk/cage")
     (synopsis "Wayland kiosk")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
@@ -787,7 +797,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.4.5")
+    (version "3.4.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -795,7 +805,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "1wd5k0whh2b43a72223cy19pwc29fhrhd2dnc61fha2y5ndgw6ld"))))
+                "1j4jd1fim12h8ry7jkx6y298kyn63pabih1m61rljbzvr3lyy1db"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
@@ -820,13 +830,6 @@ desktop environment.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-gmo-files
-                 ;; gmo files are generated from .po files
-                 ;; so remove them before build to make sure
-                 ;; they are re-generated if needed
-                 (lambda _
-                   (for-each delete-file
-                             (find-files "po" "\\.gmo$"))))
                (add-after 'unpack 'skip-failing-test
                  ;; strtest.cc tests failing due to $HOME and /etc setup
                  ;; difference under guix
@@ -1148,7 +1151,7 @@ the XDG Autostart specification.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1157,7 +1160,7 @@ the XDG Autostart specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l0brayvcifrc5rxxkqfrskd6523vs3allg2cxhwkixqf2ddg7kh"))))
+                "0fmjvmsm2ikcmdzrf6xwyq6vxb9p1dd3bhvz3bvi7q7rb2g8h8pi"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"))
     (native-inputs
@@ -1166,7 +1169,7 @@ the XDG Autostart specification.")
            tllist
            scdoc))
     (inputs
-     (list wlroots wayland fcft dbus libpng))
+     (list wlroots-0.16 wayland fcft dbus libpng))
     (home-page "https://codeberg.org/dnkl/fnott")
     (synopsis "Keyboard driven and lightweight Wayland notification daemon")
     (description "Fnott is a keyboard driven and lightweight notification daemon
@@ -1495,7 +1498,7 @@ project derived from the original Calm Window Manager.")
 (define-public dunst
   (package
     (name "dunst")
-    (version "1.9.2")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1504,7 +1507,7 @@ project derived from the original Calm Window Manager.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17zrw7jrnlyln81pxw7p4jgvl7j1w1gf488nfskhns6j6dcz90gh"))))
+        (base32 "1d6mc3ac4z16iwgq9934g1yc3412xl0hwv5vs40ycfmasm8qbjga"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1568,7 +1571,7 @@ started automatically on the first call via D-Bus.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list wlroots))
+     (list wlroots-0.16))
     (home-page "https://github.com/djpohly/dwl")
     (synopsis "Dynamic window manager for Wayland")
     (description
@@ -1621,14 +1624,14 @@ its size
 (define-public polybar
   (package
     (name "polybar")
-    (version "3.6.3")
+    (version "3.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/polybar/polybar/releases/"
                            "download/" version "/polybar-" version ".tar.gz"))
        (sha256
-        (base32 "19azx5dpfyfh0pv4q2fcrf4p7a0pc5d13m7lnv3qy8376mbmhmzj"))))
+        (base32 "03zz2c3ckxqbwixc2qhsnasq4j4sfia71v75li9w97d0bcwavrjx"))))
     (build-system cmake-build-system)
     (arguments
      ;; Test is disabled because it requires downloading googletest from the
@@ -1674,7 +1677,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.16.2")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -1683,7 +1686,9 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
+        (base32 "1hj4gq5vx8in65622yvjm8bwqkw2vpc556k9my997a0hn0ricj37"))
+         ;; This patch can be removed once hwdata in Guix supports pkg-config
+         (patches (search-patches "wlroots-hwdata-fallback.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -1704,6 +1709,7 @@ functionality to display information about the most commonly used services.")
     (propagated-inputs
      (list ;; As required by wlroots.pc.
            eudev
+           libdisplay-info
            libinput-minimal
            libxkbcommon
            mesa
@@ -1729,10 +1735,71 @@ Wayland compositor")
 modules for building a Wayland compositor.")
     (license license:expat)))  ; MIT license
 
+(define-public wlroots-0.16
+  (package
+    (inherit wlroots)
+    (name "wlroots-0.16")
+    (version "0.16.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
+                         (delete libdisplay-info)))))
+
+(define-public wlroots-0.15
+  (package
+    (inherit wlroots)
+    (name "wlroots-0.15")
+    (version "0.15.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name "wlroots" version))
+       (sha256
+        (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))))
+
+(define-public wmenu
+  (package
+    (name "wmenu")
+    (version "0.1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~adnano/wmenu")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wjn68r5cx4zvw7sby6sk2ip5h4fn0jbgb1nasm9nsgjpv63pnpm"))))
+    (build-system meson-build-system)
+    (native-inputs (append (if (%current-target-system)
+                               ;; for wayland-scanner
+                               (list pkg-config-for-build
+                                     wayland)
+                               '())
+                           (list pkg-config scdoc)))
+    (inputs (list cairo pango wayland libxkbcommon wayland-protocols))
+    (home-page "https://git.sr.ht/~adnano/wmenu")
+    (synopsis "Dynamic menu for Wayland")
+    (description "@command{wmenu} is a dynamic menu for Wayland, which reads a list
+of newline-separated items from stdin.  When the user selects an item and presses
+Return, their choice is printed to stdout and wmenu terminates.  Entering text will
+narrow the items to those matching the tokens in the input.")
+    (license license:expat)))
+
 (define-public sway
   (package
     (name "sway")
-    (version "1.8.1")
+    (version "1.9")
     (source
      (origin
        (method git-fetch)
@@ -1741,27 +1808,23 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y7brfrsjnm9gksijgnr6zxqiqvn06mdiwsk5j87ggmxazxd66av"))))
+        (base32 "1n36vgpi4bg2gkiq4fam4khly1z9bjinmjclzq5vfx0z8h7a5bzz"))))
     (build-system meson-build-system)
     (arguments
-     `(;; elogind is propagated by wlroots -> libseat
-       ;; and would otherwise shadow basu.
-       #:configure-flags '("-Dsd-bus-provider=basu")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'hardcode-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Hardcode path to swaybg.
-             (substitute* "sway/config.c"
-               (("strdup..swaybg..")
-                (string-append "strdup(\"" (assoc-ref inputs "swaybg")
-                               "/bin/swaybg\")")))
-             ;; Hardcode path to scdoc.
-             (substitute* "meson.build"
-               (("scdoc.get_pkgconfig_variable..scdoc..")
-                (string-append "'" (assoc-ref inputs "scdoc")
-                               "/bin/scdoc'")))
-             #t)))))
+     (list
+      ;; elogind is propagated by wlroots -> libseat
+      ;; and would otherwise shadow basu.
+      #:configure-flags
+      #~'("-Dsd-bus-provider=basu")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'hardcode-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hardcode path to swaybg.
+              (substitute* "sway/config.c"
+                (("strdup..swaybg..")
+                 (format #f "strdup(\"~a\")"
+                         (search-input-file inputs "bin/swaybg")))))))))
     (inputs (list basu
                   cairo
                   gdk-pixbuf
@@ -1811,7 +1874,7 @@ corners, shadows, inactive window dimming, etc.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1820,7 +1883,7 @@ corners, shadows, inactive window dimming, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06iq12p4438d6bv3jlqsf01wjaxrzlnj1bnicn41kad563aq41xl"))))
+        (base32 "0y0qdqzx90kvk6l80darldvizr7p5g65bnblhxlq5a2rgvs9hkpx"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")))
@@ -1853,7 +1916,7 @@ corners, shadows, inactive window dimming, etc.")
                                (list pkg-config-for-build wayland)
                                '())
                            (list pango pkg-config scdoc wayland-protocols)))
-    (home-page "https://github.com/swaywm/sway")
+    (home-page "https://github.com/swaywm/swaylock")
     (synopsis "Screen locking utility for Wayland compositors")
     (description "Swaylock is a screen locking utility for Wayland compositors.")
     (license license:expat))) ; MIT license
@@ -1862,7 +1925,7 @@ corners, shadows, inactive window dimming, etc.")
   (package
     (inherit swaylock)
     (name "swaylock-effects")
-    (version "1.6.11")
+    (version "1.7.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1872,7 +1935,7 @@ corners, shadows, inactive window dimming, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j7dxn66xqlf6iv2arqzz7mxlh7nf85anvpyf30d2frcidarda9h"))))
+         "0cgpbzdpxj6bbpa8jwql1snghj21mhryyvj6sk46g66lqvwlrqbj"))))
     (arguments
      (list #:configure-flags #~'("-Dsse=false")))
     (synopsis "Screen locking utility for Wayland compositors with effects")
@@ -1910,6 +1973,94 @@ display a clock or apply image manipulation techniques to the background image."
     (description "Swaybg is a wallpaper utility for Wayland compositors.")
     (license license:expat))) ; MIT license
 
+(define-public swww
+  (package
+    (name "swww")
+    (version "0.8.2")
+    (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/LGFae/swww")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ps10dv6a8a0hiw7p8kg64mf81pvavskmyn5xpbfw6hrc991vdlz"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin (substitute* "utils/Cargo.toml"
+                           (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                            (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-log" ,rust-log-0.4)
+        ("rust-simplelog" ,rust-simplelog-0.12)
+        ("rust-wayland-client" ,rust-wayland-client-0.31)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18)
+        ("rust-nix" ,rust-nix-0.27)
+        ("rust-keyframe" ,rust-keyframe-1)
+        ("rust-rkyv" ,rust-rkyv-0.7)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-spin-sleep" ,rust-spin-sleep-1)
+        ("rust-sd-notify" ,rust-sd-notify-0.4)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-fast-image-resize" ,rust-fast-image-resize-2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-lzzzz" ,rust-lzzzz-1))
+      #:cargo-development-inputs
+      `(("rust-rand" ,rust-rand-0.8)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-criterion" ,rust-criterion-0.5))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-documentation
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "doc/gen.sh")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (share (string-append out "/share"))
+                     (man1 (string-append share "/man/man1"))
+                     (swww (car (find-files "target" "^swww$")))
+                     (swww-daemon (car (find-files "target" "^swww-daemon$")))
+                     (bash-completions-dir
+                      (string-append share "/bash-completion/completions"))
+                     (zsh-completions-dir
+                      (string-append share "/zsh/site-functions"))
+                     (fish-completions-dir
+                      (string-append share "/fish/vendor_completions.d"))
+                     (elvish-completions-dir
+                      (string-append share "/elvish/lib")))
+                (install-file swww bin)
+                (install-file swww-daemon bin)
+                (copy-recursively "doc/generated" man1)
+                (install-file "completions/swww.bash" bash-completions-dir)
+                (install-file "completions/_swww" zsh-completions-dir)
+                (install-file "completions/swww.fish" fish-completions-dir)
+                (install-file "completions/swww.elv" elvish-completions-dir))))
+          (add-after 'install 'wrap-binaries
+           (lambda* (#:key outputs inputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (lz4 (assoc-ref inputs "lz4")))
+               (wrap-program (string-append out "/bin/swww")
+                 `("PATH" prefix (,(string-append lz4 "/bin"))))
+               (wrap-program (string-append out "/bin/swww-daemon")
+                 `("PATH" prefix (,(string-append lz4 "/bin"))))))))))
+    (native-inputs (list scdoc))
+    (inputs (list bash-minimal lz4))
+    (home-page "https://github.com/LGFae/swww")
+    (synopsis
+     "Efficient animated wallpaper daemon for wayland controlled at runtime")
+    (description
+     "A Solution to your Wayland Wallpaper Woes (swww).  It uses minimal resources
+and provides animations for switching between backgrounds.")
+    (license license:gpl3+)))
 
 (define-public swaynotificationcenter
   (package
@@ -1966,7 +2117,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.20")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1975,7 +2126,7 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07h5l7h7wmzqgg7fbp98khrxg2sq2s4ncp4fiiz1yg62r752idy4"))))
+        (base32 "00a8npilvcvicn9mff00i5rdzdll0zrmq0y8wgr314gnljn52md7"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "--wrap-mode=nodownload")))
@@ -2046,7 +2197,7 @@ core/thread.")
 (define-public wlr-randr
   (package
     (name "wlr-randr")
-    (version "0.3.1")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -2055,7 +2206,7 @@ core/thread.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13mya6j5z7cwg2a973y28ya8w36kxhj0fgj8bk9z6yf2w0ryr5xv"))))
+        (base32 "1kl5awwclmlfcxfz0jp8gzpg2vffsl9chfilysfsv1mq11a96ifs"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config))
@@ -2104,7 +2255,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.4.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2113,7 +2264,7 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "016s2896mnf4dnyyrqp2pnqrvrqn404c6b16d5kcjf1p21003lp5"))))
+        (base32 "1mc2zcqsv79y7682nwi1gn8p751zwflm9zirl98v2q2kvx334k8a"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config scdoc))
@@ -2940,7 +3091,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "2.2.0")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2949,7 +3100,7 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yhn77hdy7c80hd6r8nmvs206pmp76bx4zr94imfvgs8fh5gb8cy"))))
+                "0firjpp7qw4kb2h1zh5pv5k0xf0jvx6x0r0s7j6y7dhlh5j0s00q"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2973,6 +3124,49 @@ shows a notification for the user on the screen.")
 for wayland conceptually based on the X11 window manager
 @command{ratpoison}.")
     (license license:expat)))
+
+(define-public libdisplay-info
+  (let ((commit "ebee35935dad01478ae1ae5ead298c4cd8018ac2")
+        (revision "0"))
+    (package
+      (name "libdisplay-info")
+      (version (git-version "0.2.0-dev" revision commit))
+      (home-page "https://gitlab.freedesktop.org/emersion/libdisplay-info")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page) (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ly8acdjxn8l55y0wc07n7pb6rzh9dpr1vbsakdib2zrl0i5yh3a"))))
+      (build-system meson-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-before 'configure 'fix-meson-file
+                       (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                         (substitute* "meson.build"
+                           (("/usr/share/hwdata/pnp.ids")
+                            (string-append (assoc-ref (or native-inputs inputs)
+                                                      "hwdata")
+                                           "/share/hwdata/pnp.ids"))))))))
+      (native-inputs (list `(,hwdata "pnp") python))
+      (synopsis "EDID and DisplayID library")
+      (description
+       "This package provides a library to read @acronym{EDID, Extended
+Display Identification Data} and DisplayID metadata from display devices.  It
+has the following goals:
+
+@enumerate
+@item
+Provide a set of high-level, easy-to-use, opinionated functions
+as well as low-level functions to access detailed information.
+@item
+Simplicity and correctness over performance and resource usage.
+@item
+Well-tested and fuzzed.
+@end enumerate")
+      (license license:expat))))
 
 (define-public libucl
   (package
@@ -3001,7 +3195,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.6.5")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3010,7 +3204,7 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04401k1i6b9s2v6mbhw5llla8fdpkhmgz826iva246iqch9z20lx"))))
+                "17p3wcnggnd4v37z1dgv8nmc35nq4261s8sglr44bf71vjircggz"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))
@@ -3062,7 +3256,7 @@ session.  Nor does it depend on any UI toolkits such as Qt or GTK.")
            linux-pam
            pango
            wayland
-           wlroots))
+           wlroots-0.15))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags
@@ -3340,7 +3534,7 @@ Type=Application~%"
 (define-public avizo
   (package
     (name "avizo")
-    (version "1.2.1")
+    (version "1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3349,7 +3543,7 @@ Type=Application~%"
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ddv5ssxfjbzhqskbbhi9qj1yqkraiv3r8svfmp9s5nnfpid8aba"))))
+                "01v1c9376pbjndyhj9r6f214kzhivl1m9pkl05sdkcj0v6n0wgsn"))))
     (build-system meson-build-system)
     (inputs (list gtk+))
     (native-inputs
@@ -3367,20 +3561,24 @@ used for multimedia keys.")
 
 (define-public grimshot
   (package
-    (inherit sway)
     (name "grimshot")
+    (version "1.9-contrib.0")
     (source (origin
-              (inherit (package-source sway))
-              (snippet #~(delete-file "contrib/grimshot.1"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/OctopusET/sway-contrib")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (snippet #~(delete-file "grimshot.1"))
+              (sha256
+               (base32
+                "16fa8l81zjy25nsky1i525hb7zjprqz74mbirm9b76pvksschdv5"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan #~`(("grimshot" "bin/")
                               ("grimshot.1" "share/man/man1/"))
            #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "contrib")))
-                        (add-after 'chdir 'patch-script-dependencies
+                        (add-after 'unpack 'patch-script-dependencies
                           (lambda* (#:key inputs #:allow-other-keys)
                             (substitute* "grimshot"
                               (("\\b(date|grim|jq|notify-send|slurp|swaymsg|wl-copy)\\b"
@@ -3402,11 +3600,13 @@ used for multimedia keys.")
                   slurp
                   sway
                   wl-clipboard))
+    (home-page "https://github.com/OctopusET/sway-contrib")
     (synopsis "Screenshot utility for the Sway window manager")
     (description "Grimshot is a screenshot utility for @code{sway}.  It provides
 an interface over @code{grim}, @code{slurp} and @code{jq}, and supports storing
 the screenshot either directly to the clipboard using @code{wl-copy} or to a
-file.")))
+file.")
+    (license license:expat)))
 
 (define-public wld
   (let ((commit "6586736176ef50a88025abae835e29a7ca980126")
@@ -3518,3 +3718,47 @@ notable features include:
       (description "velox is a simple window manager for Wayland based on swc.
 It is inspired by dwm and xmonad.")
       (license license:expat))))
+
+(define-public yambar-wayland
+  (package
+    (name "yambar-wayland")
+    (version "1.10.0")
+    (home-page "https://codeberg.org/dnkl/yambar")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14lxhgyyia7sxyqjwa9skps0j9qlpqi8y7hvbsaidrwmy4857czr"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:build-type "release"
+      #:configure-flags #~'("-Db_lto=true"
+                            "-Dbackend-x11=disabled"
+                            "-Dbackend-wayland=enabled")))
+    (native-inputs (list pkg-config
+                         tllist
+                         flex
+                         bison
+                         scdoc
+                         wayland-protocols))
+    (inputs (list fcft
+                  wayland
+                  pipewire
+                  libyaml
+                  pixman
+                  alsa-lib
+                  json-c
+                  libmpdclient
+                  eudev))
+    (synopsis "X11 and Wayland status panel")
+    (description
+     "@command{yambar} is a lightweight and configurable status panel (bar,
+for short) for X11 and Wayland, that goes to great lengths to be both CPU and
+battery efficient---polling is only done when absolutely necessary.")
+    (license license:expat)))

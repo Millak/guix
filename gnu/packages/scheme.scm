@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Andrew Whatson <whatson@tailcall.au>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -701,14 +702,14 @@ regular-expression notation.")
 (define-public slib
   (package
     (name "slib")
-    (version "3b6")
+    (version "3c1")
     (source (origin
              (method url-fetch)
              (uri (string-append "http://groups.csail.mit.edu/mac/ftpdir/scm/slib-"
                                  version ".zip"))
              (sha256
               (base32
-               "137dn2wwwwg0qbifgxfckjhzj4m4820crpg9kziv402l7f2b931f"))))
+               "10f7l0fmd0xzs6kc2cwqjrx7msdn0fsd918r459xyc05wscfpy62"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There is no check target.
@@ -1117,95 +1118,72 @@ a Common Lisp environment.")
 (define-public gerbil
   (package
     (name "gerbil")
-    (version "0.17.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/vyzo/gerbil")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0c0nspm659ybgmqlppdv7sxzll4hwkvcp9qmcsip6d0kz0p8r9c3"))))
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/mighty-gerbils/gerbil/releases/download/v"
+             version "/gerbil-v" version ".tar.gz"))
+       (sha256
+        (base32 "1dff14bzqkq6scyyhnwhc3ky96j6lr84mnghk4da0x6vifw7p0p1"))))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (delete 'bootstrap)
-               (add-before 'configure 'chdir
-                 (lambda _
-                   (chdir "src")))
-               (replace 'configure
-                 (lambda _
-                   (invoke "chmod" "755" "-R" ".")
-                   ;; Otherwise fails when editing an r--r--r-- file.
-                   (invoke "gsi-script"
-                           "configure"
-                           "--prefix"
-                           #$output
-                           "--with-gambit"
-                           #$gambit-c)))
-               (add-before 'patch-generated-file-shebangs 'fix-gxi-shebangs
-                 (lambda _
-                   ;; Some .ss files refer to gxi using /usr/bin/env gxi
-                   ;; and 'patch-generated-file-shebangs can't fix that
-                   ;; because gxi has not been compiled yet.
-                   ;; We know where gxi is going to end up so we
-                   ;; Doctor Who our fix here before the problem
-                   ;; happens towards the end of the build.sh script.
-                   (let ((abs-srcdir (getcwd)))
-                     (for-each (lambda (f)
-                                 (substitute* f
-                                   (("#!/usr/bin/env gxi")
-                                    (string-append "#!" abs-srcdir
-                                                   "/../bin/gxi"))))
-                               '("./gerbil/gxc" "./lang/build.ss"
-                                 "./misc/http-perf/build.ss"
-                                 "./misc/rpc-perf/build.ss"
-                                 "./misc/scripts/docsnarf.ss"
-                                 "./misc/scripts/docstub.ss"
-                                 "./misc/scripts/docsyms.ss"
-                                 "./r7rs-large/build.ss"
-                                 "./release.ss"
-                                 "./std/build.ss"
-                                 "./std/run-tests.ss"
-                                 "./std/web/fastcgi-test.ss"
-                                 "./std/web/rack-test.ss"
-                                 "./tools/build.ss"
-                                 "./tutorial/httpd/build.ss"
-                                 "./tutorial/kvstore/build.ss"
-                                 "./tutorial/lang/build.ss"
-                                 "./tutorial/proxy/build-static.ss"
-                                 "./tutorial/proxy/build.ss")))))
-               (add-after 'configure 'create-gx-version.scm
-                 (lambda _
-                   (with-output-to-file (string-append (getcwd)
-                                                       "/gerbil/runtime/gx-version.scm")
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'bootstrap)
+                   (add-after 'set-paths 'set-cc
                      (lambda _
-                       (write `(define (gerbil-version-string)
-                                 ,(string-append "v"
-                                                 #$(version-major+minor
-                                                    version))))))))
-               (replace 'build
-                 (lambda _
-                   (setenv "HOME"
-                           (getcwd))
-                   (invoke
-                    ;; The build script needs a tty or it'll crash on an ioctl
-                    ;; trying to find the width of the terminal it's running on.
-                    ;; Calling in script prevents that.
-                    "script"
-                    "-qefc"
-                    "./build.sh")))
-               (replace 'install
-                 (lambda _
-                   (let* ((bin (string-append #$output "/bin"))
-                          (lib (string-append #$output "/lib")))
-                     (mkdir-p bin)
-                     (mkdir-p lib)
-                     (copy-recursively "../bin" bin)
-                     (copy-recursively "../lib" lib)))))
-           #:tests? #f))
-    (native-inputs (list coreutils gambit-c util-linux))
+                       (setenv "CC" #$(cc-for-target))))
+                   (add-before 'patch-generated-file-shebangs 'fix-gxi-shebangs
+                     (lambda _
+                       ;; Some .ss files refer to gxi using /usr/bin/env gxi
+                       ;; and 'patch-generated-file-shebangs can't fix that
+                       ;; because gxi has not been compiled yet.
+                       ;; We know where gxi is going to end up so we
+                       ;; Doctor Who our fix here before the problem
+                       ;; happens towards the end of the build.sh script.
+                       (let ((abs-srcdir (getcwd)))
+                         (for-each (lambda (f)
+                                     (substitute* f
+                                       (("#!/usr/bin/env gxi")
+                                        (string-append "#!" abs-srcdir
+                                                       "/../bin/gxi"))))
+                                   '("./src/std/web/rack-test.ss"
+                                     "./src/std/web/fastcgi-test.ss"
+                                     "./src/std/build.ss"
+                                     "./src/build/build-libgerbil.ss"
+                                     "./src/gerbil/test/test-build-static-exe.ss"
+                                     "./src/gerbil/test/test-build-optimized-static-exe.ss"
+                                     "./src/gerbil/test/test-build-optimized-exe.ss"
+                                     "./src/gerbil/test/test-build-exe.ss"
+                                     "./src/srfi/build.ss"
+                                     "./src/r7rs-large/build.ss"
+                                     "./src/misc/rpc-perf/build.ss"
+                                     "./src/misc/http-perf/build.ss"
+                                     "./src/misc/scripts/docsnarf.ss"
+                                     "./src/misc/scripts/docstub.ss"
+                                     "./src/misc/scripts/docsyms.ss"
+                                     "./src/tools/gxpkg.ss"
+                                     "./src/tools/build.ss"
+                                     "./src/lang/build.ss"
+                                     "./src/tutorial/kvstore/build.ss"
+                                     "./src/tutorial/httpd/build.ss"
+                                     "./src/tutorial/proxy/build.ss"
+                                     "./src/tutorial/ensemble/build.ss"
+                                     "./src/tutorial/lang/build.ss")))))
+                   (replace 'build
+                     (lambda _
+                       (setenv "HOME"
+                               (getcwd))
+                       (invoke
+                        ;; The build script needs a tty or it'll crash on an ioctl
+                        ;; trying to find the width of the terminal it's running on.
+                        ;; Calling in script prevents that.
+                        "script"
+                        "-qefc"
+                        "./build.sh"))))
+      #:tests? #f))
+    (native-inputs (list gambit-c util-linux))
     (propagated-inputs (list gambit-c openssl sqlite zlib))
     (build-system gnu-build-system)
     (synopsis "Meta-dialect of Scheme with post-modern features")

@@ -2,6 +2,7 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +36,12 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages hardware)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
@@ -45,7 +51,6 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages rsync)
-  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
@@ -64,7 +69,7 @@
 (define-public haproxy
   (package
     (name "haproxy")
-    (version "2.7.6")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -72,7 +77,7 @@
                            (version-major+minor version)
                            "/src/haproxy-" version ".tar.gz"))
        (sha256
-        (base32 "0kxpvrn6iaxhw2f2hrxblns6pnxmrds3vvs9h6nwbkrzvdykagqk"))))
+        (base32 "1aqfp1gslk4dfvrrzg51h0mn1j4n4in82z701bi7ycs63b6qm8gv"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -110,7 +115,7 @@ realistic with today's hardware.")
 (define-public libqb
   (package
     (name "libqb")
-    (version "2.0.7")
+    (version "2.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -118,7 +123,7 @@ realistic with today's hardware.")
                     version "/libqb-" version ".tar.xz"))
               (sha256
                (base32
-                "0xd51wh7gdindh6fzi62r4xp9lkayggb1rqsprqmjkh1m71gnvin"))))
+                "1rifa94zrdr7d5gsy4yvkgqfx8f4yx4xr96hqvs05b5q43y329dl"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libxml2))
@@ -137,7 +142,7 @@ applications.")
 (define-public kronosnet
   (package
     (name "kronosnet")
-    (version "1.24")
+    (version "1.28")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -146,7 +151,7 @@ applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b8rz7f2h3scrq0xcqz58ckzsvv08g31j5jgy2v4i6w87r9c75lw"))))
+                "05kws374sj0p3yg918kf2l2jp518k0c9j5qgzb9gl327cwlbwkls"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX: Multiple tests failed. Tests
@@ -194,10 +199,51 @@ applications.")
  in general better performances compared to the old network protocol.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public nats-server
+  (package
+    (name "nats-server")
+    (version "2.10.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/nats-server")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sn8a3xfs1s9jc5fphrnc0ahh83h7ma2ckg2x447gdhg1p7pf9gn"))))
+    (build-system go-build-system)
+    (inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-minio-highwayhash
+           go-github-com-nats-io-jwt-v2
+           go-github-com-nats-io-nats-go
+           go-github-com-nats-io-nkeys
+           go-github-com-nats-io-nuid
+           go-go-uber-org-automaxprocs
+           go-golang-org-x-crypto
+           go-golang-org-x-sys
+           go-golang-org-x-time))
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/nats-io/nats-server"
+      #:install-source? #f))
+    (home-page "https://github.com/nats-io/nats-server")
+    (synopsis "High performance message broker")
+    (description
+     "NATS is a simple, secure and performant communications system for digital
+systems, services and devices.  NATS is part of the Cloud Native Computing
+Foundation (CNCF).  NATS has over 40 client language implementations, and its
+server can run on-premise, in the cloud, at the edge, and even on a Raspberry
+Pi.  NATS can secure and simplify design and operation of modern distributed
+systems.")
+    (license license:asl2.0)))
+
 (define-public nsq
   (package
     (name "nsq")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -206,7 +252,7 @@ applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ajqjwfn06zsmz21z9mkl4cblarypaf20228pqcd1293zl6y3ry8"))))
+        (base32 "1227ricbng8r5svnpr6hkmwjafa74jdp3ivijrk55qhw43rjk05a"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -223,7 +269,9 @@ applications.")
               (when tests?
                 (setenv "HOME" "/tmp")
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke #$@(if (target-x86?)
+                ;; go test: -race is only supported on linux/amd64,
+                ;; linux/ppc64le, linux/arm64
+                  (invoke #$@(if (not target-x86-32?)
                                  (list "go" "test" "-v" "-race" "./...")
                                  (list "go" "test" "-v" "./...")))))))
           (replace 'install
@@ -238,7 +286,7 @@ applications.")
            go-github-com-bmizerany-perks-quantile
            go-github-com-burntsushi-toml
            go-github-com-davecgh-go-spew
-           go-github-com-golang-snappy ; Move to (gnu packages golang)
+           go-github-com-golang-snappy
            go-github-com-julienschmidt-httprouter
            go-github-com-mreiferson-go-options
            go-github-com-mreiferson-go-svc
@@ -280,7 +328,7 @@ instrumentation
 (define-public corosync
   (package
     (name "corosync")
-    (version "3.1.6")
+    (version "3.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -289,7 +337,7 @@ instrumentation
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03g3qnm5acmk7jry6kspvkssbiv8k39749bic2f0cj3ckkwy2li4"))))
+                "02imkif6lzhr8mwbwphdp4m6w987pqnrhai8zx06vpygiasx6cyp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--disable-static")
@@ -329,7 +377,7 @@ lost.
 (define-public pacemaker
   (package
     (name "pacemaker")
-    (version "2.1.4")
+    (version "2.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -338,7 +386,7 @@ lost.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04gfd7i3w0zbzv7vi7728lgbyjq7cbqpr7jsp501piwg3z5j4mvb"))))
+                "0vhimylbkwabi0hksgs66awn9iq3ik02k1n4xghxh81nhz7kjmdz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-corosync" "--disable-static"

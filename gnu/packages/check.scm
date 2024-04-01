@@ -24,7 +24,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
@@ -39,7 +39,7 @@
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
@@ -47,6 +47,10 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,6 +80,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -107,6 +112,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix deprecation)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
 (define-public pict
@@ -245,6 +251,7 @@ source code editors and IDEs.")
     (inherit check)
     (version "0.14.0")
     (source (origin
+              (inherit (package-source check))
               (method url-fetch)
               (uri (string-append "https://github.com/libcheck/check/releases"
                                   "/download/" version "/check-" version ".tar.gz"))
@@ -602,10 +609,10 @@ It allows the specification of behaviour scenarios using a given-when-then
 pattern.")
       (license license:apsl2))))
 
-(define-public catch2-3.3
+(define-public catch2-3
   (package
     (name "catch2")
-    (version "3.4.0")
+    (version "3.5.3")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -615,7 +622,7 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gdfsva6mnd66px85fmm3s65h8qzqnmgbmws2i3nygfav1y8d88f"))))
+                "11yla93vm2896fzhm3fz8lk3y3iz5iy7vd6wa7wnwvhsfd2dbfq3"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -889,94 +896,6 @@ prevent common NGINX misconfigurations.  It provides the @command{gixy}
 command.")
       (license license:mpl2.0))))
 
-(define-public go-github.com-smartystreets-gunit
-  (package
-    (name "go-github.com-smartystreets-gunit")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/smartystreets/gunit")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "00m4zg0kdj49mnpmf9klb44ba71p966xsk6zknrzqgfc8119f35z"))))
-    (build-system go-build-system)
-    (arguments
-     '(;; TODO: This package depends on go-github.com-smartystreets-assertions
-       ;; for running the tests, but go-github.com-smartystreets-assertions
-       ;; depends on this package, so break this loop by not running the tests
-       ;; for this package.
-       #:tests? #f
-       #:import-path "github.com/smartystreets/gunit"))
-    (synopsis "Testing tool for Go, in the style of xUnit")
-    (description
-     "@code{gunit} allows the test author to use a struct as the scope for a
-group of related test cases, in the style of xUnit fixtures.  This makes
-extraction of setup/teardown behavior (as well as invoking the system under
-test) much simpler.")
-    (home-page "https://github.com/smartystreets/gunit")
-    (license license:expat)))
-
-(define-public go-github.com-smartystreets-assertions
-  (package
-    (name "go-github.com-smartystreets-assertions")
-    (version "1.13.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/smartystreets/assertions")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "0flf3fb6fsw3bk1viva0fzrzw87djaj1mqvrx2gzg1ssn7xzfrzr"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-       #:import-path "github.com/smartystreets/assertions"
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs #:allow-other-keys #:rest args)
-               (unless
-                 ;; The tests fail when run with gccgo.
-                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (native-inputs
-     (list go-github.com-smartystreets-gunit))
-    (synopsis "Assertions for testing with Go")
-    (description
-     "The @code{assertions} package provides convenient assertion functions
-for writing tests in Go.")
-    (home-page "https://github.com/smartystreets/assertions")
-    (license license:expat)))
-
-(define-public go-github.com-smartystreets-goconvey
-  (package
-    (name "go-github.com-smartystreets-goconvey")
-    (version "1.6.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/smartystreets/goconvey")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1ph18rkl3ns3fgin5i4j54w5a69grrmf3apcsmnpdn1wlrbs3dxh"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/smartystreets/goconvey"))
-    (propagated-inputs
-     (list go-github.com-jtolds-gls go-github.com-smartystreets-assertions))
-    (synopsis "Go testing tool with both a web and terminal user interface")
-    (description
-     "GoConvey is a testing tool for Go. It integrates with go test, can show
-test coverage and has a web user interface that will refresh automatically.")
-    (home-page "https://github.com/smartystreets/goconvey")
-    (license license:expat)))
-
 (define-public googletest
   (package
     (name "googletest")
@@ -1019,7 +938,7 @@ generation.")
 (define-public googlebenchmark
   (package
     (name "googlebenchmark")
-    (version "1.8.2")
+    (version "1.8.3")
     (home-page "https://github.com/google/benchmark")
     (source (origin
               (method git-fetch)
@@ -1028,7 +947,7 @@ generation.")
               (file-name (git-file-name "google-benchmark" version))
               (sha256
                (base32
-                "1p72bw7xcd88d8268fmmzji59408f552fbiv37jmsixml5dmq9wv"))))
+                "1hf8xrdd9k57kw3mpdi68a78fd96vzdqv3179v2yy5dxx336ffw3"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
@@ -1042,6 +961,29 @@ generation.")
      "The googlebenchmark C++ library support the benchmarking of functions,
 similar to unit tests.")
     (license license:asl2.0)))
+
+(define-public greatest
+  (package
+   (name "greatest")
+   (version "1.5.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/silentbicycle/greatest")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "11rajkb5m7mlzi3i3v0i27k6rrjw3x8a7bl6fkc29igzpwfbxndy"))))
+   (build-system copy-build-system)
+   (arguments (list #:install-plan
+                    #~'(("greatest.h" "include/"))))
+   (home-page "https://github.com/silentbicycle/greatest")
+   (synopsis "Single-header test system")
+   (description "Greatest is a single-header test system for C, including
+macros for defining tests, grouping them into suites, and providing a test
+runner.  It is quite unopinionated with most of its features being optional.")
+   (license license:isc)))
 
 (define-public cpputest
   (package
@@ -1218,14 +1160,14 @@ available via the @code{unittest.mock} module.")
 (define-public python-nose2
   (package
     (name "python-nose2")
-    (version "0.11.0")
+    (version "0.14.0")
       (source
         (origin
           (method url-fetch)
           (uri (pypi-uri "nose2" version))
           (sha256
            (base32
-            "1scxwvwbgfdj41acma41xzdhcfdwjj9irj6sfifdbyf9dryqs83d"))))
+            "1936fkrxg672bhp9i32ivna7jbydl9dpbhyn5f3059xrl1qdfa2w"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -1236,10 +1178,6 @@ available via the @code{unittest.mock} module.")
                      ;; Tests require nose2 itself.
                      (setenv "PYTHONPATH" (getcwd))
                      (invoke (string-append #$output "/bin/nose2") "-v")))))))
-    (native-inputs
-     (list python-coverage))
-    (propagated-inputs
-     (list python-six))
     (home-page "https://github.com/nose-devs/nose2")
     (synopsis "Next generation of nicer testing for Python")
     (description
@@ -1416,6 +1354,123 @@ distributed testing in both @code{load} and @code{each} modes.  It also
 supports coverage of subprocesses.")
   (license license:expat)))
 
+(define-public python-pytest-relaxed
+  (package
+    (name "python-pytest-relaxed")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bitprophet/pytest-relaxed")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lnnkadfr390i30209gpl80nymc20pmamvxjhd11gvf4d6f54n7x"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-decorator))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/bitprophet/pytest-relaxed")
+    (synopsis "Relaxed test discovery for pytest")
+    (description "This package provides relaxed test discovery for pytest.")
+    (license license:bsd-2)))
+
+(define-public python-pytest-dotenv
+  (package
+    (name "python-pytest-dotenv")
+    (version "0.5.2")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quiqua/pytest-dotenv")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bdxwaak5clhsd63b9q65nf2amqqv5hfn7dskfakyldxsqnnh0y6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dotenv))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/quiqua/pytest-dotenv")
+    (synopsis "Automatically detect and load a .env file before running tests")
+    (description
+     "This Pytest plugin automatically detects and loads environment variables
+from a .env file before running tests.")
+    (license license:expat)))
+
+(define-public python-pytest-examples
+  (package
+    (name "python-pytest-examples")
+    (version "0.0.10")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pydantic/pytest-examples")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lwxgyfj6lnkhmrvb6kzfskpwfz70kxnhnjvyl3l65k568c4wb4c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-append
+               ;; Disable tests requiring pthon-ruff.
+               "not test_ruff"
+               " and not test_ruff_config"
+               " and not test_ruff_offset"
+               " and not test_ruff_ok"
+               " and not test_ruff_error"
+               " and not test_update_files"
+               " and not test_cases_update[simple.md]"
+               " and not test_cases_update[dataclass_indent.md]"
+               " and not test_cases_update[long_python_lines.py]"
+               " and not test_cases_update[simple.py]"
+               " and not test_cases_update[python_class.py]"
+               " and not test_cases_update[call_twice.md]"
+               " and not test_insert_print[example/README.md:3-33]"
+               " and not test_insert_print[example/README.md:37-40]"
+               " and not test_insert_print[example/README.md:44-47]"
+               " and not test_insert_print[example/README.md:49-66]"
+               " and not test_python_self[example/test_example.py:28-31]"
+               " and not test_python_self[example/test_example.py:40-43]"
+               " and not test_python_self_change_docstyle[example/test_example.py:28-31]"
+               " and not test_python_self_change_docstyle[example/test_example.py:40-43]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; XXX: Removing ruff from required packages to pass Sanity
+                ;; check, add it back when it's available.
+                (("'ruff>=0.0.258',") "")
+                ;; black>=23
+                ((">=23") ">22")))))))
+    (propagated-inputs
+     ;; TODO: Add python-ruff once it has been packaged.
+     (list python-black python-pytest))
+    (native-inputs
+     (list python-hatchling))
+    (home-page "https://pypi.org/project/pytest-examples/")
+    (synopsis "Pytest plugin for testing examples in docstrings and markdown files")
+    (description
+     "Pytest-examples provides functionality for testing Python code examples
+in docstrings and markdown files, with its main features being:
+
+@itemize
+@item lint code examples using ruff and black
+@item run code examples
+@item run code examples and check print statements are inlined correctly in
+the code
+@item It can also update code examples in place to format them and insert or
+update print statements
+@end itemize")
+    (license license:expat)))
+
 (define-public python-pytest-httpserver
   (package
     (name "python-pytest-httpserver")
@@ -1445,6 +1500,27 @@ supports coverage of subprocesses.")
     (synopsis "HTTP server for pytest")
     (description "Pytest plugin library to test http clients without
 contacting the real http server.")
+    (license license:expat)))
+
+(define-public python-pytest-nunit
+  (package
+    (name "python-pytest-nunit")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-nunit" version))
+       (sha256
+        (base32 "1gw3a33myq9yncjixs3kkcrr1xkjzvvf3xk6x955p3i79wlwkswx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;no tests included
+    (propagated-inputs (list python-attrs python-pytest))
+    (native-inputs (list python-pytest python-pytest-cov python-xmlschema))
+    (home-page "https://github.com/pytest-dev/pytest-nunit")
+    (synopsis "Pytest plugin for generating NUnit3 test result XML output")
+    (description
+     "This package provides a pytest plugin for generating NUnit3 test result
+XML output")
     (license license:expat)))
 
 (define-public python-pytest-param-files
@@ -2959,6 +3035,37 @@ JSON APIs with Behave.")
 @command{nosetests} command of the Python Nose unit test framework.")
     (license license:bsd-3)))
 
+(define-public python-nose-exclude
+  (package
+    (name "python-nose-exclude")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nose-exclude" version))
+       (sha256
+        (base32 "0123x1lyv5b2p9civcfg8vilj2ga3q7p2ks1hq25z0gb3ssai3zp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-test
+            (lambda _
+              ;; Disable failing test: AssertionError.
+              (substitute* '("test_dirs/build/test.py"
+                            "test_dirs/test_not_me/test.py")
+                (("def test_i_should_never_run")
+                 "def off_i_should_never_run")))))))
+    (propagated-inputs
+     (list python-nose))
+    (home-page "https://github.com/kgrandis/nose-exclude")
+    (synopsis "Exclude specific directories from nosetests runs")
+    (description
+     "@code{nose-exclude} is a Nose plugin that allows you to easily specify
+directories to be excluded from testing.")
+    (license license:lgpl2.1+)))
+
 (define-public python-nose-random
   (package
     (name "python-nose-random")
@@ -3139,6 +3246,36 @@ retried.")
     (description "PyHamcrest is a framework for writing matcher objects,
 allowing you to declaratively define \"match\" rules.")
     (license license:bsd-3)))
+
+(define-public theft
+  (package
+   (name "theft")
+   (version "0.4.5")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/silentbicycle/theft")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1n2mkawfl2bpd4pwy3mdzxwlqjjvb5bdrr2x2gldlyqdwbk7qjhd"))
+            (snippet #~(begin
+                         (delete-file "vendor/greatest.h")))))
+   (build-system gnu-build-system)
+   (arguments (list #:make-flags #~(list "VENDOR="
+                                         (string-append "CC=" #$(cc-for-target))
+                                         (string-append "PREFIX=" #$output))
+                    #:test-target "test"
+                    #:phases
+                    #~(modify-phases %standard-phases
+                        (delete 'bootstrap)
+                        (delete 'configure))))
+   (native-inputs (list greatest))
+   (home-page "https://github.com/silentbicycle/theft")
+   (synopsis "Property-based testing for C")
+   (description "Theft is a library for property-based testing.")
+   (license license:isc)))
 
 (define-public unittest-cpp
   (package
@@ -3539,6 +3676,29 @@ directories and files.")
 tables by saving expected data in a data directory (courtesy of pytest-datadir)
 that can be used to verify that future runs produce the same data.")
     (license license:expat)))
+
+(define-public python-pytest-tornado5
+  (package
+    (name "python-pytest-tornado5")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-tornado5" version))
+              (sha256
+               (base32
+                "0qb62jw2w0xr6y942yp0qxiy755bismjfpnxaxjjm05gy2pymr8d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests require pytest < 6
+     (list #:tests? #f))
+    (propagated-inputs (list python-pytest python-tornado))
+    (home-page "https://github.com/vidartf/pytest-tornado")
+    (synopsis
+     "Fixtures and markers to simplify testing of Tornado applications")
+    (description
+     "This package provides a @code{py.test} plugin supplying fixtures and
+markers to simplify testing of asynchronous tornado applications.")
+    (license license:asl2.0)))
 
 (define-public guile-proba
   (package

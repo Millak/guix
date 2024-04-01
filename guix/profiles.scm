@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
@@ -652,6 +652,8 @@ denoting a specific output of a package."
                  vlist-null)))
     (_
      (raise (condition
+             (&profile-error
+              (profile (and=> (source-property sexp 'filename) dirname)))
              (&message (message "unsupported manifest format")))))))
 
 (define (read-manifest port)
@@ -1577,7 +1579,7 @@ MIME type."
   "Return a derivation that builds the @file{mime.cache} database from manifest
 entries.  It's used to query the MIME type of a given file."
   (define shared-mime-info  ; lazy reference
-    (module-ref (resolve-interface '(gnu packages gnome)) 'shared-mime-info))
+    (module-ref (resolve-interface '(gnu packages freedesktop)) 'shared-mime-info))
 
   (mlet %store-monad ((glib (manifest-lookup-package manifest "glib")))
     (define build

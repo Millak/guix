@@ -14,6 +14,8 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -348,11 +350,11 @@ numbers of user-defined menu items efficiently.")
                 "0k8fvf9g27yyaqpyhk6apbkq6r4vjwxhff1qb9ignxx2yvxy7qdf"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output))
-       #:phases (modify-phases %standard-phases (delete 'configure))))
+     (list #:tests? #f                      ; no tests
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
     (inputs
      (list libx11 libxext libxinerama libxrandr))
     (home-page "https://tools.suckless.org/slock/")
@@ -514,7 +516,7 @@ Vim bindings and Xresource compatibility.")
              #t)))))
     (inputs
      `(("dmenu" ,dmenu)
-       ("gcr" ,gcr)
+       ("gcr" ,gcr-3)
        ("glib-networking" ,glib-networking)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("webkitgtk" ,webkitgtk-with-libsoup2)
@@ -1115,7 +1117,7 @@ support.")
 (define-public sfeed
   (package
     (name "sfeed")
-    (version "1.6")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -1125,7 +1127,7 @@ support.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ax603xxcwvmgizf6ia820fc7fliinx86zv6ggiqj5p59kz75x0r"))))
+        (base32 "0zmgkvq75a7h4rmk7izpsaxswlqh9zg446wxv7qcw0bh5xdckg0d"))))
     (build-system gnu-build-system)
     (arguments
      (list

@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -29,12 +29,13 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2022, 2023 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022-2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,9 +64,11 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages rails)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libffi)
@@ -78,6 +81,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -87,6 +91,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages serialization)
   #:use-module (guix packages)
@@ -273,7 +278,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.2
   (package
     (inherit ruby-3.1)
-    (version "3.2.2")
+    (version "3.2.3")
     (source
      (origin
        (method url-fetch)
@@ -282,7 +287,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "08wy2ishjwbccfsrd0iwmyadbwjzrpyxnk74wcrf7163gq7jsdab"))))
+         "0ss7pb7f62sakq5ywpw3dl0v586cl61cd91qlm1i094c9fak3cng"))))
     (inputs
      (modify-inputs (package-inputs ruby-3.1)
        (prepend libyaml)))))
@@ -734,6 +739,30 @@ groups.")
     (description "This package provides a subclass of @code{Object} that
 includes the @code{Comparable} module for handling dates.")
     (home-page "https://github.com/ruby/date")
+    (license license:bsd-2)))
+
+(define-public ruby-time
+  (package
+    (name "ruby-time")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)  ; for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/time")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jd6df2lxd60wcxyaf37j8v3nnfn952d5xhg6aap9zlcdmkk4g2n"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-date))
+    (native-inputs (list ruby-test-unit-ruby-core))
+    (synopsis
+     "Extends the Time class with methods for parsing and conversion")
+    (description
+     "When this gem is @code{require}d, it extends the Time class with with
+additional methods for parsing and converting Times.")
+    (home-page "https://github.com/ruby/time")
     (license license:bsd-2)))
 
 (define-public ruby-diff-lcs
@@ -1207,6 +1236,65 @@ inspection in the Ruby debugger upon encountering a failure.  To use it, set
 the @env{RSPEC_DEBUG} environment variable to @samp{true} then invoke the
 @command{rspec} command as usual.")
     (home-page "https://github.com/ko1/rspec-debug")
+    (license license:expat)))
+
+(define-public ruby-specinfra
+  (package
+    (name "ruby-specinfra")
+    (version "2.88.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "specinfra" version))
+              (sha256
+               (base32
+                "07lap3sknncffpq9jw1x1mn9c5xxd058wxs5vnyz1y0lawdjfnsf"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-scp ruby-net-ssh ruby-net-telnet
+                             ruby-sfl))
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-dependencies
+            (lambda _
+              (substitute* "specinfra.gemspec"
+                (("%q<net-telnet>.freeze, \\[.*\\]")
+                 "%q<net-telnet>.freeze, [\">= 0\"]")))))))
+    (synopsis "Common layer for serverspec and itamae")
+    (description "This Gem provides a common layer for serverspec and
+itamae.")
+    (home-page "https://github.com/mizzy/specinfra")
+    (license license:expat)))
+
+(define-public ruby-serverspec
+  (package
+    (name "ruby-serverspec")
+    (version "2.42.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "serverspec" version))
+              (sha256
+               (base32
+                "0kfaqrqynly8n3dy5qrbjvx4lx6mk9a5vynwb7xwqj8bixm0mab4"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-multi-json ruby-rspec ruby-rspec-its
+                             ruby-specinfra))
+    (arguments
+     (list #:test-target "spec"))
+    (synopsis
+     "RSpec tests for servers configured by Puppet, Chef, Itamae, etc")
+    (description
+     "With Serverspec, you can write RSpec tests for checking your servers are
+configured correctly.
+
+Serverspec tests your servers’ actual state by executing command locally, via
+SSH, via WinRM, via Docker API and so on.  So you don’t need to install any
+agent softwares on your servers and can use any configuration management
+tools, Puppet, Ansible, CFEngine, Itamae and so on.
+
+But the true aim of Serverspec is to help refactoring infrastructure code.")
+    (home-page "https://serverspec.org/")
     (license license:expat)))
 
 ;; Bundler is yet another source of circular dependencies, so we must disable
@@ -3171,7 +3259,10 @@ error streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g0311ly32f6hfn4q5fvkbjbl2bhv1l9fx6s0kglxfsrwq51926y"))))
+                "1g0311ly32f6hfn4q5fvkbjbl2bhv1l9fx6s0kglxfsrwq51926y"))
+              (patches
+               (search-patches
+                "ruby-x25519-automatic-fallback-non-x86_64.patch"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "spec"
@@ -3400,6 +3491,39 @@ maintains its elements in ascending key order.  The interface is the almost
 identical to that of Hash.")
     (home-page "http://rbtree.rubyforge.org/")
     (license license:expat)))
+
+(define-public ruby-rgl
+  (package
+    (name "ruby-rgl")
+    (version "0.6.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rgl" version))
+              (sha256
+               (base32
+                "0dji1k9knrf8cxm5psd3pgd9i8f7cfq182jwjpi1pwxw15axf496"))))
+    (build-system ruby-build-system)
+  (arguments
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+        (add-after 'unpack 'remove-unnecessary-dependencies
+          (lambda _
+            (substitute* "Gemfile"
+              ;; Caring about coverage is a not a packager's task but a
+              ;; developer's
+              ;;(("gem \"simplecov\"") "")
+              ;; CodeClimate is an online service, and is unnecessary for
+              ;; running the tests
+              (("gem \"codeclimate-test-reporter\", .*") "\n")))))))
+    (native-inputs (list ruby-test-unit ruby-simplecov ruby-yard graphviz-minimal))
+    (propagated-inputs (list ruby-pairing-heap ruby-rexml ruby-stream))
+    (synopsis "Framework for graph data structures and algorithms")
+    (description "RGL is a framework for graph data structures and algorithms.
+The design of the library is much influenced by the Boost Graph Library (BGL)
+which is written in C++.")
+    (home-page "https://github.com/monora/rgl")
+    (license license:bsd-2)))
 
 (define-public ruby-hkdf
   (package
@@ -4426,6 +4550,87 @@ help tests uncover more bugs.")
     (home-page "https://github.com/jordansissel/ruby-flores")
     (license license:asl2.0)))
 
+(define-public ruby-ipaddr
+  (package
+    (name "ruby-ipaddr")
+    (version "1.2.6")
+    (source (origin
+              (method git-fetch)  ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/ipaddr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h3z8i1fa8s4gx48322fflhpkzghd4bmd9109hglsgdkic7b0dyp"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-test-unit-ruby-core))
+    (synopsis "Manipulate IP addresses")
+    (description "This package provides a set of methods to manipulate an IP
+address.  Both IPv4 and IPv6 are supported.")
+    (home-page "https://github.com/ruby/ipaddr")
+    (license license:bsd-2)))
+
+(define-public ruby-fake-ftp
+  (package
+    (name "ruby-fake-ftp")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "fake_ftp" version))
+              (sha256
+               (base32
+                "1zl9q9m4x7lz9890g0h1qqj7hcxnwzpjfnfbxadjblps7b5054q4"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rspec ruby-rubocop ruby-simplecov))
+    (arguments
+     '(#:test-target "spec"))
+    (synopsis "Fake FTP server for use with ruby tests")
+    (description "This package allows you to test FTP implementations in ruby.
+It is a minimal single-client FTP server that can be bound to any arbitrary
+port on localhost.")
+    (home-page "https://rubygems.org/gems/fake_ftp")
+    (license license:expat)))
+
+(define-public ruby-net-telnet
+  (package
+    (name "ruby-net-telnet")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "net-telnet" version))
+              (sha256
+               (base32
+                "16nkxc79nqm7fd6w1fba4kb98vpgwnyfnlwxarpdcgywz300fc15"))))
+    (build-system ruby-build-system)
+    (synopsis "Telnet client functionality")
+    (description "This package provides telnet client functionality.")
+    (home-page "https://github.com/ruby/net-telnet")
+    (license license:bsd-2)))
+
+(define-public ruby-net-ftp
+  (package
+    (name "ruby-net-ftp")
+    (version "0.3.4")
+    (source (origin
+              (method git-fetch)  ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/net-ftp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11b1sw7c4c7xrhn5li5m0wylw42hp52jp6pqacyb43hkw1m5zr36"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-protocol ruby-time))
+    (synopsis "File Transfer Protocol client library")
+    (description "This class implements the File Transfer Protocol.  If you
+have used a command-line FTP program, and are familiar with the commands, you
+will be able to use this class easily.  Some extra features are included to
+take advantage of Ruby's style and strengths.")
+    (home-page "https://github.com/ruby/net-ftp")
+    (license license:bsd-2)))
+
 (define-public ruby-net-http-persistent
   (package
     (name "ruby-net-http-persistent")
@@ -4800,6 +5005,25 @@ It allows writing tests, checking results and automated testing in Ruby.")
        (package-arguments ruby-test-unit)
        (list #:tests? #f)))
      (native-inputs '()))))
+
+(define-public ruby-test-unit-ruby-core
+  (package
+    (name "ruby-test-unit-ruby-core")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "test-unit-ruby-core" version))
+       (sha256
+        (base32 "1i7fa4hlj6xiqvjaikagwrmiyc21jzyswvd4grjbfqysziwsxygc"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f))  ; contains no tests
+    (synopsis "Additional test assertions for Ruby standard libraries")
+    (description "This package provides additional test assertions for Ruby
+standard libraries.")
+    (home-page "https://github.com/ruby/test-unit-ruby-core")
+    (license license:ruby)))
 
 (define-public ruby-mapping
   (package
@@ -5497,6 +5721,27 @@ with processes on remote servers, via SSH2.")
     (description "@code{Net::SCP} is a pure-Ruby implementation of the SCP
 client protocol.")
     (home-page "https://github.com/net-ssh/net-scp")
+    (license license:expat)))
+
+(define-public ruby-net-sftp
+  (package
+    (name "ruby-net-sftp")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "net-sftp" version))
+              (sha256
+               (base32
+                "0r33aa2d61hv1psm0l0mm6ik3ycsnq8symv7h84kpyf2b7493fv5"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-ssh))
+    (synopsis "Pure Ruby implementation of the SFTP client protocol")
+    (description
+     "@code{Net::SFTP} is a pure Ruby implementation of the SFTP
+protocol (specifically, versions 1 through 6 of the SFTP protocol).  Note that
+this is the “Secure File Transfer Protocol”, typically run over an SSH
+connection, and has nothing to do with the FTP protocol.")
+    (home-page "https://github.com/net-ssh/net-sftp")
     (license license:expat)))
 
 (define-public ruby-minima
@@ -9390,6 +9635,186 @@ follows Ruby conventions and requires little knowledge of REST.")
     (home-page "https://github.com/octokit/octokit.rb")
     (license license:expat)))
 
+(define-public ruby-hashicorp-checkpoint
+  (package
+    (name "ruby-hashicorp-checkpoint")
+    (version "0.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "hashicorp-checkpoint" version))
+              (sha256
+               (base32
+                "1z6mwzvd7p2wqhmk07dwrhvm0ncgqm7pxn0pr2k025rwsspp9bsd"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f)) ;; no need to test, useless outside HashiCorp anyway
+    (synopsis "Internal HashiCorp service to check version information")
+    (description "This package is probably useless outside of internal
+HashiCorp use.  It is open source for disclosure and because HashiCorp's open
+source projects must be able to link to it.")
+    (home-page "https://github.com/hashicorp/ruby-checkpoint")
+    (license license:mpl2.0)))
+
+(define-public ruby-vagrant-cloud
+  (package
+    (name "ruby-vagrant-cloud")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hashicorp/vagrant_cloud")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bnjd8b86lrgj5ar1l7pg5if95bv0sxa75mz7x2ikqyz6q8rmjb3"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "spec"))
+    (native-inputs (list ruby-rspec ruby-webmock))
+    (propagated-inputs (list ruby-excon ruby-log4r ruby-rexml))
+    (synopsis "Vagrant Cloud API library")
+    (description "This library provides the functionality to create, modify,
+and delete boxes, versions, and providers on HashiCorp's Vagrant Cloud.")
+    (home-page "https://github.com/hashicorp/vagrant_cloud")
+    (license license:asl2.0)))
+
+(define-public ruby-libvirt
+  (package
+    (name "ruby-libvirt")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "ruby-libvirt" version))
+              (sha256
+               (base32
+                "0v6vj5vs9v01zr00bflqpfczhwcyc6jdf8k2dqn42lq6d87si77d"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; tests require access to libvirt socket
+    (native-inputs (list pkg-config))
+    (inputs (list libvirt))
+    (synopsis "Ruby bindings for libvirt")
+    (description "This package provides Ruby language binding for libvirt's
+native C API.")
+    (home-page "https://ruby.libvirt.org/")
+    (license license:lgpl2.1+)))
+
+(define-public ruby-fog-core
+  (package
+    (name "ruby-fog-core")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)        ; for tests
+              (uri (git-reference
+                    (url "https://github.com/fog/fog-core")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "184vpi81az7raz98652m7d98ikabdl9di37dgal0adr76q57j03c"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list ruby-minitest-stub-const))
+    (propagated-inputs (list ruby-builder ruby-excon ruby-formatador
+                             ruby-mime-types))
+    (synopsis "Shared classes and tests for fog providers and services")
+    (description "@code{fog} is a Ruby cloud services library.  This package
+provides shared classes and tests for @code{fog} providers and services.")
+    (home-page "https://github.com/fog/fog-core")
+    (license license:expat)))
+
+(define-public ruby-fog-json
+  (package
+    (name "ruby-fog-json")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)        ; for tests
+              (uri (git-reference
+                    (url "https://github.com/fog/fog-json")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f4hbmhy22b1gbkzd3pnj5xvljp6bl7inc2y4fxh29nrmcn4pgb0"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-minitest))
+    (propagated-inputs (list ruby-fog-core ruby-multi-json))
+    (synopsis "JSON parsing tools used by @code{fog} providers")
+    (description "This package containse the JSON parsing tools shared between
+a number of providers in the @code{fog} gem.  @code{fog} is a Ruby cloud
+services library.")
+    (home-page "https://github.com/fog/fog-json")
+    (license license:expat)))
+
+(define-public ruby-fog-xml
+  (package
+    (name "ruby-fog-xml")
+    (version "0.1.4")
+    (source (origin
+              (method git-fetch)        ; for tests
+              (uri (git-reference
+                    (url "https://github.com/fog/fog-xml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d0n201qzcjxis5wb26bi3s7yfhlmqkwsl6lb9w4szq3b8l1xbwn"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Run tests via bundler so rake picks up the minitest gem from
+          ;; native-inputs, not the one installed otherwise.  This is required
+          ;; since turn@0.9.7 needs minitest@4 and can not be upgraded to
+          ;; minitest@5.
+          (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "bundle" "exec" "rake")))))))
+    (native-inputs (list ruby-minitest-4 ruby-turn ruby-pry ruby-coveralls))
+    (propagated-inputs (list ruby-fog-core ruby-nokogiri))
+    (synopsis "XML parsing tools used by @code{fog} providers")
+    (description "This package containse the XML parsing tools shared between
+a number of providers in the @code{fog} gem.  @code{fog} is a Ruby cloud
+services library.")
+    (home-page "https://github.com/fog/fog-xml")
+    (license license:expat)))
+
+(define-public ruby-fog-libvirt
+  (package
+    (name "ruby-fog-libvirt")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)        ; for tests
+              (uri (git-reference
+                    (url "https://github.com/fog/fog-libvirt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b1qafb0l24anmr8fviwhp9vj14g0fic0mkg9n1i11h68zhqkj2v"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-minitest-stub-const ruby-mocha ruby-net-ssh
+                         ruby-netrc ruby-octokit ruby-pry ruby-rubocop
+                         ruby-shindo ruby-simplecov ruby-yard ))
+    (propagated-inputs (list ruby-fog-core ruby-fog-json ruby-fog-xml
+                             ruby-json ruby-libvirt))
+    (synopsis "Ruby libvirt provider, either standalone or as a module for
+@code{fog}")
+    (description "This library can be used as a module for @code{fog} or as
+standalone libvirt provider.  @code{fog} is a Ruby cloud services library.")
+    (home-page "https://github.com/fog/fog-libvirt")
+    (license license:expat)))
+
 (define-public ruby-pry-byebug
   (package
     (name "ruby-pry-byebug")
@@ -9425,13 +9850,13 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
 (define-public ruby-stackprof
   (package
     (name "ruby-stackprof")
-    (version "0.2.25")
+    (version "0.2.26")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "stackprof" version))
        (sha256
-        (base32 "0bhdgfb0pmw9mav1kw9fn0ka012sa0i3h5ppvqssw5xq48nhxnr8"))))
+        (base32 "1gdqqwnampxmc54nf6zfy9apkmkpdavzipvfssmjlhnrrjy8qh7f"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -9451,7 +9876,10 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
                 (("def test_(cputime)" _ name)
                  (string-append "def skip_" name))
                 ;; This test often fails
-                (("def test_gc") "def skip_test_gc"))))
+                (("def test_gc") "def skip_test_gc")
+                ;; This test is known to fail on 32-bit systems.
+                ;; /gnu/store/w8y8wm82by1cnp33n5vy976wbrns9jys-stackprof-0.2.26.gem
+                (("def test_raw") "def skip_test_raw"))))
           (add-before 'check 'build-tests
             (lambda _
               (invoke "rake" "compile")))
@@ -11929,6 +12357,32 @@ dependency, @code{pg}.")
     (home-page "https://github.com/QueueClassic/queue_classic")
     (license license:expat)))
 
+(define-public ruby-pairing-heap
+  (package
+    (name "ruby-pairing-heap")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "pairing_heap" version))
+              (sha256
+               (base32
+                "059kqpw53cancnp0bp7y1s74y1955riw33w3lqfbnms4b4mdh5zj"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                (("require \"standard/rake\"") "")
+                ((":\"standard:fix\",") "")))))))
+    (synopsis "Priority queue in pure Ruby")
+    (description "This package provides a performant priority queue in pure
+ruby with support for changing priority using pairing heap data structure")
+    (home-page "https://github.com/mhib/pairing_heap")
+    (license license:expat)))
+
 (define-public ruby-ae
   (package
     (name "ruby-ae")
@@ -12801,24 +13255,49 @@ manifest file.")
     (home-page "https://github.com/mvz/rake-manifest")
     (license license:expat)))
 
+(define-public ruby-sfl
+  (package
+    (name "ruby-sfl")
+    (version "2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "sfl" version))
+              (sha256
+               (base32
+                "1qm4hvhq9pszi9zs1cl9qgwx1n4wxq0af0hq9sbf6qihqd8rwwwr"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f  ;; some tests fail, gem is a dummy for ruby >= 1.9 anyway
+       #:test-target "spec"))
+    (synopsis "Spawn for Ruby 1.8")
+    (description "This pure ruby library provides @code{spawn()} which is
+almost perfectly compatible with ruby 1.9's.")
+    (home-page "https://github.com/ujihisa/spawn-for-legacy")
+    (license license:bsd-2)))
+
 (define-public ruby-childprocess
   (package
     (name "ruby-childprocess")
-    (version "3.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "childprocess" version))
        (sha256
         (base32
-         "1ic028k8xgm2dds9mqnvwwx3ibaz32j8455zxr9f4bcnviyahya5"))))
+         "1lvcp8bsd35g57f7wz4jigcw2sryzzwrpcgjwwf3chmjrjcww5in"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f))
+     `(#:tests? #f  ;; one failing test, even with fixes below
+       #:test-target "spec"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda _
+             (substitute* "spec/spec_helper.rb"
+               (("#!/bin/sh\\\\n") (string-append "#!" (which "sh") "\\n"))))))))
     (native-inputs
-     (list bundler ruby-rspec))
-    (propagated-inputs
-     (list ruby-ffi))
+     (list ruby-coveralls ruby-rspec))
     (synopsis "Control external programs running in the background, in Ruby")
     (description "@code{childprocess} provides a gem to control external
 programs running in the background, in Ruby.")
@@ -13793,6 +14272,54 @@ GFM dialect to HTML.")
 parser for writing http servers, clients and proxies.")
     (license license:expat)))
 
+(define-public ruby-excon
+  (package
+    (name "ruby-excon")
+    (version "0.109.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/excon/excon")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "199niqbpzj70k3n6ybg4vbcw3qm76kwic4nl9747l1n0v49aaj24"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;; some tests require DNS
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "excon.gemspec"
+                (("`git ls-files -- data/. lib/.`")
+                 "`find data lib -type f`"))))
+          (add-before 'check 'disable-server-spec-checks
+            (lambda _ ;; TODO: Remove this if ruby-unicorn is available.
+              ;; Some of the tests in this file require ruby-unicorn, which is
+              ;; not yet packaged for guix and would pull in a lot of other
+              ;; dependencies.
+              (delete-file "spec/excon/test/server_spec.rb"))))))
+    (native-inputs
+     (list
+      ruby-activesupport
+      ruby-eventmachine
+      ruby-json
+      ruby-open4
+      ruby-puma
+      ruby-rspec
+      ruby-shindo
+      ruby-sinatra
+      ruby-webrick))
+    (synopsis "Usable, fast, simple Ruby HTTP 1.1")
+    (description "Excon was designed to be simple, fast and performant.  It
+works great as a general HTTP(s) client and is particularly well suited to
+usage in API clients.")
+    (home-page "https://github.com/excon/excon")
+    (license license:expat)))
+
 (define-public ruby-em-websocket
   (package
     (name "ruby-em-websocket")
@@ -14739,6 +15266,49 @@ as well as the tools necessary to inspect and manipulate that syntax tree.  It
 can be used to build formatters, linters, language servers, and more.")
     (home-page "https://github.com/ruby-syntax-tree/syntax_tree")
     (license license:expat)))
+
+(define-public ruby-stringio
+  (package
+    (name "ruby-stringio")
+    (version "3.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruby/stringio")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jgi2w5y0z0x9mfapr2pdlag4wvn03fpf5kbai8bscyh8nn79yka"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rake-compiler ruby-test-unit-ruby-core))
+    (synopsis "Pseudo `IO` class from and to `String`")
+    (description "Pseudo `IO` class from and to `String`.")
+    (home-page "https://github.com/ruby/stringio")
+    (license license:bsd-2)))
+
+(define-public ruby-stream
+  (package
+    (name "ruby-stream")
+    (version "0.5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "stream" version))
+              (sha256
+               (base32
+                "016m9v81vpj14d8g5ins91zc4pzl7vf5f1gxl7jhfsfy601k7cv2"))))
+    (build-system ruby-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'remove-version-constraints
+           (lambda _
+             (delete-file "Gemfile.lock"))))))
+    (native-inputs (list bundler ruby-stringio ruby-webrick ruby-yard))
+    (synopsis "Interface for external iterators")
+    (description "Module Stream defines an interface for external iterators.")
+    (home-page "https://github.com/monora/stream")
+    (license license:bsd-2)))
 
 (define sorbet-version "0.5.10610.20230106174520-1fa668010")
 
@@ -17360,6 +17930,75 @@ can also be used as a Ruby library or as a web application, though the later
 has not yet been packaged for Guix.")
     (license license:bsd-2)
     (properties `((upstream-name . "anystyle-cli")))))
+
+(define-public ruby-google-protobuf
+  (package
+    (name "ruby-google-protobuf")
+    (version "3.25.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "google-protobuf" version))
+              (sha256
+               (base32
+                "1mnxzcq8kmyfb9bkzqnp019d1hx1vprip3yzdkkha6b3qz5rgg9r"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f))  ;; has no tests
+    (native-inputs (list ruby-rake))
+    (synopsis "Protocol Buffers are Google's data interchange format")
+    (description "This library contains the Ruby extension that implements
+Protocol Buffers functionality in Ruby.
+
+The Ruby extension makes use of generated Ruby code that defines message and
+enum types in a Ruby DSL.  You may write definitions in this DSL directly, but
+we recommend using protoc's Ruby generation support with @code{.proto} files.
+The build process in this directory only installs the extension; you need to
+install @code{protoc} (in package ruby-grpc-tools) as well to have Ruby code
+generation functionality.")
+    (home-page "https://protobuf.dev")
+    (license license:bsd-3)))
+
+(define-public ruby-googleapis-common-protos-types
+  (package
+    (name "ruby-googleapis-common-protos-types")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "googleapis-common-protos-types" version))
+              (sha256
+               (base32
+                "1zrxnv9s2q39f2nh32x7nbfi8lpwzmmn3ji4adglg8dlfr1xrz16"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f))  ;; has no tests
+    (propagated-inputs (list ruby-google-protobuf))
+    (synopsis "Common protocol buffer types used by Google APIs")
+    (description "Common protocol buffer types used by Google APIs")
+    (home-page "https://github.com/googleapis/common-protos-ruby")
+    (license license:asl2.0)))
+
+(define-public ruby-grpc
+  (package
+    (name "ruby-grpc")
+    (version "1.62.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "grpc" version))
+              (sha256
+               (base32
+                "03z8yq0z228g6xxxq6s2mmslpv6psrdmi30dpmhysr4px16d897n"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f))  ;; has no tests
+    ;; TODO remove third-party sources (zlib, upb, utf8-range, re2, c-ares,
+    ;; boringssl-with-bazel, address_sorting, abseil-cpp), see Makefile
+    (propagated-inputs (list ruby-google-protobuf
+                             ruby-googleapis-common-protos-types))
+    (synopsis "GRPC system in Ruby")
+    (description "GRPC is a high performance, open-source universal RPC
+framework.  This package provides a ruby interface for it.")
+    (home-page "https://github.com/grpc/grpc/tree/master/src/ruby")
+    (license license:asl2.0)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

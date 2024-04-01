@@ -41,9 +41,9 @@
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
@@ -114,7 +114,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
-  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -140,7 +140,6 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
-  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tcl)
@@ -327,7 +326,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.16")
+    (version "0.6.21")
     (source
      (origin
        (method git-fetch)
@@ -336,7 +335,7 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3i9blcw5i793m1rxf5dqp773hssdpifrz820psr90x982vvmib"))))
+        (base32 "1a97h711nbwi01a3vv2944m8gyzi04hgfpiizrzinx79n4vp1zhk"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -359,7 +358,7 @@ used to further tweak the behaviour of the different profiles.")
            wayland
            wayland-protocols))
     (native-inputs
-     (list doxygen pkg-config))
+     (list doxygen pkg-config scdoc))
     (home-page "https://github.com/Cloudef/bemenu")
     (synopsis "Dynamic menu library and client program inspired by dmenu")
     (description
@@ -370,41 +369,41 @@ with X11 or Wayland, or in a text terminal with ncurses.")
                    license:lgpl3+))))   ; library and bindings
 
 (define-public copyq
-(package
-  (name "copyq")
-  (version "7.0.0")
-  (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                   (url "https://github.com/hluk/CopyQ")
-                   (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "0h8jz7v5xvpq23dh1sr600q5jlrfzm6wsnp7sln8hbgsn96n8kas"))))
-  (build-system cmake-build-system)
-  (arguments
-   (list
-    #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
-    #:tests? #f)) ; Test suite is a rather manual process.
-  (inputs
-   (list qtbase-5
-         qtscript
-         qtsvg-5
-         qtx11extras
-         qtdeclarative-5
-         qtwayland-5
-         wayland
-         knotifications))
-  (native-inputs
-   (list extra-cmake-modules qttools-5))
-  (synopsis "Clipboard manager with advanced features")
-  (description "CopyQ is clipboard manager with editing and scripting
+  (package
+    (name "copyq")
+    (version "8.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hluk/CopyQ")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "029s1pdp177fnrq5qrwjmd5pf1672l5jhq99is1lczrxi6bsf2qk"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
+      #:tests? #f)) ; Test suite is a rather manual process.
+    (inputs
+     (list qtbase-5
+           qtscript
+           qtsvg-5
+           qtx11extras
+           qtdeclarative-5
+           qtwayland-5
+           wayland
+           knotifications))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (synopsis "Clipboard manager with advanced features")
+    (description "CopyQ is clipboard manager with editing and scripting
 features.  CopyQ monitors system clipboard and saves its content in customized
 tabs.  Saved clipboard can be later copied and pasted directly into any
 application.")
-  (home-page "https://hluk.github.io/CopyQ/")
-  (license license:gpl3+)))
+    (home-page "https://hluk.github.io/CopyQ/")
+    (license license:gpl3+)))
 
 (define-public xkeysnail
   (package
@@ -1256,14 +1255,14 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.14.2")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "12s9pc0dhqgawq6jiqhamj1zq9753kgpswny1rcsdx1lkpzrgaq1"))))
+        (base32 "1632y0yr1ig5nihs6kqyvfi117815zszhnfvaabm97qkf5blkj5p"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc))
@@ -1341,16 +1340,16 @@ Guile will work for XBindKeys.")
         (base32 "1winwzdy9yxvxnrv8gqpigl9y0c2px27mnms62bdilp4x6llrs9r"))))
     (build-system gnu-build-system)
     (inputs
-     (list asciidoc libxcb xcb-util xcb-util-keysyms xcb-util-wm))
+     (list libxcb xcb-util xcb-util-keysyms xcb-util-wm))
     (arguments
-     `(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:tests? #f  ; no check target
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" %output)
-             ;; Keep the documentation where the build system installs LICENSE.
-             (string-append "DOCPREFIX=" %output
-                            "/share/doc/" ,name "-" ,version))))
+     (list #:phases #~(modify-phases %standard-phases (delete 'configure))
+           #:tests? #f  ; no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   ;; Keep the documentation where the build system installs LICENSE.
+                   (string-append "DOCPREFIX=" #$output
+                                  "/share/doc/" #$name "-" #$version))))
     (home-page "https://github.com/baskerville/sxhkd")
     (synopsis "Simple X hotkey daemon")
     (description "sxhkd is a simple X hotkey daemon with a powerful and
@@ -1488,7 +1487,7 @@ Wacom tablet applet.")
 (define-public xf86-input-wacom
   (package
     (name "xf86-input-wacom")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -1497,7 +1496,7 @@ Wacom tablet applet.")
              "xf86-input-wacom-" version "/"
              "xf86-input-wacom-" version ".tar.bz2"))
        (sha256
-        (base32 "04ks577ag2yir7kssv8zhig4rx9xqj2wifmlrcmy4k9lgw379di3"))))
+        (base32 "0pb8f8fvwm7vy5p3h8nc7x7fb68kpdkscz0j79xzsaxwn8435hhk"))))
     (arguments
      (list #:configure-flags
            #~(list (string-append "--with-sdkdir=" #$output "/include/xorg")
@@ -2032,7 +2031,7 @@ by name.")
     (package
       (inherit rofi)
       (name "rofi-wayland")
-      (version "1.7.5+wayland2")
+      (version "1.7.5+wayland3")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://github.com/lbonn/rofi"
@@ -2040,7 +2039,7 @@ by name.")
                                     "/rofi-" version ".tar.xz"))
                 (sha256
                  (base32
-                  "0l6rf8qwvawyh938pinl9fkwzjnq72xpa9a7lwk9jrr5lkk3h8yj"))))
+                  "11xiksh3m7yf3270kqf1jranlfh9q6rr8i99jvx4ak4azn4pwhpw"))))
       (build-system meson-build-system)
       (inputs
        (modify-inputs (package-inputs base)
@@ -3224,34 +3223,33 @@ After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
 (define-public clipman
   (package
     (name "clipman")
-    (version "1.6.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url (string-append "https://github.com/yory8/" name "/"))
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256 (base32
-                        "0b9kvj0dif4221dy6c1npknhhjxvbc4kygzhwxjirpwjws0yv6v9"))))
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chmouel/clipman")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "033l2hy46r2zjy8dllcmkjxidhnqac9kfh4wkq9hfvim9imp5a4m"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/yory8/clipman"
-           #:install-source? #f
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'build 'patch
-                          (lambda _
-                            (substitute* "src/github.com/yory8/clipman/main.go"
-                              (("gopkg.in/alecthomas/kingpin.v2")
-                               "github.com/alecthomas/kingpin")
-                              (("\"wl-copy\"")
-                               (string-append "\"" (which "wl-copy") "\"")))))
-                        (delete 'install-license-files))))
-    (native-inputs (list go-github-com-alecthomas-template
-                         go-github-com-alecthomas-units))
-    (inputs (list go-github-com-kballard-go-shellquote
-                  go-github-com-alecthomas-kingpin
-                  libnotify
-                  wl-clipboard))
+     (list
+      #:import-path "github.com/yory8/clipman"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-wl-copy-path
+            (lambda _
+              (substitute* "src/github.com/yory8/clipman/main.go"
+                (("\"wl-copy\"")
+                 (string-append "\"" (which "wl-copy") "\""))))))))
+    (inputs
+     (list go-github-com-kballard-go-shellquote
+           go-gopkg-in-alecthomas-kingpin-v2
+           libnotify
+           wl-clipboard))
     (synopsis "Basic clipboard manager with support for persisting copy buffers")
     (description
      "A clipboard manager for Wayland that relies on an external selector,
@@ -3261,7 +3259,7 @@ Run the binary in your session by adding @command{exec wl-paste -t text --watch
 clipman store} (or @command{exec wl-paste -t text --watch clipman store 1>>
 PATH/TO/LOGFILE 2>&1 &} to log errors) at the beginning of wherever you
 initialize programs.")
-    (home-page "https://github.com/yory8/clipman")
+    (home-page "https://github.com/chmouel/clipman")
     (license license:gpl3)))
 
 (define-public kbdd

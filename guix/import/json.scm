@@ -78,14 +78,13 @@ a list of S-expressions, or return #F when the JSON is invalid."
                               #:result
                               (append result
                                       (list
-                                       (package->code (alist->package pkg names))
-                                       (string->symbol (assoc-ref pkg "name"))))))))
-                        (list #:names '()
-                              #:result '())
-                        packages))))
+                                       (package->code
+                                         (alist->package pkg names))))))))
+                   (list #:names '()
+                         #:result '())
+                   packages))))
           (package
-            (list (package->code (alist->package json))
-                  (string->symbol (assoc-ref json "name")))))))
+            (list (package->code (alist->package json)))))))
     (const #f)))
 
 (define (json->scheme-file file)

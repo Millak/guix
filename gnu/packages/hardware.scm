@@ -703,7 +703,7 @@ battery state, controlling LEDs, and setting the inactive time.")
     (arguments
      `(#:tests? #f)) ;; Tests require Google's gtest and gmock
     (inputs
-     (list mbedtls-apache))
+     (list mbedtls-lts))
     (synopsis "C++ library to control Philips Hue lights")
     (description "Hueplusplus is a library for controlling Philips Hue lights.
 Features:
@@ -806,6 +806,7 @@ information can be viewed in real time and/or logged to a file.")
 also provides extensions for proprietary methods of interfacing with Dell
 specific SMBIOS tables.")
     (home-page "https://github.com/dell/libsmbios")
+    (supported-systems (list "i686-linux" "x86_64-linux"))
     (license
      (list license:osl2.1 license:gpl2+ license:bsd-3 license:boost1.0))))
 
@@ -1111,7 +1112,7 @@ technology, such as head mounted displays with built in head tracking.")
            hueplusplus
            nlohmann-json
            libusb
-           mbedtls-apache
+           mbedtls-lts
            qtbase-5))
     (native-inputs
      (list pkg-config

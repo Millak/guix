@@ -132,29 +132,25 @@ environment variable\n" source-directory))
     (parameterize ((%emacs emacs))
       (emacs-compile-directory (elpa-directory out)))))
 
-(define* (patch-el-files #:key outputs #:allow-other-keys)
-  "Substitute the absolute \"/bin/\" directory with the right location in the
-store in '.el' files."
+(define* (patch-el-files #:key inputs outputs #:allow-other-keys)
+  "Substitute the absolute \"/bin/\" and \"/sbin\" directories with the right
+locations in the store in '.el' files."
 
-  (let* ((out (assoc-ref outputs "out"))
-         (elpa-name-ver (store-directory->elpa-name-version out))
-         (el-dir (string-append out %install-dir "/" elpa-name-ver))
-         (el-files (find-files (getcwd) "\\.el$")))
-    (define (substitute-program-names)
-      (substitute* el-files
-        (("\"/bin/([^.]\\S*)\"" _ cmd-name)
-         (let ((cmd (which cmd-name)))
-           (unless cmd
-             (error "patch-el-files: unable to locate " cmd-name))
-           (string-append "\"" cmd "\"")))))
+  (define substitute-program-names
+    (let ((el-files (find-files (getcwd) "\\.el$")))
+      (lambda ()
+        (substitute* el-files
+          (("\"/(s?bin/[^.]\\S*)\"" _ cmd)
+           (let ((cmd (search-input-file inputs cmd)))
+             (unless cmd
+               (error "patch-el-files: unable to locate " (basename cmd)))
+             (string-append "\"" cmd "\"")))))))
 
-    (with-directory-excursion el-dir
-      ;; Some old '.el' files (e.g., tex-buf.el in AUCTeX) are still
-      ;; ISO-8859-1-encoded.
-      (unless (false-if-exception (substitute-program-names))
-        (with-fluids ((%default-port-encoding "ISO-8859-1"))
-          (substitute-program-names))))
-    #t))
+  (unless (false-if-exception (substitute-program-names))
+    ;; Some old '.el' files (e.g., tex-buf.el in AUCTeX) are still
+    ;; ISO-8859-1-encoded.
+    (with-fluids ((%default-port-encoding "ISO-8859-1"))
+      (substitute-program-names))))
 
 (define (find-root-library-file name)
   (let loop ((parts (string-split
@@ -224,10 +220,8 @@ store in '.el' files."
       (emacs-batch-edit-file (string-append name ".el")
         %write-pkg-file-form)))
 
-  (let* ((out (assoc-ref outputs "out"))
-         (elpa-name-ver (store-directory->elpa-name-version out)))
-    (with-directory-excursion (elpa-directory out)
-      (and=> (find-root-library-file elpa-name-ver) write-pkg-file))))
+  (let ((name (store-directory->elpa-name-version (assoc-ref outputs "out"))))
+    (and=> (find-root-library-file name) write-pkg-file)))
 
 (define* (check #:key tests? (test-command '("make" "check"))
                 (parallel-tests? #t) #:allow-other-keys)
@@ -306,24 +300,15 @@ parallel. PARALLEL-TESTS? is ignored when using a non-make TEST-COMMAND."
                   info-files)))
     #t))
 
-(define* (make-autoloads #:key outputs inputs #:allow-other-keys)
+(define* (make-autoloads #:key outputs #:allow-other-keys)
   "Generate the autoloads file."
-  (let* ((emacs (search-input-file inputs "/bin/emacs"))
-         (out (assoc-ref outputs "out"))
-         (elpa-name-ver (store-directory->elpa-name-version out))
-         (elpa-name (package-name->name+version elpa-name-ver))
-         (el-dir (elpa-directory out)))
-    (parameterize ((%emacs emacs))
-      (emacs-generate-autoloads elpa-name el-dir))))
-
-(define* (enable-autoloads-compilation #:key outputs #:allow-other-keys)
-  "Remove the NO-BYTE-COMPILATION local variable embedded in the generated
-autoload files."
-  (let* ((out (assoc-ref outputs "out"))
-         (autoloads (find-files out "-autoloads.el$")))
-    (substitute* autoloads
-      ((";; no-byte-compile.*") ""))
-    #t))
+  (emacs-generate-autoloads
+   (package-name->name+version (store-directory->elpa-name-version
+                                (assoc-ref outputs "out")))
+   (getcwd))
+  ;; Ensure that autoloads can be byte-compiled.
+  (substitute* (find-files "." "-autoloads\\.el$")
+    ((";; no-byte-compile.*") "")))
 
 (define* (validate-compiled-autoloads #:key outputs #:allow-other-keys)
   "Verify whether the byte compiled autoloads load fine."
@@ -358,7 +343,11 @@ for libraries following the ELPA convention."
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (replace 'unpack unpack)
+    (add-after 'unpack 'ensure-package-description
+      ensure-package-description)
     (add-after 'unpack 'expand-load-path expand-load-path)
+    (add-after 'unpack 'patch-el-files patch-el-files)
+    (add-after 'expand-load-path 'make-autoloads make-autoloads)
     (add-after 'expand-load-path 'add-install-to-native-load-path
       add-install-to-native-load-path)
     (delete 'bootstrap)
@@ -366,14 +355,8 @@ for libraries following the ELPA convention."
     (delete 'build)
     (replace 'check check)
     (replace 'install install)
-    (add-after 'install 'make-autoloads make-autoloads)
-    (add-after 'make-autoloads 'enable-autoloads-compilation
-      enable-autoloads-compilation)
-    (add-after 'enable-autoloads-compilation 'patch-el-files patch-el-files)
-    (add-after 'patch-el-files 'ensure-package-description
-      ensure-package-description)
     ;; The .el files are byte compiled directly in the store.
-    (add-after 'ensure-package-description 'build build)
+    (add-after 'install 'build build)
     (add-after 'build 'validate-compiled-autoloads validate-compiled-autoloads)
     (add-after 'validate-compiled-autoloads 'move-doc move-doc)))
 

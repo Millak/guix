@@ -50,20 +50,14 @@
 (define-public scribus
   (package
     (name "scribus")
-    (version "1.5.8")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/scribus/scribus-devel/"
-                           version "/scribus-" version ".tar.xz"))
+       (uri (string-append "mirror://sourceforge/scribus/scribus/"
+                           version "/scribus-" version ".tar.gz"))
        (sha256
-        (base32 "0x3bw58v920akca8jxvsfwf468pzjyglk93ay67ph1bdry7nx0a7"))
-       (patches
-        (search-patches "scribus-1.5.8-poppler-22.2.0-1.patch"
-                        "scribus-1.5.8-poppler-22.2.0-2.patch"
-                        "scribus-1.5.8-poppler-22.03.0.patch"
-                        "scribus-1.5.8-poppler-22.04.0.patch"
-                        "scribus-1.5.8-poppler-22.09.0.patch"))))
+        (base32 "1kqqffx5xz35mwd422s4i110794zzx9sc2bn2mg77rz02hrxdhxg"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test target

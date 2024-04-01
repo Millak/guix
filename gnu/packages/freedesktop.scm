@@ -5,7 +5,7 @@
 ;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -33,6 +33,8 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -138,7 +140,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.15.6")
+    (version "0.16.4")
     (source
      (origin
        (method url-fetch)
@@ -147,11 +149,14 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "03pirmc5r4izl6mzff879g7pk1nxq03kgpr2yvnnqnlb6r0ckmi3"))))
+        (base32 "1val1b3dggn9g33q2r9q7wsl75a64x4lcvswvkcjjbvakkbj5xyl"))
+       (patches
+        (search-patches "appstream-force-reload-stemmer.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:configure-flags #~(list "-Dsystemd=false")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-libstemmer
@@ -161,11 +166,6 @@
               (substitute* "meson.build"
                 (("/usr/include")
                  (dirname libstemmer.h))))))
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (substitute* "tests/test-pool.c"
-                (("[ \t]*g_test_add_func \\(\"/AppStream/PoolRead?.*;")
-                 ""))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "HOME" (getcwd)))))))
@@ -480,6 +480,115 @@ method framework.")
      "This package provides virtual keyboard for Wayland and X11
 display servers.  It supports many different languages and emoji.")
     (license license:gpl3+)))
+
+;; Private package used by shared-mime-info.
+(define xdgmime
+  ;; No public release, match commit to the one used in the
+  ;; shared-mime-info release.
+  (let ((commit "179296748e92bd91bf531656632a1056307fb7b7")
+        (revision "2"))
+    (package
+      (name "xdgmime")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.freedesktop.org/xdg/xdgmime.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "04bpbqlkmwi2pqx1lj3awa9f9gwp4n91fpnz8hbbd0hl8x41przm"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f  ; no tests
+        #:make-flags #~(list (string-append "DESTDIR=" #$output)
+                             #$(string-append "CC=" (cc-for-target)))
+        #:imported-modules `((guix build copy-build-system)
+                             ,@%gnu-build-system-modules)
+        #:modules `((guix build gnu-build-system)
+                    ((guix build copy-build-system) #:prefix copy:)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Package uses a hand-crafted Makefile.
+            (delete 'configure)
+            (replace 'install
+              (lambda args
+                (apply (assoc-ref copy:%standard-phases 'install)
+                       #:install-plan
+                       '(("src" "bin/" #:include ("print-mime-data"
+                                                  "test-mime-data"
+                                                  "test-mime")))
+                       args))))))
+      (home-page "https://gitlab.freedesktop.org/xdg/xdgmime/")
+      (synopsis "Module that parses the freedesktop.org MIME spec")
+      (description "This module is used for shared-mime-info package tests.")
+      (license (list license:lgpl2.1+ license:artistic2.0)))))
+
+;; Note: when updating shared-mime-info, don't forget to update xdgmime's commit
+;; to the one used in the release.
+(define-public shared-mime-info
+  (package
+    (name "shared-mime-info")
+    (version "2.3")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://gitlab.freedesktop.org/xdg/shared-mime-info.git")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0w8sbhz00sk6k8pyiykfig4rm22jyibalj7g22j9qf3d2nfy8ivh"))
+             (patches (search-patches "shared-mime-info-xdgmime-path.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append
+               "-Dxdgmime-path="
+               (dirname
+                (search-input-file %build-inputs "/bin/test-mime")))
+              "-Dupdate-mimedb=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't patch shebangs for the test files.
+          (replace 'patch-source-shebangs
+            (lambda _
+              (let ((pred (lambda (file stat)
+                            (and (eq? 'regular (stat:type stat))
+                                 (not (string-prefix? "./tests/mime-detection"
+                                                      file))))))
+                (for-each patch-shebang
+                          (find-files "." pred #:stat lstat)))))
+          ;; The docs have no install rule.
+          (add-after 'install 'install-doc
+            (lambda* (#:key source #:allow-other-keys)
+              (let ((dest (string-append #$output:doc "/share/doc")))
+                (with-directory-excursion "data/shared-mime-info-spec-html"
+                  (install-file "shared-mime-info-spec.html"
+                                (string-append dest "/html")))
+                (install-file (string-append source
+                                             "/data/shared-mime-info-spec.xml")
+                              dest)))))))
+    (inputs
+     (list glib libxml2))
+    (native-inputs
+     (list gettext-minimal pkg-config python xdgmime
+           ;; For 'doc' output.
+           docbook-xml-4.1.2 docbook-xsl xmlto))
+    (outputs (list "out" "doc"))
+    (home-page "https://www.freedesktop.org/wiki/Software/shared-mime-info")
+    (synopsis "Database of common MIME types")
+    (description
+     "The shared-mime-info package contains the core database of common types
+and the update-mime-database command used to extend it.  It requires glib2 to
+be installed for building the update command.  Additionally, it uses intltool
+for translations, though this is only a dependency for the maintainers.  This
+database is translated at Transifex.")
+    (license license:gpl2+)))
 
 (define-public xdg-utils
   (package
@@ -1463,7 +1572,10 @@ XEv.")
         (base32 "0bpix92vzip9vlhzihj3k8h9flrlna231x3y8ah7p4965l177yjd"))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config wayland libxkbcommon))
+     (list pkg-config
+           ;; for wayland-scanner
+           wayland))
+    (inputs (list wayland libxkbcommon))
     (synopsis "Xdotool type for Wayland")
     (description "Wtype lets you simulate keyboard input and mouse activity,
 move and resize windows, etc.")
@@ -1474,7 +1586,7 @@ move and resize windows, etc.")
 (define-public exempi
   (package
     (name "exempi")
-    (version "2.5.2")
+    (version "2.6.5")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1482,7 +1594,7 @@ move and resize windows, etc.")
                    name "-" version ".tar.bz2"))
              (sha256
               (base32
-               "1mdfxb36p8251n5m7l55gx3fcqpk46yz9v568xfr8igxmqa47xaj"))))
+               "1zhzwkfna14sy78llhfc94cy5hv3076j5v3p1zmvawzz5gaa7yg9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--with-boost="
@@ -1496,8 +1608,7 @@ move and resize windows, etc.")
              ;; <https://gitlab.freedesktop.org/libopenraw/exempi/-/issues/17>.
              ;; Simply delete the static library instead to save ~4.3 MiB.
              (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libexempi.a"))
-             #t)))))
+                                         "/lib/libexempi.a")))))))
     (native-inputs
      (list boost)) ; tests
     (inputs
@@ -1522,7 +1633,25 @@ formats.")
                 "138gvgdwk6h4ljrjsr09pxk1nrki4b155hqdzyr8mlk3bwsfmw31"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (append (if (and (%current-target-system)
+                      (target-riscv64?))
+                 (list config)
+                 '())
+             (list pkg-config)))
+    (arguments
+     (if (and (%current-target-system)
+              (target-riscv64?))
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'update-config
+                     (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                       (for-each (lambda (file)
+                                   (install-file
+                                    (search-input-file
+                                     (or native-inputs inputs)
+                                     (string-append "/bin/" file)) "build-aux"))
+                                 '("config.guess" "config.sub"))))))
+         '()))
     (inputs
      (list eudev))
     (home-page "https://0pointer.de/blog/projects/being-smart.html")
@@ -1638,7 +1767,7 @@ message bus.")
 (define-public accountsservice
   (package
     (name "accountsservice")
-    (version "22.08.8")
+    (version "23.13.9")
     (source
      (origin
        (method url-fetch)
@@ -1646,7 +1775,7 @@ message bus.")
                            "accountsservice/accountsservice-"
                            version ".tar.xz"))
        (sha256
-        (base32 "14d3lwik048h62qrzg1djdd2sqmxf3m1r859730pvzhrd6krg6ch"))
+        (base32 "0kwjkff5m7gnzpns6cy27az90w7sxzwzygyzwy90kyi4mvg4rnmd"))
        (patches (search-patches "accountsservice-extensions.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -1687,6 +1816,7 @@ message bus.")
            docbook-xsl
            gettext-minimal
            `(,glib "bin")               ; for gdbus-codegen, etc.
+           glibc-locales                    ;for tests
            gobject-introspection
            gtk-doc
            libxml2                      ;for XML_CATALOG_FILES
@@ -2427,14 +2557,14 @@ their MIME type.
 (define-public uchardet
   (package
     (name "uchardet")
-    (version "0.0.7")
+    (version "0.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://www.freedesktop.org/software/"
                             name "/releases/" name "-" version ".tar.xz"))
         (sha256
-          (base32 "1ca51sryhryqz82v4d0graaiqqq5w2f33a9gj83b910xmq499irz"))))
+          (base32 "1w659aiphbnczpry771diakrzg9a8aqpn2abcxx1870aq37n0yp9"))))
     (build-system cmake-build-system)
     (home-page "https://www.freedesktop.org/wiki/Software/uchardet/")
     (synopsis "Encoding detector library")
@@ -2757,7 +2887,7 @@ compatible with the well-known scripts of the same name.")
 (define-public libportal
   (package
     (name "libportal")
-    (version "0.6")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2766,7 +2896,7 @@ compatible with the well-known scripts of the same name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q1kqq72cs7f5b17gzw7218mxs65hijzkll27mh51s02fpiw8c60"))))
+                "0ypl9ds5g5jzyirjg4ic0r7lzv39w67yrh8njz1cw566g4j1kfny"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2965,7 +3095,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
 (define-public xdg-desktop-portal-wlr
   (package
     (name "xdg-desktop-portal-wlr")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2974,7 +3104,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b3hpp3ybjgnnmnwsyb5bsnvz9q5nr3zz0j1alh02g24f68lf00k"))
+                "1mbq3czka9swwmfaasnaj89y2m254p3qa522ayclh688jdwh70hq"))
               (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -3002,7 +3132,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                            (string-append (assoc-ref outputs "out")
                                           "/share/doc/" ,name)))))))
     (native-inputs
-     (list cmake pkg-config))
+     (list cmake-minimal pkg-config))
     (inputs (list elogind
                   bash-minimal
                   grim

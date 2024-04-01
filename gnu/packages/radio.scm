@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2019, 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020-2024 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -63,6 +63,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
@@ -99,12 +100,14 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -788,7 +791,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
 (define-public gnuradio
   (package
     (name "gnuradio")
-    (version "3.10.3.0")
+    (version "3.10.8.0")
     (source
      (origin
        (method git-fetch)
@@ -797,7 +800,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xdhb2blzajxpi0f2ch23hh6bzdwz5q7syi3bmiqzdjlj2yjfzd4"))))
+        (base32 "11p08qrbfh5dz6l5n4c2g8c2gv1qq8aiydq91ryzfzgp49r0j6p0"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -1890,10 +1893,63 @@ their position, altitude, speed, etc.")
     (home-page "https://github.com/flightaware/dump1090")
     (license license:gpl2+)))
 
+(define-public libacars
+  (package
+    (name "libacars")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/szpajder/libacars")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08cadcqzhl3i7hpd8jwph33kx52vdwbrj1rlagwrkwb2mfw6szfs"))))
+    (build-system cmake-build-system)
+    (inputs (list jansson libxml2 zlib))
+    (arguments (list #:tests? #f)) ; No test suite
+    (synopsis "Decoder for ACARS messages")
+    (description "This package provides a library for decoding the contents of
+ACARS messages used by planes.")
+    (home-page "https://github.com/szpajder/libacars")
+    (license (list license:bsd-2
+                   license:expat))))
+
+(define-public dumpvdl2
+  (package
+    (name "dumpvdl2")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/szpajder/dumpvdl2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zxv24fg2ciy7bfiqhx95v0h8b1bnbs3ax06n9ywsssbf4ndas4n"))))
+    (build-system cmake-build-system)
+    (native-inputs (list pkg-config))
+    (inputs
+     (list glib
+           libacars
+           protobuf-c
+           rtl-sdr
+           soapysdr
+           sqlite
+           zeromq))
+    (arguments (list #:tests? #f)) ; No test suite
+    (synopsis "VDL Mode 2 message decoder")
+    (description "This package provides a decoder for VDL Mode 2 messages used
+by planes.")
+    (home-page "https://github.com/szpajder/dumpvdl2")
+    (license license:gpl3+)))
+
 (define-public rtl-433
   (package
     (name "rtl-433")
-    (version "22.11")
+    (version "23.11")
     (source
      (origin
        (method git-fetch)
@@ -1902,7 +1958,7 @@ their position, altitude, speed, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qx89qmf0zn0qa05vraipny4ihx6lm72s830mbfyzw2znyk3wdm8"))))
+        (base32 "11qigwnaa22vgd43jvzk2byiancahdkhxpsh6cp74q2ywb0wy9x8"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -2534,7 +2590,7 @@ transmissions.")
 (define-public dsdcc
   (package
     (name "dsdcc")
-    (version "1.9.3")
+    (version "1.9.5")
     (source
      (origin
        (method git-fetch)
@@ -2543,7 +2599,7 @@ transmissions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jgzpv4d6ckd0sdq6438rjh3m6knj6gx63627fajch74hxrvclzj"))))
+        (base32 "1rb9r1m4rfi9x5x4h5frpl65xmk5p2bqyfisnrv6nbmnsgds9h0c"))))
     (build-system cmake-build-system)
     (inputs
      (list mbelib serialdv))
@@ -2573,7 +2629,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.17.0")
+    (version "7.17.3")
     (source
      (origin
        (method git-fetch)
@@ -2582,7 +2638,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16hpnfzccpj8a3i24ryli870ym6kjih981sjapcqdc8va0q14qdz"))))
+        (base32 "1cvs9nqwx3cqsazxwk9jxlq2bys00zpljhrsbp0sdsnc64ya2din"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))

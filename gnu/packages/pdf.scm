@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
@@ -17,14 +17,16 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2020, 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +57,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -119,7 +122,7 @@
 (define-public capypdf
   (package
     (name "capypdf")
-    (version "0.6.0")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -127,7 +130,7 @@
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "15l8zwc83l65xh739s0qddlv5qv537wnx74s8fcwlm1r8y7kf2x4"))))
+               (base32 "0kp1dcww5zl04wnbqbi8vjzpc5qgr8gr8rcx0s6s4xbjnzvqqw8d"))))
     (build-system meson-build-system)
     (arguments
      (list #:meson meson/newer
@@ -371,7 +374,23 @@ please install the @code{flyer-composer-gui} package.")))
                  (setenv "PKG_CONFIG" #$(pkg-config-for-target))))))))
    (synopsis "PDF rendering library")
    (description
-    "Poppler is a PDF rendering library based on the xpdf-3.0 code base.")
+    "Poppler is a PDF rendering library based on the xpdf-3.0 code base.
+Poppler gives access to the following binary programs:
+@itemize
+@item pdfattach
+@item pdfdetach
+@item pdffonts
+@item pdfimages
+@item pdfinfo
+@item pdfseparate
+@item pdfsig
+@item pdftocairo
+@item pdftohtml
+@item pdftoppm
+@item pdftops
+@item pdftotext
+@item pdfunite
+@end itemize")
    (license license:gpl2+)
    (home-page "https://poppler.freedesktop.org/")))
 
@@ -415,40 +434,25 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 (define-public python-poppler-qt5
   (package
     (name "python-poppler-qt5")
-    (version "21.1.0")
+    (version "21.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-poppler-qt5" version))
-        (sha256
-         (base32
-          "0b82gm4i75q5v19kfbq0h4y0b2vcwr2213zkhxh6l0h45kdndmxd"))
-       (patches (search-patches "python-poppler-qt5-fix-build.patch"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-poppler-qt5" version))
+       (sha256
+        (base32 "1q3gvmsmsq3llf9mcbhlkryrgprqrw2z7wmnvagy180f3y2fhxxl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; There are no tests.  The check phase just causes a rebuild.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               ;; This check always fails, so disable it.
-               (("if not check_qtxml\\(\\)")
-                "if True"))
-             ;; We need to pass an extra flag here.  This cannot be in
-             ;; configure-flags because it should not be passed for the
-             ;; installation phase.
-             ((@@ (guix build python-build-system) call-setuppy)
-              "build_ext" (list (string-append "--pyqt-sip-dir="
-                                               (assoc-ref inputs "python-pyqt")
-                                               "/share/sip")) #t))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list python-sip-4 python-pyqt poppler-qt5 qtbase-5))
-    (home-page "https://pypi.org/project/python-poppler-qt5/")
-    (synopsis "Python bindings for Poppler-Qt5")
+     `(;; The sipbuild.api backend builder expects a Python dictionary as per
+       ;; https://peps.python.org/pep-0517/#config-settings, but we
+       ;; give it lists and it fails.  The next line is a workaround.
+       #:configure-flags '#nil
+       #:tests? #f))
+    (native-inputs (list pkg-config))
+    (inputs (list python-sip python-pyqt-builder python-pyqt poppler-qt5
+                  qtbase-5))
+    (home-page "https://github.com/frescobaldi/python-poppler-qt5")
+    (synopsis "Python binding to Poppler-Qt5")
     (description
      "This package provides Python bindings for the Qt5 interface of the
 Poppler PDF rendering library.")
@@ -699,7 +703,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.5.2")
+    (version "0.5.4")
     (source (origin
               (method url-fetch)
               (uri
@@ -707,7 +711,28 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "15314m9chmh5jkrd9vk2h2gwcwkcffv2kjcxkd4v3wmckz5sfjy6"))))
+                "0ckgamf98sydq543arp865jg1afwzhpzcsbhv6zrch2dm5x7y0x3"))
+              (patches (search-patches "zathura-use-struct-initializers.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            ;; Tests require a running X server.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((display ":1"))
+                (setenv "DISPLAY" display)
+
+                ;; On busy machines, tests may take longer than
+                ;; the default of four seconds.
+                (setenv "CK_DEFAULT_TIMEOUT" "20")
+
+                ;; Don't fail due to missing '/etc/machine-id'.
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (zero? (system (string-append
+                                (search-input-file inputs "/bin/Xvfb")
+                                " " display " &")))))))))
     (native-inputs
      (list pkg-config
            gettext-minimal
@@ -729,24 +754,6 @@ by using the poppler rendering engine.")
      (list (search-path-specification
             (variable "ZATHURA_PLUGINS_PATH")
             (files '("lib/zathura")))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'start-xserver
-                    ;; Tests require a running X server.
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((display ":1"))
-                        (setenv "DISPLAY" display)
-
-                        ;; On busy machines, tests may take longer than
-                        ;; the default of four seconds.
-                        (setenv "CK_DEFAULT_TIMEOUT" "20")
-
-                        ;; Don't fail due to missing '/etc/machine-id'.
-                        (setenv "DBUS_FATAL_WARNINGS" "0")
-                        (zero? (system (string-append
-                                         (search-input-file inputs "/bin/Xvfb")
-                                         " " display " &")))))))))
     (home-page "https://pwmt.org/projects/zathura/")
     (synopsis "Lightweight keyboard-driven PDF viewer")
     (description "Zathura is a customizable document viewer.  It provides a
@@ -826,14 +833,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.23.7")
+    (version "1.23.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "0d0ig1amxyy50jvfbn6rz49zd0980p6syqzcx5v7wg0c3pl2iwwm"))
+        (base32 "1kv44zqijkvljc9fcqmgb8zqkj7hmasga70fsz98aimmrfc2rmyv"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -1033,7 +1040,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1042,7 +1049,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1svmdj43z1shm3wnkrdrq1h6rba843mp4x4d8jmxsx7kwiiz9l78"))))
+        (base32 "1rj9kz21r59cswfpczp5dcmvchbbmybv661iyycaiii2z5gh0h7i"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1119,38 +1126,28 @@ optimize toolbar for portrait / landscape
 (define-public python-reportlab
   (package
     (name "python-reportlab")
-    (version "3.5.42")
+    (version "4.0.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "reportlab" version))
               (sha256
                (base32
-                "0i17qgm7gzy7pzp240mkpsx9rn8rr67jh5npp5bylv3sd41g48cw"))))
+                "0lq8fibbgp7bfasxjf33s4hzqr405y655bkxggxmjxqsga0lb68n"))))
     (build-system python-build-system)
     (arguments
-     '(;; FIXME: There is one test failure, building the pdf manual from source,
-       ;; but it does not cause the build to fail.
-       #:test-target "tests"
-       #:configure-flags (list "--use-system-libart")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-target "tests"
+      #:configure-flags '(list "--no-download-t1-files")
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'find-libraries
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libart (assoc-ref inputs "libart-lgpl"))
-                   (freetype (assoc-ref inputs "freetype"))
-                   (dlt1 (assoc-ref inputs "font-curve-files")))
+             (let ((dlt1 (assoc-ref inputs "font-curve-files")))
                (substitute* "setup.py"
-                 (("/usr/include/libart-\\*")
-                  (string-append libart "/include/libart-2.0"))
-                 (("/usr/include/freetype2")
-                  (string-append freetype "/include"))
                  (("http://www.reportlab.com/ftp/pfbfer-20180109.zip")
-                  (string-append "file://" dlt1)))
-               #t))))))
+                  (string-append "file://" dlt1)))))))))
     (inputs
-     `(("freetype" ,freetype)
-       ("libart-lgpl" ,libart-lgpl)
-       ("font-curve-files"
+     `(("font-curve-files"
         ,(origin
            (method url-fetch)
            (uri "http://www.reportlab.com/ftp/pfbfer-20180109.zip")
@@ -1158,7 +1155,7 @@ optimize toolbar for portrait / landscape
             (base32
              "1v0gy4mbx02ys96ssx89420y0njknlrxs2bx64bv4rp8a0al66w5"))))))
     (propagated-inputs
-     (list python-pillow))
+     (list python-chardet python-pillow))
     (home-page "https://www.reportlab.com")
     (synopsis "Python library for generating PDFs and graphics")
     (description "This is the ReportLab PDF Toolkit.  It allows rapid creation
@@ -1216,13 +1213,13 @@ the PDF pages.")
 (define-public img2pdf
   (package
     (name "img2pdf")
-    (version "0.4.4")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "img2pdf" version))
        (sha256
-        (base32 "0g3rpq68y5phnlgxrqn39k10j9nmgksg6m5ic8wgs8v5cjlrij4f"))))
+        (base32 "158bgnk2jhjnpyld4z3jq8v2j8837vh4j0672g8mnjrg4i3px13k"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pikepdf python-pillow
@@ -1520,7 +1517,7 @@ multiple files.")
 (define-public pdfpc
   (package
     (name "pdfpc")
-    (version "4.5.0")
+    (version "4.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1529,31 +1526,24 @@ multiple files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bmy51w6ypz927hxwp5g7wapqvzqmsi3w32rch6i3f94kg1152ck"))))
+        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))
+       (patches
+        (search-patches "pdfpc-build-with-vala-0.56.patch"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:tests? #f          ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         ;; This is really a bug in Vala.
-         ;; https://github.com/pdfpc/pdfpc/issues/594
-         (add-after 'unpack 'fix-vala-API-conflict
-           (lambda _
-             (substitute* "src/classes/action/movie.vala"
-               (("info.from_caps\\(caps\\)")
-                "Gst.Video.info_from_caps(out info, caps)")))))))
-    (inputs
-     `(("cairo" ,cairo)
-       ("discount" ,discount) ; libmarkdown
-       ("gtk+" ,gtk+)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("json-glib" ,json-glib)
-       ("libgee" ,libgee)
-       ("poppler" ,poppler)
-       ("pango" ,pango)
-       ("vala" ,vala)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+    (arguments '(#:tests? #f))           ; no test target
+    (inputs (list
+             cairo
+             discount ; libmarkdown
+             qrencode
+             gtk+
+             gstreamer
+             gst-plugins-base
+             json-glib
+             libgee
+             poppler
+             pango
+             vala
+             webkitgtk-with-libsoup2))
     (native-inputs
      (list pkg-config))
     (home-page "https://pdfpc.github.io/")
@@ -1704,3 +1694,62 @@ python library.
 
 Keywords: html2pdf, htmltopdf")
     (license license:bsd-3)))
+
+(define-public sioyek
+  (package
+    (name "sioyek")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ahrm/sioyek")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vmmp2s032ygh1byz77pg9aljmp8hx745fr7mmz11831f96mlmhq"))
+       (modules '((guix build utils)))
+       ;; libmupdf-third.so no longer available since mupdf 1.18.0.
+       (snippet '(substitute* "pdf_viewer_build_config.pro"
+                   (("-lmupdf-third") "")))
+       ;; XXX: Fix build with mupdf-0.23.0+.
+       ;; See also: https://github.com/ahrm/sioyek/issues/804
+       (patches (search-patches "sioyek-fix-build.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "pdf_viewer/main.cpp"
+                (("/usr/share")
+                 (string-append #$output "/share"))
+                (("/etc")
+                 (string-append #$output "/etc")))))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "qmake" configure-flags)))
+          (add-after 'install 'instal-man-page
+            (lambda _
+              (install-file "resources/sioyek.1"
+                            (string-append #$output "/share/man/man1")))))))
+    (inputs
+     (list freetype
+           gumbo-parser
+           harfbuzz
+           jbig2dec
+           libjpeg-turbo
+           mujs
+           mupdf
+           openjpeg
+           qt3d-5
+           qtbase-5
+           zlib))
+    (home-page "https://sioyek.info/")
+    (synopsis "PDF viewer with a focus on technical books and research papers")
+    (description
+     "Sioyek is a PDF viewer with a focus on textbooks and research papers.")
+    (license license:gpl3+)))

@@ -22,11 +22,12 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022, 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages llvm-meta)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
@@ -78,8 +80,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
-            system->llvm-target
-            clang-properties))
+            system->llvm-target))
 
 (define* (system->llvm-target #:optional
                               (system (or (and=> (%current-target-system)
@@ -144,12 +145,17 @@ as \"x86_64-linux\"."
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
     (native-inputs
-     (if (version>=? version "15")
-         ;; TODO: Remove this when GCC 12 is the default.
-         ;; libfuzzer fails to build with GCC 11
-         (modify-inputs (package-native-inputs llvm)
-           (prepend gcc-12))
-         (package-native-inputs llvm)))
+     (cond ((version>=? version "18")
+            ;; TODO: Remove this when GCC 13 is the default.
+            ;; libfuzzer fails to build with GCC 12
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-13)))
+           ((version>=? version "15")
+            ;; TODO: Remove this when GCC 12 is the default.
+            ;; libfuzzer fails to build with GCC 11
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-12)))
+           (else (package-native-inputs llvm))))
     (inputs
      (append
       (list llvm)
@@ -480,68 +486,7 @@ code analysis tools.")
 
 (define (clang-properties version)
   "Return package properties for Clang VERSION."
-  `((compiler-cpu-architectures
-     ("x86_64"
-      ;; This list was obtained by running:
-      ;;
-      ;;   guix shell clang -- llc -march=x86-64 -mattr=help
-      ;;
-      ;; filtered from uninteresting entries such as "i686" and "pentium".
-      ,@(if (version>=? version "10.0")           ;TODO: refine
-            '("atom"
-              "barcelona"
-              "bdver1"
-              "bdver2"
-              "bdver3"
-              "bdver4"
-              "bonnell"
-              "broadwell"
-              "btver1"
-              "btver2"
-              "c3"
-              "c3-2"
-              "cannonlake"
-              "cascadelake"
-              "cooperlake"
-              "core-avx-i"
-              "core-avx2"
-              "core2"
-              "corei7"
-              "corei7-avx"
-              "generic"
-              "geode"
-              "goldmont"
-              "goldmont-plus"
-              "haswell"
-              "icelake-client"
-              "icelake-server"
-              "ivybridge"
-              "k8"
-              "k8-sse3"
-              "knl"
-              "knm"
-              "lakemont"
-              "nehalem"
-              "nocona"
-              "opteron"
-              "opteron-sse3"
-              "sandybridge"
-              "silvermont"
-              "skx"
-              "skylake"
-              "skylake-avx512"
-              "slm"
-              "tigerlake"
-              "tremont"
-              "westmere"
-              "x86-64"
-              "x86-64-v2"
-              "x86-64-v3"
-              "x86-64-v4"
-              "znver1"
-              "znver2"
-              "znver3")
-            '())))))
+  `((clang-compiler-cpu-architectures version)))
 
 (define-public (make-clang-toolchain clang libomp)
   (package
@@ -604,13 +549,17 @@ output), and Binutils.")
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
     ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
-    ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")))
+    ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
+    ("18.1.2" . "06nfbn8yj8c65q4vamwdiqpxh0dggs6w781swd3285k4af0qwf62")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
     ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
     ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
-    ("17.0.6" . ("clang-17.0-libc-search-path.patch"))))
+    ("17.0.6" . ("clang-17.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))
+    ("18.1.2" . ("clang-18.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -912,42 +861,17 @@ Library.")
        (base32
         "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))))
     (arguments
-     ;; TODO(core-updates): Unconditionally use quasiquote
-     `(#:configure-flags
-       ,#~(#$(if (%current-target-system)
-                 #~quasiquote
-                 #~quote)
-           ;; These options are required for cross-compiling LLVM according to
-           ;; https://llvm.org/docs/HowToCrossCompileLLVM.html.
-           (#$@(if (%current-target-system)
-                   #~(,(string-append "-DLLVM_TABLEGEN="
-                                      #+(file-append this-package
-                                                     "/bin/llvm-tblgen"))
-                      #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
-                                       (%current-target-system))
-                      #$(string-append "-DLLVM_TARGET_ARCH="
-                                       (system->llvm-target-arch))
-                      #$(string-append "-DLLVM_TARGETS_TO_BUILD="
-                                       (system->llvm-target)))
-                   #~())
-            "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
-            "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
-            "-DBUILD_SHARED_LIBS:BOOL=TRUE"
-            "-DLLVM_ENABLE_FFI:BOOL=TRUE"
-            "-DLLVM_ENABLE_RTTI:BOOL=TRUE" ; For some third-party utilities
-            "-DLLVM_INSTALL_UTILS=ON")) ; Needed for rustc.
-       ;; Don't use '-g' during the build, to save space.
-       #:build-type "Release"
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (assoc "config" (package-native-inputs this-package))
-            `((add-after 'unpack 'update-config
-                (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                  (let ((config.guess (search-input-file
-                                        (or inputs native-inputs)
-                                        "/bin/config.guess")))
-                    (copy-file config.guess "cmake/config.guess")))))
-            '())
+     (substitute-keyword-arguments (package-arguments llvm-13)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+           #$@(if (assoc "config" (package-native-inputs this-package))
+                #~((add-after 'unpack 'update-config
+                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                       (let ((config.guess (search-input-file
+                                             (or inputs native-inputs)
+                                             "/bin/config.guess")))
+                         (copy-file config.guess "cmake/config.guess")))))
+                #~())
          (add-before 'build 'shared-lib-workaround
            ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
            ;; doesn't seem to get the correct rpath to be able to run
@@ -955,18 +879,7 @@ Library.")
            ;; workaround.
            (lambda _
              (setenv "LD_LIBRARY_PATH"
-                     (string-append (getcwd) "/lib"))
-             #t))
-         (add-after 'install 'install-opt-viewer
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (opt-viewer-out (assoc-ref outputs "opt-viewer"))
-                    (opt-viewer-share-dir (string-append opt-viewer-out "/share"))
-                    (opt-viewer-dir (string-append opt-viewer-share-dir "/opt-viewer")))
-               (mkdir-p opt-viewer-share-dir)
-               (rename-file (string-append out "/share/opt-viewer")
-                            opt-viewer-dir))
-             #t)))))))
+                     (string-append (getcwd) "/lib"))))))))))
 
 (define-public clang-runtime-12
   (clang-runtime-from-llvm
@@ -1140,7 +1053,7 @@ Library.")
      (if (target-riscv64?)
        (substitute-keyword-arguments (package-arguments llvm-10)
          ((#:phases phases)
-          `(modify-phases ,phases
+          #~(modify-phases #$phases
              (add-after 'unpack 'patch-dsymutil-link
                (lambda _
                  (substitute* "tools/dsymutil/CMakeLists.txt"
@@ -1538,6 +1451,40 @@ Library.")
 (define-public clang-toolchain-17
   (make-clang-toolchain clang-17 libomp-17))
 
+(define-public llvm-18
+  (package
+    (inherit llvm-15)
+    (version "18.1.2")
+    (source (llvm-monorepo version))))
+
+(define-public clang-runtime-18
+  (clang-runtime-from-llvm llvm-18))
+
+(define-public clang-18
+  (clang-from-llvm
+   llvm-18 clang-runtime-18
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-18)))
+     (sha256
+      (base32
+       "1whpd7szjy6i95gzy9jzf154dgk2jdbsp753sv2dx4lg9a9chkcc")))))
+
+(define-public libomp-18
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-18))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-18)
+       (replace "llvm" llvm-18)))))
+
+(define-public clang-toolchain-18
+  (make-clang-toolchain clang-18 libomp-18))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
 (define-public llvm llvm-13)
@@ -1744,7 +1691,7 @@ misuse of libraries outside of the store.")))
 (define-public lldb
   (package
     (name "lldb")
-    (version (package-version llvm-15))
+    (version (package-version llvm-17))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
@@ -1758,8 +1705,8 @@ misuse of libraries outside of the store.")))
     (native-inputs
      (list pkg-config swig))
     (inputs
-     (list clang-15
-           llvm-15
+     (list clang-17
+           llvm-17
            ;; Optional (but recommended) inputs.
            ncurses
            libedit
@@ -2169,20 +2116,31 @@ using @code{clang-rename}.")))
               ;; AMDGPU is needed by the vulkan drivers.
               #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                (system->llvm-target) ";AMDGPU")
+              #$@(if (%current-target-system)
+                     '("-DBUILD_SHARED_LIBS:BOOL=TRUE"
+                       "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+                    '())
               ;; Skipping tools and utils decreases the output by ~100 MiB.
               "-DLLVM_BUILD_TOOLS=NO"
-              (remove (cut string-match
-                           "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*" <>)
+              (remove
+               (cut string-match
+                    #$(if (%current-target-system)
+                          "-DLLVM_(LINK_LLVM_DYLIB|TARGETS_TO_BUILD|INSTALL_UTILS).*"
+                          "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*") <>)
                       #$cf)))
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
-              (add-after 'install 'delete-static-libraries
-                ;; If these are just relocated then llvm-config can't find them.
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (for-each delete-file
-                            (find-files (string-append
-                                          (assoc-ref outputs "out") "/lib")
-                                        "\\.a$"))))
+              #$@(if (%current-target-system)
+                     '()
+                     #~((add-after 'install 'delete-static-libraries
+                          ;; If these are just relocated then llvm-config
+                          ;; can't find them.
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (for-each delete-file
+                                      (find-files
+                                       (string-append
+                                        (assoc-ref outputs "out") "/lib")
+                                       "\\.a$"))))))
               ;; llvm-config is how mesa and others find the various
               ;; libraries and headers they use.
               (add-after 'install 'build-and-install-llvm-config
@@ -2291,9 +2249,9 @@ LLVM."))))
                  "-DLLVM_BUILD_LLVM_DYLIB=ON"
                  "-DLLVM_LINK_LLVM_DYLIB=ON"))
          ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (delete 'shared-lib-workaround)
-             (delete 'install-opt-viewer))))))))
+          #~(modify-phases #$phases
+              (delete 'shared-lib-workaround)
+              (delete 'install-opt-viewer))))))))
 
 (define clang-cling-runtime
   (let ((base clang-runtime-9))

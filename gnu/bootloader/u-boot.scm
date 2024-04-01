@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Herman Rimm <herman_rimm@protonmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +48,7 @@
             u-boot-rock64-rk3328-bootloader
             u-boot-rockpro64-rk3399-bootloader
             u-boot-sifive-unmatched-bootloader
+            u-boot-qemu-riscv64-bootloader
             u-boot-ts7970-q-2g-1000mhz-c-bootloader
             u-boot-wandboard-bootloader))
 
@@ -156,6 +158,12 @@
                               image (* 34 512))
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               image (* 2082 512)))))
+
+(define install-qemu-riscv64-u-boot
+  #~(lambda (bootloader device mount-point)
+      (let ((u-boot.bin (string-append bootloader "/libexec/u-boot.bin"))
+            (install-dir (string-append mount-point "/boot")))
+        (install-file u-boot.bin install-dir))))
 
 
 
@@ -307,3 +315,10 @@
    (inherit u-boot-bootloader)
    (package u-boot-sifive-unmatched)
    (disk-image-installer install-sifive-unmatched-u-boot)))
+
+(define u-boot-qemu-riscv64-bootloader
+  (bootloader
+   (inherit u-boot-bootloader)
+   (package u-boot-qemu-riscv64)
+   (installer install-qemu-riscv64-u-boot)
+   (disk-image-installer #f)))

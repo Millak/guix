@@ -1551,8 +1551,8 @@ command.")
 (define-public tzdata
   (package
     (name "tzdata")
-    ;; This package should be kept in sync with python-pytz in (gnu packages
-    ;; time).
+    ;; This package should be kept in sync with python-pytz and python-tzdata
+    ;; in (gnu packages time).
     (version "2022a")
     (source (origin
              (method url-fetch)

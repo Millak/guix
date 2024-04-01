@@ -10,12 +10,13 @@ diff --git a/gio/tests/meson.build b/gio/tests/meson.build
 index a926ae0..4fdbe7a 100644
 --- a/gio/tests/meson.build
 +++ b/gio/tests/meson.build
-@@ -317,10 +317,6 @@ if host_machine.system() != 'windows'
+@@ -317,11 +317,6 @@ if host_machine.system() != 'windows'
          'extra_sources' : [extra_sources, gdbus_test_codegen_generated, gdbus_test_codegen_generated_interface_info],
          'c_args' : ['-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32'],
        },
 -      'gdbus-threading' : {
 -        'extra_sources' : extra_sources,
+-        'extra_programs': extra_programs,
 -        'suite' : ['slow'],
 -      },
        'gmenumodel' : {

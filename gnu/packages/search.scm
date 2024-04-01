@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
+;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -373,7 +374,7 @@ for parsing HTML files.")
        (list aspell
              c-ares
              libextractor
-             mbedtls-apache
+             mbedtls-lts
              postgresql
              zlib))
       (synopsis "Feature rich search engine")
@@ -568,14 +569,14 @@ conflict with slocate compatibility.")
 (define-public plocate
   (package
     (name "plocate")
-    (version "1.1.19")
+    (version "1.1.22")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://plocate.sesse.net/download/"
                            "plocate-" version ".tar.gz"))
        (sha256
-        (base32 "0rb15sifsmcm756bifs3y8wj282vp0zzagg6kkvbjyczibpchnyr"))))
+        (base32 "0j80zcklr7g73wsq54wbj8ggp8rj993hdzrywm2c0bmani0lfziv"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

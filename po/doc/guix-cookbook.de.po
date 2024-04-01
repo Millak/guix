@@ -1,14 +1,14 @@
 # German translations for the Guix Cookbook.
 # Copyright (C) 2019, 2020 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the guix manual package.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2020, 2021, 2022, 2023.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2020, 2021, 2022, 2023, 2024.
 # Jens Maucher <jensmaucher@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2023-12-31 03:18+0000\n"
-"PO-Revision-Date: 2023-12-31 20:45+0000\n"
+"POT-Creation-Date: 2024-01-01 03:18+0000\n"
+"PO-Revision-Date: 2024-02-29 15:28+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.3.1\n"
+"X-Generator: Weblate 5.4\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -583,9 +583,9 @@ msgstr "Netzwerkverbindungen im Container"
 msgid "Network bridge for QEMU"
 msgstr "Netzwerkbrücke für QEMU"
 
-#. type: node
+#. type: section
 #: guix-git/doc/guix-cookbook.texi:163 guix-git/doc/guix-cookbook.texi:3725
-#: guix-git/doc/guix-cookbook.texi:3848
+#: guix-git/doc/guix-cookbook.texi:3848 guix-git/doc/guix-cookbook.texi:3849
 #, no-wrap
 msgid "Routed network for libvirt"
 msgstr "Netzwerk-Routing anschalten in libvirt"
@@ -643,7 +643,7 @@ msgstr "Reproduzierbare Profile"
 #: guix-git/doc/guix-cookbook.texi:4381 guix-git/doc/guix-cookbook.texi:4382
 #, no-wrap
 msgid "Getting Started"
-msgstr "Einstieg in Guix"
+msgstr "Einstieg"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:185 guix-git/doc/guix-cookbook.texi:4379
@@ -7129,12 +7129,6 @@ msgstr ""
 "COMMIT\n"
 "\"))\n"
 
-#. type: section
-#: guix-git/doc/guix-cookbook.texi:3849
-#, no-wrap
-msgid "Rounted network for libvirt"
-msgstr "Netzwerk-Routing anschalten in libvirt"
-
 #. type: cindex
 #: guix-git/doc/guix-cookbook.texi:3850
 #, no-wrap
@@ -7167,7 +7161,7 @@ msgstr "Eine virtuelle Netzwerkbrücke anlegen"
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3877
 msgid "A virtual network bridge consists of a few components/configurations, such as a @abbr{TUN, network tunnel} interface, DHCP server (dnsmasq)  and firewall rules (iptables).  The @command{virsh} command, provided by the @code{libvirt} package, makes it very easy to create a virtual bridge.  You first need to choose a network subnet for your virtual bridge; if your home LAN is in the @samp{192.168.1.0/24} network, you could opt to use e.g.@: @samp{192.168.2.0/24}.  Define an XML file, e.g.@: @file{/tmp/virbr0.xml}, containing the following:"
-msgstr ""
+msgstr "Eine virtuelle Netzwerkbrücke besteht aus mehreren Komponenten bzw.@: Konfigurationen wie einer TUN-Schnittstelle („Netzwerk-Tunnel-Schnittstelle“), DHCP-Server (dnsmasq) und Firewall-Regeln (iptables). Mit dem Befehl @command{virsh} aus dem Paket @code{libvirt} lässt sich die virtuelle Bridge sehr einfach anlegen. Zuerst müssen Sie wissen, welches Netzwerk-Subnetz Ihre virtuelle Brücke haben soll. Wenn Ihrem LAN zu Hause das @samp{192.168.1.0/24}-Netzwerk gehört, könnten Sie z.B.@: @samp{192.168.2.0/24} vergeben. Legen Sie eine XML-Datei an z.B.@: als @file{/tmp/virbr0.xml} mit folgendem Inhalt:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:3889
@@ -7184,11 +7178,21 @@ msgid ""
 "  </ip>\n"
 "</network>\n"
 msgstr ""
+"<network>\n"
+"  <name>virbr0</name>\n"
+"  <bridge name=\"virbr0\" />\n"
+"  <forward mode=\"route\"/>\n"
+"  <ip address=\"192.168.2.0\" netmask=\"255.255.255.0\">\n"
+"    <dhcp>\n"
+"      <range start=\"192.168.2.1\" end=\"192.168.2.254\"/>\n"
+"    </dhcp>\n"
+"  </ip>\n"
+"</network>\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3893
 msgid "Then create and configure the interface using the @command{virsh} command, as root:"
-msgstr ""
+msgstr "Damit legen Sie die Schnittstelle mit Hilfe des @command{virsh}-Befehls an, welchen Sie als Administratorbenutzer @code{root} ausführen:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:3898
@@ -7198,92 +7202,95 @@ msgid ""
 "virsh net-autostart virbr0\n"
 "virsh net-start virbr0\n"
 msgstr ""
+"virsh net-define /tmp/virbr0.xml\n"
+"virsh net-autostart virbr0\n"
+"virsh net-start virbr0\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3903
 msgid "The @samp{virbr0} interface should now be visible e.g.@: via the @samp{ip address} command.  It will be automatically started every time your libvirt virtual machine is started."
-msgstr ""
+msgstr "Die Schnittstelle @samp{virbr0} müsste jetzt zum Beispiel in der Ausgabe des Befehls @samp{ip address} zu sehen sein. Sie wird automatisch gestartet, sobald Ihre virtuelle Maschine mit libvirt gestartet wird."
 
 #. type: subsection
 #: guix-git/doc/guix-cookbook.texi:3904
 #, no-wrap
 msgid "Configuring the static routes for your virtual bridge"
-msgstr ""
+msgstr "Statische Routen für Ihre virtuelle Netzwerkbrücke einrichten"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3912
 msgid "If you configured your virtual machine to use your newly created @samp{virbr0} virtual bridge interface, it should already receive an IP via DHCP such as @samp{192.168.2.15} and be reachable from the server hosting it, e.g.@: via @samp{ping 192.168.2.15}.  There's one last configuration needed so that the VM can reach the external network: adding static routes to the network's router."
-msgstr ""
+msgstr "Wenn Sie Ihre virtuelle Maschine so eingerichtet haben, dass sie auf der neu geschaffenen Schnittstelle @samp{virbr0} für die virtuelle Bridge läuft, sollte sie von sich aus bereits eine IP wie @samp{192.168.2.15} über DHCP beziehen und darüber von dem Wirts-Serverrechner aus erreichbar sein mit @samp{ping 192.168.2.15} oder entsprechend. Zum Schluss fehlt noch eine letzte Konfiguration, damit die VM auch das externe Netzwerk erreichen kann: Sie müssen im für das Netzwerk zuständigen Router statische Routen hinzufügen."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3921
 msgid "In this example, the LAN network is @samp{192.168.1.0/24} and the router configuration web page may be accessible via e.g.@: the @url{http://192.168.1.1} page.  On a router running the @url{https://librecmc.org/, libreCMC} firmware, you would navigate to the @clicksequence{Network @click{} Static Routes} page (@url{https://192.168.1.1/cgi-bin/luci/admin/network/routes}), and you would add a new entry to the @samp{Static IPv4 Routes} with the following information:"
-msgstr ""
+msgstr "In diesem Beispiel gehen wir davon aus, dass das LAN-Netzwerk bei Ihnen den Block @samp{192.168.1.0/24} bekommt und die Router-Einstellungswebseite könnte z.B.@: unter @url{http://192.168.1.1} verfügbar sein. Wenn auf Ihrem Router die Firmware von @url{https://librecmc.org/, libreCMC} läuft, würden Sie nach @clicksequence{Netzwerk @click{} Statische Routen} navigieren (auf die Seite @url{https://192.168.1.1/cgi-bin/luci/admin/network/routes}) und dort einen neuen Eintrag für @samp{Statische IPv4-Routen} mit den folgenden Informationen anlegen:"
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:3923
 #, no-wrap
 msgid "Interface"
-msgstr ""
+msgstr "Schnittstelle"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:3925
 msgid "lan"
-msgstr ""
+msgstr "lan"
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:3925
 #, no-wrap
 msgid "Target"
-msgstr ""
+msgstr "Ziel"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:3927
 msgid "192.168.2.0"
-msgstr ""
+msgstr "192.168.2.0"
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:3927
 #, no-wrap
 msgid "IPv4-Netmask"
-msgstr ""
+msgstr "IPv4-Netzmaske"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:3929
 msgid "255.255.255.0"
-msgstr ""
+msgstr "255.255.255.0"
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:3929
 #, no-wrap
 msgid "IPv4-Gateway"
-msgstr ""
+msgstr "IPv4-Gateway"
 
 #. type: var{#1}
 #: guix-git/doc/guix-cookbook.texi:3931
 msgid "server-ip"
-msgstr ""
+msgstr "Server-IP"
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:3931
 #, no-wrap
 msgid "Route type"
-msgstr ""
+msgstr "Routen-Typ"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:3933
 msgid "unicast"
-msgstr ""
+msgstr "unicast"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3937
 msgid "where @var{server-ip} is the IP address of the machine hosting the VMs, which should be static."
-msgstr ""
+msgstr "Dabei schreiben Sie statt @var{Server-IP} die IP-Adresse der Wirtsmaschine, auf der die VM laufen. Diese sollte als statische Adresse eingerichtet sein."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3941
 msgid "After saving/applying this new static route, external connectivity should work from within your VM; you can e.g.@: run @samp{ping gnu.org} to verify that it functions correctly."
-msgstr ""
+msgstr "Sobald Sie diese neue statische Route speichern und anwenden, sollten Sie sich von und nach außen mit Ihrer VM verbinden können. Um zu überprüfen, ob es funktioniert, führen Sie z.B.@: den Befehl @samp{ping gnu.org} aus."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3951
@@ -9767,6 +9774,10 @@ msgstr "Lizenz, GNU-Lizenz für freie Dokumentation"
 #, no-wrap
 msgid "fdl-1.3.texi"
 msgstr "fdl-1.3.texi"
+
+#, no-wrap
+#~ msgid "Rounted network for libvirt"
+#~ msgstr "Netzwerk-Routing anschalten in libvirt"
 
 #~ msgid "Let's take an example:"
 #~ msgstr "Schauen wir uns ein Beispiel an:"

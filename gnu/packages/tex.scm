@@ -5141,7 +5141,15 @@ multiscript version of @code{biblatex-ms}.")
               "161056627w1lazfpld3lyjwfrl8j8gc4b6dzml46bzwf7mk9ifln")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:link-scripts #~(list "bibexport.sh")))
+    (arguments
+     (list
+      #:link-scripts #~(list "bibexport.sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'fix-bash-shebang
+            (lambda _
+              (substitute* "scripts/bibexport/bibexport.sh"
+                (("/bin/bash") (which "bash"))))))))
     (home-page "https://ctan.org/pkg/bibexport")
     (synopsis "Extract a BibTeX file based on a @file{.aux} file")
     (description
@@ -7413,7 +7421,7 @@ of Arts and Sciences.")
     (home-page "https://ctan.org/pkg/breakcites")
     (synopsis "Ensure that multiple citations may break at line end")
     (description
-     "This packages makes a very minor change to the operation of the
+     "This package makes a very minor change to the operation of the
 @code{\\cite} command so that multiple citations may break at line end.  Note
 that the change is not necessary in unmodified LaTeX; however, there remain
 packages that restore the undesirable behaviour of the command as provided in
@@ -25923,7 +25931,7 @@ algorithms in a natural manner.")
     (home-page "https://ctan.org/pkg/psgo")
     (synopsis "Typeset go diagrams with PSTricks")
     (description
-     "This packages can be used to typeset go diagrams with PSTricks.")
+     "This package can be used to typeset go diagrams with PSTricks.")
     (license license:lppl)))
 
 (define-public texlive-psizzl
@@ -57054,7 +57062,7 @@ develop documents with LaTeX, in a single application.")
 (define-public texstudio
   (package
     (name "texstudio")
-    (version "4.5.2")
+    (version "4.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -57063,7 +57071,7 @@ develop documents with LaTeX, in a single application.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bzdcsc0273809hx04zqd2famq05q9rpvqcbqhkjqnqp9vxbisig"))))
+                "10w398airsq04vym27n37pw10425f19a7vbhicnwn5iinahdm3s3"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f))                    ;tests work only with debug build
@@ -84370,7 +84378,7 @@ then the references are hyperlinked.  (References to footnotes in
     (home-page "https://ctan.org/pkg/footnpag")
     (synopsis "Per-page numbering of footnotes")
     (description
-     "This packages allows footnotes on individual pages to be numbered from @samp{1},
+     "This package allows footnotes on individual pages to be numbered from @samp{1},
 rather than being numbered sequentially through the document.")
     (license license:gpl3+)))
 
@@ -93356,7 +93364,7 @@ page.")
     (home-page "https://ctan.org/pkg/pdfpc")
     (synopsis "Define data for the @command{pdfpc} presentation viewer")
     (description
-     "This packages allows to define additional meta data within the PDF file which
+     "This package allows to define additional meta data within the PDF file which
 can be interpreted by the PDF presenter console (@command{pdfpc}) program.")
     (license license:gpl3+)))
 
@@ -93649,7 +93657,7 @@ context, though there is some overhead to this approach.")
     (home-page "https://ctan.org/pkg/phfcc")
     (synopsis "Convenient inline commenting in collaborative documents")
     (description
-     "This packages allows one to easily define helper macros to insert comments in
+     "This package allows one to easily define helper macros to insert comments in
 a LaTeX document.  A convenient syntax enables you to mark text
 additions (e.g., @samp{\\phf@{I'm adding this text@}}), an in-line
 comment (e.g., @samp{We're the best \\phf[I'm not sure about this.]}), and

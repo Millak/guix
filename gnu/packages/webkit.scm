@@ -127,13 +127,20 @@ engine that uses Wayland for graphics output.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.42.3")
+    (version "2.42.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "1qnq2f6chsfns1psrqbbsqhgyb458zf75nlmzskb6a2n0hq4c6ha"))
+               (base32 "0jg7c7z572afywwrnvdj3m5agaviv0vkqmzznnzzv30byb0phhmn"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   ;; https://bugs.webkit.org/show_bug.cgi?id=268739
+                   ;; Fix a FTBFS on i686, powerpc64le.
+                   (substitute* "Source/JavaScriptCore/llint/LowLevelInterpreter.cpp"
+                     (("UNUSED_VARIABLE\\(t[67]\\);") ""))))
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)

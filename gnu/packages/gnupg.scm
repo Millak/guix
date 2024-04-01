@@ -71,6 +71,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tor)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
@@ -345,11 +346,33 @@ compatible to GNU Pth.")
            zlib))
     (arguments
      (list
-      #:configure-flags #~'(;; Otherwise, the test suite looks for the `gpg`
-                            ;; executable in its installation directory in
-                            ;; /gnu/store before it has been installed.
-                            "--enable-gnupg-builddir-envvar"
-                            "--enable-all-tests")
+      #:configure-flags
+      ;; Always use quasiquote on the next core-updates cycle.
+      #~(#$(if (%current-target-system)
+               #~quasiquote
+               #~quote)
+         (#$@(if (%current-target-system)
+                 #~(,(string-append
+                      "--with-libgpg-error-prefix="
+                      #$(this-package-input "libgpg-error"))
+                    ,(string-append
+                      "--with-libgcrypt-prefix="
+                      #$(this-package-input "libgcrypt"))
+                    ,(string-append
+                      "--with-libassuan-prefix="
+                      #$(this-package-input "libassuan"))
+                    ,(string-append
+                      "--with-ksba-prefix="
+                      #$(this-package-input "libksba"))
+                    ,(string-append
+                      "--with-npth-prefix="
+                      #$(this-package-input "npth")))
+                 #~())
+          ;; Otherwise, the test suite looks for the `gpg`
+          ;; executable in its installation directory in
+          ;; /gnu/store before it has been installed.
+          "--enable-gnupg-builddir-envvar"
+          "--enable-all-tests"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-paths
@@ -871,7 +894,7 @@ passphrase when @code{gpg} is run and needs it.")))
     (name "pinentry-gnome3")
     (inputs
      (modify-inputs (package-inputs pinentry-tty)
-       (prepend gtk+-2 gcr glib)))
+       (prepend gtk+-2 gcr-3 glib)))
     (arguments
      `(#:configure-flags '("--enable-pinentry-gnome3"
                            "--enable-fallback-curses")))
@@ -1129,7 +1152,7 @@ files, to verify signatures, and to manage the private and public keys.")
            perl-try-tiny
            perl-type-tiny
            perl-types-path-tiny
-           (@ (gnu packages tor) torsocks))) ;avoid dependency loop
+           torsocks))
     (native-inputs
      (list perl-file-which
            perl-gnupg-interface

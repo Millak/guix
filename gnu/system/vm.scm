@@ -1,10 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
 
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
+  #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
   #:use-module (gnu system image)
   #:use-module (gnu system linux-container)
@@ -63,6 +65,7 @@
   #:use-module (gnu system uuid)
 
   #:use-module ((srfi srfi-1) #:hide (partition))
+  #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 match)
@@ -70,8 +73,19 @@
   #:export (virtualized-operating-system
             system-qemu-image/shared-store-script
 
+            linux-image-startup-command
+
             virtual-machine
-            virtual-machine?))
+            virtual-machine?
+            virtual-machine-operating-system
+            virtual-machine-qemu
+            virtual-machine-cpu-count
+            virtual-machine-volatile?
+            virtual-machine-graphic?
+            virtual-machine-memory-size
+            virtual-machine-disk-image-size
+            virtual-machine-port-forwardings
+            virtual-machine-date))
 
 
 ;;; Commentary:
@@ -122,8 +136,11 @@
        (check? #f)
        (create-mount-point? #t)))))
 
-(define* (virtualized-operating-system os mappings
-                                       #:key (full-boot? #f) volatile?)
+(define* (virtualized-operating-system os
+                                       #:optional (mappings '())
+                                       #:key (full-boot? #f) volatile?
+                                       (system (%current-system))
+                                       (target (%current-target-system)))
   "Return an operating system based on OS suitable for use in a virtualized
 environment with the store shared with the host.  MAPPINGS is a list of
 <file-system-mapping> to realize in the virtualized OS."
@@ -153,15 +170,18 @@ environment with the store shared with the host.  MAPPINGS is a list of
           (append (map mapping->file-system mappings)
                   user-file-systems)))
 
-  (operating-system (inherit os)
-
+  (operating-system
+    (inherit os)
     ;; XXX: Until we run QEMU with UEFI support (with the OVMF firmware),
     ;; force the traditional i386/BIOS method.
     ;; See <https://bugs.gnu.org/28768>.
     (bootloader (bootloader-configuration
-                  (inherit (operating-system-bootloader os))
-                  (bootloader grub-bootloader)
-                  (targets '("/dev/vda"))))
+                 (inherit (operating-system-bootloader os))
+                 (bootloader
+                  (if (target-riscv64? (or target system))
+                      u-boot-qemu-riscv64-bootloader
+                      grub-bootloader))
+                 (targets '("/dev/vda"))))
 
     (initrd (lambda (file-systems . rest)
               (apply (operating-system-initrd os)
@@ -190,7 +210,9 @@ environment with the store shared with the host.  MAPPINGS is a list of
                        virtual-file-systems)))))
 
 (define* (common-qemu-options image shared-fs
-                              #:key rw-image?)
+                              #:key
+                              rw-image?
+                              (target (%current-target-system)))
   "Return the a string-value gexp with the common QEMU options to boot IMAGE,
 with '-virtfs' options for the host file systems listed in SHARED-FS."
 
@@ -201,7 +223,7 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
   #~(;; Only enable kvm if we see /dev/kvm exists.
      ;; This allows users without hardware virtualization to still use these
      ;; commands.
-     #$@(if (file-exists? "/dev/kvm")
+     #$@(if (and (not target) (file-exists? "/dev/kvm"))
             '("-enable-kvm")
             '())
 
@@ -245,7 +267,9 @@ useful when FULL-BOOT?  is true."
   (mlet* %store-monad ((os ->  (virtualized-operating-system
                                 os mappings
                                 #:full-boot? full-boot?
-                                #:volatile? volatile?))
+                                #:volatile? volatile?
+                                #:system system
+                                #:target target))
                        (base-image -> (system-image
                                        (image
                                         (inherit
@@ -257,7 +281,7 @@ useful when FULL-BOOT?  is true."
                                         (volatile-root? volatile?)))))
     (define kernel-arguments
       #~(list #$@(if graphic? #~() #~("console=ttyS0"))
-              #+@(operating-system-kernel-arguments os "/dev/vda1")))
+              #$@(operating-system-kernel-arguments os "/dev/vda1")))
 
     (define rw-image
       #~(format #f "/tmp/guix-image-~a" (basename #$base-image)))
@@ -273,10 +297,15 @@ useful when FULL-BOOT?  is true."
                         "-initrd" #$(file-append os "/initrd")
                         (format #f "-append ~s"
                                 (string-join #$kernel-arguments " "))))
+              ;; Default qemu-riscv64 have not PCI, virt have it, so we set it.
+              #$@(if (target-riscv64? (or target system))
+                     #~("-M" "virt")
+                     #~())
               #$@(common-qemu-options (if volatile? base-image rw-image)
                                       (map file-system-mapping-source
                                            (cons %store-mapping mappings))
-                                      #:rw-image? (not volatile?))
+                                      #:rw-image? (not volatile?)
+                                      #:target target)
               "-m " (number->string #$memory-size)
               #$@options))
 
@@ -306,6 +335,63 @@ useful when FULL-BOOT?  is true."
 
     (gexp->derivation "run-vm.sh" builder)))
 
+(define* (linux-image-startup-command image
+                                      #:key
+                                      (system (%current-system))
+                                      (target #f)
+                                      (qemu qemu-minimal)
+                                      (graphic? #f)
+                                      (cpu "max")
+                                      (cpu-count 1)
+                                      (memory-size 1024)
+                                      (port-forwardings '())
+                                      (date #f))
+  "Return a list-valued gexp representing the command to start QEMU to run
+IMAGE, assuming it uses the Linux kernel, and not sharing the store with the
+host."
+  (define os
+    ;; Note: 'image-operating-system' would return the wrong OS, before
+    ;; its root partition has been assigned a UUID.
+    (operating-system-for-image image))
+
+  (define kernel-arguments
+    #~(list #$@(if graphic? #~() #~("console=ttyS0"))
+            #$@(operating-system-kernel-arguments os "/dev/vda1")))
+
+  #~`(#+(file-append qemu "/bin/"
+                     (qemu-command (or target system)))
+      ,@(if (access? "/dev/kvm" (logior R_OK W_OK))
+            '("-enable-kvm")
+            '())
+
+      "-cpu" #$cpu
+      #$@(if (> cpu-count 1)
+             #~("-smp" #$(string-append "cpus=" (number->string cpu-count)))
+             #~())
+      "-m" #$(number->string memory-size)
+      "-nic" #$(string-append
+                "user,model=virtio-net-pci,"
+                (port-forwardings->qemu-options port-forwardings))
+      "-kernel" #$(operating-system-kernel-file os)
+      "-initrd" #$(file-append os "/initrd")
+      "-append" ,(string-join #$kernel-arguments)
+      "-serial" "stdio"
+
+      #$@(if date
+             #~("-rtc"
+                #$(string-append "base=" (date->string date "~5")))
+             #~())
+
+      "-object" "rng-random,filename=/dev/urandom,id=guix-vm-rng"
+      "-device" "virtio-rng-pci,rng=guix-vm-rng"
+
+      "-drive"
+      ,(string-append "file=" #$(system-image image)
+                      ",format=qcow2,if=virtio,"
+                      "cache=writeback,werror=report,readonly=off")
+      "-snapshot"
+      "-no-reboot"))
+
 
 ;;;
 ;;; High-level abstraction.
@@ -317,6 +403,8 @@ useful when FULL-BOOT?  is true."
   (operating-system virtual-machine-operating-system) ;<operating-system>
   (qemu             virtual-machine-qemu              ;<package>
                     (default qemu-minimal))
+  (cpu-count        virtual-machine-cpu-count     ;integer
+                    (default 1))
   (volatile?        virtual-machine-volatile?    ;Boolean
                     (default #t))
   (graphic?         virtual-machine-graphic?      ;Boolean
@@ -326,7 +414,9 @@ useful when FULL-BOOT?  is true."
   (disk-image-size  virtual-machine-disk-image-size   ;integer (bytes)
                     (default 'guess))
   (port-forwardings virtual-machine-port-forwardings ;list of integer pairs
-                    (default '())))
+                    (default '()))
+  (date             virtual-machine-date          ;SRFI-19 date | #f
+                    (default #f)))
 
 (define-syntax virtual-machine
   (syntax-rules ()
@@ -352,23 +442,24 @@ FORWARDINGS is a list of host-port/guest-port pairs."
 (define-gexp-compiler (virtual-machine-compiler (vm <virtual-machine>)
                                                 system target)
   (match vm
-    (($ <virtual-machine> os qemu volatile? graphic? memory-size
-                          disk-image-size ())
-     (system-qemu-image/shared-store-script os
-                                            #:system system
-                                            #:target target
-                                            #:qemu qemu
-                                            #:graphic? graphic?
-                                            #:volatile? volatile?
-                                            #:memory-size memory-size
-                                            #:disk-image-size
-                                            disk-image-size))
-    (($ <virtual-machine> os qemu volatile? graphic? memory-size
-                          disk-image-size forwardings)
+    (($ <virtual-machine> os qemu cpus volatile? graphic? memory-size
+                          disk-image-size forwardings date)
      (let ((options
-            `("-nic" ,(string-append
-                       "user,model=virtio-net-pci,"
-                       (port-forwardings->qemu-options forwardings)))))
+            (append (if (null? forwardings)
+                        '()
+                        `("-nic" ,(string-append
+                                   "user,model=virtio-net-pci,"
+                                   (port-forwardings->qemu-options
+                                    forwardings))))
+                    (if (> cpus 1)
+                        `("-smp" ,(string-append "cpus="
+                                                 (number->string cpus)))
+                        '())
+                    (if date
+                        `("-rtc"
+                          ,(string-append
+                            "base=" (date->string date "~5")))
+                        '()))))
        (system-qemu-image/shared-store-script os
                                               #:system system
                                               #:target target

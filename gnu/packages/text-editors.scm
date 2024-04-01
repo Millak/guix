@@ -12,7 +12,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Mark Meyer <mark@ofosos.org>
@@ -27,9 +27,12 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 David Pflug <david@pflug.io>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -213,7 +216,7 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2022.10.31")
+    (version "2023.08.05")
     (source
      (origin
        (method url-fetch)
@@ -221,7 +224,7 @@ based command language.")
                            "releases/download/v" version "/"
                            "kakoune-" version ".tar.bz2"))
        (sha256
-        (base32 "12z5wka649xycclbs94bfy2yyln2172dz0zycxsxr384r5i7ncgv"))))
+        (base32 "0p6skjrfygg7hakl8v95pd17q9pjmid9p8nnw86m1lyx18g1ai9y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -309,7 +312,8 @@ Rust.")
        (file-name (git-file-name name version))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-emacs" ,rust-emacs-0.11)
@@ -317,7 +321,26 @@ Rust.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-plugins-and-libs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib"))
+                    (vimfiles (string-append out "/share/vim/vimfiles/"
+                                             "pack/guix/start/parinfer")))
+               (with-directory-excursion "target/release"
+                 (install-file "libparinfer_rust.so" lib))
+               (substitute* "plugin/parinfer.vim"
+                            (("(let s:libdir = ).*" all libdir)
+                             (format #f "~a'~a'\n" libdir lib)))
+               (install-file "doc/parinfer.txt"
+                             (string-append vimfiles "/doc"))
+               (install-file "plugin/parinfer.vim"
+                             (string-append vimfiles "/plugin"))
+               (install-file "rc/parinfer.kak"
+                             (string-append out "/share/kak/autoload"))))))))
     (inputs
      (list clang))
     (home-page "https://github.com/justinbarclay/parinfer-rust")
@@ -785,7 +808,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.15.0")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -794,7 +817,7 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d1r62s1qidspck0b1zf8dibyjn9g72agbkjcica4bvfylnbqz9z"))))
+        (base32 "1w1wscq7w0xx4wkkk9rl3pc067yspbk8qnfaq3i9sxc7k6zsy77x"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -886,7 +909,7 @@ in plain text file format.")
 (define-public editorconfig-core-c
   (package
     (name "editorconfig-core-c")
-    (version "0.12.5")
+    (version "0.12.6")
     (source
       (origin
         (method git-fetch)
@@ -895,7 +918,7 @@ in plain text file format.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "073sh18y0v8wm10iphaia54pkdmwylalccpn1k5i9dwyfjzgj7yg"))))
+         (base32 "05qllpls3r95nfl14gqq3cv4lisf07fgn85n52w8blc5pfl1h93g"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
@@ -905,6 +928,13 @@ in plain text file format.")
              (let ((tests (assoc-ref inputs "tests")))
                (copy-recursively tests "tests"))
              #t))
+         (add-after 'insert-tests 'disable-failing-tests
+           (lambda _
+             (substitute* "tests/parser/CMakeLists.txt"
+               (("# Test max property name and values")
+                "# Disabled: test max property name and values\nif(FALSE)\n")
+               (("# Test max section names")
+                "endif()\n\n# Test max section names"))))
          (add-after 'install 'delete-static-library
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -937,14 +967,14 @@ editors.")
 (define-public texmacs
   (package
     (name "texmacs")
-    (version "2.1.1")
+    (version "2.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.texmacs.org/Download/ftp/tmftp/"
                            "source/TeXmacs-" version "-src.tar.gz"))
        (sha256
-        (base32 "0c780vcwppzhb70d3d96md3hra7338d4fv3aj0sm7jx0mj2a334i"))))
+        (base32 "11l1q5lmsj9g7yil1dn7n1cgsr8iikx59kg9riahpb6xw0p959l7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config xdg-utils))       ;for xdg-icon-resource
@@ -1450,7 +1480,7 @@ commands.")
 (define-public lite-xl
   (package
     (name "lite-xl")
-    (version "2.1.1")
+    (version "2.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1459,18 +1489,10 @@ commands.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pnmax68hvk1ry4bjsxwq4qimfn55pai8jlljw6jiqzcmh4mp7xm"))
-              (modules '((guix build utils)))
-              (snippet '(substitute* "meson.build"
-                          (("dependency\\('lua5\\.4',")
-                           "dependency('lua-5.4',")))))
+                "19wdq8w6ickyynx6r2wg2vf5isl2577zjizgwbzql9vhqdsi8ag3"))))
     (build-system meson-build-system)
-    (inputs (list agg
-                  freetype
-                  lua-5.4
-                  pcre2
-                  reproc
-                  sdl2))
+    (arguments (list #:configure-flags #~'("-Duse_system_lua=true")))
+    (inputs (list lua-5.4 pcre2 freetype sdl2))
     (native-inputs (list pkg-config))
     (home-page "https://lite-xl.com")
     (synopsis "Lightweight text editor written in Lua")
@@ -1525,14 +1547,14 @@ highlighting for dozens of languages.  Jed is very small and fast.")
 (define-public xnedit
   (package
     (name "xnedit")
-    (version "1.5.2")
+    (version "1.5.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/xnedit/" name "-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "09424qj03p7v7ih2gi3jnpm5iilr24ssab8rkijcjh6n9qn7izl0"))))
+                "10pw0yylhfmpcmhs74i3ikgsd8jq4dsy64zp9v14wj5s4qrac4c5"))))
 
     (build-system gnu-build-system)
     (arguments

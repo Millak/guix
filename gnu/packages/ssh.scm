@@ -204,7 +204,10 @@ a server that supports the SSH-2 protocol.")
       (method url-fetch)
       (uri (string-append "mirror://openbsd/OpenSSH/portable/"
                           "openssh-" version ".tar.gz"))
-      (patches (search-patches "openssh-trust-guix-store-directory.patch"))
+      (patches (search-patches "openssh-trust-guix-store-directory.patch"
+                               ;; Can be removed with next openssh update
+                               ;; https://issues.guix.gnu.org/67948#2
+                               "openssh-gcc-13-ppc64le-fzero-call-used-regs.patch"))
       (sha256
        (base32 "0z3pgam8b4z05lvdb78iv06p204qwl7b94a3cnnwba2mfb0120li"))))
    (build-system gnu-build-system)
@@ -324,7 +327,7 @@ Additionally, various channel-specific options can be negotiated.")
 (define-public guile-ssh
   (package
     (name "guile-ssh")
-    (version "0.16.3")
+    (version "0.16.4")
     (home-page "https://github.com/artyom-poptsov/guile-ssh")
     (source (origin
               (method git-fetch)
@@ -334,7 +337,7 @@ Additionally, various channel-specific options can be negotiated.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b03aizjdj3g15xfkspgvy8k5jl8bgv4q7gwjwr3l2ibqkrm8vrz"))))
+                "127yhjaywais3h2g3cxhqmhdmqgxf9j1jwb6wzx92j0z7asrjqwr"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -362,8 +365,7 @@ Additionally, various channel-specific options can be negotiated.")
                                       (parallel-job-count)))
                         (substitute* (find-files "." "\\.scm$")
                           (("\"libguile-ssh\"")
-                           (string-append "\"" lib "/libguile-ssh\"")))
-                        #t)))
+                           (string-append "\"" lib "/libguile-ssh\""))))))
                   ,@(if (%current-target-system)
                         '()
                         '((add-before 'check 'fix-guile-path
@@ -371,8 +373,7 @@ Additionally, various channel-specific options can be negotiated.")
                                (let ((guile (assoc-ref inputs "guile")))
                                  (substitute* "tests/common.scm"
                                    (("/usr/bin/guile")
-                                    (string-append guile "/bin/guile")))
-                                 #t)))))
+                                    (string-append guile "/bin/guile"))))))))
                   (add-after 'install 'remove-bin-directory
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -384,8 +385,7 @@ Additionally, various channel-specific options can be negotiated.")
                                      (string-append examples "/ssshd.scm"))
                         (rename-file (string-append bin "/sssh.scm")
                                      (string-append examples "/sssh.scm"))
-                        (delete-file-recursively bin)
-                        #t))))))
+                        (delete-file-recursively bin)))))))
     (native-inputs (list autoconf
                          automake
                          libtool

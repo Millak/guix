@@ -317,7 +317,8 @@ Report the size of the PACKAGE or STORE-ITEM, with its dependencies.\n"))
           ;; Turn off grafts because (1) substitute servers do not serve grafted
           ;; packages, and (2) they do not make any difference on the
           ;; resulting size.
-          (parameterize ((%graft? #f))
+          (parameterize ((%graft? #f)
+                         (%current-system system))
             (with-store store
               (set-build-options store
                                  #:use-substitutes? #t

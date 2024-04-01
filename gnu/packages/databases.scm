@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -45,8 +45,8 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
@@ -62,6 +62,7 @@
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.ne
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,8 +108,10 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -142,6 +145,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -156,7 +160,6 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages syncthing)           ;for go-github-com-lib-pq
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -188,6 +191,39 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
+
+(define-public duckdb
+  (package
+    (name "duckdb")
+    (version "0.9.2")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/duckdb/duckdb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0dbsxyiz7c8sxflbfj87qv0b2s69zk802vsk5h00ra8w8fcbqlj0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; There is no git checkout from which to read the version tag.
+            (substitute* "CMakeLists.txt"
+              (("set\\(DUCKDB_VERSION \"[^\"]*\"")
+               (string-append "set(DUCKDB_VERSION \"v" #$version "-dev0\"")))))))
+    (build-system cmake-build-system)
+    (home-page "https://duckdb.org")
+    (synopsis "In-process SQL OLAP database management system")
+    (description "CLI and C/C++ source libraries for DuckDB, a relational
+(table-oriented) @acronym{DBMS, Database Management System} that supports
+@acronym{SQL, Structured Query Language}, contains a columnar-vectorized query
+execution engine, and provides transactional @acronym{ACID, Atomicity
+Consistency Isolation and Durability} guarantees via bulk-optimized
+@acronym{MVCC, Multi-Version Concurrency Control}.  Data can be stored in
+persistent, single-file databases with support for secondary indexes.")
+    (license license:expat)))
 
 (define-public ephemeralpg
   (package
@@ -577,6 +613,35 @@ the API, and provides features such as:
 @item Local replication
 @end itemize")
     (license license:bsd-3)))
+
+(define-public python-prisma
+  (package
+    (name "python-prisma")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "prisma" version))
+       (sha256
+        (base32 "1y9m3bailnvid59dl4vx31vysaqbcg6gsppskyymaxg3m96808pc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-cached-property
+           python-click
+           python-dotenv
+           python-httpx
+           python-jinja2
+           python-nodeenv
+           python-pydantic
+           python-strenum
+           python-tomlkit
+           python-typing-extensions))
+    (home-page "https://github.com/RobertCraigie/prisma-client-py")
+    (synopsis "Fully type-safe database client")
+    (description
+     "Prisma Client Python is an auto-generated and fully type-safe database
+client.")
+    (license license:asl2.0)))
 
 (define-public python-pylibmc
   (package
@@ -1416,6 +1481,56 @@ time-series data.  It is engineered up from PostgreSQL and packaged as a
 PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
     (license license:asl2.0)))
+
+(define-public pgvector
+  (package
+    (name "pgvector")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pgvector/pgvector")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19zcjrlmyj7gfbn8prh014yq50iy4dg97pirsm7idxsr829vwyc5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Do not use -march=native
+      #:make-flags
+      '(list "OPTFLAGS=")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((extension (string-append #$output "/share/extension"))
+                    (lib (string-append #$output "/lib"))
+                    (headers (string-append #$output "/include/server/extension/vector")))
+                (for-each mkdir-p (list extension lib headers))
+                (install-file "vector.so" lib)
+                (chmod (string-append lib "/vector.so") #o755)
+                (install-file "vector.control" extension)
+                (for-each (lambda (file)
+                            (install-file file extension))
+                          (find-files "sql" "\\.sql$"))
+                (install-file "src/vector.h" headers)))))))
+    (inputs (list postgresql))
+    (home-page "https://github.com/pgvector/pgvector")
+    (synopsis "Vector similarity search for Postgres")
+    (description
+     "This package provides a vector similarity search extension for Postgres.
+Store your vectors with the rest of your data.  It supports:
+
+@itemize
+@item exact and approximate nearest neighbor search;
+@item L2 distance, inner product, and cosine distance;
+@item any language with a Postgres client.
+@end itemize
+")
+    (license (license:x11-style "file://COPYRIGHT"))))
 
 (define-public pgloader
   (package
@@ -3319,6 +3434,10 @@ etc., and an SQL engine for performing simple SQL queries.")
     (arguments
      '(#:tests? #f      ; Tests try to use a running mongodb server.
        #:import-path "gopkg.in/mgo.v2"))
+    (propagated-inputs
+     (list go-gopkg.in-tomb.v2))
+    (inputs
+     (list cyrus-sasl))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/mgo.v2")
@@ -3763,7 +3882,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.42.0.1")
+    (version "3.45.1.0")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3773,11 +3892,11 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "0dr7zymn45x2793cilr709rnwn9g1c4n4vzln57y2lhj7420ykic"))))
+         "1vfrzb414pbh5k0cgcqkp039jvla2galapn4a551zgh8xi70bnrp"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.42 required.
+     (list unzip))
+    (inputs (list sqlite-next))         ;SQLite 3.45.1 required.
     (arguments
      (list
       #:phases
@@ -4082,19 +4201,21 @@ files or Python scripts that define a list of migration steps.")
 (define-public python-mysqlclient
   (package
     (name "python-mysqlclient")
-    (version "2.0.1")
+    (version "2.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mysqlclient" version))
        (sha256
-        (base32
-         "1rf5l8hazs3v18hmcrm90z3hi9wxv553ipwd5l6kj8j7l6p7abzv"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;XXX: requires a live database
-    (inputs
-     `(("mysql-dev" ,mariadb "dev")))
-    (home-page "https://github.com/PyMySQL/mysqlclient-python")
+        (base32 "0hdznfz9095d2qhl7awbp39s7wpqbxn37xzan487qzaf8srrzg1k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~'("tests/test__mysql.py"   ;tests not needing a live db
+               "tests/test_MySQLdb_times.py")))
+    (native-inputs (list pkg-config python-pytest))
+    (inputs (list mariadb-connector-c))
+    (home-page "https://github.com/PyMySQL/mysqlclient")
     (synopsis "MySQLdb is an interface to the popular MySQL database server for Python")
     (description "MySQLdb is an interface to the popular MySQL database server
 for Python.  The design goals are:
@@ -4394,7 +4515,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "14.0.0")
+    (version "15.0.1")
     (source
      (origin
        (method git-fetch)
@@ -4404,7 +4525,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08x01jcibmx03g9p0sjikp3dyynw6is6gyn0m3cy1gwkpkwk2ad2"))))
+         "0zrcwsq9c976xncc1kg6lw24s5r3ag8vfzhmcnkvi5z2c9x4lvvc"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4867,6 +4988,77 @@ implementation, along with tools for interoperability with pandas, NumPy, and
 other traditional Python scientific computing packages.")
     (license license:asl2.0)))
 
+(define-public python-fastparquet
+  (package
+    (name "python-fastparquet")
+    (version "2024.2.0")
+    (source
+     (origin
+       ;; Fastparquet uses setuptools-scm to find the current version. This
+       ;; only works when we use the PyPI tarball, which does not contain
+       ;; tests. Instead, we use the git-fetch method and set the version via
+       ;; envar.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dask/fastparquet")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f32dj1xvd11l0siznqd33dpjlhg9siylcjcfkcdlqfcy45jfj3v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; Remove dependencies on git.
+                (("^.*\"git\", \"status\".*$") "")
+                ;; Guix is only compatible with a single version of numpy
+                ;; at a time. We can safely remove this dependency.
+                (("'oldest-supported-numpy'") ""))))
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set
+            ;; to '0.0.0'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'build-cython-extensions
+            ;; Cython extensions need to be built for the check phase.
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-cramjam
+           python-fsspec
+           python-lzo
+           python-numpy
+           python-packaging
+           python-pandas))
+    (native-inputs
+     (list python-cython
+           python-pytest-runner
+           python-pytest-xdist
+           python-setuptools-scm))
+    (home-page "https://github.com/dask/fastparquet")
+    (synopsis "Python implementation of the Parquet file format")
+    (description
+     "@code{fastparquet} is a Python implementation of the Parquet file
+format.  @code{fastparquet} is used implicitly by @code{dask}, @code{pandas}
+and @code{intake-parquet}.  It supports the following compression algorithms:
+
+@itemize
+@item Gzip
+@item Snappy
+@item Brotli
+@item LZ4
+@item Zstd
+@item LZO (optionally)
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public python-crate
   (package
     (name "python-crate")
@@ -5162,11 +5354,10 @@ compatible with SQLite using a graphical user interface.")
   (package
     (name "sqls")
     (version "0.2.18")
-    (home-page "https://github.com/lighttiger2505/sqls")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url home-page)
+                    (url "https://github.com/sqls-server/sqls")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -5174,17 +5365,22 @@ compatible with SQLite using a graphical user interface.")
                 "13837v27avdp2nls3vyy7ml12nj7rxragchwf92adn10ffp4aj6c"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/lighttiger2505/sqls"))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/lighttiger2505/sqls"))
     (inputs (list go-github-com-go-sql-driver-mysql
                   go-github-com-lib-pq
+                  go-github-com-mattn-go-runewidth
                   go-github-com-mattn-go-sqlite3
                   go-github-com-olekukonko-tablewriter
                   go-github-com-pkg-errors
                   go-github-com-sourcegraph-jsonrpc2
                   go-golang-org-x-crypto
-                  go-github-com-mattn-go-runewidth
                   go-golang-org-x-xerrors
                   go-gopkg-in-yaml-v2))
+    (native-inputs (list go-github-com-google-go-cmp-cmp
+                         go-github-com-k0kubun-pp))
+    (home-page "https://github.com/sqls-server/sqls")
     (synopsis "SQL language server written in Go")
     (description
      "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
@@ -5221,7 +5417,7 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "0.64.2")
+    (version "1.0a7")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -5230,7 +5426,7 @@ mechanism of @code{dogpile}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c8ajdaraynrjvsb8xxxnkb7zgm5fwq60qczaz00n465ki80j4h3"))))
+                "1wwdx2xqkxygbww1nzpr6h702ims6zcxpjskh8fldn1kby591qgg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5269,6 +5465,7 @@ mechanism of @code{dogpile}.")
      (list python-aiofiles
            python-asgi-csrf
            python-asgiref
+           python-asyncinject
            python-click
            python-click-default-group
            python-httpx
@@ -5280,6 +5477,7 @@ mechanism of @code{dogpile}.")
            python-pint
            python-pluggy
            python-pyyaml
+           python-sqlite-utils
            python-uvicorn))
     (native-inputs
      (list python-beautifulsoup4

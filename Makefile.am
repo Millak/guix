@@ -18,7 +18,7 @@
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2023 Clément Lassieur <clement@lassieur.org>
-# Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+# Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
 #
 # This file is part of GNU Guix.
 #
@@ -140,6 +140,7 @@ MODULES =					\
   guix/platforms/arm.scm                        \
   guix/platforms/avr.scm                        \
   guix/platforms/mips.scm                       \
+  guix/platforms/or1k.scm                       \
   guix/platforms/powerpc.scm                    \
   guix/platforms/riscv.scm                      \
   guix/platforms/x86.scm                        \
@@ -421,9 +422,18 @@ dist_noinst_DATA =				\
 # Auxiliary files for packages.
 AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
+  gnu/packages/aux-files/emacs/comp-integrity.el		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/findclass.php			\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.8-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.8-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.8-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.8-x86_64.conf	\
+  gnu/packages/aux-files/linux-libre/6.7-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.7-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.7-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.7-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.6-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.6-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.6-i686.conf	\
@@ -448,9 +458,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/4.19-arm64.conf	\
   gnu/packages/aux-files/linux-libre/4.19-i686.conf	\
   gnu/packages/aux-files/linux-libre/4.19-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/4.14-arm.conf	\
-  gnu/packages/aux-files/linux-libre/4.14-i686.conf	\
-  gnu/packages/aux-files/linux-libre/4.14-x86_64.conf	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sitecustomize.py	\

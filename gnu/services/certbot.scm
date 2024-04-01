@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,7 @@
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (certbot-service-type
             certbot-configuration
@@ -63,7 +65,9 @@
   (cleanup-hook        certificate-cleanup-hook
                        (default #f))
   (deploy-hook         certificate-configuration-deploy-hook
-                       (default #f)))
+                       (default #f))
+  (start-self-signed?  certificate-configuration-start-self-signed?
+                       (default #t)))
 
 (define-record-type* <certbot-configuration>
   certbot-configuration make-certbot-configuration
@@ -86,6 +90,45 @@
                           (uri "/")
                           (body
                            (list "return 301 https://$host$request_uri;"))))))
+
+(define (certbot-deploy-hook name deploy-hook-script)
+  "Returns a gexp which creates symlinks for privkey.pem and fullchain.pem
+from /etc/certs/NAME to /etc/letsenctypt/live/NAME.  If DEPLOY-HOOK-SCRIPT is
+not #f then it is run after the symlinks have been created.  This wrapping is
+necessary for certificates with start-self-signed? set to #t, as it will
+overwrite the initial self-signed certificates upon the first successful
+deploy."
+  (program-file
+   (string-append name "-deploy-hook")
+   (with-imported-modules '((gnu services herd)
+                            (guix build utils))
+     #~(begin
+         (use-modules (gnu services herd)
+                      (guix build utils))
+         (mkdir-p #$(string-append "/etc/certs/" name))
+         (chmod #$(string-append "/etc/certs/" name) #o755)
+
+         ;; Create new symlinks
+         (symlink #$(string-append
+                     "/etc/letsencrypt/live/" name "/privkey.pem")
+                  #$(string-append "/etc/certs/" name "/privkey.pem.new"))
+         (symlink #$(string-append
+                     "/etc/letsencrypt/live/" name "/fullchain.pem")
+                  #$(string-append "/etc/certs/" name "/fullchain.pem.new"))
+
+         ;; Rename over the top of the old ones, just in case they were the
+         ;; original self-signed certificates.
+         (rename-file #$(string-append "/etc/certs/" name "/privkey.pem.new")
+                      #$(string-append "/etc/certs/" name "/privkey.pem"))
+         (rename-file #$(string-append "/etc/certs/" name "/fullchain.pem.new")
+                      #$(string-append "/etc/certs/" name "/fullchain.pem"))
+
+         ;; With the new certificates in place, tell nginx to reload them.
+         (with-shepherd-action 'nginx ('reload) result result)
+
+         #$@(if deploy-hook-script
+                (list #~(invoke #$deploy-hook-script))
+                '())))))
 
 (define certbot-command
   (match-lambda
@@ -118,7 +161,8 @@
                           `("--manual-auth-hook" ,authentication-hook)
                           '())
                       (if cleanup-hook `("--manual-cleanup-hook" ,cleanup-hook) '())
-                      (if deploy-hook `("--deploy-hook" ,deploy-hook) '()))
+                      (list "--deploy-hook"
+                            (certbot-deploy-hook name deploy-hook)))
                      (append
                       (list name certbot "certonly" "-n" "--agree-tos"
                             "--webroot" "-w" webroot
@@ -130,20 +174,51 @@
                           '("--register-unsafely-without-email"))
                       (if server `("--server" ,server) '())
                       (if rsa-key-size `("--rsa-key-size" ,rsa-key-size) '())
-                      (if deploy-hook `("--deploy-hook" ,deploy-hook) '()))))))
+                      (list "--deploy-hook"
+                            (certbot-deploy-hook name deploy-hook)))))))
               certificates)))
        (program-file
         "certbot-command"
         #~(begin
-            (use-modules (ice-9 match))
-            (let ((code 0))
+            (use-modules (ice-9 match)
+                         (ice-9 textual-ports))
+
+            (define (log format-string . args)
+              (apply format #t format-string args)
+              (force-output))
+
+            (define (file-contains? file string)
+              (string-contains (call-with-input-file file
+                                 get-string-all)
+                               string))
+
+            (define (connection-error?)
+              ;; Certbot errors are always exit code 1, so we need to look at
+              ;; the log file to see if there was a connection error.
+              (file-contains? "/var/log/letsencrypt/letsencrypt.log"
+                              "Failed to establish a new connection"))
+
+            (let ((script-code 0))
               (for-each
                (match-lambda
                  ((name . command)
-                  (begin
-                    (format #t "Acquiring or renewing certificate: ~a~%" name)
-                    (set! code (or (apply system* command) code)))))
-               '#$commands) code)))))))
+                  (log "Acquiring or renewing certificate: ~a~%" name)
+                  (cond
+                   ((zero? (status:exit-val (apply system* command)))
+                    (log "Certificate successfully acquired: ~a~%" name))
+                   ((connection-error?)
+                    ;; If we have a connection error, then bail early with
+                    ;; exit code 2. We don't expect this to resolve within the
+                    ;; timespan of this script.
+                    (log "Connection error - bailing out~%")
+                    (exit 2))
+                   (else
+                    ;; If we have any other type of error, then continue but
+                    ;; exit with a failing status code in the end.
+                    (log "Error: ~a - continuing with other domains~%" name)
+                    (set! script-code 1)))))
+               '#$commands)
+              (exit script-code))))))))
 
 (define (certbot-renewal-jobs config)
   (list
@@ -152,11 +227,84 @@
    #~(job '(next-minute-from (next-hour '(0 12)) (list (random 60)))
           #$(certbot-command config))))
 
+(define (certbot-renewal-one-shot config)
+  (list
+   ;; Renew certificates when the system first starts. This is a one-shot
+   ;; service, because the mcron configuration will take care of running this
+   ;; periodically. This is most useful the very first time the system starts,
+   ;; to overwrite our self-signed certificates as soon as possible without
+   ;; user intervention.
+   (shepherd-service
+    (provision '(renew-certbot-certificates))
+    (requirement '(nginx))
+    (one-shot? #t)
+    (start #~(lambda _
+               ;; This needs the network, but there's no reliable way to know
+               ;; if the network is up other than trying. If we fail due to a
+               ;; connection error we retry a number of times in the hope that
+               ;; the network comes up soon.
+               (let loop ((attempt 0))
+                 (let ((code (status:exit-val
+                              (system* #$(certbot-command config)))))
+                   (cond
+                    ((and (= code 2)      ; Exit code 2 means connection error
+                          (< attempt 12)) ; Arbitrarily chosen max attempts
+                     (sleep 10)           ; Arbitrarily chosen retry delay
+                     (loop (1+ attempt)))
+                    ((zero? code)
+                     ;; Success!
+                     #t)
+                    (else
+                     ;; Failure.
+                     #f))))))
+    (auto-start? #t)
+    (documentation "Call certbot to renew certificates.")
+    (actions (list (shepherd-configuration-action (certbot-command config)))))))
+
+(define (generate-certificate-gexp certbot-cert-directory rsa-key-size)
+  (match-lambda
+    (($ <certificate-configuration> name (primary-domain other-domains ...)
+                                    challenge
+                                    csr authentication-hook
+                                    cleanup-hook deploy-hook)
+     (let (;; Arbitrary default subject, with just the
+           ;; right domain filled in. These values don't
+           ;; have any real significance.
+           (subject (string-append
+                     "/C=US/ST=Oregon/L=Portland/O=Company Name/OU=Org/CN="
+                     primary-domain))
+           (alt-names (if (null? other-domains)
+                          #f
+                          (format #f "subjectAltName=~{DNS:~a~^,~}"
+                                  other-domains)))
+           (directory (string-append "/etc/certs/" (or name primary-domain))))
+       #~(when (not (file-exists? #$directory))
+           ;; We generate self-signed certificates in /etc/certs/{domain},
+           ;; because certbot is very sensitive to its directory
+           ;; structure. It refuses to write over the top of existing files,
+           ;; so we need to use a directory outside of its control.
+           ;;
+           ;; These certificates are overwritten by the certbot deploy hook
+           ;; the first time it successfully obtains a letsencrypt-signed
+           ;; certificate.
+           (mkdir-p #$directory)
+           (chmod #$directory #o755)
+           (invoke #$(file-append openssl "/bin/openssl")
+                   "req" "-x509"
+                   "-newkey" #$(string-append "rsa:" (or rsa-key-size "4096"))
+                   "-keyout" #$(string-append directory "/privkey.pem")
+                   "-out" #$(string-append directory "/fullchain.pem")
+                   "-sha256"
+                   "-days" "1" ; Only one day, because we expect certbot to run
+                   "-nodes"
+                   "-subj" #$subject
+                   #$@(if alt-names
+                          (list "-addext" alt-names)
+                          (list))))))))
+
 (define (certbot-activation config)
   (let* ((certbot-directory "/var/lib/certbot")
-         (certbot-cert-directory "/etc/letsencrypt/live")
-         (script (in-vicinity certbot-directory "renew-certificates"))
-         (message (format #f (G_ "~a may need to be run~%") script)))
+         (certbot-cert-directory "/etc/letsencrypt/live"))
     (match config
       (($ <certbot-configuration> package webroot certificates email
                                   server rsa-key-size default-location)
@@ -166,8 +314,13 @@
              (mkdir-p #$webroot)
              (mkdir-p #$certbot-directory)
              (mkdir-p #$certbot-cert-directory)
-             (copy-file #$(certbot-command config) #$script)
-             (display #$message)))))))
+
+             #$@(let ((rsa-key-size (and rsa-key-size
+                                         (number->string rsa-key-size))))
+                  (map (generate-certificate-gexp certbot-cert-directory
+                                                  rsa-key-size)
+                       (filter certificate-configuration-start-self-signed?
+                               certificates)))))))))
 
 (define certbot-nginx-server-configurations
   (match-lambda
@@ -200,7 +353,9 @@
                        (service-extension activation-service-type
                                           certbot-activation)
                        (service-extension mcron-service-type
-                                          certbot-renewal-jobs)))
+                                          certbot-renewal-jobs)
+                       (service-extension shepherd-root-service-type
+                                          certbot-renewal-one-shot)))
                 (compose concatenate)
                 (extend (lambda (config additional-certificates)
                           (certbot-configuration

@@ -1,0 +1,42 @@
+From af9e72124b12ca481fd3592f9c8ea2649f7e4c80 Mon Sep 17 00:00:00 2001
+Message-ID: <af9e72124b12ca481fd3592f9c8ea2649f7e4c80.1698775513.git.vivien@planete-kraus.eu>
+From: Vivien Kraus <vivien@planete-kraus.eu>
+Date: Sun, 29 Oct 2023 19:12:27 +0100
+Subject: [PATCH] Look for a system-installed gmobile first.
+
+Meson lets projects use a dependency with fallback to a submodule, in
+case the dependency is not installed.
+
+* meson.build (gmobile_subp): Convert to a dependency with subproject
+fallback.
+---
+I am waiting for Purism to approve my account before I can report this.
+
+ meson.build | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 8725e76..e5504be 100644
+--- a/meson.build
++++ b/meson.build
+@@ -14,13 +14,13 @@ gio_unix       = dependency('gio-unix-2.0', version: '>=2.50.0')
+ glib           = dependency('glib-2.0', version: '>=2.50.0')
+ if get_option('daemon')
+   gobject        = dependency('gobject-2.0', version: '>=2.50.0')
+-  gmobile_subp   = subproject('gmobile',
++  gmobile        = dependency('gmobile',
++                              fallback: ['gmobile', 'gmobile_dep'],
+                               default_options: [
+                                 'examples=false',
+                                 'gtk_doc=false',
+                                 'tests=false',
+                               ])
+-  gmobile        = gmobile_subp.get_variable('gmobile_dep')
+   gsound         = dependency('gsound')
+   gudev          = dependency('gudev-1.0', version: '>=232')
+   json_glib      = dependency('json-glib-1.0')
+
+base-commit: 853bd6d7ea8455efea063ba7c4f29ce8c203285f
+-- 
+2.41.0
+

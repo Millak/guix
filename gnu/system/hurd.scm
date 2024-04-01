@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -70,7 +70,7 @@
   ;; Note: the Shepherd comes before the Hurd, not just because its duty is to
   ;; shepherd the herd, but also because we want its 'halt' and 'reboot'
   ;; commands to take precedence.
-  (list shepherd-0.8 hurd netdde bash coreutils file findutils grep sed
+  (list shepherd-0.10 hurd netdde bash coreutils file findutils grep sed
         diffutils patch gawk tar gzip bzip2 xz lzip
         guile-3.0-latest guile-colorized guile-readline
         net-base nss-certs inetutils less procps shadow sudo which

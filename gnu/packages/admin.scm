@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
@@ -62,6 +62,8 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +114,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
@@ -130,6 +133,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -149,6 +154,7 @@
   #:use-module (gnu packages mcrypt)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages package-management)
@@ -373,14 +379,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.10
   (package
     (inherit shepherd-0.9)
-    (version "0.10.3")
+    (version "0.10.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1vxghlxnxajx2iciqmjia49c5hkir8li0gv29kl55frhn2zgxilf"))))
+                "0206r2l914qjahzd1qill57r1qcg1x8faj0f6qv3x42wqx6x28ky"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
                      (replace "guile-fibers"
                        ;; Work around
@@ -746,7 +752,7 @@ console.")
 (define-public btop
   (package
     (name "btop")
-    (version "1.2.13")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -755,7 +761,7 @@ console.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aggzlxyfp213rknpbhkn8wbgzcnz181dyh9m2awz72w705axy8p"))))
+                "0fbrkzg03n2vamg1pfzdb8wxm3xffy6gp4izhqppl45zngy3c0s1"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no test suite
@@ -4907,6 +4913,33 @@ It can mount all local file systems supported by @command{mount}, as well as
 LUKS volumes encrypted with the user's log-in password.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public pam-uaccess
+  (let ((commit "54fbf043c63cc500b4850b0b4a12ea14078f2b53")
+        (revision "0"))
+    (package
+      (name "pam-uaccess")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~kennylevinsen/pam_uaccess")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "08068cw4nvcanym8b5dyccnnb3qc3f09pbvi6fcfiz227yx73npc"))))
+      (build-system meson-build-system)
+      (native-inputs (list pkg-config))
+      (inputs (list acl eudev linux-pam))
+      (home-page "https://git.sr.ht/~kennylevinsen/pam_uaccess")
+      (synopsis
+       "PAM module that grants access to devices tagged @code{uaccess} in udev")
+      (description
+       "@code{pam_uaccess} is a PAM module that grants access to devices tagged
+@code{uaccess} in udev for the duration of the users' session, replacing
+elogind's uaccess feature.")
+      (license license:expat))))
+
 (define-public jc
   (package
     (name "jc")
@@ -5155,7 +5188,7 @@ disk utilization, priority, username, state, and exit code.")
      `())
     (inputs
      `(("go-golang-org-x-text" ,go-golang-org-x-text)
-       ("go-github.com-ulikunitz-xz" ,go-github.com-ulikunitz-xz)))
+       ("go-github-com-ulikunitz-xz" ,go-github-com-ulikunitz-xz)))
     (synopsis "UEFI image editor")
     (description "This package provides a command-line UEFI image editor.")
     (home-page "https://github.com/linuxboot/fiano")
@@ -5483,71 +5516,73 @@ This allows greetd-pam-mount to auto-(un)mount @env{XDG_RUNTIME_DIR} without
 interfering with any pam-mount configuration.")))
 
 (define-public wlgreet
-  (package
-    (name "wlgreet")
-    (version "0.4.1")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://git.sr.ht/~kennylevinsen/wlgreet")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1k0jmgh0rjbnb49gkvs0a4d7z9xb6pad8v5w5f7my4s0rfpk7wd9"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:cargo-inputs
-           `(("rust-chrono" ,rust-chrono-0.4)
-             ("rust-getopts" ,rust-getopts-0.2)
-             ("rust-greetd-ipc" ,rust-greetd-ipc-0.9)
-             ("rust-lazy-static" ,rust-lazy-static-1)
-             ("rust-memmap2" ,rust-memmap2-0.3)
-             ("rust-nix" ,rust-nix-0.25)
-             ("rust-os-pipe" ,rust-os-pipe-1)
-             ("rust-rusttype" ,rust-rusttype-0.9)
-             ("rust-serde" ,rust-serde-1)
-             ("rust-smithay-client-toolkit"
-              ,rust-smithay-client-toolkit-0.15)
-             ("rust-toml" ,rust-toml-0.5)
-             ("rust-wayland-client" ,rust-wayland-client-0.29)
-             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-bundled-fonts
-                 (lambda _
-                   (delete-file-recursively "fonts")))
-               (add-after 'remove-bundled-fonts 'fix-font-references
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "src/draw.rs"
-                     (("\\.\\./fonts/dejavu/DejaVuSansMono\\.ttf" _)
-                      (search-input-file
-                       inputs
-                       "share/fonts/truetype/DejaVuSansMono.ttf"))
-                     (("\\.\\./fonts/Roboto-Regular\\.ttf" _)
-                      (search-input-file
-                       inputs
-                       "share/fonts/truetype/Roboto-Regular.ttf")))))
-               (add-after 'configure 'fix-library-references
-                 (lambda* (#:key inputs vendor-dir #:allow-other-keys)
-                   (substitute* (find-files vendor-dir "\\.rs$")
-                     (("lib(wayland-.*|xkbcommon)\\.so" so-file)
-                      (search-input-file
-                       inputs
-                       (string-append "lib/" so-file)))))))))
-    (inputs
-     (list font-dejavu
-           font-google-roboto
-           libxkbcommon
-           wayland))
-    (home-page "https://git.sr.ht/~kennylevinsen/wlgreet")
-    (synopsis "Bare-bones Wayland-based greeter for @command{greetd}")
-    (description
-     "@command{wlgreet} provides a @command{greetd} greeter
+  (let ((commit "7e79d6004fc5e765a5c3ece6d377f8c5999d9dfa")
+        (revision "1"))
+    (package
+      (name "wlgreet")
+      (version (git-version "0.4.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~kennylevinsen/wlgreet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "039a05v6c2i3al86k4fncqr3z47dnrz7y8wmhx6wvm08zx8s89ww"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list #:cargo-inputs
+             `(("rust-chrono" ,rust-chrono-0.4)
+               ("rust-getopts" ,rust-getopts-0.2)
+               ("rust-greetd-ipc" ,rust-greetd-ipc-0.9)
+               ("rust-lazy-static" ,rust-lazy-static-1)
+               ("rust-memmap2" ,rust-memmap2-0.3)
+               ("rust-nix" ,rust-nix-0.25)
+               ("rust-os-pipe" ,rust-os-pipe-1)
+               ("rust-rusttype" ,rust-rusttype-0.9)
+               ("rust-serde" ,rust-serde-1)
+               ("rust-smithay-client-toolkit"
+                ,rust-smithay-client-toolkit-0.15)
+               ("rust-toml" ,rust-toml-0.5)
+               ("rust-wayland-client" ,rust-wayland-client-0.29)
+               ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'remove-bundled-fonts
+                   (lambda _
+                     (delete-file-recursively "fonts")))
+                 (add-after 'remove-bundled-fonts 'fix-font-references
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/draw.rs"
+                       (("\\.\\./fonts/dejavu/DejaVuSansMono\\.ttf" _)
+                        (search-input-file
+                         inputs
+                         "share/fonts/truetype/DejaVuSansMono.ttf"))
+                       (("\\.\\./fonts/Roboto-Regular\\.ttf" _)
+                        (search-input-file
+                         inputs
+                         "share/fonts/truetype/Roboto-Regular.ttf")))))
+                 (add-after 'configure 'fix-library-references
+                   (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+                     (substitute* (find-files vendor-dir "\\.rs$")
+                       (("lib(wayland-.*|xkbcommon)\\.so" so-file)
+                        (search-input-file
+                         inputs
+                         (string-append "lib/" so-file)))))))))
+      (inputs
+       (list font-dejavu
+             font-google-roboto
+             libxkbcommon
+             wayland))
+      (home-page "https://git.sr.ht/~kennylevinsen/wlgreet")
+      (synopsis "Bare-bones Wayland-based greeter for @command{greetd}")
+      (description
+       "@command{wlgreet} provides a @command{greetd} greeter
 that runs on a Wayland compositor such as @command{sway}.  It
 is implemented with pure Wayland APIs, so it does not depend
 on a GUI toolkit.")
-    (license license:gpl3)))
+      (license license:gpl3))))
 
 (define-public libseat
   (package
@@ -5814,6 +5849,57 @@ up services to use only two factor, or public/private authentication
 mechanisms if you really want to protect services.")
     (license license:gpl2+)))
 
+(define-public restartd
+  (let* ((commit "7044125ac55056f2663536f7137170edf92ebd75")
+         ;; Version is 0.2.4 in the version file in the repo
+         ;; but not in github tags.
+         ;; It is released as 0.2.3-1.1 for other distributions.
+         ;; Probably because of the lack of activity upstream.
+         (revision "1"))
+    (package
+      (name "restartd")
+      (version (git-version "0.2.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ajraymond/restartd")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1m1np00b4zvvwx63gzysbi38i5vj1jsjvh2s0p9czl6dzyz582z0"))
+         (patches (search-patches "restartd-update-robust.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ; no tests
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete  'configure)
+            (replace 'install
+              (lambda _
+                (install-file "restartd.conf" (string-append #$output "/etc"))
+                (install-file "restartd" (string-append #$output "/sbin"))
+                (install-file "restartd.8"
+                              (string-append #$output "/share/man/man8"))
+                (mkdir-p (string-append #$output "/share/man/fr/man8"))
+                (copy-file
+                 "restartd.fr.8"
+                 (string-append #$output "/share/man/fr/man8/restartd.8")))))))
+      (home-page "https://launchpad.net/debian/+source/restartd")
+      (synopsis "Daemon for restarting processes")
+      (description "This package provides a daemon for checking running and
+not running processes.  It reads the @file{/proc} directory every @var{n}
+seconds and does a POSIX regexp on the process names.  The daemon runs a
+user-provided script when it detects a program in the running processes, or an
+alternate script if it doesn't detect the program.  The daemon can only be
+called by the root user, but can use @command{sudo -u user} in the process
+called if needed.")
+      (license license:gpl2+))))
+
 (define-public rex
   (package
     (name "rex")
@@ -6038,3 +6124,34 @@ breadth-first rather than depth-first.  It is otherwise compatible with many
 versions of @command{find}, including POSIX, GNU, and *BSD find.")
     (home-page "https://tavianator.com/projects/bfs.html")
     (license license:bsd-0)))
+
+(define-public rdfind
+  (package
+    (name "rdfind")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://rdfind.pauldreik.se/" name "-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "0y9j1w3nbgjks0k4kgm6qq92yrwgv66n212ncmlmhsl8y676wh3s"))))
+    (build-system gnu-build-system)
+    (native-inputs (list which))
+    (inputs (list nettle))
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'patch-tests
+                     (lambda _
+                       (display (which "echo"))
+                       (substitute* "testcases/common_funcs.sh"
+                         (("/bin/echo")
+                          (which "echo"))))))))
+    (home-page "https://rdfind.pauldreik.se")
+    (synopsis "Find duplicate files")
+    (description
+     "Rdfind is a command line tool that finds duplicate files based on
+their content instead of their file names.  It is useful for compressing
+backup directories or just finding duplicate files.")
+    (license license:gpl2+)))

@@ -1399,11 +1399,11 @@ build tree Yggdrasil.")
                   (("generate_wrapper_header.*")
                    (string-append
                     "generate_wrapper_header(\"MbedTLS\", \""
-                    (assoc-ref inputs "mbedtls-apache") "\")\n"))))
+                    (assoc-ref inputs "mbedtls") "\")\n"))))
               ;; There's a Julia file for each platform, override them all
               (find-files "src/wrappers/" "\\.jl$"))
              #t)))))
-    (inputs (list mbedtls-apache))
+    (inputs (list mbedtls-lts))
     (propagated-inputs (list julia-jllwrappers))
     (home-page "https://github.com/JuliaBinaryWrappers/MbedTLS_jll.jl")
     (synopsis "Apache's mbed TLS binary wrappers")

@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 muradm <mail@muradm.net>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,7 @@
             xorg-configuration-extra-config
             xorg-configuration-server
             xorg-configuration-server-arguments
+            xorg-configuration-keyboard-layout
 
             %default-xorg-modules
             %default-xorg-fonts
@@ -1046,7 +1048,7 @@ argument.")))
              (default (xinitrc)))
   (xdmcp? gdm-configuration-xdmcp?
           (default #f))
-  (wayland? gdm-configuration-wayland? (default #f))
+  (wayland? gdm-configuration-wayland? (default #t))
   (wayland-session gdm-configuration-wayland-session
                    (default gdm-wayland-session-wrapper)))
 

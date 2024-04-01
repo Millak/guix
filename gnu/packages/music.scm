@@ -10,7 +10,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 nikita <nikita@n0.is>
 ;;; Copyright © 2017 Rodger Fox <thylakoid@openmailbox.org>
-;;; Copyright © 2017–2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017–2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen0@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -52,8 +52,9 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
-;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -233,6 +234,13 @@
                  (string-append "	"
                                 #$(cc-for-target) " -o")))
               (chdir "src")))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/alsa-scarlett-gui")
+                ;; For GtkFileChooserDialog.
+                `("GSETTINGS_SCHEMA_DIR" =
+                  (,(string-append #$(this-package-input "gtk")
+                                   "/share/glib-2.0/schemas"))))))
           (delete 'configure))))
     (inputs
      (list alsa-lib glib gtk))
@@ -860,7 +868,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
 (define-public hydrogen
   (package
     (name "hydrogen")
-    (version "1.2.0")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -869,7 +877,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v4ir1my8zndw5rvz6jr42ysprwycgxrlsc53070y3620n699nha"))))
+        (base32 "0qb16yn3igs95silvngwy5mjwlzsyz5axwbd3lz6pjhwbf81rn7d"))))
     (build-system cmake-build-system)
     (arguments
      `(#:test-target "tests"
@@ -1501,7 +1509,7 @@ and auto-mapping slices to MIDI note numbers.")
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.24.1")
+    (version "2.24.3")
     (source
      (origin
        (method url-fetch)
@@ -1509,7 +1517,7 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "028m31fjcfgsq3f8ahz4hp2r36shsvkq1fjjibqdcp2aas3r1ifm"))))
+        (base32 "1gj4xjc9842wnqvqj08lkykpz2r72mqqw3x1fk6s9xbsxxv5y06z"))))
     (build-system gnu-build-system)
     (arguments
       (list #:tests? #f                      ;out-test/collated-files.html fails
@@ -1673,15 +1681,7 @@ typographic detail of symbols on the page.")
        (sha256
         (base32
          "0wma9vzn42h1rhbzh2dwjsrzjhsi1yqdgn6wx1dfk78vaki6prd8"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" ".")
-               #t))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list lilypond
            python-black
@@ -1691,7 +1691,8 @@ typographic detail of symbols on the page.")
            python-mypy
            python-pytest
            python-pytest-cov
-           python-pytest-helpers-namespace))
+           python-pytest-helpers-namespace
+           python-sphinx-autodoc-typehints))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
@@ -1715,15 +1716,7 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
        (sha256
         (base32
          "05hr2lr6myzi493k8vc19cqzraxxnbdwlckwbnras19l5g5ns38x"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "tests")
-               #t))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list lilypond
            python-black
@@ -1733,7 +1726,8 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
            python-mypy
            python-pytest
            python-pytest-cov
-           python-pytest-helpers-namespace))
+           python-pytest-helpers-namespace
+           python-sphinx-autodoc-typehints))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
@@ -1788,7 +1782,7 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
            python-pytest-cov
            python-pytest-helpers-namespace))
     (propagated-inputs
-     (list abjad jupyter))
+     (list abjad jupyter python-sphinx-autodoc-typehints))
     (home-page "https://abjad.github.io")
     (synopsis "Abjad IPython Extension")
     (description
@@ -3047,37 +3041,62 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
 using a system-independent interface.")
     (license license:expat)))
 
-(define-public python-pyportmidi
+(define-public portmidi-2
   (package
-    (name "python-pyportmidi")
-    (version (package-version portmidi))
-    (source (package-source portmidi))
-    (build-system python-build-system)
+    (name "portmidi")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PortMidi/portmidi")
+             (commit "b808babecdc5d05205467dab5c1006c5ac0fdfd4")))
+       (sha256
+        (base32 "05a3dfpgbpcg08p8a3acjrrd1qy5hvvray2kz2asygy1vf3mx85s"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no tests included
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir "pm_python") #t))
-         (add-after 'enter-dir 'fix-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               ;; Use Python 3 syntax
-               (("print (\".*\")" _ text)
-                (string-append "print(" text ")\n"))
-               ;; TODO.txt and CHANGES.txt don't exist
-               (("CHANGES =.*") "CHANGES = \"\"\n")
-               (("TODO =.*") "TODO = \"\"\n"))
-             #t)))))
-    (inputs
-     (list portmidi alsa-lib))
-    (native-inputs
-     (list python-cython unzip))
-    (home-page "https://portmedia.sourceforge.net/portmidi/")
-    (synopsis "Python bindings to PortMidi")
+     `(#:tests? #f       ;Tests are interactive and can be found in the
+       #:configure-flags ;pm_tests/ directory of the build tree.
+       (list "-DBUILD_PORTMIDI_TESTS=On")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-version
+                    (lambda _
+                      (substitute* "CMakeLists.txt"
+                        (("2.0.3")
+                         (version))))))))
+    (inputs (list alsa-lib))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/PortMidi/")
+    (synopsis "Library for MIDI I/O")
     (description
-     "This package provides Python bindings to the PortMidi library.")
+     "PortMidi is a library supporting real-time input and output of MIDI data
+using a system-independent interface.")
     (license license:expat)))
+
+(define-public python-pyportmidi
+  (let ((commit "d9e5ee00b208b09618fa0d4a5bbce3c9c077b386")
+        (revision "0"))
+    (package
+      (name "python-pyportmidi")
+      (version (git-version "0.0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/PortMidi/pm_python")
+               (commit commit)))
+         (sha256
+          (base32 "1jvp9na8d1hw46w9ybhkimbavfb3ysw7hp30cbk6dj40k5y5vgvz"))
+         (file-name (git-file-name name version))))
+      (build-system python-build-system)
+      (inputs (list portmidi-2 alsa-lib))
+      (native-inputs (list python-cython))
+      (home-page "https://github.com/PortMidi")
+      (synopsis "Python bindings to PortMidi")
+      (description
+       "This package provides Python bindings to the PortMidi library.")
+      (license license:expat))))
 
 (define-public frescobaldi
   (package
@@ -3087,32 +3106,39 @@ using a system-independent interface.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://github.com/wbsoft/frescobaldi/releases/download/v"
+             "https://github.com/frescobaldi/frescobaldi/releases/download/v"
              version "/frescobaldi-" version ".tar.gz"))
        (sha256
         (base32 "1n60gfnf6x0l1bac088g9adzx0lskbl9knd4y1ynr3y0zcs0kfcz"))))
     (build-system python-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no tests included
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'generate-translations
-            (lambda _
-              (invoke "make" "-C" "i18n")))
-          (add-before 'build 'generate-metadata
-            (lambda _
-              (invoke "make" "-C" "linux"))))))
-    (inputs
-     (list lilypond
-           poppler
-           portmidi
-           python-ly
-           python-poppler-qt5
-           python-pyportmidi
-           python-pyqt
-           python-sip
-           qpageview))
+      #:tests? #f ;no tests included
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'generate-translations
+                     (lambda _
+                       (invoke "make" "-C" "i18n")))
+                   (add-before 'build 'generate-metadata
+                     (lambda _
+                       (invoke "make" "-C" "linux")))
+                   (add-after 'install 'wrap-executable
+                     (lambda _
+                       ;; Ensure that icons are found at runtime.
+                       (wrap-program (string-append #$output
+                                                    "/bin/frescobaldi")
+                         `("QT_PLUGIN_PATH" prefix
+                           ,(list (getenv "QT_PLUGIN_PATH")))))))))
+    (inputs (list bash-minimal
+                  lilypond
+                  poppler
+                  portmidi-2
+                  python-ly
+                  python-poppler-qt5
+                  python-pyportmidi
+                  python-pyqt
+                  python-sip
+                  qpageview
+                  qtsvg-5))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
     (description
@@ -3821,7 +3847,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.10")
+    (version "2.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3829,7 +3855,7 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "0f9rvif9m83jhal9n9x8kks17c0cgcipi1hjqmki7a296lz175ss"))))
+                "0ppq2n9jf8c8r8p9dkpcyipd2psr9hg0zbd5hcdsicili25336j4"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -5022,7 +5048,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.1.1")
+    (version "4.2.1")
     (source
      (origin
        (method git-fetch)
@@ -5031,7 +5057,7 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12h26k9qnsq027gdpch579nchwrqva1ymwm2fj5xmlh0aayrwy4d"))
+        (base32 "0rc5ma1k0cjllfl86apbyj61sh0691lsmqnvqicyn0zi53z8w9v0"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5099,7 +5125,7 @@ sample library.")
 (define-public muse-sequencer
   (package
     (name "muse-sequencer")
-    (version "4.1.0")
+    (version "4.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5108,7 +5134,7 @@ sample library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1iihjivpkvmdfqf20kcl9k0s1iwlv9p5vpna7c58lbw3573fiyr4"))))
+                "13b9xx8x8yr58r8765xn770kfn3k2whmvmpl2657nc19max9n61g"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -5148,7 +5174,8 @@ sample library.")
            rubberband
            sord))
     (native-inputs
-     (list perl
+     (list extra-cmake-modules
+           perl
            pkg-config
            python-wrapper
            qttools-5))
@@ -5164,7 +5191,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "6.1.3")
+    (version "6.5.2")
     (source
      (origin
        (method git-fetch)
@@ -5173,7 +5200,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h5zw9047qmhhc6n4ny11id1h1p8322wadl7p8j65bwrz8kbfx99"))))
+        (base32 "16rkwb60v7igixligkcm86l8l8vab1bhmwg8m7ihb051ryqixa3i"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -5259,7 +5286,7 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "23.06")
+    (version "23.12")
     (source
      (origin
        (method url-fetch)
@@ -5267,7 +5294,7 @@ specification and header.")
                            (version-major+minor version) "/"
                            "rosegarden-" version ".tar.xz"))
        (sha256
-        (base32 "1k3j5p6lx3w6pbsh95xiyfj8g8ysmvd18v0wmx7kdb3vyj5mfd0z"))))
+        (base32 "0clkzrs931dypvqcn5hzx2v3bq9gc439g71phahgwkh4c1jfcmrz"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -7221,22 +7248,27 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
               (uri (git-reference
                     (url "https://github.com/jackaudio/a2jmidid")
                     (commit version)))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix build for for riscv64-linux, same as:
+               ;;   https://github.com/jackaudio/a2jmidid/pull/18
+               '(substitute* "sigsegv.c"
+                  (("!defined[(]__aarch64__[)]")
+                   "!defined(__arch64__) && !defined(__riscv)")))
               (sha256
                (base32 "1x6rcl3f4nklnx4p5jln9a7fpj9y7agjxs9rw7cccmwnski7pnsq"))
               (file-name (git-file-name name version))))
     (arguments
-     `(#:tests? #f      ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/")))
-               (substitute* (string-append bin "a2j")
-                 (("a2j_control") (string-append bin "a2j_control")))
-               (wrap-program (string-append bin "a2j_control")
-                `("PYTHONPATH" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+     (list #:tests? #f      ; No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-programs
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((bin (string-append #$output "/bin/")))
+                     (substitute* (string-append bin "a2j")
+                       (("a2j_control") (string-append bin "a2j_control")))
+                     (wrap-program (string-append bin "a2j_control")
+                       `("PYTHONPATH" prefix (,(getenv "GUIX_PYTHONPATH"))))))))))
     (build-system meson-build-system)
     (inputs
      (list alsa-lib

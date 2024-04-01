@@ -2,6 +2,7 @@
 ;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
             check-device-initrd-modules           ;XXX: needs a better place
 
             luks-device-mapping
+            luks-device-mapping-with-options
             raid-device-mapping
             lvm-device-mapping))
 
@@ -188,7 +190,7 @@ option of @command{guix system}.\n")
 ;;; Common device mappings.
 ;;;
 
-(define (open-luks-device source targets)
+(define* (open-luks-device source targets #:key key-file)
   "Return a gexp that maps SOURCE to TARGET as a LUKS device, using
 'cryptsetup'."
   (with-imported-modules (source-module-closure
@@ -198,7 +200,8 @@ option of @command{guix system}.\n")
       ((target)
        #~(let ((source #$(if (uuid? source)
                              (uuid-bytevector source)
-                             source)))
+                             source))
+               (keyfile #$key-file))
            ;; XXX: 'use-modules' should be at the top level.
            (use-modules (rnrs bytevectors) ;bytevector?
                         ((gnu build file-systems)
@@ -215,29 +218,35 @@ option of @command{guix system}.\n")
            ;; 'cryptsetup open' requires standard input to be a tty to allow
            ;; for interaction but shepherd sets standard input to /dev/null;
            ;; thus, explicitly request a tty.
-           (zero? (system*/tty
-                   #$(file-append cryptsetup-static "/sbin/cryptsetup")
-                   "open" "--type" "luks"
-
-                   ;; Note: We cannot use the "UUID=source" syntax here
-                   ;; because 'cryptsetup' implements it by searching the
-                   ;; udev-populated /dev/disk/by-id directory but udev may
-                   ;; be unavailable at the time we run this.
-                   (if (bytevector? source)
-                       (or (let loop ((tries-left 10))
-                             (and (positive? tries-left)
-                                  (or (find-partition-by-luks-uuid source)
-                                      ;; If the underlying partition is
-                                      ;; not found, try again after
-                                      ;; waiting a second, up to ten
-                                      ;; times.  FIXME: This should be
-                                      ;; dealt with in a more robust way.
-                                      (begin (sleep 1)
-                                             (loop (- tries-left 1))))))
-                           (error "LUKS partition not found" source))
-                       source)
-
-                   #$target)))))))
+           (let ((partition
+                  ;; Note: We cannot use the "UUID=source" syntax here
+                  ;; because 'cryptsetup' implements it by searching the
+                  ;; udev-populated /dev/disk/by-id directory but udev may
+                  ;; be unavailable at the time we run this.
+                  (if (bytevector? source)
+                      (or (let loop ((tries-left 10))
+                            (and (positive? tries-left)
+                                 (or (find-partition-by-luks-uuid source)
+                                     ;; If the underlying partition is
+                                     ;; not found, try again after
+                                     ;; waiting a second, up to ten
+                                     ;; times.  FIXME: This should be
+                                     ;; dealt with in a more robust way.
+                                     (begin (sleep 1)
+                                            (loop (- tries-left 1))))))
+                          (error "LUKS partition not found" source))
+                      source)))
+             ;; We want to fallback to the password unlock if the keyfile fails.
+             (or (and keyfile
+                      (zero? (system*/tty
+                              #$(file-append cryptsetup-static "/sbin/cryptsetup")
+                              "open" "--type" "luks"
+                              "--key-file" keyfile
+                              partition #$target)))
+                 (zero? (system*/tty
+                         #$(file-append cryptsetup-static "/sbin/cryptsetup")
+                         "open" "--type" "luks"
+                         partition #$target)))))))))
 
 (define (close-luks-device source targets)
   "Return a gexp that closes TARGET, a LUKS device."
@@ -275,6 +284,14 @@ option of @command{guix system}.\n")
    (open open-luks-device)
    (close close-luks-device)
    (check check-luks-device)))
+
+(define* (luks-device-mapping-with-options #:key key-file)
+  "Return a luks-device-mapping object with open modified to pass the arguments
+into the open-luks-device procedure."
+  (mapped-device-kind
+   (inherit luks-device-mapping)
+   (open (λ (source targets) (open-luks-device source targets
+                                               #:key-file key-file)))))
 
 (define (open-raid-device sources targets)
   "Return a gexp that assembles SOURCES (a list of devices) to the RAID device

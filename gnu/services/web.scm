@@ -16,6 +16,7 @@
 ;;; Copyright © 2020, 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services admin)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services getmail)
   #:use-module (gnu services mail)
   #:use-module (gnu system pam)
@@ -47,6 +49,7 @@
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages php)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages logging)
@@ -239,6 +242,13 @@
             varnish-configuration-extra-options
 
             varnish-service-type
+
+            whoogle-service-type
+            whoogle-configuration
+            whoogle-configuration-package
+            whoogle-configuration-host
+            whoogle-configuration-port
+            whoogle-configuration-environment-variables
 
             patchwork-database-configuration
             patchwork-database-configuration?
@@ -1602,6 +1612,52 @@ files.")
                              varnish-shepherd-service)))
    (default-value
      (varnish-configuration))))
+
+
+;;;
+;;; Whoogle
+;;;
+
+(define-configuration/no-serialization whoogle-configuration
+  (package
+    (package whoogle-search)
+    "The @code{whoogle-search} package to use.")
+  (host
+   (string "127.0.0.1")
+   "The host address to run Whoogle on.")
+  (port
+   (integer 5000)
+   "The port to run Whoogle on.")
+  (environment-variables
+   (list-of-strings '())
+   "A list of strings specifying environment variables used to configure
+Whoogle."))
+
+(define (whoogle-shepherd-service config)
+  (match-record config <whoogle-configuration>
+    (package host port environment-variables)
+    (list
+     (shepherd-service
+      (provision '(whoogle-search))
+      (start #~(make-forkexec-constructor
+                (list (string-append #$package "/bin/whoogle-search")
+                      "--host" #$host "--port" #$(number->string port))
+                #:environment-variables
+                (append (list "CONFIG_VOLUME=/var/cache/whoogle-search")
+                        '#$environment-variables)))
+      (stop #~(make-kill-destructor))
+      (documentation "Run a @code{whoogle-search} instance.")))))
+
+(define whoogle-service-type
+  (service-type
+   (name 'whoogle-search)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             whoogle-shepherd-service)
+          (service-extension profile-service-type
+                             (compose list whoogle-configuration-package))))
+   (default-value (whoogle-configuration))
+   (description "Set up the @code{whoogle-search} metasearch engine.")))
 
 
 ;;;

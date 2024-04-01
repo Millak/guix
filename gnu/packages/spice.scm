@@ -90,16 +90,16 @@ different (virtual) machine than the one to which the USB device is attached.")
 (define-public virglrenderer
   (package
     (name "virglrenderer")
-    (version "0.10.4")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.freedesktop.org/virgl/virglrenderer")
+                    (url "https://gitlab.freedesktop.org/virgl/virglrenderer.git")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06pwavrknyhghlxyh7ckq4scjx47v9fhy08r6pn194whzvzivmqg"))))
+                "0xw2qk8557gqpm1ssgk3ccshgljm6sh3wbbwpsp9cl0h4hdf2wq2"))))
     (build-system meson-build-system)
     (inputs (list libepoxy mesa))
     (native-inputs (list pkg-config python))
@@ -230,7 +230,7 @@ which allows users to view a desktop computing environment.")
 (define-public spice
   (package
     (name "spice")
-    (version "0.15.1")
+    (version "0.15.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -238,7 +238,7 @@ which allows users to view a desktop computing environment.")
                 "spice-server/spice-" version ".tar.bz2"))
               (sha256
                (base32
-                "0ym3n60gq0kzzknk5ir8ib09cxsak9hkv7mmgsyic69jmdkszadd"))))
+                "10av05vk60jzqjhqbsw5zdwqmx6gpr50045wqiqp9483gw8vd7kd"))))
     (build-system gnu-build-system)
     (propagated-inputs
       (list openssl-1.1 pixman spice-protocol))

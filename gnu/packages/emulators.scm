@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2018, 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
@@ -351,7 +351,7 @@ console.")
              libxi
              libxrandr
              lzo
-             mbedtls-apache
+             mbedtls-lts
              mesa
              miniupnpc
              openal
@@ -410,7 +410,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.80.1")
+    (version "0.81.0")
     (source
      (origin
        (method git-fetch)
@@ -419,7 +419,7 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iqqrw95lpgjbmi777jdl5z1nizxgfy8xwpmy1fasjlb2yh2kp93"))))
+        (base32 "1fkshxaq12pd72v8m2f3a6d6jk9gh39hn0846gfkfinvw7yykzrl"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -736,7 +736,7 @@ The following systems are supported:
 (define-public mgba
   (package
     (name "mgba")
-    (version "0.10.2")
+    (version "0.10.3")
     (source
      (origin
        (method git-fetch)
@@ -746,7 +746,7 @@ The following systems are supported:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wwpjcblp2c1svab4z1if5xb7707wsy6zw590lwdz9za35i0h37q"))
+         "1h4wsx76kylsn4f4418swbp6zjp1x94dfn751iks1i6i529pfay1"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure we don't use the bundled software.
@@ -760,7 +760,8 @@ The following systems are supported:
     (arguments
      `(#:tests? #f                      ;no "test" target
        #:configure-flags
-       (list "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
+       (list "-DBUILD_LTO=OFF" ;FIXME: <https://github.com/mgba-emu/mgba/issues/3115>
+             "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
              "-DUSE_LIBZIP=OFF")))      ;use "zlib" instead
     (native-inputs (list pkg-config qttools-5))
     (inputs
@@ -791,7 +792,7 @@ and Game Boy Color games.")
 (define-public sameboy
   (package
     (name "sameboy")
-    (version "0.15.8")
+    (version "0.16.2")
     (source
      (origin
        (method git-fetch)
@@ -800,7 +801,7 @@ and Game Boy Color games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11qz5lamwxgvlh4dc95xd4m8hrypjj3bvha51zg9l454hxlvw4j8"))))
+        (base32 "1ckx5dm57h7ncvfqqqb2mdl5dcmhkardcn78zv965h6w1yxg0ii8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list rgbds pkg-config))
@@ -1433,7 +1434,7 @@ as RetroArch.")
 (define-public retroarch
   (package
     (name "retroarch")
-    (version "1.16.0.3")
+    (version "1.18.0")
     (source
      (origin
        (method git-fetch)
@@ -1442,7 +1443,7 @@ as RetroArch.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nvvd78hx1s73nif7g02pqms29b9v072mxnld0vmsh78236qngq5"))))
+        (base32 "0wdl9zrb1gpqgrxxmv6fida1si1s5g6061aja9dm0hnbpa8cbsdq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1490,7 +1491,7 @@ as RetroArch.")
            libxml2
            libxrandr
            libxv
-           mbedtls-apache
+           mbedtls-lts
            mesa
            openal
            openssl
@@ -1574,14 +1575,14 @@ that compiles to WebAssembly.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.7.0")
+    (version "2.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "14wrrzai25mh8qra3lsfibx8z6f96cqbnmsfh9kyhkvpc7yiyjs4"))))
+        (base32 "1dr70z1dkfw2gp43jq0qp7g73glr36a7qdcv1jvp1m927nhz95vy"))))
     (build-system gnu-build-system)
     (arguments
      (list

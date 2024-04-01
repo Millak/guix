@@ -10,7 +10,7 @@
 ;;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -39,6 +39,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
@@ -333,7 +334,7 @@ convert HTML to Markdown.")
 (define-public cmark
   (package
     (name "cmark")
-    (version "0.30.3")
+    (version "0.31.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -342,7 +343,7 @@ convert HTML to Markdown.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07d30s5v893nb1m7qbam5c3x9b3d84m80kzlj7fmkwhgjrlz7d7z"))))
+                "0llj68l9rxdhral0zyv0bz6yzqsxgq8d3730082sl3kx78lsq5qq"))))
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "test"))
@@ -475,21 +476,18 @@ with a few extensions.")
 (define-public python-mistletoe
   (package
     (name "python-mistletoe")
-    (version "0.8.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mistletoe" version))
        (sha256
-        (base32 "0h8ydzxlfzmspiz8lcm13qp720kfsxiky0qqnc2mxf4qzm16m326"))))
-    (build-system python-build-system)
+        (base32 "1sfv79fway4iya9i3rmz1bkj12lhzgazd4n7kv8phi4vvn57h3mx"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest" "discover" "test")))))))
+     ;; FileNotFoundError (not distributed in PyPI).
+     (list #:test-flags #~(list "-k" "not test_main")))
+    (native-inputs (list python-parameterized python-pytest))
     (home-page "https://github.com/miyuchina/mistletoe")
     (synopsis "Extensible Markdown parser in pure Python")
     (description

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
@@ -19,7 +19,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -173,7 +173,7 @@
 (define-public librecad
   (package
     (name "librecad")
-    (version "2.2.0-rc2")
+    (version "2.2.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -182,39 +182,12 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08cl4935c9vznz9qdw1zgd86rn7hl64zpfayxl07x21bhf53pn24"))
-              (patches
-               (search-patches "librecad-support-for-boost-1.76.patch"))))
+                "04pyywkc0nzhdx1wi0g63hldmbpdp0wvlrhqv8p3m1z6wyyafgjn"))))
     (build-system qt-build-system)
     (arguments
      '(#:test-target "check"
        #:phases
        (modify-phases %standard-phases
-         ;; Without this patch boost complains that "make_array" is not a
-         ;; member of "boost::serialization".
-         (add-after 'unpack 'patch-boost-error
-           (lambda _
-             (substitute* "librecad/src/lib/math/lc_quadratic.h"
-               (("#include \"rs_vector.h\"" line)
-                (string-append line
-                               "\n#include <boost/serialization/array_wrapper.hpp>")))
-             (substitute* "librecad/src/lib/math/rs_math.cpp"
-               (("#include <boost/numeric/ublas/matrix.hpp>" line)
-                (string-append "#include <boost/serialization/array_wrapper.hpp>\n"
-                               line)))
-             #t))
-         ;; Fix build against Qt 5.11.
-         (add-after 'unpack 'add-missing-headers
-           (lambda _
-             (substitute* "librecad/src/ui/generic/widgetcreator.cpp"
-               (("#include <QPushButton>") "#include <QPushButton>
-#include <QActionGroup>"))
-             #t))
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "librecad/src/lib/engine/rs_system.cpp"
-                 (("/usr/share") (string-append out "/share"))))))
          (replace 'configure
            (lambda* (#:key inputs #:allow-other-keys)
              (system* "qmake" (string-append "BOOST_DIR="
@@ -227,8 +200,7 @@
                (mkdir-p bin)
                (install-file "unix/librecad" bin)
                (mkdir-p share)
-               (copy-recursively "unix/resources" share))
-             #t)))))
+               (copy-recursively "unix/resources" share)))))))
     (inputs
      (list boost muparser freetype qtbase-5 qtsvg-5))
     (native-inputs
@@ -1098,7 +1070,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "7.0.10")
+    (version "7.0.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1106,7 +1078,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0rmlkgzgvpd70jzspyrrb2f618fimw52qrhpsp777flmpyh91wly"))
+                "1qn7w6pb1n5gx73z1zqbv140chh4307y8764z7xkdvric9i48qj4"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1206,7 +1178,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lc7d6hn8ya8m51kjnf59v41pbp03l5ncxir75s21pb92l26xgnv"))))
+                "10iwp35xywdz15a83vialzfd46rjw6mlz174dxawm2rw4ws2n7j4"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1240,7 +1212,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nlgmxf9z1vf4g350dfkxql1dawgmw275wqxkgszsfxmhdfpmi9v"))))
+                "057zmhf4h3p3p4y6jqxch9cj1wqf129k6kmvx2gshb9lgda0kjr8"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1269,7 +1241,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1az6fzh1lma71mj12bc4bblnmzjayrxhkb8w9rjvlhvvgv33cdmy"))))
+                "1r9v8v41n0yrgwsqaksskmdgb9vyw1sb92xh81bwrv2ag3p5vdg7"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1286,7 +1258,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xzyi4mgyifwc6dppdzh6jq294mkj0a71cwkqw2ymz1kfbksw626"))))
+                "0lcy1av7ixg1f7arflk50jllpc1749sfvf3h62hkxsz97wkr97xj"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -2006,7 +1978,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "41")
+    (version "42")
     (source
      (origin
        (method url-fetch)
@@ -2017,7 +1989,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "1i78im03kx6vp5yml0fiwvqnic8qhczl1893n8zc6l1gblwikqhw"))))
+        (base32 "02p5ar1cqwn70dw5xzx5v3qhm1p1xgb1xpzs1ljklcxjda2f6zvk"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -2681,7 +2653,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.30.0")
+    (version "0.31.0")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2689,7 +2661,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1fbws80glrakd08xzhifna831yk0bd8b0cizhfcjkg4km2nyx65c"))
+                "1cidv2373lwxy26kbzg4slaqvn2gpq67mvijgp0rydfx6mm6a89i"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
@@ -3272,6 +3244,8 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
                   (guix build utils))
       #:configure-flags
       #~(list "--disable-static"
+              (string-append "--with-vimdir=" #$output
+                             "/share/vim/vimfiles/pack/guix/start/poke")
               (string-append "--with-lispdir="
                              (emacs:elpa-directory #$output)))))
     (home-page "https://www.gnu.org/software/poke/#documentation")
@@ -4300,7 +4274,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.6.2")
+    (version "0.7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4308,7 +4282,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "0szq3wr7i7gwm8llgbhssjb63q70rjqqdlj6078vs110waih16p2"))))
+                "0ajqng66b01phs0hjygg9phyc8p3fs0a1isbc0zmxdz2bas3zzzw"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -4320,11 +4294,13 @@ form, numpad.
               "-Duse_sys_libzip=enabled"
               "-Duse_sys_zlib=enabled"
               "-Duse_sys_lz4=enabled"
+              "-Duse_sys_libzstd=enabled"
               "-Duse_sys_xxhash=enabled"
               "-Duse_sys_openssl=enabled"
               "-Duse_sys_tree_sitter=enabled"
               "-Duse_sys_lzma=enabled"
               "-Duse_sys_libmspack=enabled"
+              "-Duse_sys_pcre2=enabled"
               "-Duse_zlib=true"
               "-Duse_lzma=true"
               "-Dinstall_sigdb=false"
@@ -4340,8 +4316,7 @@ form, numpad.
                 (("subdir\\('integration'\\)") ""))
               ;;; Skip failing tests.
               (substitute* "test/unit/meson.build"
-                (("'bin_mach0',\n") "")
-                (("'hash',\n") "")))))))
+                (("'bin_mach0',\n") "")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list capstone
@@ -4350,9 +4325,11 @@ form, numpad.
            libzip
            lz4
            openssl
+           pcre2
            tree-sitter
            xxhash
            zlib
+           (list zstd "lib")
            libmspack))
     (home-page "https://rizin.re")
     (synopsis "Disassemble, debug, analyze, and manipulate binary files")

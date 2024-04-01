@@ -26,6 +26,7 @@
 
 (define-module (gnu packages logging)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
@@ -213,7 +214,7 @@ output in multiple windows in a terminal.")
 (define-public spdlog
   (package
     (name "spdlog")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -221,18 +222,19 @@ output in multiple windows in a terminal.")
              (url "https://github.com/gabime/spdlog")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (patches (search-patches "spdlog-fix-tests.patch"))
        (sha256
-        (base32 "0yyncv6wjs5rqm76rkqyxpfbsingk1dq5zfcqhy1a7fpw8xdl53k"))))
+        (base32 "0zgdmdgnp2y36jrlk85d4fiyjkjd6anly8pambyc3f3v6sg02zyy"))))
     (build-system cmake-build-system)
     ;; TODO run benchmark. Currently not possible, as adding
     ;; (gnu packages benchmark) forms a dependency cycle
     (arguments
-     '(#:configure-flags
-       (list "-DSPDLOG_BUILD_BENCH=OFF"
-             "-DSPDLOG_BUILD_SHARED=ON"
-             "-DSPDLOG_BUILD_TESTS=ON")))
-    (native-inputs (list catch2-3.3))
+     (list #:configure-flags
+           #~(list "-DSPDLOG_BUILD_BENCH=OFF"
+                   "-DSPDLOG_BUILD_SHARED=ON"
+                   #$@(if (%current-target-system)
+                          '()
+                          '("-DSPDLOG_BUILD_TESTS=ON")))))
+    (native-inputs (list catch2-3))
     (home-page "https://github.com/gabime/spdlog")
     (synopsis "Fast C++ logging library")
     (description "Spdlog is a very fast header-only/compiled C++ logging

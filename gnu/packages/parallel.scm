@@ -12,6 +12,7 @@
 ;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,14 +65,14 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20231222")
+    (version "20240222")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "1alvva2dlnlq5rbbklzc2a7l84mg550l1xc632zdgfx9dzf6sihr"))
+       (base32 "0ml5xicx4lwg2irhl38pdysmq1rmgxcn3m7pjci653r3grm9p87b"))
       (snippet
        '(begin
           (use-modules (guix build utils))
@@ -143,11 +144,11 @@ and they are executed on lists of files, hosts, users or other items.")
         (base32 "1ijvf7q5pxk4rlj7p9q6fmpdqiwmc28gffkk6yg390k1a1z3msf9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" %output))
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list #:tests? #f
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
     (synopsis "Execute a command for every argument")
     (description
      "The xe utility constructs command lines from specified arguments,

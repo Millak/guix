@@ -3,6 +3,7 @@
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -328,7 +329,11 @@ Relogin="              (if (sddm-configuration-relogin? config)
                           (service-extension account-service-type
                                              (const %sddm-accounts))
                           (service-extension profile-service-type
-                                             sddm-profile-service)))
+                                             sddm-profile-service)
+                          (service-extension localed-service-type
+                                             (compose
+                                              xorg-configuration-keyboard-layout
+                                              sddm-configuration-xorg))))
                   (default-value (sddm-configuration))
                   (description
                    "Run SDDM, a display and log-in manager for X11 and

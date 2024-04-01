@@ -1,8 +1,7 @@
 ;;; -*- mode: scheme; -*-
 ;;; JSON extracted from an actual Jami account and processed with
 ;;; Emacs/guile-json.
-(define %jami-account-content-sexp
-  '(("RINGCAKEY" . "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRd0lCQURBTkJna3F\
+(("RINGCAKEY" . "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRd0lCQURBTkJna3F\
 oa2lHOXcwQkFRRUZBQVNDQ1Mwd2dna3BBZ0VBQW9JQ0FRQzBxWUozSkYvTzhQRGEKRnUwRnpRcHBCaD\
 gybGJMdURrNTlVU0I0MUJSaS9kdDZGV1BRN29YOVpsY25vNGZzM2dmUHQ0dU1hRVBkVFBGKwowbGN2Q\
 jc2cytQTEFlcjlOZGpVQzQ2ZXp0UnNiNE9aQXc4ZUk1M3EwSU04QWJFd0o0ZjllLzBmQUFueHgrK3Qw\
@@ -58,7 +57,7 @@ TUNPaHdxN21xYXRUVnNrawpTRDNySmkrTFR6a2Y4OEx1bjZZNjdiaFNOTWpKZkFaUXNQc0FTRkJBUTJ\
 rQnE5alRLZGVuaU4yYTJIbm0xNCtrCnJDeU9ZVE14Q2hQbWNpS25pVy9MWnFUL0U1dlNRUGdBVzc0dT\
 VLazJoSjRBajNjRW9NVEwxSytZbStWYWh2U0cKTi8xOFdYQ1JRQkg1d0p2eXJYczBtT29GQlRnTWg4d\
 z0KLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQo=")
-    ("ringAccountKey" . "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRUUlCQURBTk\
+ ("ringAccountKey" . "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRUUlCQURBTk\
 Jna3Foa2lHOXcwQkFRRUZBQVNDQ1Nzd2dna25BZ0VBQW9JQ0FRRDNCdDRnOUVUdk9EVnYKM3hWV0ZlS\
 1Nnbk5uVEF3S2dYa3IrQ1FhdU8vTGZWM01RenNSNHliL3hoaWhhb1Z2c2FtZ3ZRU1haL0M1R3I5QQpE\
 YlAxbHNHclRCK1pXMC9uMXVEb3hmVWdZRWY3SGtVanJtdVFjUGlFWGlUVkNiY002U0NzdVNrMnRxdE1\
@@ -114,7 +113,7 @@ KMTlPd09oZ1lGcjFheGQvNXd2VgpURjNoVlQwbFZGN2RyRC9iMHZOcmxnbUNjbEk4UDg1a2dkRUhZbG\
 ZtTFoxeXJIMkNXVy9SS0lsWk9ZdFVuNFNpCkp5a2VlNDROWElXU3ovalRBdFRta3VQTzRvUjF5d3dRc\
 jdhUTF5a3hRVm9rVm5vY2xqU0tyQlk4R294a0I0eDIKUDNrb3F1UnkvcUd3QzBnN1o4ZjBTQjNQZVZt\
 eQotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg==")
-    ("ringAccountCert" . "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZXakNDQTBLZ\
+ ("ringAccountCert" . "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZXakNDQTBLZ\
 0F3SUJBZ0lJRm1tNmZuaWRndEl3RFFZSktvWklodmNOQVFFTUJRQXdUREVRTUE0R0ExVUUKQXhNSFNt\
 RnRhU0JEUVRFNE1EWUdDZ21TSm9tVDhpeGtBUUVUS0RjNVpqSTJaVFZpWTJNeU9EWXlPREppT0dFMwp\
 PRFF6TUdOak1EWXpNakV4T1RFNFkyWm1PVGd3SGhjTk1qRXdOREUyTVRjek1qRXdXaGNOTXpFd05ERT\
@@ -180,17 +179,17 @@ OFY2cWM2bXZTbUFXa25nL3QwaStXVmdGVkZuZFQrQ0oyNTJsa0ZacGljdAp6ekdETW44VUNDRUp4TDR\
 KTklTM2lLOUhlRys2MlZuay9QOEM3YVpLSXpVdjFud25rcVdUUUFYWDBKckJGdDdICjI5ZDk1RElmRT\
 RuT0FyS0JFNHc2Z1R4SU1uZzVzWi9ZbDFjcG5wUHlsR3VICi0tLS0tRU5EIENFUlRJRklDQVRFLS0tL\
 S0K")
-    ("ethKey" . "fN8cOT1lYNziaW0+pjBIgZ8r6+zMMhHsukkWBNPDsFo=")
-    ("TURN.username" . "ring")
-    ("TURN.server" . "turn.jami.net")
-    ("TURN.realm" . "ring")
-    ("TURN.password" . "ring")
-    ("TURN.enable" . "true")
-    ("TLS.verifyServer" . "true")
-    ("TLS.verifyClient" . "true")
-    ("TLS.serverName" . "")
-    ("TLS.requireClientCertificate" . "true")
-    ("TLS.privateKeyFile" . "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRd0lCQU\
+ ("ethKey" . "fN8cOT1lYNziaW0+pjBIgZ8r6+zMMhHsukkWBNPDsFo=")
+ ("TURN.username" . "ring")
+ ("TURN.server" . "turn.jami.net")
+ ("TURN.realm" . "ring")
+ ("TURN.password" . "ring")
+ ("TURN.enable" . "true")
+ ("TLS.verifyServer" . "true")
+ ("TLS.verifyClient" . "true")
+ ("TLS.serverName" . "")
+ ("TLS.requireClientCertificate" . "true")
+ ("TLS.privateKeyFile" . "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRd0lCQU\
 RBTkJna3Foa2lHOXcwQkFRRUZBQVNDQ1Mwd2dna3BBZ0VBQW9JQ0FRQzM5b1Z0cXNtUGdaSUgKcHpTV\
 GtlT3BlWC9CSEx2KzFTYnJPSFpVRHEwNFZCUU5BNmJmSFNSWTJpbHE1WEVheXNVSmwzQmsvM0txZEhS\
 cQpEV01wQ1dpcE1Vc2FwSGxJR0tSWHEwbXhQZ29WODZSUVBub1dCRTdhWVVEZTlJZXlxMmllZXpDK1l\
@@ -246,11 +245,11 @@ mNUloSWU0RUtZUE5VUXNua0tSVTlxUApzWi9idXBXc2w4bWVFcko3bllJQ05ucHpnSHRpNXdSMlliVF\
 VXT01odmRFUldxMnhTV3BBYmtNMElhZDBUc05kCmUrYVRQVmJOMXFibFZLMm1qUTl2YS9JSkVuSE51V\
 E9TREtJeUpvcVArQkxiRTVjQU5acXQ2OFFadWdOc2RxNHkKV2FoeStydU5LS1F3Mk5MYzQzZUtsNmxv\
 bXdtRlFZOD0KLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQo=")
-    ("TLS.password" . "")
-    ("TLS.negotiationTimeoutSec" . "-1")
-    ("TLS.method" . "Automatic")
-    ("TLS.ciphers" . "")
-    ("TLS.certificateFile" . "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZHVENDQ\
+ ("TLS.password" . "")
+ ("TLS.negotiationTimeoutSec" . "-1")
+ ("TLS.method" . "Automatic")
+ ("TLS.ciphers" . "")
+ ("TLS.certificateFile" . "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZHVENDQ\
 XdHZ0F3SUJBZ0lJU1pUdlZPQnh3akF3RFFZSktvWklodmNOQVFFTUJRQXdTVEVOTUFzR0ExVUUKQXhN\
 RVNtRnRhVEU0TURZR0NnbVNKb21UOGl4a0FRRVRLR1l6TXpRMVpqSTNOelZrWkdabE1EZGhOR0l3WkR\
 rMQpaR0ZsWVRFeE1XUXhOV1ppWXpFeE9Ua3dIaGNOTWpFd05ERTJNVGN6TWpFd1doY05NekV3TkRFME\
@@ -346,47 +345,47 @@ lzVXFsVHVncXhtM2xDOUhzaDM2UFJLNURDUG93eHVUNlgKcXo1M1ZiN2h6TkxLelpiRlJzbUdFOFY2c\
 WM2bXZTbUFXa25nL3QwaStXVmdGVkZuZFQrQ0oyNTJsa0ZacGljdAp6ekdETW44VUNDRUp4TDRKTklT\
 M2lLOUhlRys2MlZuay9QOEM3YVpLSXpVdjFud25rcVdUUUFYWDBKckJGdDdICjI5ZDk1RElmRTRuT0F\
 yS0JFNHc2Z1R4SU1uZzVzWi9ZbDFjcG5wUHlsR3VICi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K")
-    ("STUN.server" . "")
-    ("STUN.enable" . "false")
-    ("SRTP.rtpFallback" . "false")
-    ("SRTP.keyExchange" . "sdes")
-    ("SRTP.enable" . "true")
-    ("RingNS.uri" . "")
-    ("RingNS.account" . "0790738ce15fa05933b49dd77034312787da86c3")
-    ("DHT.PublicInCalls" . "true")
-    ("Account.videoPortMin" . "49152")
-    ("Account.videoPortMax" . "65534")
-    ("Account.videoEnabled" . "true")
-    ("Account.username" . "f3345f2775ddfe07a4b0d95daea111d15fbc1199")
-    ("Account.useragent" . "")
-    ("Account.upnpEnabled" . "true")
-    ("Account.type" . "RING")
-    ("Account.ringtoneEnabled" . "true")
-    ("Account.rendezVous" . "true")
-    ("Account.publishedSameAsLocal" . "true")
-    ("Account.publishedPort" . "5060")
-    ("Account.publishedAddress" . "")
-    ("Account.presenceSubscribeSupported" . "true")
-    ("Account.peerDiscovery" . "false")
-    ("Account.managerUsername" . "")
-    ("Account.managerUri" . "")
-    ("Account.mailbox" . "")
-    ("Account.localModeratorsEnabled" . "true")
-    ("Account.localInterface" . "default")
-    ("Account.hostname" . "bootstrap.jami.net")
-    ("Account.hasCustomUserAgent" . "false")
-    ("Account.enable" . "true")
-    ("Account.dtmfType" . "overrtp")
-    ("Account.displayName" . "dummy")
-    ("Account.defaultModerators" . "")
-    ("Account.audioPortMin" . "16384")
-    ("Account.audioPortMax" . "32766")
-    ("Account.archiveHasPassword" . "false")
-    ("Account.allowCertFromTrusted" . "true")
-    ("Account.allowCertFromHistory" . "true")
-    ("Account.allowCertFromContact" . "true")
-    ("Account.allModeratorEnabled" . "true")
-    ("Account.alias" . "dummy")
-    ("Account.activeCallLimit" . "-1")
-    ("Account.accountPublish" . "false")
-    ("Account.accountDiscovery" . "false")))
+ ("STUN.server" . "")
+ ("STUN.enable" . "false")
+ ("SRTP.rtpFallback" . "false")
+ ("SRTP.keyExchange" . "sdes")
+ ("SRTP.enable" . "true")
+ ("RingNS.uri" . "")
+ ("RingNS.account" . "0790738ce15fa05933b49dd77034312787da86c3")
+ ("DHT.PublicInCalls" . "true")
+ ("Account.videoPortMin" . "49152")
+ ("Account.videoPortMax" . "65534")
+ ("Account.videoEnabled" . "true")
+ ("Account.username" . "f3345f2775ddfe07a4b0d95daea111d15fbc1199")
+ ("Account.useragent" . "")
+ ("Account.upnpEnabled" . "true")
+ ("Account.type" . "RING")
+ ("Account.ringtoneEnabled" . "true")
+ ("Account.rendezVous" . "true")
+ ("Account.publishedSameAsLocal" . "true")
+ ("Account.publishedPort" . "5060")
+ ("Account.publishedAddress" . "")
+ ("Account.presenceSubscribeSupported" . "true")
+ ("Account.peerDiscovery" . "false")
+ ("Account.managerUsername" . "")
+ ("Account.managerUri" . "")
+ ("Account.mailbox" . "")
+ ("Account.localModeratorsEnabled" . "true")
+ ("Account.localInterface" . "default")
+ ("Account.hostname" . "bootstrap.jami.net")
+ ("Account.hasCustomUserAgent" . "false")
+ ("Account.enable" . "true")
+ ("Account.dtmfType" . "overrtp")
+ ("Account.displayName" . "dummy")
+ ("Account.defaultModerators" . "")
+ ("Account.audioPortMin" . "16384")
+ ("Account.audioPortMax" . "32766")
+ ("Account.archiveHasPassword" . "false")
+ ("Account.allowCertFromTrusted" . "true")
+ ("Account.allowCertFromHistory" . "true")
+ ("Account.allowCertFromContact" . "true")
+ ("Account.allModeratorEnabled" . "true")
+ ("Account.alias" . "dummy")
+ ("Account.activeCallLimit" . "-1")
+ ("Account.accountPublish" . "false")
+ ("Account.accountDiscovery" . "false"))

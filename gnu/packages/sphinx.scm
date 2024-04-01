@@ -18,6 +18,7 @@
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -371,6 +372,48 @@ math in HTML via JavaScript.")
 Blog, News or Announcements section to a Sphinx website.")
     (home-page "https://bitbucket.org/prometheus/sphinxcontrib-newsfeed")
     (license license:bsd-2)))
+
+(define-public python-sphinx-issues
+  (package
+    (name "python-sphinx-issues")
+    (version "4.0.0")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sloria/sphinx-issues")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q4as8gibvin0n6h5y1q4cwz3b1nwgs0idfc94dbndx42pjiz1vn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'patch-sphinx-build-path
+                     (lambda _
+                       ;; The path to the sphinx-build binary is hardcoded to
+                       ;; be in the same directory as the python
+                       ;; executable. That does not work when building the
+                       ;; package.
+                       (substitute* "tests/test_sphinx_issues.py"
+                         (((string-append "Path\\(sys\\.executable\\)"
+                                          "\\.parent\\.joinpath\\"
+                                          "(\"sphinx-build\"\\)"))
+                          (string-append "\""
+                                         #$(this-package-native-input
+                                            "python-sphinx")
+                                         "/bin/sphinx-build\""))))))))
+    (native-inputs (list python-flit-core python-pytest python-sphinx))
+    (home-page "https://github.com/sloria/sphinx-issues")
+    (synopsis "Sphinx extension for linking to a project's issue tracker")
+    (description
+     "This package provides a Sphinx extension for linking to a project's
+issue tracker.  This includes roles for linking to issues, pull requests and
+user profiles.  Support for GitHub is built-in, but other services can also be
+supported with @code{sphinx-issues}.")
+    (license license:expat)))
 
 (define-public python-sphinx-panels
   (package

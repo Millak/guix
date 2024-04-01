@@ -22,7 +22,7 @@
 @set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
-Copyright @copyright{} 2012-2023 Ludovic Courtès@*
+Copyright @copyright{} 2012-2024 Ludovic Courtès@*
 Copyright @copyright{} 2013, 2014, 2016 Andreas Enge@*
 Copyright @copyright{} 2013 Nikita Karetnikov@*
 Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
@@ -43,7 +43,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
 Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@*
 Copyright @copyright{} 2017, 2018, 2020, 2021, 2022 Mathieu Othacehe@*
 Copyright @copyright{} 2017 Federico Beffa@*
-Copyright @copyright{} 2017, 2018 Carlo Zancanaro@*
+Copyright @copyright{} 2017, 2018, 2024 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
@@ -56,7 +56,7 @@ Copyright @copyright{} 2017 Andy Wingo@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2023 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
-Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*
+Copyright @copyright{} 2018, 2021, 2023 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
@@ -111,7 +111,7 @@ Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
 Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
-Copyright @copyright{} 2023 Giacomo Leidi@*
+Copyright @copyright{} 2023-2024 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
@@ -122,6 +122,9 @@ Copyright @copyright{} 2023 Felix Lechner@*
 Copyright @copyright{} 2023 Foundation Devices, Inc.@*
 Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2023 Saku Laesvuori@*
+Copyright @copyright{} 2023 Graham James Addis@*
+Copyright @copyright{} 2023 Tomas Volf@*
+Copyright @copyright{} 2024 Herman Rimm@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -355,6 +358,7 @@ Foreign Architectures
 
 System Configuration
 
+* Getting Started with the System:: Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
@@ -730,14 +734,17 @@ ready to use it.
 
 @cindex installing Guix from binaries
 @cindex installer script
-This section describes how to install Guix on an arbitrary system from a
-self-contained tarball providing binaries for Guix and for all its
-dependencies.  This is often quicker than installing from source, which
-is described in the next sections.  The only requirement is to have
-GNU@tie{}tar and Xz.
+This section describes how to install Guix from a self-contained tarball
+providing binaries for Guix and for all its dependencies.  This is often
+quicker than installing from source, which is described in the next
+sections.  Binary installation requires a system using a Hurd or Linux
+kernel; the GNU@tie{}tar and Xz commands must also be available.
+
+@quotation Important
+This section only applies to systems without Guix.  Following it for
+existing Guix installations will overwrite important system files.
 
 @c Note duplicated from the ``Installation'' node.
-@quotation Note
 We recommend the use of this
 @uref{https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh,
 shell installer script}.  The script automates the download, installation, and
@@ -1294,6 +1301,11 @@ The chroot does not contain a @file{/home} directory, and the @env{HOME}
 environment variable is set to the non-existent
 @file{/homeless-shelter}.  This helps to highlight inappropriate uses of
 @env{HOME} in the build scripts of packages.
+
+All this usually enough to ensure details of the environment do not
+influence build processes.  In some exceptional cases where more control
+is needed---typically over the date, kernel, or CPU---you can resort to
+a virtual build machine (@pxref{build-vm, virtual build machines}).
 
 You can influence the directory where the daemon stores build trees
 @i{via} the @env{TMPDIR} environment variable.  However, the build tree
@@ -2716,20 +2728,20 @@ the Cryptsetup/LUKS utilities to do that (see @inlinefmtifelse{html,
 @code{man cryptsetup}} for more information).
 
 @quotation Warning
-Note that GRUB can unlock LUKS2 devices since version 2.06, but only
-supports the PBKDF2 key derivation function, which is not the default
-for @command{cryptsetup luksFormat}.  You can check which key derivation
-function is being used by a device by running @command{cryptsetup
-luksDump @var{device}}, and looking for the PBKDF field of your
-keyslots.
+While efforts are in progress to extend support to LUKS2, please note
+that Guix only supports devices of type LUKS1 at the moment. You can
+verify that your existing LUKS device is of the right type by running
+@command{cryptsetup luksDump @var{device}}. Alternatively, you can
+create a new LUKS1 device with @command{cryptsetup luksFormat --type
+luks1 @var{device}}.
 @end quotation
 
 Assuming you want to store the root partition on @file{/dev/sda2}, the
-command sequence to format it as a LUKS2 partition would be along these
+command sequence to format it as a LUKS1 partition would be along these
 lines:
 
 @example
-cryptsetup luksFormat --type luks2 --pbkdf pbkdf2 /dev/sda2
+cryptsetup luksFormat --type luks1 /dev/sda2
 cryptsetup open /dev/sda2 my-partition
 mkfs.ext4 -L my-root /dev/mapper/my-partition
 @end example
@@ -2868,8 +2880,8 @@ unless your configuration specifies otherwise
 @node After System Installation
 @section After System Installation
 
-Success, you've now booted into Guix System!  From then on, you can update the
-system whenever you want by running, say:
+Success, you've now booted into Guix System!  You can upgrade the system
+whenever you want by running:
 
 @example
 guix pull
@@ -2877,24 +2889,10 @@ sudo guix system reconfigure /etc/config.scm
 @end example
 
 @noindent
-This builds a new system generation with the latest packages and services
-(@pxref{Invoking guix system}).  We recommend doing that regularly so that
-your system includes the latest security updates (@pxref{Security Updates}).
+This builds a new system @dfn{generation} with the latest packages and
+services.
 
-@c See <https://lists.gnu.org/archive/html/guix-devel/2019-01/msg00268.html>.
-@quotation Note
-@cindex sudo vs. @command{guix pull}
-Note that @command{sudo guix} runs your user's @command{guix} command and
-@emph{not} root's, because @command{sudo} leaves @env{PATH} unchanged.  To
-explicitly run root's @command{guix}, type @command{sudo -i guix @dots{}}.
-
-The difference matters here, because @command{guix pull} updates
-the @command{guix} command and package definitions only for the user it is run
-as.  This means that if you choose to use @command{guix system reconfigure} in
-root's login shell, you'll need to @command{guix pull} separately.
-@end quotation
-
-Now, @pxref{Getting Started}, and
+Now, @pxref{Getting Started with the System}, and
 join us on @code{#guix} on the Libera Chat IRC network or on
 @email{guix-devel@@gnu.org} to share your experience!
 
@@ -2935,7 +2933,7 @@ Boot the USB installation image in an VM:
 qemu-system-x86_64 -m 1024 -smp 1 -enable-kvm \
   -nic user,model=virtio-net-pci -boot menu=on,order=d \
   -drive file=guix-system.img \
-  -drive media=cdrom,file=guix-system-install-@value{VERSION}.@var{system}.iso
+  -drive media=cdrom,readonly=on,file=guix-system-install-@value{VERSION}.@var{system}.iso
 @end example
 
 @code{-enable-kvm} is optional, but significantly improves performance,
@@ -3148,22 +3146,9 @@ sudo guix system reconfigure /etc/config.scm
 @end example
 
 Upon completion, the system runs the latest versions of its software
-packages.  When you eventually reboot, you'll notice a sub-menu in the
-bootloader that reads ``Old system generations'': it's what allows you
-to boot @emph{an older generation of your system}, should the latest
-generation be ``broken'' or otherwise unsatisfying.  Just like for
-packages, you can always @emph{roll back} to a previous generation
-@emph{of the whole system}:
-
-@example
-sudo guix system roll-back
-@end example
-
-There are many things you'll probably want to tweak on your system:
-adding new user accounts, adding new system services, fiddling with the
-configuration of those services, etc.  The system configuration is
-@emph{entirely} described in the @file{/etc/config.scm} file.
-@xref{Using the Configuration System}, to learn how to change it.
+packages.  Just like for packages, you can always @emph{roll back} to a
+previous generation @emph{of the whole system}.  @xref{Getting Started
+with the System}, to learn how to manage your system.
 
 Now you know enough to get started!
 
@@ -3272,7 +3257,7 @@ out to have a serious bug, users may roll back to the previous instance
 of their profile, which was known to work well.  Similarly, the global
 system configuration on Guix is subject to
 transactional upgrades and roll-back
-(@pxref{Using the Configuration System}).
+(@pxref{Getting Started with the System}).
 
 All packages in the package store may be @emph{garbage-collected}.
 Guix can determine which packages are still referenced by user
@@ -3460,7 +3445,7 @@ Install the package @var{exp} evaluates to.
 @var{exp} must be a Scheme expression that evaluates to a
 @code{<package>} object.  This option is notably useful to disambiguate
 between same-named variants of a package, with expressions such as
-@code{(@@ (gnu packages base) guile-final)}.
+@code{(@@ (gnu packages commencement) guile-final)}.
 
 Note that this option installs the first output of the specified
 package, which may be insufficient when needing a specific output of a
@@ -4353,7 +4338,7 @@ There are several such multiple-output packages in the GNU distribution.
 Other conventional output names include @code{lib} for libraries and
 possibly header files, @code{bin} for stand-alone programs, and
 @code{debug} for debugging information (@pxref{Installing Debugging
-Files}).  The outputs of a packages are listed in the third column of
+Files}).  The outputs of a package are listed in the third column of
 the output of @command{guix package --list-available} (@pxref{Invoking
 guix package}).
 
@@ -4742,7 +4727,9 @@ the user's @file{~/.config/guix/channels.scm} file, unless @option{-q}
 is passed;
 @item
 the system-wide @file{/etc/guix/channels.scm} file, unless @option{-q}
-is passed;
+is passed (on Guix System, this file can be declared in the operating
+system configuration, @pxref{guix-configuration-channels,
+@code{channels} field of @code{guix-configuration}});
 @item
 the built-in default channels specified in the @code{%default-channels}
 variable.
@@ -5001,7 +4988,8 @@ environment} command to spawn an environment in a container running
 @command{guile} (@command{guix environment} has since been subsumed by
 @command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
 DeLorean@footnote{If you don't know what a DeLorean is, consider
-traveling back to the 1980's.}!  The first @command{guix time-machine}
+traveling back to the 1980's. (@uref{https://www.imdb.com/title/tt0088763/,
+Back to the Future (1985)})}!  The first @command{guix time-machine}
 invocation can be expensive: it may have to download or even build a
 large number of packages; the result is cached though and subsequent
 commands targeting the same commit are almost instantaneous.
@@ -5030,21 +5018,21 @@ opens the door to security vulnerabilities.  @xref{Invoking guix pull,
 @option{--allow-downgrades}}.
 @end quotation
 
-Due to @command{guix time-machine} relying on the ``inferiors''
-mechanism (@pxref{Inferiors}), the oldest commit it can travel to is
-commit @samp{6298c3ff} (``v1.0.0''), dated May 1@sup{st}, 2019, which is
-the first release that included the inferiors mechanism.  An error is
-returned when attempting to navigate to older commits.
+@c Keep this paragraph in sync with 'time-machine.scm'.
+@command{guix time-machine} raises an error when attempting to travel to
+commits older than ``v0.16.0'' (commit @samp{4a0b87f0}), dated
+Dec.@: 2018.  This is one of the oldest commits supporting the channel
+mechanism that makes ``time travel'' possible.
 
 @quotation Note
 Although it should technically be possible to travel to such an old
 commit, the ease to do so will largely depend on the availability of
 binary substitutes.  When traveling to a distant past, some packages may
 not easily build from source anymore.  One such example are old versions
-of Python 2 which had time bombs in its test suite, in the form of
-expiring SSL certificates.  This particular problem can be worked around
-by setting the hardware clock to a value in the past before attempting
-the build.
+of OpenSSL whose tests would fail after a certain date.  This particular
+problem can be worked around by running a @dfn{virtual build machine}
+with its clock set to the right time (@pxref{build-vm, Virtual Build
+Machines}).
 @end quotation
 
 The general syntax is:
@@ -5511,16 +5499,16 @@ $ wget -O - \
 @cindex configuration file for channels
 @cindex @command{guix pull}, configuration file
 @cindex configuration of @command{guix pull}
-Guix and its package collection are updated by running @command{guix pull}
-(@pxref{Invoking guix pull}).  By default @command{guix pull} downloads and
-deploys Guix itself from the official GNU@tie{}Guix repository.  This can be
-customized by defining @dfn{channels} in the
-@file{~/.config/guix/channels.scm} file.  A channel specifies a URL and branch
-of a Git repository to be deployed, and @command{guix pull} can be instructed
-to pull from one or more channels.  In other words, channels can be used
-to @emph{customize} and to @emph{extend} Guix, as we will see below.
-Guix is able to take into account security concerns and deal with authenticated
-updates.
+Guix and its package collection are updated by running @command{guix
+pull}.  By default @command{guix pull} downloads and deploys Guix itself
+from the official GNU@tie{}Guix repository.  This can be customized by
+providing a file specifying the set of @dfn{channels} to pull from
+(@pxref{Invoking guix pull}).  A channel
+specifies the URL and branch of a Git repository to be deployed, and
+@command{guix pull} can be instructed to pull from one or more channels.
+In other words, channels can be used to @emph{customize} and to
+@emph{extend} Guix, as we will see below.  Guix is able to take into
+account security concerns and deal with authenticated updates.
 
 @menu
 * Specifying Additional Channels::  Extending the package collection.
@@ -7160,7 +7148,7 @@ What if the recipient of your pack does not have root privileges on
 their machine, and thus cannot unpack it in the root file system?  In
 that case, you will want to use the @option{--relocatable} option (see
 below).  This option produces @dfn{relocatable binaries}, meaning they
-they can be placed anywhere in the file system hierarchy: in the example
+can be placed anywhere in the file system hierarchy: in the example
 above, users can unpack your tarball in their home directory and
 directly run @file{./opt/gnu/bin/guile}.
 
@@ -7406,7 +7394,7 @@ execution engines listed above by setting the
 @env{GUIX_EXECUTION_ENGINE} environment variable accordingly.
 @end quotation
 
-@cindex entry point, for Docker images
+@cindex entry point, for Docker and Singularity images
 @item --entry-point=@var{command}
 Use @var{command} as the @dfn{entry point} of the resulting pack, if the pack
 format supports it---currently @code{docker} and @code{squashfs} (Singularity)
@@ -7428,6 +7416,41 @@ arguments will spawn @code{bin/guile}:
 docker load -i pack.tar.gz
 docker run @var{image-id}
 @end example
+
+@cindex entry point arguments, for docker images
+@item --entry-point-argument=@var{command}
+@itemx -A @var{command}
+Use @var{command} as an argument to @dfn{entry point} of the resulting pack.
+This option is only valid in conjunction with @code{--entry-point} and can
+appear multiple times on the command line.
+
+@example
+guix pack -f docker --entry-point=bin/guile --entry-point-argument="--help" guile
+@end example
+
+@cindex maximum layers argument, for docker images
+@item --max-layers=@code{n}
+Specifies the maximum number of Docker image layers allowed when
+building an image.
+
+@example
+guix pack -f docker --max-layers=100 guile
+@end example
+
+This option allows you to limit the number of layers in a Docker image.
+Docker images are comprised of multiple layers, and each layer adds to
+the overall size and complexity of the image.  By setting a maximum
+number of layers, you can control the following effects:
+
+@itemize
+@item Disk Usage:
+Increasing the number of layers can help optimize the disk space
+required to store multiple images built with a similar package graph.
+
+@item Pulling:
+When transferring images between different nodes or systems, having more
+layers can reduce the time required to pull the image.
+@end itemize
 
 @item --expression=@var{expr}
 @itemx -e @var{expr}
@@ -7611,6 +7634,9 @@ contain OpenPGP public keys in @file{.key} files, either in binary form
 or ``ASCII-armored''.  By default the keyring is loaded from the branch
 named @code{keyring}.
 
+@item --end=@var{commit}
+Authenticate revisions up to @var{commit}.
+
 @item --stats
 Display commit signing statistics upon completion.
 
@@ -7656,7 +7682,8 @@ assembly is to C programs.  The term ``derivation'' comes from the fact
 that build results @emph{derive} from them.
 
 This chapter describes all these APIs in turn, starting from high-level
-package definitions.
+package definitions.  @xref{Source Tree Structure}, for a more general
+overview of the source code.
 
 @menu
 * Package Modules::             Packages from the programmer's viewpoint.
@@ -9812,7 +9839,7 @@ MbedTLS package:
                   (("generate_wrapper_header.*")
                    (string-append
                     "generate_wrapper_header(\"MbedTLS\", \""
-                    (assoc-ref inputs "mbedtls-apache") "\")\n"))))
+                    (assoc-ref inputs "mbedtls") "\")\n"))))
               ;; There's a Julia file for each platform, override them all.
               (find-files "src/wrappers/" "\\.jl$"))))
 @end lisp
@@ -10157,8 +10184,8 @@ It also generates font metrics (i.e., @file{.tfm} files) out of Metafont
 files whenever possible.  Likewise, it can also create TeX formats
 (i.e., @file{.fmt} files) listed in the @code{#:create-formats}
 argument, and generate a symbolic link from @file{bin/} directory to any
-script located in located in @file{texmf-dist/scripts/}, provided its
-file name is listed in @code{#:link-scripts} argument.
+script located in @file{texmf-dist/scripts/}, provided its file name is
+listed in @code{#:link-scripts} argument.
 
 The build system adds @code{texlive-bin} from @code{(gnu packages tex)}
 to the native inputs.  It can be overridden with the
@@ -13879,8 +13906,8 @@ happen because the daemon runs builds in containers where, unlike in our
 environment above, network access is missing, @file{/bin/sh} does not
 exist, etc. (@pxref{Build Environment Setup}).
 
-In such cases, you may need to run inspect the build process from within
-a container similar to the one the build daemon creates:
+In such cases, you may need to inspect the build process from within a
+container similar to the one the build daemon creates:
 
 @example
 $ guix build -K foo
@@ -13983,6 +14010,9 @@ the certificates of X.509 authorities from the directory pointed to by
 the @env{SSL_CERT_DIR} environment variable (@pxref{X.509
 Certificates}), unless @option{--no-check-certificate} is used.
 
+Alternatively, @command{guix download} can also retrieve a Git
+repository, possibly a specific commit, tag, or branch.
+
 The following options are available:
 
 @table @code
@@ -14007,6 +14037,26 @@ URL, which makes you vulnerable to ``man-in-the-middle'' attacks.
 @itemx -o @var{file}
 Save the downloaded file to @var{file} instead of adding it to the
 store.
+
+@item --git
+@itemx -g
+Checkout the Git repository at the latest commit on the default branch.
+
+@item --commit=@var{commit-or-tag}
+Checkout the Git repository at @var{commit-or-tag}.
+
+@var{commit-or-tag} can be either a tag or a commit defined in the Git
+repository.
+
+@item --branch=@var{branch}
+Checkout the Git repository at @var{branch}.
+
+The repository will be checked out at the latest commit of @var{branch},
+which must be a valid branch of the Git repository.
+
+@item --recursive
+@itemx -r
+Recursively clone the Git repository.
 @end table
 
 @node Invoking guix hash
@@ -14117,12 +14167,21 @@ is a package definition, or a template thereof, in the format we know
 The general syntax is:
 
 @example
-guix import @var{importer} @var{options}@dots{}
+guix import [@var{global-options}@dots{}] @var{importer} @var{package} [@var{options}@dots{}]
 @end example
 
 @var{importer} specifies the source from which to import package
 metadata, and @var{options} specifies a package identifier and other
-options specific to @var{importer}.
+options specific to @var{importer}. @command{guix import} itself has the
+following @var{global-options}:
+
+@table @code
+@item --insert=@var{file}
+@itemx -i @var{file}
+Insert the package definition(s) that the @var{importer} generated into the
+specified @var{file}, either in alphabetical order among existing package
+definitions, or at the end of the file otherwise.
+@end table
 
 Some of the importers rely on the ability to run the @command{gpgv} command.
 For these, GnuPG must be installed and in @code{$PATH}; run @code{guix install
@@ -14258,8 +14317,7 @@ should be checked closely.  If Perl is available in the store, then the
 @code{corelist} utility will be used to filter core modules out of the
 list of dependencies.
 
-The command command below imports metadata for the Acme::Boolean Perl
-module:
+The command below imports metadata for the Acme::Boolean Perl module:
 
 @example
 guix import cpan Acme::Boolean
@@ -14274,7 +14332,7 @@ statistical and graphical environment}.
 
 Information is extracted from the @file{DESCRIPTION} file of the package.
 
-The command command below imports metadata for the Cairo R package:
+The command below imports metadata for the Cairo R package:
 
 @example
 guix import cran Cairo
@@ -14334,10 +14392,10 @@ Information about the package is obtained from the TeX Live package
 database, a plain text file that is included in the
 @code{texlive-scripts} package.  The source code is downloaded from
 possibly multiple locations in the SVN repository of the Tex Live
-project.
+project.  Note that therefore SVN must be installed and in @code{$PATH};
+run @code{guix install subversion} if needed.
 
-The command command below imports metadata for the @code{fontspec}
-TeX package:
+The command below imports metadata for the @code{fontspec} TeX package:
 
 @example
 guix import texlive fontspec
@@ -14549,6 +14607,13 @@ Additional options include:
 Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
+@item --recursive-dev-dependencies
+If @option{--recursive-dev-dependencies} is specified, also the recursively
+imported packages contain their development dependencies, which are recursively
+imported as well.
+@item --allow-yanked
+If no non-yanked version of a crate is available, use the latest yanked
+version instead instead of aborting.
 @end table
 
 @item elm
@@ -15645,7 +15710,7 @@ Coreutils}).
 
 When the given packages are @emph{not} in the store, @command{guix size}
 reports information based on the available substitutes
-(@pxref{Substitutes}).  This makes it possible it to profile disk usage of
+(@pxref{Substitutes}).  This makes it possible to profile the disk usage of
 store items that are not even on disk, only available remotely.
 
 You can also specify several package names:
@@ -16677,6 +16742,20 @@ guix package}).
 This option can be repeated several times, in which case the manifests
 are concatenated.
 
+@item --expression=@var{expr}
+@itemx -e @var{expr}
+Consider the package @var{expr} evaluates to.
+
+A typical use case for this option is specifying a package that is
+hidden and thus cannot be referred to in the usual way, as in this
+example:
+
+@example
+guix weather -e '(@@@@ (gnu packages rust) rust-bootstrap)'
+@end example
+
+This option can be repeated.
+
 @item --coverage[=@var{count}]
 @itemx -c [@var{count}]
 Report on substitute coverage for packages: list packages with at least
@@ -16749,7 +16828,7 @@ ChildCommand: guix offload x86_64-linux 7200 1 28800
 @end example
 
 In this example we see that @command{guix-daemon} has three clients:
-@command{guix environment}, @command{guix publish}, and the Cuirass continuous
+@command{guix shell}, @command{guix publish}, and the Cuirass continuous
 integration tool; their process identifier (PID) is given by the
 @code{ClientPID} field.  The @code{SessionPID} field gives the PID of the
 @command{guix-daemon} sub-process of this particular session.
@@ -16859,6 +16938,7 @@ The available targets are:
    - i686-linux-gnu
    - i686-w64-mingw32
    - mips64el-linux-gnu
+   - or1k-elf
    - powerpc-linux-gnu
    - powerpc64le-linux-gnu
    - riscv64-linux-gnu
@@ -17001,6 +17081,7 @@ instantiated.  Then we show how this mechanism can be extended, for
 instance to support new system services.
 
 @menu
+* Getting Started with the System:: Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
@@ -17021,14 +17102,222 @@ instance to support new system services.
 * Defining Services::           Adding new service definitions.
 @end menu
 
+@node Getting Started with the System
+@section Getting Started
+
+@cindex system configuration file
+@cindex configuration file, of the system
+You're reading this section probably because you have just installed
+Guix System (@pxref{System Installation}) and would like to know where
+to go from here.  If you're already familiar with GNU/Linux system
+administration, the way Guix System is configured is very different from
+what you're used to: you won't install a system service by running
+@command{guix install}, you won't configure services by modifying files
+under @file{/etc}, and you won't create user accounts by invoking
+@command{useradd}; instead, all these aspects are spelled out in a
+@dfn{system configuration file}.
+
+The first step with Guix System is thus to write the @dfn{system
+configuration file}; luckily, system installation already generated one
+for you and stored it under @file{/etc/config.scm}.
+
+@quotation Note
+You can store your system configuration file anywhere you like---it
+doesn't have to be at @file{/etc/config.scm}.  It's a good idea to keep
+it under version control, for instance in a
+@uref{https://git-scm.com/book/en/, Git repository}.
+@end quotation
+
+The @emph{entire} configuration of the system---user accounts, system
+services, timezone, locale settings---is declared in this file, which
+follows this template:
+
+@lisp
+(use-modules (gnu))
+(use-package-modules @dots{})
+(use-service-modules @dots{})
+
+(operating-system
+  (host-name @dots{})
+  (timezone @dots{})
+  (locale @dots{})
+  (bootloader @dots{})
+  (file-systems @dots{})
+  (users @dots{})
+  (packages @dots{})
+  (services @dots{}))
+@end lisp
+
+This configuration file is in fact a Scheme program; the first lines
+pull in modules providing variables you might need in the rest of the
+file---e.g., packages, services, etc.  The @code{operating-system} form
+declares the system configuration as a @dfn{record} with a number of
+@dfn{fields}.  @xref{Using the Configuration System}, to view complete
+examples and learn what to put in there.
+
+The second step, once you have this configuration file, is to test it.
+Of course, you can skip this step if you're feeling lucky---you choose!
+To do that, pass your configuration file to @command{guix system vm} (no
+need to be root, you can do that as a regular user):
+
+@example
+guix system vm /etc/config.scm
+@end example
+
+@noindent
+This command returns the name of a shell script that starts a virtual
+machine (VM) running the system @emph{as described in the configuration
+file}:
+
+@example
+/gnu/store/@dots{}-run-vm.sh
+@end example
+
+@noindent
+In this VM, you can log in as @code{root} with no password.  That's a
+good way to check that your configuration file is correct and that it
+gives the expected result, without touching your system.  @xref{Invoking
+guix system}, for more information.
+
+@quotation Note
+When using @command{guix system vm}, aspects tied to your hardware such
+as file systems and mapped devices are overridden because they cannot be
+meaningfully tested in the VM@.  Other aspects such as static network
+configuration (@pxref{Networking Setup,
+@code{static-networking-service-type}}) are @emph{not} overridden but
+they may not work inside the VM@.
+@end quotation
+
+@cindex system instantiation
+@cindex reconfiguring the system
+The third step, once you're happy with your configuration, is to
+@dfn{instantiate} it---make this configuration effective on your system.
+To do that, run:
+
+@example
+sudo guix system reconfigure /etc/config.scm
+@end example
+
+@cindex upgrading system services
+@cindex system services, upgrading
+@noindent
+This operation is @dfn{transactional}: either it succeeds and you end up
+with an upgraded system, or it fails and nothing has changed.  Note that
+it does @emph{not} restart system services that were already running.
+Thus, to upgrade those services, you have to reboot or to explicitly
+restart them; for example, to restart the secure shell (SSH) daemon, you
+would run:
+
+@example
+sudo herd restart sshd
+@end example
+
+@quotation Note
+System services are managed by the Shepherd (@pxref{Jump Start,,,
+shepherd, The GNU Shepherd Manual}).  The @code{herd} command lets you
+inspect, start, and stop services.  To view the status of services, run:
+
+@example
+sudo herd status
+@end example
+
+To view detailed information about a given service, add its name to the
+command:
+
+@example
+sudo herd status sshd
+@end example
+
+@xref{Services}, for more information.
+@end quotation
+
+@cindex provenance, of the system
+The system records its @dfn{provenance}---the configuration file and
+channels that were used to deploy it.  You can view it like so:
+
+@example
+guix system describe
+@end example
+
+Additionally, @command{guix system reconfigure} preserves previous
+system generations, which you can list:
+
+@example
+guix system list-generations
+@end example
+
+@noindent
+@cindex roll back, for the system
+Crucially, that means that you can always @emph{roll back} to an earlier
+generation should something go wrong!  When you eventually reboot,
+you'll notice a sub-menu in the bootloader that reads ``Old system
+generations'': it's what allows you to boot @emph{an older generation of
+your system}, should the latest generation be ``broken'' or otherwise
+unsatisfying.  You can also ``permanently'' roll back, like so:
+
+@example
+sudo guix system roll-back
+@end example
+
+@noindent
+Alternatively, you can use @command{guix system switch-generation} to
+switch to a specific generation.
+
+Once in a while, you'll want to delete old generations that you do not
+need anymore to allow @dfn{garbage collection} to free space
+(@pxref{Invoking guix gc}).  For example, to remove generations older
+than 4 months, run:
+
+@example
+sudo guix system delete-generations 4m
+@end example
+
+From there on, anytime you want to change something in the system
+configuration, be it adding a user account or changing parameters of a
+service, you will first update your configuration file and then run
+@command{guix system reconfigure} as shown above.
+@cindex upgrade, of the system
+Likewise, to @emph{upgrade} system software, you first fetch an
+up-to-date Guix and then reconfigure your system with that new Guix:
+
+@example
+guix pull
+sudo guix system reconfigure /etc/config.scm
+@end example
+
+@noindent
+We recommend doing that regularly so that your system includes the
+latest security updates (@pxref{Security Updates}).
+
+@c See <https://lists.gnu.org/archive/html/guix-devel/2019-01/msg00268.html>.
+@quotation Note
+@cindex sudo vs. @command{guix pull}
+@command{sudo guix} runs your user's @command{guix} command and
+@emph{not} root's, because @command{sudo} leaves @env{PATH} unchanged.
+
+The difference matters here, because @command{guix pull} updates
+the @command{guix} command and package definitions only for the user it is run
+as.  This means that if you choose to use @command{guix system reconfigure} in
+root's login shell, you'll need to @command{guix pull} separately.
+@end quotation
+
+That's it!  If you're getting started with Guix entirely,
+@pxref{Getting Started}.  The next sections dive in more detail into the
+crux of the matter: system configuration.
+
 @node Using the Configuration System
 @section Using the Configuration System
 
+The previous section showed the overall workflow you would follow when
+administering a Guix System machine (@pxref{Getting Started with the
+System}).  Let's now see in more detail what goes into the system
+configuration file.
+
 The operating system is configured by providing an
 @code{operating-system} declaration in a file that can then be passed to
-the @command{guix system} command (@pxref{Invoking guix system}).  A
-simple setup, with the default Linux-Libre
-kernel, initial RAM disk, and a couple of system services added to those
+the @command{guix system} command (@pxref{Invoking guix system}), as
+we've seen before.  A simple setup, with the default Linux-Libre kernel,
+initial RAM disk, and a couple of system services added to those
 provided by default looks like this:
 
 @findex operating-system
@@ -17036,8 +17325,8 @@ provided by default looks like this:
 @include os-config-bare-bones.texi
 @end lisp
 
-The configuration is declarative and hopefully mostly self-describing.
-It is actually code in the Scheme programming language; the whole
+The configuration is declarative.
+It is code in the Scheme programming language; the whole
 @code{(operating-system @dots{})} expression produces a @dfn{record}
 with a number of @dfn{fields}.
 Some of the fields defined
@@ -17046,16 +17335,21 @@ Others, such as @code{packages} and @code{services}, can be omitted, in
 which case they get a default value.  @xref{operating-system Reference},
 for details about all the available fields.
 
-Below we discuss the effect of some of the most important fields,
-and how to @dfn{instantiate} the operating system using
-@command{guix system}.
+Below we discuss the meaning of some of the most important fields.
 
-@quotation Do not panic
-@cindex Scheme programming language, getting started
-Intimidated by the Scheme language or curious about it?  The Cookbook
-has a short section to get started that explains the fundamentals, which
-you will find helpful when hacking your configuration.  @xref{A Scheme
-Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
+@quotation Troubleshooting
+The configuration file is a Scheme program and you might get the syntax
+or semantics wrong as you get started.  Syntactic issues such as
+misplaced parentheses can often be identified by reformatting your file:
+
+@example
+guix style -f config.scm
+@end example
+
+The Cookbook has a short section to get started with the Scheme
+programming language that explains the fundamentals, which you will find
+helpful when hacking your configuration.  @xref{A Scheme Crash Course,,,
+guix-cookbook, GNU Guix Cookbook}.
 @end quotation
 
 @unnumberedsubsec Bootloader
@@ -17248,18 +17542,70 @@ Alternatively, the @code{modify-services} macro can be used:
   (delete avahi-service-type))
 @end lisp
 
+@unnumberedsubsec Inspecting Services
+
+@cindex troubleshooting, for system services
+@cindex inspecting system services
+@cindex system services, inspecting
+As you work on your system configuration, you might wonder why some
+system service doesn't show up or why the system is not as you expected.
+There are several ways to inspect and troubleshoot problems.
+
+@cindex dependency graph, of Shepherd services
+First, you can inspect the dependency graph of Shepherd services like
+so:
+
+@example
+guix system shepherd-graph /etc/config.scm | \
+  guix shell xdot -- xdot -
+@end example
+
+This lets you visualize the Shepherd services as defined in
+@file{/etc/config.scm}.  Each box is a service as would be shown by
+@command{sudo herd status} on the running system, and each arrow denotes
+a dependency (in the sense that if service @var{A} depends on @var{B},
+then @var{B} must be started before @var{A}).
+
+@cindex extension graph, of services
+Not all ``services'' are Shepherd services though, since Guix System
+uses a broader definition of the term (@pxref{Services}).  To visualize
+system services and their relations at a higher level, run:
+
+@example
+guix system extension-graph /etc/config.scm | \
+  guix shell xdot -- xdot -
+@end example
+
+This lets you view the @dfn{service extension graph}: how services
+``extend'' each other, for instance by contributing to their
+configuration.  @xref{Service Composition}, to understand the meaning of
+this graph.
+
+Last, you may also find it useful to inspect your system configuration
+at the REPL (@pxref{Using Guix Interactively}).  Here is an example
+session:
+
+@example
+$ guix repl
+scheme@@(guix-user)> ,use (gnu)
+scheme@@(guix-user)> (define os (load "config.scm"))
+scheme@@(guix-user)> ,pp (map service-kind (operating-system-services os))
+$1 = (#<service-type localed cabba93>
+      @dots{})
+@end example
+
+@xref{Service Reference}, to learn about the Scheme interface to
+manipulate and inspect services.
+
 @unnumberedsubsec Instantiating the System
 
+@cindex system instantiation
+@cindex reconfiguring the system
 Assuming the @code{operating-system} declaration
-is stored in the @file{my-system-config.scm}
-file, the @command{guix system reconfigure my-system-config.scm} command
-instantiates that configuration, and makes it the default GRUB boot
-entry (@pxref{Invoking guix system}).
-
-@quotation Note
-We recommend that you keep this @file{my-system-config.scm} file safe
-and under version control to easily track changes to your configuration.
-@end quotation
+is stored in the @file{config.scm}
+file, the @command{sudo guix system reconfigure config.scm} command
+instantiates that configuration, and makes it the default boot
+entry.  @xref{Getting Started with the System}, for an overview.
 
 The normal way to change the system configuration is by updating this
 file and re-running @command{guix system reconfigure}.  One should never
@@ -17268,23 +17614,6 @@ system state such as @command{useradd} or @command{grub-install}.  In
 fact, you must avoid that since that would not only void your warranty
 but also prevent you from rolling back to previous versions of your
 system, should you ever need to.
-
-@cindex roll-back, of the operating system
-Speaking of roll-back, each time you run @command{guix system
-reconfigure}, a new @dfn{generation} of the system is created---without
-modifying or deleting previous generations.  Old system generations get
-an entry in the bootloader boot menu, allowing you to boot them in case
-something went wrong with the latest generation.  Reassuring, no?  The
-@command{guix system list-generations} command lists the system
-generations available on disk.  It is also possible to roll back the
-system via the commands @command{guix system roll-back} and
-@command{guix system switch-generation}.
-
-Although the @command{guix system reconfigure} command will not modify
-previous generations, you must take care when the current generation is not
-the latest (e.g., after invoking @command{guix system roll-back}), since
-the operation might overwrite a later generation (@pxref{Invoking guix
-system}).
 
 @unnumberedsubsec The Programming Interface
 
@@ -17567,7 +17896,7 @@ mounted.}.
 
 @findex file-system-label
 File system labels are created using the @code{file-system-label}
-procedure, UUIDs are created using @code{uuid}, and @file{/dev} node are
+procedure, UUIDs are created using @code{uuid}, and @file{/dev} nodes are
 plain strings.  Here's an example of a file system referred to by its
 label, as shown by the @command{e2label} command:
 
@@ -17948,6 +18277,30 @@ This defines LUKS block device encryption using the @command{cryptsetup}
 command from the package with the same name.  It relies on the
 @code{dm-crypt} Linux kernel module.
 @end defvar
+
+@deffn {Procedure} luks-device-mapping-with-options [#:key-file]
+Return a @code{luks-device-mapping} object, which defines LUKS block
+device encryption using the @command{cryptsetup} command from the
+package with the same name.  It relies on the @code{dm-crypt} Linux
+kernel module.
+
+If @code{key-file} is provided, unlocking is first attempted using that
+key file.  This has an advantage of not requiring a password entry, so
+it can be used (for example) to unlock RAID arrays automatically on
+boot.  If key file unlock fails, password unlock is attempted as well.
+Key file is not stored in the store and needs to be available at the
+given location at the time of the unlock attempt.
+
+@lisp
+;; Following definition would be equivalent to running:
+;;   cryptsetup open --key-file /crypto.key /dev/sdb1 data
+(mapped-device
+ (source "/dev/sdb1)
+ (target "data)
+ (type (luks-device-mapping-with-options
+        #:key-file "/crypto.key")))
+@end lisp
+@end deffn
 
 @defvar raid-device-mapping
 This defines a RAID device, which is assembled using the @code{mdadm}
@@ -19455,6 +19808,20 @@ few seconds when enough entropy is available and is only done once; you
 might want to turn it off for instance in a virtual machine that does
 not need it and where the extra boot time is a problem.
 
+@anchor{guix-configuration-channels}
+@item @code{channels} (default: @code{%default-channels})
+List of channels to be specified in @file{/etc/guix/channels.scm}, which
+is what @command{guix pull} uses by default (@pxref{Invoking guix
+pull}).
+
+@quotation Note
+When reconfiguring a system, the existing @file{/etc/guix/channels.scm}
+file is backed up as @file{/etc/guix/channels.scm.bak} if it was
+determined to be a manually modified file.  This is to facilitate
+migration from earlier versions, which allowed for in-place
+modifications to @file{/etc/guix/channels.scm}.
+@end quotation
+
 @item @code{max-silent-time} (default: @code{3600})
 @itemx @code{timeout} (default: @code{(* 3600 24)})
 The number of seconds of silence and the number of seconds of activity,
@@ -19562,9 +19929,23 @@ Type of the service that runs udev, a service which populates the
 @file{/dev} directory dynamically, whose value is a
 @code{<udev-configuration>} object.
 
-This service type can be @emph{extended} using procedures
-@code{udev-rules-service} along with @code{file->udev-rule} or
-@code{udev-rule} which simplify the process of writing udev rules.
+Since the file names for udev rules and hardware description files
+matter, the configuration items for rules and hardware cannot simply be
+plain file-like objects with the rules content, because the name would
+be ignored.  Instead, they are directory file-like objects that contain
+optional rules in @file{lib/udev/rules.d} and optional hardware files in
+@file{lib/udev/hwdb.d}.  This way, the service can be configured with
+whole packages from which to take rules and hwdb files.
+
+The @code{udev-service-type} can be @emph{extended} with file-like
+directories that respect this hierarchy.  For convenience, the
+@code{udev-rule} and @code{file->udev-rule} can be used to construct
+udev rules, while @code{udev-hardware} and @code{file->udev-hardware}
+can be used to construct hardware description files.
+
+In an @code{operating-system} declaration, this service type can be
+@emph{extended} using procedures @code{udev-rules-service} and
+@code{udev-hardware-service}.
 @end defvar
 
 @deftp {Data Type} udev-configuration
@@ -19572,10 +19953,17 @@ Data type representing the configuration of udev.
 
 @table @asis
 @item @code{udev} (default: @code{eudev}) (type: file-like)
-Package object of the udev service.
+Package object of the udev service.  This package is used at run-time,
+when compiled for the target system.  In order to generate the
+@file{hwdb.bin} hardware index, it is also used when generating the
+system definition, compiled for the current system.
 
 @item @code{rules} (default: @var{'()}) (type: list-of-file-like)
-List of file-like objects denoting udev-rule files.
+List of file-like objects denoting udev rule files under a sub-directory.
+
+@item @code{hardware} (default: @var{'()}) (type: list-of-file-like)
+List of file-like objects denoting udev hardware description files under
+a sub-directory.
 
 @end table
 @end deftp
@@ -19598,6 +19986,11 @@ upon detecting a USB device with a given product identifier.
 @end lisp
 @end deffn
 
+@deffn {Procedure} udev-hardware @var{file-name} @var{contents}
+Return a udev hardware description file named @var{file-name} containing
+the hardware information @var{contents}.
+@end deffn
+
 @deffn {Procedure} udev-rules-service @var{name} @var{rules} [#:groups '()]
 Return a service that extends @code{udev-service-type} with @var{rules}
 and @code{account-service-type} with @var{groups} as system groups.
@@ -19615,6 +20008,11 @@ with the previously defined rule @code{%example-udev-rule}.
    (cons (udev-rules-service 'usb-thing %example-udev-rule)
          %desktop-services)))
 @end lisp
+@end deffn
+
+@deffn {Procedure} udev-hardware-service @var{name} @var{hardware}
+Return a service that extends @code{udev-service-type} with
+@var{hardware}.  The service name is @code{@var{name}-udev-hardware}.
 @end deffn
 
 @deffn {Procedure} file->udev-rule @var{file-name} @var{file}
@@ -19641,12 +20039,16 @@ The following example showcases how we can use an existing rule file.
 @end lisp
 @end deffn
 
-Additionally, Guix package definitions can be included in @var{rules} in
-order to extend the udev rules with the definitions found under their
-@file{lib/udev/rules.d} sub-directory.  In lieu of the previous
-@var{file->udev-rule} example, we could have used the
-@var{android-udev-rules} package which exists in Guix in the @code{(gnu
-packages android)} module.
+Since guix package definitions can be included in @var{rules} in order
+to use all their rules under the @file{lib/udev/rules.d} sub-directory,
+then in lieu of the previous @var{file->udev-rule} example, we could
+have used the @var{android-udev-rules} package which exists in Guix in
+the @code{(gnu packages android)} module.
+
+@deffn {Procedure} file->udev-hardware @var{file-name} @var{file}
+Return a udev hardware description file named @var{file-name} containing
+the rules defined within @var{file}, a file-like object.
+@end deffn
 
 The following example shows how to use the @var{android-udev-rules}
 package so that the Android tool @command{adb} can detect devices
@@ -19888,7 +20290,7 @@ in users, including:
 Special variation of @code{pam-mount} to mount @code{XDG_RUNTIME_DIR}
 @end itemize
 
-Here is example of switching from @code{mingetty-service-type} to
+Here is an example of switching from @code{mingetty-service-type} to
 @code{greetd-service-type}, and how different terminals could be:
 
 @lisp
@@ -20734,7 +21136,7 @@ the @code{loopback} Shepherd service.
 @defvar %qemu-static-networking
 This is the @code{static-networking} record representing network setup
 when using QEMU's user-mode network stack on @code{eth0} (@pxref{Using
-the user mode network stack,,, QEMU, QEMU Documentation}).
+the user mode network stack,,, qemu, QEMU Documentation}).
 @end defvar
 
 @cindex DHCP, networking service
@@ -20853,8 +21255,7 @@ package, which allows NetworkManager to manage VPNs @i{via} OpenVPN.
 This is the service type to run @url{https://01.org/connman,Connman},
 a network connection manager.
 
-Its value must be an
-@code{connman-configuration} record as in this example:
+Its value must be a @code{connman-configuration} record as in this example:
 
 @lisp
 (service connman-service-type
@@ -20881,7 +21282,212 @@ networks.
 @item @code{disable-vpn?} (default: @code{#f})
 When true, disable connman's vpn plugin.
 
+@item @code{general-configuration} (default: @code{(connman-general-configuration)})
+Configuration serialized to @file{main.conf} and passed as @option{--config}
+to @command{connmand}.
+
 @end table
+@end deftp
+
+@c %start of fragment
+
+@deftp {Data Type} connman-general-configuration
+Available @code{connman-general-configuration} fields are:
+
+@table @asis
+@item @code{input-request-timeout} (type: maybe-number)
+Set input request timeout.  Default is 120 seconds.  The request for
+inputs like passphrase will timeout after certain amount of time.  Use
+this setting to increase the value in case of different user interface
+designs.
+
+@item @code{browser-launch-timeout} (type: maybe-number)
+Set browser launch timeout.  Default is 300 seconds.  The request for
+launching a browser for portal pages will timeout after certain amount
+of time.  Use this setting to increase the value in case of different
+user interface designs.
+
+@item @code{background-scanning?} (type: maybe-boolean)
+Enable background scanning.  Default is true.  If wifi is disconnected,
+the background scanning will follow a simple back off mechanism from 3s
+up to 5 minutes.  Then, it will stay in 5 minutes unless user
+specifically asks for scanning through a D-Bus call.  If so, the
+mechanism will start again from 3s.  This feature activates also the
+background scanning while being connected, which is required for roaming
+on wifi.  When @code{background-scanning?} is false, ConnMan will not
+perform any scan regardless of wifi is connected or not, unless it is
+requested by the user through a D-Bus call.
+
+@item @code{use-gateways-as-timeservers?} (type: maybe-boolean)
+Assume that service gateways also function as timeservers.  Default is
+false.
+
+@item @code{fallback-timeservers} (type: maybe-list)
+List of Fallback timeservers.  These timeservers are used for NTP sync
+when there are no timeservers set by the user or by the service, and
+when @code{use-gateways-as-timeservers?} is @code{#f}.  These can
+contain a mixed combination of fully qualified domain names, IPv4 and
+IPv6 addresses.
+
+@item @code{fallback-nameservers} (type: maybe-list)
+List of fallback nameservers appended to the list of nameservers given
+by the service.  The nameserver entries must be in numeric format, host
+names are ignored.
+
+@item @code{default-auto-connect-technologies} (type: maybe-list)
+List of technologies that are marked autoconnectable by default.  The
+default value for this entry when empty is @code{"ethernet"},
+@code{"wifi"}, @code{"cellular"}.  Services that are automatically
+connected must have been set up and saved to storage beforehand.
+
+@item @code{default-favourite-technologies} (type: maybe-list)
+List of technologies that are marked favorite by default.  The default
+value for this entry when empty is @code{"ethernet"}.  Connects to
+services from this technology even if not setup and saved to storage.
+
+@item @code{always-connected-technologies} (type: maybe-list)
+List of technologies which are always connected regardless of
+preferred-technologies setting (@code{auto-connect?} @code{#t}).  The
+default value is empty and this feature is disabled unless explicitly
+enabled.
+
+@item @code{preferred-technologies} (type: maybe-list)
+List of preferred technologies from the most preferred one to the least
+preferred one.  Services of the listed technology type will be tried one
+by one in the order given, until one of them gets connected or they are
+all tried.  A service of a preferred technology type in state 'ready'
+will get the default route when compared to another preferred type
+further down the list with state 'ready' or with a non-preferred type; a
+service of a preferred technology type in state 'online' will get the
+default route when compared to either a non-preferred type or a
+preferred type further down in the list.
+
+@item @code{network-interface-blacklist} (type: maybe-list)
+List of blacklisted network interfaces.  Found interfaces will be
+compared to the list and will not be handled by ConnMan, if their first
+characters match any of the list entries.  Default value is
+@code{"vmnet"}, @code{"vboxnet"}, @code{"virbr"}, @code{"ifb"}.
+
+@item @code{allow-hostname-updates?} (type: maybe-boolean)
+Allow ConnMan to change the system hostname.  This can happen for
+example if we receive DHCP hostname option.  Default value is @code{#t}.
+
+@item @code{allow-domainname-updates?} (type: maybe-boolean)
+Allow connman to change the system domainname.  This can happen for
+example if we receive DHCP domainname option.  Default value is
+@code{#t}.
+
+@item @code{single-connected-technology?} (type: maybe-boolean)
+Keep only a single connected technology at any time.  When a new service
+is connected by the user or a better one is found according to
+preferred-technologies, the new service is kept connected and all the
+other previously connected services are disconnected.  With this setting
+it does not matter whether the previously connected services are in
+'online' or 'ready' states, the newly connected service is the only one
+that will be kept connected.  A service connected by the user will be
+used until going out of network coverage.  With this setting enabled
+applications will notice more network breaks than normal.  Note this
+options can't be used with VPNs.  Default value is @code{#f}.
+
+@item @code{tethering-technologies} (type: maybe-list)
+List of technologies that are allowed to enable tethering.  The default
+value is @code{"wifi"}, @code{"bluetooth"}, @code{"gadget"}.  Only those
+technologies listed here are used for tethering.  If one wants to tether
+ethernet, then add @code{"ethernet"} in the list.  Note that if ethernet
+tethering is enabled, then a DHCP server is started on all ethernet
+interfaces.  Tethered ethernet should never be connected to corporate or
+home network as it will disrupt normal operation of these networks.  Due
+to this ethernet is not tethered by default.  Do not activate ethernet
+tethering unless you really know what you are doing.
+
+@item @code{persistent-tethering-mode?} (type: maybe-boolean)
+Restore earlier tethering status when returning from offline mode,
+re-enabling a technology, and after restarts and reboots.  Default value
+is @code{#f}.
+
+@item @code{enable-6to4?} (type: maybe-boolean)
+Automatically enable anycast 6to4 if possible.  This is not recommended,
+as the use of 6to4 will generally lead to a severe degradation of
+connection quality.  See RFC6343.  Default value is @code{#f} (as
+recommended by RFC6343 section 4.1).
+
+@item @code{vendor-class-id} (type: maybe-string)
+Set DHCP option 60 (Vendor Class ID) to the given string.  This option
+can be used by DHCP servers to identify specific clients without having
+to rely on MAC address ranges, etc.
+
+@item @code{enable-online-check?} (type: maybe-boolean)
+Enable or disable use of HTTP GET as an online status check.  When a
+service is in a READY state, and is selected as default, ConnMan will
+issue an HTTP GET request to verify that end-to-end connectivity is
+successful.  Only then the service will be transitioned to ONLINE state.
+If this setting is false, the default service will remain in READY
+state.  Default value is @code{#t}.
+
+@item @code{online-check-ipv4-url} (type: maybe-string)
+IPv4 URL used during the online status check.  Please refer to the
+README for more detailed information.  Default value is
+@uref{http://ipv4.connman.net/online/status.html}.
+
+@item @code{online-check-ipv6-url} (type: maybe-string)
+IPv6 URL used during the online status check.  Please refer to the
+README for more detailed information.  Default value is
+@uref{http://ipv6.connman.net/online/status.html}.
+
+@item @code{online-check-initial-interval} (type: maybe-number)
+Range of intervals between two online check requests.  Please refer to
+the README for more detailed information.  Default value is @samp{1}.
+
+@item @code{online-check-max-interval} (type: maybe-number)
+Range of intervals between two online check requests.  Please refer to
+the README for more detailed information.  Default value is @samp{1}.
+
+@item @code{enable-online-to-ready-transition?} (type: maybe-boolean)
+WARNING: This is an experimental feature.  In addition to
+@code{enable-online-check} setting, enable or disable use of HTTP GET to
+detect the loss of end-to-end connectivity.  If this setting is
+@code{#f}, when the default service transitions to ONLINE state, the
+HTTP GET request is no more called until next cycle, initiated by a
+transition of the default service to DISCONNECT state.  If this setting
+is @code{#t}, the HTTP GET request keeps being called to guarantee that
+end-to-end connectivity is still successful.  If not, the default
+service will transition to READY state, enabling another service to
+become the default one, in replacement.  Default value is @code{#f}.
+
+@item @code{auto-connect-roaming-services?} (type: maybe-boolean)
+Automatically connect roaming services.  This is not recommended unless
+you know you won't have any billing problem.  Default value is
+@code{#f}.
+
+@item @code{address-conflict-detection?} (type: maybe-boolean)
+Enable or disable the implementation of IPv4 address conflict detection
+according to RFC5227.  ConnMan will send probe ARP packets to see if an
+IPv4 address is already in use before assigning the address to an
+interface.  If an address conflict occurs for a statically configured
+address, an IPv4LL address will be chosen instead (according to
+RFC3927).  If an address conflict occurs for an address offered via
+DHCP, ConnMan sends a DHCP DECLINE once and for the second conflict
+resorts to finding an IPv4LL address.  Default value is @code{#f}.
+
+@item @code{localtime} (type: maybe-string)
+Path to localtime file.  Defaults to @file{/etc/localtime}.
+
+@item @code{regulatory-domain-follows-timezone?} (type: maybe-boolean)
+Enable regulatory domain to be changed along timezone changes.  With
+this option set to true each time the timezone changes the first present
+ISO3166 country code is read from
+@file{/usr/share/zoneinfo/zone1970.tab} and set as regulatory domain
+value.  Default value is @code{#f}.
+
+@item @code{resolv-conf} (type: maybe-string)
+Path to resolv.conf file.  If the file does not exist, but intermediate
+directories exist, it will be created.  If this option is not set, it
+tries to write into @file{/var/run/connman/resolv.conf} if it fails
+(@file{/var/run/connman} does not exist or is not writeable).  If you do
+not want to update resolv.conf, you can set @file{/dev/null}.
+
+@end table
+
 @end deftp
 
 @cindex WPA Supplicant
@@ -21082,7 +21688,7 @@ The WiFi channel to use.
 @item @code{driver} (default: @code{"nl80211"})
 The driver interface type.  @code{"nl80211"} is used with all Linux
 mac80211 drivers.  Use @code{"none"} if building hostapd as a standalone
-RADIUS server that does # not control any wireless/wired driver.
+RADIUS server that does not control any wireless/wired driver.
 
 @item @code{extra-settings} (default: @code{""})
 Extra settings to append as-is to the hostapd configuration file.  See
@@ -22165,9 +22771,9 @@ Logging level.
 This service type adds a list of known Facebook hosts to the
 @file{/etc/hosts} file.
 (@pxref{Host Names,,, libc, The GNU C Library Reference Manual})
-Each line contains a entry that maps a known server name of the Facebook
-on-line service---e.g., @code{www.facebook.com}---to the local
-host---@code{127.0.0.1} or its IPv6 equivalent, @code{::1}.
+Each line contains an entry that maps a known server name of the Facebook
+on-line service---e.g., @code{www.facebook.com}---to unroutable IPv4 and
+IPv6 addresses.
 
 This mechanism can prevent programs running locally, such as Web
 browsers, from accessing Facebook.
@@ -22344,7 +22950,7 @@ private keys in it}.  See the output of @code{yggdrasil -genconf} for a
 quick overview of valid keys and their default values.
 
 @item @code{autoconf?} (default: @code{#f})
-Whether to use automatic mode.  Enabling it makes Yggdrasil use adynamic IP
+Whether to use automatic mode.  Enabling it makes Yggdrasil use a dynamic IP
 and peer with IPv6 neighbors.
 
 @item @code{log-level} (default: @code{'info})
@@ -24858,7 +25464,7 @@ List of possible UUIDs:
 @code{671b10b5-42c0-4696-9227-eb28d1b049d6}: BlueZ Experimental Simultaneous Central and Peripheral,
 
 @item
-@code{"15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
+@code{15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
 
 @item
 @code{330859bc-7506-492d-9370-9a6f0614037f}: BlueZ Experimental Bluetooth Quality Report,
@@ -25488,6 +26094,9 @@ The @code{(gnu services databases)} module provides the following services.
 
 @subsubheading PostgreSQL
 
+@defvar postgresql-service-type
+The service type for the PostgreSQL database server.  Its value should
+be a valid @code{postgresql-configuration} object, documented below.
 The following example describes a PostgreSQL service with the default
 configuration.
 
@@ -25514,13 +26123,14 @@ sudo -u postgres -s /bin/sh
 createuser --interactive
 createdb $MY_USER_LOGIN      # Replace appropriately.
 @end example
+@end defvar
 
 @deftp {Data Type} postgresql-configuration
 Data type representing the configuration for the
 @code{postgresql-service-type}.
 
 @table @asis
-@item @code{postgresql}
+@item @code{postgresql} (default: @code{postgresql-10})
 PostgreSQL package to use for the service.
 
 @item @code{port} (default: @code{5432})
@@ -27821,7 +28431,7 @@ Prosodyctl will also help you to import certificates from the
 them.  See @url{https://prosody.im/doc/letsencrypt}.
 
 @example
-prosodyctl --root cert import /etc/letsencrypt/live
+prosodyctl --root cert import /etc/certs
 @end example
 
 The available configuration parameters follow.  Each parameter
@@ -27996,6 +28606,12 @@ Set of mechanisms that will never be offered.  See
 Defaults to @samp{'("DIGEST-MD5")}.
 @end deftypevr
 
+@deftypevr {@code{prosody-configuration} parameter} string-list insecure-sasl-mechanisms
+Set of mechanisms that will not be offered on unencrypted connections.
+See @url{https://prosody.im/doc/modules/mod_saslauth}.
+Defaults to @samp{'("PLAIN" "LOGIN")}.
+@end deftypevr
+
 @deftypevr {@code{prosody-configuration} parameter} boolean s2s-require-encryption?
 Whether to force all server-to-server connections to be encrypted or not.
 See @url{https://prosody.im/doc/modules/mod_tls}.
@@ -28075,7 +28691,7 @@ See @url{https://prosody.im/doc/configure#virtual_host_settings}.
 
 Available @code{virtualhost-configuration} fields are:
 
-all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
+all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{insecure-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
 @deftypevr {@code{virtualhost-configuration} parameter} string domain
 Domain you wish Prosody to serve.
 @end deftypevr
@@ -28097,7 +28713,7 @@ Defaults to @samp{'()}.
 
 Available @code{int-component-configuration} fields are:
 
-all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
+all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{insecure-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
 @deftypevr {@code{int-component-configuration} parameter} string hostname
 Hostname of the component.
 @end deftypevr
@@ -28150,7 +28766,7 @@ Defaults to @samp{'()}.
 
 Available @code{ext-component-configuration} fields are:
 
-all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
+all these @code{prosody-configuration} fields: @code{admins}, @code{use-libevent?}, @code{modules-enabled}, @code{modules-disabled}, @code{groups-file}, @code{allow-registration?}, @code{ssl}, @code{c2s-require-encryption?}, @code{disable-sasl-mechanisms}, @code{insecure-sasl-mechanisms}, @code{s2s-require-encryption?}, @code{s2s-secure-auth?}, @code{s2s-insecure-domains}, @code{s2s-secure-domains}, @code{authentication}, @code{log}, @code{http-max-content-size}, @code{http-external-url}, @code{raw-content}, plus:
 @deftypevr {@code{ext-component-configuration} parameter} string component-secret
 Password which the component will use to log in.
 @end deftypevr
@@ -28287,10 +28903,11 @@ services:
 
 @subsubheading Jami
 
-@cindex jami, service
-
-This section describes how to configure a Jami server that can be used
-to host video (or audio) conferences, among other uses.  The following
+@defvar jami-service-type
+The service type for running Jami as a service.  It takes a
+@code{jami-configuration} object as a value, documented below.  This
+section describes how to configure a Jami server that can be used to
+host video (or audio) conferences, among other uses.  The following
 example demonstrates how to specify Jami account archives (backups) to
 be provisioned automatically:
 
@@ -28418,6 +29035,7 @@ Account_username: f3345f2775ddfe07a4b0d95daea111d15fbc1199
 The remaining actions should be self-explanatory.
 
 The complete set of available configuration options is detailed below.
+@end defvar
 
 @c TODO: Ideally, the following fragments would be auto-generated at
 @c build time, so that they needn't be manually duplicated.
@@ -28514,6 +29132,12 @@ account fingerprint for a registered username.
 This section describes how to set up and run a
 @uref{https://mumble.info, Mumble} server (formerly known as Murmur).
 
+@defvar mumble-server-service-type
+
+This is the service to run a Mumble server.  It takes a
+@code{mumble-server-configuration} object as its value, defined below.
+@end defvar
+
 @deftp {Data Type} mumble-server-configuration
 The service type for the Mumble server.  An example configuration can
 look like this:
@@ -28524,8 +29148,8 @@ look like this:
           (welcome-text
             "Welcome to this Mumble server running on Guix!")
           (cert-required? #t) ;disallow text password logins
-          (ssl-cert "/etc/letsencrypt/live/mumble.example.com/fullchain.pem")
-          (ssl-key "/etc/letsencrypt/live/mumble.example.com/privkey.pem")))
+          (ssl-cert "/etc/certs/mumble.example.com/fullchain.pem")
+          (ssl-key "/etc/certs/mumble.example.com/privkey.pem")))
 @end lisp
 
 After reconfiguring your system, you can manually set the mumble-server
@@ -28643,12 +29267,12 @@ Should logged ips be obfuscated to protect the privacy of users.
 File name of the SSL/TLS certificate used for encrypted connections.
 
 @lisp
-(ssl-cert "/etc/letsencrypt/live/example.com/fullchain.pem")
+(ssl-cert "/etc/certs/example.com/fullchain.pem")
 @end lisp
 @item @code{ssl-key} (default: @code{#f})
 Filepath to the ssl private key used for encrypted connections.
 @lisp
-(ssl-key "/etc/letsencrypt/live/example.com/privkey.pem")
+(ssl-key "/etc/certs/example.com/privkey.pem")
 @end lisp
 
 @item @code{ssl-dh-params} (default: @code{#f})
@@ -31003,7 +31627,7 @@ the configuration.
                   (httpd-virtualhost
                     "*:80"
                     (list (string-join '("ServerName www.example.com"
-                                          "DocumentRoot /srv/http/www.example.com")
+                                         "DocumentRoot /srv/http/www.example.com")
                                        "\n")))))
 @end lisp
 @end defvar
@@ -31532,6 +32156,50 @@ List of run-time parameters in the form @code{'(("parameter" . "value"))}.
 
 @item @code{extra-options} (default: @code{'()})
 Additional arguments to pass to the @command{varnishd} process.
+
+@end table
+@end deftp
+
+@subheading Whoogle Search
+@cindex Whoogle Search
+
+@uref{https://github.com/benbusby/whoogle-search, Whoogle Search} is a
+self-hosted, ad-free, privacy-respecting meta search engine that collects
+and displays Google search results.  By default, you can configure it by
+adding this line to the @code{services} field of your operating system
+declaration:
+
+@lisp
+(service whoogle-service-type)
+@end lisp
+
+As a result, Whoogle Search runs as local Web server, which you can
+access by opening @indicateurl{http://localhost:5000} in your browser.
+The configuration reference is given below.
+
+@defvar whoogle-service-type
+Service type for Whoogle Search.  Its value must be a
+@code{whoogle-configuration} record---see below.
+@end defvar
+
+@deftp {Data Type} whoogle-configuration
+Data type representing Whoogle Search service configuration.
+
+@table @asis
+@item @code{package} (default: @code{whoogle-search})
+The Whoogle Search package to use.
+
+@item @code{host} (default: @code{"127.0.0.1"})
+The host address to run Whoogle on.
+
+@item @code{port} (default: @code{5000})
+The port where Whoogle will be exposed.
+
+@item @code{environment-variables} (default: @code{'()})
+A list of strings with the environment variables to configure Whoogle.
+You can consult
+@uref{https://github.com/benbusby/whoogle-search/blob/main/whoogle.template.env,
+its environment variables template} for the list of available options.
 
 @end table
 @end deftp
@@ -32240,21 +32908,13 @@ A service type for the @code{certbot} Let's Encrypt client.  Its value
 must be a @code{certbot-configuration} record as in this example:
 
 @lisp
-(define %certbot-deploy-hook
-  (program-file "certbot-deploy-hook.scm"
-    (with-imported-modules '((gnu services herd))
-      #~(begin
-          (use-modules (gnu services herd))
-          (with-shepherd-action 'nginx ('reload) result result)))))
-
 (service certbot-service-type
          (certbot-configuration
           (email "foo@@example.net")
           (certificates
            (list
             (certificate-configuration
-             (domains '("example.net" "www.example.net"))
-             (deploy-hook %certbot-deploy-hook))
+             (domains '("example.net" "www.example.net")))
             (certificate-configuration
              (domains '("bar.example.net")))))))
 @end lisp
@@ -32368,12 +33028,18 @@ certificates and keys; the shell variable @code{$RENEWED_DOMAINS} will
 contain a space-delimited list of renewed certificate domains (for
 example, @samp{"example.com www.example.com"}.
 
+@item @code{start-self-signed?} (default: @code{#t})
+Whether to generate an initial self-signed certificate during system
+activation.  This option is particularly useful to allow @code{nginx} to
+start before @code{certbot} has run, because @code{certbot} relies on
+@code{nginx} running to perform HTTP challenges.
+
 @end table
 @end deftp
 
 For each @code{certificate-configuration}, the certificate is saved to
-@code{/etc/letsencrypt/live/@var{name}/fullchain.pem} and the key is
-saved to @code{/etc/letsencrypt/live/@var{name}/privkey.pem}.
+@code{/etc/certs/@var{name}/fullchain.pem} and the key is
+saved to @code{/etc/certs/@var{name}/privkey.pem}.
 @node DNS Services
 @subsection DNS Services
 @cindex DNS (domain name system)
@@ -35081,6 +35747,7 @@ Owner of the @command{mympd} process.
 
 The default @code{%mympd-user} is a system user with the name ``mympd'',
 who is a part of the group @var{group} (see below).
+
 @item @code{group} (default: @code{%mympd-group}) (type: user-group)
 Owner group of the @command{mympd} process.
 
@@ -36012,6 +36679,142 @@ host.  If empty, QEMU uses a default file name.
 @end table
 @end deftp
 
+
+@anchor{build-vm}
+@subsubheading Virtual Build Machines
+
+@cindex virtual build machines
+@cindex build VMs
+@cindex VMs, for offloading
+@dfn{Virtual build machines} or ``build VMs'' let you offload builds to
+a fully controlled environment.  ``How can it be more controlled than
+regular builds?  And why would it be useful?'', you ask.  Good
+questions.
+
+Builds spawned by @code{guix-daemon} indeed run in a controlled
+environment; specifically the daemon spawns build processes in separate
+namespaces and in a chroot, such as that build processes only see their
+declared dependencies and a well-defined subset of the file system tree
+(@pxref{Build Environment Setup}, for details).  A few aspects of the
+environments are not controlled though: the operating system kernel, the
+CPU model, and the date.  Most of the time, these aspects have no impact
+on the build process: the level of isolation @code{guix-daemon} provides
+is ``good enough''.
+
+@cindex time traps
+However, there are occasionally cases where those aspects @emph{do}
+influence the build process.  A typical example is @dfn{time traps}:
+build processes that stop working after a certain date@footnote{The most
+widespread example of time traps is test suites that involve checking
+the expiration date of a certificate.  Such tests exists in TLS
+implementations such as OpenSSL and GnuTLS, but also in high-level
+software such as Python.}.  Another one is software that optimizes for
+the CPU microarchitecture it is built on or, worse, bugs that manifest
+only on specific CPUs.
+
+To address that, @code{virtual-build-machine-service-type} lets you add
+a virtual build machine on your system, as in this example:
+
+@lisp
+(use-modules (gnu services virtualization))
+
+(operating-system
+  ;; @dots{}
+  (services (append (list (service virtual-build-machine-service-type))
+                    %base-services)))
+@end lisp
+
+By default, you have to explicitly start the build machine when you need
+it, at which point builds may be offloaded to it (@pxref{Daemon Offload
+Setup}):
+
+@example
+herd start build-vm
+@end example
+
+With the default setting shown above, the build VM runs with its clock
+set to a date several years in the past, and on a CPU model that
+corresponds to that date---a model possibly older than that of your
+machine.  This lets you rebuild today software from the past that would
+otherwise fail to build due to a time trap or other issues in its build
+process.  You can view the VM's config like this:
+
+@example
+herd configuration build-vm
+@end example
+
+You can configure the build VM, as in this example:
+
+@lisp
+(service virtual-build-machine-service-type
+         (virtual-build-machine
+          (cpu "Westmere")
+          (cpu-count 8)
+          (memory-size (* 1 1024))
+          (auto-start? #t)))
+@end lisp
+
+The available options are shown below.
+
+@defvar virtual-build-machine-service-type
+This is the service type to run @dfn{virtual build machines}.  Virtual
+build machines are configured so that builds are offloaded to them when
+they are running.
+@end defvar
+
+@deftp {Data Type} virtual-build-machine
+This is the data type specifying the configuration of a build machine.
+It contains the fields below:
+
+@table @asis
+@item @code{name} (default: @code{'build-vm})
+The name of this build VM.  It is used to construct the name of its
+Shepherd service.
+
+@item @code{image}
+The image of the virtual machine (@pxref{System Images}).  This notably
+specifies the virtual disk size and the operating system running into it
+(@pxref{operating-system Reference}).  The default value is a minimal
+operating system image.
+
+@item @code{qemu} (default: @code{qemu-minimal})
+The QEMU package to run the image.
+
+@item @code{cpu}
+The CPU model being emulated as a string denoting a model known to QEMU.
+
+The default value is a model that matches @code{date} (see below).  To
+see what CPU models are available, run, for example:
+
+@example
+qemu-system-x86_64 -cpu help
+@end example
+
+@item @code{cpu-count} (default: @code{4})
+The number of CPUs emulated by the virtual machine.
+
+@item @code{memory-size} (default: @code{2048})
+Size in mebibytes (MiB) of the virtual machine's main memory (RAM).
+
+@item @code{date} (default: a few years ago)
+Date inside the virtual machine when it starts; this must be a SRFI-19
+date object (@pxref{SRFI-19 Date,,, guile, GNU Guile Reference Manual}).
+
+@item @code{port-forwardings} (default: 11022 and 11004)
+TCP ports of the virtual machine forwarded to the host.  By default, the
+SSH and secrets ports are forwarded into the host.
+
+@item @code{systems} (default: @code{(list (%current-system))})
+List of system types supported by the build VM---e.g.,
+@code{"x86_64-linux"}.
+
+@item @code{auto-start?} (default: @code{#f})
+Whether to start the virtual machine when the system boots.
+@end table
+@end deftp
+
+In the next section, you'll find a variant on this theme: GNU/Hurd
+virtual machines!
 
 @anchor{hurd-vm}
 @subsubheading The Hurd in a Virtual Machine
@@ -37058,9 +37861,9 @@ serve the default @file{/srv/git} over HTTPS might be:
              (listen '("443 ssl"))
              (server-name "git.my-host.org")
              (ssl-certificate
-              "/etc/letsencrypt/live/git.my-host.org/fullchain.pem")
+              "/etc/certs/git.my-host.org/fullchain.pem")
              (ssl-certificate-key
-              "/etc/letsencrypt/live/git.my-host.org/privkey.pem")
+              "/etc/certs/git.my-host.org/privkey.pem")
              (locations
               (list
                (git-http-nginx-location-configuration
@@ -38185,9 +38988,9 @@ footers.
            (nginx-server-block
              (nginx-server-configuration
                (ssl-certificate
-                 "/etc/letsencrypt/live/myweb.site/fullchain.pem")
+                 "/etc/certs/myweb.site/fullchain.pem")
                (ssl-certificate-key
-                 "/etc/letsencrypt/live/myweb.site/privkey.pem")
+                 "/etc/certs/myweb.site/privkey.pem")
                (listen '("443 ssl http2" "[::]:443 ssl http2"))
                (locations
                  (list
@@ -38902,6 +39705,14 @@ days, @code{1m} means 1 month, and so on.
 This allows the user's Guix to keep substitute information in cache for
 @var{ttl}.
 
+@item @code{new-ttl} (default: @code{#f})
+If specified, this will override the @code{ttl} setting when used for
+the @code{Cache-Control} headers, but this value will be used when
+scheduling the removal of nars.
+
+Use this setting when the TTL is being reduced to avoid removing nars
+while clients still have cached narinfos.
+
 @item @code{negative-ttl} (default: @code{#f})
 Similarly produce @code{Cache-Control} HTTP headers to advertise the
 time-to-live (TTL) of @emph{negative} lookups---missing store items, for
@@ -38950,6 +39761,21 @@ in /var/cache/nar-herder/nar/TYPE.
 
 @item @code{directory-max-size} (default: @code{#f})
 Maximum size in bytes of the directory.
+
+@item @code{unused-removal-duration} (default: @code{#f})
+If a cached nar isn't used for @code{unused-removal-duration}, it will
+be scheduled for removal.
+
+@var{unused-removal-duration} must denote a duration: @code{5d} means 5
+days, @code{1m} means 1 month, and so on.
+
+@item @code{ttl} (default: @code{#f})
+If specified this overrides the @code{ttl} used for narinfos when this
+cached compression is available.
+
+@item @code{new-ttl} (default: @code{#f})
+As with the @code{new-ttl} option for @code{nar-herder-configuration},
+this value will override the @code{ttl} when used for narinfo requests.
 
 @end table
 @end deftp
@@ -39992,15 +40818,30 @@ After @command{guix system reconfigure} configure Nix for your user:
 
 @itemize
 @item Add a Nix channel and update it.  See
-@url{https://nixos.org/nix/manual/, Nix Package Manager Guide}.
+@url{https://nixos.wiki/wiki/Nix_channels, Nix channels} for more
+information about the available channels.  If you would like to use the
+unstable Nix channel you can do this by running:
+
+@example
+$ nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+$ nix-channel --update
+@end example
+
+@item Create your Nix profile directory:
+
+@example
+$ sudo mkdir -p /nix/var/nix/profiles/per-user/$USER
+$ sudo chown $USER:root /nix/var/nix/profiles/per-user/$USER
+@end example
 
 @item Create a symlink to your profile and activate Nix profile:
-@end itemize
 
 @example
 $ ln -s "/nix/var/nix/profiles/per-user/$USER/profile" ~/.nix-profile
 $ source /run/current-system/profile/etc/profile.d/nix.sh
 @end example
+
+@end itemize
 
 @end defvar
 
@@ -40190,7 +41031,7 @@ Backend to use to detect changes in the @code{log-path}.  The default is
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package.
 
 @item @code{max-retry} (type: maybe-integer)
-The number of failures before a host get banned (e.g.  @code{(max-retry
+The number of failures before a host gets banned (e.g.  @code{(max-retry
 5)}).
 
 @item @code{max-matches} (type: maybe-integer)
@@ -41002,6 +41843,55 @@ This option in enabled by default.  In some cases involving the
 @code{u-boot} bootloader, where the device tree has already been loaded
 in RAM, it can be handy to disable the option by setting it to
 @code{#f}.
+
+@item @code{extra-initrd} (default: @code{#f})
+File name of an additional initrd to load during the boot.  It may or
+may not point to a file in the store, but the main use case is for
+out-of-store files containing secrets.
+
+In order to be able to provide decryption keys for the LUKS device, they
+need to be available in the initial ram disk.  However they cannot be
+stored inside the usual initrd, since it is stored in the store and
+being a world-readable (as files in the store are) is not a desired
+property for a initrd containing decryption keys.  You can therefore use
+this field to instruct GRUB to also load a manually created initrd not
+stored in the store.
+
+For any use case not involving secrets, you should use regular initrd
+(@pxref{operating-system Reference, @code{initrd}}) instead.
+
+Suitable image can be created for example like this:
+
+@example
+echo /key-file.bin | cpio -oH newc >/key-file.cpio
+chmod 0000 /key-file.cpio
+@end example
+
+After it is created, you can use it in this manner:
+
+@lisp
+;; Operating system with encrypted boot partition
+(operating-system
+  ...
+  (bootloader (bootloader-configuration
+               (bootloader grub-efi-bootloader)
+               (targets '("/boot/efi"))
+               ;; Load the initrd with a key file
+               (extra-initrd "/key-file.cpio")))
+  (mapped-devices
+   (list (mapped-device
+          (source (uuid "12345678-1234-1234-1234-123456789abc"))
+          (target "my-root")
+          (type (luks-device-mapping-with-options
+                 ;; And use it to unlock the root device
+                 #:key-file "/key-file.bin"))))))
+@end lisp
+
+Be careful when using this option, since pointing to a file that is not
+readable by the grub while booting will cause the boot to fail and
+require a manual edit of the initrd line in the grub menu.
+
+Currently only supported by GRUB.
 @end table
 
 @end deftp
@@ -41102,7 +41992,7 @@ Of course, these options can be combined:
 '("console=com0" "noide")
 @end lisp
 
-+@item @code{multiboot-modules} (default: @code{'()})
+@item @code{multiboot-modules} (default: @code{'()})
 The list of commands for loading Multiboot modules.  For example:
 
 @lisp
@@ -42771,6 +43661,15 @@ shepherd, The GNU Shepherd Manual}, for more info.
 Whether to restart the service when it stops, for instance when the
 underlying process dies.
 
+@item @code{respawn-limit} (default: @code{#f})
+Set a limit on how many times and how frequently a service may be
+restarted by Shepherd before it is disabled.  @xref{Defining
+Services,,, shepherd, The GNU Shepherd Manual}, for details.
+
+@item @code{respawn-delay} (default: @code{#f})
+When true, this is the delay in seconds before restarting a failed
+service.
+
 @item @code{start}
 @itemx @code{stop} (default: @code{#~(const #f)})
 The @code{start} and @code{stop} fields refer to the Shepherd's
@@ -43003,7 +43902,7 @@ A clause has the following form:
 the generated record.
 
 @var{type-decl} is either @code{@var{type}} for fields that require a
-value to be set or @code{(@var{type} @var{default})} otherwise.
+value to be set or @code{(@var{type} @var{default-value})} otherwise.
 
 @var{type} is the type of the value corresponding to @var{field-name};
 since Guile is untyped, a predicate
@@ -43468,7 +44367,7 @@ utilizing the configuration mechanism described in the previous chapter
 (@pxref{Defining Services}), but for user's dotfiles and packages.  It
 works both on Guix System and foreign distros and allows users to
 declare all the packages and services that should be installed and
-configured for the user.  Once a user has written a file containing
+configured for the user.  Once a user has written a file containing a
 @code{home-environment} record, such a configuration can be
 @dfn{instantiated} by an unprivileged user with the @command{guix home}
 command (@pxref{Invoking guix home}).
@@ -43791,8 +44690,8 @@ be used here, too.  Make sure that modules containing the specified
 packages are imported with @code{use-modules}.  To find a package or
 information about its module use @command{guix search} (@pxref{Invoking
 guix package}).  Alternatively, @code{specification->package} can be
-used to get the package record from string without importing related
-module.
+used to get the package record from a string without importing its
+related module.
 @end defvar
 
 There are few more essential services, but users are not expected to
@@ -43843,6 +44742,158 @@ part of essential home services (enabled by default), but it's possible
 to use alternative services to implement more advanced use cases like
 read-only home.  Feel free to experiment and share your results.
 @end defvar
+
+@cindex dot files in Guix Home
+It is often the case that Guix Home users already have a setup for versioning
+their user configuration files (also known as @emph{dot files}) in a single
+directory, and some way of automatically deploy changes to their user home.
+
+@cindex Stow-like dot file management
+The @code{home-dotfiles-service-type} from @code{(gnu home services dotfiles)}
+is designed to ease the way into using Guix Home for this kind of users,
+allowing them to point the service to their dotfiles directory without
+migrating them to Guix native configurations.
+
+Please keep in mind that it is advisable to keep your dotfiles directories under
+version control, for example in the same repository where you'd track your
+Guix Home configuration.
+
+There are two supported dotfiles directory layouts, for now. The
+@code{'plain} layout, which is structured as follows:
+
+@example
+~$ tree -a ./dotfiles/
+dotfiles/
+├── .gitconfig
+├── .gnupg
+│   ├── gpg-agent.conf
+│   └── gpg.conf
+├── .guile
+├── .config
+│   ├── guix
+│   │   └── channels.scm
+│   └── nixpkgs
+│       └── config.nix
+├── .nix-channels
+├── .tmux.conf
+└── .vimrc
+@end example
+
+This tree structure is installed as is to the
+home directory upon @command{guix home reconfigure}.
+
+The @code{'stow} layout, which must
+follow the layout suggested by
+@uref{https://www.gnu.org/software/stow/, GNU Stow} presents an additional
+application specific directory layer, just like:
+
+@example
+~$ tree -a ./dotfiles/
+dotfiles/
+├── git
+│   └── .gitconfig
+├── gpg
+│   └── .gnupg
+│       ├── gpg-agent.conf
+│       └── gpg.conf
+├── guile
+│   └── .guile
+├── guix
+│   └── .config
+│       └── guix
+│           └── channels.scm
+├── nix
+│   ├── .config
+│   │   └── nixpkgs
+│   │       └── config.nix
+│   └── .nix-channels
+├── tmux
+│   └── .tmux.conf
+└── vim
+    └── .vimrc
+
+13 directories, 10 files
+@end example
+
+For an informal specification please refer to the Stow manual
+(@pxref{Top,,, stow, Introduction}). This tree structure is installed following
+GNU Stow's logic to the home directory upon @command{guix home reconfigure}.
+
+A suitable configuration with a @code{'plain} layout could be:
+
+@lisp
+(home-environment
+  ;; @dots{}
+  (services
+    (service home-dotfiles-service-type
+             (home-dotfiles-configuration
+               (directories '("./dotfiles"))))))
+@end lisp
+
+The expected home directory state would then be:
+
+@example
+.
+├── .config
+│   ├── guix
+│   │   └── channels.scm
+│   └── nixpkgs
+│       └── config.nix
+├── .gitconfig
+├── .gnupg
+│   ├── gpg-agent.conf
+│   └── gpg.conf
+├── .guile
+├── .nix-channels
+├── .tmux.conf
+└── .vimrc
+@end example
+
+@defvar home-dotfiles-service-type
+Return a service which is very similiar to @code{home-files-service-type}
+(and actually extends it), but designed to ease the way into using Guix
+Home for users that already track their dotfiles under some kind of version
+control.  This service allows users to point Guix Home to their dotfiles
+directory and have their files automatically provisioned to their home
+directory, without migrating all of their dotfiles to Guix native
+configurations.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} home-dotfiles-configuration
+Available @code{home-dotfiles-configuration} fields are:
+
+@table @asis
+@item @code{source-directory} (default: @code{(current-source-directory)}) (type: string)
+The path where dotfile directories are resolved.  By default dotfile
+directories are resolved relative the source location where
+@code{home-dotfiles-configuration} appears.
+
+@item @code{layout} (default: @code{'plain}) (type: symbol)
+The intended layout of the specified @code{directory}.  It can be either
+@code{'stow} or @code{'plain}.
+
+@item @code{directories} (default: @code{'()}) (type: list-of-strings)
+The list of dotfiles directories where @code{home-dotfiles-service-type}
+will look for application dotfiles.
+
+@item @code{packages} (type: maybe-list-of-strings)
+The names of a subset of the GNU Stow package layer directories.  When provided
+the @code{home-dotfiles-service-type} will only provision dotfiles from this
+subset of applications.  This field will be ignored if @code{layout} is set
+to @code{'plain}.
+
+@item @code{excluded} (default: @code{'(".*~" ".*\\.swp" "\\.git" "\\.gitignore")}) (type: list-of-strings)
+The list of file patterns @code{home-dotfiles-service-type} will exclude
+while visiting each one of the @code{directories}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
 
 @defvar home-xdg-configuration-files-service-type
 The service is very similar to @code{home-files-service-type} (and
@@ -44521,19 +45572,19 @@ running on this machine, then it @emph{may} take this file into account:
 this is what @command{sshd} does by default, but be aware that it can
 also be configured to ignore it.
 
-@item @code{add-keys-to-agent} (default: @code{``no''})
+@item @code{add-keys-to-agent} (default: @code{no})
 This string specifies whether keys should be automatically added to a
-running ssh-agent.  If this option is set to @code{``yes''} and a key is
+running ssh-agent.  If this option is set to @code{yes} and a key is
 loaded from a file, the key and its passphrase are added to the agent
 with the default lifetime, as if by @code{ssh-add}.  If this option is
-set to @code{``ask''}, @code{ssh} will require confirmation.  If this
-option is set to @code{``confirm''}, each use of the key must be
-confirmed.  If this option is set to @code{``no''}, no keys are added to
+set to @code{ask}, @code{ssh} will require confirmation.  If this
+option is set to @code{confirm}, each use of the key must be
+confirmed.  If this option is set to @code{no}, no keys are added to
 the agent.  Alternately, this option may be specified as a time interval
 to specify the key's lifetime in @code{ssh-agent}, after which it will
-automatically be removed.  The argument must be @code{``no''},
-@code{``yes''}, @code{``confirm''} (optionally followed by a time
-interval), @code{``ask''} or a time interval.
+automatically be removed.  The argument must be @code{no},
+@code{yes}, @code{confirm} (optionally followed by a time
+interval), @code{ask} or a time interval.
 @end table
 @end deftp
 
@@ -46050,6 +47101,11 @@ Platform targeting AVR CPUs without an operating system, with run-time support
 from AVR Libc.
 @end defvar
 
+@defvar or1k-elf
+Platform targeting OpenRISC 1000 CPU without an operating system and without a
+C standard library.
+@end defvar
+
 @node System Images
 @chapter Creating System Images
 
@@ -46609,7 +47665,7 @@ missing.
 @node Separate Debug Info
 @section Separate Debug Info
 
-The problem with debugging information is that is takes up a fair amount
+The problem with debugging information is that it takes up a fair amount
 of disk space.  For example, debugging information for the GNU C Library
 weighs in at more than 60 MiB@.  Thus, as a user, keeping all the
 debugging info of all the installed programs is usually not an option.
@@ -47092,7 +48148,7 @@ traditional bootstrap of the rest of the Guix System.
 @c ./pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' | sed -re 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' > doc/images/gcc-core-mesboot0-graph.dot
 @image{images/gcc-core-mesboot0-graph,6in,,Dependency graph of gcc-core-mesboot0}
 
-Work is ongoing to to bring these bootstraps to the @code{arm-linux} and
+Work is ongoing to bring these bootstraps to the @code{arm-linux} and
 @code{aarch64-linux} architectures and to the Hurd.
 
 If you are interested, join us on @samp{#bootstrappable} on the Libera.Chat
@@ -47263,7 +48319,7 @@ bootstrap GCC with a sequence of assemblers, interpreters, and compilers
 of increasing complexity, which could be built from source starting from
 a simple and auditable assembler.
 
-Our first major achievement is the replacement of of GCC, the GNU C Library
+Our first major achievement is the replacement of GCC, the GNU C Library
 and Binutils by MesCC-Tools (a simple hex linker and macro assembler) and Mes
 (@pxref{Top, GNU Mes Reference Manual,, mes, GNU Mes}, a Scheme interpreter
 and C compiler in Scheme).  Neither MesCC-Tools nor Mes can be fully

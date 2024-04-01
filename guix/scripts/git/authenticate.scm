@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +27,7 @@
   #:use-module ((guix git) #:select (with-git-error-handling))
   #:use-module (guix progress)
   #:use-module (guix base64)
+  #:autoload   (rnrs bytevectors) (bytevector-length)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
@@ -100,6 +101,8 @@ Authenticate the given Git checkout using COMMIT/SIGNER as its introduction.\n")
   -k, --keyring=REFERENCE
                          load keyring from REFERENCE, a Git branch"))
   (display (G_ "
+      --end=COMMIT       authenticate revisions up to COMMIT"))
+  (display (G_ "
       --stats            display commit signing statistics upon completion"))
   (display (G_ "
       --cache-key=KEY    cache authenticated commits under KEY"))
@@ -133,6 +136,16 @@ Authenticate the given Git checkout using COMMIT/SIGNER as its introduction.\n")
   (define commit-short-id
     (compose (cut string-take <> 7) oid->string commit-id))
 
+  (define (openpgp-fingerprint* str)
+    (unless (string-every (char-set-union char-set:hex-digit
+                                          char-set:whitespace)
+                          str)
+      (leave (G_ "~a: invalid OpenPGP fingerprint~%") str))
+    (let ((fingerprint (openpgp-fingerprint str)))
+      (unless (= 20 (bytevector-length fingerprint))
+        (leave (G_ "~a: wrong length for OpenPGP fingerprint~%") str))
+      fingerprint))
+
   (define (make-reporter start-commit end-commit commits)
     (format (current-error-port)
             (G_ "Authenticating commits ~a to ~a (~h new \
@@ -165,7 +178,7 @@ commits)...~%")
                                 (repository-cache-key repository))))
           (define stats
             (authenticate-repository repository (string->oid commit)
-                                     (openpgp-fingerprint signer)
+                                     (openpgp-fingerprint* signer)
                                      #:end end
                                      #:keyring-reference keyring
                                      #:historical-authorizations history

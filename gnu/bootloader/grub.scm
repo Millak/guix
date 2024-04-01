@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022 Karl Hallsby <karl@hallsby.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -386,7 +387,8 @@ when booting a root file system on a Btrfs subvolume."
                                      store-directory-prefix))
               (initrd (normalize-file (menu-entry-initrd entry)
                                       device-mount-point
-                                      store-directory-prefix)))
+                                      store-directory-prefix))
+              (extra-initrd (bootloader-configuration-extra-initrd config)))
           ;; Here DEVICE is the store and DEVICE-MOUNT-POINT is its mount point.
           ;; Use the right file names for LINUX and INITRD in case
           ;; DEVICE-MOUNT-POINT is not "/", meaning that the store is on a
@@ -397,11 +399,12 @@ when booting a root file system on a Btrfs subvolume."
           #~(format port "menuentry ~s {
   ~a
   linux ~a ~a
-  initrd ~a
+  initrd ~a ~a
 }~%"
                     #$label
                     #$(grub-root-search device linux)
                     #$linux (string-join (list #$@arguments))
+                    (or #$extra-initrd "")
                     #$initrd)))
        (multiboot-kernel
         (let* ((kernel (menu-entry-multiboot-kernel entry))
