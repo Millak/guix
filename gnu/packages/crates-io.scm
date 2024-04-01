@@ -29911,8 +29911,48 @@ graphics.")
 graphics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-glium-0.32
+  (package
+    (name "rust-glium")
+    (version "0.32.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glium" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gwknlxblg5hlwjg91y8pp5slr9dnca7cs1x3nwi8q5qxhl6fxnj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Creating EventLoop multiple times is not supported.
+       #:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-gl-generator" ,rust-gl-generator-0.14)
+                       ("rust-glutin" ,rust-glutin-0.29)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-memoffset" ,rust-memoffset-0.6)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-takeable-option" ,rust-takeable-option-0.5))
+       #:cargo-development-inputs (("rust-cgmath" ,rust-cgmath-0.18)
+                                   ("rust-genmesh" ,rust-genmesh-0.6)
+                                   ("rust-image" ,rust-image-0.24)
+                                   ("rust-libc" ,rust-libc-0.2)
+                                   ("rust-obj" ,rust-obj-0.10)
+                                   ("rust-ouroboros" ,rust-ouroboros-0.15)
+                                   ("rust-rand" ,rust-rand-0.8))))
+    (native-inputs (list pkg-config))
+    (inputs (list expat fontconfig freetype))
+    (home-page "https://github.com/glium/glium")
+    (synopsis "OpenGL wrapper")
+    (description
+     "Glium is an intermediate layer between OpenGL and your application.  You
+still need to manually handle the graphics pipeline, but without having to use
+OpenGL's old and error-prone API.")
+    (license license:asl2.0)))
+
 (define-public rust-glium-0.31
   (package
+    (inherit rust-glium-0.32)
     (name "rust-glium")
     (version "0.31.0")
     (source
@@ -29923,7 +29963,6 @@ graphics.")
        (sha256
         (base32
          "06cfsq3mgjlq3bnxv7jh5bb5is7040xyvf8cf1x45vnq8fdz1d0a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true              ;XXX circular dependencies
        #:cargo-inputs
@@ -29939,14 +29978,7 @@ graphics.")
         ("rust-genmesh" ,rust-genmesh-0.6)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
         ("rust-obj" ,rust-obj-0.10)
-        ("rust-ouroboros" ,rust-ouroboros-0.14))))
-    (home-page "https://github.com/glium/glium")
-    (synopsis "OpenGL wrapper")
-    (description
-     "Glium is an intermediate layer between OpenGL and your application.  You
-still need to manually handle the graphics pipeline, but without having to use
-OpenGL's old and error-prone API.")
-    (license license:asl2.0)))
+        ("rust-ouroboros" ,rust-ouroboros-0.14))))))
 
 (define-public rust-glium-0.25
   (package
