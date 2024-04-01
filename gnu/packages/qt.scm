@@ -1712,13 +1712,13 @@ consume data received from the server, or both.")))
 (define-public qtwebsockets
   (package
     (name "qtwebsockets")
-    (version "6.6.2")
+    (version "6.6.3")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1y9q8jmspxbfxf07jdcg4n8zwmchccyzp0z68fxr0hnvr2dymrn0"))))
+                "0dm066lv3n97ril9iyd5xn8j13m6r7xp844aagj6dpclaxv83x0n"))))
     (build-system cmake-build-system)
     (arguments
      (list
