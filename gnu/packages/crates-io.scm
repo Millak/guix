@@ -9179,33 +9179,45 @@ almost the same speed for encoding: about 3% slower when encoding 32 bytes.
 (define-public rust-bson-2
   (package
     (name "rust-bson")
-    (version "2.0.1")
+    (version "2.9.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "bson" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0ff1xj1vgh2l6sl5gqhkgsfkbhh11jkwd5wf3h0f0mrbg1kd8n7z"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bson" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08h2v3yqydx1df27zmkavf746495b0h5rckbd62ll5cw3j64c8ff"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-ahash" ,rust-ahash-0.7)
-         ("rust-base64" ,rust-base64-0.13)
-         ("rust-chrono" ,rust-chrono-0.4)
-         ("rust-hex" ,rust-hex-0.4)
-         ("rust-indexmap" ,rust-indexmap-1)
-         ("rust-lazy-static" ,rust-lazy-static-1)
-         ("rust-rand" ,rust-rand-0.8)
-         ("rust-serde" ,rust-serde-1)
-         ("rust-serde-bytes" ,rust-serde-bytes-0.11)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-uuid" ,rust-uuid-0.8))))
+     `(#:tests? #f      ; file not found for module `tests`
+       #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-base64" ,rust-base64-0.13)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-with" ,rust-serde-with-1)
+                       ("rust-serde-with" ,rust-serde-with-3)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-uuid" ,rust-uuid-1)
+                       ("rust-uuid" ,rust-uuid-0.8))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11))))
     (home-page "https://github.com/mongodb/bson-rust")
     (synopsis "Encoding and decoding support for BSON in Rust")
-    (description
-     "This crate provides encoding and decoding support for BSON.")
+    (description "This crate provides encoding and decoding support for BSON.")
     (license license:expat)))
 
 (define-public rust-bstr-1
