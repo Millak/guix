@@ -4303,14 +4303,14 @@ standard library.")
 (define-public rust-assert-0.7
   (package
     (name "rust-assert")
-    (version "0.7.4")
+    (version "0.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hnph97yz3hpf71s4rdzcrgd492d1m7rj0k48ymxl1w5d2g8v450"))))
+        (base32 "1fxwnw8ypr6i6bxsy4ggzpjb70aysl044nfzyl3q8kyyv25zqisn"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/stainless-steel/assert")
     (synopsis "Assertions for testing")
