@@ -4,7 +4,7 @@
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021, 2022, 2023 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,7 +51,7 @@
   #:export (chez-scheme-for-system
             racket-cs-native-supported-system?
             nix-system->pbarch-machine-type
-            unpack-nanopass+stex))
+            unpack-nanopass))
 
 ;; Commentary:
 ;;
@@ -273,19 +273,14 @@ can use only the ``portable bytecode'' backends, return #f."
 ;; Chez Scheme:
 ;;
 
-
-(define unpack-nanopass+stex
-  #~(begin
-      (copy-recursively
-       (dirname (search-input-file %build-inputs
-                                   "lib/chez-scheme/nanopass.ss"))
-       "nanopass"
-       #:keep-mtime? #t)
-      (mkdir-p "stex")
-      (with-output-to-file "stex/Mf-stex"
-        (lambda ()
-          ;; otherwise, it will try to download submodules
-          (display "# to placate ../configure")))))
+(define unpack-nanopass
+  #~(lambda* (#:key inputs native-inputs #:allow-other-keys)
+      (with-directory-excursion (if (directory-exists? "racket/src/ChezScheme")
+                                    "racket/src/ChezScheme"
+                                    ".")
+        (symlink (dirname (search-input-file (or native-inputs inputs)
+                                             "lib/chez-scheme/nanopass.ss"))
+                 "nanopass"))))
 
 (define-public chez-scheme
   (package
@@ -357,7 +352,17 @@ can use only the ``portable bytecode'' backends, return #f."
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unpack-nanopass+stex
             (lambda args
-              #$unpack-nanopass+stex))
+              (begin
+                (copy-recursively
+                 (dirname (search-input-file %build-inputs
+                                             "lib/chez-scheme/nanopass.ss"))
+                 "nanopass"
+                 #:keep-mtime? #t)
+                (mkdir-p "stex")
+                (with-output-to-file "stex/Mf-stex"
+                  (lambda ()
+                    ;; otherwise, it will try to download submodules
+                    (display "# to placate ../configure"))))))
           (add-after 'unpack-nanopass+stex 'unpack-bootfiles
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (when (directory-exists? "boot")
@@ -462,152 +467,226 @@ generates native code for each target processor, with support for x86, x86_64,
 and 32-bit PowerPC architectures.")
     (license asl2.0)))
 
+(define chez-configure
+  ;; The custom Chez 'configure' script doesn't allow unrecognized flags, such
+  ;; as those automatically added by `gnu-build-system`. This replacement
+  ;; phase uses only the explicitly provided `#:configure-flags`.
+  #~(lambda* (#:key inputs (configure-flags '()) out-of-source?
+              #:allow-other-keys)
+      (let* ((abs-srcdir (getcwd))
+             (srcdir (if out-of-source?
+                         (string-append "../" (basename abs-srcdir))
+                         ".")))
+        (format #t "source directory: ~s (relative from build: ~s)~%"
+                abs-srcdir srcdir)
+        (when out-of-source?
+            (begin
+              (mkdir "../build")
+              (chdir "../build")))
+        (format #t "build directory: ~s~%" (getcwd))
+        (format #t "configure flags: ~s~%" configure-flags)
+        (apply invoke
+               (string-append srcdir "/configure")
+               configure-flags))))
+
 (define-public chez-scheme-for-racket
   (package
-    (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.9.9-pre-release.18")
-    ;; The version should match `scheme-version`.
-    ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
-    ;; It will always be different than the upstream version!
-    ;; When updating, remember to also update %racket-version in racket.scm.
-    (source #f) ; avoid problematic cycle with racket.scm
-    (inputs
-     (let ((inputs (modify-inputs (package-inputs chez-scheme)
-                     (replace "chez-scheme-bootstrap-bootfiles"
-                       chez-scheme-for-racket-bootstrap-bootfiles)
-                     (delete "libx11" "util-linux:lib"))))
-       (if (racket-cs-native-supported-system?)
-           inputs
-           (modify-inputs inputs
-             (prepend libffi)))))
-    (native-inputs
-     (let ((native-inputs (modify-inputs (package-native-inputs chez-scheme)
-                            (prepend zuo))))
-       (if (%current-target-system)
-           (modify-inputs native-inputs
-             (prepend this-package))
-           native-inputs)))
+    ;; The version should match `(scheme-version-number #t)`.
+    ;; See s/cmacros.ss c. line 360.
+    (version "9.9.9-pre-release.23")
+    (source #f)
+    (build-system gnu-build-system)
+    (inputs `(,@(if (racket-cs-native-supported-system?)
+                    '()
+                    (list libffi))
+              ,chez-scheme-for-racket-bootstrap-bootfiles
+              ,lz4
+              ,ncurses ;<-- for expeditor
+              ,zlib))
+    (native-inputs `(,@(if (%current-target-system)
+                           (list this-package
+                                 `(,this-package "doc"))
+                           (list stex-bootstrap
+                                 (texlive-updmap.cfg
+                                  (list texlive-enumitem))))
+                     ,chez-nanopass-bootstrap
+                     ,zuo))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "CHEZSCHEMELIBDIRS")
+            (files '("lib/chez-scheme")))))
+    (outputs '("out" "debug" "doc"))
     (arguments
-     (substitute-keyword-arguments (package-arguments chez-scheme)
-       ((#:out-of-source? _ #f)
-        #t)
-       ((#:configure-flags cfg-flags #~'())
-        #~`("--disable-x11"
-            "--threads" ;; ok to potentially duplicate
-            #$(string-append "-m=" (or (racket-cs-native-supported-system?)
-                                       (nix-system->pbarch-machine-type)))
-            ;; ^ could skip -m= for non-cross non-pbarch builds
-            #$@(if (racket-cs-native-supported-system?)
-                   #~()
-                   ;; not inferred on non-native platforms: see
-                   ;; https://racket.discourse.group/t/950/9
-                   #~("--enable-libffi"
-                      "CFLAGS=-g -O2 -D_REENTRANT -pthread"
-                      "LIBS=-lm -ldl -lrt -lffi -lncurses"))
-            #$@(if (%current-target-system)
-                   (list (string-append "--toolprefix="
-                                        (%current-target-system)
-                                        "-"))
-                   '())
-            ,@(let* ((chez+version (strip-store-file-name #$output))
-                     (doc-prefix (assoc-ref %outputs "doc"))
-                     (doc-dir (string-append doc-prefix
-                                             "/share/doc/"
-                                             chez+version)))
-                (list (string-append "--installcsug="
-                                     doc-dir
-                                     "/csug")
-                      (string-append "--installreleasenotes="
-                                     doc-dir
-                                     "/release_notes")))
-            ,@#$cfg-flags))
-       ((#:make-flags mk-flags #~'())
-        #~(cons* (string-append "ZUO="
-                                #+(this-package-native-input "zuo")
-                                "/bin/zuo")
-                 (string-append "STEXLIB="
-                                #+(this-package-native-input "stex")
-                                "/lib/stex")
-                 #$mk-flags))
-       ((#:phases those-phases #~%standard-phases)
-        #~(let* ((those-phases #$those-phases)
-                 (gnu:unpack (assoc-ref those-phases 'unpack))
-                 (gnu:build (assoc-ref those-phases 'build)))
-            (modify-phases those-phases
-              (replace 'build
-                ;; need to override target for cross-compilation
-                ;; https://racket.discourse.group/t/950/19
-                (lambda* (#:key target (make-flags '()) (parallel-build? #t)
-                          #:allow-other-keys)
-                  (gnu:build #:make-flags (if target
-                                              (cons "kernel" make-flags)
-                                              make-flags)
-                             #:parallel-build? parallel-build?)))
-              (replace 'install-docs
-                (lambda* (#:key native-inputs (make-flags '())
-                          #:allow-other-keys)
-                  ;; The tests for 'native-inputs' are cross-compilation
-                  ;; workarounds that would be better to address upstream:
-                  ;; see <https://racket.discourse.group/t/950/20>.
-                  (when native-inputs
-                    (substitute* "Makefile"
-                      (("install-docs: build \\$[(]ZUO[)]")
-                       "install-docs: $(ZUO)")))
-                  (apply invoke
-                         "make"
-                         "install-docs"
-                         (if native-inputs
-                             (cons (string-append
-                                    "Scheme="
-                                    (search-input-file native-inputs
-                                                       "/bin/scheme"))
-                                   make-flags)
-                             make-flags))))
-              (replace 'unpack
-                (lambda args
-                  (gnu:unpack #:source #$(or (package-source this-package)
-                                             (package-source racket-vm-bc)))))
-              (add-after 'unpack 'chdir
-                (lambda args
-                  (chdir "racket/src/ChezScheme"))))))))
-    (supported-systems %supported-systems)
-    (home-page "https://github.com/racket/ChezScheme")
-    ;; ^ This is downstream of https://github.com/racket/racket,
-    ;; but it's designed to be a friendly landing place for people
-    ;; who want a ChezScheme-shaped repositroy.
-    (synopsis "Variant of Chez Scheme extended for Racket")
-    (description "This variant of Chez Scheme is extended to support the
-implementation of Racket.  It may be useful on platforms that are not yet
-supported by upstream Chez Scheme.
-
-Main additions to Chez Scheme in the Racket variant:
-@itemize @bullet
-@item
-AArch64 and RV64G (RISC-V) code generation
-@item
-Portable bytecode (@code{pb}) mode, which is mainly useful for bootstrapping a
-build on any platform, but can also be used on platforms without native-code
-generation, compiled via Emscripten, linked with @code{libffi}, or used with
-bytecode partially compiled to C
-@item
-Unboxed floating-point arithmetic and flvectors
-@item
-Faster multiplication and division for large exact numbers
-@item
-Type reconstruction during optimization (especially for safe code)
-@item
-Continuation marks
-@item
-Parallel garbage collection, in-place garbage collection for old-generation
-objects (instead of always copying), and reachability-based memory
-accounting
-@item
-Ordered finalization, immobile (but collectable) objects, weak/ephemeron
-generic hash tables, and reference bytevectors
-@item
-Easier bootstrapping via old versions of Chez Scheme
-@end itemize")
+     (list
+      #:modules
+      '((guix build gnu-build-system)
+        (guix build utils)
+        (ice-9 ftw)
+        (ice-9 match)
+        (srfi srfi-34))
+      #:out-of-source? #t
+      ;; Intermittent failures: https://github.com/cisco/ChezScheme/issues/809
+      #:tests? #f
+      #:test-target "test" ; test-one test-some-fast test-some test test-more
+      #:configure-flags
+      #~`(,@(let* ((chez+version (strip-store-file-name #$output))
+                   (doc-dir (string-append #$output:doc
+                                           "/share/doc/"
+                                           chez+version)))
+              (list (string-append "--installcsug="
+                                   doc-dir
+                                   "/csug")
+                    (string-append "--installreleasenotes="
+                                   doc-dir
+                                   "/release_notes")))
+          ,(string-append "--installprefix=" #$output)
+          #$@(if (%current-target-system)
+                 (list (string-append "--toolprefix="
+                                      (%current-target-system)
+                                      "-"))
+                 '())
+          ,@(if (false-if-exception
+                 (search-input-directory %build-inputs "/include/X11"))
+                '()
+                '("--disable-x11"))
+          #$(string-append "-m=" (or (racket-cs-native-supported-system?)
+                                     (nix-system->pbarch-machine-type)))
+          ;; ^ could skip -m= for non-cross non-pbarch builds
+          #$@(if (racket-cs-native-supported-system?)
+                 #~()
+                 ;; not inferred on non-native platforms: see
+                 ;; https://racket.discourse.group/t/950/9
+                 #~("--enable-libffi"
+                    "CFLAGS+=-g -D_REENTRANT -pthread"
+                    "LIBS+=-lm -ldl -lrt -lncurses"))
+          ,(string-append "STEXLIB="
+                          (or (false-if-exception
+                               (search-input-directory %build-inputs
+                                                       "/lib/stex"))
+                              "/GuixNotUsingStex"))
+          "ZUO=zuo"
+          "ZLIB=-lz"
+          "LZ4=-llz4"
+          ;; Guix will do 'compress-man-pages',
+          ;; and letting Chez try caused an error (at one point)
+          "--nogzip-man-pages")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (let ((unpack (assoc-ref %standard-phases 'unpack)))
+              (lambda args
+                (unpack #:source #$(or (package-source this-package)
+                                       (package-source racket-vm-bc))))))
+          (add-after 'unpack 'unpack-nanopass
+            #$unpack-nanopass)
+          (add-after 'unpack-nanopass 'maybe-chdir
+            (lambda args
+              (when (directory-exists? "racket/src/ChezScheme")
+                (chdir "racket/src/ChezScheme"))))
+          (add-after 'maybe-chdir 'unpack-bootfiles
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (when (directory-exists? "boot")
+                (delete-file-recursively "boot"))
+              (copy-recursively
+               (search-input-directory inputs "lib/chez-scheme-bootfiles")
+               "boot")))
+          (replace 'configure
+            #$chez-configure)
+          (add-after 'configure 'configure-environment-variables
+            (lambda args
+              ;; mats/6.ms needs HOME to be set:
+              (setenv "HOME" "/tmp")))
+          (replace 'build
+            ;; need to override target for cross-compilation
+            ;; https://racket.discourse.group/t/950/19
+            (let ((gnu:build (assoc-ref %standard-phases 'build)))
+              (lambda* (#:key target (make-flags '()) (parallel-build? #t)
+                        #:allow-other-keys)
+                (gnu:build #:make-flags (if target
+                                            (cons "kernel" make-flags)
+                                            make-flags)
+                           #:parallel-build? parallel-build?))))
+          (add-before 'check 'build-docs
+            ;; Building the documentation requires stex and a running scheme.
+            ;; This comes BEFORE 'check because the test suite may take on the
+            ;; order of an hour (without parallelism), so we want to get any
+            ;; other errors first.
+            ;; TODO: Improve cross support upstream: currently, it tries to
+            ;; run the cross-compiled scheme.
+            (lambda* (#:key native-inputs (make-flags '()) #:allow-other-keys)
+              #$(if (%current-target-system)
+                    #~(format #t "not building docs for cross~%")
+                    #~(apply invoke "make" "docs" make-flags))))
+          ;; The binary file name is called "scheme" as is the one from
+          ;; MIT/GNU Scheme.  We add a symlink to use in case both are
+          ;; installed.
+          (add-after 'install 'install-symlink
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((bin-dir
+                      (dirname (search-input-file outputs "/bin/scheme")))
+                     (boot-dir
+                      (match (find-files (string-append bin-dir "/../lib")
+                                         "scheme.boot")
+                        ((scheme.boot)
+                         (dirname scheme.boot)))))
+                (for-each (lambda (dir)
+                            (with-directory-excursion dir
+                              (symlink "./scheme" "chez-scheme")
+                              (when (file-exists? "scheme.boot")
+                                (symlink "./scheme.boot" "chez-scheme.boot"))))
+                          (list bin-dir boot-dir)))))
+          (add-after 'install-symlink 'install-docs
+            ;; TODO: Improve cross support upstream.
+            ;; The `install-docs` target has a Zuo dependency on the `docs`
+            ;; target, so we have the same problem as the build-docs phase.
+            (lambda* (#:key native-inputs (make-flags '()) #:allow-other-keys)
+              #$(if (%current-target-system)
+                    #~(let* ((rel
+                              (string-append "share/doc/"
+                                             (strip-store-file-name #$output)))
+                             (found/csug
+                              (search-input-directory
+                               native-inputs (string-append rel "/csug")))
+                             (found (substring found/csug
+                                               0
+                                               (- (string-length found/csug)
+                                                  (string-length "/csug"))))
+                             (dest (string-append #$output:doc "/" rel)))
+                        (mkdir-p dest)
+                        (with-directory-excursion dest
+                          (for-each (lambda (f)
+                                      (symlink (string-append found "/" f)
+                                               f))
+                                    '("csug" "csug.pdf"
+                                      "release_notes" "release_notes.pdf"))))
+                    #~(apply invoke "make" "install-docs" make-flags))))
+          (add-after 'install-docs 'link-doc-pdfs
+            ;; otherwise, it's hard to notice them in a forest of HTML files
+            ;; TODO: improve cross support upstream.
+            (lambda* (#:key outputs #:allow-other-keys)
+              #$(if (%current-target-system)
+                    #~(format #t "nothing to be done for cross~%")
+                    #~(with-directory-excursion
+                          (string-append (or (assoc-ref outputs "doc")
+                                             (assoc-ref outputs "out"))
+                                         "/share/doc/"
+                                         (strip-store-file-name #$output))
+                        (symlink "release_notes/release_notes.pdf"
+                                 "release_notes.pdf")
+                        (match (find-files
+                                "csug"
+                                "csug.*\\.pdf$" ;; embeded version number
+                                #:fail-on-error? #t)
+                          ((pth)
+                           (symlink pth
+                                    "csug.pdf"))))))))))
+    (home-page "https://cisco.github.io/ChezScheme/")
+    (synopsis "Bootstrapping version of Chez Scheme")
+    (description
+     "This is the precise pre-release version of Chez Scheme from a specific
+Racket release.  It is used to build Racket and to bootstrap the released
+version of Chez Scheme.")
     (license asl2.0)))
 
 ;;
@@ -646,58 +725,70 @@ source.")))
 
 (define-public chez-scheme-for-racket-bootstrap-bootfiles
   (package
-    (inherit chez-scheme-bootstrap-bootfiles)
     (name "chez-scheme-for-racket-bootstrap-bootfiles")
     (version (package-version chez-scheme-for-racket))
     (source #f) ; avoid problematic cycle with racket.scm
     (native-inputs
-     (cons* chez-nanopass-bootstrap
-            (if (%current-target-system)
-                (list zuo
-                      chez-scheme-for-racket)
-                (list racket-vm-bc))))
+     (cons chez-nanopass-bootstrap
+           (if (%current-target-system)
+               (list zuo
+                     chez-scheme-for-racket)
+               (list racket-vm-bc))))
+    (build-system copy-build-system)
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments chez-scheme-bootstrap-bootfiles)
-       ((#:phases those-phases #~%standard-phases)
-        #~(let* ((those-phases #$those-phases)
-                 (unpack (assoc-ref those-phases 'unpack)))
-            (modify-phases those-phases
-              (replace 'unpack
-                (lambda args
-                  (unpack #:source #$(or (package-source this-package)
-                                         (package-source racket-vm-bc)))))
-              (add-after 'unpack 'chdir
-                (lambda args
-                  (chdir "racket/src/ChezScheme")))
-              (add-after 'chdir 'unpack-nanopass+stex
-                (lambda args
-                  #$unpack-nanopass+stex))
-              (add-before 'install 'build
-                (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  #$(cond
-                     ((%current-target-system)
-                      ;; cross-compiling
-                      #~(invoke
-                         (search-input-file (or native-inputs inputs)
-                                            "/bin/zuo")
-                         "makefiles/boot.zuo"
-                         (search-input-file (or native-inputs inputs)
-                                            "/bin/scheme")
-                         #$(or (racket-cs-native-supported-system?)
-                               (nix-system->pbarch-machine-type))))
-                     (else
-                      ;; bootstrapping
-                      #~(invoke
-                         (search-input-file (or native-inputs inputs)
-                                            "/opt/racket-vm/bin/racket")
-                         "../rktboot/main.rkt"))))))))))
-    (supported-systems
-     (package-supported-systems chez-scheme-for-racket))
-    (home-page "https://github.com/racket/ChezScheme")
-    ;; ^ This is downstream of https://github.com/racket/racket,
-    ;; but it's designed to be a friendly landing place for people
-    ;; who want a ChezScheme-shaped repositroy.
+     (list
+      #:install-plan
+      #~`(("boot/" "lib/chez-scheme-bootfiles"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (let ((unpack (assoc-ref %standard-phases 'unpack)))
+              (lambda args
+                (unpack #:source #$(or (package-source this-package)
+                                       (package-source racket-vm-bc))))))
+          (add-after 'unpack 'unpack-nanopass
+            #$unpack-nanopass)
+          (add-after 'unpack-nanopass 'chdir
+            (lambda args
+              (chdir "racket/src/ChezScheme")))
+          (add-before 'install 'build
+            #$(cond
+               ((%current-target-system)
+                ;; cross-compiling
+                ;; TODO: share more of this with upstream, once we figure out
+                ;; how best to manage running Chez as a cross-compiler and the
+                ;; unfortate cycle with %racket-origin.
+                #~(lambda* (#:key native-inputs inputs (parallel-build? #t)
+                            #:allow-other-keys)
+                    (invoke "./configure"
+                            "--force" ; don't complain about missing bootfiles
+                            #$(string-append
+                               "-m=" (or (racket-cs-native-supported-system?)
+                                         (nix-system->pbarch-machine-type)))
+                            "ZUO=zuo"
+                            ;; ignore submodules:
+                            "ZLIB=-lz"
+                            "LZ4=-llz4"
+                            "STEXLIB=/GuixNotUsingStex")
+                    (apply invoke
+                           "make"
+                           `(,@(if parallel-build?
+                                   `("-j" ,(number->string
+                                            (parallel-job-count)))
+                                   '())
+                             ,(string-append "SCHEME="
+                                             (search-input-file
+                                              (or native-inputs inputs)
+                                              "/bin/scheme"))
+                             "cross.boot"))))
+               (else
+                ;; bootstrapping
+                #~(lambda* (#:key native-inputs inputs #:allow-other-keys)
+                    (invoke
+                     (search-input-file (or native-inputs inputs)
+                                        "/opt/racket-vm/bin/racket")
+                     "../rktboot/main.rkt"))))))))
+    (home-page "https://pkgs.racket-lang.org/package/cs-bootstrap")
     (synopsis "Chez Scheme bootfiles bootstrapped by Racket")
     (description "Chez Scheme is a self-hosting compiler: building it
 requires ``bootfiles'' containing the Scheme-implemented portions compiled for
@@ -709,11 +800,8 @@ repository) implements enough of a Chez Scheme simulation to load the Chez
 Scheme compiler purely from source into Racket and apply the compiler to
 itself, thus bootstrapping Chez Scheme.  Bootstrapping takes about 10 times as
 long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
-7.1 and later, including the Racket BC variant.
-
-Note that the generated bootfiles are specific to Racket's fork of Chez
-Scheme, and @code{cs-bootstrap} does not currently support building upstream
-Chez Scheme.")))
+7.1 and later, including the Racket BC variant.")
+    (license asl2.0)))
 
 ;;
 ;; Chez's bootstrap dependencies:
@@ -935,7 +1023,7 @@ create compilers, making them easier to understand and maintain.")
 
 ;; Help function for Chez Scheme to add the current path to
 ;; CHEZSCHEMELIBDIRS.
-(define chez-configure
+(define configure-chezschemelibdirs
   #~(lambda _
       (let ((chez-env (getenv "CHEZSCHEMELIBDIRS")))
         (setenv "CHEZSCHEMELIBDIRS"
@@ -975,7 +1063,7 @@ create compilers, making them easier to understand and maintain.")
            #:test-target "test"
            #:phases #~(modify-phases %standard-phases
                         (replace 'configure
-                          #$chez-configure))))
+                          #$configure-chezschemelibdirs))))
     (home-page "https://github.com/fedeinthemix/chez-srfi")
     (synopsis "SRFI libraries for Chez Scheme")
     (description
@@ -1159,7 +1247,7 @@ Chez Scheme.")
            #:test-target "test"
            #:phases #~(modify-phases %standard-phases
                         (replace 'configure
-                          #$chez-configure))))
+                          #$configure-chezschemelibdirs))))
     (synopsis "Portable hygienic pattern matcher for Scheme")
     (description "This package provides a superset of the popular Scheme
 @code{match} package by Andrew Wright, written in fully portable
@@ -1191,7 +1279,7 @@ Chez Scheme.")
            #:test-target "test"
            #:phases #~(modify-phases %standard-phases
                         (replace 'configure
-                          #$chez-configure))))
+                          #$configure-chezschemelibdirs))))
     (home-page "https://github.com/fedeinthemix/chez-irregex")
     (synopsis "Portable regular expression library for Scheme")
     (description "This package provides a portable and efficient
@@ -1223,7 +1311,7 @@ syntax, with various aliases for commonly used patterns.")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
-                 #$chez-configure)
+                 #$configure-chezschemelibdirs)
                (replace 'build
                  (lambda* (#:key (make-flags '()) #:allow-other-keys)
                    (apply invoke "make" "chez-build" make-flags)))
@@ -1285,7 +1373,7 @@ strings.")
            #:test-target "test"
            #:phases #~(modify-phases %standard-phases
                         (replace 'configure
-                          #$chez-configure))))
+                          #$configure-chezschemelibdirs))))
     (synopsis "MIT/GNU Scheme compatibility library for Chez Scheme")
     (description "This package provides a set of MIT/GNU Scheme compatibility
 libraries for Chez Scheme.  The main goal was to provide the functionality
@@ -1320,7 +1408,7 @@ required to port the program @code{Scmutils} to Chez Scheme.")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
-            #$chez-configure)
+            #$configure-chezschemelibdirs)
           ;; Since the documentation is lacking, we install the source
           ;; code.  For things to work correctly we have to replace
           ;; relative paths by absolute ones in 'include' forms.  This
