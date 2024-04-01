@@ -34,7 +34,7 @@
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 mikadoZero <mikadozero@yandex.com>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -114,6 +114,7 @@
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpio)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages compression)
@@ -123,6 +124,7 @@
   #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages dlang)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
@@ -143,6 +145,7 @@
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
@@ -166,6 +169,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rrdtool)
   #:use-module (gnu packages rsync)
@@ -197,6 +201,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system linux-module)
   #:use-module (guix download)
@@ -7133,6 +7138,130 @@ not as a replacement for it.")
                    (license:non-copyleft "file://nist/packtest.c")
                    license:public-domain        ; nist/dfft.c
                    license:gpl3+))))            ; everything else
+
+(define-public hotspot
+  (package
+    (name "hotspot")
+    (version "1.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/KDAB/hotspot")
+                    (commit (string-append "v" version))
+                    ;; Include the bundled perfparser and PrefixTickLabels
+                    ;; libraries, which are to be used in source form.
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wz4qr3dwjji79x7kj44g7xp11qsscp3b95h6627k8p7xbpi2vhd"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      ;; As mentioned in the option help text, the KAuth helper cannot be
+      ;; installed to a custom prefix and the build fails with "file cannot
+      ;; create directory: /polkit-1/actions.  Maybe need administrative"
+      ;; (see: https://bugs.kde.org/show_bug.cgi?id=363678).
+      #:configure-flags #~(list "-DINSTALL_KAUTH_HELPER=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-perfparser
+            ;; XXX: This phase is copied from qt-creator: keep them in sync!
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; perfparser attempts to dynamically load the demangle
+              ;; libraries; use their absolute file name to avoid having to
+              ;; set LD_LIBRARY_PATH.
+              (let ((librustc_demangle.so
+                     (with-exception-handler (lambda (ex)
+                                               (if (search-error? ex)
+                                                   #f
+                                                   (raise-exception ex)))
+                       (lambda ()
+                         (search-input-file inputs "lib/librustc_demangle.so"))
+                       #:unwind? #t)))
+                (substitute* "3rdparty/perfparser/app/demangler.cpp"
+                  (("loadDemangleLib\\(QStringLiteral\\(\"rustc_demangle\")"
+                    all)
+                   (if librustc_demangle.so
+                       (format #f "loadDemangleLib(QStringLiteral(~s)"
+                               librustc_demangle.so)
+                       all))            ;no rustc_demangle; leave unchanged
+                  (("loadDemangleLib\\(QStringLiteral\\(\"d_demangle\")")
+                   (format #f "loadDemangleLib(QStringLiteral(~s)"
+                           (search-input-file inputs
+                                              "lib/libd_demangle.so")))))))
+          (add-after 'unpack 'path-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/perfoutputwidgetkonsole.cpp"
+                (("\"tail\"")
+                 (format #f "~s" (search-input-file inputs "bin/tail"))))
+              (substitute* "src/perfrecord.cpp"
+                (("\"perf( )?\"" _ space)
+                 (string-append "\"" (search-input-file inputs "bin/perf")
+                                (or space "") "\"")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The 'tst_models' and 'tst_callgraphgenerator' fail, with
+                ;; the later seemingly requiring sudo or access to the kernel
+                ;; trace points.
+                (invoke "ctest" "-E"
+                        (string-append
+                         "("
+                         (string-join
+                          ;; The 'tst_models' expected output doesn't exactly
+                          ;; match.
+                          '("tst_models"
+                            ;; The 'tst_callgraphgenerator' perf invocation
+                            ;; fails when run in the build container.
+                            "tst_callgraphgenerator"
+                            ;; The 'tst_perfparser' test requires sudo/access
+                            ;; to the kernel scheduler trace points.
+                            "tst_perfparser")
+                          "|")
+                         ")"))))))))
+    (native-inputs
+     (list extra-cmake-modules
+           vulkan-headers))
+    (inputs
+     (append
+      (list coreutils-minimal
+            d-demangler
+            elfutils
+            karchive
+            kconfig
+            kcoreaddons
+            kddockwidgets-1    ;see https://github.com/KDAB/hotspot/issues/610
+            kgraphviewer
+            kio
+            kiconthemes
+            kitemmodels
+            kitemviews
+            knotifications
+            kparts
+            ksyntaxhighlighting
+            kwindowsystem
+            libxkbcommon
+            perf
+            qcustomplot
+            qtbase-5
+            qtdeclarative-5
+            qtquickcontrols2-5
+            qtsvg-5
+            qtx11extras
+            solid
+            threadweaver
+            `(,zstd "lib"))
+      (if (supported-package? rust-rustc-demangle-capi-0.1)
+          (list rust-rustc-demangle-capi-0.1)
+          '())))
+    (home-page "https://github.com/KDAB/hotspot")
+    (synopsis "Performance analysis GUI for Linux perf")
+    (description "Hotspot is a standalone GUI for performance data analysis.
+It aims to be similar to KCachegrind, but for data collected with the
+@command{perf}, a profiler for use with the kernel Linux.  Its main feature is
+graphically visualizing a @file{perf.data} file.")
+    (license (list license:gpl2+ license:gpl3+)))) ;dual licensed
 
 (define-public ecryptfs-utils
   (package
