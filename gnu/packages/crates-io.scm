@@ -50605,16 +50605,14 @@ synchronization primitives.")
   (package
     (inherit rust-parking-lot-core-0.8)
     (name "rust-parking-lot-core")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "parking_lot_core" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "18s0cw5y32447c06fhg2mp3xfng22fn1h9fpx3il98sbimv7r36m"))))
+        (base32 "167wvxai4a5zhpy5zfgfbm5c566vfffjlr3fkrwkq21kn9mkhgxr"))))
     (arguments
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
