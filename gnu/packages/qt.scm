@@ -5045,13 +5045,13 @@ data.")
 (define-public qthttpserver
   (package
     (name "qthttpserver")
-    (version "6.6.2")
+    (version "6.6.3")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1qzw96y20qr1kc9wmys61wm568jsknvlgvh09bbqjcmm6dm3lhd2"))))
+                "0dbqx36ywfmqi4nxfi4dl17scj9nkl8sbpb670ffy3nh8pbpib21"))))
     (build-system cmake-build-system)
     (inputs (list qtbase qtwebsockets))
     (home-page (package-home-page qtbase))
