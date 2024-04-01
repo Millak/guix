@@ -16760,29 +16760,23 @@ final xor value.  It has many built-in CRC functions.")
 (define-public rust-crc32fast-1
   (package
     (name "rust-crc32fast")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crc32fast" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "03c8f29yx293yf43xar946xbls1g60c207m9drf8ilqhr25vsh5m"))))
+        (base32 "1ahy259ypc955l5ak24hdlgllb6vm6y2pvwr6qrlyisbg255m1dk"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1))
-       #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-rand" ,rust-rand-0.4))))
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/srijs/rust-crc32fast")
-    (synopsis
-     "Fast, SIMD-accelerated CRC32 (IEEE) checksum computation")
-    (description
-     "Fast, SIMD-accelerated CRC32 (IEEE) checksum computation.")
+    (synopsis "Fast, SIMD-accelerated CRC32 (IEEE) checksum computation")
+    (description "Fast, SIMD-accelerated CRC32 (IEEE) checksum computation.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-crc64-2
