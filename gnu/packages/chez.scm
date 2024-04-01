@@ -27,6 +27,7 @@
                 #:select (gpl2+ gpl3+ lgpl2.0+ lgpl2.1+ asl2.0 bsd-3 expat
                           public-domain))
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -68,8 +69,7 @@
 ;;
 ;; Code:
 
-(define* (chez-scheme-for-system #:optional
-                                 system)
+(define-deprecated (chez-scheme-for-system #:optional system) chez-scheme
   "Returns 'chez-scheme'."
   chez-scheme)
 
