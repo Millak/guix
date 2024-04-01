@@ -37666,25 +37666,22 @@ functions and static variables these libraries contain.")
 (define-public rust-libm-0.2
   (package
     (name "rust-libm")
-    (version "0.2.6")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libm" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1ywg7jfcgfv4jypxi3f6rpf7n9509ky695bfzy1fqhms7ymhi09l"))))
+        (base32 "0n4hk1rs8pzw8hdfmwn96c4568s93kfxqgcqswr7sajd2diaihjf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-rand" ,rust-rand-0.6))
-       #:cargo-development-inputs
-       (("rust-no-panic" ,rust-no-panic-0.1))))
+     `(#:cargo-inputs (("rust-rand" ,rust-rand-0.6))
+       #:cargo-development-inputs (("rust-no-panic" ,rust-no-panic-0.1))))
     (home-page "https://github.com/rust-lang/libm")
     (synopsis "Libm in pure Rust")
-    (description "This package provides an implementation of libm in pure Rust.")
+    (description
+     "This package provides an implementation of libm in pure Rust.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-libm-0.1
