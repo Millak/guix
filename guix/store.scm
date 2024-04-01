@@ -29,7 +29,7 @@
   #:use-module (guix records)
   #:use-module (guix base16)
   #:use-module (guix base32)
-  #:use-module (gcrypt hash)
+  #:autoload   (gcrypt hash) (sha256)
   #:use-module (guix profiling)
   #:autoload   (guix build syscalls) (terminal-columns)
   #:autoload   (guix build utils) (dump-port)

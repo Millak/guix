@@ -27,7 +27,7 @@
   #:use-module (guix i18n)
   #:use-module (guix base32)
   #:use-module (guix cache)
-  #:use-module (gcrypt hash)
+  #:autoload   (gcrypt hash) (sha256)
   #:use-module ((guix build utils)
                 #:select (mkdir-p delete-file-recursively invoke/quiet))
   #:use-module (guix store)

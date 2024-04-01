@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Mathieu Lirzin <mthl@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -32,7 +32,7 @@
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 vlist)
   #:use-module (guix store)
-  #:use-module (guix utils)
+  #:autoload   (guix utils) (%current-system string-replace-substring)
   #:use-module (guix base16)
   #:use-module (guix memoization)
   #:use-module (guix combinators)
@@ -40,7 +40,7 @@
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (guix monads)
-  #:use-module (gcrypt hash)
+  #:autoload   (gcrypt hash) (sha256)
   #:use-module (guix sets)
   #:export (<derivation>
             derivation?
