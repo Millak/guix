@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
@@ -49,7 +49,12 @@
   #:use-module (ice-9 popen)
   #:autoload   (ice-9 threads) (current-processor-count)
   #:use-module (ice-9 format)
-  #:use-module (web uri)
+  #:autoload   (web uri) (uri?
+                          string->uri
+                          uri-scheme
+                          uri-host
+                          uri-port
+                          uri-path)
   #:export (%daemon-socket-uri
             %gc-roots-directory
             %default-substitute-urls
@@ -764,11 +769,8 @@ encoding conversion errors."
   ;; Default list of substituters.  This is *not* the list baked in
   ;; 'guix-daemon', but it is used by 'guix-service-type' and and a couple of
   ;; clients ('guix build --log-file' uses it.)
-  (map (if (false-if-exception (resolve-interface '(gnutls)))
-           (cut string-append "https://" <>)
-           (cut string-append "http://" <>))
-       '("bordeaux.guix.gnu.org"
-         "ci.guix.gnu.org")))
+  '("https://bordeaux.guix.gnu.org"
+    "https://ci.guix.gnu.org"))
 
 (define (current-user-name)
   "Return the name of the calling user."

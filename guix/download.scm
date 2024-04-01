@@ -32,7 +32,7 @@
   #:use-module (guix monads)
   #:use-module (guix gexp)
   #:autoload   (guix build utils) (call-with-temporary-output-file)
-  #:use-module (web uri)
+  #:autoload   (web uri) (string->uri uri-scheme uri-path)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (%download-methods

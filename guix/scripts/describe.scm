@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2023, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -37,7 +37,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:autoload   (ice-9 pretty-print) (pretty-print)
-  #:use-module (web uri)
+  #:autoload   (web uri) (string->uri uri-host)
   #:export (display-profile-content
             channel-commit-hyperlink
 
