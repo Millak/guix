@@ -1668,6 +1668,10 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
               (lambda args
                 (with-directory-excursion "lisp"
                   (apply (assoc-ref %standard-phases 'expand-load-path) args))))
+            (replace 'make-autoloads
+              (lambda args
+                (with-directory-excursion "lisp"
+                  (apply (assoc-ref %standard-phases 'make-autoloads) args))))
             (replace 'install
               (lambda args
                 (with-directory-excursion "lisp"
