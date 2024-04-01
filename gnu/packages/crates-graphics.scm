@@ -2937,29 +2937,44 @@ interactive applications.")
 (define-public rust-png-0.17
   (package
     (name "rust-png")
-    (version "0.17.7")
+    (version "0.17.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "png" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0f66slx641p7an277xskz8vq7syy9cmhsx1qwnfb268ahspqww2x"))))
+        (base32 "1qdmajjzkdbmk5zk7qb5pc6927xa26hr2v68hbkpa9ris79v1r06"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false                  ;XXX missing files in tarball
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files incuded.
+         "--skip=decoder::stream::tests::image_gamma"
+         "--skip=decoder::stream::tests::image_source_chromaticities"
+         "--skip=decoder::stream::tests::test_two_iccp_chunks"
+         "--skip=encoder::tests::image_palette"
+         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_ignore_text_chunk (line 269)"
+         "--skip=src/decoder/mod.rs - decoder::Decoder<R>::set_limits (line 182)"
+         "--skip=src/lib.rs - (line 13)"
+         "--skip=src/text_metadata.rs - text_metadata (line 25)")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-crc32fast" ,rust-crc32fast-1)
-        ("rust-deflate" ,rust-deflate-1)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.6))
+        ("rust-fdeflate" ,rust-fdeflate-0.3)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.7))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-criterion" ,rust-criterion-0.4)
         ("rust-getopts" ,rust-getopts-0.2)
-        ("rust-glium" ,rust-glium-0.31)
+        ("rust-glium" ,rust-glium-0.32)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-term" ,rust-term-0.7))))
+    (native-inputs (list pkg-config))
+    (inputs (list expat fontconfig freetype))
     (home-page "https://github.com/image-rs/image-png")
     (synopsis "PNG decoding and encoding library in pure Rust")
     (description
