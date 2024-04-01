@@ -34587,6 +34587,30 @@ library.")
     (description "The low-level `io_uring` userspace interface for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ioslice-0.6
+  (package
+    (name "rust-ioslice")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ioslice" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06z38yklsxn53ypslljk21cj25py7wbyagifs5s91f53r1916msy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/4lDO2/ioslice-rs")
+    (synopsis "@code{no_std} I/O slices compatible with @code{std} and @code{lbc}")
+    (description
+     "This package provides @code{no_std} I/O slices that are still optionally
+ABI compatible with @code{std} and @code{lbc}.")
+    (license license:expat)))
+
 (define-public rust-iovec-0.1
   (package
     (name "rust-iovec")
