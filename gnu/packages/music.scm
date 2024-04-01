@@ -4428,6 +4428,69 @@ standard MIDI file with the csvmidi program.")
     (home-page "https://www.fourmilab.ch/webtools/midicsv/")
     (license license:public-domain)))
 
+(define-public mididings
+  (let ((commit "d98265be8afe7da20a5c7cfd0515f0d5fae5c53a")
+        (revision "1"))
+    (package
+      (name "mididings")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mididings/mididings")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1a8i4yac5jjkq0vh73nwkv0j7vnvfwbzzagam4xdl1gpnc26n5xi"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'build-manpages
+             (lambda _
+               (with-directory-excursion "doc/man"
+                 (for-each (lambda (doc)
+                             (system (format #false
+                                             "scdoc < ~a.scd > ~a.1" doc doc)))
+                           '(livedings mididings send_midi))))))))
+      (inputs
+       (list alsa-lib
+             boost
+             jack-2
+             `(,python "tk")
+             python-dbus
+             python-decorator
+             python-pyinotify
+             python-pyliblo
+             python-pysmf))
+      (native-inputs (list python-pytest pkg-config scdoc))
+      (home-page "https://github.com/mididings/mididings")
+      (synopsis "MIDI router and processor")
+      (description
+       "mididings is a MIDI router/processor based on Python, supporting ALSA
+and JACK MIDI.  Features include:
+
+@itemize
+@item MIDI routing and filtering; filter events depending on their event type,
+  channel, note number, velocity, etc., and freely route them between an
+  arbitrary number of input and output ports.
+@item Modifying and converting MIDI events; transpose notes, apply velocity
+  curves, change controller values and ranges, or convert events to any other
+  MIDI event type. mididings also includes more complex functions like a
+  diatonic harmonizer, floating split points, latched notes, and more.
+@item Seamless switching between patches; set up different \"scenes\", each
+  with its own MIDI routing and processing, and switch between them at any time,
+  even while playing.  Switching scenes does not affect notes already held, and
+  does not result in dropouts or stuck notes!
+@item MIDI event monitoring, running external commands; print MIDI event data
+  to the console to help debugging your patches and configuring your MIDI
+  controllers.  In addition to its MIDI output, mididings can also execute shell
+  commands and send OSC or DBUS messages.
+@end itemize")
+      (license license:gpl2+))))
+
 (define-public gx-guvnor-lv2
   (package
     (name "gx-guvnor-lv2")
