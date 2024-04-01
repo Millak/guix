@@ -72,6 +72,7 @@
 ;;             ├── bc/
 ;;             ├── cs/
 ;;             ├── ChezScheme/
+;;             ├── rktboot/
 ;;             ├── zuo/
 ;;             └── ...
 ;;
@@ -149,20 +150,26 @@
 ;;   - Racket BC [3M] needs an existing Racket to run "xform",
 ;;     which transforms its own C source code to add additional annotations
 ;;     for the precise garbage collector.
-;;   - Racket CS needs (bootfiles for) Racket's fork of Chez Scheme.
-;;     It also needs an existing Racket to compile Racket-implemented
+;;   - Racket CS needs (boot files for) the corresponding version of Chez
+;;     Scheme. It also needs an existing Racket to compile Racket-implemented
 ;;     parts of the runtime system to R6RS libraries.
-;;   - Chez Scheme also needs bootfiles for itself, but Racket can simulate
-;;     enough of Chez Scheme to load Racket's fork of the Chez Scheme compiler
-;;     purely from source into Racket and apply the compiler to itself,
-;;     producing the needed bootfiles (albeit very slowly).
-;;     Any variant of Racket since version 7.1 can run the simulation.
+;;   - Chez Scheme also needs boot files for itself, but Racket BC can
+;;     bootstrap these using the code in "racket/src/rktboot/".
+;;     See the commentary in "chez.scm" for further details
 ;;
 ;; So, we build CGC to build 3M to build bootfiles and CS.
 ;;
 ;; (Note: since the CGC variant is basically only for bootstrapping, we
 ;; often use "BC" to mean "3M", consistent with `(banner)` and the
 ;; suffixes used on executables when more than one variant co-exists.)
+;;
+;; Since the pre-releases for Chez Scheme 10.0.0, all of Racket's changes have
+;; been merged upstream, and development will be kept in sync going
+;; forward. However, there is no plan to align the Chez Scheme and Racket
+;; release cycles. For the near fulture, a given released version of Racket
+;; will continue to depend on a specific pre-release version of Chez Scheme as
+;; part of Racket CS's "ABI". See upstream discussion at
+;; <https://racket.discourse.group/t/2739/3>.
 ;;
 ;; One remaining bootstrapping limitation is that Racket's reader, module
 ;; system, and macro expander are implemented in Racket. For Racket CS,
@@ -189,7 +196,8 @@
 ;; Zuo is notably *not* a problem for bootstrapping. The implementation is a
 ;; single hand-written C file designed to build with just `cc -o zuo zuo.c`,
 ;; even with very old or limited compilers. (We use the Autoconf support for
-;; convienience.)
+;; convienience.) As of Zuo 1.8, Zuo has tagged releases in its own repository
+;; independent of the Racket release cycle.
 ;;
 ;; CODE:
 

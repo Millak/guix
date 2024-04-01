@@ -57,15 +57,54 @@
 ;; Commentary:
 ;;
 ;; The bootstrapping paths for Chez Scheme and Racket are closely
-;; entwined. Racket CS (the default Racket implementation) is based on (a fork
-;; of) Chez Scheme. Racket's variant of Chez Scheme shares sources for
-;; nanopass and stex with upstream Chez Scheme.
+;; entwined. See "Bootstrapping Racket" in the commentary on "racket.scm" for
+;; details on the Racket portion of Chez Scheme's bootstrapping path.
 ;;
-;; Racket's variant of Chez Scheme can be bootstrapped by an older Racket
-;; implementation, Racket BC, which can be bootstrapped from C. Porting that
-;; code to work with upstream Chez Scheme (or finding an old version that
-;; does) is our best hope for some day bootstrapping upstream Chez Scheme from
-;; source.
+;; Chez Scheme is a self-hosting compiler. A small kernel implemented in C
+;; loads "boot files" (in a custom object file format) compiled from the parts
+;; of the system implemented in Chez Scheme. (While Chez Scheme generates
+;; native machine code, it implements its own linker and loader.)
+;;
+;; As of Chez Scheme 10.0.0 (and the pre-release versions that preceded it on
+;; the Racket branch), there are several ways to obtain boot files:
+;;
+;;  1. The Racket package "cs-bootstrap" (in the "racket/src/rktboot/"
+;;     directory of the main Racket Git repository) simulates enough of Chez
+;;     Scheme to load the Chez Scheme compiler purely from source into Racket
+;;     and apply the compiler to itself, producing the needed boot files
+;;     (albeit very slowly).
+;;     Any variant of Racket since version 7.1 can run the simulation. Using
+;;     the older Racket BC implementation, which does not depend on Chez
+;;     Scheme, breaks the dependency cycle.
+;;     However, the simulation relies on implementation details of Chez
+;;     Scheme, so a given version of Chez Scheme can only be bootstrapped by
+;;     the corresponding version of the "cs-bootstrap" package.
+;;
+;;  2. The Chez Scheme makefile provides a "re.boot" target for bootstrapping
+;;     via a different version of Chez Scheme (9.5.4 or later).
+;;     This path manages potential differences in implementation details
+;;     across Chez Scheme versions using a strategy similar to "cs-bootstrap",
+;;     but the compatibility shim is maintained with the Chez Scheme source
+;;     code (in "s/reboot.ss"). Also, it's faster, since less indirection is
+;;     needed.
+;;
+;;  3. For cross-compilation, or with an extremely similar Chez Scheme, the
+;;     makefile provides "cross.boot" and related targets.
+;;
+;;  4. The Chez Scheme Git repository includes pre-built "pb" (portable
+;;     bytecode) boot files, which can be used for bootstrapping on any
+;;     platform, but these binary files are removed from the source Guix uses.
+;;
+;; Concretely, we use racket-vm-bc to bootstrap chez-scheme-for-racket, which
+;; we then use to bootstrap both chez-scheme and racket-vm-cs.
+;;
+;; In principle, it would be possible instead to use chez-scheme to bootstrap
+;; chez-scheme-for-racket. However, since Racket is ultimately used for
+;; bootstrapping, chez-scheme would still need to be rebuilt when Racket
+;; changes, whereas treating chez-scheme as a leaf avoids having to rebuild
+;; Racket when upstream Chez Scheme changes. Furthermore, since "cs-bootstrap"
+;; is developed in the Racket source repository, we don't have to look for the
+;; version of "cs-bootstrap" compatible with the upstream Chez Scheme release.
 ;;
 ;; Code:
 
@@ -479,7 +518,8 @@ version of Chez Scheme.")
                            (for-each (lambda (dir)
                                        (when (directory-exists? dir)
                                          (delete-file-recursively dir)))
-                                     '("lz4"
+                                     '("boot"
+                                       "lz4"
                                        "nanopass"
                                        "stex"
                                        "zlib"
@@ -575,10 +615,10 @@ with reliability taking precedence over efficiency if necessary.")
                                         "/opt/racket-vm/bin/racket")
                      "../rktboot/main.rkt"))))))))
     (home-page "https://pkgs.racket-lang.org/package/cs-bootstrap")
-    (synopsis "Chez Scheme bootfiles bootstrapped by Racket")
-    (description "Chez Scheme is a self-hosting compiler: building it
-requires ``bootfiles'' containing the Scheme-implemented portions compiled for
-the current platform.  (Chez can then cross-compile bootfiles for all other
+    (synopsis "Chez Scheme boot files bootstrapped by Racket")
+    (description "Chez Scheme is a self-hosting compiler: building it requires
+``boot files'' containing the Scheme-implemented portions compiled for the
+current platform.  (Chez can then cross-compile boot files for all other
 supported platforms.)
 
 The Racket package @code{cs-bootstrap} (part of the main Racket Git
@@ -591,28 +631,57 @@ long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
 
 (define-public chez-scheme-bootstrap-bootfiles
   (package
-    (inherit chez-scheme)
     (name "chez-scheme-bootstrap-bootfiles")
-    (inputs '())
-    (native-inputs '())
+    (version (package-version chez-scheme))
+    (source (package-source chez-scheme))
+    (native-inputs (list chez-nanopass-bootstrap
+                         (if (%current-target-system)
+                             chez-scheme
+                             chez-scheme-for-racket)
+                         zuo))
     (outputs '("out"))
-    (build-system copy-build-system)
-    ;; TODO: cross compilation
+    (build-system gnu-build-system)
     (arguments
-     (list #:install-plan
-           #~`(("boot/" "lib/chez-scheme-bootfiles"))))
-    (synopsis "Chez Scheme bootfiles (binary seed)")
+     (list
+      #:configure-flags
+      #~`("--force" ; don't complain about missing bootfiles
+          "ZLIB=-lz" "LZ4=-llz4" "STEXLIB=/GuixNotUsingStex" ; ignore submods
+          "ZUO=zuo"
+          ;; could skip -m= for non-cross non-pbarch builds
+          #$(string-append "-m=" (or (nix-system->native-chez-machine-type)
+                                     (nix-system->pbarch-machine-type))))
+      #:make-flags
+      #~(list (string-append "SCHEME="
+                             (search-input-file %build-inputs "/bin/scheme"))
+              #$(if (%current-target-system)
+                    "cross.boot"
+                    "re.boot"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-nanopass
+            #$unpack-nanopass)
+          (replace 'configure
+            #$chez-configure)
+          (delete 'check)
+          (replace 'install
+            (lambda args
+              (mkdir-p (string-append #$output "/lib"))
+              (copy-recursively
+               "boot"
+               (string-append #$output "/lib/chez-scheme-bootfiles")))))))
+    (home-page "https://cisco.github.io/ChezScheme/")
+    (synopsis "Bootstrapped Chez Scheme boot files")
     (description
      "Chez Scheme is a self-hosting compiler: building it requires
-``bootfiles'' containing the Scheme-implemented portions compiled for the
+``boot files'' containing the Scheme-implemented portions compiled for the
 current platform.  (Chez can then cross-compile bootfiles for all other
 supported platforms.)
 
-This package provides bootstrap bootfiles for upstream Chez Scheme.
-Currently, it simply packages the binaries checked in to the upstream
-repository.  Hopefully we can eventually adapt Racket's @code{cs-bootstrap} to
-work with upstream Chez Scheme so that we can bootstrap these files from
-source.")))
+This package provides boot files for the released version of Chez Scheme
+bootstrapped by @code{chez-scheme-for-racket}. Chez Scheme 9.5.4 or any later
+version can be used for bootstrapping. Guix ultimately uses the Racket package
+@code{cs-bootstrap} to bootstrap its initial version of Chez Scheme.")
+    (license asl2.0)))
 
 ;;
 ;; Chez's bootstrap dependencies:
