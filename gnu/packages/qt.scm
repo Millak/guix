@@ -1511,14 +1511,14 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.6.2")
+    (version "6.6.3")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0k6qndjvkkx3g8lr7f64xx86b3cwxzkgpl6fr6cp73s6qjkyk763"))
+                "1wwjlwjb3hnlpai4rrrdsm096a6ahb1izs3524r79jpjzhn7n805"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (outputs '("out" "debug"))
     (build-system cmake-build-system)
@@ -1635,7 +1635,7 @@ with JavaScript and C++.")))
                     "tst_qmlls"
                     "tst_qmllscompletions"
 
-                    ;; This test fails starting with 6.6.2 (see:
+                    ;; This test fails starting with 6.6.3 (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-123748), for
                     ;; unknown reasons.
                     "tst_qquickiconimage") "|")
