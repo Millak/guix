@@ -1656,7 +1656,7 @@ gone and to help you to clean it up.")
 (define-public nwipe
   (package
     (name "nwipe")
-    (version "0.35")
+    (version "0.36")
     (source
      (origin
        (method git-fetch)
@@ -1665,7 +1665,7 @@ gone and to help you to clean it up.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bj20y52qzz2ja56yf1pxqjg3lsda35c2k5hcj3lqm69jpsla2wq"))))
+        (base32 "075zwakv3lva46v6wab00l5x7bs2k73mzzhwlbvm839r8a6gm0dh"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
