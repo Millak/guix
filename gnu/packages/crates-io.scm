@@ -80279,16 +80279,15 @@ C library.")
 (define-public rust-tinyvec-macros-0.1
   (package
     (name "rust-tinyvec-macros")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tinyvec_macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p5zvgbas5nh403fbxica819mf3g83n8g2hzpfazfr56w6klv9yd"))))
+        (base32 "081gag86208sc3y6sdkshgw3vysm5d34p431dzw0bshz66ncng0z"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/Soveu/tinyvec_macros")
     (synopsis "Some macros for tiny containers")
     (description "This package provides a few useful macros for tiny
