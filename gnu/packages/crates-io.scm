@@ -9643,18 +9643,18 @@ libraries and binaries.")
   (package
     (inherit rust-built-0.7)
     (name "rust-built")
-    (version "0.5.3")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "built" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fwpyasbp4pb6ff070xn17w1kwhvzgcx83l15gh8kff6y9m92mff"))))
+        (base32 "1gig8y8786wkmvimjxgcmk31jgkqxjhkls2b0rgfwfnlkrmhb72v"))))
     (arguments
      `(#:cargo-inputs (("rust-cargo-lock" ,rust-cargo-lock-8)
                        ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-git2" ,rust-git2-0.16)
+                       ("rust-git2" ,rust-git2-0.15)
                        ("rust-semver" ,rust-semver-1))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
