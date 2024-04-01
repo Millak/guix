@@ -83897,6 +83897,22 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
 parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ttf-parser-0.17
+  (package
+    (inherit rust-ttf-parser-0.19)
+    (name "rust-ttf-parser")
+    (version "0.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ttf-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zrbcjmyz3280wlbdbxskz0gd25lxizjzkcmq50xzdns8kx14n1p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t)))) ; Cut the dependency graph.
+
 (define-public rust-ttf-parser-0.12
   (package
     (inherit rust-ttf-parser-0.19)
