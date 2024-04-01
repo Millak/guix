@@ -50574,7 +50574,7 @@ synchronization primitives.")
 (define-public rust-parking-lot-core-0.8
   (package
     (name "rust-parking-lot-core")
-    (version "0.8.4")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
@@ -50582,14 +50582,7 @@ synchronization primitives.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "08n7w09q6b2prvazbzgwrc9ml7aaf8yg3132ifsayrkwy1nwwzs6"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; XXX: The file demands 0.3.60; we have 0.3.56, but
-           ;; that works well, really.
-           (substitute* "Cargo.toml"
-             (("0\\.3\\.60") "0.3.56"))))))
+         "1p2nfcbr0b9lm9rglgm28k6mwyjwgm4knipsmqbgqaxdy3kcz8k0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
