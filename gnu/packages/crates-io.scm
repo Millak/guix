@@ -15692,14 +15692,14 @@ It supports signed and private (encrypted + signed) jars.")
   (package
     (inherit rust-cookie-0.16)
     (name "rust-cookie")
-    (version "0.15.1")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cookie" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03gql9c2l0wg3hpfp67wg2ns21wysk0xsjxwdbjrf0s6grrcgwfm"))))
+        (base32 "0hlsi1hv5yrx4g92v5acha6yjz8dy1zj0pbppwynml44qpgjavpw"))))
     (arguments
      `(#:cargo-inputs
        (("rust-aes-gcm" ,rust-aes-gcm-0.8)
