@@ -32572,18 +32572,17 @@ SystemTime}}.")
 (define-public rust-iana-time-zone-haiku-0.1
   (package
     (name "rust-iana-time-zone-haiku")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "iana-time-zone-haiku" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1jix9qrqxclj9r4wkg7d3fr987d77vdg3qy2c5hl4ry19wlaw0q7"))))
+               (base32 "17r6jmj31chn7xs9698r122mapq85mfnv98bb4pg6spm0si2f67k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cxx" ,rust-cxx-1)
-        ("rust-cxx-build" ,rust-cxx-build-1))))
+       (("rust-cc" ,rust-cc-1))))
     (home-page "https://github.com/strawlab/iana-time-zone")
     (synopsis "IANA-time-zone support crate for Haiku OS")
     (description
