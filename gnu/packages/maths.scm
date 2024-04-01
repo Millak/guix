@@ -839,6 +839,58 @@ LP/MIP solver is included in the package.")
        (base32
         "040sfaa9jclg2nqdh83w71sv9rc1sznpnfiripjdyr48cady50a2"))))))
 
+(define-public python-libensemble
+  (package
+    (name "python-libensemble")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "libensemble" version))
+       (sha256
+        (base32 "0ckmr04z7ai9mar58si0wzyyy8dnq6g89pg57mzmfz5mkbg4fbsa"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list ncurses
+                         python-mock
+                         python-mpi4py
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-timeout))
+    (propagated-inputs (list python-numpy
+                             python-psutil
+                             python-pydantic-2
+                             python-pyyaml
+                             python-tomli))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-psutil
+            (lambda _
+              (substitute* "setup.py"
+                (("psutil>=5.9.4") "psutil>=5.9.2"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; These files require MPI and call subprocesses.
+                (delete-file
+                 "libensemble/tests/unit_tests/test_executor.py")
+                (delete-file
+                 "libensemble/tests/unit_tests/test_executor_gpus.py")
+                (setenv "TERM" "xterm")
+                ;; A very bad way to skip another MPI test.
+                (substitute* "libensemble/tests/run-tests.sh"
+                  (("export UNIT_TEST_MPI_SUBDIR=.*")
+                   "export UNIT_TEST_MPI_SUBDIR=''"))
+                ;; Run only unit tests, regression tests require MPI.
+                (invoke "bash" "libensemble/tests/run-tests.sh" "-u")))))))
+    (home-page "https://github.com/Libensemble/libensemble")
+    (synopsis "Toolkit for dynamic ensembles of calculations")
+    (description "@code{libensemble} is a complete toolkit for dynamic
+ensembles of calculations.  It connects @code{deciders} to experiments or
+simulations.")
+    (license license:bsd-3)))
+
 (define-public linasm
   (package
     (name "linasm")
