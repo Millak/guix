@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,8 +19,8 @@
 (define-module (test-cpio)
   #:use-module (guix cpio)
   #:use-module (guix tests)
-  #:use-module ((guix build utils) #:select (which))
-  #:use-module ((guix utils) #:select (call-with-temporary-output-file))
+  #:use-module ((guix build utils)
+                #:select (which call-with-temporary-output-file))
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (rnrs io ports)

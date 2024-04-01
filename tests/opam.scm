@@ -24,8 +24,9 @@
   #:use-module (gcrypt hash)
   #:use-module (guix tests)
   #:use-module ((guix build syscalls) #:select (mkdtemp!))
-  #:use-module ((guix build utils) #:select (delete-file-recursively mkdir-p which))
-  #:use-module ((guix utils) #:select (call-with-temporary-output-file))
+  #:use-module ((guix build utils)
+                #:select (delete-file-recursively mkdir-p which
+                          call-with-temporary-output-file))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
   #:use-module (web uri)

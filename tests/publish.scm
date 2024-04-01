@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 by Amar M. Singh <nly@disroot.org>
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,7 +25,8 @@
   #:use-module (guix scripts publish)
   #:use-module (guix tests)
   #:use-module (guix config)
-  #:use-module (guix utils)
+  #:use-module ((guix utils) #:select (call-with-temporary-directory))
+  #:use-module ((guix build utils) #:select (call-with-temporary-output-file))
   #:use-module (gcrypt hash)
   #:use-module (guix store)
   #:use-module (guix derivations)

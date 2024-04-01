@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2019-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2019-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020-2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -28,10 +28,11 @@
   #:use-module ((guix build utils)
                 #:select ((package-name->name+version
                            . hyphen-package-name->name+version)
-                          dump-port))
+                          dump-port
+                          call-with-temporary-output-file))
   #:use-module (guix packages)
   #:use-module (guix upstream)
-  #:use-module (guix utils)
+  #:autoload   (guix utils) (version>? file-sans-extension)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)

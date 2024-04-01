@@ -8,7 +8,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2019 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,7 +47,7 @@
   #:use-module (guix upstream)
   #:use-module (guix packages)
   #:autoload   (guix build-system haskell) (hackage-uri)
-  #:use-module ((guix utils) #:select (call-with-temporary-output-file))
+  #:autoload   (guix build utils) (call-with-temporary-output-file)
   #:export (%hackage-url
             hackage->guix-package
             hackage-recursive-import

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -25,6 +25,7 @@
 (define-module (test-utils)
   #:use-module ((guix config) #:select (%gzip))
   #:use-module (guix utils)
+  #:use-module ((guix build utils) #:select (call-with-temporary-output-file))
   #:use-module ((guix store) #:select (%store-prefix store-path-package-name))
   #:use-module ((guix search-paths) #:select (string-tokenize*))
   #:use-module (srfi srfi-1)

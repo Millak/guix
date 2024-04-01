@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
@@ -47,11 +47,12 @@
   #:use-module (rnrs io ports)                    ;need 'port-position' etc.
   #:use-module ((rnrs bytevectors) #:select (bytevector-u8-set!))
   #:use-module (guix memoization)
-  #:use-module ((guix build utils)
-                #:select (dump-port mkdir-p delete-file-recursively
-                          call-with-temporary-output-file %xz-parallel-args))
-  #:use-module ((guix build syscalls) #:select (mkdtemp! fdatasync))
-  #:use-module ((guix combinators) #:select (fold2))
+  #:autoload   (guix build utils) (dump-port
+                                   mkdir-p
+                                   delete-file-recursively
+                                   %xz-parallel-args)
+  #:autoload   (guix build syscalls) (mkdtemp! fdatasync)
+  #:autoload   (guix combinators) (fold2)
   #:use-module (guix diagnostics)           ;<location>, &error-location, etc.
   #:use-module (ice-9 format)
   #:use-module ((ice-9 iconv) #:prefix iconv:)
@@ -76,9 +77,7 @@
 
                &fix-hint
                fix-hint?
-               condition-fix-hint
-
-               call-with-temporary-output-file)
+               condition-fix-hint)
   #:export (strip-keyword-arguments
             default-keyword-arguments
             substitute-keyword-arguments

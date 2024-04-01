@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2018, 2020-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,9 +21,9 @@
   #:use-module (guix store)
   #:use-module (guix store database)
   #:use-module (guix build store-copy)
-  #:use-module ((guix utils) #:select (call-with-temporary-output-file))
   #:use-module ((guix build utils)
-                #:select (mkdir-p delete-file-recursively))
+                #:select (mkdir-p delete-file-recursively
+                          call-with-temporary-output-file))
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64))
 

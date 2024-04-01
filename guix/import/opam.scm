@@ -31,7 +31,9 @@
   #:use-module ((srfi srfi-26) #:select (cut))
   #:use-module (srfi srfi-34)
   #:use-module ((web uri) #:select (string->uri uri->string))
-  #:use-module ((guix build utils) #:select (dump-port find-files mkdir-p))
+  #:use-module ((guix build utils)
+                #:select (dump-port find-files mkdir-p
+                          call-with-temporary-output-file))
   #:use-module (guix build-system)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
@@ -39,8 +41,7 @@
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix utils) #:select (cache-directory
-                                       version>?
-                                       call-with-temporary-output-file))
+                                       version>?))
   #:use-module ((guix import utils) #:select (beautify-description
                                               guix-hash-url
                                               recursive-import

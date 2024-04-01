@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2015-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -52,7 +52,8 @@
                 #:select ((package-name->name+version
                            . hyphen-package-name->name+version)
                           find-files
-                          invoke))
+                          invoke
+                          call-with-temporary-output-file))
   #:use-module (guix import utils)
   #:use-module (guix import json)
   #:use-module (json)

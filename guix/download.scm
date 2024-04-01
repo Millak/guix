@@ -31,7 +31,7 @@
   #:autoload   (guix build download) (url-fetch)
   #:use-module (guix monads)
   #:use-module (guix gexp)
-  #:use-module (guix utils)
+  #:autoload   (guix build utils) (call-with-temporary-output-file)
   #:use-module (web uri)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
