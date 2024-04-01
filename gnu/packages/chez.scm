@@ -69,21 +69,9 @@
 ;; Code:
 
 (define* (chez-scheme-for-system #:optional
-                                 (system (or (%current-target-system)
-                                             (%current-system))))
-  "Return 'chez-scheme' if it fully supports SYSTEM, including support for
-bootstrapping and native threads.  Otherwise, return
-'chez-scheme-for-racket'."
-  (if (and=> (chez-upstream-features-for-system system)
-             (lambda (features)
-               (every (cut memq <> features)
-                      '(threads
-                        ;; We can cross-compile for platforms without
-                        ;; bootstrap bootfiles, but we can't self-host
-                        ;; on them short of adding more binary seeds.
-                        bootstrap-bootfiles))))
-      chez-scheme
-      chez-scheme-for-racket))
+                                 system)
+  "Returns 'chez-scheme'."
+  chez-scheme)
 
 (define* (target-chez-arch #:optional (system
                                        (or (%current-target-system)
@@ -506,10 +494,11 @@ version of Chez Scheme.")
 
 (define-public chez-scheme
   (package
+    (inherit chez-scheme-for-racket)
     (name "chez-scheme")
-    ;; The version should match `(scheme-version-number)`.
+    ;; The version should match `(scheme-version-number #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "9.5.8")
+    (version "10.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -517,9 +506,10 @@ version of Chez Scheme.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0xchqq8cm0ka5wgpn18sjs0hh15rc3nb7xrjqbbc9al3asq0d7gc"))
+                "1q66vafhiwk617z51qkm1v64r3bxqhhf5lzrmsa4l9d5yhvlyk09"))
               (file-name (git-file-name name version))
-              (patches (search-patches "chez-scheme-bin-sh.patch"))
+              (patches (search-patches "chez-scheme-backport-configure.patch"
+                                       "chez-scheme-bin-sh.patch"))
               (snippet #~(begin
                            (use-modules (guix build utils))
                            ;; TODO: consider putting this in a (guix ...) or
@@ -528,165 +518,30 @@ version of Chez Scheme.")
                            (for-each (lambda (dir)
                                        (when (directory-exists? dir)
                                          (delete-file-recursively dir)))
-                                     '("stex"
+                                     '("lz4"
                                        "nanopass"
-                                       "lz4"
-                                       "zlib"))))))
+                                       "stex"
+                                       "zlib"
+                                       "zuo"))))))
     (build-system gnu-build-system)
     (inputs
-     (list
-      chez-scheme-bootstrap-bootfiles
-      `(,util-linux "lib") ;<-- libuuid
-      zlib
-      lz4
-      ncurses ;<-- for expeditor
-      ;; for X11 clipboard support in expeditor:
-      ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
-      libx11))
-    (native-inputs (list chez-nanopass-bootstrap
-                         stex-bootstrap))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "CHEZSCHEMELIBDIRS")
-            (files '("lib/chez-scheme")))))
-    (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:modules
-      '((guix build gnu-build-system)
-        (guix build utils)
-        (ice-9 ftw)
-        (ice-9 match))
-      #:test-target "test"
-      #:configure-flags
-      #~`(,(string-append "--installprefix=" #$output)
-          #$@(if (and=> (chez-upstream-features-for-system)
-                        (cut memq 'threads <>))
-                 #~("--threads")
-                 #~())
-          "ZLIB=-lz"
-          "LZ4=-llz4"
-          "--libkernel"
-          ;; Guix will do 'compress-man-pages',
-          ;; and letting Chez try causes an error
-          "--nogzip-man-pages")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'unpack-nanopass+stex
-            (lambda args
-              (begin
-                (copy-recursively
-                 (dirname (search-input-file %build-inputs
-                                             "lib/chez-scheme/nanopass.ss"))
-                 "nanopass"
-                 #:keep-mtime? #t)
-                (mkdir-p "stex")
-                (with-output-to-file "stex/Mf-stex"
-                  (lambda ()
-                    ;; otherwise, it will try to download submodules
-                    (display "# to placate ../configure"))))))
-          (add-after 'unpack-nanopass+stex 'unpack-bootfiles
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (when (directory-exists? "boot")
-                (delete-file-recursively "boot"))
-              (copy-recursively
-               (search-input-directory inputs
-                                       "lib/chez-scheme-bootfiles")
-               "boot")))
-          ;; NOTE: The custom Chez 'configure' script doesn't allow
-          ;; unrecognized flags, such as those automatically added
-          ;; by `gnu-build-system`. This replacement phase uses only
-          ;; the explicitly provided `#:configure-flags`.
-          (replace 'configure
-            (lambda* (#:key inputs (configure-flags '()) out-of-source?
-                            #:allow-other-keys)
-              (let* ((abs-srcdir (getcwd))
-                     (srcdir (if out-of-source?
-                                 (string-append "../" (basename abs-srcdir))
-                                 ".")))
-                (format #t "source directory: ~s (relative from build: ~s)~%"
-                        abs-srcdir srcdir)
-                (if out-of-source?
-                    (begin
-                      (mkdir "../build")
-                      (chdir "../build")))
-                (format #t "build directory: ~s~%" (getcwd))
-                (format #t "configure flags: ~s~%" configure-flags)
-                (apply invoke
-                       (string-append srcdir "/configure")
-                       configure-flags))))
-          (add-after 'configure 'configure-environment-variables
-            (lambda args
-              ;; Some makefiles (for tests) don't seem to propagate CC
-              ;; properly, so we take it out of their hands:
-              (setenv "CC" #$(cc-for-target))
-              ;; Likewise, some tests have needed HOME to be set:
-              (setenv "HOME" "/tmp")))
-          ;; The binary file name is called "scheme" as is the one from
-          ;; MIT/GNU Scheme.  We add a symlink to use in case both are
-          ;; installed.
-          (add-after 'install 'install-symlink
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((scheme (search-input-file outputs "/bin/scheme"))
-                     (bin-dir (dirname scheme)))
-                (symlink scheme
-                         (string-append bin-dir "/chez-scheme"))
-                (match (find-files (string-append bin-dir "/../lib")
-                                   "scheme.boot")
-                  ((scheme.boot)
-                   (symlink scheme.boot
-                            (string-append (dirname scheme.boot)
-                                           "/chez-scheme.boot")))))))
-          ;; Building the documentation requires stex and a running scheme.
-          (add-after 'install-symlink 'install-docs
-            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-              (let* ((doc-prefix (or (assoc-ref outputs "doc")
-                                     (assoc-ref outputs "out")))
-                     (chez+version (strip-store-file-name #$output))
-                     (scheme (search-input-file outputs "/bin/scheme"))
-                     (stexlib (search-input-directory (or native-inputs
-                                                          inputs)
-                                                      "/lib/stex"))
-                     (doc-dir (string-append doc-prefix
-                                             "/share/doc/"
-                                             chez+version)))
-                (define* (stex-make #:optional (suffix ""))
-                  (invoke "make" "install"
-                          (string-append "Scheme=" scheme)
-                          (string-append "STEXLIB=" stexlib)
-                          (string-append "installdir=" doc-dir suffix)))
-                (with-directory-excursion "csug"
-                  (stex-make "/csug"))
-                (with-directory-excursion "release_notes"
-                  (stex-make "/release_notes")))))
-          (add-after 'install-docs 'link-doc-pdfs
-            ;; otherwise, it's hard to notice them in a forest of HTML files
-            (lambda* (#:key outputs #:allow-other-keys)
-              (with-directory-excursion
-                  (string-append (or (assoc-ref outputs "doc")
-                                     (assoc-ref outputs "out"))
-                                 "/share/doc/"
-                                 (strip-store-file-name #$output))
-                (symlink "release_notes/release_notes.pdf"
-                         "release_notes.pdf")
-                (match (find-files "csug"
-                                   "csug.*\\.pdf$" ;; embeded version number
-                                   #:fail-on-error? #t)
-                  ((pth)
-                   (symlink pth
-                            "csug.pdf")))))))))
-    (supported-systems
-     (delete
-      "armhf-linux" ;; XXX reportedly broken, needs checking
-      (filter chez-upstream-features-for-system
-              %supported-systems)))
+     (modify-inputs (package-inputs chez-scheme-for-racket)
+       (replace "chez-scheme-for-racket-bootstrap-bootfiles"
+         chez-scheme-bootstrap-bootfiles)
+       ;; for X11 clipboard support in expeditor:
+       ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
+       (prepend libx11)))
+    ;; replace unpack phase?
     (home-page "https://cisco.github.io/ChezScheme/")
     (synopsis "R6RS Scheme compiler and run-time")
     (description
-     "Chez Scheme is a compiler and run-time system for the language of the
-Revised^6 Report on Scheme (R6RS), with numerous extensions.  The compiler
-generates native code for each target processor, with support for x86, x86_64,
-and 32-bit PowerPC architectures.")
+     "Chez Scheme is both a programming language and a high-performance
+implementation of that language. The language is a superset of R6RS Scheme
+with numerous extensions, including native threads, non-blocking I/O, local
+modules, and much more.  Chez Scheme compiles source expressions incrementally
+to machine code, providing the speed of compiled code in an interactive
+system.  The system is intended to be as reliable and efficient as possible,
+with reliability taking precedence over efficiency if necessary.")
     (license asl2.0)))
 
 ;;
@@ -785,11 +640,6 @@ long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
     (arguments
      (list #:install-plan
            #~`(("boot/" "lib/chez-scheme-bootfiles"))))
-    (supported-systems
-     (filter (lambda (system)
-               (and=> (chez-upstream-features-for-system system)
-                      (cut memq 'bootstrap-bootfiles <>)))
-             %supported-systems))
     (synopsis "Chez Scheme bootfiles (binary seed)")
     (description
      "Chez Scheme is a self-hosting compiler: building it requires

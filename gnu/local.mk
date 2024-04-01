@@ -1022,6 +1022,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ccextractor-add-missing-header.patch	\
   %D%/packages/patches/ccextractor-autoconf-tesseract.patch	\
   %D%/packages/patches/ccextractor-fix-ocr.patch		\
+  %D%/packages/patches/chez-scheme-backport-configure.patch	\
   %D%/packages/patches/chez-scheme-bin-sh.patch			\
   %D%/packages/patches/circos-remove-findbin.patch		\
   %D%/packages/patches/cdparanoia-fpic.patch			\
