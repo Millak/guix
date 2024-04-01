@@ -6248,31 +6248,31 @@ iteratively in Rust.")
 (define-public rust-average-0.10
   (package
     (name "rust-average")
-    (version "0.10.4")
+    (version "0.10.6")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "average" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1dmsxqcr1n0i20qr9g2g6j89kkx8dy6w18dbqzx1wi42wj1chgvh"))))
+          "1npcsgksxa8c03cam1zyxgaw9rsifwbzbflf4pjrq55b0a01cg1j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-conv" ,rust-conv-0.3)
         ("rust-float-ord" ,rust-float-ord-0.2)
         ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rayon" ,rust-rayon-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-big-array" ,rust-serde-big-array-0.2)
+        ("rust-serde-big-array" ,rust-serde-big-array-0.3)
         ("rust-serde-derive" ,rust-serde-derive-1))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-proptest" ,rust-proptest-0.9)
+        ("rust-proptest" ,rust-proptest-0.10)
         ("rust-quantiles" ,rust-quantiles-0.7)
         ("rust-rand" ,rust-rand-0.7)
-        ("rust-rand-distr" ,rust-rand-distr-0.2)
+        ("rust-rand-distr" ,rust-rand-distr-0.3)
         ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.4)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-streaming-stats" ,rust-streaming-stats-0.2))))
