@@ -60944,8 +60944,32 @@ using tokio's @code{RwLock}")
 owned memory.")
     (license license:expat)))
 
+(define-public rust-redox-syscall-0.5
+  (package
+    (name "rust-redox-syscall")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "redox_syscall" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zja6y3av9z50gg1hh0vsc053941wng21r43whhk8mfb9n4m5426"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Functions not implemented on Linux.
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://gitlab.redox-os.org/redox-os/syscall")
+    (synopsis "Rust library to access raw Redox system calls")
+    (description
+     "This package provides a Rust library to access raw Redox system calls.")
+    (license license:expat)))
+
 (define-public rust-redox-syscall-0.4
   (package
+    (inherit rust-redox-syscall-0.5)
     (name "rust-redox-syscall")
     (version "0.4.1")
     (source
@@ -60955,17 +60979,11 @@ owned memory.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1aiifyz5dnybfvkk4cdab9p2kmphag1yad6iknc7aszlxxldf8j7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; could not find `CloneFlags` in the crate root
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
-    (home-page "https://gitlab.redox-os.org/redox-os/syscall")
-    (synopsis "Rust library to access raw Redox system calls")
-    (description
-     "This package provides a Rust library to access raw Redox system calls.")
-    (license license:expat)))
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
 (define-public rust-redox-syscall-0.3
   (package
