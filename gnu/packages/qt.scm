@@ -2763,13 +2763,13 @@ message.")))
 (define-public qtspeech
   (package
     (name "qtspeech")
-    (version "6.6.2")
+    (version "6.6.3")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1qvf3p2p1pc5fw40d8zq0iawaaqkc0dp5yx85b1dnw1j809bn8y0"))))
+                "1yh3r5zbhgwkjgs7yk6iv2w23766n1i4z8vjkkw5awdixx3gfa76"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
