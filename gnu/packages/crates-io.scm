@@ -70293,7 +70293,7 @@ CPUs, as well as raw interfaces to platform-specific instructions.
 (define-public rust-simd-adler32-0.3
   (package
     (name "rust-simd-adler32")
-    (version "0.3.4")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
@@ -70301,7 +70301,7 @@ CPUs, as well as raw interfaces to platform-specific instructions.
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "060b9v15s3miq06582cj2ywam92ph6xs34s62mc8az3xc4wxz98l"))))
+         "1zkq40c3iajcnr5936gjp9jjh1lpzhy44p3dq3fiw75iwr1w2vfn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
@@ -70310,8 +70310,7 @@ CPUs, as well as raw interfaces to platform-specific instructions.
         ("rust-criterion" ,rust-criterion-0.3)
         ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/mcountryman/simd-adler32")
-    (synopsis
-     "Adler-32 rolling hash algorithm implementation")
+    (synopsis "Adler-32 rolling hash algorithm implementation")
     (description
      "This package provides a SIMD-accelerated Adler-32 rolling hash algorithm
 implementation in Rust.")
