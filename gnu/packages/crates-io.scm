@@ -53451,21 +53451,23 @@ both WASM and native applications")
 (define-public rust-plotters-bitmap-0.3
   (package
     (name "rust-plotters-bitmap")
-    (version "0.3.1")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "plotters-bitmap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0m0bq3fqrnhgg37k6lz0m328n3ifymc965pxmqc5cpk90nljydi1"))))
+        (base32 "0hw5zd70l7q122np8m731sksclmv6m82k2wyqsmrjli0f0gvxsqc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; use of undeclared crate or module `plotters`
        #:cargo-inputs
-       (("rust-gif" ,rust-gif-0.11)
-        ("rust-image" ,rust-image-0.23)
-        ("rust-plotters-backend" ,rust-plotters-backend-0.3))))
+       (("rust-gif" ,rust-gif-0.12)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-plotters-backend" ,rust-plotters-backend-0.3))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-rayon" ,rust-rayon-1))))
     (home-page "https://plotters-rs.github.io")
     (synopsis "Plotters Bitmap Backend")
     (description "This package provides Plotters bitmap backend.")
