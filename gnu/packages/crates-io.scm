@@ -51173,7 +51173,7 @@ Format (MCF).")
                    (string-append ">=" version)))))))
     (arguments
      `(#:cargo-inputs
-       (("rust-base64ct" ,rust-base64ct-1.0.1)
+       (("rust-base64ct" ,rust-base64ct-1)
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-subtle" ,rust-subtle-2))))))
 
