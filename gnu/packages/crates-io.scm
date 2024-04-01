@@ -79416,19 +79416,18 @@ handle Unicode characters correctly.")
 (define-public rust-thread-id-4
   (package
     (name "rust-thread-id")
-    (version "4.0.0")
+    (version "4.2.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "thread-id" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0zvikdngp0950hi0jgiipr8l36rskk1wk7pc8cd43xr3g5if1psz"))))
+         (base32 "02xph1955cpsriazs73hnwgjs1fzi8a2zgjplbm0vdcydv283v7h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/ruuda/thread-id")
     (synopsis "Get a unique ID for the current thread in Rust")
