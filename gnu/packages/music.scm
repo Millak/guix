@@ -3098,6 +3098,39 @@ using a system-independent interface.")
        "This package provides Python bindings to the PortMidi library.")
       (license license:expat))))
 
+(define-public python-pysmf
+  (let ((commit "8a98a557470301f5a471d07d37f334a5b8892602")
+        (revision "1"))
+    (package
+      (name "python-pysmf")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mididings/pysmf")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ic24k8jr7iwcrj7xaw5b9i22al05rxfpjw39bbjsg7v09kvygcv"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'fix-build-system
+             (lambda _
+               (substitute* "setup.py"
+                 (("from subprocess") "import sys; from subprocess")))))))
+      (inputs (list libsmf glib))
+      (native-inputs (list pkg-config python-cython python-pytest))
+      (home-page "https://github.com/mididings/pysmf")
+      (synopsis "Read and write Standard MIDI files")
+      (description
+       "pysmf is a Python extension module for reading and writing Standard
+MIDI files, based on libsmf.")
+      (license license:bsd-2))))
+
 (define-public frescobaldi
   (package
     (name "frescobaldi")
