@@ -53434,16 +53434,15 @@ both WASM and native applications")
 (define-public rust-plotters-backend-0.3
   (package
     (name "rust-plotters-backend")
-    (version "0.3.2")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "plotters-backend" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "075ccyz814q46dkr93zz7crj9mmyqgk0w6mmrpyz1sm0ilqig16q"))))
+        (base32 "02cn98gsj2i1bwrfsymifmyas1wn2gibdm9mk8w82x9s9n5n4xly"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://plotters-rs.github.io")
     (synopsis "Plotters Backend API")
     (description "This package provides Plotters backend API.")
