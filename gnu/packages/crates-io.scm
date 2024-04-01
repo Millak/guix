@@ -21799,20 +21799,19 @@ and @code{directories} crates.")
   (package
     (inherit rust-dirs-sys-0.3)
     (name "rust-dirs-sys-next")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dirs-sys-next" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0zgy7is3h2dyf1l4sa7k065w2kvx0l12l40my4rswm2mc1gkdplr"))))
+         "0kavhavdxv4phzj4l0psvh55hszwnr0rcz8sxbvx20pyqi2a3gaf"))))
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-redox-users" ,rust-redox-users-0.3)
+        ("rust-redox-users" ,rust-redox-users-0.4)
         ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/xdg-rs/dirs/tree/master/dirs-sys")))
 
