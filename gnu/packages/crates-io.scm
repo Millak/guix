@@ -66164,8 +66164,29 @@ quickly convert floating point numbers to decimal strings.")
 computation (experimental)")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-safe-arch-0.7
+  (package
+    (name "rust-safe-arch")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "safe_arch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m63dasp3rs9mkaa5wai6l6v14lbb788igaidys7k8g6w5f0g67k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1))))
+    (home-page "https://github.com/Lokathor/safe_arch")
+    (synopsis "Access core::arch safely")
+    (description "This package exposes @code{core::arch} safely via
+@code{#[cfg()]}.")
+    (license (list license:zlib license:asl2.0 license:expat))))
+
 (define-public rust-safe-arch-0.6
   (package
+    (inherit rust-safe-arch-0.7)
     (name "rust-safe-arch")
     (version "0.6.0")
     (source
@@ -66175,16 +66196,8 @@ computation (experimental)")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ad5ykwgq9ll1ymp83d9cayzj8q191rik71ga5wzkndhrkj22j3r"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-bytemuck" ,rust-bytemuck-1))))
-    (home-page "https://github.com/Lokathor/safe_arch")
-    (synopsis "Access core::arch safely")
-    (description "This package exposes @code{core::arch} safely via
-@code{#[cfg()]}.")
-    (license (list license:zlib license:asl2.0 license:expat))))
-
+     `(#:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1))))))
 
 (define-public rust-safe-arch-0.5
   (package
