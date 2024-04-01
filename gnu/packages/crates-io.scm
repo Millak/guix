@@ -8459,24 +8459,20 @@ storage.")
 (define-public rust-block-buffer-0.10
   (package
     (name "rust-block-buffer")
-    (version "0.10.0")
+    (version "0.10.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "block-buffer" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "15cbh9jbcfcbbi863dlmamjka2f8l55ld915vr0b0xlf0l16mlzi"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "block-buffer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w9sa2ypmrsqqvc20nhwr75wbb5cjr4kkyhpjm1z1lv2kdicfy1h"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-generic-array" ,rust-generic-array-0.14))))
+     `(#:cargo-inputs (("rust-generic-array" ,rust-generic-array-0.14))))
     (home-page "https://github.com/RustCrypto/utils")
     (synopsis "Fixed size buffer for block processing of data")
-    (description
-     "Fixed size buffer for block processing of data.")
+    (description "Fixed size buffer for block processing of data.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-block-buffer-0.9
