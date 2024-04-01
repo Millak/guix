@@ -294,6 +294,21 @@ Qt.  Some of its features include:
 @end itemize")
     (license (list license:gpl2 license:gpl3)))) ;dual-licensed
 
+(define-public kddockwidgets-1
+  (package
+    (inherit kddockwidgets)
+    (name "kddockwidgets")
+    (version "1.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/KDAB/KDDockWidgets")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bz08f1fv3qbza101q0q0w70nd67z3h6azs5wr3ypmva9kvfg4ck"))))))
+
 (define-public kvantum
   (package
     (name "kvantum")
