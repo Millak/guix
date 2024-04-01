@@ -89109,21 +89109,20 @@ environment.")
 (define-public rust-wide-0.7
   (package
     (name "rust-wide")
-    (version "0.7.4")
+    (version "0.7.15")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "wide" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0psw31mh21cn4w7i0klsz7law8p8iddsqir8x35cf6n3vb8s5axk"))))
+          "071cl37d9ni0a4r8y1hjyr5vq0w0w3wf742lqagnfvi49xafrgl9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bytemuck" ,rust-bytemuck-1)
-        ("rust-safe-arch" ,rust-safe-arch-0.6))))
+        ("rust-safe-arch" ,rust-safe-arch-0.7))))
     (home-page "https://github.com/Lokathor/wide")
     (synopsis "Rust for wide blocks")
     (description "This crate has data types for blocks of primitives packed
