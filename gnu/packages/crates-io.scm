@@ -50629,31 +50629,26 @@ synchronization primitives.")
   (package
     (inherit rust-parking-lot-core-0.7)
     (name "rust-parking-lot-core")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "parking_lot_core" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0ay67dpnrn68ryyvp720m9i8hzp189fd4d6slrs1lvmcwywv2xmq"))))
+        (base32 "02kbwqrr0w5mw0hkklqcg35aaiq1cck3g1w0d8bpbgk21a0np9mx"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-cloudabi" ,rust-cloudabi-0.0)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-petgraph" ,rust-petgraph-0.4)
-        ("rust-rand" ,rust-rand-0.4)
         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
+        ("rust-rustc-version" ,rust-rustc-version-0.2)
         ("rust-smallvec" ,rust-smallvec-0.6)
         ("rust-thread-id" ,rust-thread-id-3)
-        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.2))))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-parking-lot-core-0.5
   (package
