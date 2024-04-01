@@ -615,6 +615,15 @@ which will be used as a snippet in origin."
      #:commit commit
      #:license license:expat)))
 
+(define-public tree-sitter-nix
+  (tree-sitter-grammar
+   "nix" "Nix"
+   "0nn3ij8k6wkbf3kcvkyyp0vhfjcksi31wyyfwmsbx66maf2xgaii"
+   "0.0.0"
+   ;; The most recent commit at time of packaging, no tags.
+   #:commit "763168fa916a333a459434f1424b5d30645f015d"
+   #:repository-url "https://github.com/nix-community/tree-sitter-nix"))
+
 (define-public tree-sitter-org
   ;; There are a lot of additions, the last tag was placed a while ago
   (let ((commit "081179c52b3e8175af62b9b91dc099d010c38770")
