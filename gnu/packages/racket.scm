@@ -2,7 +2,7 @@
 ;;; Copyright © 2013-2016, 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2021, 2022, 2023 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -192,7 +192,6 @@
 ;; CODE:
 
 (define %racket-version "8.11.1") ; Remember to update chez-scheme-for-racket!
-(define %zuo-version "1.7") ; defined in racket/src/zuo/zuo.c
 (define %racket-commit
   (string-append "v" %racket-version))
 (define %racket-origin
@@ -206,8 +205,7 @@
     (file-name (git-file-name "racket" %racket-version))
     (patches (search-patches "racket-chez-scheme-bin-sh.patch"
                              "racket-backport-8.11-layered-docs.patch"
-                             "racket-rktio-bin-sh.patch"
-                             "racket-zuo-bin-sh.patch"))
+                             "racket-rktio-bin-sh.patch"))
     (modules '((guix build utils)))
     (snippet
      #~(begin
@@ -229,30 +227,28 @@
 
 
 (define-public zuo
-  (let ((revision #f))
-    (package
-      (name "zuo")
-      (version (string-append %zuo-version
-                              "-racket"
-                              %racket-version
-                              (if revision "-guix" "")
-                              (or revision "")))
-      (source %racket-origin)
-      (outputs '("out" "debug"))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:out-of-source? #t
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda args
-                (chdir "racket/src/zuo"))))))
-      (home-page "https://github.com/racket/zuo")
-      ;; ^ This is downstream of https://github.com/racket/racket,
-      ;; but it's designed to be a friendly landing place
-      (synopsis "Tiny Racket for build scripts")
-      (description "Zuo is a tiny Racket with primitives for dealing
+  (package
+    (name "zuo")
+    (version "1.9") ; defined in racket/src/zuo/zuo.c or the following
+    #;(displayln (~a (hash-ref (runtime-env) 'version) "."
+                     (hash-ref (runtime-env) 'minor-version)))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/racket/zuo")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32 "0zasir33nx1qi1ciz9dn6h8k39i443lr6apw5d1i6mjmhpzxmdhp"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "zuo-bin-sh.patch"))))
+    (outputs '("out" "debug"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:out-of-source? #t))
+    (home-page "https://github.com/racket/zuo")
+    (synopsis "Tiny Racket for build scripts")
+    (description "Zuo is a tiny Racket with primitives for dealing
 with files and running processes.  It comes with a @command{make}-like
 embedded DSL, which is used to build Racket itself.
 
@@ -261,7 +257,7 @@ Zuo is a Racket variant in the sense that program files start with
 and expansion of the file content.  That's how the @command{make}-like DSL is
 defined, and even the base Zuo language is defined by layers of @code{#lang}s.
 One of the early layers implements macros.")
-      (license (list license:asl2.0 license:expat)))))
+    (license (list license:asl2.0 license:expat))))
 
 
 (define racket-vm-common-configure-flags

@@ -2001,7 +2001,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
   %D%/packages/patches/racket-backport-8.11-layered-docs.patch	\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
-  %D%/packages/patches/racket-zuo-bin-sh.patch			\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restartd-update-robust.patch             \
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
@@ -2244,7 +2243,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/zig-do-not-link-against-librt.patch	\
   %D%/packages/patches/zig-use-baseline-cpu-by-default.patch	\
   %D%/packages/patches/zig-use-system-paths.patch		\
-  %D%/packages/patches/zsh-egrep-failing-test.patch
+  %D%/packages/patches/zsh-egrep-failing-test.patch		\
+  %D%/packages/patches/zuo-bin-sh.patch
 
 MISC_DISTRO_FILES =				\
   %D%/packages/ld-wrapper.in
