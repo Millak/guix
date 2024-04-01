@@ -715,13 +715,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qtbase")
-    (version "6.6.2")
+    (version "6.6.3")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "0yv78bwqzy975854h53rbiilsms62f3v02i3jqz7v8ajk1ml56xq"))
+                "0qklvzg242ilxw29jd2vsz6s8ni4dpraf4ghfa4dykhc705zv4q4"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -882,6 +882,20 @@ tst_qt_cmake_create.cpp"
                     (string-join
                      (append
                       (list
+                       ;; The 'tst_qdialogbuttonbox' may fail non-deterministically
+                       ;; (see: https://bugreports.qt.io/browse/QTBUG-123939).
+                       "tst_qdialogbuttonbox"
+
+                       ;; The 'test_standalone_test' fails with a
+                       ;; "get_property could not find TARGET Qt6::Core" error
+                       ;; (see: https://bugreports.qt.io/browse/QTBUG-123940).
+                       "test_standalone_test"
+
+                       ;; The 'test_collecting_plugins' fails with a "Unknown
+                       ;; platform linux-g++" error (see:
+                       ;; https://bugreports.qt.io/browse/QTBUG-123941).
+                       "test_collecting_plugins"
+
                        ;; The 'tst_selftests' fails with the following error:
                        ;; with expansion:
                        ;; false
@@ -894,11 +908,11 @@ tst_qt_cmake_create.cpp"
                        ;; for more information.
 
                        ;; See https://bugreports.qt.io/browse/QTBUG-113371
-                       ;; Add glibc-utf8-locales to native-inpus is no help.
-                       ;; TODO: when core-updates merge, check again.
+                       ;; Adding glibc-utf8-locales to native-inpus is no help.
+                       ;; TODO: when core-updates is merged, check again.
                        "tst_selftests"
 
-                       ;; Sometimes it fails.
+                       ;; The 'tst_qsystemsemaphore' test sometimes fails.
                        "tst_qsystemsemaphore"
                        ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
                        "tst_moc"
