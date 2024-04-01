@@ -32592,14 +32592,14 @@ SystemTime}}.")
 (define-public rust-iana-time-zone-0.1
   (package
     (name "rust-iana-time-zone")
-    (version "0.1.53")
+    (version "0.1.60")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "iana-time-zone" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ra7nvai8n3alvljswacjbnhfcpivpi7xqbc5n048w18gdk25hb4"))))
+                "0hdid5xz3jznm04lysjm3vi93h3c523w0hcc3xba47jl3ddbpzz7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ; Not all files included.
@@ -32609,7 +32609,7 @@ SystemTime}}.")
         ("rust-iana-time-zone-haiku" ,rust-iana-time-zone-haiku-0.1)
         ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-windows-core" ,rust-windows-core-0.52))
        #:cargo-development-inputs
        (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/strawlab/iana-time-zone")
