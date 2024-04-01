@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -6723,7 +6723,7 @@ and as an LV2 plugin.")
     ;; distros to make necessary changes to integrate the software into the
     ;; distribution.
     (name "zrythm")
-    (version "1.0.0-beta.4.9.1")
+    (version "1.0.0-beta.4.12.5")
     (source
      (origin
        (method url-fetch)
@@ -6731,49 +6731,46 @@ and as an LV2 plugin.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "0skdb4bpw4v5175yw9wijrc6j36mxjq8i7p8nn9650lipxg6bshd"))))
+         "1kixf8rlim5qvkhcm65rf35mxkxv3hij039jc9rvh710vl2xxm0g"))))
     (build-system meson-build-system)
     (arguments
-     (list #:glib-or-gtk? #t
-           #:configure-flags
-           #~(list "-Dtests=true"
-                   "-Dmanpage=false"    ;fish-completions breaks this
-                   "-Ddseg_font=false"
-                   "-Dextra_optimizations=false" ;machine-specific
-                   "-Dgraphviz=enabled" ;for exporting routing graphs
-                   "-Dguile=enabled"    ;for Guile scripting
-                   "-Djack=enabled"     ;for JACK audio/MIDI backend
-                   "-Drtaudio=enabled"  ;for RtAudio backend (ALSA)
-                   "-Drtmidi=enabled"   ;for RtMidi backend (ALSA sequencer)
-                   "-Dsdl=enabled")     ;for SDL audio backend (which uses ALSA)
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-tests
-                 (lambda _
-                   ;; io_mkdir must be called with a GError value, not plain
-                   ;; NULL, or else the assertion in io_mkdir segfaults.
-                   (substitute* "tests/helpers/zrythm.h"
-                     (("success = io_mkdir \\(tmp_log_dir, NULL\\);" m)
-                      (string-append "err = NULL;
-success = io_mkdir (tmp_log_dir, &err);")))
-
-                   ;; zrythm: fails because curl wants to access the internet.
-                   ;; project: unknown failure XXX
-                   ;; The other tests fail with this error:
-                   ;;     error: attempt to map invalid URI `'
-                   ;; This means that lilv is given an empty LV2 plugin URI.
-                   ;; This is probably because we don't provide all LV2
-                   ;; plugins that are needed for running the tests.
-                   (substitute* "tests/meson.build"
-                     (("foreach name, info : tests")
-                      "\
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      '(list "-Dtests=true"
+             "-Dmanpage=false"             ;fish-completions breaks this
+             "-Ddseg_font=false"
+             "-Dextra_optimizations=false" ;machine-specific
+             "-Dgraphviz=enabled"          ;for exporting routing graphs
+             "-Dguile=enabled"             ;for Guile scripting
+             "-Djack=enabled"              ;for JACK audio/MIDI backend
+             "-Drtaudio=enabled"           ;for RtAudio backend (ALSA)
+             "-Drtmidi=enabled"            ;for RtMidi backend (ALSA sequencer)
+             "-Dsdl=enabled")              ;for SDL audio backend (which uses ALSA)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; zrythm: fails because curl wants to access the internet.
+              ;; project: unknown failure XXX
+              ;; The other tests fail with this error:
+              ;;     error: attempt to map invalid URI `'
+              ;; This means that lilv is given an empty LV2 plugin URI.
+              ;; This is probably because we don't provide all LV2
+              ;; plugins that are needed for running the tests.
+              (substitute* "tests/meson.build"
+                (("foreach name, info : tests")
+                 "\
   disabled_tests = {
-    'zrythm': 0,
-    'project': 0,
-    'audio/midi_track': 0,
-    'integration/recording': 0,
     'actions/mixer_selections_action': 0,
-    'actions/tracklist_selections': 0
+    'actions/tracklist_selections': 0,
+    'dsp/audio_region': 0,
+    'dsp/audio_track': 0,
+    'dsp/midi_track': 0,
+    'dsp/pool': 0,
+    'integration/recording': 0,
+    'project': 0,
+    'zrythm': 0
   }
   enabled_tests = {}
   foreach name, info : tests
@@ -6781,17 +6778,21 @@ success = io_mkdir (tmp_log_dir, &err);")))
       enabled_tests += {name: info}
     endif
   endforeach
-  foreach name, info : enabled_tests"))))
-               (add-before 'build 'disable-guile-auto-compilation
-                 (lambda _
-                   (setenv "GUILE_AUTO_COMPILE" "0")))
-               (add-after 'install 'wrap-program
-                 (lambda _
-                   (wrap-program (string-append #$output "/bin/zrythm")
-                     ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Zrythm to load
-                     ;; its own SVG icons in pure environments.
-                     `("GDK_PIXBUF_MODULE_FILE" =
-                       (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+  foreach name, info : enabled_tests"))
+              ;; Requires internet access
+              (substitute* "data/meson.build"
+                (("if appstream.*\\(\\)")
+                 "if false"))))
+          (add-before 'build 'disable-guile-auto-compilation
+            (lambda _
+              (setenv "GUILE_AUTO_COMPILE" "0")))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/zrythm")
+                ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Zrythm to load
+                ;; its own SVG icons in pure environments.
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
     (inputs
      (list alsa-lib
            boost
@@ -6810,7 +6811,6 @@ success = io_mkdir (tmp_log_dir, &err);")))
            jack-2
            json-glib
            libadwaita
-           libaudec
            (module-ref
             (resolve-interface '(gnu packages debug)) 'libbacktrace)
            libcyaml
@@ -6820,8 +6820,10 @@ success = io_mkdir (tmp_log_dir, &err);")))
            libsndfile
            libyaml
            lilv
+           lsp-dsp-lib
            lv2
            pango
+           pcre
            pipewire
            pulseaudio
            reproc
@@ -6829,6 +6831,7 @@ success = io_mkdir (tmp_log_dir, &err);")))
            rtmidi
            rubberband
            sdl2
+           soxr
            vamp
            xdg-utils
            xxhash
