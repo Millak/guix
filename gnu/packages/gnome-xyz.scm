@@ -1011,7 +1011,7 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
 (define-public gpaste
   (package
     (name "gpaste")
-    (version "42.2")
+    (version "44.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1020,12 +1020,12 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qq2p19p3r3lz8yfynpnf36cipv54bzdbmq1x5zgwhyl4yl41g28"))
+                "1amfr8hwf7401xa3fzaa8w17w3v3lxx0fkr7rqkkyfy57iavrykk"))
               (patches
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
     (native-inputs
-     (list gcr-3
+     (list gcr
            gettext-minimal
            gobject-introspection
            (list glib "bin")            ; for glib-compile-resources
@@ -1033,11 +1033,11 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
            vala))
     (inputs
      (list appstream-glib
+           desktop-file-utils           ; for update-desktop-database
            gjs
-           gtk
+           gtk+
            mutter
-           libadwaita
-           libarchive))
+           libadwaita))
     (arguments
      (list #:glib-or-gtk? #true
            #:configure-flags
