@@ -8191,15 +8191,14 @@ streams in big-endian and little-endian formats.")
   (package
     (inherit rust-bitstream-io-2)
     (name "rust-bitstream-io")
-    (version "1.0.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bitstream-io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01pyk3pipwcbaghi7f0lmp3izjl902cv21yf4b1v5nipkrrrqlq3"))))
-    (arguments `(#:skip-build? #t))))
+        (base32 "0kq7hgc66pkbg9kwp8qazaz5x0dagaihml6b8ixsa17xb5k5fig4"))))))
 
 (define-public rust-bitstream-io-0.8
   (package
