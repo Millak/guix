@@ -41585,22 +41585,20 @@ for Rust structs.")
 (define-public rust-memsec-0.6
   (package
     (name "rust-memsec")
-    (version "0.6.0")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "memsec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pfbpl75586bjdkphnaa4j58d668rl1wgcqzpnpzzx1phxfzkx1a"))))
+        (base32 "0z5s2pawma2xdwiswzshp4r9s8m0yhivsw91h99x50hm01mr380g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-getrandom" ,rust-getrandom-0.1)
+     `(#:cargo-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-mach-o-sys" ,rust-mach-o-sys-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-windows-sys" ,rust-windows-sys-0.45))))
     (home-page "https://github.com/quininer/memsec")
     (synopsis "Rust implementation of libsodium/utils")
     (description "This package provides a Rust implementation of
