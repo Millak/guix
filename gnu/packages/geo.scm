@@ -101,6 +101,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
@@ -1228,6 +1229,47 @@ development.")
  construct common SQL queries, or craft your own SQL queries.")
     (home-page "https://www.gaia-gis.it/fossil/spatialite_gui/index")
     (license license:gpl3+)))
+
+(define-public pdal
+  (package
+    (name "pdal")
+    (version "2.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PDAL/PDAL")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gg5lcshlmn3wwak42xr0b8a8gdr4572d7hrcvxn2291kp2c3096"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" ;; This test hangs.
+                             "pdal_io_stac_reader_test")))))))
+    (native-inputs (list python))
+    (inputs (list gdal
+                  h3
+                  libgeotiff
+                  libunwind
+                  libxml2
+                  nlohmann-json
+                  openssl
+                  proj
+                  utfcpp
+                  xz
+                  `(,zstd "lib")))
+    (home-page "https://pdal.io/")
+    (synopsis "Point Data Abstraction Library")
+    (description "PDAL is a C++ library for translating and manipulating point
+cloud data.  It is very much like the GDAL library which handles raster and
+vector data.")
+    (license license:bsd-3)))
 
 (define-public gdal
   (package
