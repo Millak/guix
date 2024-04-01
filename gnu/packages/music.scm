@@ -208,7 +208,7 @@
 (define-public alsa-scarlett-gui
   (package
     (name "alsa-scarlett-gui")
-    (version "0.3.3")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -217,7 +217,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nd764vd7qfy2x8dqapiyh5yrxjimm8b4himhm1qkgpf5hvh734l"))))
+                "1397z3c232n3zpqmpc77lbwv8z5szsbagawl3l7hiizn152hkgpv"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -243,7 +243,7 @@
                                    "/share/glib-2.0/schemas"))))))
           (delete 'configure))))
     (inputs
-     (list alsa-lib glib gtk))
+     (list alsa-lib glib gtk openssl))
     (native-inputs
      (list `(,glib "bin") pkg-config))
     (home-page "https://github.com/geoffreybennett/alsa-scarlett-gui")
