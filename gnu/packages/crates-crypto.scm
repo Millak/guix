@@ -193,13 +193,14 @@ ciphers implementations.")
        (sha256
         (base32 "1f0sdx2fsa8w3l7xzsyi9ry3shvnnsgc0znh50if9fm95vslg2wy"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-cipher" ,rust-cipher-0.3)
         ("rust-cpufeatures" ,rust-cpufeatures-0.2)
         ("rust-ctr" ,rust-ctr-0.8)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.3))))))
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3))
+       #:cargo-development-inputs (("rust-cipher" ,rust-cipher-0.3)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
 (define-public rust-aes-0.6
   (package
