@@ -80231,29 +80231,23 @@ C library.")
 (define-public rust-tinytemplate-1
   (package
     (name "rust-tinytemplate")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tinytemplate" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0by1k1hdz6jgv4ykd0izirwsm6p3qb6s9g1jb4ffqg500ihcfgbd"))))
+        (base32 "1g5n77cqkdh9hy75zdb01adxn45mkh9y40wdr7l68xpz35gnnkdy"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://github.com/bheisler/TinyTemplate")
     (synopsis "Simple, lightweight template engine")
-    (description
-     "Simple, lightweight template engine.")
+    (description "Simple, lightweight template engine.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-tinyvec-1
