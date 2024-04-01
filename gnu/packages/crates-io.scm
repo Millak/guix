@@ -53476,19 +53476,20 @@ both WASM and native applications")
 (define-public rust-plotters-svg-0.3
   (package
     (name "rust-plotters-svg")
-    (version "0.3.1")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "plotters-svg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1aavi3i4jrwydw3i6x0zxs3i3c7gki7jlhg9agff35x5ixisj7sj"))))
+        (base32 "1axbw82frs5di4drbyzihr5j35wpy2a75hp3f49p186cjfcd7xiq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; use of undeclared crate or module `plotters`
        #:cargo-inputs
-       (("rust-plotters-backend" ,rust-plotters-backend-0.3))))
+       (("rust-image" ,rust-image-0.24)
+        ("rust-plotters-backend" ,rust-plotters-backend-0.3))))
     (home-page "https://plotters-rs.github.io")
     (synopsis "Plotters SVG backend")
     (description "This package provides Plotters SVG backend.")
