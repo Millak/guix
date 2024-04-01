@@ -156,14 +156,14 @@ with Associated Data (AEAD) algorithms.")
 (define-public rust-aes-0.8
   (package
     (name "rust-aes")
-    (version "0.8.3")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aes" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qi7z96wf3zd6alg116nh2myp34bw2574jwly4zrhpz9k19887xc"))))
+        (base32 "1853796anlwp4kqim0s6wm1srl4ib621nm0cl2h3c8klsjkgfsdi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
