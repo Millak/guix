@@ -2767,20 +2767,18 @@ integers.")
 (define-public rust-ariadne-0.1
   (package
     (name "rust-ariadne")
-    (version "0.1.6")
+    (version "0.1.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ariadne" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1dhxrhqgdwbl7v03m29zv4rb2fvjgw8a82lybp5xhzjp97khkm83"))))
+                "0303ig5g2v2xzhyzkis0nph2v21441vzalamhxgcxa5y8qh2mjzi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-concolor" ,rust-concolor-0.0.11)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-yansi" ,rust-yansi-0.5))))
+       (("rust-yansi" ,rust-yansi-0.5))))
     (home-page "https://github.com/zesterer/ariadne")
     (synopsis "Fancy diagnostics & reporting crate")
     (description "This package provides a fancy diagnostics & reporting crate.")
