@@ -2701,13 +2701,13 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
 (define-public qtremoteobjects
   (package
     (name "qtremoteobjects")
-    (version "6.6.2")
+    (version "6.6.3")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0fbkjzykxpkz8myr6dy588gcmhyy3lar17v78zfam8kyxq7s5qxa"))))
+                "16bd4zd3yfzlzk087qphphsh8hv38q3a57n1yknvkc5fchzmfzjz"))))
     (build-system cmake-build-system)
     (arguments
      (list
