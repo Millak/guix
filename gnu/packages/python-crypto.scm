@@ -651,14 +651,14 @@ ciphers, message digests and key derivation functions.")
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "23.2.0")
+    (version "24.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "1b4bkcpzhmablf592g21rq3l8apbhklp6wcwlvgfflm4algr6vr7"))))
+         "0vqsyji1q4vhd5yxlzks0z6va62knq64mxhfdjhz3yaxmazx9gna"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -670,25 +670,21 @@ ciphers, message digests and key derivation functions.")
                 ;; PyOpenSSL runs tests against a certificate with a fixed
                 ;; expiry time.  To ensure successful builds in the future,
                 ;; set the time to roughly the release date.
-                (invoke "faketime" "2023-03-25" "pytest" "-vv" "-k"
-                        (string-append
-                         ;; This test tries to look up certificates from
-                         ;; the compiled-in default path in OpenSSL, which
-                         ;; does not exist in the build environment.
-                         "not test_fallback_default_verify_paths "
-                         ;; This test attempts to make a connection to
-                         ;; an external web service.
-                         "and not test_set_default_verify_paths "
-                         ;; Fails on i686-linux and possibly other 32-bit platforms
-                         ;; https://github.com/pyca/pyopenssl/issues/974
-                         "and not test_verify_with_time"))))))))
+                (invoke "faketime" "2024-03-09" "pytest" "-vv" "-k"
+                        ;; This test tries to look up certificates from
+                        ;; the compiled-in default path in OpenSSL, which
+                        ;; does not exist in the build environment.
+                        "not test_fallback_default_verify_paths ")))))))
     (propagated-inputs (list python-cryptography))
     (inputs (list openssl))
-    (native-inputs (list libfaketime python-flaky python-pretend python-pytest))
+    (native-inputs (list libfaketime python-pretend python-pytest
+                         python-pytest-rerunfailures))
     (home-page "https://github.com/pyca/pyopenssl")
     (synopsis "Python wrapper module around the OpenSSL library")
     (description "PyOpenSSL is a high-level wrapper around a subset of the
 OpenSSL library.")
+    (properties `((updater-extra-inputs . ("openssl"))
+                  (updater-extra-native-inputs . ("libfaketime"))))
     (license license:asl2.0)))
 
 (define-public python-ed25519
