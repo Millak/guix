@@ -41544,21 +41544,18 @@ for Rust structs.")
   (package
     (inherit rust-memoffset-0.6)
     (name "rust-memoffset")
-    (version "0.5.3")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "memoffset" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fblqzc25hfaym8m0pj112s66pqq87avvaqm5hp5rskib2w9w63m"))))
+        (base32 "1ahi51aa650s2p9ib1a4ifgqv0pzmsxlm9z4xdgvi9zdd7q7ac84"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.2))
-       #:cargo-development-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+     `(#:tests? #f      ; reference to packed field is unaligned
+       #:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))
+       #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (inputs '())))
 
 (define-public rust-memory-units-0.4
