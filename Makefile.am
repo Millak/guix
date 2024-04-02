@@ -972,7 +972,7 @@ gen-tarball-version:
 	echo $(VERSION) > "$(distdir)/.tarball-version"
 
 gen-ChangeLog:
-	$(AM_V_GEN)if test -d .git; then		\
+	$(AM_V_GEN)if test -e .git; then		\
 	  $(top_srcdir)/build-aux/gitlog-to-changelog	\
 	    > $(distdir)/ChangeLog.tmp;			\
 	  rm -f $(distdir)/ChangeLog;			\
@@ -980,7 +980,7 @@ gen-ChangeLog:
 	fi
 
 gen-AUTHORS:
-	$(AM_V_GEN)if test -d .git; then			\
+	$(AM_V_GEN)if test -e .git; then			\
 	  rm -f "$(distdir)/AUTHORS";				\
 	  $(top_builddir)/pre-inst-env "$(GUILE)"		\
 	    "$(top_srcdir)/build-aux/generate-authors.scm"	\
