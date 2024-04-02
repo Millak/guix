@@ -52432,14 +52432,14 @@ function data structures.")
   (package
     (inherit rust-phf-codegen-0.10)
     (name "rust-phf-codegen")
-    (version "0.9.1")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "phf_codegen" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1q4r7mqisvzjz5fzfnr16nb5bxrj6xv32qnq1ds75xql783md31z"))))
+                "00q5chz1v9idglrzk5qbijjyr80sgibpbkq1skgnbvi2rw8xnfln"))))
     (arguments
      `(#:cargo-inputs
        (("rust-phf-generator" ,rust-phf-generator-0.9)
