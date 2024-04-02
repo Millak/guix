@@ -3229,13 +3229,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.6.1")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "1rwvzjpidz0sfp52mqgs25599hbvxyc4gdc1yk0kdm8aynhdwi82"))))
+        (base32 "04ippj90dn2671xg4rvncf7jsbpcflr7dr6jc2h52z7xfd1msb4d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3264,7 +3264,6 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
            python-pytest
            python-pytest-cov
            python-pytest-doctestplus
-           python-pytest-openfiles
            python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stcal")
