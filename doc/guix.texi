@@ -5983,12 +5983,18 @@ such as @file{/usr/bin} on foreign distros.
 This @option{--container} option can also prove useful if you wish to
 run a security-sensitive application, such as a web browser, in an
 isolated environment.  For example, the command below launches
-Ungoogled-Chromium in an isolated environment, this time sharing network
-access with the host and preserving its @code{DISPLAY} environment
-variable, but without even sharing the current directory:
+Ungoogled-Chromium in an isolated environment, which:
+@itemize
+@item shares network access with the host
+@item inherits host's environment variables @code{DISPLAY} and @code{XAUTHORITY}
+@item has access to host's authentication records from the @code{XAUTHORITY}
+file
+@item has no information about host's current directory
+@end itemize
 
 @example
 guix shell --container --network --no-cwd ungoogled-chromium \
+  --preserve='^XAUTHORITY$' --expose="$@{XAUTHORITY@}" \
   --preserve='^DISPLAY$' -- chromium
 @end example
 
