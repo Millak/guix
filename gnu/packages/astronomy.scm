@@ -3804,7 +3804,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 (define-public indi-2.0
   (package
     (name "indi")
-    (version "2.0.6")
+    (version "2.0.7")
     (source
      (origin
        (method git-fetch)
@@ -3813,7 +3813,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j1yr8wz6q6xi4dskv3yyhm0valsyfhcw1n8xpfgzbzbdzc8biyw"))))
+        (base32 "0w3494by88g0sz92adgvy75g7f1609ilsblink9z37n02v83dfxi"))))
     (build-system cmake-build-system)
     (arguments
      ;; TODO: fix failing tests on aarch64-system.
