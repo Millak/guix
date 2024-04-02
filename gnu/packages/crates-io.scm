@@ -34263,20 +34263,20 @@ bytestring representations.")
   (package
     (inherit rust-integer-encoding-3)
     (name "rust-integer-encoding")
-    (version "1.2.2")
+    (version "1.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "integer-encoding" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1c032xhif5d6a8nc4cak60g5ylwd6p9569122m5hm67brx2l5yhb"))))
+        (base32 "0vxmsfxwsf8dclppdmikjklzh84w341crl0lb3bpydwv18c53p28"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-tokio" ,rust-tokio-0.2))))))
+        ("rust-tokio" ,rust-tokio-0.2))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-0.2))))))
 
 (define-public rust-interpolate-name-0.2
   (package
