@@ -8301,7 +8301,7 @@ streams in big-endian and little-endian formats.")
        '("--release" "--"
          "--skip=slice::tests::get_set")
        #:cargo-inputs
-       (("rust-funty" ,rust-funty-1.1)
+       (("rust-funty" ,rust-funty-1)
         ("rust-radium" ,rust-radium-0.6)
         ("rust-serde" ,rust-serde-1)
         ("rust-tap" ,rust-tap-1)
@@ -8328,7 +8328,7 @@ streams in big-endian and little-endian formats.")
         (base32 "0cvb24nanb50vq61d3ac3pz7rxjcy0w6lr3nb56kcg1nyc73vyam"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-funty" ,rust-funty-1.1)
+       (("rust-funty" ,rust-funty-1)
         ("rust-radium" ,rust-radium-0.5)
         ("rust-serde" ,rust-serde-1)
         ("rust-tap" ,rust-tap-1)
@@ -27894,43 +27894,16 @@ references by lifting access permissions into the trait system.")
 
 (define-public rust-funty-1
   (package
-    (name "rust-funty")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "funty" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "07lb1f8yih3g694id3n90anlgxf8m6p98bllsnn6dmb5rfwsniqq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-static-assertions" ,rust-static-assertions-1))))
-    (home-page "https://github.com/myrrlyn/funty")
-    (synopsis "Trait generalization over the primitive types")
-    (description
-     "Prior to 1.0, Rust had traits for the numeric primitive types to permit
-code to generalize over which specific type it accepted. This was never
-stabilized, and eventually removed.  This library reïnstates these traits.")
-    (license license:expat)))
-
-(define-public rust-funty-1.1
-  (package
-    (inherit rust-funty-1)
+    (inherit rust-funty-2)
     (name "rust-funty")
     (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "funty" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "19wx3p3jmv863y0mjb56sr4qf1kvqhl3fsyslkd92zli0p8lrlzy"))))
+        (base32 "19wx3p3jmv863y0mjb56sr4qf1kvqhl3fsyslkd92zli0p8lrlzy"))))
     (arguments
      `(#:cargo-development-inputs
        (("rust-static-assertions" ,rust-static-assertions-1))))))
