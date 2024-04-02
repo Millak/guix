@@ -24469,13 +24469,13 @@ estimates, etc.")
 (define-public r-tcgabiolinks
   (package
     (name "r-tcgabiolinks")
-    (version "2.30.0")
+    (version "2.30.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TCGAbiolinks" version))
        (sha256
-        (base32 "1k8xiv4bmil420176ckfda2r6y0s46dk1cm8dbywav86q28bmzzx"))))
+        (base32 "0br0bgcvxxfy1vclfc8i20b0bsb7rcchwfdx7lkw4f2aqxny8ja8"))))
     (properties `((upstream-name . "TCGAbiolinks")))
     (build-system r-build-system)
     (propagated-inputs
