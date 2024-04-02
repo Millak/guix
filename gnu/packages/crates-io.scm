@@ -38588,15 +38588,14 @@ C parser and toolkit developed for the GNOME project.")
   (package
     (inherit rust-libxml-0.3)
     (name "rust-libxml")
-    (version "0.2.17")
+    (version "0.2.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libxml" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z567rqb55hxn0g7hpvcsh3nfvz9mdzlwk4mk179z9bkf7v10r29"))))))
+        (base32 "1xx1bsay6c0jy9vi7qcvliidya33lvbkxwpdfz9qmzl23f11xxxh"))))))
 
 (define-public rust-libz-sys-1
   (package
