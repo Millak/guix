@@ -3227,25 +3227,25 @@ cryptographic library.")
 (define-public rust-orion-0.17
   (package
     (name "rust-orion")
-    (version "0.17.4")
+    (version "0.17.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "orion" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ri0b0vyd9vqwlzlcv0q4i7r9pga23q7nnnvd5z4zycjc9v4mryb"))))
+                "1rcm8vgzb1rvm1ilgak1lkia3wasdmnmv93b055qqg4hh40v3gbs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ct-codecs" ,rust-ct-codecs-1)
-        ("rust-fiat-crypto" ,rust-fiat-crypto-0.1)
+        ("rust-fiat-crypto" ,rust-fiat-crypto-0.2)
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-serde" ,rust-serde-1)
         ("rust-subtle" ,rust-subtle-2)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
+       (("rust-criterion" ,rust-criterion-0.5)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
