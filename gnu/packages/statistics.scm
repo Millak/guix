@@ -1064,13 +1064,13 @@ see package vignette.  To quote Rene Magritte, \"Ceci n'est pas un pipe.\"")
 (define-public r-munsell
   (package
     (name "r-munsell")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "munsell" version))
        (sha256
-        (base32 "16g1fzisbpqb15yh3pqf3iia4csppva5dnv1z88x9dg263xskwyh"))))
+        (base32 "19i9jjawlqciw4n4h99a4sm0lbc77la3pqyzjvnwsrh7qjdgv8h3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace))
