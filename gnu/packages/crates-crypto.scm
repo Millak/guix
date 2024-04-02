@@ -2076,8 +2076,9 @@ ciphers implementations.")
 
 (define-public rust-digest-0.6
   (package
+    (inherit rust-digest-0.10)
     (name "rust-digest")
-    (version "0.6.2")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
@@ -2085,16 +2086,10 @@ ciphers implementations.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "02mgf8z4hi96w9nl2zb5w3k6lqbhjgv5z8hhyv2b7x7kavqrpcp5"))))
-    (build-system cargo-build-system)
+         "1lgv5rs7i903zvmkdbil0bcjx9vxvi9rx4z9qavapz199q31rbpc"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-generic-array" ,rust-generic-array-0.8))))
-    (home-page "https://github.com/RustCrypto/traits")
-    (synopsis "Traits for cryptographic hash functions")
-    (description "This package provides traits for cryptographic hash
-functions.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-generic-array" ,rust-generic-array-0.8))))))
 
 (define-public rust-dsa-0.6
   (package
