@@ -1619,14 +1619,14 @@ EUI-64, also known as MAC-48 media access control addresses.")
   (package
     (inherit rust-glutin-0.31)
     (name "rust-glutin")
-    (version "0.30.7")
+    (version "0.30.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05gzw9icj4s0p9db9srnwrd3m3plcs7260jlblyy2pbiqygap6zq"))))
+        (base32 "1zk0cxchdy6fmnnwggylgg748wbk04mys9pv76nvh6974h1kpjcg"))))
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -1634,7 +1634,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
         ("rust-cgl" ,rust-cgl-0.3)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-dispatch" ,rust-dispatch-0.2)
-        ("rust-glutin-egl-sys" ,rust-glutin-egl-sys-0.4)
+        ("rust-glutin-egl-sys" ,rust-glutin-egl-sys-0.5)
         ("rust-glutin-glx-sys" ,rust-glutin-glx-sys-0.4)
         ("rust-glutin-wgl-sys" ,rust-glutin-wgl-sys-0.4)
         ("rust-libloading" ,rust-libloading-0.7)
