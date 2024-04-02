@@ -34584,14 +34584,14 @@ simple interface for all functions.")
 (define-public r-iml
   (package
     (name "r-iml")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iml" version))
        (sha256
         (base32
-         "0fi37lv9czaxcc123f6r57607shqhs83ks96n2n0b93dl1qs0j52"))))
+         "1sjv0cj50iivjlb2hri401z78rmidxxh6q5akscd42k98jyw2r30"))))
     (properties `((upstream-name . "iml")))
     (build-system r-build-system)
     (propagated-inputs
@@ -34602,7 +34602,6 @@ simple interface for all functions.")
            r-future-apply
            r-ggplot2
            r-metrics
-           r-prediction
            r-r6))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/christophM/iml")
