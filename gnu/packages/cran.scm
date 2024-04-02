@@ -21836,14 +21836,14 @@ the local machine to, say, distributed processing on a remote compute cluster.")
 (define-public r-future-apply
   (package
     (name "r-future-apply")
-    (version "1.11.1")
+    (version "1.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "future.apply" version))
        (sha256
         (base32
-         "0zf22vip8w50pywc47xjghca9wkvcsvvfaa2yfaydwwzc3ss3bh2"))))
+         "11qkv2r8ml1i95j5ra191ij5w1dvllgvr9ld5xnq43ayzaq3b9pl"))))
     (properties `((upstream-name . "future.apply")))
     (build-system r-build-system)
     (arguments
