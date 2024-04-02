@@ -74880,6 +74880,23 @@ values without proliferating generics.")
        (("rust-is-terminal" ,rust-is-terminal-0.4)
         ("rust-is-ci" ,rust-is-ci-1))))))
 
+(define-public rust-supports-color-1
+  (package
+    (inherit rust-supports-color-3)
+    (name "rust-supports-color")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "supports-color" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vqdhwc3yf1bv1xbaz5d8p2brmlv1ap4fhwg8pfjzr3yrbrgm9lb"))))
+    (arguments
+     `(#:tests? #f      ; panicked at 'assertion failed: `(left == right)`
+       #:cargo-inputs (("rust-atty" ,rust-atty-0.2)
+                       ("rust-is-ci" ,rust-is-ci-1))))))
+
 (define-public rust-supports-hyperlinks-3
   (package
     (name "rust-supports-hyperlinks")
