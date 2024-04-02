@@ -5823,7 +5823,7 @@ at @code{musicbrainz.org}.")
 (define-public clyrics
   (package
     (name "clyrics")
-    (version "0.13")
+    (version "0.16")
     (source
      (origin
        (method git-fetch)
@@ -5832,7 +5832,7 @@ at @code{musicbrainz.org}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0py31linlbphl18wxj5v00gggvxp9djg466mjncf5wpa147hs8r3"))))
+        (base32 "1izlqnzr1a504djhzk1a5k8dwwrkd5iyjfsfm5x48sb3vjlr1fr3"))))
     (build-system trivial-build-system)
     (inputs
      (list bash ; for the wrapped program
