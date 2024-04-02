@@ -5084,14 +5084,14 @@ expression estimates for all genes.")
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.6.2")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "0gjnb1ar6n3qg37ljy5yai0pd219zhm0n186jdzhsfwma5498ifh"))
+         "181cfmdvi64j978q8x69bl7wxwpjpx54a52sh4xng0pk3a2djd91"))
        (snippet
         '(for-each delete-file
                    '("inst/components/dist/components.min.js"
@@ -5133,6 +5133,7 @@ expression estimates for all genes.")
     (propagated-inputs
      (list r-base64enc
            r-cachem
+           r-fastmap
            r-htmltools
            r-jquerylib
            r-jsonlite
