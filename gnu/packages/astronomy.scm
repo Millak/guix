@@ -3969,13 +3969,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.13.4")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "0n5cfjayg15kf5p6pns7k2zfcldqz1464ndbldgzanc33fp9wnfz"))))
+                "0knl2x0z3djsln8mi3a4bkxjz49iwmnr1v6wwsk13zvpkfq21vv4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3992,19 +3992,21 @@ milliarcsecond).")
     (propagated-inputs (list opencv
                              python-asdf
                              python-asdf-astropy
-                             python-asdf-transform-schemas
                              python-astropy
                              python-bayesicfitting
                              python-crds
                              python-drizzle
                              python-gwcs
+                             python-importlib-metadata
                              python-jplephem
                              python-jsonschema
                              python-numpy
+                             python-packaging
                              python-photutils
                              python-poppy
                              python-psutil
                              python-pyparsing
+                             python-pysiaf
                              python-requests
                              python-scikit-image
                              python-scipy
@@ -4014,6 +4016,7 @@ milliarcsecond).")
                              python-stpipe
                              python-stsci-image
                              python-stsci-imagestats
+                             python-synphot
                              python-tweakwcs
                              python-wiimatch))
     (native-inputs (list python-colorama
@@ -4022,6 +4025,7 @@ milliarcsecond).")
                          python-pytest-doctestplus
                          python-pytest-openfiles
                          python-requests-mock
+                         ;; python-ruff ; not packed yet in Guix
                          python-setuptools-scm))
     (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
     (synopsis
