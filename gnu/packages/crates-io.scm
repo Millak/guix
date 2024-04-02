@@ -52660,14 +52660,14 @@ function data structures.")
   (package
     (inherit rust-phf-macros-0.10)
     (name "rust-phf-macros")
-    (version "0.9.1")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "phf_macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1rpc0jy5sfrk3ir87k2q0kk44a45nsrbwc131jmsi6f8hi3fqi7g"))))
+                "11mbi4x03gz7jnf4bg9fzxdxn6gd8ddkj29hms0dh3mmds9za1mp"))))
     (arguments
      `(#:cargo-inputs
        (("rust-phf-generator" ,rust-phf-generator-0.9)
@@ -52678,7 +52678,7 @@ function data structures.")
         ("rust-syn" ,rust-syn-1)
         ("rust-unicase" ,rust-unicase-2))
        #:cargo-development-inputs
-       (("rust-phf" ,rust-phf-0.9)
+       (("rust-phf" ,rust-phf-0.8)
         ("rust-trybuild" ,rust-trybuild-1)
         ("rust-unicase" ,rust-unicase-2))))))
 
