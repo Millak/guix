@@ -1802,6 +1802,22 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (description "The egl bindings for glutin.")
     (license license:asl2.0)))
 
+(define-public rust-glutin-egl-sys-0.5
+  (package
+    (inherit rust-glutin-egl-sys-0.6)
+    (name "rust-glutin-egl-sys")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glutin_egl_sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iapzqscy4891crxdddddq4qqqday1sf0s0j762yqs2sdjr4wy5g"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gl-generator" ,rust-gl-generator-0.14)
+                       ("rust-windows-sys" ,rust-windows-sys-0.45))))))
+
 (define-public rust-glutin-egl-sys-0.4
   (package
     (inherit rust-glutin-egl-sys-0.6)
