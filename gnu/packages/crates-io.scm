@@ -20179,16 +20179,18 @@ resource-constrained devices, like micro-controllers.")
 (define-public rust-defmt-parser-0.3
   (package
     (name "rust-defmt-parser")
-    (version "0.3.0")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "defmt-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1is90zrcifdky4rpra450779c3jf3bc2xwcqbj9fy6m5w48f074d"))))
+        (base32 "03zpg0i6vlalw7m976z66n70s041rvwii8qn3grxgs1hwgpmyjpz"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-rstest" ,rust-rstest-0.17))))
     (home-page "https://github.com/knurling-rs/defmt")
     (synopsis "Parsing library for defmt format strings")
     (description "This package is a parsing library for defmt format
