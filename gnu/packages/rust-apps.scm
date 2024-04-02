@@ -2549,14 +2549,14 @@ background agent taking care of maintaining the necessary state.")
 (define-public rust-cargo
   (package
     (name "rust-cargo")
-    (version "0.78.0")
+    (version "0.78.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fzsljg3imn8naxniqw5pxdidq0fglgxjcpfjh0q9dxycmzlzaj0"))))
+        (base32 "1p6564hg38xxbpjiiqxmnm1kmysxfjh0kbm5g56n85c3s0wmwc6n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; unresolved import `cargo_test_support`
@@ -2580,7 +2580,6 @@ background agent taking care of maintaining the necessary state.")
         ("rust-curl" ,rust-curl-0.4)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-flate2" ,rust-flate2-1)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-git2" ,rust-git2-0.18)
         ("rust-git2-curl" ,rust-git2-curl-0.19)
