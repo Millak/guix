@@ -2517,7 +2517,7 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
   (package
     (inherit rust-fiat-crypto-0.2)
     (name "rust-fiat-crypto")
-    (version "0.1.11")
+    (version "0.1.20")
     (source
      (origin
        (method url-fetch)
@@ -2525,7 +2525,7 @@ curve forms, scalars, points, and public/secret keys composed thereof.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "12gyr01z3bkahbxcrj2nsdq42qbqgq12w32dvpr6a7930i0qfxi1"))))))
+         "0xvbcg6wh42q3n7294mzq5xxw8fpqsgc0d69dvm5srh1f6cgc9g8"))))))
 
 (define-public rust-ghash-0.5
   (package
