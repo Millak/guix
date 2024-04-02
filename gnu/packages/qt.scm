@@ -5164,6 +5164,32 @@ including @i{fix-its} for automatic refactoring.")
                              #$output "/lib/qtcreator"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-perfparser
+            ;; XXX: The 'patch-perfparser' phase is also used by the 'hotspot'
+            ;; package; keep its copy in sync.
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; perfparser attempts to dynamically load the demangle
+              ;; libraries; use their absolute file name to avoid having to
+              ;; set LD_LIBRARY_PATH.
+              (let ((librustc_demangle.so
+                     (with-exception-handler (lambda (ex)
+                                               (if (search-error? ex)
+                                                   #f
+                                                   (raise-exception ex)))
+                       (lambda ()
+                         (search-input-file inputs "lib/librustc_demangle.so"))
+                       #:unwind? #t)))
+                (substitute* "3rdparty/perfparser/app/demangler.cpp"
+                  (("loadDemangleLib\\(QStringLiteral\\(\"rustc_demangle\")"
+                    all)
+                   (if librustc_demangle.so
+                       (format #f "loadDemangleLib(QStringLiteral(~s)"
+                               librustc_demangle.so)
+                       all))            ;no rustc_demangle; leave unchanged
+                  (("loadDemangleLib\\(QStringLiteral\\(\"d_demangle\")")
+                   (format #f "loadDemangleLib(QStringLiteral(~s)"
+                           (search-input-file inputs
+                                              "lib/libd_demangle.so")))))))
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* '("src/libs/utils/commandline.cpp"
