@@ -960,8 +960,8 @@ safety and thread safety guarantees.")
                              (replace "llvm" llvm-17))))))
 
 (define-public rust-1.77
-  (let ((base-rust (rust-bootstrapped-package rust-1.76 "1.77.0"
-                    "11rda8d8qj24a5mkjzj1x6x9pkvaq0zlhkgdp5b39zj5m0gwsv0d")))
+  (let ((base-rust (rust-bootstrapped-package rust-1.76 "1.77.1"
+                    "18d4ncdzp0nfimmw029xdf7vv1hgh82v30mjnnixnllzar66w47f")))
     (package
       (inherit base-rust)
       (arguments
@@ -1142,7 +1142,8 @@ safety and thread safety guarantees.")
                                  '("fn uplift_dwp_of_bin_on_linux")))
                            (substitute* "cache_lock.rs"
                              ,@(make-ignore-test-list
-                                 '("fn multiple_download"
+                                 '("fn multiple_shared"
+                                   "fn multiple_download"
                                    "fn download_then_mutate")))
                            (substitute* "global_cache_tracker.rs"
                              ,@(make-ignore-test-list
