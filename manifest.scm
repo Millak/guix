@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,10 +26,14 @@
 
 (use-modules (guix profiles)
              (gnu packages gnupg)
+             (gnu packages perl)
              (gnu packages package-management))
 
 (concatenate-manifests
  (list (package->development-manifest guix)
+
+       ;; Extra packages used by make dist.
+       (packages->manifest (list perl))
 
        ;; Extra packages used by unit tests.
        (packages->manifest (list gnupg))))
