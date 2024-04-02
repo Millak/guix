@@ -76679,35 +76679,6 @@ processors, disks, components and networks.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-sysinfo-0.23
-  (package
-    (name "rust-sysinfo")
-    (version "0.23.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sysinfo" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "14d5fgg24x4rfd6226dl1grsv5lnid0kynp6kfzb3lmylh070xcy"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-ntapi" ,rust-ntapi-0.3)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/GuillaumeGomez/sysinfo")
-    (synopsis "System handler to interact with processes")
-    (description
-     "This package is a library to get system information such as processes,
-processors, disks, components and networks.")
-    (license license:expat)))
-
 (define-public rust-syslog-6
   (package
     (name "rust-syslog")
