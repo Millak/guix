@@ -20130,20 +20130,23 @@ written in rust.")
 (define-public rust-defmt-0.3
   (package
     (name "rust-defmt")
-    (version "0.3.0")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "defmt" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "181l5wv6sihrjwjvk97wznmg2iaz3w1ljsx2dfzjssmhsbs5vyv2"))))
+        (base32 "15a53435jpy9jj3g49mxp94g961zslggbin2nd9f2va20wlmaf9r"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags '("--release" "--features=unstable-test")
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-defmt-macros" ,rust-defmt-macros-0.3))))
+        ("rust-defmt-macros" ,rust-defmt-macros-0.3))
+       #:cargo-development-inputs
+       (("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://knurling.ferrous-systems.com/")
     (synopsis "Logging framework for resource-constrained devices")
     (description
