@@ -4086,16 +4086,16 @@ Digital Signature Algorithm} (ECDSA).")
 
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 (define rust-ring-0.17-sources
-  (let* ((version "0.17.7")
+  (let* ((version "0.17.8")
          (upstream-source
            (origin
              (method git-fetch)
              (uri (git-reference
                     (url "https://github.com/briansmith/ring")
-                    (commit "2be687bebdf76648ce85109d40c015412e14b0da")))
+                    (commit "fa98b490bcbc99a01ff150896ec74c1813242d7f")))
              (file-name (git-file-name "rust-ring" version))
              (sha256
-              (base32 "1i3b7sha8yj990v2s5yk2a5dx3v4x9b8ckzm6bgiyi6wk4vnid69"))
+              (base32 "0rqfal81bf4l3dja98cajfjq2jbz1rcx7xdp2r33cxrm5y5psr28"))
              (patches (search-patches "rust-ring-0.17-ring-core.patch")))))
     (origin
       (method computed-origin-method)
@@ -4176,6 +4176,7 @@ Digital Signature Algorithm} (ECDSA).")
                         "crypto/fipsmodule/bn/asm/armv8-mont.pl"
                         "crypto/fipsmodule/ec/asm/p256-armv8-asm.pl"
                         "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
+                        "crypto/fipsmodule/modes/asm/aesv8-gcm-armv8.pl"
                         "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
 
                     (for-each
@@ -4275,16 +4276,17 @@ Digital Signature Algorithm} (ECDSA).")
 (define-public rust-ring-0.17
   (package
     (name "rust-ring")
-    (version "0.17.7")
+    (version "0.17.8")
     (source rust-ring-0.17-sources)
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cc" ,rust-cc-1)
                        ("rust-getrandom" ,rust-getrandom-0.2)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-spin" ,rust-spin-0.9)
                        ("rust-untrusted" ,rust-untrusted-0.9)
-                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
