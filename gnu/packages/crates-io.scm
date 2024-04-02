@@ -52328,16 +52328,16 @@ function data structures.")
   (package
     (inherit rust-phf-0.10)
     (name "rust-phf")
-    (version "0.9.1")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "phf" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0sk9arhiv4hkg3hbmbxnpjvr0bffhyz7kpb2pn86mn6ia4c566xj"))))
+                "0dsgl8gqaia5lwg9sjlg4ccihn5dija2drg0gi2sjz1samkqpb5j"))))
     (arguments
-     `(#:tests? #f          ; Doc tests fail.
+     `(#:tests? #f      ; unresolved imports `phf::phf_map`, `phf::phf_set`
        #:cargo-inputs
        (("rust-phf-macros" ,rust-phf-macros-0.9)
         ("rust-phf-shared" ,rust-phf-shared-0.9)
