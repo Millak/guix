@@ -49797,14 +49797,16 @@ owo.")
   (package
     (inherit rust-owo-colors-4)
     (name "rust-owo-colors")
-    (version "3.6.0")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "owo-colors" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0943lynkwz1glq3w7m9anv73lnrhd8yabs09krbh49g1wz4lxp39"))))))
+                "0vyvry6ba1xmpd45hpi6savd8mbx09jpmvnnwkf6z62pk6s4zc61"))))
+    (arguments
+     `(#:cargo-inputs (("rust-supports-color" ,rust-supports-color-1))))))
 
 (define-public rust-owned-ttf-parser-0.6
   (package
