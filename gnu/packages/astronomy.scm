@@ -4209,6 +4209,45 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public python-pysiaf
+  (package
+    (name "python-pysiaf")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pysiaf" version))
+       (sha256
+        (base32 "08wb98k9k4f04455da5ns9rif8pl9r3ih537w1yj393hkjjiyzfz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-n" "auto"
+              ;; Disable 2 failing tests, see
+              ;; <https://github.com/spacetelescope/pysiaf/issues/338>
+              "-k" (string-append "not test_write_jwst_siaf_xlsx"
+                                  " and not test_write_jwst_siaf_xml" ))))
+    (propagated-inputs
+     (list python-astropy
+           python-lxml
+           python-matplotlib
+           python-numpy
+           python-numpydoc
+           python-openpyxl
+           python-requests
+           python-scipy))
+    (native-inputs
+     (list python-pytest python-pytest-xdist))
+    (home-page "https://pysiaf.readthedocs.io/")
+    (synopsis "Handling SIAF for space telescopes")
+    (description
+     "@code{pysiaf} is a python package to access, interpret, maintain, and
+generate @acronym{Handling of Science Instrument Aperture Files, SIAF}, in
+particular for JWST.  Tools for applying the frame transformations, plotting,
+comparison, and validation are provided.")
+    (license license:bsd-3)))
+
 (define-public python-pysynphot
   ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
   ;; time and it failed to build with python-astropy 6.0.0, use the latest
