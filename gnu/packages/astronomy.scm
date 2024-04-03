@@ -4348,19 +4348,14 @@ object.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace")
-              ;; To solve pytest/conftest issue. Pytest tries to load all
-              ;; files with word 'test' in them.
-              ;;
-              ;; ImportError while loading conftest ...
-              ;; _pytest.pathlib.ImportPathMismatchError: ...
-              ;;
-              (call-with-output-file "pytest.ini"
-                (lambda (port)
-                  (format port "[pytest]
-python_files = test_*.py"))))))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (invoke "python" "setup.py" "build_ext" "--inplace")
+                ;; Step out of the source directory to avoid interference; we
+                ;; want to run the installed code with extensions etc.
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v" test-flags))))))))
     (propagated-inputs
      (list python-astropy
            python-dust-extinction
