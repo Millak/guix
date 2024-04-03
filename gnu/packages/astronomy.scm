@@ -1933,16 +1933,18 @@ specifically in the C code.")
 (define-public python-bayesicfitting
   (package
     (name "python-bayesicfitting")
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dokester/BayesicFitting")
-             (commit (string-append "v" version))))
+             ;; Tag style has been changed, see
+             ;; <https://github.com/dokester/BayesicFitting/issues/23>.
+             (commit (string-append "v." version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q6v7w9b1xzam0qn5vsl5wrdp1fkfpsn411pzd8wyy9giznpajxi"))))
+        (base32 "0brqvy4r75vh93lj4jwv8wcrc96ka1v44f5ckjvr65y30plnfwg2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
