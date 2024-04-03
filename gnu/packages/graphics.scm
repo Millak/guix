@@ -493,14 +493,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.3.5")                   ;3.3.x is the current LTS version
+    (version "3.6.10")                   ;3.6.x is the current LTS version
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "1pwl4lbc00g0bj97rd8l9fnrv3w1gny9ci6mrma3pp2acgs56502"))))
+                "1srwr365y40hhpjmfsg52rphdybvin0ay2r23pknm7b9pkpw0wqs"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -536,32 +536,19 @@ typically encountered in feature film production.")
                 (string-append "-DPYTHON_NUMPY_PATH="
                                (assoc-ref %build-inputs "python-numpy")
                                "/lib/python" #$python-version
-                               "/site-packages/")
-                ;; OpenEXR propagates ilmbase, but its include files do not
-                ;; appear in the C_INCLUDE_PATH, so we need to add
-                ;; "$ilmbase/include/OpenEXR/" to the C_INCLUDE_PATH to
-                ;; satisfy the dependency on "half.h" and "Iex.h".
-                (string-append "-DCMAKE_CXX_FLAGS=-I"
-                               (search-input-directory %build-inputs
-                                                       "include/OpenEXR"))))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-broken-import
-            (lambda _
-              (substitute* "release/scripts/addons/io_scene_fbx/json2fbx.py"
-                (("import encode_bin")
-                 "from . import encode_bin")))))))
+                               "/site-packages/")))))
     (inputs
      (list boost
            embree
            ffmpeg-5
            fftw
-           freetype
+           freetype-with-brotli
            glew
            gmp                        ;needed for boolean operations on meshes
-           ilmbase
+           imath
            jack-1
            jemalloc
+           libepoxy
            libjpeg-turbo
            libpng
            libsndfile
@@ -571,7 +558,7 @@ typically encountered in feature film production.")
            libxrender
            openal
            opencolorio
-           openexr-2
+           openexr
            openimageio
            openjpeg
            opensubdiv
