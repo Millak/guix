@@ -974,6 +974,8 @@ gen-tarball-version:
 
 gen-ChangeLog:
 	$(AM_V_GEN)if test -e .git; then		\
+	  export LC_ALL=en_US.UTF-8;			\
+	  export TZ=UTC0;				\
 	  $(top_srcdir)/build-aux/gitlog-to-changelog	\
 	    > $(distdir)/ChangeLog.tmp;			\
 	  rm -f $(distdir)/ChangeLog;			\
@@ -983,6 +985,8 @@ gen-ChangeLog:
 gen-AUTHORS:
 	$(AM_V_GEN)if test -e .git; then			\
 	  rm -f "$(distdir)/AUTHORS";				\
+	  export LC_ALL=en_US.UTF-8;				\
+	  export TZ=UTC0;					\
 	  $(top_builddir)/pre-inst-env "$(GUILE)"		\
 	    "$(top_srcdir)/build-aux/generate-authors.scm"	\
 	    "$(top_srcdir)" "$(distdir)/AUTHORS";		\
