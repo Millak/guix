@@ -1934,25 +1934,31 @@ specifically in the C code.")
   (package
     (name "python-bayesicfitting")
     (version "3.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/dokester/BayesicFitting")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0q6v7w9b1xzam0qn5vsl5wrdp1fkfpsn411pzd8wyy9giznpajxi"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dokester/BayesicFitting")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q6v7w9b1xzam0qn5vsl5wrdp1fkfpsn411pzd8wyy9giznpajxi"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "unittest" "discover"
-                                      "test")))))))
-    (propagated-inputs (list python-astropy python-future python-matplotlib
-                             python-numpy python-scipy))
+     (list
+      #:test-flags #~(list "-m" "unittest" "discover" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" test-flags)))))))
+    (propagated-inputs
+     (list python-astropy
+           python-future
+           python-matplotlib
+           python-numpy
+           python-scipy))
     (home-page "https://www.bayesicfitting.nl")
     (synopsis "Python Toolbox for Astronimical Bayesian fitting")
     (description
