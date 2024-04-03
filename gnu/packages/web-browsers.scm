@@ -58,6 +58,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fontutils)
@@ -74,6 +75,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libunistring)
@@ -94,11 +96,13 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg))
 
@@ -1022,3 +1026,58 @@ Features include
 @item Support for any character encoding recognised by Python.
 @end itemize")
     (license license:bsd-2)))
+
+(define-public edbrowse
+  (package
+    (name "edbrowse")
+    (version "3.8.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CMB/edbrowse.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hxvdvplmbnn0jzw4ls8a03k2s7qdylghln74910yljzjf392mld"))))
+    (build-system gnu-build-system)
+    (inputs (list curl-ssh pcre2 quickjs openssl readline-7 tidy-html
+                  unixodbc))
+    (native-inputs (list perl pkg-config))
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "QUICKJS_LIB="
+                             (assoc-ref %build-inputs "quickjs")
+                             "/lib/quickjs"))
+      #:tests? #f ; Edbrowse doesn't have tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (substitute* file
+                   (("\"quickjs-libc.h\"") "<quickjs/quickjs-libc.h>")))
+               '("src/js_hello_quick.c" "src/jseng-quick.c"))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (doc (string-append out "/share/doc/" #$name "-" #$version)))
+                (mkdir-p doc)
+                (install-file "doc/usersguide.html" doc)
+                (install-file "src/edbrowse" bin)))))))
+    (home-page "https://edbrowse.org/")
+    (synopsis "Command-line editor and web browser")
+    (description "Edbrowse is a combination editor, browser, and mail client that is
+100% text based.  The interface is similar to /bin/ed, though there are many more
+features, such as editing multiple files simultaneously, and rendering html.  This
+program was originally written for blind users, but many sighted users have taken
+advantage of the unique scripting capabilities of this program, which can be found
+nowhere else.  A batch job, or cron job, can access web pages on the internet, submit
+forms, and send email, with no human intervention whatsoever.  edbrowse can also tap
+into databases through odbc.  It was primarily written by Karl Dahlke.")
+    (license license:gpl2+)))
