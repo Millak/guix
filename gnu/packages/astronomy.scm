@@ -1565,9 +1565,20 @@ accurately in real time at any rate desired.")
            ;; see https://github.com/astropy/astropy/pull/14311
            (with-directory-excursion "cextern"
              (for-each delete-file-recursively '("expat" "wcslib")))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--pyargs" "astropy"
+              "-n" "auto"
+              "-k" (string-append
+                    ;; Skip tests that need remote data.
+                    "not remote_data"
+                    ;; E astropy.samp.errors.SAMPProxyError:
+                    ;; <SAMPProxyError 1: 'Timeout expired!'>
+                    " and not test_main"
+                    ;; E ModuleNotFoundError: No module named 'wofz'
+                    " and not test_pickle_functional"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
@@ -1587,32 +1598,18 @@ accurately in real time at any rate desired.")
           (add-before 'install 'writable-compiler
             (lambda _
               (make-file-writable "astropy/_compiler.c")))
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              ;; Some tests require a writable home.
-              (setenv "HOME" "/tmp")
-              (make-file-writable "astropy/_compiler.c")
-              ;; Extensions have to be rebuilt before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"
-                      "-j" (number->string (parallel-job-count)))))
-          ;; TODO: The swap to pyproject-build-system introduced all tests
-          ;; failed due to pytest could not load conftest.py, find out how
-          ;; to resolve it and migrate completely to pyproject-build-system.
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
-                (invoke "python" "-m" "pytest" "--pyargs" "astropy"
-                        ;; with    -n : 133.00s
-                        ;; without -n : 326.14s
-                        "-n" (number->string (parallel-job-count))
-                        "-k" (string-append
-                              ;; Skip tests that need remote data.
-                              "not remote_data"
-                              ;; E astropy.samp.errors.SAMPProxyError:
-                              ;; <SAMPProxyError 1: 'Timeout expired!'>
-                              " and not test_main"
-                              ;; E ModuleNotFoundError: No module named 'wofz'
-                              " and not test_pickle_functional"))))))))
+                (setenv "HOME" "/tmp")
+                (make-file-writable "astropy/_compiler.c")
+                ;; Extensions have to be rebuilt before running the tests.
+                (invoke "python" "setup.py" "build_ext" "--inplace"
+                        "-j" (number->string (parallel-job-count)))
+                ;; Step out of the source directory to avoid interference; we
+                ;; want to run the installed code with extensions etc.
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v" test-flags))))))))
     (native-inputs
      (list pkg-config
            python-colorlog
