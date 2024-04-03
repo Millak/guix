@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz))
@@ -101,14 +103,14 @@ together, allowing them to pretend they have a direct connection.")
 (define-public magic-wormhole
   (package
     (name "magic-wormhole")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "magic-wormhole" version))
        (sha256
         (base32
-         "05hm5pnrxli69a28h3pbgx6s6pwy8279l506kha7y3i7hs1dcfxc"))))
+         "105hsv7ck83bs29929zpb29aygr69q00mxpgq9xw7xxzi2gj6v80"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -130,12 +132,14 @@ together, allowing them to pretend they have a direct connection.")
            python-click
            python-hkdf
            python-humanize
+           python-iterable-io
            python-noiseprotocol
            python-pynacl
            python-spake2
            python-tqdm
            python-twisted
-           python-txtorcon))
+           python-txtorcon
+           python-zipstream-ng))
     (home-page "https://github.com/magic-wormhole/magic-wormhole")
     (synopsis "Securely transfer data between computers")
     (description
