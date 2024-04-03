@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
@@ -60,6 +60,38 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public python-assay
+  ;; No release yet.
+  (let ((commit "74617d70e77afa09f58b3169cf496679ac5d5621")
+        (revision "0"))
+    (package
+      (name "python-assay")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/brandon-rhodes/assay")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1klxmamj88mn0q348r08zksccgsbch8sp0m4b04s3myrqnslp2nd"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags #~(list "-m" "assay.tests")
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? test-flags #:allow-other-keys)
+                (when tests?
+                  (apply invoke "python" test-flags)))))))
+      (home-page "https://github.com/brandon-rhodes/assay")
+      (synopsis "Python testing framework")
+      (description
+       "This package provides opiniotated Python test framework prototype.")
+      (license license:expat))))
 
 (define-public python-assertpy
   (package
