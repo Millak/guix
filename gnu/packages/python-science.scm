@@ -2607,6 +2607,31 @@ interoperability offered by HDF5.")
 proportional-integral-derivative} controller.")
     (license license:expat)))
 
+(define-public python-supersmoother
+  (package
+    (name "python-supersmoother")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)        ; no package in PyPI
+       (uri (git-reference
+             (url "https://github.com/jakevdp/supersmoother")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lkj8l2mpki6x2pxcwlrplx63lhi8h9v2rzxgjfb0cppsfr8m1wp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-scipy))
+    (home-page "http://github.com/jakevdp/supersmoother")
+    (synopsis "Python implementation of Friedman's Supersmoother")
+    (description
+     "This package provides an efficient implementation of
+@url{https://www.slac.stanford.edu/pubs/slacpubs/3250/slac-pub-3477.pdf,
+Friedman's SuperSmoother} based in Python.  It makes use of numpy for fast
+numerical computation.")
+    (license license:bsd-2)))
+
 (define-public python-opt-einsum
   (package
     (name "python-opt-einsum")
