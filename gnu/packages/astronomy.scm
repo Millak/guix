@@ -707,31 +707,45 @@ series in Python.")
 (define-public python-ginga
   (package
     (name "python-ginga")
-    (version "5.0.0")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ginga" version))
        (sha256
-        (base32 "1kydi6qqsscgsa55fa2za35vr5j8xjn09lfbnb5ajr8yxdgm4n3y"))))
+        (base32 "1zw93487a0ilkb5w5qjgrdnavxlmdmjp6c2wyc1wp8qahby9c0xa"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.cfg"
+               ;; packaging>=23.1
+               ((">=23.1") ">=21.3")))))))
     (propagated-inputs
-     (list ;;python-exifread  ; optional, not packed yet in Guix
+     (list opencv
            python-astropy
            python-astroquery
            python-dateutil
+           python-exif-read
+           python-fitsio
            python-magic
            python-matplotlib
-           python-fitsio
            python-numpy
+           python-packaging
            python-photutils
            python-pillow
+           python-pyyaml
            python-qtpy
-           python-scipy))
+           python-scipy
+           python-tomli))
     (native-inputs
      (list python-attrs
            python-docutils
            python-pytest-astropy
+           python-pytest-astropy-header
            python-semantic-version
            python-tornado))
     (home-page "https://ejeschke.github.io/ginga/")
