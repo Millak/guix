@@ -5226,7 +5226,8 @@ including @i{fix-its} for automatic refactoring.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-perfparser
             ;; XXX: The 'patch-perfparser' phase is also used by the 'hotspot'
-            ;; package; keep its copy in sync.
+            ;; package; keep its copy in sync (paying attention to the
+            ;; different demangler.cpp file name).
             (lambda* (#:key inputs #:allow-other-keys)
               ;; perfparser attempts to dynamically load the demangle
               ;; libraries; use their absolute file name to avoid having to
@@ -5239,7 +5240,7 @@ including @i{fix-its} for automatic refactoring.")
                        (lambda ()
                          (search-input-file inputs "lib/librustc_demangle.so"))
                        #:unwind? #t)))
-                (substitute* "3rdparty/perfparser/app/demangler.cpp"
+                (substitute* "src/tools/perfparser/app/demangler.cpp"
                   (("loadDemangleLib\\(QStringLiteral\\(\"rustc_demangle\")"
                     all)
                    (if librustc_demangle.so
