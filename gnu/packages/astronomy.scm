@@ -4379,26 +4379,28 @@ of the old packages.")
   (package
     (name "python-tweakwcs")
     (version "0.8.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "tweakwcs" version))
-              (sha256
-               (base32
-                "1j75i02xzd36gp7pf6gks6nmp4ivi9cbphya4l69py5p62iaab99"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tweakwcs" version))
+       (sha256
+        (base32 "1j75i02xzd36gp7pf6gks6nmp4ivi9cbphya4l69py5p62iaab99"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-astropy
-                             python-gwcs
-                             python-numpy
-                             python-packaging
-                             python-spherical-geometry
-                             python-stsci-imagestats
-                             python-stsci-stimage))
-    (native-inputs (list python-codecov
-                         python-pytest
-                         python-pytest-cov
-                         python-scipy
-                         python-semantic-version
-                         python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-gwcs
+           python-numpy
+           python-packaging
+           python-spherical-geometry
+           python-stsci-imagestats
+           python-stsci-stimage))
+    (native-inputs
+     (list python-codecov
+           python-pytest
+           python-pytest-cov
+           python-scipy
+           python-semantic-version
+           python-setuptools-scm))
     (home-page "https://tweakwcs.readthedocs.io/en/latest/")
     (synopsis
      "Algorithms for matching and aligning catalogs and for tweaking the WCS")
