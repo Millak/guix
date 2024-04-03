@@ -10718,7 +10718,7 @@ support for Python 3 and PyPy.  It is based on cffi.")
 (define-public python-cairocffi
   (package
     (name "python-cairocffi")
-    (version "1.3.0")
+    (version "1.6.1")
     (source
      (origin
        ;; The PyPI archive does not include the documentation, so use Git.
@@ -10729,13 +10729,15 @@ support for Python 3 and PyPy.  It is based on cffi.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lylyxyyd8csjhn5kxwzrcr6ick6pvvm1wclpmb5ni28jznxn7lb"))))
-    (build-system python-build-system)
+         "161z2bsp0ai4311mz9n0h6vmz80690jbijxx2gqkknygwm2ynjgd"))))
+    (build-system pyproject-build-system)
     (outputs '("out" "doc"))
     (inputs
      (list glib gtk+ gdk-pixbuf cairo))
     (native-inputs
-     (list python-numpy
+     (list python-flit-core
+           python-numpy
+           python-pikepdf
            python-pytest
            python-pytest-cov
            python-pytest-runner
@@ -10765,15 +10767,6 @@ support for Python 3 and PyPy.  It is based on cffi.")
                 (search-input-file inputs "/lib/libglib-2.0.so.0"))
                (("libgdk-3.so.0")
                 (search-input-file inputs "/lib/libgdk-3.so.0")))))
-         (add-after 'unpack 'disable-linters
-           ;; Their check fails; none of our business.
-           (lambda _
-             (substitute* "setup.cfg"
-               ((".*pytest-flake8.*") "")
-               ((".*pytest-isort.*") "")
-               (("--flake8") "")
-               (("--isort") ""))
-             #t))
          (add-after 'install 'install-doc
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
