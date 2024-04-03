@@ -74,6 +74,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -521,6 +522,11 @@ typically encountered in feature film production.")
                 "-DWITH_OPENVDB=ON"
                 "-DWITH_OPENSUBDIV=ON"
                 "-DWITH_PYTHON_INSTALL=OFF"
+                "-DWITH_SYSTEM_BULLET=ON"
+                "-DWITH_SYSTEM_EIGEN3=ON"
+                "-DWITH_SYSTEM_FREETYPE=ON"
+                "-DWITH_SYSTEM_GLOG=ON"
+                "-DWITH_SYSTEM_LZO=ON"
                 (string-append "-DPYTHON_LIBRARY=python" #$python-version)
                 (string-append "-DPYTHON_LIBPATH="
                                (assoc-ref %build-inputs "python")
@@ -539,11 +545,14 @@ typically encountered in feature film production.")
                                "/site-packages/")))))
     (inputs
      (list boost
+           bullet
+           eigen
            embree
            ffmpeg-5
            fftw
            freetype-with-brotli
            glew
+           glog
            gmp                        ;needed for boolean operations on meshes
            imath
            jack-1
@@ -556,6 +565,7 @@ typically encountered in feature film production.")
            libx11
            libxi
            libxrender
+           lzo
            openal
            opencolorio
            openexr
