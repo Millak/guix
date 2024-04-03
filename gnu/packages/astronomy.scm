@@ -675,33 +675,34 @@ CFITSIO library.  Among other things, it can
   (package
     (name "python-gatspy")
     (version "0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "gatspy" version))
-              (sha256
-               (base32
-                "1gw2z6x8nikvnw2gkdl70gr81cwczd1pd7v8ry2kjn6k4kssrfav"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gatspy" version))
+       (sha256
+        (base32 "1gw2z6x8nikvnw2gkdl70gr81cwczd1pd7v8ry2kjn6k4kssrfav"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; Tests need this
-         (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))
       #:test-flags
-      '(list "-k"
-             (string-append
-              ;; These tests require internet access
-              "not test_download_data.py"
-              ;; XXX: we don't have supersmoother
-              " and not test_supersmoother.py"))))
-    (propagated-inputs (list python-astroml python-numpy python-scipy))
+      ;; These tests require internet access
+      #~(list "-k" "not test_download_data.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests need this
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-astroml
+           python-numpy
+           python-scipy
+           python-supersmoother))
     (native-inputs (list python-pytest python-nose python-setuptools-scm))
     (home-page "https://github.com/astroml/gatspy")
     (synopsis "General tools for astronomical time series in Python")
-    (description "This package provides general tools for astronomical time
-series in Python.")
+    (description
+     "This package provides general tools for astronomical time series in
+Python.")
     (license license:bsd-2)))
 
 (define-public python-ginga
