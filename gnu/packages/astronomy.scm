@@ -723,7 +723,13 @@ series in Python.")
            (lambda _
              (substitute* "setup.cfg"
                ;; packaging>=23.1
-               ((">=23.1") ">=21.3")))))))
+               ((">=23.1") ">=21.3"))))
+         (add-before 'check 'set-home
+           (lambda _
+             ;; Relax matplotlib warning: ... because the default path
+             ;; (/homeless-shelter/.config/matplotlib) is not a writable
+             ;; directory ...
+             (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list opencv
            python-astropy
