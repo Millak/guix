@@ -151,6 +151,7 @@
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34997,6 +34998,28 @@ It’s specially useful when you need to standardize the data from many
 sources.  For example, it allows you to have all your casting and
 parsing rules in a single place.")
     (license license:bsd-3)))
+
+(define-public python-iterable-io
+  (package
+    (name "python-iterable-io")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "iterable-io" version))
+       (sha256
+        (base32 "0g4cn522n4dv6ly8pwf97dc62rr4f7my38v0bh6vmac7jmrip7pv"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/pR0Ps/iterable-io")
+    (synopsis "Adapt generators and other iterables to a file-like interface")
+    (description
+     "@code{iterable-io} is a small Python library that provides an adapter so
+that it's possible to read from
+@url{https://docs.python.org/3/glossary.html#term-iterable,iterable} objects
+in the same way as
+@url{https://docs.python.org/3/glossary.html#term-file-object,file-like}
+objects.")
+    (license license:lgpl3)))
 
 (define-public python-iteround
   (package
