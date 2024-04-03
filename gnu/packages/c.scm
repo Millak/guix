@@ -265,16 +265,29 @@ standard.")
                                                  #$(cc-for-target))
                                   (string-append "prefix="
                                                  #$output))
-             #:phases #~(modify-phases %standard-phases
-                          (delete 'configure)
-                          (replace 'check
-                            (lambda* (#:key tests? make-flags
-                                      #:allow-other-keys)
-                              (when tests?
-                                (apply invoke
-                                       `("make" "-C" "unittest"
-                                         ,@make-flags))
-                                (invoke "./unittest/t1")))))))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (replace 'check
+                   (lambda* (#:key tests? make-flags
+                             #:allow-other-keys)
+                     (when tests?
+                       (apply invoke
+                              `("make" "-C" "unittest"
+                                ,@make-flags))
+                       (invoke "./unittest/t1"))))
+                 ;; The Makefile checks for libtoml.pc and only installs if
+                 ;; the prefix is /usr/local.
+                 (add-after 'install 'install-pkg-config
+                   (lambda _
+                     (rename-file "libtoml.pc.sample" "libtoml.pc")
+                     (substitute* "libtoml.pc"
+                       (("^prefix=.*")
+                        (string-append "prefix=" #$output "\n")))
+
+                     (let ((pc (string-append #$output "/lib/pkgconfig")))
+                       (mkdir-p pc)
+                       (install-file "libtoml.pc" pc)))))))
       (home-page "https://github.com/cktan/tomlc99")
       (synopsis "TOML library for C")
       (description
