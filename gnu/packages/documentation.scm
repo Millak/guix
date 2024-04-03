@@ -521,3 +521,60 @@ markdeep/latest/markdeep\\.min\\.js\\?\"></script>")
 be displayed in any web browser, whether local or remote.  It supports diagrams,
 calendars, equations, and other features as extensions of Markdown syntax.")
     (license license:bsd-2)))
+
+(define-public stddoc
+  (let ((commit "6eef9deaf2e36bae812f50e448a8012b3e5efb14")
+        (revision "1"))
+    (package
+      (name "stddoc")
+      (version (git-version "1.0.2" revision commit))
+      (home-page "https://github.com/r-lyeh/stddoc.c")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06phjp7wbf4x1sagxwfapgv6iyiixmijxxbg2clb48kyvjg5mlwn"))
+         (snippet #~(delete-file "stddoc.c.html"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ; no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'configure
+                   (lambda _
+                     (substitute* "stddoc.c"
+                       ;; Note: For some reason quote characters are being
+                       ;; inserted into urls and tags, eg.
+                       ;; 'https://morgan3d.github.io/m""arkdeep/latest/markdeep.min.js?'
+                       (("https://casual-effects.com/m\"*arkdeep/latest/")
+                        (string-append #$markdeep "/share/markdeep/latest/"))
+                       (("https://morgan3d.github.io/m\"*arkdeep/latest/")
+                        (string-append #$markdeep "/share/markdeep/latest/")))))
+                 (replace 'build
+                   (lambda _
+                     (invoke #$(cc-for-target)
+                             "-O2" "-g" "-o" "stddoc" "stddoc.c")
+                     (with-input-from-file "stddoc.c"
+                       (lambda _
+                         (with-output-to-file "stddoc.c.html"
+                           (lambda _
+                             (invoke #$(if (%current-target-system)
+                                           "stddoc"
+                                           "./stddoc"))))))))
+                 (replace 'install
+                   (lambda _
+                     (install-file "stddoc"
+                                   (string-append #$output "/bin"))
+                     (install-file "stddoc.c.html"
+                                   (string-append #$output
+                                                  "/share/doc")))))))
+      (native-inputs (if (%current-target-system) (list this-package) '()))
+      (synopsis "Documentation generator for multiple programming languages")
+      (description "@code{stddoc.c} is a tiny documentation generator with many
+supported programming languages.  Markdeep code comments are extracted from stdin and
+printed into stdout as a HTML file.")
+      (license license:unlicense))))
