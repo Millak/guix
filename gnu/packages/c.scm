@@ -19,7 +19,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
-;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023, 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -245,8 +245,8 @@ standard.")
       (license license:lgpl2.1+))))
 
 (define-public tomlc99
-  (let ((revision "0")
-        (commit "52e9c039c5418a100605c2db1282590511fa891b"))
+  (let ((revision "1")
+        (commit "5221b3d3d66c25a1dc6f0372b4f824f1202fe398"))
     (package
       (name "tomlc99")
       (version (git-version "1.0" revision commit))
@@ -258,7 +258,7 @@ standard.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1zrn5mmd1ysxma96jzrq50xqypbs3rhk6dwlj1wcjpjz1a4h9wgg"))))
+                  "1r443cpwy7f1f8imyfykpggkihrvv9fvdlgl95liiqmzqz9snqnd"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags #~(list (string-append "CC="
