@@ -10308,6 +10308,7 @@ playing media, scanning, and much more.")
                             pulseaudio
                             shared-mime-info
                             system-config-printer
+                            xdg-desktop-portal
                             xdg-user-dirs
                             yelp
                             zenity))
