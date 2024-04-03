@@ -5187,13 +5187,13 @@ structure is left untouched.")
 (define-public python-exif-read
   (package
     (name "python-exif-read")
-    (version "2.1.2")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ExifRead" version))
               (sha256
                (base32
-                "1b90jf6m9vxh9nanhpyvqdq7hmfx5iggw1l8kq10jrs6xgr49qkr"))))
+                "191c7sa0rca8wkspfq8nlfa6davh743mqkzrcayz5gcx2rja7i8a"))))
     (build-system python-build-system)
     (arguments `(#:tests? #f)) ; no tests
     (home-page "https://github.com/ianare/exif-py")
