@@ -5050,15 +5050,27 @@ astronomical images, especially when there is no WCS information available.")
     (version "1.48")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "skyfield" version))
+       (method git-fetch) ; PyPI tarball lacks test data
+       (uri (git-reference
+             (url "https://github.com/skyfielders/python-skyfield")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qaz0k0lkni3y423r66mkvj99bx08qa9xgqp3cs2df70cmdz30cb"))))
-    (build-system python-build-system)
+        (base32 "0l324r4pz7d5w72c7c5akvjx40287hl7sl0qv7swvn2da53vmq0r"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; XXX: Tests depend on custom test framework
-     ;; https://github.com/brandon-rhodes/assay
-     `(#:tests? #f))
+     (list
+      #:test-flags
+      #~(list "-m" "assay" "--batch" "skyfield.tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "ci"
+                  (apply invoke "python" test-flags))))))))
+    (native-inputs
+     (list python-assay python-pandas))
     (propagated-inputs
      (list python-certifi
            python-jplephem
