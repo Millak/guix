@@ -541,6 +541,8 @@ Performance is achieved by using the LLVM JIT compiler.")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:configure-flags
+        '(list "-DLLAMA_BLAS=ON" "-DLLAMA_BLAS_VENDOR=OpenBLAS")
         #:modules '((ice-9 textual-ports)
                     (guix build utils)
                     ((guix build python-build-system) #:prefix python:)
@@ -575,8 +577,9 @@ Performance is achieved by using the LLVM JIT compiler.")
               (lambda _
                 (copy-file "bin/main" (string-append #$output "/bin/llama")))))))
       (inputs (list python))
+      (native-inputs (list pkg-config))
       (propagated-inputs
-       (list python-numpy python-pytorch python-sentencepiece))
+       (list python-numpy python-pytorch python-sentencepiece openblas))
       (home-page "https://github.com/ggerganov/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
       (description "This package provides a port to Facebook's LLaMA collection
