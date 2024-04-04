@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
@@ -200,8 +200,11 @@ translation between LLVM IR and SPIR-V.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
-                           "-DALLOW_EXTERNAL_SPIRV_TOOLS=ON")
+     `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                           "-DALLOW_EXTERNAL_SPIRV_TOOLS=ON"
+                           ,@(if (target-riscv64?)
+                                 `("-DCMAKE_EXE_LINKER_FLAGS=-latomic")
+                                 '()))
        #:phases (modify-phases %standard-phases
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
