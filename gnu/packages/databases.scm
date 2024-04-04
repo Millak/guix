@@ -4299,7 +4299,8 @@ files or Python scripts that define a list of migration steps.")
      (list #:test-flags
            #~'("tests/test__mysql.py"   ;tests not needing a live db
                "tests/test_MySQLdb_times.py")))
-    (native-inputs (list pkg-config python-pytest))
+    (native-inputs
+     (list pkg-config python-pytest python-setuptools python-wheel))
     (inputs (list mariadb-connector-c))
     (home-page "https://github.com/PyMySQL/mysqlclient")
     (synopsis "MySQLdb is an interface to the popular MySQL database server for Python")
