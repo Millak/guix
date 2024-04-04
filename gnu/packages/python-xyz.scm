@@ -37152,11 +37152,11 @@ implementing a pre-defined interface.")
     (name "python-itemloaders")
     (version "1.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "itemloaders" version))
-        (sha256
-          (base32 "0j2aw4ipalj208594x80blpgkh1i63gqqa4nb67b823av9hirn11"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "itemloaders" version))
+       (sha256
+        (base32 "0j2aw4ipalj208594x80blpgkh1i63gqqa4nb67b823av9hirn11"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
