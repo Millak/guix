@@ -6324,7 +6324,7 @@ provides Python-specific tags that represent an arbitrary Python object.")
         (base32 "1q31krwxdvwawdn1kfqmpplix31d4jhs0qng26908hawsf0yjqlb"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-case))
+     (list python-pytest python-case python-setuptools python-wheel))
     (home-page "https://github.com/celery/vine")
     (synopsis "Promises for Python")
     (description
