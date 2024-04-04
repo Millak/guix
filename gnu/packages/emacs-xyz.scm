@@ -38847,8 +38847,8 @@ headlines, keywords, tables and source blocks.")
       (license license:gpl3+)))) ; License is in pyimport.el
 
 (define-public emacs-straight-el
-  (let ((commit "039e5c9a9b5c00749602afb41341e9e77ba09429")
-        (revision "2"))
+  (let ((commit "b3760f5829dba37e855add7323304561eb57a3d4")
+        (revision "3"))
     (package
       (name "emacs-straight-el")
       (version (git-version "0" revision commit))
@@ -38861,7 +38861,7 @@ headlines, keywords, tables and source blocks.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "05avzakgkwzrj1pxa1pkcv96knqq4mnkv2cszn4cs4kmvr2mchxm"))))
+          (base32 "10kvm2gzn7yf2wkfprq7cm6m2la83rdi394rcrsxql3yyhd0v599"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -38881,12 +38881,7 @@ headlines, keywords, tables and source blocks.")
                   (("\"git\"")
                    (string-append "\""
                                   (search-input-file inputs "/bin/git")
-                                  "\"")))))
-            (add-after 'check 'delete-tests
-              ;; "tests" directory includes bogus ".el" files that can make
-              ;; `patch-el-files' phase fail.
-              (lambda _
-                (delete-file-recursively "tests"))))))
+                                  "\""))))))))
       (native-inputs
        (list texinfo))
       (inputs
