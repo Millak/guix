@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -212,7 +212,7 @@ features not found in the core libraries.")))
 (define-public java-marlin-renderer
   (package
     (name "java-marlin-renderer")
-    (version "0.9.4.2")
+    (version "0.9.4.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -224,11 +224,17 @@ features not found in the core libraries.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12vb8fmxf1smnyv6w8i1khahy76v6r29j1qwabbykxff8i9ndxqv"))))
+                "0gcqp9iq0j5n08gdssh8gp0daj3n5zrx0dll1l4ljhbj2b9jm9ym"))))
     (build-system ant-build-system)
     (arguments
-     `(#:jar-name "marlin.jar"
-       #:test-include (list "src/test/java/RunJUnitTest.java")))
+     (list
+      #:jar-name "marlin.jar"
+      #:test-include '(list "src/test/java/RunJUnitTest.java")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'build 'copy-resources
+           (lambda _
+             (copy-recursively "src/main/resources" "build/classes"))))))
     (inputs
      (list java-hamcrest-core java-junit))
     (home-page "https://github.com/bourgesl/marlin-renderer/")
