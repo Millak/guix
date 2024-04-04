@@ -976,6 +976,48 @@ efficient, and can be used in any application that needs to edit or view
 source code.")
     (license license:bsd-3)))
 
+(define-public java-autocomplete
+  (package
+    (name "java-autocomplete")
+    (version "3.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/bobbylight/AutoComplete")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ksa3k3xkdjpyq9sbsvchyhfzzpb67pv8xzbpljj8rqilgk8ysy0"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #false ;needs junit5
+      #:jar-name "autocomplete.jar"
+      #:source-dir "AutoComplete/src/main/java"
+      #:test-dir "AutoComplete/src/test"
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'build 'copy-resources
+           (lambda _
+             (copy-recursively "AutoComplete/src/main/resources" "build/classes"))))))
+    (propagated-inputs
+     (list java-rsyntaxtextarea))
+    (native-inputs
+     (list java-hamcrest-core))
+    (home-page "https://github.com/bobbylight/AutoComplete")
+    (synopsis "Text completion library")
+    (description "AutoComplete is a library allowing you to add IDE-like
+auto-completion (aka \"code completion\" or \"Intellisense\") to any Swing
+JTextComponent.  Special integration is added for @code{RSyntaxTextArea},
+since this feature is commonly needed when editing source code.  Features
+include: Drop-down completion choice list. Optional companion \"description\"
+window, complete with full HTML support and navigable with hyperlinks.
+Optional parameter completion assistance for functions and methods, ala
+Eclipse and NetBeans.  Completion information is typically specified in an XML
+file, but can even be dynamic.")
+    (license license:bsd-3)))
+
 ;; We use the sources from git instead of the tarball from pypi, because the
 ;; latter does not include the Cython source file from which bycython.cpp is
 ;; generated.
