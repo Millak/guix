@@ -35894,7 +35894,7 @@ and powerful way to handle real-world data, featuring:
     (propagated-inputs
      (list python-msgpack python-ruamel.yaml python-tomli python-tomli-w))
     (native-inputs
-     (list python-cython python-pytest python-wheel))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/cdgriffith/Box")
     (synopsis "Advanced Python dictionaries with dot notation access")
     (description
