@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
@@ -78,7 +78,9 @@
                "doc"           ;400+ section 3 man pages
                "debug"))
     (inputs
-     (append (list libx11 cairo ncurses expat)
+     (append (if (%current-target-system)
+                 '()                  ;fewer dependencies when cross-compiling
+                 (list libx11 cairo ncurses expat))
              (if (target-arm32?) '() (list numactl))))
     (propagated-inputs
      ;; hwloc.pc lists it in 'Requires.private'.
