@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017-2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2019, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -468,11 +468,6 @@ svga,swrast,virgl,zink")))
                   ;; https://gitlab.freedesktop.org/mesa/mesa/-/issues/4091).
                   `((substitute* "src/util/meson.build"
                       ((".*'tests/u_debug_stack_test.cpp',.*") ""))))
-                 ("aarch64-linux"
-                  ;; The ir3_disasm test segfaults.
-                  ;; The simplest way to skip it is to run a different test instead.
-                  `((substitute* "src/freedreno/ir3/meson.build"
-                      (("disasm\\.c'") "delay.c',\n    link_args: ld_args_build_id"))))
                  ("armhf-linux"
                   ;; Disable some of the llvmpipe tests.
                   `((substitute* "src/gallium/drivers/llvmpipe/meson.build"
