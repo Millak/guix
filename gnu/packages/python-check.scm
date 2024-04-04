@@ -706,7 +706,8 @@ astropy related packages.")
                     " and not test_generate"
                     " and not test_default_format"))))
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-pytest python-setuptools-scm
+           python-setuptools python-wheel))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/astropy/pytest-arraydiff")
