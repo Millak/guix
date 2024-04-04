@@ -933,7 +933,7 @@ Filter, list, or split a tar file.
 (define-public java-rsyntaxtextarea
   (package
     (name "java-rsyntaxtextarea")
-    (version "2.6.1")
+    (version "3.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -942,16 +942,20 @@ Filter, list, or split a tar file.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dyflzvxq2wvs0rgqfyi5yzzrb6r4bzw2dm8cl304dakxk38ddys"))))
+                "0ad3cmfxwz9963kbh5ryba9jp88hsx03jsl8r4qinwhy6aahx6f3"))))
     (build-system ant-build-system)
     (arguments
      (list
       #:jar-name "rsyntaxtextarea.jar"
+      #:source-dir "RSyntaxTextArea/src/main/java"
+      #:test-dir "RSyntaxTextArea/src/test"
+      #:tests? #false ;requires junit5
       #:phases
       '(modify-phases %standard-phases
          (add-before 'build 'copy-resources
            (lambda _
-             (copy-recursively "src/main/resources" "build/classes")))
+             (copy-recursively "RSyntaxTextArea/src/main/resources" "build/classes")))
+         #;
          (add-before 'check 'start-xorg-server
            (lambda _
              ;; The test suite requires a running X server.
@@ -961,7 +965,7 @@ Filter, list, or split a tar file.
              ;; ‘Fontconfig error: No writable cache directories’
              (setenv "XDG_CACHE_HOME" (getcwd)))))))
     (native-inputs
-     (list java-junit java-hamcrest-core
+     (list java-hamcrest-core
            xorg-server-for-tests))
     (home-page "https://bobbylight.github.io/RSyntaxTextArea/")
     (synopsis "Syntax highlighting text component for Java Swing")
