@@ -217,6 +217,27 @@ The look is heavily inspired by Darcula and IntelliJ themes from IntelliJ IDEA
 2019.2+ and uses almost the same colors and icons.")
     (license license:asl2.0)))
 
+(define-public java-flatlaf-intellij-themes
+  (package
+    (inherit java-flatlaf)
+    (name "java-flatlaf-intellij-themes")
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:jar-name "flatlaf-intellij-themes.jar"
+      #:source-dir '(list "flatlaf-intellij-themes/src/main/java")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'copy-resources
+            (lambda _
+              (copy-recursively "flatlaf-intellij-themes/src/main/resources"
+                                "build/classes"))))))
+    (inputs (list java-flatlaf))
+    (synopsis "FlatLaf addon with popular themes")
+    (description "This addon for FlatLaf bundles many popular third party
+themes from JetBrains Plugins Repository into a JAR and provides Java classes
+to use them.")))
+
 (define-public java-piccolo2d-core
   (package
     (name "java-piccolo2d-core")
