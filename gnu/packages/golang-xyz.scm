@@ -1083,38 +1083,6 @@ while callers can implement logging with whatever backend is appropriate.")
 wrapping errors and checking if an error contains another error.")
     (license license:mpl2.0)))
 
-(define-public go-github-com-hashicorp-hcl-v2
-  (package
-    (name "go-github-com-hashicorp-hcl-v2")
-    (version "2.11.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hashicorp/hcl")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0f9flmmkj7fr1337fc56cqy73faq87ix375hnz3id4wc023przv1"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/hashicorp/hcl/v2"))
-    (native-inputs
-     (list go-github-com-davecgh-go-spew))
-    (inputs
-     (list go-github-com-agext-levenshtein
-           go-github-com-apparentlymart-go-textseg-v13
-           go-github-com-mitchellh-go-wordwrap
-           go-github-com-zclconf-go-cty))
-    (synopsis "Go implementation of HashiCorp Configuration Language V2")
-    (description
-     "This package contains the main implementation of the @acronym{HCL,
-HashiCorp Configuration Language}.  HCL is designed to be a language for
-expressing configuration which is easy for both humans and machines to read.")
-    (home-page "https://github.com/hashicorp/hcl")
-    (license license:mpl2.0)))
-
 (define-public go-github-com-hashicorp-go-hclog
   (package
     (name "go-github-com-hashicorp-go-hclog")
@@ -1273,6 +1241,38 @@ increment versions.")
     (native-inputs
      (list go-github-com-davecgh-go-spew))
     (synopsis "Go implementation of HashiCorp Configuration Language V1")
+    (description
+     "This package contains the main implementation of the @acronym{HCL,
+HashiCorp Configuration Language}.  HCL is designed to be a language for
+expressing configuration which is easy for both humans and machines to read.")
+    (home-page "https://github.com/hashicorp/hcl")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-hcl-v2
+  (package
+    (name "go-github-com-hashicorp-hcl-v2")
+    (version "2.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/hcl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f9flmmkj7fr1337fc56cqy73faq87ix375hnz3id4wc023przv1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/hcl/v2"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew))
+    (inputs
+     (list go-github-com-agext-levenshtein
+           go-github-com-apparentlymart-go-textseg-v13
+           go-github-com-mitchellh-go-wordwrap
+           go-github-com-zclconf-go-cty))
+    (synopsis "Go implementation of HashiCorp Configuration Language V2")
     (description
      "This package contains the main implementation of the @acronym{HCL,
 HashiCorp Configuration Language}.  HCL is designed to be a language for
