@@ -20758,6 +20758,35 @@ implementation has been adapted, improved, and fixed from Molten.")
 running in.")
     (license license:isc)))
 
+(define-public python-shshsh
+  (package
+    (name "python-shshsh")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/zqqqqz2000/shshsh")
+         (commit
+          "fd21c8696aebaae04507760c16cb45979291fef5")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1wzqyj1a6jj6cyv5ymzy834qm2lyq80yy1kfz0q0zayq9gm1cj7f"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-tox))
+    (home-page "https://github.com/zqqqqz2000/shshsh")
+    (synopsis "Write Shell commands simply and safely within Python")
+    (description "This package provides a way to write Shell commands from
+within Python.  Python functions can be chained together to process input
+Bash control characters are escapted so that parameters can be passed
+without worrying about command injection.")
+    (license license:expat)))
+
 (define-public python-memcached
   (package
     (name "python-memcached")
