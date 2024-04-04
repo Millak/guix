@@ -20134,7 +20134,8 @@ RabbitMQ messaging server is the most popular implementation.")
                                       '("billiard/popen_spawn_win32.py"
                                         "billiard/_win.py")))))))
     (native-inputs
-     (list python-case python-psutil python-pytest))
+     (list python-case python-psutil python-pytest python-setuptools
+           python-wheel))
     (home-page "https://github.com/celery/billiard")
     (synopsis "Python multiprocessing fork with improvements and bugfixes")
     (description
