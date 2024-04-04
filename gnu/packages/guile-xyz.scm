@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
+;;; Copyright © 2024 Artyom Bologov <mail@aartaka.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4518,6 +4519,45 @@ To use the bindings, import @code{(ffi cblas)}.  CBLAS will be loaded from the
 default dynamic library path.  There are up to three bindings for each
 function: raw, typed, and functional.")
       (license license:lgpl3+))))
+
+(define-public guile-gsl
+  (let ((commit "e6d1477b0d0456f500c32610a5cae6ebb1b8acfe")
+        (revision "0"))
+    (package
+      (name "guile-gsl")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aartaka/guile-gsl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1b4brimmg3phahia9dm0wkcp1f29wnbvmi0q8di5sz7pf7qjzsy0"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "modules"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'substitute-gsl-so
+              (lambda _
+                (let ((gsl (string-append #$(this-package-input "gsl")
+                                          "/lib/libgsl.so"))
+                      (gslcblas (string-append #$(this-package-input "gsl")
+                                               "/lib/libgslcblas.so")))
+                  (substitute* '("modules/gsl/core.scm")
+                    (("libgsl.so") gsl)
+                    (("libgslcblas.so") gslcblas))))))))
+      (native-inputs (list guile-3.0))
+      (inputs (list guile-3.0 gsl))
+      (home-page "https://github.com/aartaka/guile-gsl")
+      (synopsis "Bindings for GNU Scientific library in Guile")
+      (description
+       "This package provides a Guile Scheme wrapper for @code{libgsl.so}.
+Implements vector, matrix,and BLAS operations.")
+      (license license:gpl3+))))
 
 (define-public guile-ffi-fftw
   (let ((commit "294ad9e7491dcb40026d2fec9be2af05263be1c0")
