@@ -90,103 +90,101 @@
         '(delete-file-recursively "lib/"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no check target
-       #:modules ((guix build gnu-build-system)
+     (list
+      #:tests? #f ; no check target
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1)
                   (srfi srfi-26)
                   (ice-9 match)
                   (ice-9 regex))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; prepare ChibiOS
-             (invoke "unzip" "-o" (assoc-ref inputs "chibios"))
-             (invoke "mv" "ChibiOS_2.6.9" "chibios")
-             (with-directory-excursion "chibios/ext"
-               (invoke "unzip" "-o" "fatfs-0.9-patched.zip"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; prepare ChibiOS
+              (invoke "unzip" "-o" (assoc-ref inputs "chibios"))
+              (invoke "mv" "ChibiOS_2.6.9" "chibios")
+              (with-directory-excursion "chibios/ext"
+                (invoke "unzip" "-o" "fatfs-0.9-patched.zip"))
 
-             ;; Remove source of non-determinism in ChibiOS
-             (substitute* "chibios/os/various/shell.c"
-               (("#ifdef __DATE__") "#if 0"))
+              ;; Remove source of non-determinism in ChibiOS
+              (substitute* "chibios/os/various/shell.c"
+                (("#ifdef __DATE__") "#if 0"))
 
-             ;; Patch shell paths
-             (substitute* '("src/main/java/qcmds/QCmdCompileFirmware.java"
-                            "src/main/java/qcmds/QCmdCompilePatch.java"
-                            "src/main/java/qcmds/QCmdFlashDFU.java")
-               (("/bin/sh") (which "sh")))
+              ;; Patch shell paths
+              (substitute* '("src/main/java/qcmds/QCmdCompileFirmware.java"
+                             "src/main/java/qcmds/QCmdCompilePatch.java"
+                             "src/main/java/qcmds/QCmdFlashDFU.java")
+                (("/bin/sh") (which "sh")))
 
-             ;; Override cross compiler base name
-             (substitute* "firmware/Makefile.patch"
-               (("arm-none-eabi-(gcc|g\\+\\+|objcopy|objdump)" tool)
-                (which tool)))
+              ;; Override cross compiler base name
+              (substitute* "firmware/Makefile.patch"
+                (("arm-none-eabi-(gcc|g\\+\\+|objcopy|objdump)" tool)
+                 (which tool)))
 
-             ;; XXX: for some reason the whitespace substitution does not
-             ;; work, so we disable it.
-             (substitute* "firmware/Makefile.patch"
-               (("^BDIR=.*") "BDIR=${axoloti_home}/build\n"))
+              ;; XXX: for some reason the whitespace substitution does not
+              ;; work, so we disable it.
+              (substitute* "firmware/Makefile.patch"
+                (("^BDIR=.*") "BDIR=${axoloti_home}/build\n"))
 
-             ;; Hardcode full path to compiler tools
-             (substitute* '("firmware/Makefile"
-                            "firmware/flasher/Makefile"
-                            "firmware/mounter/Makefile")
-               (("TRGT =.*")
-                (string-append "TRGT = "
-                               (assoc-ref inputs "cross-toolchain")
-                               "/bin/arm-none-eabi-\n")))
+              ;; Hardcode full path to compiler tools
+              (substitute* '("firmware/Makefile"
+                             "firmware/flasher/Makefile"
+                             "firmware/mounter/Makefile")
+                (("TRGT =.*")
+                 (string-append "TRGT = "
+                                (assoc-ref inputs "cross-toolchain")
+                                "/bin/arm-none-eabi-\n")))
 
-             ;; Hardcode path to "make"
-             (substitute* '("firmware/compile_firmware_linux.sh"
-                            "firmware/compile_patch_linux.sh")
-               (("make") (which "make")))
+              ;; Hardcode path to "make"
+              (substitute* '("firmware/compile_firmware_linux.sh"
+                             "firmware/compile_patch_linux.sh")
+                (("make") (which "make")))
 
-             ;; Hardcode path to "dfu-util"
-             (substitute* "platform_linux/upload_fw_dfu.sh"
-               (("-f \"\\$\\{platformdir\\}/bin/dfu-util\"") "-z \"\"")
-               (("\\./dfu-util") (which "dfu-util")))
-             #t))
-         (delete 'configure)
-         (replace 'build
-           ;; Build Axoloti firmware with cross-compiler
-           (lambda _
-             (with-directory-excursion "platform_linux"
-               (invoke "sh" "compile_firmware.sh"))))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (share (string-append out "/share/axoloti/"))
-                    (doc   (string-append share "doc"))
-                    (dir   (getcwd))
-                    (pats  '("/doc/[^/]+$"
-                             "/patches/[^/]+/[^/]+$"
-                             "/objects/[^/]+/[^/]+$"
-                             "/firmware/.+"
-                             "/chibios/[^/]+$"
-                             "/chibios/boards/ST_STM32F4_DISCOVERY/[^/]+$"
-                             "/chibios/(ext|os|docs)/.+"
-                             "/CMSIS/[^/]+/[^/]+$"
-                             "/patch/[^/]+/[^/]+$"
-                             "/[^/]+\\.txt$"))
-                    (pattern (string-append
-                              "(" (string-join
-                                   (map (cut string-append dir <>)
-                                        pats)
-                                   "|") ")"))
-                    (files   (find-files dir
-                                         (lambda (file stat)
-                                           (and (eq? 'regular (stat:type stat))
-                                                (string-match pattern file))))))
-               (for-each (lambda (file)
-                           (install-file file
-                                         (string-append
-                                          share
-                                          (regexp-substitute
-                                           #f
-                                           (string-match dir (dirname file))
-                                           'pre  'post))))
-                         files)
-               #t))))))
+              ;; Hardcode path to "dfu-util"
+              (substitute* "platform_linux/upload_fw_dfu.sh"
+                (("-f \"\\$\\{platformdir\\}/bin/dfu-util\"") "-z \"\"")
+                (("\\./dfu-util") (which "dfu-util")))))
+          (delete 'configure)
+          (replace 'build
+            ;; Build Axoloti firmware with cross-compiler
+            (lambda _
+              (with-directory-excursion "platform_linux"
+                (invoke "sh" "compile_firmware.sh"))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((share (string-append #$output "/share/axoloti/"))
+                     (doc   (string-append share "doc"))
+                     (dir   (getcwd))
+                     (pats  '("/doc/[^/]+$"
+                              "/patches/[^/]+/[^/]+$"
+                              "/objects/[^/]+/[^/]+$"
+                              "/firmware/.+"
+                              "/chibios/[^/]+$"
+                              "/chibios/boards/ST_STM32F4_DISCOVERY/[^/]+$"
+                              "/chibios/(ext|os|docs)/.+"
+                              "/CMSIS/[^/]+/[^/]+$"
+                              "/patch/[^/]+/[^/]+$"
+                              "/[^/]+\\.txt$"))
+                     (pattern (string-append
+                               "(" (string-join
+                                    (map (cut string-append dir <>)
+                                         pats)
+                                    "|") ")"))
+                     (files   (find-files dir
+                                          (lambda (file stat)
+                                            (and (eq? 'regular (stat:type stat))
+                                                 (string-match pattern file))))))
+                (for-each (lambda (file)
+                            (install-file file
+                                          (string-append
+                                           share
+                                           (regexp-substitute
+                                            #f
+                                            (string-match dir (dirname file))
+                                            'pre  'post))))
+                          files)))))))
     (inputs
      `(("chibios"
         ,(origin
