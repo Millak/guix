@@ -776,3 +776,162 @@ with some layout changes and added features.
 
 This package provides the runtime.")
     (license license:gpl3+)))
+
+(define-public ksoloti-patcher
+  (package
+    (inherit ksoloti-runtime)
+    (name "ksoloti-patcher")
+    (version (package-version ksoloti-runtime))
+    (arguments
+     (list
+      #:tests? #f                       ; no check target
+      #:modules '((guix build gnu-build-system)
+                  ((guix build ant-build-system) #:prefix ant:)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (srfi srfi-26)
+                  (ice-9 match)
+                  (ice-9 regex)
+                  (sxml simple)
+                  (sxml xpath)
+                  (sxml transform))
+      #:imported-modules `((guix build ant-build-system)
+                           ,@%gnu-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "JAVA_HOME"
+                      (dirname
+                       (dirname (search-input-file inputs "/bin/javac"))))
+              ;; We want to use our own jar files instead of the pre-built
+              ;; stuff in lib.  So we replace the zipfileset tags in the
+              ;; build.xml with new ones that reference our jars.
+              (let* ((build.xml (with-input-from-file "build.xml"
+                                  (lambda _
+                                    (xml->sxml #:trim-whitespace? #t))))
+                     (jars      (append-map (match-lambda
+                                              (((? (cut string-prefix? "java-" <>)
+                                                   label) . directory)
+                                               (find-files directory "\\.jar$"))
+                                              (_ '()))
+                                            inputs))
+                     (all-jars  (append jars (find-files "lib" "\\.jar$")))
+                     (classpath (string-join all-jars ":"))
+                     (fileset   (map (lambda (jar)
+                                       `(zipfileset (@ (excludes "META-INF/*.SF")
+                                                       (src ,jar))))
+                                     all-jars)))
+                (call-with-output-file "build.xml"
+                  (lambda (port)
+                    (sxml->xml
+                     (pre-post-order
+                      build.xml
+                      `( ;; Remove all zipfileset tags from the "jar" tree and
+                        ;; inject our own tags.
+                        (jar . ,(lambda (tag . kids)
+                                  `(jar ,@(append-map
+                                           (filter (lambda (e)
+                                                     (not (eq? 'zipfileset (car e)))))
+                                           kids)
+                                        ,@fileset)))
+                        ;; Skip the "bundle" target (and the "-post-jar" target
+                        ;; that depends on it), because we don't need it and it
+                        ;; confuses sxml->xml.
+                        (target . ,(lambda (tag . kids)
+                                     (let ((name ((sxpath '(name *text*))
+                                                  (car kids))))
+                                       (if (or (member "bundle" name)
+                                               (member "-post-jar" name))
+                                           '() ; skip
+                                           `(,tag ,@kids)))))
+                        (*default*  . ,(lambda (tag . kids) `(,tag ,@kids)))
+                        (*text*     . ,(lambda (_ txt)
+                                         (match txt
+                                           ;; Remove timestamp.
+                                           ("${TODAY}" "(unknown)")
+                                           (_ txt))))))
+                     port)))
+
+                ;; Build it!
+                (invoke "ant"
+                        (string-append "-Djavac.classpath=" classpath)
+                        "-Dbuild.runtime=true"
+                        "-Dbuild.time=01/01/1970 00:00:00"
+                        "-Djavac.source=1.8"
+                        "-Djavac.target=1.8"
+                        (string-append "-Dtag.short.version="
+                                       #$version)))))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((share (string-append #$output "/share/ksoloti/")))
+                (install-file "dist/Ksoloti.jar" share)
+
+                ;; We do this to ensure that this package retains references to
+                ;; other Java packages' jar files.
+                (install-file "build.xml" share)
+
+                ;; Create a launcher script
+                (mkdir (string-append #$output "/bin"))
+                (let ((target (string-append #$output "/bin/Ksoloti")))
+                  (with-output-to-file target
+                    (lambda ()
+                      (let* ((dir       (string-append #$output "/share/ksoloti"))
+                             (runtime   (search-input-directory inputs
+                                                                "share/ksoloti"))
+                             (toolchain (assoc-ref inputs "cross-toolchain"))
+                             (includes  (string-append
+                                         toolchain
+                                         "/arm-none-eabi/include/:"
+                                         toolchain
+                                         "/arm-none-eabi/include/c++:"
+                                         toolchain
+                                         "/arm-none-eabi/include/c++/arm-none-eabi/armv7e-m"))
+                             (marlin.jar
+                              (search-input-file inputs "/share/java/marlin.jar")))
+                        (display
+                         (string-append "#!" (which "sh") "\n"
+                                        "export CROSS_CPATH=" includes "\n"
+                                        "export CROSS_CPLUS_INCLUDE_PATH=" includes "\n"
+                                        "export CROSS_LIBRARY_PATH="
+                                        toolchain "/arm-none-eabi/lib" "\n"
+                                        (which "java")
+                                        " -Xbootclasspath/a:" marlin.jar
+                                        " -Dsun.java2d.renderer=org.marlin.pisces.MarlinRenderingEngine"
+                                        " -Dsun.java2d.dpiaware=true"
+                                        " -Daxoloti_release=" runtime
+                                        " -Daxoloti_runtime=" runtime
+                                        " -jar " dir "/Ksoloti.jar")))))
+                  (chmod target #o555)))))
+          (add-after 'install 'strip-jar-timestamps
+            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
+    (inputs
+     `(("openjdk" ,openjdk11 "jdk")
+       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-4.9))
+       ("java-autocomplete" ,java-autocomplete)
+       ("java-flatlaf" ,java-flatlaf)
+       ("java-flatlaf-intellij-themes" ,java-flatlaf-intellij-themes)
+       ("java-jgit" ,java-jgit-4.2)
+       ("java-jsch" ,java-jsch)
+       ("java-marlin-renderer" ,java-marlin-renderer)
+       ("java-rsyntaxtextarea" ,java-rsyntaxtextarea)
+       ("java-simple-xml" ,java-simple-xml)
+       ("java-usb4java" ,java-usb4java)
+       ("java-slf4j-api" ,java-slf4j-api)
+       ("ksoloti-runtime" ,ksoloti-runtime)))
+    (native-inputs
+     (list ant zip                      ;for repacking the jar
+           unzip))
+    (description
+     "Ksoloti is an environment for generating and processing digital
+audio. It can be a programmable virtual modular synthesizer, polysynth, drone
+box, sequencer, chord generator, multi effect, sample player, looper, granular
+sampler, MIDI generator/processor, CV or trigger generator, anything in
+between, and more.
+
+The Ksoloti Core is a rework of the discontinued Axoloti Core board.  In
+short, Ksoloti aims for maximum compatibility with the original Axoloti, but
+with some layout changes and added features.
+
+This package provides the patcher application.")))
