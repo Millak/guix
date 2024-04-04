@@ -2025,8 +2025,8 @@ for MySQL.")
     (license license:gpl2+)))
 
 (define-public guile-lmdb
-  (let ((commit "438143ca9ba157faec6f4c2740092c31c733fbfe")
-        (revision "0"))
+  (let ((commit "ea9aa1d4b13e03f9fd23ec73d8884f4fae79666b")
+        (revision "1"))
     (package
       (name "guile-lmdb")
       (version (git-version "0.0.1" revision commit))
@@ -2038,7 +2038,7 @@ for MySQL.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0p43c8ppbhzpi944in0z2jqr7acl8pm7s1x0p5f0idqda6n6f828"))))
+                  "1li92ldyjvbqkhqnkndgw0jk1avkzq9jkbmk8dqiby4na72sxi8k"))))
       (build-system guile-build-system)
       (arguments
        (list
@@ -2059,7 +2059,8 @@ for MySQL.")
 Most names are the same as LMDB ones, except for prefix absence.
 Several conveniences are added on top:
 @itemize
-@item @code{call-with-env-and-txn} and @code{call-with-cursor} wrappers.
+@item @code{call-with-env-and-txn}, @code{call-with-cursor}, and
+@code{call-with-wrapped-cursor} helpers and respective @code{with-} macros.
 @item @code{for-cursor} procedure for cursor iteration.
 @item @code{val} and @code{stat} types.
 @item Error signaling instead of integer return values.
