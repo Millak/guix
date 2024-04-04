@@ -85,11 +85,9 @@
        (sha256
         (base32 "1qffis277wshldr3i939b0r2x3a2mlr53samxqmr2nk1sfm2b4w9"))
        (modules '((guix build utils)))
+       ;; Remove pre-built Java binaries.
        (snippet
-        '(begin
-           ;; Remove pre-built Java binaries.
-           (delete-file-recursively "lib/")
-           #t))))
+        '(delete-file-recursively "lib/"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no check target
