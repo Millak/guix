@@ -1546,13 +1546,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "6.0.0")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1nbpqx7ibm8zsyyy17y5rmfjamwz6mv0sy4drlisap9hald81k83"))
+        (base32 "175k2h039c0b8rsf0fdphmxbpjrszd138j8z9zkhh1kd6pg7bac9"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1574,11 +1574,9 @@ accurately in real time at any rate desired.")
               "-k" (string-append
                     ;; Skip tests that need remote data.
                     "not remote_data"
-                    ;; E astropy.samp.errors.SAMPProxyError:
-                    ;; <SAMPProxyError 1: 'Timeout expired!'>
-                    " and not test_main"
-                    ;; E ModuleNotFoundError: No module named 'wofz'
-                    " and not test_pickle_functional"))
+                    ;; ValueError: The truth value of an array with more than
+                    ;; one element is ambiguous. Use a.any() or a.all()
+                    " and not test_table_comp[t16-t26]"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
@@ -1619,7 +1617,6 @@ accurately in real time at any rate desired.")
            python-h5py
            python-ipython
            python-jplephem
-           python-matplotlib
            python-objgraph
            python-pandas
            python-pyarrow
@@ -1629,21 +1626,23 @@ accurately in real time at any rate desired.")
            python-pytest-mpl
            python-pytest-xdist
            python-scikit-image
-           python-scipy
            python-setuptools-scm
            python-sgp4
            python-skyfield
+           python-threadpoolctl
            python-timezonefinder))
     (inputs
      (list expat wcslib))
     (propagated-inputs
      (list python-astropy-iers-data
            python-configobj
+           python-matplotlib
            python-numpy
            python-packaging
            python-ply
            python-pyerfa
-           python-pyyaml))
+           python-pyyaml
+           python-scipy))
     (home-page "https://www.astropy.org/")
     (synopsis "Core package for Astronomy in Python")
     (description
