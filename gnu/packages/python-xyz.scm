@@ -6758,7 +6758,7 @@ bookmarks using a declarative input in the form of a markdown file.")
      (list
       #:test-flags  ; disabled to avoid having to depend on ipython/jupyter
       #~(list "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-psutil))
     (home-page "https://joblib.readthedocs.io/")
     (synopsis "Using Python functions as pipeline jobs")
