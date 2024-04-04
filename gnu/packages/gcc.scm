@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2023 Andreas Enge <andreas@enge.fr>
@@ -969,10 +969,18 @@ using compilers other than GCC."
                (if (and (target-ppc64le?)
                        (version>=? version "11")
                        (not (version>=? version "12")))
-                   #~((add-after 'unpack 'patch-powerpc
-                        (lambda* (#:key inputs #:allow-other-keys)
-                          (invoke "patch" "--force" "-p1" "-i"
-                                  (assoc-ref inputs "powerpc64le-patch")))))
+                   ;; TODO: Drop the 'else' branch below on next rebuild
+                   ;; cycle.
+                   (if (%current-target-system)
+                       #~((add-after 'unpack 'patch-powerpc ;correct
+                            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                              (invoke "patch" "--force" "-p1" "-i"
+                                      (assoc-ref (or native-inputs inputs)
+                                                 "powerpc64le-patch")))))
+                       #~((add-after 'unpack 'patch-powerpc ;wrong
+                            (lambda* (#:key inputs #:allow-other-keys)
+                              (invoke "patch" "--force" "-p1" "-i"
+                                      (assoc-ref inputs "powerpc64le-patch"))))))
                    '()))
           ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
           (add-before 'chdir 'fix-rs6000-libdir
