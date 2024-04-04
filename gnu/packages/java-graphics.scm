@@ -21,6 +21,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix modules)
   #:use-module (guix utils)
@@ -148,6 +149,73 @@
 ascii art drawings that contain characters that resemble lines like @samp{|}
 @samp{/} @samp{-}), into proper bitmap graphics.")
     (license license:lgpl3)))
+
+(define-public java-flatlaf
+  (package
+    (name "java-flatlaf")
+    (version "3.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/JFormDesigner/FlatLaf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qr7g8s5m89q5k31mnxk18lflz3l2hid4i055mim3b0m4vjs40pi"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each
+                 delete-file
+                 (find-files "flatlaf-core/src/main/resources/com/formdev/flatlaf/natives/"
+                             ".*")))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;XXX requires junit5
+      #:jar-name "flatlaf.jar"
+      #:source-dir '(list "flatlaf-core/src/main/java")
+      #:test-dir '(list "flatlaf-core/src/test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'build-native-code
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((jdk (assoc-ref inputs "jdk"))
+                     (suffix #$(match (%current-system)
+                                 ("i686-linux" "i686")
+                                 ("armhf-linux" "armhf")
+                                 ("aarch64-linux" "aarch64")
+                                 ("x86_64-linux" "x86_64")
+                                 (_ "generic")))
+                     (filename
+                      (string-append "libflatlaf-linux-" suffix ".so"))
+                     (target-dir
+                      (string-append (getcwd)
+                                     "/flatlaf-core/src/main/resources/com/formdev/flatlaf/natives")))
+                (with-directory-excursion "flatlaf-natives/flatlaf-natives-linux/"
+                  (invoke "gcc" "-shared" "-O3" "-fPIC"
+                          "src/main/cpp/ApiVersion.cpp"
+                          "src/main/cpp/X11WmUtils.cpp"
+                          "-Isrc/main/headers"
+                          (string-append "-I" jdk "/include")
+                          (string-append "-I" jdk "/include/linux")
+                          "-o" filename)
+                  (install-file filename target-dir)))))
+          (add-before 'build 'copy-resources
+            (lambda _
+              (copy-recursively "flatlaf-core/src/main/resources"
+                                "build/classes"))))))
+    (inputs (list libx11 libxt))
+    (home-page "https://www.formdev.com/flatlaf/")
+    (synopsis "Flat Look and Feel for Java Swing applications")
+    (description "FlatLaf is a cross-platform Look and Feel for Java Swing
+desktop applications.  It looks almost flat (no shadows or gradients), clean,
+simple and elegant.  FlatLaf comes with Light, Dark, IntelliJ and Darcula
+themes, scales on HiDPI displays and runs on Java 8 or newer.
+
+The look is heavily inspired by Darcula and IntelliJ themes from IntelliJ IDEA
+2019.2+ and uses almost the same colors and icons.")
+    (license license:asl2.0)))
 
 (define-public java-piccolo2d-core
   (package
