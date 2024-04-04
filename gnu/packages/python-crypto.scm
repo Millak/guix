@@ -853,7 +853,7 @@ PKCS#12, PKCS#5, X.509 and TSP.")
            (lambda _
              (setenv "SODIUM_INSTALL" "system"))))))
     (native-inputs
-     (list python-hypothesis python-pytest))
+     (list python-hypothesis python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-cffi python-six libsodium))
     (home-page "https://github.com/pyca/pynacl/")
