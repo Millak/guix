@@ -2088,7 +2088,9 @@ Amazon S3 compatible object storage server.")
     (native-inputs
      (list python-bottle
            python-flaky
-           python-pytest))
+           python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
      (list curl gnutls))
     (home-page "http://pycurl.io/")
