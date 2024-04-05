@@ -14,6 +14,7 @@
 # Copyright © 2023 Andrew Tropin <andrew@trop.in>
 # Copyright © 2020 David A. Redick <david.a.redick@gmail.com>
 # Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 #
 # This file is part of GNU Guix.
 #
@@ -613,6 +614,7 @@ sys_create_init_profile()
     cat <<"EOF" > /etc/profile.d/zzz-guix.sh
 # Explicitly initialize XDG base directory variables to ease compatibility
 # with Guix System: see <https://issues.guix.gnu.org/56050#3>.
+export XCURSOR_PATH="${XCURSOR_PATH:-/usr/local/share/icons:/usr/share/icons}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
