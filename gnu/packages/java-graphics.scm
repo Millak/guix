@@ -187,6 +187,24 @@ ascii art drawings that contain characters that resemble lines like @samp{|}
                                  ("aarch64-linux" "aarch64")
                                  ("x86_64-linux" "x86_64")
                                  (_ "generic")))
+                     (lib #$(match (%current-system)
+                              ("i686-linux"
+                               "/lib/i386")
+                              ("x86_64-linux"
+                               "/lib/amd64")
+                              ("armhf-linux"
+                               "/lib/arm")
+                              ("aarch64-linux"
+                               "/lib/aarch64")
+                              ("powerpc-linux"
+                               "/lib/ppc")
+                              ;; We need a catch-all, dropping
+                              ;; '-linux' works in most cases.
+                              (_
+                               (string-append
+                                "/lib/"
+                                (string-drop-right
+                                 (%current-system) 6)))))
                      (filename
                       (string-append "libflatlaf-linux-" suffix ".so"))
                      (target-dir
@@ -197,6 +215,8 @@ ascii art drawings that contain characters that resemble lines like @samp{|}
                           "src/main/cpp/ApiVersion.cpp"
                           "src/main/cpp/X11WmUtils.cpp"
                           "-Isrc/main/headers"
+                          "-ljawt"
+                          (string-append "-L" jdk lib)
                           (string-append "-I" jdk "/include")
                           (string-append "-I" jdk "/include/linux")
                           "-o" filename)
