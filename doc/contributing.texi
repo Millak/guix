@@ -203,6 +203,10 @@ example, the @code{origin} record) has changed, and all of guix needs
 to be recompiled to take that change into account.  To do so, run
 @command{make clean-go} followed by @command{make}.
 
+Should @command{make} fail with an Automake error message after
+updating, you need to repeat the steps outlined in this section,
+commencing with @command{./bootstrap}.
+
 @node Running Guix Before It Is Installed
 @section Running Guix Before It Is Installed
 
