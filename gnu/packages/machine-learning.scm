@@ -541,8 +541,16 @@ Performance is achieved by using the LLVM JIT compiler.")
       (build-system cmake-build-system)
       (arguments
        (list
-        #:configure-flags
-        '(list "-DLLAMA_BLAS=ON" "-DLLAMA_BLAS_VENDOR=OpenBLAS")
+        #:configure-flags #~'("-DLLAMA_BLAS=ON"
+                              "-DLLAMA_BLAS_VENDOR=OpenBLAS"
+
+                              "-DLLAMA_NATIVE=OFF" ;no '-march=native'
+                              "-DLLAMA_FMA=OFF"    ;and no '-mfma', etc.
+                              "-DLLAMA_AVX2=OFF"
+                              "-DLLAMA_AVX512=OFF"
+                              "-DLLAMA_AVX512_VBMI=OFF"
+                              "-DLLAMA_AVX512_VNNI=OFF")
+
         #:modules '((ice-9 textual-ports)
                     (guix build utils)
                     ((guix build python-build-system) #:prefix python:)
@@ -580,6 +588,7 @@ Performance is achieved by using the LLVM JIT compiler.")
       (native-inputs (list pkg-config))
       (propagated-inputs
        (list python-numpy python-pytorch python-sentencepiece openblas))
+      (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
       (home-page "https://github.com/ggerganov/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
       (description "This package provides a port to Facebook's LLaMA collection
