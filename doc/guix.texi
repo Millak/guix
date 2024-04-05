@@ -696,12 +696,11 @@ to join!  @xref{Contributing}, for information about how you can help.
 We recommend the use of this
 @uref{https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh,
 shell installer script} to install Guix on top of a running GNU/Linux system,
-thereafter called a @dfn{foreign distro}.@footnote{This section is concerned
+thereafter called a @dfn{foreign distro}@footnote{This section is concerned
 with the installation of the package manager, which can be done on top of a
 running GNU/Linux system.  If, instead, you want to install the complete GNU
-operating system, @pxref{System Installation}.} The script automates the
-download, installation, and initial configuration of Guix.  It should be run
-as the root user.
+operating system, @pxref{System Installation}.}.  @xref{Binary
+Installation}, for more information.
 @end quotation
 
 @cindex foreign distro
@@ -757,6 +756,22 @@ wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
 chmod +x guix-install.sh
 ./guix-install.sh
 @end example
+
+The script automates the download, installation, and initial
+configuration of Guix, interactively offering various configuration
+options.
+
+@cindex uninstalling Guix
+@cindex uninstallation, of Guix
+Should you eventually want to uninstall Guix, run the same script with
+the @option{--uninstall} flag:
+
+@example
+./guix-install.sh --uninstall
+@end example
+
+With @option{--uninstall}, the script irreversibly deletes all the Guix
+files, configuration, and services.
 
 If you're running Debian or a derivative such as Ubuntu, you can instead
 install the package (it might be a version older than @value{VERSION}

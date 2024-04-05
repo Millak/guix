@@ -12,6 +12,7 @@
 # Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2022 Prafulla Giri <prafulla.giri@protonmail.com>
 # Copyright © 2023 Andrew Tropin <andrew@trop.in>
+# Copyright © 2020 David A. Redick <david.a.redick@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -70,7 +71,9 @@ REQUIRE=(
     "chmod"
     "uname"
     "groupadd"
+    "groupdel"
     "useradd"
+    "userdel"
     "tail"
     "tr"
     "xz"
@@ -191,6 +194,7 @@ chk_term()
                 *)
                     ERR="[ FAIL ] "
                     PAS="[ PASS ] "
+                    WAR="[ WARN ] "
                     ;;
             esac
         fi
@@ -377,6 +381,18 @@ sys_create_store()
     _msg "${PAS}activated root profile at ${GUIX_PROFILE}"
 }
 
+sys_delete_store()
+{
+    _msg "${INF}removing /var/guix"
+    rm -rf /var/guix
+
+    _msg "${INF}removing /gnu"
+    rm -rf /gnu
+
+    _msg "${INF}removing ${ROOT_HOME}/.config/guix"
+    rm -rf ${ROOT_HOME}/.config/guix
+}
+
 sys_create_build_user()
 { # Create the group and user accounts for build users.
 
@@ -409,6 +425,16 @@ sys_create_build_user()
             _msg "${PAS}user added <guixbuilder${i}>"
         fi
     done
+}
+
+sys_delete_build_user()
+{
+    for i in $(seq -w 1 10); do
+        userdel -f guixbuilder${i}
+    done
+
+    _msg "${INF}delete group guixbuild"
+    groupdel -f guixbuild
 }
 
 sys_enable_guix_daemon()
@@ -498,6 +524,65 @@ sys_enable_guix_daemon()
     for i in "${var_guix}"/share/info/*; do
         ln -sf "$i" "$info_path"
     done
+}
+
+sys_delete_guix_daemon()
+{ # Disabled, stop and remove the various guix daemons.
+
+    local info_path
+    local local_bin
+    local var_guix
+
+    _debug "--- [ $FUNCNAME ] ---"
+
+    info_path="/usr/local/share/info"
+    local_bin="/usr/local/bin"
+
+
+    case "$INIT_SYS" in
+        upstart)
+            _msg "${INF}stopping guix-daemon"
+            stop guix-daemon
+            _msg "${INF}removing guix-daemon"
+            rm /etc/init/guix-daemon.conf
+            ;;
+
+        systemd)
+            _msg "${INF}disabling guix-daemon"
+            systemctl disable guix-daemon
+            _msg "${INF}stopping guix-daemon"
+            systemctl stop guix-daemon
+            _msg "${INF}removing guix-daemon"
+            rm -f /etc/systemd/system/guix-daemon.service
+
+            if [ -x /etc/systemd/system/gnu-store.mount ]; then
+                _msg "${INF}disabling gnu-store.mount"
+                systemctl disable gnu-store.mount
+                _msg "${INF}stopping gnu-store.mount"
+                systemctl stop gnu-store.mount
+                _msg "${INF}removing gnu-store.mount"
+                rm -f /etc/systemd/system/gnu-store.mount
+            fi
+            systemctl daemon-reload
+            ;;
+
+        sysv-init)
+            update-rc.d guix-daemon disable
+            service guix-daemon stop
+            rm -rf /etc/init.d/guix-daemon
+            ;;
+        NA|*)
+            _msg "${ERR}unsupported init system; disable, stop and remove the daemon manually:"
+            echo "  ${ROOT_HOME}/.config/guix/current/bin/guix-daemon --build-users-group=guixbuild"
+            ;;
+    esac
+
+
+    _msg "${INF}removing $local_bin/guix"
+    rm -f "$local_bin"/guix
+
+    _msg "${INF}removing $info_path/guix*"
+    rm -f "$info_path"/guix*
 }
 
 sys_authorize_build_farms()
@@ -623,8 +708,29 @@ sys_maybe_setup_selinux()
     restorecon -R /gnu /var/guix
 }
 
+sys_delete_init_profile()
+{
+    _msg "${INF}removing /etc/profile.d/guix.sh"
+    rm -f /etc/profile.d/guix.sh
+}
+
+sys_delete_user_profiles()
+{
+    _msg "${INF}removing ${ROOT_HOME}/.guix-profile"
+    rm -f ${ROOT_HOME}/.guix-profile
+    rm -rf ${ROOT_HOME}/.cache/guix
+
+    _msg "${INF}removing .guix-profile, .cache/guix and .config/guix of all /home users"
+    for user in `ls -1 /home`; do
+        rm -f /home/$user/.guix-profile
+        rm -rf /home/$user/.cache/guix
+        rm -rf /home/$user/.config/guix
+    done
+}
+
 welcome()
 {
+    local uninstall_flag="$1"
     local char
     cat<<"EOF"
     ░░░                                     ░░░
@@ -647,10 +753,17 @@ welcome()
    | |__| | |\  | |__| | | |__| | |_| | |>  <
     \_____|_| \_|\____/   \_____|\__,_|_/_/\_\
 
-This script installs GNU Guix on your system
-
 https://www.gnu.org/software/guix/
 EOF
+
+    if [ '--uninstall' = "$uninstall_flag" ]; then
+        echo "${WARN}This script will uninstall GNU Guix from your system"
+        echo "To install, run this script with no parameters."
+    else
+        echo "This script installs GNU Guix on your system"
+        echo "To uninstall, pass in the '--uninstall' parameter."
+    fi
+
     # Don't use ‘read -p’ here!  It won't display when run non-interactively.
     echo -n "Press return to continue..."$'\r'
     if ! read -r char; then
@@ -665,7 +778,7 @@ EOF
     fi
 }
 
-main()
+main_install()
 {
     local tmp_path
     welcome
@@ -714,5 +827,54 @@ main()
     # Required to source /etc/profile in desktop environments.
     _msg "${INF}Please log out and back in to complete the installation."
  }
+
+main_uninstall()
+{
+    welcome --uninstall
+    _msg "Starting uninstall process ($(date))"
+
+    chk_term
+    chk_require "${REQUIRE[@]}"
+    # it's ok to leave the gpg key
+    chk_init_sys
+    chk_sys_arch
+
+    _msg "${INF}system is ${ARCH_OS}"
+
+    # stop the build, package system.
+    sys_delete_guix_daemon
+    # stop people from accessing their profiles.
+    sys_delete_user_profiles
+    # kill guix off all the guts of guix
+    sys_delete_store
+    # clean up the system
+    sys_delete_init_profile
+    sys_delete_build_user
+
+    # these directories are created on the fly during usage.
+    _msg "${INF}removing /etc/guix"
+    rm -rf /etc/guix
+    _msg "${INF}removing /var/log/guix"
+    rm -rf /var/log/guix
+
+    _msg "${PAS}Guix has successfully been uninstalled!"
+}
+
+main()
+{
+    # expect no parameters
+    # or '--uninstall'
+    if [ 0 -eq $# ]; then
+        main_install
+    else
+        local uninstall_flag="$1"
+        if [ '--uninstall' = "${uninstall_flag}" ]; then
+            main_uninstall
+        else
+            echo "unsupported parameters: $@"
+            exit 1
+        fi
+    fi
+}
 
 main "$@"
