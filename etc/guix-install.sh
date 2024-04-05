@@ -635,13 +635,13 @@ export INFOPATH="$_GUIX_PROFILE/share/info:$INFOPATH"
 # GUIX_PROFILE: User's default profile and home profile
 GUIX_PROFILE="$HOME/.guix-profile"
 [ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
-[ -L "$GUIX_PROFILE" ] || \
-GUIX_LOCPATH="$GUIX_PROFILE/lib/locale:${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
+[ -L "$GUIX_PROFILE" ] && \
+GUIX_LOCPATH="$GUIX_PROFILE/lib/locale${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
 
 GUIX_PROFILE="$HOME/.guix-home/profile"
 [ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
-[ -L "$GUIX_PROFILE" ] || \
-GUIX_LOCPATH="$GUIX_PROFILE/lib/locale:${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
+[ -L "$GUIX_PROFILE" ] && \
+GUIX_LOCPATH="$GUIX_PROFILE/lib/locale${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
 
 export GUIX_LOCPATH
 
