@@ -191,6 +191,7 @@
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -598,6 +599,64 @@ you create custom user interfaces for your MIDI hardware.")
       (license (list license:gpl2+
                      license:gpl3       ;JUCE
                      license:bsd-3)))))
+
+(define-public qmmp
+  (package
+    (name "qmmp")
+    (version "2.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://qmmp.ylsoftware.com/files/"
+                           (version-major+minor version) "/"
+                           "qmmp-" version ".tar.bz2"))
+       (sha256
+        (base32 "1jpflf17198ascaqmxla6ajb69bnj8zzngk32vdyyw5443kshylj"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f)) ; there are no tests
+    (inputs
+     ;; Missing optional inputs:
+     ;; libsidplay2 ; input plugin
+     ;; projectm ; visualization plugin
+     (list alsa-lib
+           curl
+           enca
+           faad2
+           ffmpeg
+           flac
+           jack-2
+           libarchive
+           libbs2b
+           libcddb
+           libcdio-paranoia
+           libgme
+           libmad
+           libshout
+           libsndfile
+           libvorbis
+           libxmp
+           opusfile
+           opus
+           pipewire
+           pulseaudio
+           qtmultimedia
+           qttools
+           soxr
+           taglib
+           wavpack
+           wildmidi))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://qmmp.ylsoftware.com")
+    (synopsis "Qt-based music player")
+    (description "Music player with support for most common audio formats, and
+plugins for various additional features such as visualization, effects and
+online service integration.  In addition to a Qt-based interface it supports
+Winamp/XMMS skins.")
+    (license (list license:gpl2+ ; code
+                   license:cc-by-sa4.0)))) ; src/plugins/Ui/skinned/glare
 
 (define-public strawberry
   (package
