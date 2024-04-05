@@ -502,17 +502,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 ;; The current "mainline" kernel.
 
-(define-public linux-libre-6.8-version "6.8.2")
+(define-public linux-libre-6.8-version "6.8.4")
 (define-public linux-libre-6.8-gnu-revision "gnu")
 (define deblob-scripts-6.8
   (linux-libre-deblob-scripts
    linux-libre-6.8-version
    linux-libre-6.8-gnu-revision
    (base32 "1kqwcm8baq3zx1z8jrgnvm9yps3y9jbf4pv1pbqqprpdscgl9089")
-   (base32 "1bh8mwwarzp5l9bwa6235qqqmm0i14wix6lfs6wi7nszia5k9j0a")))
+   (base32 "0j9pj370zismhzw18iyx3lwcby3l3160xgpmh5xa8i8cr38r2z5h")))
 (define-public linux-libre-6.8-pristine-source
   (let ((version linux-libre-6.8-version)
-        (hash (base32 "013xs37cnan72baqvmn2qrcbs5bbcv1gaafrcx3a166gbgc25hws")))
+        (hash (base32 "0qwywy89an1w0yvs5957kqyv74mwgxady521w2lmyq00zjaw9pnm")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.8)))
