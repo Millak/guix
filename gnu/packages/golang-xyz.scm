@@ -33,6 +33,7 @@
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2558,6 +2559,30 @@ output format is customizable and supports different logging backends like
 syslog, file and memory.  Multiple backends can be utilized with different log
 levels per backend and logger.")
     (license license:bsd-3)))
+
+(define-public go-github-com-openprinting-goipp
+  (package
+    (name "go-github-com-openprinting-goipp")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenPrinting/goipp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p05dk37l393byvjanvi3ipqcax320vf3qynlzazm7czzzlw448h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/OpenPrinting/goipp"))
+    (home-page "https://github.com/OpenPrinting/goipp")
+    (synopsis "IPP core protocol implementation")
+    (description
+      "The goipp package implements the IPP core protocol, as defined by
+@@url{https://rfc-editor.org/rfc/rfc8010.html,RFC 8010}.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-orisano-pixelmatch
   (package
