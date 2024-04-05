@@ -1869,6 +1869,29 @@ of @code{sync.Map} to Go versions below 1.9 and a cancellable Goroutine with
 explicit ownership.")
     (license license:asl2.0)))
 
+(define-public go-github-com-modern-go-reflect2
+  (package
+    (name "go-github-com-modern-go-reflect2")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/modern-go/reflect2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05a89f9j4nj8v1bchfkv2sy8piz746ikj831ilbp54g8dqhl8vzr"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/modern-go/reflect2"))
+    (home-page "https://github.com/modern-go/reflect2")
+    (synopsis "Cheaper reflect API")
+    (description
+     "This library provides a reflect api for Go programs
+without the runtime cost of the standard library reflect.Value.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mreiferson-go-options
   (package
     (name "go-github-com-mreiferson-go-options")
