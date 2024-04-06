@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2022 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 cage <cage-dev@twistfold.it>
@@ -1360,6 +1361,35 @@ environments, where no keyboard is available.")
 It also contains the Plan 9 libbio, libregexp, libfmt and libutf libraries.")
       (license (list license:expat ;modifications
                      license:lpl1.02))))) ;original plan9 code
+
+(define-public xssstate
+  (package
+    (name "xssstate")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dl.suckless.org/tools/xssstate-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "04b03jz38pn5qhddg8a9hh01qqzrrdjvsq09qrxj9sx8lq2gbdn4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; no tests
+      #:make-flags #~(list (string-append "CC="
+                                          #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs (list libxscrnsaver))
+    (home-page "https://tools.suckless.org/x/xssstate/")
+    (synopsis "Simple tool to retrieve the X screensaver state")
+    (description
+     "A utility to retrieve the state of the X screensaver.  These
+states include the idle time, the screensaver state and the length of time
+until the screensaver should be activated.")
+    (license license:x11)))
 
 (define-public 9yacc
   (package
