@@ -20956,6 +20956,22 @@ intelligently transliterating them.  It supports Emoji and Chinese.")
 procedural macros.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-devise-0.3
+  (package
+    (inherit rust-devise-0.4)
+    (name "rust-devise")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "devise" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15dmibnykic2a1ndi66shyvxmpfysnhf05lg2iv8871g0w5miish"))))
+    (arguments
+     `(#:cargo-inputs (("rust-devise-codegen" ,rust-devise-codegen-0.3)
+                       ("rust-devise-core" ,rust-devise-core-0.3))))))
+
 (define-public rust-devise-0.2
   (package
     (inherit rust-devise-0.4)
