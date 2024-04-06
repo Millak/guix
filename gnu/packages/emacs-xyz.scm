@@ -2723,7 +2723,13 @@ provides an optional IDE-like error list.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((unzip (search-input-file inputs "/bin/unzip")))
                   (substitute* "fb2-reader.el"
-                    (("unzip") unzip))))))))
+                    (("unzip") unzip)))))
+            (add-after 'unpack 'compatibility-with-recent-buttercup
+              (lambda _
+                (emacs-batch-edit-file "tests/test-fb2-reader.el"
+                  '(progn
+                    (insert ";;; -*-lexical-binding:t-*-")
+                    (basic-save-buffer))))))))
       (inputs (list unzip))
       (native-inputs
        (list emacs-async emacs-buttercup emacs-dash emacs-s))
