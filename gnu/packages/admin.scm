@@ -3001,13 +3001,13 @@ provides the following commands:
 (define-public ansible
   (package
     (name "ansible")
-    (version "8.5.0")
+    (version "10.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible" version))
        (sha256
-        (base32 "0bazj5h12wraf30bb2schzwk553y20n9vh45km4b5kgmvadm0z1j"))))
+        (base32 "0apj783acx4jzkf3bnibn4y5jc6jd8ly7l0rdqq8f1jpgxal933x"))))
     (build-system python-build-system)
     (propagated-inputs (list ansible-core))
     ;; The Ansible collections are found by ansible-core via the Python search
