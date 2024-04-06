@@ -61,6 +61,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages golang) ; for automatic-component-toolkit
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
