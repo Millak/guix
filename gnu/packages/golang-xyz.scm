@@ -1787,6 +1787,32 @@ implementing features like:
     (description "This package provides an idiomatic Go retry module.")
     (license license:expat)))
 
+(define-public go-github-com-mattn-go-colorable
+  (package
+    (name "go-github-com-mattn-go-colorable")
+    (version "0.1.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-colorable")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05hl2ddp67p5kj3ix4zzqqjh4fan4ban3vgw8f98simwigs3q41j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-colorable"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-isatty))
+    (home-page "https://github.com/mattn/go-colorable")
+    (synopsis "Handle ANSI color escapes on Windows")
+    (description
+     "This package provides @code{colorable}, a module that makes it possible
+to handle ANSI color escapes on Windows.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-go-isatty
   (package
     (name "go-github-com-mattn-go-isatty")

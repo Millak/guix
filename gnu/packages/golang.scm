@@ -4351,31 +4351,6 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
     (description "This package provides a Golang Matrix client.")
     (license license:asl2.0)))
 
-(define-public go-github-com-mattn-go-colorable
-  (package
-    (name "go-github-com-mattn-go-colorable")
-    (version "0.1.13")
-    (home-page "https://github.com/mattn/go-colorable")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "05hl2ddp67p5kj3ix4zzqqjh4fan4ban3vgw8f98simwigs3q41j"))))
-    (build-system go-build-system)
-    (propagated-inputs
-     (list go-github-com-mattn-go-isatty))
-    (arguments
-     '(#:import-path "github.com/mattn/go-colorable"))
-    (synopsis "Handle ANSI color escapes on Windows")
-    (description "This package provides @code{colorable}, a module that
-makes it possible to handle ANSI color escapes on Windows.")
-    (license license:expat)))
-
 (define-public go-github-com-mattn-go-pointer
   (let ((commit "a0a44394634f41e4992b173b24f14fecd3318a67")
         (revision "1"))

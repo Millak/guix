@@ -70,6 +70,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
