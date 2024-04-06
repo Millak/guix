@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -642,23 +643,20 @@ calls.")
         (base32 "1zf5w6338y0s0pf0jlpbqzlbxbx39s93z0bmdaa0cxkxs8cz8xij"))))
     (build-system go-build-system)
     (arguments
-     `(#:go ,go-1.17
-       #:import-path "github.com/oz/tz"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key import-path tests? #:allow-other-keys)
-             (when tests?
-               (invoke "go" "test" "-cover" import-path)))))))
+     (list
+      #:go go-1.17
+      #:install-source? #f
+      #:import-path "github.com/oz/tz"))
     (inputs
-     `(("github.com/charmbracelet/bubbletea" ,go-github-com-charmbracelet-bubbletea)
-       ("github.com/tkuchiki/go-timezone" ,go-github-com-tkuchiki-go-timezone)
-       ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)))
+     (list go-github-com-charmbracelet-bubbletea
+           go-github-com-muesli-termenv
+           go-github-com-tkuchiki-go-timezone))
     (home-page "https://github.com/oz/tz")
     (synopsis "TUI time zone helper")
     (description
-"@command{tz} helps you schedule things across time zones.  It is an interactive
-TUI program that displays time across a few time zones of your choosing.")
+     "@command{tz} helps you schedule things across time zones.  It is an
+interactive TUI program that displays time across a few time zones of your
+choosing.")
     (license gpl3+)))
 
 (define-public countdown
