@@ -24463,10 +24463,42 @@ polkit with the actions from @code{gnome-settings-daemon}.
 
 @deftp {Data Type} gnome-desktop-configuration
 Configuration record for the GNOME desktop environment.
+Available @code{gnome-desktop-configuration} fields are:
 
 @table @asis
-@item @code{gnome} (default: @code{gnome})
-The GNOME package to use.
+@item @code{core-services} (type: list-of-packages)
+A list of packages that the GNOME Shell and applications may rely on.
+
+@item @code{shell} (type: list-of-packages)
+A list of packages that constitute the GNOME Shell, without
+applications.
+
+@item @code{utilities} (type: list-of-packages)
+A list of packages that serve as applications to use on top of the GNOME Shell.
+
+@item @code{gnome} (type: maybe-package)
+This field used to be the only configuration point and specified
+a GNOME meta-package to install system-wide.  Since the meta-package
+itself provides neither sources nor the actual packages and is only
+used to propagate them, this field is deprecated.
+
+@item @code{extra-packages} (type: list-of-packages)
+A list of GNOME-adjacent packages to also include.  This field is
+intended for users to add their own packages to their GNOME experience.
+Note, that it already includes some packages that are considered
+essential by some (most?) GNOME users.
+
+@item @code{udev-ignorelist} (default: @code{()}) (type: list-of-strings)
+A list of regular expressions denoting udev rules or hardware file names
+provided by any package that should not be installed.  By default, every
+udev rule and hardware file specified by any package referenced in the
+other fields are installed.
+
+@item @code{polkit-ignorelist} (default: @code{()}) (type: list-of-strings)
+A list of regular expressions denoting polkit rules provided by any
+package that should not be installed.  By default, every polkit rule
+added by any package referenced in the other fields are installed.
+
 @end table
 @end deftp
 
