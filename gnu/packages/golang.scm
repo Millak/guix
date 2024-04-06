@@ -9186,31 +9186,6 @@ parser.")
 @url{https://unicode.org/reports/tr29/, Unicode Standard Annex #29}.")
     (license license:expat)))
 
-(define-public go-github-com-mattn-go-runewidth
-  (package
-    (name "go-github-com-mattn-go-runewidth")
-    (version "0.0.14")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mattn/go-runewidth")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1iaqw5pd7f4f2xz37540kp0828p2820g4vxx3hz089hwl331sx1v"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "github.com/mattn/go-runewidth"))
-    (propagated-inputs
-     (list go-github-com-rivo-uniseg))
-    (home-page "https://github.com/mattn/go-runewidth")
-    (synopsis "Rune width implementation for Go")
-    (description
-     "This package provides functions to get the fixed width of a character or
-string.")
-    (license license:expat)))
-
-
 (define-public go-github-com-charmbracelet-bubbletea
   (package
     (name "go-github-com-charmbracelet-bubbletea")
