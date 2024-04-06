@@ -148,7 +148,11 @@ DOT_OPTIONS =					\
 	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
 
 .dot.pdf:
-	$(AM_V_DOT)$(DOT) -Tpdf $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_V_DOT)set -e; export TZ=UTC0;				\
+	    $(DOT) -Tpdf $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_V_at)sed -ri					\
+	    -e 's,(/CreationDate \(D:).*\),\119700101000000),'	\
+	    "$(srcdir)/$@.tmp"
 	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
 
 .dot.eps:
