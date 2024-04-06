@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -1919,6 +1920,30 @@ string.")
     (synopsis "Parse lines into shell words")
     (description "This package parses text into shell arguments.  Based on
 the @code{cpan} module @code{Parse::CommandLine}.")
+    (license license:expat)))
+
+(define-public go-github-com-mattn-go-sqlite3
+  (package
+    (name "go-github-com-mattn-go-sqlite3")
+    (version "1.14.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-sqlite3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04anvqkc37mmc3z1dy4xfa6cas67zlxnnab0ywii7sylk864mhxz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-sqlite3"))
+    (home-page "https://github.com/mattn/go-sqlite3")
+    (synopsis "Sqlite3 driver for Go")
+    (description
+     "This package provides a Sqlite3 driver for Go using
+@code{database/sql}.")
     (license license:expat)))
 
 (define-public go-github-com-mattn-go-zglob

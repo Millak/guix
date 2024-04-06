@@ -6601,28 +6601,6 @@ improved and cleaner API.")
 Proxy functionality.")
     (license license:expat)))
 
-(define-public go-github-com-mattn-go-sqlite3
-  (package
-    (name "go-github-com-mattn-go-sqlite3")
-    (version "1.14.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mattn/go-sqlite3")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04anvqkc37mmc3z1dy4xfa6cas67zlxnnab0ywii7sylk864mhxz"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/mattn/go-sqlite3"))
-    (home-page "https://github.com/mattn/go-sqlite3")
-    (synopsis "Sqlite3 driver for Go")
-    (description "This package provides a Sqlite3 driver for Go using
-@code{database/sql}.")
-    (license license:expat)))
-
 (define-public go-github-com-bits-and-blooms-bitset
   (package
     (name "go-github-com-bits-and-blooms-bitset")
