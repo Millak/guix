@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,7 +90,7 @@
     '("XDG_CONFIG_DIRS" suffix directory "/etc/xdg")
     `("QT_PLUGIN_PATH" prefix directory
       ,(format #f "/lib/qt~a/plugins" qt-major-version))
-    `(,(if (>= 6 (string->number qt-major-version))
+    `(,(if (>= (string->number qt-major-version) 6)
            "QML_IMPORT_PATH"
            "QML2_IMPORT_PATH")
       prefix directory ,(format #f "/lib/qt~a/qml" qt-major-version))
