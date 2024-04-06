@@ -21047,6 +21047,26 @@ procedural macros.")
 procedural macros.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-devise-core-0.3
+  (package
+    (inherit rust-devise-core-0.4)
+    (name "rust-devise-core")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "devise_core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l00qiih4z14ai0c3s16nlvw0kv4p07ygi6a0ms0knc78xpz87l4"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-proc-macro2-diagnostics" ,rust-proc-macro2-diagnostics-0.9)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-devise-core-0.2
   (package
     (inherit rust-devise-core-0.4)
