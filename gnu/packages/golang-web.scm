@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
@@ -1187,6 +1188,40 @@ Microsoft AD PAC authorization data.")
      "This package implements JMESPath, a query language for JSON.  It
 transforms one JSON document into another through a JMESPath expression.")
     (license license:asl2.0)))
+
+(define-public go-github-com-json-iterator-go
+  (package
+    (name "go-github-com-json-iterator-go")
+    (version "1.1.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/json-iterator/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c8f0hxm18wivx31bs615x3vxs2j3ba0v6vxchsjhldc8kl311bz"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/json-iterator/go"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-google-gofuzz
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-modern-go-concurrent
+           go-github-com-modern-go-reflect2))
+    (home-page "https://github.com/json-iterator/go")
+    (synopsis "High-performance replacement for Golang @code{encoding/json}")
+    (description
+     "This package implements encoding and decoding of JSON as defined in
+@uref{https://rfc-editor.org/rfc/rfc4627.html,RFC 4627} and provides
+interfaces with identical syntax of standard lib encoding/json.  Converting
+from encoding/json to jsoniter is no more than replacing the package with
+jsoniter and variable type declarations (if any).  jsoniter interfaces gives
+100% compatibility with code using standard lib.")
+    (license license:expat)))
 
 (define-public go-github-com-julienschmidt-httprouter
   (package
