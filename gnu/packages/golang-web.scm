@@ -1292,14 +1292,8 @@ router.")
       (arguments
        (list
         #:import-path "github.com/multiformats/go-multiaddr"))
-      (native-inputs
-       (list go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-mr-tron-base58
-             go-github-com-multiformats-go-multihash
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
+      (propagated-inputs
+       (list go-github-com-multiformats-go-multihash))
       (home-page "https://github.com/multiformats/go-multiaddr")
       (synopsis "Composable and future-proof network addresses")
       (description
