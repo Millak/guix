@@ -2715,8 +2715,7 @@ provides an optional IDE-like error list.")
        (list
         #:tests? #t
         #:test-command
-        #~(list "emacs" "-Q" "--batch" "-L" "."
-                "--eval" "(load-file \"tests/test-fb2-reader.el\")")
+        #~(list "buttercup" "-L" ".")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'qualify-paths
@@ -2724,12 +2723,17 @@ provides an optional IDE-like error list.")
                 (let ((unzip (search-input-file inputs "/bin/unzip")))
                   (substitute* "fb2-reader.el"
                     (("unzip") unzip)))))
-            (add-after 'unpack 'compatibility-with-recent-buttercup
+            (add-after 'unpack 'fix-tests
               (lambda _
+                ;; Lexical binding is required for compatibility with recent
+                ;; Buttercup.
                 (emacs-batch-edit-file "tests/test-fb2-reader.el"
                   '(progn
-                    (insert ";;; -*-lexical-binding:t-*-")
-                    (basic-save-buffer))))))))
+                    (insert ";;; -*-lexical-binding:t -*-\n")
+                    (basic-save-buffer)))
+                ;; Fix bogus function name.
+                (substitute* "tests/test-fb2-reader.el"
+                  (("fb2-reader-render") "fb2-reader-render-xml")))))))
       (inputs (list unzip))
       (native-inputs
        (list emacs-async emacs-buttercup emacs-dash emacs-s))
