@@ -33586,8 +33586,8 @@ EDU SDK.  This library has the following features:
                 (invoke "pycodestyle" "--max-line-length=88"
                         "git_version.py" "versioneer.py")))))))
     (native-inputs
-     (list git python-flake8 python-pycodestyle python-pyflakes
-           python-setuptools python-wheel))
+     (list git-minimal python-flake8 python-pycodestyle python-pyflakes
+           python-pypa-build python-setuptools python-wheel))
     (propagated-inputs
      (list python-tomli))
     (home-page "https://github.com/python-versioneer/python-versioneer")
