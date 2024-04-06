@@ -2147,6 +2147,29 @@ command line flags, config files, and default struct values.")
      "@code{base32} encoding package from Go with @code{NoPadding} option")
     (license license:bsd-3)))
 
+(define-public go-github-com-multiformats-go-base36
+  (package
+    (name "go-github-com-multiformats-go-base36")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-base36")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wfhsmxkvm97pglfwgiw3ad5g9vqc9nhd61i0kyvsb9lc006g8qq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/multiformats/go-base36"))
+    (home-page "https://github.com/multiformats/go-base36")
+    (synopsis "Optimized @code{base36} codec for Go")
+    (description
+     "Optimized codec for @code{[]byte} <=> @code{base36} string conversion.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-multiformats-go-varint
   (package
     (name "go-github-com-multiformats-go-varint")
