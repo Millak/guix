@@ -29,14 +29,14 @@
 (define-public cpio
   (package
     (name "cpio")
-    (version "2.13")
+    (version "2.15")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/cpio/cpio-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "0vbgnhkawdllgnkdn6zn1f56fczwk0518krakz2qbwhxmv2vvdga"))
+               "1nvmj2mc3nagpig75sgzvkqgzg1p01wgnlw54v4ix6ijgjwi0xlk"))
              (modules '((guix build utils)))
              (snippet
               '(begin
