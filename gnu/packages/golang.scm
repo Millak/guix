@@ -4878,20 +4878,14 @@ required by Go's standard Hash interface.")
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/libp2p/go-libp2p-metrics"))
-      (native-inputs
+      (propagated-inputs
        (list go-github-com-libp2p-go-flow-metrics
              go-github-com-libp2p-go-libp2p-peer
              go-github-com-libp2p-go-libp2p-protocol
              go-github-com-libp2p-go-libp2p-crypto
-             go-github-com-mr-tron-base58
              go-github-com-multiformats-go-multihash
              go-github-com-btcsuite-btcd-btcec
-             go-github-com-gogo-protobuf
-             go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
+             go-github-com-gogo-protobuf))
       (home-page "https://github.com/libp2p/go-libp2p-metrics")
       (synopsis "Connection wrapper for go-libp2p that provides bandwidth metrics")
       (description "A connection wrapper for @command{go-libp2p} that provides bandwidth
