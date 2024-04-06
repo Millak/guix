@@ -21054,12 +21054,15 @@ procedural macros.")
        (sha256
         (base32 "0wr3jdzzibpafz73hcca83wnzdgjinvm7axmxnyfkbasbnfkw1fi"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))))))
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-0.4)
+                       ("rust-quote" ,rust-quote-0.6)
+                       ("rust-syn" ,rust-syn-0.15))
+       #:phases (modify-phases %standard-phases
+                  ;; Enable using nightly/dev features
+                  (add-after 'unpack 'enable-unstable-features
+                    (lambda _
+                      (setenv "RUSTC_BOOTSTRAP" "1"))))))))
 
 (define-public rust-dhcproto-0.9
   (package
