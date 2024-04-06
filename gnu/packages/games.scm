@@ -5786,7 +5786,7 @@ tactics.")
 (define-public widelands
   (package
     (name "widelands")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -5795,7 +5795,7 @@ tactics.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07wbalwdmml9vdh9nh50svnsw4sdj9nnp32azbss8vzq5mxmzvbx"))
+        (base32 "1m9hn1sh1siggribzsq79k7p0lggdw41ji7zdl6h648cjak9mdsp"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5830,11 +5830,9 @@ tactics.")
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+       ("python" ,python)))
     (inputs
      `(("asio" ,asio)
-       ("curl" ,curl)
-       ("boost" ,boost)
        ("glew" ,glew)
        ("icu4c" ,icu4c)
        ("libpng" ,libpng)
