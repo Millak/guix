@@ -2723,6 +2723,38 @@ well as a program to generate applications and command files.")
 query information regarding the number of CPUs available to the system.")
     (license license:asl2.0)))
 
+(define-public go-github-com-tkuchiki-go-timezone
+  (package
+    (name "go-github-com-tkuchiki-go-timezone")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tkuchiki/go-timezone")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rmvg4hh0br51vbsxacani2g0v5xxsayp8q4xli9jag25zi5rhd1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tkuchiki/go-timezone"))
+    (home-page "https://github.com/tkuchiki/go-timezone")
+    (synopsis "Timezone utility for Golang")
+    (description
+     "This package provides provides an utility for timezone manipulation,
+implementing the following features:
+
+@itemize
+@item this library uses only the standard package
+@item supports getting offset from timezone abbreviation, which is not
+supported by the time package
+@item determine whether the specified time.Time is daylight saving time
+@item change the location of time.Time by specifying the timezone
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-vividcortex-ewma
   (package
     (name "go-github-com-vividcortex-ewma")
