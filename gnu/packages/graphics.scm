@@ -1345,14 +1345,22 @@ with strong support for multi-part, multi-channel use cases.")
      (list pkg-config))
     (inputs
      (list boost
+           dcmtk
            fmt
+           freetype
            giflib
            imath
+           libglvnd
            libheif
            libjpeg-turbo
            libpng
+           libraw
            libtiff
+           libwebp
+           opencolorio
            openexr
+           openjpeg
+           ;; openvdb ; OpenVDB needs OIIO to be built with C++17 or higher
            pugixml
            pybind11
            python-wrapper
