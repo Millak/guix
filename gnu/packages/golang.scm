@@ -4351,32 +4351,6 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
     (description "This package provides a Golang Matrix client.")
     (license license:asl2.0)))
 
-(define-public go-github-com-mattn-go-isatty
-  (package
-    (name "go-github-com-mattn-go-isatty")
-    (version "0.0.20")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mattn/go-isatty")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0g63n9wpb991qnq9mn2kvd8jk1glrp6gnd851kvwz2wmzdkggiga"))))
-    (build-system go-build-system)
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (arguments
-     '(#:import-path "github.com/mattn/go-isatty"))
-    (home-page "https://github.com/mattn/go-isatty")
-    (synopsis "Provide @code{isatty} for Golang")
-    (description "This package provides @code{isatty}, a Go module that can
-tell you whether a file descriptor points to a terminal and the type of the
-terminal.")
-    (license license:expat)))
-
 (define-public go-github-com-mattn-go-colorable
   (package
     (name "go-github-com-mattn-go-colorable")

@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2017-2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2018 Pierre Neidhardt <ambrevar@gmail.com>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
-;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
@@ -1785,6 +1785,32 @@ implementing features like:
     (home-page "https://github.com/matryer/try")
     (synopsis "Simple idiomatic retry package for Go")
     (description "This package provides an idiomatic Go retry module.")
+    (license license:expat)))
+
+(define-public go-github-com-mattn-go-isatty
+  (package
+    (name "go-github-com-mattn-go-isatty")
+    (version "0.0.20")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-isatty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g63n9wpb991qnq9mn2kvd8jk1glrp6gnd851kvwz2wmzdkggiga"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-isatty"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/mattn/go-isatty")
+    (synopsis "Provide @code{isatty} for Golang")
+    (description
+     "This package provides @code{isatty}, a Go module that can tell you
+whether a file descriptor points to a terminal and the type of the terminal.")
     (license license:expat)))
 
 (define-public go-github-com-mattn-go-runewidth
