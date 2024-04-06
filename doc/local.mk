@@ -152,12 +152,13 @@ DOT_OPTIONS =					\
 	mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
 
 .dot.eps:
-	$(AM_V_DOT)$(DOT) -Teps $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"; \
-	mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
+	$(AM_V_DOT)$(DOT) -Teps $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_v_at)! grep -q %%CreationDate "$(srcdir)/$@.tmp"
+	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$@"
 
 .png.eps:
-	$(AM_V_GEN)convert "$<" "$@-tmp.eps"; \
-	mv "$@-tmp.eps" "$@"
+	$(AM_V_GEN)convert "$<" "$@-tmp.eps"
+	$(AM_V_at)mv "$@-tmp.eps" "$@"
 
 # We cannot add new dependencies to `%D%/guix.pdf' & co. (info "(automake)
 # Extending").  Using the `-local' rules is imperfect, because they may be
