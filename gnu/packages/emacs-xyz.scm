@@ -516,7 +516,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-gptel
   (package
     (name "emacs-gptel")
-    (version "0.8.0")
+    (version "0.8.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -525,7 +525,7 @@ e.g. emacs-geiser-guile for Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n3kdylv50filla692j2vcjalw6yza80xlg90cw54m9jp9br8sch"))))
+                "1w9sji73dixch1b5i420j44qb3jd0zknpypz46g33pbyhg9xwqln"))))
     (build-system emacs-build-system)
     (arguments
      (list
