@@ -42,6 +42,7 @@
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
+;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56016,8 +56017,29 @@ macro use case.")
        #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/SergioBenitez/proc-macro2-diagnostics")
     (synopsis "Diagnostics for proc-macro2")
-    (description "Diagnostics for proc-macro2.")
+    (description "Diagnostics for stable and nightly proc-macros!")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-proc-macro2-diagnostics-0.9
+  (package
+    (inherit rust-proc-macro2-diagnostics-0.10)
+    (name "rust-proc-macro2-diagnostics")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-macro2-diagnostics" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nmazlb1dkznjds7qwms7yxhi33ajc3isji2lsgx8r3lsqk9gwjb"))))
+    (arguments
+     `(#:cargo-test-flags '("--release" "--" "--skip=main")
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-version-check" ,rust-version-check-0.9)
+                       ("rust-yansi" ,rust-yansi-0.5))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-proc-mounts-0.3
   (package
