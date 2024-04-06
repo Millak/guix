@@ -3674,31 +3674,6 @@ containers.")
     (description "Safe and easy casting from one type to another in Go")
     (license license:expat)))
 
-(define-public go-github-com-spf13-cobra
-  (package
-    (name "go-github-com-spf13-cobra")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/spf13/cobra")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0mhnqfgcwwcknlhk7n07i02q3iqq6ihksj4dwz296zci8ry3w0d0"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/spf13/cobra"))
-    (propagated-inputs
-     (list go-github-com-spf13-pflag))
-    (home-page "https://github.com/spf13/cobra")
-    (synopsis "Go library for creating CLI applications")
-    (description "Cobra is both a library for creating powerful modern CLI
-applications as well as a program to generate applications and command files.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-spf13-jwalterweatherman
   (package
     (name "go-github-com-spf13-jwalterweatherman")
