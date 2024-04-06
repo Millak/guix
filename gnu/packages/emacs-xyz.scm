@@ -6498,7 +6498,7 @@ files and directories.")
 (define-public emacs-fountain-mode
   (package
     (name "emacs-fountain-mode")
-    (version "3.7.2")
+    (version "3.7.3")
     (source
      (origin
        (method git-fetch)
@@ -6507,7 +6507,7 @@ files and directories.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xy45inihqwaix49vxr5yiqyps4r2djkzdd4g7kkc0fv7kzrm1m4"))))
+        (base32 "15r0pzdmimm72jx26zgdxf7fwwcppl45vvh33xx5wnhqzd140hwn"))))
     (arguments
      (list
       #:phases #~(modify-phases %standard-phases
