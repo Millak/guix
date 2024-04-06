@@ -144,12 +144,12 @@ DOT_OPTIONS =					\
   -Nfontsize=9 -Nheight=.1 -Nwidth=.1
 
 .dot.png:
-	$(AM_V_DOT)$(DOT) -Tpng $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"; \
-	mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
+	$(AM_V_DOT)$(DOT) -Tpng $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
 
 .dot.pdf:
-	$(AM_V_DOT)$(DOT) -Tpdf $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"; \
-	mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
+	$(AM_V_DOT)$(DOT) -Tpdf $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
+	$(AM_V_at)mv "$(srcdir)/$@.tmp" "$(srcdir)/$@"
 
 .dot.eps:
 	$(AM_V_DOT)$(DOT) -Teps $(DOT_OPTIONS) < "$<" > "$(srcdir)/$@.tmp"
