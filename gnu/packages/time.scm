@@ -674,9 +674,10 @@ choosing.")
         (base32 "0snz26dvj8v58fyzd51bcf07b5yp2akcyy26w7b0pnkmlh3lknmk"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/antonmedv/countdown"))
+     (list
+      #:import-path "github.com/antonmedv/countdown"))
     (native-inputs
-     `(("termbox" ,go-github.com-nsf-termbox-go)))
+     (list go-github.com-nsf-termbox-go))
     (home-page "https://github.com/antonmedv/countdown")
     (synopsis "Counts to zero with a text user interface")
     (description
