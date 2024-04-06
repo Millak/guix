@@ -247,8 +247,9 @@ Every store item in REFERENCES must already be registered."
     (time-second time))
 
   ;; Make sure NAR-SIZE is valid.
-  (assert-integer "sqlite-register" positive? #:nar-size nar-size)
-  (assert-integer "sqlite-register" (cut >= <> 0) #:time registration-time)
+  (assert-integer "register-valid-path" positive? #:nar-size nar-size)
+  (assert-integer "register-valid-path" (cut >= <> 0)
+                  #:time registration-time)
 
   (define id
     (let ((existing-id (valid-path-id db path)))
