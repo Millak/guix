@@ -38021,7 +38021,11 @@ released, and track their progress in watching a series.")
                ;; Disable tests that need network access.
                (substitute* (list "tests/unit/test-webpaste-provider-creation.el"
                                   "tests/integration/test-webpaste-providers.el")
-                 (("describe") "xdescribe")))))))
+                 (("describe") "xdescribe"))
+               (emacs-batch-edit-file "tests/integration/test-webpaste-providers.el"
+                 '(progn
+                   (insert ";;; -*-lexical-binding:t -*-\n")
+                   (basic-save-buffer))))))))
       (native-inputs
        (list emacs-buttercup))
       (propagated-inputs
