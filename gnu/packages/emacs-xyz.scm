@@ -22478,7 +22478,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
 (define-public emacs-jupyter
   (package
     (name "emacs-jupyter")
-    (version "0.8.3")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -22487,7 +22487,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0acn964xlpn265vry35lrkkpf9z5y4ml96xg8ifadkxwxymm1sh2"))))
+        (base32 "0rf8d83bzc05v0w7zpqwcd89cdvrxwzpyf55vmmzj5j755bgxvhs"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-company ;optional
