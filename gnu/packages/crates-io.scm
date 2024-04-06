@@ -56008,7 +56008,7 @@ macro use case.")
         (base32 "1j48ipc80pykvhx6yhndfa774s58ax1h6sm6mlhf09ls76f6l1mg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; cannot determine resolution for the macro `diagnostic_item`
+     `(#:cargo-test-flags '("--release" "--" "--skip=main")
        #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-2)
