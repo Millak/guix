@@ -10904,7 +10904,7 @@ sgml/html integration, and indentation (working with sgml).")
 (define-public emacs-jinx
   (package
     (name "emacs-jinx")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -10914,7 +10914,7 @@ sgml/html integration, and indentation (working with sgml).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14zamk2s20f6dnv23v9snya0mi1bs2nq6xpp5bj06kiymzwhcqjw"))))
+        (base32 "0g8sdfq6fqf6jnv7ig9cgkvmrdfzah6c94yr041anzkwappkziwx"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -10953,9 +10953,9 @@ sgml/html integration, and indentation (working with sgml).")
     (propagated-inputs (list emacs-compat))
     (native-inputs (list emacs-compat enchant pkg-config texinfo))
     (home-page "https://github.com/minad/jinx")
-    (synopsis "Emacs Enchanted Spell Checker")
+    (synopsis "Emacs spell checker based on Enchant library")
     (description "Jinx is a just-in-time spell-checker for Emacs
-based on the enchant library.  It lazily highlights misspelled words in the
+based on the Enchant library.  It lazily highlights misspelled words in the
 text of the visible portion of the buffer by honouring window boundaries as
 well as text folding, if any.")
     (license license:gpl3+)))
