@@ -12192,9 +12192,10 @@ The resulting file holds references to all the dependencies of @var{exp}
 or a subset thereof.
 @end deffn
 
-@deffn {Procedure} scheme-file name exp [#:splice? #f] [#:set-load-path? #t]
+@deffn {Procedure} scheme-file name exp [#:splice? #f] @
+           [#:guile #f] [#:set-load-path? #t]
 Return an object representing the Scheme file @var{name} that contains
-@var{exp}.
+@var{exp}.  @var{guile} is the Guile package used to produce that file.
 
 This is the declarative counterpart of @code{gexp->file}.
 @end deffn

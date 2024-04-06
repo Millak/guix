@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -661,7 +661,8 @@
   (mlet* %store-monad ((exp -> (gexp (display (ungexp %bootstrap-guile))))
                        (guile  (package-file %bootstrap-guile))
                        (sexp   (gexp->sexp exp (%current-system) #f))
-                       (drv    (gexp->file "foo" exp))
+                       (drv    (gexp->file "foo" exp
+                                           #:guile %bootstrap-guile))
                        (out -> (derivation->output-path drv))
                        (done   (built-derivations (list drv)))
                        (refs   (references* out)))
@@ -672,7 +673,8 @@
   (mlet* %store-monad ((exp -> #~#$(file-append %bootstrap-guile
                                                 "/bin/guile"))
                        (guile  (package-file %bootstrap-guile))
-                       (drv    (gexp->file "foo" exp))
+                       (drv    (gexp->file "foo" exp
+                                           #:guile %bootstrap-guile))
                        (out -> (derivation->output-path drv))
                        (done   (built-derivations (list drv)))
                        (refs   (references* out)))
@@ -685,7 +687,9 @@
                                 #~(define foo 'bar)
                                 #~(define guile #$%bootstrap-guile)))
                        (guile  (package-file %bootstrap-guile))
-                       (drv    (gexp->file "splice" exp #:splice? #t))
+                       (drv    (gexp->file "splice" exp
+                                           #:splice? #t
+                                           #:guile %bootstrap-guile))
                        (out -> (derivation->output-path drv))
                        (done   (built-derivations (list drv)))
                        (refs   (references* out)))
@@ -943,7 +947,8 @@
   (let ((make-file (lambda ()
                      ;; Use 'eval' to make sure we get an object that's not
                      ;; 'eq?' nor 'equal?' due to the closures it embeds.
-                     (eval '(scheme-file "bar.scm" #~(define-module (bar)))
+                     (eval '(scheme-file "bar.scm" #~(define-module (bar))
+                                         #:guile %bootstrap-guile)
                            (current-module)))))
     (define result
       ((@@ (guix gexp) gexp-modules)
@@ -1035,7 +1040,8 @@ importing.* \\(guix config\\) from the host"
                                          #:export (the-answer))
 
                                        (define the-answer 42))
-                               #:splice? #t))
+                               #:splice? #t
+                               #:guile %bootstrap-guile))
        (build -> (with-imported-modules `(((foo bar) => ,module)
                                           (guix build utils))
                    #~(begin
@@ -1080,7 +1086,8 @@ importing.* \\(guix config\\) from the host"
 
                                       (define (multiply x)
                                         (* the-answer x)))
-                               #:splice? #t))
+                               #:splice? #t
+                               #:guile %bootstrap-guile))
        (build -> (with-extensions (list extension)
                    (with-imported-modules `((guix build utils)
                                             ((foo) => ,module))
@@ -1432,7 +1439,8 @@ importing.* \\(guix config\\) from the host"
 
 (test-assertm "scheme-file"
   (let* ((text   (plain-file "foo" "Hello, world!"))
-         (scheme (scheme-file "bar" #~(list "foo" #$text))))
+         (scheme (scheme-file "bar" #~(list "foo" #$text)
+                              #:guile %bootstrap-guile)))
     (mlet* %store-monad ((drv  (lower-object scheme))
                          (text (lower-object text))
                          (out -> (derivation->output-path drv)))
@@ -1719,7 +1727,9 @@ importing.* \\(guix config\\) from the host"
 (test-assertm "gexp->file, cross-compilation"
   (mlet* %store-monad ((target -> "aarch64-linux-gnu")
                        (exp    -> (gexp (list (ungexp coreutils))))
-                       (xdrv      (gexp->file "foo" exp #:target target))
+                       (xdrv      (gexp->file "foo" exp
+                                              #:target target
+                                              #:guile %bootstrap-guile))
                        (refs      (references*
                                    (derivation-file-name xdrv)))
                        (xcu       (package->cross-derivation coreutils
@@ -1732,7 +1742,8 @@ importing.* \\(guix config\\) from the host"
   (mlet* %store-monad ((target -> "aarch64-linux-gnu")
                        (_         (set-current-target target))
                        (exp    -> (gexp (list (ungexp coreutils))))
-                       (xdrv      (gexp->file "foo" exp))
+                       (xdrv      (gexp->file "foo" exp
+                                              #:guile %bootstrap-guile))
                        (refs      (references*
                                    (derivation-file-name xdrv)))
                        (xcu       (package->cross-derivation coreutils

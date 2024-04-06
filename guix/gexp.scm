@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -633,25 +633,29 @@ This is the declarative counterpart of 'gexp->script'."
                    #:target target))))
 
 (define-record-type <scheme-file>
-  (%scheme-file name gexp splice? load-path?)
+  (%scheme-file name gexp splice? guile load-path?)
   scheme-file?
   (name       scheme-file-name)                  ;string
   (gexp       scheme-file-gexp)                  ;gexp
   (splice?    scheme-file-splice?)               ;Boolean
+  (guile      scheme-file-guile)                 ;package
   (load-path? scheme-file-set-load-path?))       ;Boolean
 
-(define* (scheme-file name gexp #:key splice? (set-load-path? #t))
+(define* (scheme-file name gexp
+                      #:key splice?
+                      guile (set-load-path? #t))
   "Return an object representing the Scheme file NAME that contains GEXP.
 
 This is the declarative counterpart of 'gexp->file'."
-  (%scheme-file name gexp splice? set-load-path?))
+  (%scheme-file name gexp splice? guile set-load-path?))
 
 (define-gexp-compiler (scheme-file-compiler (file <scheme-file>)
                                             system target)
   ;; Compile FILE by returning a derivation that builds the file.
   (match file
-    (($ <scheme-file> name gexp splice? set-load-path?)
+    (($ <scheme-file> name gexp splice? guile set-load-path?)
      (gexp->file name gexp
+                 #:guile (or guile (default-guile))
                  #:set-load-path? set-load-path?
                  #:splice? splice?
                  #:system system
@@ -2019,6 +2023,7 @@ imported modules in its search path.  Look up EXP's modules in MODULE-PATH."
                       #:substitutable? #f)))
 
 (define* (gexp->file name exp #:key
+                     (guile (default-guile))
                      (set-load-path? #t)
                      (module-path %load-path)
                      (splice? #f)
@@ -2038,6 +2043,8 @@ Lookup EXP's modules in MODULE-PATH."
       ((target (if (eq? target 'current)
                    (current-target-system)
                    (return target)))
+       (guile-for-build
+        (lower-object guile system #:target #f))
        (no-load-path? -> (or (not set-load-path?)
                              (and (null? modules)
                                   (null? extensions))))
@@ -2057,6 +2064,7 @@ Lookup EXP's modules in MODULE-PATH."
                                 '(ungexp (if splice?
                                              exp
                                              (gexp ((ungexp exp)))))))))
+                          #:guile-for-build guile-for-build
                           #:local-build? #t
                           #:substitutable? #f
                           #:system system
@@ -2073,6 +2081,7 @@ Lookup EXP's modules in MODULE-PATH."
                                              exp
                                              (gexp ((ungexp exp)))))))))
                           #:module-path module-path
+                          #:guile-for-build guile-for-build
                           #:local-build? #t
                           #:substitutable? #f
                           #:system system
