@@ -812,7 +812,7 @@ Architecture Processors\" by J. Guilford et al.")
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/multiformats/go-multihash"))
-      (native-inputs
+      (propagated-inputs
        (list go-github-com-mr-tron-base58
              go-github-com-gxed-hashland-keccakpg
              go-github-com-minio-blake2b-simd
