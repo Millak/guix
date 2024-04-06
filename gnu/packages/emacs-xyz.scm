@@ -36292,20 +36292,20 @@ state to and restoring it from a file, with auto-saving and backups.")
 (define-public emacs-company-emoji
   (package
     (name "emacs-company-emoji")
-    (version "2.8.0")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dunn/company-emoji/")
+             (url "https://codeberg.org/egirl/company-emoji")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j35z7hjcg3dkwgd7mdx1yaxcmxkn00h91y9kl8qdci7m4lja460"))))
+        (base32 "1afy2f1ymzr518npbhy5296kaqshax5hs2ij7wgl28h0hsa2mnk1"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-company))
-    (home-page "https://github.com/dunn/company-emoji/")
+    (home-page "https://codeberg.org/egirl/company-emoji")
     (synopsis "Company completion back-end for emoji")
     (description
      "This library is a Company back-end providing auto-completion for
