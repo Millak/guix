@@ -2894,6 +2894,43 @@ Go.")
          (package-arguments go-github-com-op-go-logging)
        ((#:import-path _) "gopkg.in/op/go-logging.v1")))))
 
+(define-public go-gopkg-in-yaml-v2
+  (package
+    (name "go-gopkg-in-yaml-v2")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gopkg.in/yaml.v2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pbmrpj7gcws34g8vwna4i2nhm9p6235piww36436xhyaa10cldr"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; https://github.com/go-yaml/yaml/issues/441 and
+            ;; https://github.com/go-yaml/yaml/pull/442
+            ;; Don't assume 64-bit wide integers
+            (substitute* "decode_test.go"
+              (("bin: (-0b1000000000000000000000000000000000000000000000000000000000000000)" all number)
+               (string-append "int64_min_base2: " number))
+              (("map\\[string\\]interface\\{\\}\\{\"bin\": -9223372036854775808\\}")
+               "map[string]int64{\"int64_min_base2\": math.MinInt64}"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/yaml.v2"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://gopkg.in/yaml.v2")
+    (synopsis "YAML reader and writer for the Go language")
+    (description
+     "This package provides a Go library for encode and decode YAML
+values.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Executables:
 ;;;
