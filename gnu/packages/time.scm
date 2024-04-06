@@ -630,7 +630,7 @@ calls.")
 (define-public tz
   (package
     (name "tz")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -639,7 +639,7 @@ calls.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nbl13xd95np89sbx8fn0jqrh1iy17hsy70kq31hmcvyns8dljhg"))))
+        (base32 "1zf5w6338y0s0pf0jlpbqzlbxbx39s93z0bmdaa0cxkxs8cz8xij"))))
     (build-system go-build-system)
     (arguments
      `(#:go ,go-1.17
@@ -652,6 +652,7 @@ calls.")
                (invoke "go" "test" "-cover" import-path)))))))
     (inputs
      `(("github.com/charmbracelet/bubbletea" ,go-github-com-charmbracelet-bubbletea)
+       ("github.com/tkuchiki/go-timezone" ,go-github-com-tkuchiki-go-timezone)
        ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)))
     (home-page "https://github.com/oz/tz")
     (synopsis "TUI time zone helper")
