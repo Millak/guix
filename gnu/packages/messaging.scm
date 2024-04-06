@@ -2294,7 +2294,7 @@ building the IRC clients and bots.")
 (define-public toxic
   (package
     (name "toxic")
-    (version "0.8.4")
+    (version "0.15.1")
     (source
      (origin
        (method git-fetch)
@@ -2302,29 +2302,25 @@ building the IRC clients and bots.")
              (url "https://github.com/JFreegman/toxic")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0p1cmj1kyp506y5xm04mhlznhf5wcylvgsn6b307ms91vjqs3fg2"))
+        (base32 "1cbgw9my7nd8b215a3db2jc74nibi9kj0yk5q3c9dnh306as6wzs"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
-       (list
-        "CC=gcc"
-        (string-append "PREFIX="
-                       (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'enable-python-scripting
-           (lambda _
-             ;; XXX: For compatibility with Python 3.8, adjust python3-config
-             ;; invokation to include --embed; see
-             ;; <https://github.com/JFreegman/toxic/issues/533>.
-             (substitute* "cfg/checks/python.mk"
-               (("python3-config --ldflags")
-                "python3-config --ldflags --embed"))
-             (setenv "ENABLE_PYTHON" "1")
-             #t)))))
+     (list #:tests? #f                      ; no tests
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-before 'build 'enable-python-scripting
+                 (lambda _
+                   ;; XXX: For compatibility with Python 3.8, adjust
+                   ;; python3-config invocation to include --embed; see
+                   ;; <https://github.com/JFreegman/toxic/issues/533>.
+                   (substitute* "cfg/checks/python.mk"
+                     (("python3-config --ldflags")
+                      "python3-config --ldflags --embed"))
+                   (setenv "ENABLE_PYTHON" "1"))))))
     (inputs
      (list c-toxcore
            curl
