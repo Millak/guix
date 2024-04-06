@@ -414,6 +414,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/libidn.scm			\
   %D%/packages/libphidget.scm			\
   %D%/packages/libreoffice.scm			\
+  %D%/packages/librewolf.scm			\
   %D%/packages/libsigsegv.scm			\
   %D%/packages/libunistring.scm			\
   %D%/packages/libusb.scm			\
