@@ -49,7 +49,7 @@
 # Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 # Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 # Copyright © 2022 Remco van 't Veer <remco@remworks.net>
-# Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+# Copyright © 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 # Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 # Copyright © 2022 muradm <mail@muradm.net>
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
@@ -609,6 +609,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/sml.scm				\
   %D%/packages/solidity.scm			\
   %D%/packages/sourcehut.scm			\
+  %D%/packages/specifications.scm		\
   %D%/packages/speech.scm			\
   %D%/packages/sphinx.scm			\
   %D%/packages/spice.scm			\
