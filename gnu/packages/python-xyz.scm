@@ -3188,7 +3188,7 @@ Unicode-to-LaTeX conversion.")
      (list python-black python-lsp-server python-tomli))
     (native-inputs
      (list python-flake8 python-isort python-mypy python-pytest
-           python-pytest-runner))
+           python-pytest-runner python-setuptools python-wheel))
     (home-page "https://github.com/rupert/pyls-black")
     (synopsis "Black plugin for the Python Language Server")
     (description "Black plugin for the Python Language Server.")
