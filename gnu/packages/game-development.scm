@@ -2857,38 +2857,34 @@ computer games, 3D authoring tools and simulation tools.")
     (license (list license:lgpl2.1+ license:expat))))
 
 (define-public chipmunk
-  (package
-    (name "chipmunk")
-    (version "7.0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/slembcke/Chipmunk2D")
-             (commit (string-append "Chipmunk-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1qmkn01g06p3rnhmbyffmjns6wj5vhgf9cscigk3wzxcpwv1hyxb"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; This is fixed in the upstream repository but the fix
-            ;; has not been released.
-            (substitute* "src/cpHastySpace.c"
-              (("#include <sys/sysctl.h>") ""))))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:tests? #f                      ;no test
-           #:configure-flags
-           #~(list "-DBUILD_STATIC=OFF"
-                   "-DBUILD_DEMOS=OFF")))
-    (inputs
-     (list freeglut libxmu libxrandr))
-    (home-page "https://chipmunk-physics.net/")
-    (synopsis "Fast and lightweight 2D game physics library")
-    (description "Chipmunk is a simple, lightweight, fast and portable 2D
+  (let ((commit "d0239ef4599b3688a5a336373f7d0a68426414ba")
+        (revision "1"))
+    (package
+      (name "chipmunk")
+      (version (git-version "7.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/slembcke/Chipmunk2D")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1910rfnanhna99bhfiyny3ki7aip2i9p4jzmwsfcg16m9gip5fd6"))
+         (modules '((guix build utils)))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f                ;no test
+             #:configure-flags
+             #~(list "-DBUILD_STATIC=OFF"
+                     "-DBUILD_DEMOS=OFF")))
+      (inputs
+       (list freeglut libxmu libxrandr))
+      (home-page "https://chipmunk-physics.net/")
+      (synopsis "Fast and lightweight 2D game physics library")
+      (description "Chipmunk is a simple, lightweight, fast and portable 2D
 rigid body physics library written in C.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public box2d
   (package
