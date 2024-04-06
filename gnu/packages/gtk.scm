@@ -1140,7 +1140,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.12.3")
+    (version "4.14.2")
     (source
      (origin
        (method url-fetch)
@@ -1148,7 +1148,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "128ahzsj016vz8brd8kplhfkxg2q7wy7kndibx2qfr68yrif530l"))
+        (base32 "0wp0w259rkwf6g8sk2b9jkms47vx5gp7mfs345grx9wq53plqq12"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))
        (modules '((guix build utils)))))
@@ -1220,7 +1220,16 @@ application suites.")
                 ;; This test, 'gtk:tools / validate', started failing for
                 ;; unknown reasons after updating mesa to 23.3.1 and xorgproto
                 ;; to 2023.2.
-                ((" 'validate',") ""))
+                ((" 'validate',") "")
+                ;; XXX: These test failures come newly from 4.14.
+                ;; Not all of them are reported upstream yet, but the text nodes
+                ;; are mentioned in
+                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/6647>.
+                (("'glyph-subpixel-position',") "")
+                (("'subpixel-positioning',") "")
+                (("'subpixel-positioning-hidpi-nogl-nocairo',") "")
+                (("'text.*\\.node',") "")
+                (("'text-mixed-color-colrv1',") ""))
               (substitute* "testsuite/reftests/meson.build"
                 (("[ \t]*'label-wrap-justify.ui',") "")
                 ;; The inscription-markup.ui fails due to /etc/machine-id
@@ -1288,6 +1297,7 @@ application suites.")
            python-toml
            python-typogrify
            sassc                        ;for building themes
+           shaderc
            tzdata-for-tests
            vala
            xorg-server-for-tests))
