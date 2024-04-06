@@ -50,6 +50,7 @@
 (define-module (gnu packages golang-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system copy)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -2122,6 +2123,29 @@ command line flags, config files, and default struct values.")
        "Go Windows Service wrapper compatible with GNU/Linux.  Windows tests
 @url{https://github.com/judwhite/go-svc/raw/master/svc/svc_windows_test.go,here}.")
       (license license:expat))))
+
+(define-public go-github-com-multiformats-go-base32
+  (package
+    (name "go-github-com-multiformats-go-base32")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-base32")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ala6gaa5r5mqcg6cdwfg492hpz41cjbfwyn1ljd6qvya3n0qqiv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/multiformats/go-base32"))
+    (home-page "https://github.com/multiformats/go-base32")
+    (synopsis "Go @code{base32} encoding package with @code{NoPadding} option")
+    (description
+     "@code{base32} encoding package from Go with @code{NoPadding} option")
+    (license license:bsd-3)))
 
 (define-public go-github-com-multiformats-go-varint
   (package
