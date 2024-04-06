@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,8 @@
   #:use-module (gnu packages)
   #:use-module ((guix licenses)
                 #:select (gpl2 gpl2+ lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3+ asl2.0
-                          bsd-3 cc-by-sa4.0 non-copyleft expat public-domain))
+                          bsd-0 bsd-3 cc-by-sa4.0 non-copyleft expat
+                          public-domain))
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -854,6 +856,64 @@ the same program, without any interference between them.  Foreign functions in C
 can be added and values can be defined in the Scheme environment.  Being quite a
 small program, it is easy to comprehend, get to grips with, and use.")
     (license bsd-3)))                   ; there are no licence headers
+
+(define-public tr7
+  (package
+    (name "tr7")
+    (version "1.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/jobol/tr7")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0n77fkm5kcv2pmwbw5fl8r00aarw8da8gkd9d1ki5fn9kbl4fyk2"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (substitute* "Makefile"
+                (("PREFIX = /usr/local")
+                 (string-append "PREFIX=" #$output))
+                (("ALL = \\$\\(LIBSTA\\) \\$\\(TR7I\\) tags")
+                 "ALL = $(LIBSTA) $(TR7I)"))))
+          (replace 'build
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              (invoke "make")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test"))))
+          (replace 'install
+            (lambda _
+              (let* ((share (string-append #$output "/share"))
+                     (doc (string-append #$output:doc "/share/doc/"))
+                     (bin (string-append #$output "/bin"))
+                     (lib (string-append #$output "/lib/"))
+                     (tr7 (string-append share "/tr7"))
+                     (libs (string-append tr7 "/libs")))
+                (for-each mkdir-p (list tr7 libs bin lib doc))
+                (copy-file "tr7i" (string-append bin "/tr7i"))
+                (copy-file "libtr7.a" (string-append lib "/libtr7.a"))
+                (copy-file "r7rs.pdf" (string-append doc "/r7rs.pdf"))
+                (copy-recursively "tr7libs" libs)))))))
+    (home-page "https://gitlab.com/jobol/tr7")
+    (synopsis "Embedded R7RS small Scheme interpreter")
+    (description
+     "TR7 is a lightweight Scheme interpreter that implements the revision
+R7RS small of scheme programming language.
+
+It is meant to be used as an embedded scripting interpreter for other
+programs.  A lot of functionality in TR7 is included conditionally, to allow
+developers freedom in balancing features and footprint.")
+    (license bsd-0)))
 
 (define-public stalin
   (let ((commit "ed1c9e339c352b7a6fee40bb2a47607c3466f0be"))
