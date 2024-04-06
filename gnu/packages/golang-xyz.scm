@@ -2549,17 +2549,16 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
 (define-public go-github-com-songmu-gitconfig
   (package
     (name "go-github-com-songmu-gitconfig")
-    (version "0.1.0")
-    (home-page "https://github.com/songmu/gitconfig")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url home-page)
+             (url "https://github.com/songmu/gitconfig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y01h496a7pfj1g2bclls5b0nl3vnj7nz610jj1dzq9kxrwxk7fk"))))
+        (base32 "0p7b5n4h4vsjpb7ipfn4n1p8i978d8mlx8pi0m5dla57mj8v56hj"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2570,6 +2569,7 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
       #:import-path "github.com/Songmu/gitconfig"))
     (propagated-inputs
      (list go-github-com-goccy-yaml))
+    (home-page "https://github.com/songmu/gitconfig")
     (synopsis "Go library to get configuration values from gitconfig")
     (description
      "@{gitconfig} is a package to get configuration values from gitconfig.")
