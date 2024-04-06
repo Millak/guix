@@ -358,7 +358,7 @@ Foreign Architectures
 
 System Configuration
 
-* Getting Started with the System:: Your first steps.
+* Getting Started with the System::  Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
@@ -16963,7 +16963,7 @@ instantiated.  Then we show how this mechanism can be extended, for
 instance to support new system services.
 
 @menu
-* Getting Started with the System:: Your first steps.
+* Getting Started with the System::  Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
