@@ -1334,15 +1334,8 @@ following:
         ;; TODO: Tests fail because they try to access the network.
         #:tests? #f
         #:import-path "github.com/multiformats/go-multiaddr-net"))
-      (native-inputs
-       (list go-github-com-gxed-hashland-keccakpg
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-mr-tron-base58
-             go-github-com-multiformats-go-multiaddr
-             go-github-com-multiformats-go-multihash
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
+      (propagated-inputs
+       (list go-github-com-multiformats-go-multiaddr))
       (home-page "https://github.com/multiformats/go-multiaddr-net")
       (synopsis "Multiaddress net tools")
       (description
