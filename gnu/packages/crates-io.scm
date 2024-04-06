@@ -20999,6 +20999,21 @@ procedural macros.")
 procedural macros.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-devise-codegen-0.3
+  (package
+    (inherit rust-devise-codegen-0.4)
+    (name "rust-devise-codegen")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "devise_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cp7nnfwvjp6wfq11n0ffjjrwfa1wbsb58g1bz3ha6z5lvkp6g0j"))))
+    (arguments
+     `(#:cargo-inputs (("rust-devise-core" ,rust-devise-core-0.3)
+                       ("rust-quote" ,rust-quote-1))))))
 
 (define-public rust-devise-codegen-0.2
   (package
