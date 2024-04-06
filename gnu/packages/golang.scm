@@ -5648,21 +5648,6 @@ systems.")
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
 
-(define-public go-github-com-gdamore-tcell-v2-2.3
-  (package
-    (inherit go-github-com-gdamore-tcell-v2)
-    (name "go-github-com-gdamore-tcell")
-    (version "2.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gdamore/tcell")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ypbl5080q9sd3irad8mv7zlg4242i8pmg5xyhbyq95kymwibaid"))))))
-
 (define-public go-git-sr-ht-rockorager-tcell-term
   (package
     (name "go-git-sr-ht-rockorager-tcell-term")

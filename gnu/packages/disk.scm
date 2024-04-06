@@ -1295,8 +1295,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    ;; When updating, remove go-github-com-gdamore-tcell-v2-2.3 from golang.scm.
-    (version "27")
+    (version "31")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1305,13 +1304,15 @@ on your file system and offers to remove it.  @command{rmlint} can find:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1piym8za0iw2s8yryh39y072f90mzisv89ffvn1jzb71f71mbfqa"))))
+                "03icsf4c3j7295s1d8s6srz5gf09a3lghgw3zfcd86p03zhkzsaf"))))
     (build-system go-build-system)
     (native-inputs
      (list go-github-com-mattn-go-runewidth go-golang-org-x-term
-           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2-2.3))
+           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2
+           go-github-com-djherbis-times))
     (arguments
-     `(#:import-path "github.com/gokcehan/lf"))
+     `(#:go ,go-1.18
+       #:import-path "github.com/gokcehan/lf"))
     (home-page "https://github.com/gokcehan/lf")
     (synopsis "Console file browser similar to Ranger")
     (description "lf (as in \"list files\") is a terminal file manager
