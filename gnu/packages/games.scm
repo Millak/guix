@@ -5791,58 +5791,57 @@ tactics.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/widelands/widelands")
-              (commit (string-append "v" version))))
+             (url "https://github.com/widelands/widelands")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1m9hn1sh1siggribzsq79k7p0lggdw41ji7zdl6h648cjak9mdsp"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (delete-file-recursively "src/third_party/minizip")
-           #t))))
+        #~(delete-file-recursively "src/third_party/minizip"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (share (string-append out "/share")))
-         (list (string-append "-DCMAKE_INSTALL_PREFIX=" out "/bin")
-               (string-append "-DWL_INSTALL_BASEDIR=" share "/widelands")
-               (string-append "-DWL_INSTALL_DATADIR=" share "/widelands")
-               "-DOPTION_BUILD_WEBSITE_TOOLS=OFF"
-               ;; CMakeLists.txt does not handle properly RelWithDebInfo build
-               ;; type.  When used, no game data is installed!
-               "-DCMAKE_BUILD_TYPE=Release"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-fonts
-           ;; Unbundle fonts already packaged in Guix.  XXX: missing fonts are
-           ;; amiri, Culmus, mmrCensus, Nakula, and Sinhala.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "data/i18n/fonts"
-               (for-each (lambda (font)
-                           (delete-file-recursively font)
-                           (symlink (string-append (assoc-ref inputs font)
-                                                   "/share/fonts/truetype")
-                                    font))
-                         '("DejaVu" "MicroHei")))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(let ((share (string-append #$output "/share/widelands")))
+          (list (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+                (string-append "-DWL_INSTALL_BINDIR=" #$output "/bin")
+                (string-append "-DWL_INSTALL_BASEDIR=" share)
+                (string-append "-DWL_INSTALL_DATADIR=" share)
+                "-DOPTION_BUILD_WEBSITE_TOOLS=OFF"
+                ;; CMakeLists.txt does not handle properly RelWithDebInfo build
+                ;; type.  When used, no game data is installed!
+                "-DCMAKE_BUILD_TYPE=Release"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-fonts
+            ;; Unbundle fonts already packaged in Guix.  XXX: missing fonts are
+            ;; amiri, Culmus, mmrCensus, Nakula, and Sinhala.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (font)
+                 (let* ((path (string-append "share/fonts/truetype/" (basename font)))
+                        (target (false-if-exception (search-input-file inputs path))))
+                   (when target
+                     (delete-file font)
+                     (symlink target font))))
+               (find-files "data/i18n/fonts" "\\.tt[cf]$")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list gettext-minimal pkg-config python))
     (inputs
-     `(("asio" ,asio)
-       ("glew" ,glew)
-       ("icu4c" ,icu4c)
-       ("libpng" ,libpng)
-       ("minizip" ,minizip)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))
-       ("zlib" ,zlib)
-       ;; Fonts for the ‘unbundle-fonts’ phase.  Case matters in name!
-       ("DejaVu" ,font-dejavu)
-       ("MicroHei" ,font-wqy-microhei)))
-    (home-page "https://www.widelands.org/")
+     (list asio
+           font-dejavu
+           font-wqy-microhei
+           glew
+           icu4c
+           libpng
+           minizip
+           sdl2
+           sdl2-image
+           sdl2-mixer
+           sdl2-ttf
+           zlib))
+    (home-page "https://www.widelands.org")
     (synopsis "Fantasy real-time strategy game")
     (description
      "In Widelands, you are the regent of a small clan.  You start out with
