@@ -30678,53 +30678,51 @@ the standard @code{Dockerfile} file format.")
     (license license:asl2.0)))
 
 (define-public emacs-lsp-mode
-  (let ((commit "26c4d3e54ad2956623e64132312fe864274d346f")
-        (revision "1"))
-    (package
-      (name "emacs-lsp-mode")
-      (version (git-version "8.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/emacs-lsp/lsp-mode")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0klnik69b5y6s2q00vyshxymlg7k4x9x6m7wpsf7z9w12qn27alx"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:emacs ,emacs                 ;need libxml support
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'move-clients-libraries
-             ;; Move all clients libraries at top-level, as is done, e.g., in
-             ;; MELPA.
-             (lambda _
-               (for-each (lambda (f)
-                           (install-file f "."))
-                         (find-files "clients/" "\\.el$"))))
-           (add-before 'move-clients-libraries 'fix-patch-el-files
-             ;; /bin/ksh is only used on macOS, which we don't support, so we
-             ;; don't want to add it as input.
-             (lambda _
-               (substitute* '("clients/lsp-csharp.el" "clients/lsp-fsharp.el")
-                 (("/bin/ksh") "ksh")))))))
-      (propagated-inputs
-       (list emacs-dash
-             emacs-f
-             emacs-ht
-             emacs-hydra
-             emacs-markdown-mode
-             emacs-spinner))
-      (home-page "https://emacs-lsp.github.io/lsp-mode/")
-      (synopsis "Emacs client and library for the Language Server Protocol")
-      (description
-       "LSP mode is a client and library implementation for the Language
+  (package
+    (name "emacs-lsp-mode")
+    (version "9.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacs-lsp/lsp-mode")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p4979qbmllmmszmnyml0msxkza4pm14rdacmqczbfs3cs9n6bd3"))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:emacs ,emacs                   ;need libxml support
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'move-clients-libraries
+           ;; Move all clients libraries at top-level, as is done, e.g., in
+           ;; MELPA.
+           (lambda _
+             (for-each (lambda (f)
+                         (install-file f "."))
+                       (find-files "clients/" "\\.el$"))))
+         (add-before 'move-clients-libraries 'fix-patch-el-files
+           ;; /bin/ksh is only used on macOS, which we don't support, so we
+           ;; don't want to add it as input.
+           (lambda _
+             (substitute* '("clients/lsp-csharp.el" "clients/lsp-fsharp.el")
+               (("/bin/ksh") "ksh")))))))
+    (propagated-inputs
+     (list emacs-dash
+           emacs-f
+           emacs-ht
+           emacs-hydra
+           emacs-markdown-mode
+           emacs-spinner))
+    (home-page "https://emacs-lsp.github.io/lsp-mode/")
+    (synopsis "Emacs client and library for the Language Server Protocol")
+    (description
+     "LSP mode is a client and library implementation for the Language
 Server Protocol.  This mode creates an IDE-like experience by providing
 optional integration with other popular Emacs packages like Company, Flycheck,
 and Projectile.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define* (%emacs-lsp-treemacs-upstream-source #:key commit version hash)
   (origin
