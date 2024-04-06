@@ -6601,28 +6601,6 @@ improved and cleaner API.")
 Proxy functionality.")
     (license license:expat)))
 
-(define-public go-github-com-mattn-go-zglob
-  (package
-    (name "go-github-com-mattn-go-zglob")
-    (version "0.0.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/mattn/go-zglob")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1923lvakm66mzy62jmngdvcmbmiqclinsvnghs3907rgygnx1qc1"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/mattn/go-zglob"))
-    (home-page "https://github.com/mattn/go-zglob")
-    (synopsis "Glob library that descends into other directories")
-    (description "A glob library that implements descending into other
-directories.  It is optimized for filewalking.")
-    (license license:expat)))
-
 (define-public go-github-com-mattn-go-sqlite3
   (package
     (name "go-github-com-mattn-go-sqlite3")
