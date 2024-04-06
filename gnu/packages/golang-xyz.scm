@@ -62,7 +62,8 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
-  #:use-module (gnu packages linux))
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages specifications))
 
 ;;; Commentary:
 ;;;
@@ -2169,6 +2170,46 @@ command line flags, config files, and default struct values.")
     (description
      "Optimized codec for @code{[]byte} <=> @code{base36} string conversion.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public go-github-com-multiformats-go-multibase
+  (package
+    (name "go-github-com-multiformats-go-multibase")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multibase")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11za5yqiq9bkxfg0lvjzgr5d0kawkf2szxj90by9vfnalihqgkrr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/multiformats/go-multibase"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-multibase-specs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (copy-recursively
+               (string-append #$(this-package-native-input
+                                 "specification-multibase")
+                              "/share/multibase/")
+               (string-append "src/" import-path "/spec")))))))
+    (native-inputs
+     (list specification-multibase))
+    (propagated-inputs
+     (list go-github-com-mr-tron-base58
+           go-github-com-multiformats-go-base32
+           go-github-com-multiformats-go-base36))
+    (home-page "https://github.com/multiformats/go-multibase")
+    (synopsis "Implementation of multibase parser in Go")
+    (description
+     "Implementation of @url{https://github.com/multiformats/multibase,
+multibase} (self identifying base encodings) in Go.")
+    (license license:expat)))
 
 (define-public go-github-com-multiformats-go-varint
   (package
