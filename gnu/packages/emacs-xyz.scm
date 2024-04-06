@@ -24301,8 +24301,9 @@ given function is invoked.")
      (list emacs-extmap))
     (home-page "https://github.com/doublep/datetime/")
     (synopsis "Library to work with dates in Emacs")
-    (description "Parsing, formatting, matching and recoding
-timestamps and date-time format strings library for Emacs.")
+    (description
+     "Datetime is an Emacs library for parsing, formatting, matching and
+recoding timestamps and date-time format strings.")
     (license license:gpl3+)))
 
 (define-public emacs-org-mind-map
