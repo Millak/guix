@@ -20969,10 +20969,13 @@ procedural macros.")
        (sha256
         (base32 "09p52f54givb0g9l7clj11z755vldk8758y2lwm5mp3sa156qwfx"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-devise-codegen" ,rust-devise-codegen-0.2)
-        ("rust-devise-core" ,rust-devise-core-0.2))))))
+     `(#:cargo-inputs (("rust-devise-codegen" ,rust-devise-codegen-0.2)
+                       ("rust-devise-core" ,rust-devise-core-0.2))
+       #:phases (modify-phases %standard-phases
+                  ;; Enable using nightly/dev features
+                  (add-after 'unpack 'enable-unstable-features
+                    (lambda _
+                      (setenv "RUSTC_BOOTSTRAP" "1"))))))))
 
 (define-public rust-devise-codegen-0.4
   (package
