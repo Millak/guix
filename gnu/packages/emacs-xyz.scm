@@ -30692,22 +30692,23 @@ the standard @code{Dockerfile} file format.")
         (base32 "1p4979qbmllmmszmnyml0msxkza4pm14rdacmqczbfs3cs9n6bd3"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:emacs ,emacs                   ;need libxml support
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'move-clients-libraries
-           ;; Move all clients libraries at top-level, as is done, e.g., in
-           ;; MELPA.
-           (lambda _
-             (for-each (lambda (f)
-                         (install-file f "."))
-                       (find-files "clients/" "\\.el$"))))
-         (add-before 'move-clients-libraries 'fix-patch-el-files
-           ;; /bin/ksh is only used on macOS, which we don't support, so we
-           ;; don't want to add it as input.
-           (lambda _
-             (substitute* '("clients/lsp-csharp.el" "clients/lsp-fsharp.el")
-               (("/bin/ksh") "ksh")))))))
+     (list
+      #:emacs emacs                     ;need libxml support
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-clients-libraries
+            ;; Move all clients libraries at top-level, as is done, e.g., in
+            ;; MELPA.
+            (lambda _
+              (for-each (lambda (f)
+                          (install-file f "."))
+                        (find-files "clients/" "\\.el$"))))
+          (add-before 'move-clients-libraries 'fix-patch-el-files
+            ;; /bin/ksh is only used on macOS, which we don't support, so we
+            ;; don't want to add it as input.
+            (lambda _
+              (substitute* '("clients/lsp-csharp.el" "clients/lsp-fsharp.el")
+                (("/bin/ksh") "ksh")))))))
     (propagated-inputs
      (list emacs-dash
            emacs-f
