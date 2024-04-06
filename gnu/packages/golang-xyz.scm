@@ -1000,6 +1000,32 @@ Mark} detection.")
 atimes for files.")
     (license license:expat)))
 
+(define-public go-github-com-djherbis-times
+  (package
+    (name "go-github-com-djherbis-times")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/djherbis/times")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a70nqkc592ipbgb3ib4yg8i2yj2hlhalpzzksdlhilm5a3689ic"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/djherbis/times"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/djherbis/times")
+    (synopsis "File times - atime, mtime, ctime and btime for Golang")
+    (description
+     "Package @code{times} provides a platform-independent way to get atime,
+mtime,ctime and btime for files.")
+    (license license:expat)))
+
 (define-public go-github-com-dustin-gojson
   (package
     (name "go-github-com-dustin-gojson")
