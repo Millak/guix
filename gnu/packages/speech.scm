@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
+;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils))
@@ -236,15 +238,16 @@ efficiency through the use of a compact vector representation of n-grams.")
 (define-public speech-dispatcher
   (package
     (name "speech-dispatcher")
-    (version "0.11.4")
+    (version "0.11.5")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/brailcom/speechd/releases"
-                                  "/download/" version "/speech-dispatcher-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/brailcom/speechd")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fb6ypnr8r3905b68bbplg1qcaw3f6br2yzxkk4bb79dnwdj42cc"))))
+                "0z2rb1yi06v145sr2h69rxbxzrsfrk198cw6bgpf8wj2njfh3555"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static"
@@ -253,7 +256,12 @@ efficiency through the use of a compact vector representation of n-grams.")
                            "--with-voxin=no" "--with-ibmtts=no"
                            "--with-kali=no" "--with-baratinoo=no")))
     (native-inputs
-     (list gettext-minimal pkg-config texinfo))
+     (list autoconf
+           automake
+           gettext-minimal
+           libtool
+           pkg-config
+           texinfo))
     (inputs
      (list dotconf
            espeak-ng
@@ -261,7 +269,8 @@ efficiency through the use of a compact vector representation of n-grams.")
            libltdl
            libsndfile
            pulseaudio
-           python))
+           python
+           python-xdg))
     (synopsis "Common interface to speech synthesizers")
     (description "The Speech Dispatcher project provides a high-level
 device independent layer for access to speech synthesis through a simple,
