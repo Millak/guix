@@ -1843,27 +1843,27 @@ whether a file descriptor points to a terminal and the type of the terminal.")
     (license license:expat)))
 
 (define-public go-github-com-mattn-go-pointer
-    (package
-      (name "go-github-com-mattn-go-pointer")
-      (version "0.0.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mattn/go-pointer")
-               (commit (string-append "v" version))))
-         (sha256
-          (base32
-           "1px9kj2xwwi7r00qxxpidr23xi823kw0pkd6f50lib8bp60x3n7p"))
-         (file-name (git-file-name name version))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/mattn/go-pointer"))
-      (home-page "https://github.com/mattn/go-pointer")
-      (synopsis "Utility for cgo")
-      (description
-       "This package allows for a cgo argument to be passed a Go pointer.")
-      (license license:expat)))
+  (package
+    (name "go-github-com-mattn-go-pointer")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-pointer")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "1px9kj2xwwi7r00qxxpidr23xi823kw0pkd6f50lib8bp60x3n7p"))
+       (file-name (git-file-name name version))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/mattn/go-pointer"))
+    (home-page "https://github.com/mattn/go-pointer")
+    (synopsis "Utility for cgo")
+    (description
+     "This package allows for a cgo argument to be passed a Go pointer.")
+    (license license:expat)))
 
 (define-public go-github-com-mattn-go-runewidth
   (package
