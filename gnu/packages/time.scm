@@ -662,7 +662,7 @@ choosing.")
 (define-public countdown
   (package
     (name "countdown")
-    (version "1.0.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -671,13 +671,12 @@ choosing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pdaw1krr0bsl4amhwx03v2b02iznvwvqn7af5zp4fkzjaj14cdw"))))
+        (base32 "0snz26dvj8v58fyzd51bcf07b5yp2akcyy26w7b0pnkmlh3lknmk"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/antonmedv/countdown"))
     (native-inputs
-     `(("runewidth" ,go-github-com-mattn-go-runewidth)
-       ("termbox" ,go-github.com-nsf-termbox-go)))
+     `(("termbox" ,go-github.com-nsf-termbox-go)))
     (home-page "https://github.com/antonmedv/countdown")
     (synopsis "Counts to zero with a text user interface")
     (description
