@@ -537,60 +537,6 @@ support, its ability for the user to define new languages searched by regular
 expressions, and its ability to generate emacs-style TAGS files.")
     (license license:gpl2+)))
 
-(define-public withershins
-  (package
-    (name "withershins")
-    (version "0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cameronwhite/withershins")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cviqvbbcwljm1zx12j6511hazr3kscwrvcyifrkfi4fpy5z985m"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:out-of-source? #f
-       #:configure-flags
-       ;; XXX A (justified!) misleading-indentation error breaks the build.
-       (list "-DENABLE_WERROR=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after
-          'unpack 'find-libiberty
-          (lambda _
-            (let ((libiberty (assoc-ref %build-inputs "libiberty")))
-              (substitute* "cmake/FindIberty.cmake"
-                (("/usr/include") (string-append libiberty "/include"))
-                (("libiberty.a iberty")
-                 (string-append "NAMES libiberty.a iberty\nPATHS \""
-                                libiberty "/lib" "\"")))
-              #t)))
-         (replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out (assoc-ref outputs "out"))
-                   (include (string-append out "/include"))
-                   (lib (string-append out "/lib")))
-              (mkdir-p include)
-              (install-file "src/withershins.hpp" include)
-              (mkdir-p lib)
-              (install-file "src/libwithershins.a" lib))
-            #t)))))
-    (home-page "https://github.com/cameronwhite/withershins")
-    (inputs
-     (list libiberty binutils ;for libbfd
-           zlib))
-    (synopsis "C++11 library for generating stack traces")
-    (description
-     "Withershins is a simple cross-platform C++11 library for generating
-stack traces.")
-    ;; Sources are released under Expat license, but since BFD is licensed
-    ;; under the GPLv3+ the combined work is GPLv3+ as well.
-    (license license:gpl3+)))
-
 (define-public lcov
   (package
     (name "lcov")
