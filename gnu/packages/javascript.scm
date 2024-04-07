@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -833,7 +833,14 @@ roots, or wrestle with obscure build systems.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "06pywwpmfwjz225h59wf90q96a2fd66qfcw5xa6m6y9k9k7glnx4"))))
+                "06pywwpmfwjz225h59wf90q96a2fd66qfcw5xa6m6y9k9k7glnx4"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (for-each delete-file
+                                  '("doc/quickjs.pdf"
+                                    "doc/quickjs.html"
+                                    "doc/jsbignum.pdf"
+                                    "doc/jsbignum.html"))))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
