@@ -846,7 +846,10 @@ roots, or wrestle with obscure build systems.")
      (list #:make-flags
            #~(list "prefix="
                    (string-append "DESTDIR=" #$output)
-                   #$@(if (target-riscv64?) '("LDFLAGS=-latomic") '()))
+                   #$@(if (or (target-riscv64?)
+                              (target-ppc32?))
+                          '("LDFLAGS=-latomic")
+                          '()))
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
                         (replace 'check
