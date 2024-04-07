@@ -206,7 +206,7 @@ Go-like binding.")
 (define-public java-usb4java
   (package
     (name "java-usb4java")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -215,43 +215,38 @@ Go-like binding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aip6k24czz5g58qwb963mpick0b6ks774drfpdd8gcdvj9iv87j"))))
+                "0fwf8d2swgm8pmvssy53ixnc0pb5bfvc8iy42mf3dwgvr1zzvgmv"))))
     (build-system ant-build-system)
     (arguments
-     `(#:jar-name "usb4java.jar"
-       #:phases
-       (modify-phases %standard-phases
-         ;; Usually, native libusb4java libraries for all supported systems
-         ;; would be included in the jar and extracted at runtime.  Since we
-         ;; build everything from source we cannot just bundle pre-built
-         ;; binaries for other systems.  Instead, we patch the loader to
-         ;; directly return the appropriate library for this system.  The
-         ;; downside is that the jar will only work on the same architecture
-         ;; that it was built on.
-         (add-after 'unpack 'copy-libusb4java
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/main/java/org/usb4java/Loader.java"
-               (("private static String extractLibrary" line)
-                (string-append
-                 line "(final String a, final String b) {"
-                 "return \""
-                 (assoc-ref inputs "libusb4java") "/lib/libusb4java.so"
-                 "\"; }\n"
-                 "private static String _extractLibrary")))
-             #t))
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (with-directory-excursion "src/test/java/org/usb4java"
-               ;; These tests should only be run when USB devices are present.
-               (substitute* '("LibUsbGlobalTest.java"
-                              "TransferTest.java")
-                 (("this.context = new Context\\(\\);")
-                  "this.context = null;")
-                 (("LibUsb.init") "//"))
-               (substitute* "DeviceListIteratorTest.java"
-                 (("this.iterator.remove" line)
-                  (string-append "assumeUsbTestsEnabled();" line))))
-             #t)))))
+     (list
+      #:jar-name "usb4java.jar"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Usually, native libusb4java libraries for all supported systems
+          ;; would be included in the jar and extracted at runtime.  Since we
+          ;; build everything from source we cannot just bundle pre-built
+          ;; binaries for other systems.  Instead, we patch the loader to
+          ;; directly return the appropriate library for this system.  The
+          ;; downside is that the jar will only work on the same architecture
+          ;; that it was built on.
+          (add-after 'unpack 'copy-libusb4java
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/main/java/org/usb4java/Loader.java"
+                (("private static String extractLibrary" line)
+                 (string-append
+                  line "(final String a, final String b) {"
+                  "return \""
+                  (search-input-file inputs "/lib/libusb4java.so")
+                  "\"; }\n"
+                  "private static String _extractLibrary")))))
+          (add-after 'unpack 'disable-broken-tests
+            (lambda _
+              (with-directory-excursion "src/test/java/org/usb4java"
+                ;; These tests should only be run when USB devices are present.
+                (substitute* '("LibUsbGlobalTest.java"
+                               "TransferTest.java")
+                  (("this.context = new Context\\(\\);")
+                   "this.context = null;"))))))))
     (inputs
      (list libusb4java java-commons-lang3 java-junit java-hamcrest-core))
     (home-page "http://usb4java.org/")
