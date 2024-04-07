@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
@@ -57,6 +57,7 @@
             mapped-device-kind?
             mapped-device-kind-open
             mapped-device-kind-close
+            mapped-device-kind-modules
             mapped-device-kind-check
 
             device-mapping-service-type
@@ -112,6 +113,8 @@ specifications to 'targets'."
   (open      mapped-device-kind-open)             ;source target -> gexp
   (close     mapped-device-kind-close             ;source target -> gexp
              (default (const #~(const #f))))
+  (modules   mapped-device-kind-modules           ;list of module names
+             (default '()))
   (check     mapped-device-kind-check             ;source -> Boolean
              (default (const #t))))
 
@@ -125,13 +128,14 @@ specifications to 'targets'."
    'device-mapping
    (match-lambda
      (($ <mapped-device> source targets
-                         ($ <mapped-device-type> open close))
+                         ($ <mapped-device-type> open close modules))
       (shepherd-service
        (provision (list (symbol-append 'device-mapping- (string->symbol (string-join targets "-")))))
        (requirement '(udev))
        (documentation "Map a device node using Linux's device mapper.")
        (start #~(lambda () #$(open source targets)))
        (stop #~(lambda _ (not #$(close source targets))))
+       (modules (append %default-modules modules))
        (respawn? #f))))
    (description "Map a device node using Linux's device mapper.")))
 
