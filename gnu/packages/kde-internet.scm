@@ -140,6 +140,8 @@ Other notable features include:
      (list extra-cmake-modules pkg-config qttools-5))
     (inputs
      (list karchive
+           kcoreaddons
+           kcrash
            ki18n
            kio
            kwallet
