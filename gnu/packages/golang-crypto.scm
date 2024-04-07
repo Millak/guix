@@ -48,7 +48,9 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
-  #:use-module (gnu packages golang-web))
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages specifications))
 
 ;;; Commentary:
 ;;;
@@ -863,6 +865,51 @@ Architecture Processors\" by J. Guilford et al.")
     (synopsis "Multihash implementation in Go")
     (description "Multihash implementation in Go.")
     (license license:expat)))
+
+;; XXX: Remove it when all dependent packages are ready to be updated.
+(define-public go-github-com-multiformats-go-multihash-0.2.3
+  (package
+    (inherit go-github-com-multiformats-go-multihash)
+    (name "go-github-com-multiformats-go-multihash")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multihash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ydh94083888xl2r4d1grzgqf3c818mkmdpj008jkh6h7m56wc4w"))))
+    (arguments
+     (list #:go go-1.21
+           #:import-path "github.com/multiformats/go-multihash"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-multibase-specs
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (copy-recursively
+                    (string-append #$(this-package-native-input
+                                      "specification-multihash")
+                                   "/share/multihash/")
+                    (string-append "src/" import-path "/spec/multihash/"))
+                   (copy-recursively
+                    (string-append #$(this-package-native-input
+                                      "specification-multicodec")
+                                   "/share/multicodec/")
+                    (string-append "src/" import-path "/spec/multicodec/")))))))
+    (native-inputs
+     (list specification-multihash
+           specification-multicodec))
+    (propagated-inputs
+     (list go-github-com-gxed-hashland-keccakpg
+           go-github-com-minio-blake2b-simd
+           go-github-com-minio-sha256-simd
+           go-github-com-mr-tron-base58
+           go-github-com-multiformats-go-varint
+           go-github-com-spaolacci-murmur3
+           go-golang-org-x-crypto
+           go-lukechampine-com-blake3))))
 
 (define-public go-github-com-operatorfoundation-ed25519
   (let ((commit "b22b4bd3ddef042eec45f3ee135cd40281fde2b4")
