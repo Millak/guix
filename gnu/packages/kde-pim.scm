@@ -1247,6 +1247,55 @@ manager from KDE.")
     (license ;; GPL for programs, LGPL for libraries, FDL for documentation
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
+(define-public kmail-account-wizard
+  (package
+    (name "kmail-account-wizard")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kmail-account-wizard-" version ".tar.xz"))
+       (sha256
+        (base32 "1840zjgrqwk2zgqbb33gl9nvigsrmk5grzvzg5cw116h7lb7z7xx"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules shared-mime-info))
+    (inputs
+     (list akonadi
+           akonadi-mime
+           kcrash
+           kross
+           kcmutils
+           kdbusaddons
+           kiconthemes
+           kidentitymanagement
+           kimap
+           kitemmodels
+           kldap
+           kmailtransport
+           kmime
+           knewstuff
+           knotifications
+           knotifyconfig
+           kpimcommon
+           kpimtextedit
+           ktextaddons
+           ktexteditor
+           kwallet
+           libkdepim
+           libkleo
+           qtkeychain
+           qtscript
+           qttools-5))
+    (home-page "https://invent.kde.org/pim/kmail-account-wizard")
+    (synopsis "Assistant for the configuration of accounts in KMail")
+    (description
+     "This package provides an assistant for the configuration of accounts in
+KMail.")
+    (license ;;GPL for programs, LGPL for libraries, FDL for documentation
+     (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
+
 (define-public kmailcommon
   (package
     (name "kmailcommon")
