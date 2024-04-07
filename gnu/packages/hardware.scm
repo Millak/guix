@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Spencer Skylar Chan <schan12@umd.edu>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
@@ -140,6 +142,68 @@
 drivers, including an assembler and a disassembler for several GPU instruction
 sets, and tools to deal with register databases.")
       (license license:expat))))
+
+(define-public brillo
+  (package
+    (name "brillo")
+    (version "1.4.12")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/cameronnemo/brillo")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "16n4j45mfhd1zxwbpl8342vyqf8rj3plhcl90xp02m46hn58v8bl"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC="
+                                          #$(cc-for-target))
+                           (string-append "AADIR=" #$output "/etc/apparmor.d")
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-udev-rules
+            (lambda _
+              (substitute* "contrib/udev.in"
+                (("/bin/chgrp")
+                 (string-append #$coreutils
+                                "/bin/chgrp"))
+                (("/bin/chmod")
+                 (string-append #$coreutils
+                                "/bin/chmod")))))
+          (delete 'configure)
+          ;; Tests must be run on real hardware.
+          (delete 'check)
+          (add-after 'install 'install-udev-polkit
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (map (lambda (target)
+                     (apply invoke "make" target make-flags))
+                   '("install.udev" "install.polkit")))))))
+    (native-inputs (list go-github-com-go-md2man))
+    (supported-systems
+     (lset-difference string=? %supported-systems %hurd-systems))
+    (home-page "https://gitlab.com/cameronnemo/brillo")
+    (synopsis "Controls the brightness of backlight and LED devices on Linux")
+    (description
+     "Brillo is a command line tool to control the brightness of backlight and
+LED devices on Linux.
+
+Notable features include:
+
+@itemize
+
+@item Automatic best controller detection
+@item Smooth transitions and natural brightness adjustments
+@item Ability to save and restore brightness across boots
+@item Directly using sysfs to set brightness without relying on X
+@item Unprivileged access with no new setuid binaries
+@item Containment with AppArmor
+
+@end itemize")
+    (license (list license:bsd-0 license:gpl3+))))
 
 (define-public hw-probe
   (package
