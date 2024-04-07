@@ -1172,7 +1172,7 @@ the glProgramViewportFlip before it was replaced with glProgramViewportInfo.")
 (define-public glmark2
   (package
     (name "glmark2")
-    (version "2021.12")
+    (version "2023.01")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1181,7 +1181,7 @@ the glProgramViewportFlip before it was replaced with glProgramViewportInfo.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1aydqbrg9i74s19rrdrsscx94m885yvc43v3sdqlgyh675ms98jb"))))
+                "094dr0ljg1hq6wymw2hb3369p4g91sn5c2qf554dl0dbdbjdqasq"))))
     (build-system meson-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
