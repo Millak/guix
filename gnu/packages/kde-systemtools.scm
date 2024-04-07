@@ -340,6 +340,44 @@ who want to quickly see problems occurring on their server.
 This package is part of the KDE administration module.")
     (license license:gpl2+)))
 
+(define-public kwalletmanager
+  (package
+    (name "kwalletmanager")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kwalletmanager-" version ".tar.xz"))
+       (sha256
+        (base32 "1g3yw32kv7yij2ymk52fpp0srncr2ijfckfvz5hc0nsn7xhyqdby"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list karchive
+           kauth
+           kcmutils
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kio
+           kjobwidgets
+           knotifications
+           kservice
+           ktextwidgets
+           kwallet
+           kwindowsystem
+           kxmlgui))
+    (home-page "https://apps.kde.org/kwalletmanager5/")
+    (synopsis "Tool to manage passwords on KWallet")
+    (description
+     "This package provides a tool to manage passwords on @code{kwallet}.")
+    (license license:gpl2+)))
+
 (define-public spectacle
   (package
     (name "spectacle")
