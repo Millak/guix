@@ -39,6 +39,42 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages syncthing))
 
+(define-public go-github-com-ipfs-go-cid
+  (package
+    (name "go-github-com-ipfs-go-cid")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-cid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gfd5dg0shj2daraai2kkf8sg24jp5cr6dsv857wp4q1ni612a23"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.21
+      #:import-path "github.com/ipfs/go-cid"))
+    (propagated-inputs (list go-github-com-gxed-hashland-keccakpg
+                             go-github-com-minio-blake2b-simd
+                             go-github-com-minio-sha256-simd
+                             go-github-com-mr-tron-base58
+                             go-github-com-multiformats-go-base32
+                             go-github-com-multiformats-go-base36
+                             go-github-com-multiformats-go-multihash-0.2.3
+                             go-github-com-multiformats-go-multibase
+                             go-github-com-multiformats-go-varint
+                             go-github-com-spaolacci-murmur3
+                             go-golang-org-x-crypto))
+    (home-page "https://github.com/ipfs/go-cid")
+    (synopsis "Content ID v1 implemented in Go")
+    (description
+     "Implementation in Go of the @url{https://github.com/ipld/cid, CID spec}.  It is
+used in @code{go-ipfs} and related packages to refer to a typed hunk of data.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-cmdkit-files
   (let ((commit
           "386fcf8f18a185ec121676665fe2d9574496048d")
