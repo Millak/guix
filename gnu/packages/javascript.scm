@@ -826,14 +826,14 @@ roots, or wrestle with obscure build systems.")
 (define-public quickjs
   (package
     (name "quickjs")
-    (version "2021-03-27")
+    (version "2024-01-13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://bellard.org/quickjs/quickjs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "06pywwpmfwjz225h59wf90q96a2fd66qfcw5xa6m6y9k9k7glnx4"))
+                "00rf45l1bx0yhlv11gn3bbyfqw9724c153bc93mlp9dzjpwghjrw"))
               (snippet
                #~(begin (use-modules (guix build utils))
                         (for-each delete-file
@@ -844,8 +844,7 @@ roots, or wrestle with obscure build systems.")
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
-           #~(list "prefix="
-                   (string-append "DESTDIR=" #$output)
+           #~(list (string-append "PREFIX=" #$output)
                    #$@(if (or (target-riscv64?)
                               (target-ppc32?))
                           '("LDFLAGS=-latomic")
@@ -858,11 +857,12 @@ roots, or wrestle with obscure build systems.")
                               (invoke "make" "microbench")))))))
     (home-page "https://bellard.org/quickjs/")
     (synopsis "Small embeddable Javascript engine")
-    (description "QuickJS supports the ES2020 specification including modules,
-asynchronous generators, proxies, BigInt and BigDecimal.  It can compile
-Javascript sources to executables with no external dependency.  It includes a
-command line interpreter with contextual colorization implemented in
-Javascript and a small built-in standard library with C library wrappers.")
+    (description "QuickJS supports the ES2023 specification including modules,
+asynchronous generators, proxies, BigInt, BigDecimal, BigFloat and operator
+overloading.  It can compile Javascript sources to executables with no external
+dependency.  It includes a command line interpreter with contextual colorization
+implemented in Javascript and a small built-in standard library with C library
+wrappers.")
     (license license:expat)))
 
 (define-public duktape
