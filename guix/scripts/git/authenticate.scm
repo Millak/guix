@@ -274,4 +274,7 @@ expected COMMIT and SIGNER~%")))
                                #:keyring-reference keyring))
 
        (when (and show-stats? (not (null? stats)))
-         (show-stats stats))))))
+         (show-stats stats))
+
+       (info (G_ "successfully authenticated commit ~a~%")
+             (oid->string end))))))
