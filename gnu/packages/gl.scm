@@ -451,14 +451,12 @@ svga,swrast,virgl,zink")))
                   ;; There are some tests which fail specifically on powerpc.
                   `((substitute* '(;; LLVM ERROR: Relocation type not implemented yet!
                                    "src/gallium/drivers/llvmpipe/meson.build"
-                                   ;; This is probably a big-endian test failure.
                                    "src/gallium/targets/osmesa/meson.build")
                       (("if with_tests") "if not with_tests"))
-                    ;; This test times out and receives SIGTERM.
+                    ;; This is probably a big-endian test failure.
                     (substitute* "src/amd/common/meson.build"
-                      (("and not with_platform_windows") "and with_platform_windows"))
-                    (substitute* "src/compiler/nir/meson.build"
-                      ((".*loop_unroll_tests.*") ""))))
+                      (("and not with_platform_windows")
+                       "and with_platform_windows"))))
                  ("i686-linux"
                   ;; This test is known to fail on i686 (see:
                   ;; https://gitlab.freedesktop.org/mesa/mesa/-/issues/4091).
