@@ -1,12 +1,12 @@
 digraph "Service Type Dependencies" {
-  shepherd [shape = box, fontname = Helvetica];
-  pam [shape = box, fontname = Helvetica];
-  etc [shape = box, fontname = Helvetica];
-  profile [shape = box, fontname = Helvetica];
-  accounts [shape = box, fontname = Helvetica];
-  activation [shape = box, fontname = Helvetica];
-  boot [shape = box, fontname = Helvetica];
-  system [shape = house, fontname = Helvetica];
+  shepherd [shape = box, fontname = "dejavu sans"];
+  pam [shape = box, fontname = "dejavu sans"];
+  etc [shape = box, fontname = "dejavu sans"];
+  profile [shape = box, fontname = "dejavu sans"];
+  accounts [shape = box, fontname = "dejavu sans"];
+  activation [shape = box, fontname = "dejavu sans"];
+  boot [shape = box, fontname = "dejavu sans"];
+  system [shape = house, fontname = "dejavu sans"];
   lshd -> shepherd;
   lshd -> pam;
   udev -> shepherd;

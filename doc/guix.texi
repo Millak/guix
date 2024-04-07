@@ -47865,7 +47865,12 @@ The graph below shows the resulting dependency graph for
 @code{gcc-core-mesboot0}, the bootstrap compiler used for the
 traditional bootstrap of the rest of the Guix System.
 
-@c ./pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' | sed -re 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' > doc/images/gcc-core-mesboot0-graph.dot
+@c ./pre-inst-env guix graph \
+@c   -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' \
+@c   | sed -r \
+@c     -e 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' \
+@c     -e 's,fontname = sans,fontname = "dejavu sans",' \
+@c   > doc/images/gcc-core-mesboot0-graph.dot
 @image{images/gcc-core-mesboot0-graph,6in,,Dependency graph of gcc-core-mesboot0}
 
 Work is ongoing to bring these bootstraps to the @code{arm-linux} and
