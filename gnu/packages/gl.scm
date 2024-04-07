@@ -353,12 +353,11 @@ also known as DXTn or DXTC) for Mesa.")
       #:configure-flags
       #~(list
          #$@(cond
-             ;; TODO: Enable svga driver for non-Intel architectures.
              ((or (target-aarch64?) (target-arm32?))
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
 panfrost,r300,r600,svga,swrast,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl,zink"))
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,svga,swrast,virgl,zink"))
              (else
               '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
 svga,swrast,virgl,zink")))
