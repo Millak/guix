@@ -207,9 +207,14 @@ translation between LLVM IR and SPIR-V.")
                                  '()))
        #:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
+                    (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
                       (when tests?
-                        (invoke "ctest")))))))
+                        (invoke "ctest"
+                                "-j" (if parallel-tests?
+                                       (number->string (parallel-job-count))
+                                       "1")
+                                "--rerun-failed"
+                                "--output-on-failure")))))))
     (inputs (list spirv-tools))
     (native-inputs
      (list pkg-config python))
