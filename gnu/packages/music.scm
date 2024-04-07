@@ -2187,7 +2187,7 @@ your own lessons.")
 (define-public powertabeditor
   (package
     (name "powertabeditor")
-    (version "2.0.0-alpha14")
+    (version "2.0.0-alpha19")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2196,30 +2196,29 @@ your own lessons.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wsvni2aa9h2bpndlic7ckch4n600ahwm56n521y5vxivwjx3jmj"))))
+                "1fbrfw1ky57nms47pcfdrrwpa2jmgc8vgc68sz96wkvs49zzm5d1"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check (lambda _ (invoke "bin/pte_tests")))
-         (add-after 'unpack 'fix-pugixml-detection
-           (lambda _
-             (substitute* "cmake/third_party/pugixml.cmake"
-               (("add_library") "#add_library"))
-             #t)))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "bin/pte_tests")))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("boost" ,boost)
-       ("minizip" ,minizip)
-       ("pugixml" ,pugixml)
-       ("qtbase" ,qtbase-5)
-       ("rapidjson" ,rapidjson)
-       ("rtmidi" ,rtmidi)
-       ("timidity" ,timidity++)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           boost
+           minizip
+           nlohmann-json
+           pugixml
+           qtbase-5
+           qttools-5 ;for Qt5LinguistTools
+           rtmidi
+           timidity++
+           zlib))
     (native-inputs
      (list doctest pkg-config))
-    (home-page "https://github.com/powertab/powertabedito")
+    (home-page "https://github.com/powertab/powertabeditor")
     (synopsis "Guitar tablature editor")
     (description
      "Power Tab Editor 2.0 is the successor to the famous original Power Tab
