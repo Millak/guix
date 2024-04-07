@@ -103,11 +103,11 @@ held."
             (acquire-lock file)))))
 
   (with-database %default-database-file db
-    (unless (path-id db target)
+    (unless (valid-path-id db target)
       (let ((lock (and lock?
                        (acquire-lock (string-append target ".lock")))))
 
-        (unless (path-id db target)
+        (unless (valid-path-id db target)
           ;; If FILE already exists, delete it (it's invalid anyway.)
           (when (file-exists? target)
             (delete-file-recursively target))
