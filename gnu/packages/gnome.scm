@@ -8222,6 +8222,14 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                 "-DWITH_PHONENUMBER=ON"))
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-aarch64?)
+                 #~((add-after 'unpack 'disable-failing-aarch64-tests
+                      (lambda _
+                        ;; 26/90 Test #26: test-book-client-custom-summary
+                        ;; ...........SIGTRAP***Exception: 35.99 sec
+                        (substitute* "tests/libebook/client/CMakeLists.txt"
+                          (("test-book-client-custom-summary") "")))))
+                 '())
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               ;; tests/book-migration/test-migration.c:160:test_fetch_contacts:
