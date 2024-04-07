@@ -1065,7 +1065,7 @@ Octave.  TeXmacs is completely extensible via Guile.")
     (build-system meson-build-system)
     (native-inputs
      (list appstream-glib
-           blueprint-compiler
+           blueprint-compiler-0.4
            desktop-file-utils
            gettext-minimal
            `(,glib "bin")

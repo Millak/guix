@@ -3320,6 +3320,22 @@ compiles to GTKBuilder XML.")
     (home-page "https://gitlab.gnome.org/jwestman/blueprint-compiler")
     (license license:lgpl3+)))
 
+(define-public blueprint-compiler-0.4
+  (package
+    (inherit blueprint-compiler)
+    (name "blueprint-compiler")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))))
+
 (define-public cambalache
   (package
     (name "cambalache")
