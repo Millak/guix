@@ -252,13 +252,6 @@ upon error."
                       (srfi srfi-1)           ;for lvm-device-mapping
                       (srfi srfi-26)
 
-                      ;; FIXME: The following modules are for
-                      ;; LUKS-DEVICE-MAPPING.  We should instead propagate
-                      ;; this info via gexps.
-                      ((gnu build file-systems)
-                       #:select (find-partition-by-luks-uuid))
-                      (rnrs bytevectors))
-
                       ;; Load extra modules needed by the mapped device code.
                       #$@(append-map (compose mapped-device-kind-modules
                                               mapped-device-type)

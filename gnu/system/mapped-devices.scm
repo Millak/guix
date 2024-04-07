@@ -206,12 +206,6 @@ option of @command{guix system}.\n")
                              (uuid-bytevector source)
                              source))
                (keyfile #$key-file))
-           ;; XXX: 'use-modules' should be at the top level.
-           (use-modules (rnrs bytevectors) ;bytevector?
-                        ((gnu build file-systems)
-                         #:select (find-partition-by-luks-uuid
-                                   system*/tty))
-                        ((guix build utils) #:select (mkdir-p)))
 
            ;; Create '/run/cryptsetup/' if it does not exist, as device locking
            ;; is mandatory for LUKS2.
@@ -287,7 +281,10 @@ option of @command{guix system}.\n")
   (mapped-device-kind
    (open open-luks-device)
    (close close-luks-device)
-   (check check-luks-device)))
+   (check check-luks-device)
+   (modules '((rnrs bytevectors)                  ;bytevector?
+              ((gnu build file-systems)
+               #:select (find-partition-by-luks-uuid system*/tty))))))
 
 (define* (luks-device-mapping-with-options #:key key-file)
   "Return a luks-device-mapping object with open modified to pass the arguments
