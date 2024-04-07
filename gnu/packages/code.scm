@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,7 +62,6 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages golang) ; for automatic-component-toolkit
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
@@ -101,23 +101,24 @@
               (sha256
                (base32
                 "1r0sbw82cf9dbcj3vgnbd4sc1lklzvijic2z5wgkvs21azcm0yzh"))))
-    (build-system gnu-build-system)
+    (build-system go-build-system)
     (arguments
-     (list #:tests? #false              ;no tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)
-               (replace 'build
-                 (lambda _
-                   (setenv "HOME" "/tmp")
-                   (invoke "bash" "Build/build.sh")))
-               (replace 'install
-                 (lambda _
-                   (let ((bin (string-append #$output "/bin")))
-                     (mkdir-p bin)
-                     (copy-file "act.linux"
-                                (string-append #$output "/bin/act"))))))))
-    (native-inputs (list go))
+     (list
+      #:tests? #f              ;no tests
+      #:install-source? #f
+      #:import-path "github.com/Autodesk/AutomaticComponentToolkit/cmd/act"
+      #:unpack-path "github.com/Autodesk/AutomaticComponentToolkit/"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Golang produces the final binary based on the current directory
+          ;; name if -o options is not provided, utilize this assumption to
+          ;; completely relay on go-build-system.
+          (add-before 'build 'pretend-cmd-act
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (let ((act (string-append "src/" unpack-path "/cmd/act"))
+                    (source (string-append "src/" unpack-path "/Source")))
+                (mkdir-p act)
+                (copy-recursively source act)))))))
     (synopsis "Automatically generate software components")
     (description
      "The Automatic Component Toolkit (@dfn{ACT}) is a code generator that
