@@ -392,9 +392,9 @@ svga,swrast,virgl,zink")))
          ;; Enable the Vulkan overlay layer on all architectures.
          "-Dvulkan-layers=device-select,overlay"
 
-         ;; Enable the codecs that were built by default as part of the
+         ;; Enable all the codecs that were built by default as part of the
          ;; 21.3.x releases to avoid functionality regressions.
-         "-Dvideo-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc"
+         "-Dvideo-codecs=all"
 
          ;; Enable ZSTD compression for shader cache.
          "-Dzstd=enabled"
