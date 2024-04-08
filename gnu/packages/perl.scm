@@ -6,7 +6,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
-;;; Copyright © 2016-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
@@ -8079,15 +8079,15 @@ of data.")
 (define-public perl-mozilla-ca
   (package
     (name "perl-mozilla-ca")
-    (version "20200520")
+    (version "20240313")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/A/AB/ABH/Mozilla-CA-"
+       (uri (string-append "mirror://cpan/authors/id/L/LW/LWP/Mozilla-CA-"
                            version ".tar.gz"))
        (sha256
         (base32
-         "09n7hwrh63c5gqvygqvvgvklcbvsm7g0p4nmq0b4mwhb64101jmk"))))
+         "1rwq2qb8f101ihq5gmdmr9vsnx7ybnln85489y4k761hks9p6j32"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Mozilla-CA")
     (synopsis "Mozilla's CA cert bundle in PEM format")
