@@ -429,14 +429,25 @@ from forcing GEXP-PROMISE."
   ;; <https://lists.gnu.org/archive/html/guix-devel/2017-03/msg00790.html>.
   (fold delete %supported-systems '("mips64el-linux" "powerpc-linux" "riscv64-linux")))
 
-(define-inlinable (sanitize-inputs inputs)
-  "Sanitize INPUTS by turning it into a list of name/package tuples if it's
-not already the case."
-  (cond ((null? inputs) inputs)
+(define (maybe-add-input-labels inputs)
+  "Add labels to INPUTS unless it already has them."
+  (cond ((null? inputs)
+         inputs)
         ((and (pair? (car inputs))
               (string? (caar inputs)))
          inputs)
         (else (map add-input-label inputs))))
+
+(define-syntax sanitize-inputs
+  ;; This is written as a macro rather than as a 'define-inlinable' procedure
+  ;; because as of Guile 3.0.9, peval can handle (null? '()) but not
+  ;; (null? (list x y z)); that residual 'null?' test contributes to code
+  ;; bloat.
+  (syntax-rules (quote)
+    "Sanitize INPUTS by turning it into a list of name/package tuples if it's
+not already the case."
+    ((_ '()) '())
+    ((_ inputs) (maybe-add-input-labels inputs))))
 
 (define-syntax current-location-vector
   (lambda (s)
