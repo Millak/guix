@@ -1207,11 +1207,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;; Linux-Libre.
 ;; Reference: <https://www.kernel.org/category/releases.html>
 
-(define-public linux-libre-lts-version         linux-libre-6.1-version)
-(define-public linux-libre-lts-gnu-revision    linux-libre-6.1-gnu-revision)
-(define-public linux-libre-lts-pristine-source linux-libre-6.1-pristine-source)
-(define-public linux-libre-lts-source          linux-libre-6.1-source)
-(define-public linux-libre-lts                 linux-libre-6.1)
+(define-public linux-libre-lts-version         linux-libre-6.6-version)
+(define-public linux-libre-lts-gnu-revision    linux-libre-6.6-gnu-revision)
+(define-public linux-libre-lts-pristine-source linux-libre-6.6-pristine-source)
+(define-public linux-libre-lts-source          linux-libre-6.6-source)
+(define-public linux-libre-lts                 linux-libre-6.6)
 
 
 ;;;
