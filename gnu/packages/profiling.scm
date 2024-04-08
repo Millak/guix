@@ -401,7 +401,7 @@ high-performance computing (HPC) applications.")
 (define-public tracy-wayland
   (package
     (name "tracy-wayland")
-    (version "0.9.1")
+    (version "0.10")
     (source
      (origin
        (method git-fetch)
@@ -410,7 +410,7 @@ high-performance computing (HPC) applications.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1znw1r1c4vrb9vrsr08gcwynpjda8xxmb3923yykpymw2hsm0n9b"))
+         "1w50bckvs1nn68amzrkyrh769dhmlhk7w00kr8ac5h9ryk349p8c"))
        (file-name (git-file-name "tracy" version))
        (modules '((guix build utils)))
        (snippet
