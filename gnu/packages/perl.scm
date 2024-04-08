@@ -8087,8 +8087,23 @@ of data.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1rwq2qb8f101ihq5gmdmr9vsnx7ybnln85489y4k761hks9p6j32"))))
+         "1rwq2qb8f101ihq5gmdmr9vsnx7ybnln85489y4k761hks9p6j32"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file "lib/Mozilla/CA/cacert.pem")
+                 (substitute* "lib/Mozilla/CA.pm"
+                   (("my \\$file.*") "my $file = $ENV{SSL_CERT_FILE};\n")
+                   (("return.*")
+                    (string-append
+                      "if (!File::Spec->file_name_is_absolute($file)) {\n"
+                      "        $file = \"/etc/ssl/certs/ca-certificates.crt\";\n"
+                      "    }\n"
+                      "    return $file;\n"))
+                   (("provides a copy of.*")
+                    "provides a link to the user's or the system's SSL\n"))))))
     (build-system perl-build-system)
+    (arguments
+     (list #:tests? #f))        ; Tests rely on embedded cacert.pem.
     (home-page "https://metacpan.org/release/Mozilla-CA")
     (synopsis "Mozilla's CA cert bundle in PEM format")
     (description "@code{Mozilla::CA} provides a copy of Mozilla's bundle of
