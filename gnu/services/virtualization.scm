@@ -46,6 +46,7 @@
   #:use-module (gnu system shadow)
   #:autoload   (gnu system vm) (linux-image-startup-command
                                 virtualized-operating-system)
+  #:autoload   (gnu system locale) (locale-definition)
   #:use-module (gnu system)
   #:use-module (guix derivations)
   #:use-module (guix gexp)
@@ -1190,6 +1191,14 @@ authpriv.*;auth.info                    /var/log/secure
 (define %virtual-build-machine-operating-system
   (operating-system
     (host-name "build-machine")
+
+    (locale "en_US.utf8")
+    (locale-definitions
+     ;; Save space by providing only one locale.
+     (list (locale-definition (name "en_US.utf8")
+                              (source "en_US")
+                              (charset "UTF-8"))))
+
     (bootloader (bootloader-configuration         ;unused
                  (bootloader grub-minimal-bootloader)
                  (targets '("/dev/null"))))
