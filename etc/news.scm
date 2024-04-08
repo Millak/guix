@@ -31,6 +31,16 @@
 (channel-news
  (version 0)
 
+ (entry (commit "b4aed68e960116b2b60f68ea1468d7a526149823")
+        (title
+         (en "Linux-libre LTS kernel updated to 6.6")
+         (de "Linux-libre LTS Kernel wird auf 6.6 aktualisiert"))
+        (body
+         (en "The default version of the @code{linux-libre-lts} kernel has been
+             updated to the 6.6 longterm release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre-lts}-Kernel basiert
+              jetzt auf der 6.6-Versionsreihe (Langzeitunterstützung).")))
+
  (entry (commit "523f3def65ab061a87f4fc9e6f9008e6a78fafb5")
         (title
          (en "GNOME updated to version 44 with a more modular desktop service")
