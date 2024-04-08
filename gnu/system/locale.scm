@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2017, 2019-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2019-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <jannek@gnu.org>
 ;;;
@@ -153,9 +153,10 @@ data format changes between libc versions."
       (list glibc)))
 
 (define %default-locale-definitions
-  ;; Arbitrary set of locales that are built by default.  They are here mostly
-  ;; to facilitate first-time use to some people, while others may have to add
-  ;; a specific <locale-definition>.
+  ;; Arbitrary set of locales that are built by default.  They come as a
+  ;; "bonus" in addition to that specified in the 'locale' field of the
+  ;; operating system, for the user's convenience, so they shouldn't take too
+  ;; much space.
   (letrec-syntax ((utf8-locale (syntax-rules ()
                                  ((_ name*)
                                   (locale-definition
@@ -167,44 +168,18 @@ data format changes between libc versions."
                   (utf8-locales (syntax-rules ()
                                   ((_ name ...)
                                    (list (utf8-locale name) ...)))))
-    ;; Add "en_US.UTF-8" for compatibility with Guix 0.8.
-    (cons (locale-definition
-           (name "en_US.UTF-8")
-           (source "en_US")
-           (charset "UTF-8"))
-          (utf8-locales "ca_ES"
-                        "cs_CZ"
-                        "da_DK"
-                        "de_DE"
-                        "el_GR"
-                        "en_AU"
-                        "en_CA"
-                        "en_GB"
-                        "en_US"
-                        "es_AR"
-                        "es_CL"
-                        "es_ES"
-                        "es_MX"
-                        "fi_FI"
-                        "fr_BE"
-                        "fr_CA"
-                        "fr_CH"
-                        "fr_FR"
-                        "ga_IE"
-                        "it_IT"
-                        "ja_JP"
-                        "ko_KR"
-                        "nb_NO"
-                        "nl_NL"
-                        "pl_PL"
-                        "pt_PT"
-                        "ro_RO"
-                        "ru_RU"
-                        "sv_SE"
-                        "tr_TR"
-                        "uk_UA"
-                        "vi_VN"
-                        "zh_CN"))))
+    ;; The six UN official languages plus Portuguese, with at most two
+    ;; variants per language.
+    (utf8-locales "ar_DZ"
+                  "en_GB"
+                  "en_US"
+                  "es_AR"
+                  "es_ES"
+                  "fr_FR"
+                  "pt_BR"
+                  "pt_PT"
+                  "ru_RU"
+                  "zh_CN")))
 
 
 ;;;
