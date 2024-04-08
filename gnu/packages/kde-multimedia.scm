@@ -126,21 +126,9 @@ This package is part of the KDE multimedia module.")
            kxmlgui
            breeze-icons ; default icon set
            phonon
-           phonon-backend-gstreamer
-           gst-plugins-base
-           gst-plugins-good
+           phonon-backend-vlc
            qtbase-5
            solid))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'qt-wrap 'gst-wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out             (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/dragon")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))
-               #t))))))
     (home-page "https://apps.kde.org/dragonplayer/")
     (synopsis "Simple video player")
     (description "Dragon Player is a multimedia player where the focus is on
