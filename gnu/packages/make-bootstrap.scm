@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Mark H Weaver <mhw@netris.org>
@@ -55,7 +55,8 @@
             %guile-bootstrap-tarball
             %bootstrap-tarballs
 
-            %guile-static-stripped))
+            %guile-static-stripped
+            %guile-static-initrd))
 
 ;;; Commentary:
 ;;;
@@ -674,7 +675,8 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                        "guile-3.0-linux-syscalls.patch"
                        "guile-3.0-relocatable.patch")))
 
-(define* (make-guile-static-stripped static-guile)
+(define* (make-guile-static-stripped static-guile
+                                     #:optional (directories-to-remove '()))
   (package
     (inherit static-guile)
     (name (string-append (package-name static-guile) "-stripped"))
@@ -702,6 +704,12 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                  (mkdir (string-append out "/bin"))
                  (copy-file guile1 guile2)
 
+                 ;; Optionally remove additional directories.
+                 (for-each (lambda (directory)
+                             (delete-file-recursively
+                              (string-append out "/" directory)))
+                           '#$directories-to-remove)
+
                  ;; Verify that the relocated Guile works.
                  #$@(if (%current-target-system)
                         '()
@@ -720,9 +728,28 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
     (synopsis "Minimal statically-linked and relocatable Guile")))
 
 (define %guile-static-stripped
-  ;; A stripped static Guile 3.0 binary, for use in initrds
-  ;; and during bootstrap.
+  ;; A stripped static Guile 3.0 binary for use during bootstrap.
   (make-guile-static-stripped %guile-static-3.0))
+
+(define %guile-static-initrd
+  ;; A stripped static Guile 3.0 binary for use in initrds.  Remove various
+  ;; modules that are useless in an initrd.  Note: Keep most of language/
+  ;; because it is needed for Bournish.
+  (package
+    (inherit
+     (make-guile-static-stripped
+      %guile-static-3.0
+      (append-map (lambda (directory)
+                    (list (string-append "lib/guile/3.0/ccache/" directory)
+                          (string-append "share/guile/3.0/" directory)))
+                  '("language/brainfuck"
+                    "language/ecmascript"
+                    "language/elisp"
+                    "oop"
+                    "scripts"
+                    "texinfo"
+                    "web"))))
+    (name "guile-static-initrd")))
 
 (define (tarball-package pkg)
   "Return a package containing a tarball of PKG."
