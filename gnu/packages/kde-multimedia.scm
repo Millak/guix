@@ -273,7 +273,7 @@ This package is part of the KDE multimedia module.")
            kxmlgui
            breeze-icons ; default icon set
            phonon
-           phonon-backend-gstreamer
+           phonon-backend-vlc
            qtbase-5
            qtsvg-5
            taglib))
