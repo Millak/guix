@@ -31,6 +31,18 @@
 (channel-news
  (version 0)
 
+ (entry (commit "238a74c7dfd1469af064b445abcee38fd7408d5b")
+        (title
+          (en "Linux-libre 6.7 removed due to end of upstream support")
+          (de "Linux-libre 6.7 wurde entfernt"))
+        (body
+          (en "The linux-libre 6.7 kernel series has reached the end of
+             its life, and is no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+          (de "Die @code{linux-libre} 6.7-Versionsreihe hat ihr
+Supportende erreicht und wird nicht mehr unterstützt („end of life“). Daher ist die
+Versionsreihe aus GNU Guix entfernt worden.")))
+
  (entry (commit "67a3a83170c038d2eb084d3f53a7ea7b033aea74")
         (title
          (en "@code{nss-certs} is now included in @code{%base-packages}")
