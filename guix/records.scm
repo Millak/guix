@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -61,6 +61,11 @@
         (string-append "% " (symbol->string type-name)
                        " abi-cookie")))))
 
+  (define (record-abi-mismatch-error type)
+    (throw 'record-abi-mismatch-error 'abi-check
+           "~a: record ABI mismatch; recompilation needed"
+           (list type) '()))
+
   (define (abi-check type cookie)
     "Return syntax that checks that the current \"application binary
 interface\" (ABI) for TYPE is equal to COOKIE."
@@ -68,9 +73,7 @@ interface\" (ABI) for TYPE is equal to COOKIE."
       #`(unless (eq? current-abi #,cookie)
           ;; The source file where this exception is thrown must be
           ;; recompiled.
-          (throw 'record-abi-mismatch-error 'abi-check
-                 "~a: record ABI mismatch; recompilation needed"
-                 (list #,type) '()))))
+          (record-abi-mismatch-error #,type))))
 
   (define* (report-invalid-field-specifier name bindings
                                            #:optional parent-form)
