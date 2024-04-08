@@ -4615,7 +4615,7 @@ interval trees with associated meta-data.  It is primarily used by the
 (define-public python-deeptools
   (package
     (name "python-deeptools")
-    (version "3.4.3")
+    (version "3.5.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4624,8 +4624,23 @@ interval trees with associated meta-data.  It is primarily used by the
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l09vyynz6s6w7fnyd94rpys4a6aja6kp4gli64pngdxdz3md1nl"))))
-    (build-system python-build-system)
+                "0mgcs03amrd5157drbm6ikdg0m0szrn9xbflariz2zrrnqpsai6s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test
+            (lambda _
+              (substitute* "deeptools/test/test_tools.py"
+                (("e_ver = _p")
+                 "e_ver = \".\" + _p + \"-real\""))
+              (substitute* "deeptools/multiBigwigSummary.py"
+                (("version='multiBigwigSummary")
+                 "version='%(prog)s"))
+              (substitute* "deeptools/plotCoverage.py"
+                (("version='plotCoverage")
+                 "version='%(prog)s")))))))
     (native-inputs
      (list python-mock python-nose))
     (propagated-inputs
@@ -4637,7 +4652,7 @@ interval trees with associated meta-data.  It is primarily used by the
            python-pysam
            python-scipy
            python-deeptoolsintervals
-           python-plotly-2.4.1))
+           python-plotly))
     (home-page "https://pypi.org/project/deepTools/")
     (synopsis "Useful tools for exploring deep sequencing data")
     (description "This package addresses the challenge of handling large amounts
