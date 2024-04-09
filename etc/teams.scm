@@ -663,10 +663,6 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "zimon.toutoune@gmail.com")
   julia core mentors)
 
-(define-member (person "Raghav Gururajan"
-                       "rg@raghavgururajan.name")
-  gnome mentors)
-
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
   games localization lxqt qt xfce)
