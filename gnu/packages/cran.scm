@@ -31767,31 +31767,32 @@ Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish and Turkish.")
 (define-public r-quanteda
   (package
     (name "r-quanteda")
-    (version "3.3.1")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quanteda" version))
        (sha256
         (base32
-         "0rj13m0fmk0h9akmqwwp7nkwrvym7sj97jgvjr4mvi3sglq451b2"))))
+         "0m0iw7vm9v7dcrh9yd56kr0vagas1czqgbn2ybyxg86nwcrl73qq"))))
     (properties `((upstream-name . "quanteda")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fastmatch
            r-jsonlite
+           r-lifecycle
            r-magrittr
            r-matrix
            r-rcpp
            r-rcpparmadillo
-           r-rcppparallel
            r-snowballc
            r-stopwords
            r-stringi
            r-xml2
            r-yaml))
+    (inputs (list tbb))
     (native-inputs
-     (list r-knitr))
+     (list pkg-config r-knitr))
     (home-page "https://quanteda.io")
     (synopsis "Quantitative analysis of textual data")
     (description
