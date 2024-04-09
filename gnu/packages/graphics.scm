@@ -1972,6 +1972,10 @@ or by subtracting one shape from the other.")
             (for-each delete-file
                       '("cfg/csubst.exe"
                         "cfg/wrapmsvc.exe"))
+            ;; Unbundle expat.
+            (delete-file-recursively "src/xml/expat")
+            (substitute* "src/xml/document.cpp"
+              (("expat/expat\\.h") "expat.h"))
             ;; Delete references to packaging tool cpack. Otherwise the build
             ;; fails with "add_subdirectory given source "cpack.d" which is not
             ;; an existing directory."
@@ -1981,12 +1985,13 @@ or by subtracting one shape from the other.")
     (arguments
      (list #:configure-flags
            #~(list "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
+                   "-DUSE_EXTERNAL_EXPAT=ON"
                    (string-append "-DBOOST_ROOT="
                                   #$(this-package-input "boost")))))
     (native-inputs
      (list doxygen graphviz))
     (inputs
-     (list boost freeglut glew))
+     (list boost expat freeglut glew))
     (home-page "https://github.com/coin3d/coin")
     (synopsis
      "High-level 3D visualization library with Open Inventor 2.1 API")
