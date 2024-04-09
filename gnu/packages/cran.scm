@@ -1792,14 +1792,14 @@ bioinformaticians to assemble complex plots for publication.")
 (define-public r-rticles
   (package
     (name "r-rticles")
-    (version "0.26")
+    (version "0.27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rticles" version))
        (sha256
         (base32
-         "0v1sji223iifqmq9hakr1wcgzfca52nvmh3vbi6s6d309qc77vkk"))))
+         "1a5i8vzcf058dqk30yir3ngs02f17s4d0b0px31pxa0d1ak1yfh7"))))
     (properties `((upstream-name . "rticles")))
     (build-system r-build-system)
     (propagated-inputs
