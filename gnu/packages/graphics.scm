@@ -1967,28 +1967,26 @@ or by subtracting one shape from the other.")
         (base32 "1ayg0hl8wanhadahm5xbghghxw1qjwqbrs3dl3ngnff027hsyf8p"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Delete binaries
-           (for-each delete-file
-                     '("cfg/csubst.exe"
-                       "cfg/wrapmsvc.exe"))
-           ;; Delete references to packaging tool cpack. Otherwise the build
-           ;; fails with "add_subdirectory given source "cpack.d" which is not
-           ;; an existing directory."
-           (substitute* "CMakeLists.txt"
-             ((".*cpack.d.*") ""))
-           #t))))
+        #~(begin
+            ;; Delete binaries
+            (for-each delete-file
+                      '("cfg/csubst.exe"
+                        "cfg/wrapmsvc.exe"))
+            ;; Delete references to packaging tool cpack. Otherwise the build
+            ;; fails with "add_subdirectory given source "cpack.d" which is not
+            ;; an existing directory."
+            (substitute* "CMakeLists.txt"
+              ((".*cpack.d.*") ""))))))
     (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
+                   (string-append "-DBOOST_ROOT="
+                                  #$(this-package-input "boost")))))
     (native-inputs
      (list doxygen graphviz))
     (inputs
      (list boost freeglut glew))
-    (arguments
-     `(#:configure-flags
-       (list
-        "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
-        (string-append "-DBOOST_ROOT="
-                       (assoc-ref %build-inputs "boost")))))
     (home-page "https://github.com/coin3d/coin")
     (synopsis
      "High-level 3D visualization library with Open Inventor 2.1 API")
