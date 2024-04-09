@@ -1083,13 +1083,13 @@ samples) are easily visualized.")
 (define-public r-ggstats
   (package
     (name "r-ggstats")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggstats" version))
        (sha256
-        (base32 "1jcydapwarl1cxinm80rjmmli8vmlid8alnh6w484bh7nwzmcsic"))))
+        (base32 "103d1d4azdiaf5i2dgr23wrx6svc0aq85axrfj0v2b2lkwial2pq"))))
     (properties `((upstream-name . "ggstats")))
     (build-system r-build-system)
     (propagated-inputs (list r-broom-helpers
