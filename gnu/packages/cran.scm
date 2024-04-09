@@ -13120,14 +13120,14 @@ time after the current time, after the R execution stack has emptied.")
 (define-public r-promises
   (package
     (name "r-promises")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "promises" version))
        (sha256
         (base32
-         "1gp55inqbbj0ifm4n0j5h8854a9v109xpikyhwv7b8lyydns5q1w"))))
+         "1lzs65csxaq26d1g37qjjgxzm418xv52c3ccpk0l0cxkpbrrs87q"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fastmap
