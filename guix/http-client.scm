@@ -54,6 +54,8 @@
             http-get-error-reason
             http-get-error-headers
 
+            network-error?
+
             http-fetch
             http-multiple-get
 
@@ -75,6 +77,27 @@
   (reason   http-get-error-reason)                ;string
   (headers  http-get-error-headers))              ;alist
 
+(define kind-and-args-exception?
+  (exception-predicate &exception-with-kind-and-args))
+
+(define (system-error? exception)
+  "Return true if EXCEPTION is a Guile 'system-error exception."
+  (and (kind-and-args-exception? exception)
+       (eq? 'system-error (exception-kind exception))))
+
+(define network-error?
+  (let ((kind-and-args? (exception-predicate &exception-with-kind-and-args)))
+    (lambda (exception)
+      "Return true if EXCEPTION denotes a networking error."
+      (or (and (system-error? exception)
+               (let ((errno (system-error-errno
+                             (cons 'system-error (exception-args exception)))))
+                 (memv errno (list ECONNRESET ECONNABORTED ETIMEDOUT
+                                   ECONNREFUSED EHOSTUNREACH
+                                   ENOENT))))     ;for "file://"
+          (and (kind-and-args? exception)
+               (memq (exception-kind exception)
+                     '(gnutls-error getaddrinfo-error)))))))
 
 (define* (http-fetch uri #:key port (text? #f) (buffered? #t)
                      (open-connection guix:open-connection-for-uri)

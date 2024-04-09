@@ -584,26 +584,6 @@ if DESTINATION is in the store, deduplicate its files."
       (values expected
               (get-hash)))))
 
-(define (system-error? exception)
-  "Return true if EXCEPTION is a Guile 'system-error exception."
-  (and (kind-and-args-exception? exception)
-       (eq? 'system-error (exception-kind exception))))
-
-(define network-error?
-  (let ((kind-and-args? (exception-predicate &exception-with-kind-and-args)))
-    (lambda (exception)
-      "Return true if EXCEPTION denotes a networking error."
-      (or (and (system-error? exception)
-               (let ((errno (system-error-errno
-                             (cons 'system-error (exception-args exception)))))
-                 (memv errno (list ECONNRESET ECONNABORTED ETIMEDOUT
-                                   ECONNREFUSED EHOSTUNREACH
-                                   ENOENT))))     ;for "file://"
-          (and (kind-and-args? exception)
-               (memq (exception-kind exception)
-                     '(gnutls-error getaddrinfo-error)))
-          (http-get-error? exception)))))
-
 (define* (process-substitution/fallback narinfo destination
                                         #:key cache-urls acl
                                         deduplicate? print-build-trace?
@@ -630,7 +610,8 @@ way to download the nar."
           (if (or (equivalent-narinfo? narinfo alternate)
                   (valid-narinfo? alternate acl)
                   (%allow-unauthenticated-substitutes?))
-              (guard (c ((network-error? c)
+              (guard (c ((or (http-get-error? c)
+                             (network-error? c))
                          (when (http-get-error? c)
                            (warning (G_ "download from '~a' failed: ~a, ~s~%")
                                     (uri->string (http-get-error-uri c))
@@ -670,7 +651,8 @@ PORT."
   (let ((expected-hash
          actual-hash
          (guard
-             (c ((network-error? c)
+             (c ((or (http-get-error? c)
+                     (network-error? c))
                  (when (http-get-error? c)
                    (warning (G_ "download from '~a' failed: ~a, ~s~%")
                             (uri->string (http-get-error-uri c))
