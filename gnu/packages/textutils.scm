@@ -1505,17 +1505,15 @@ files for valid UTF-8 use and to report which line endings they use.")
          "0cd1ikxsypjqisfnmr7zix3g7x8p892w77086465chyd39gpk97b"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aswinkarthik/csvdiff"))
-    (propagated-inputs
-     (list go-golang-org-x-sys
-           go-github-com-stretchr-testify
-           go-github-com-spf13-cobra
-           go-github-com-spf13-afero
-           go-github-com-spaolacci-murmur3
-           go-github-com-mattn-go-colorable
+     (list
+      #:install-source? #f
+      #:import-path "github.com/aswinkarthik/csvdiff"))
+    (native-inputs
+     (list go-github-com-cespare-xxhash
            go-github-com-fatih-color
-           go-github-com-cespare-xxhash
-           go-github-com-oneofone-xxhash))
+           go-github-com-spf13-afero
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/aswinkarthik/csvdiff")
     (synopsis "Fast diff tool for comparing CSV files")
     (description "@code{csvdiff} is a diff tool to compute changes between two
