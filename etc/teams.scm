@@ -595,10 +595,6 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "me@tobias.gr")
   core kernel mentors)
 
-(define-member (person "Björn Höfling"
-                       "bjoern.hoefling@bjoernhoefling.de")
-  java)
-
 (define-member (person "Leo Famulari"
                        "leo@famulari.name")
   kernel)
