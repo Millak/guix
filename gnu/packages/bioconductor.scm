@@ -13006,18 +13006,19 @@ signals directly in the Bruker format.")
 (define-public r-codedepends
   (package
     (name "r-codedepends")
-    (version "0.6.5")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CodeDepends" version))
        (sha256
         (base32
-         "0l7kiv3awx50glf5cs841b4zzsff1ml90f0zr868ygvwsr4ps1hq"))))
+         "0msq5ksjqp2pjzl6f1vizw53gdf5lz520bpdr5dbjwz5mc1mp0bz"))))
     (properties `((upstream-name . "CodeDepends")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-codetools r-graph r-xml))
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/CodeDepends")
     (synopsis "Analysis of R code for reproducible research and code comprehension")
     (description
