@@ -1951,9 +1951,9 @@ or by subtracting one shape from the other.")
       (home-page "https://www.opencsg.org/")
       (license license:gpl2))))
 
-(define-public coin3D
+(define-public coin3d
   (package
-    (name "coin3D")
+    (name "coin3d")
     (version "4.0.0")
     (source
      (origin
@@ -2001,7 +2001,10 @@ library for 3D visualization and visual simulation software in the scientific
 and engineering community.")
     (license license:bsd-3)))
 
-(define-deprecated coin3D-4 coin3D)
+(define-deprecated coin3D coin3d)
+(export coin3D)
+
+(define-deprecated coin3D-4 coin3d)
 (export coin3D-4)
 
 (define-public skia
