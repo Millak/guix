@@ -31,7 +31,6 @@
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module ((guix serialization) #:select (restore-file dump-file))
-  #:autoload   (guix store deduplication) (dump-file/deduplicate)
   #:autoload   (guix scripts discover) (read-substitute-urls)
   #:use-module (gcrypt hash)
   #:use-module (guix base32)
@@ -40,14 +39,9 @@
   #:use-module (guix pki)
   #:autoload   (guix build utils) (mkdir-p delete-file-recursively)
   #:use-module ((guix build download)
-                #:select (uri-abbreviation nar-uri-abbreviation
+                #:select (uri-abbreviation
                           (open-connection-for-uri
                            . guix:open-connection-for-uri)))
-  #:autoload   (gnutls) (error/invalid-session
-                         error/again
-                         error/interrupted
-                         error/push-error
-                         error/pull-error)
   #:use-module (guix progress)
   #:use-module ((guix build syscalls)
                 #:select (set-thread-name))
@@ -95,47 +89,6 @@ disabled!~%"))
   (make-parameter
    (and=> (getenv "GUIX_ALLOW_UNAUTHENTICATED_SUBSTITUTES")
           (cut string-ci=? <> "yes"))))
-
-(define %fetch-timeout
-  ;; Number of seconds after which networking is considered "slow".
-  5)
-
-(define %random-state
-  (seed->random-state (+ (ash (cdr (gettimeofday)) 32) (getpid))))
-
-(define-syntax-rule (with-timeout duration handler body ...)
-  "Run BODY; when DURATION seconds have expired, call HANDLER, and run BODY
-again.  If DURATION is #f, run BODY with no timeout."
-  (let ((thunk (lambda () body ...)))
-    (if duration
-        (begin
-          (sigaction SIGALRM
-            (lambda (signum)
-              (sigaction SIGALRM SIG_DFL)
-              handler))
-          (alarm duration)
-          (call-with-values
-              (lambda ()
-                (let try ()
-                  (catch 'system-error
-                    thunk
-                    (lambda args
-                      ;; Before Guile v2.0.9-39-gfe51c7b, the SIGALRM triggers EINTR
-                      ;; because of the bug at
-                      ;; <http://lists.gnu.org/archive/html/guile-devel/2013-06/msg00050.html>.
-                      ;; When that happens, try again.  Note: SA_RESTART cannot be
-                      ;; used because of <http://bugs.gnu.org/14640>.
-                      (if (= EINTR (system-error-errno args))
-                          (begin
-                            ;; Wait a little to avoid bursts.
-                            (usleep (random 3000000 %random-state))
-                            (try))
-                          (apply throw args))))))
-            (lambda result
-              (alarm 0)
-              (sigaction SIGALRM SIG_DFL)
-              (apply values result))))
-        (thunk))))
 
 (define (at-most max-length lst)
   "If LST is shorter than MAX-LENGTH, return it and the empty list; otherwise
@@ -366,6 +319,10 @@ authorized substitutes."
   ;; 'open-connection-for-uri/cached'.
   16)
 
+(define %fetch-timeout
+  ;; Number of seconds after which networking is considered "slow".
+  5)
+
 (define open-connection-for-uri/cached
   (let ((cache '()))
     (lambda* (uri #:key fresh? (timeout %fetch-timeout) verify-certificate?)
@@ -410,156 +367,6 @@ server certificates."
                     ;; Drain input left from the previous use.
                     (drain-input socket)
                     socket))))))))
-
-(define-syntax-rule (catch-system-error exp)
-  (catch 'system-error
-    (lambda () exp)
-    (const #f)))
-
-(define http-response-error?
-  (let ((kind-and-args-exception?
-         (exception-predicate &exception-with-kind-and-args)))
-    (lambda (exception)
-      "Return true if EXCEPTION denotes an error with the http response"
-      (->bool
-       (memq (exception-kind exception)
-             '(bad-response bad-header bad-header-component))))))
-
-(define* (download-nar narinfo destination
-                       #:key deduplicate? print-build-trace?
-                       (fetch-timeout %fetch-timeout)
-                       fast-decompression?
-                       (open-connection-for-uri guix:open-connection-for-uri))
-  "Download the nar prescribed in NARINFO, which is assumed to be authentic
-and authorized, and write it to DESTINATION.  When DEDUPLICATE? is true, and
-if DESTINATION is in the store, deduplicate its files.  Use
-OPEN-CONNECTION-FOR-URI to open connections."
-  (define destination-in-store?
-    (string-prefix? (string-append (%store-prefix) "/")
-                    destination))
-
-  (define (dump-file/deduplicate* . args)
-    ;; Make sure deduplication looks at the right store (necessary in test
-    ;; environments).
-    (apply dump-file/deduplicate
-           (append args (list #:store (%store-prefix)))))
-
-  (define (fetch uri)
-    (case (uri-scheme uri)
-      ((file)
-       (let ((port (open-file (uri-path uri) "r0b")))
-         (values port (stat:size (stat port)))))
-      ((http https)
-       ;; Test this with:
-       ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
-       ;; and then cancel with:
-       ;;   sudo tc qdisc del dev eth0 root
-       (with-timeout fetch-timeout
-         (begin
-           (warning (G_ "while fetching ~a: server is somewhat slow~%")
-                    (uri->string uri))
-           (warning (G_ "try `--no-substitutes' if the problem persists~%")))
-         (let loop ((port  (open-connection-for-uri uri))
-                    (attempt 0))
-           (guard (c ((or (network-error? c)
-                          (http-response-error? c))
-                      (close-port port)
-
-                      ;; Perform a single retry in the case of an error,
-                      ;; mostly to mimic the behaviour of
-                      ;; with-cached-connection
-                      (if (= attempt 0)
-                          (loop (open-connection-for-uri uri) 1)
-                          (raise c))))
-             (let ((port
-                    response
-                    (http-fetch uri #:text? #f
-                                #:port port
-                                #:keep-alive? #t
-                                #:buffered? #f)))
-               (values port
-                       (response-content-length response)))))))
-      (else
-       (raise
-        (formatted-message
-         (G_ "unsupported substitute URI scheme: ~a~%")
-         (uri->string uri))))))
-
-  (define (try-fetch choices)
-    (match choices
-      (((uri compression file-size) rest ...)
-       (guard (c ((and (pair? rest)
-                       (or (http-get-error? c)
-                           (network-error? c)))
-                  (warning (G_ "download from '~a' failed, trying next URL~%")
-                           (uri->string uri))
-                  (try-fetch rest)))
-         (let ((port download-size (fetch uri)))
-           (unless print-build-trace?
-             (format (current-error-port)
-                     (G_ "Downloading ~a...~%") (uri->string uri)))
-           (values port uri compression download-size))))
-      (()
-       (raise
-        (formatted-message
-         (G_ "no valid nar URLs for ~a at ~a~%")
-         (narinfo-path narinfo)
-         (narinfo-uri-base narinfo))))))
-
-  ;; Delete DESTINATION first--necessary when starting over after a failed
-  ;; download.
-  (catch-system-error (delete-file-recursively destination))
-
-  (let ((choices (narinfo-preferred-uris narinfo
-                                         #:fast-decompression?
-                                         fast-decompression?)))
-    ;; 'guix publish' without '--cache' doesn't specify a Content-Length, so
-    ;; DOWNLOAD-SIZE is #f in this case.
-    (let* ((raw uri compression download-size (try-fetch choices))
-           (progress
-            (let* ((dl-size  (or download-size
-                                 (and (equal? compression "none")
-                                      (narinfo-size narinfo))))
-                   (reporter (if print-build-trace?
-                                 (progress-reporter/trace
-                                  destination
-                                  (uri->string uri) dl-size
-                                  (current-error-port))
-                                 (progress-reporter/file
-                                  (uri->string uri) dl-size
-                                  (current-error-port)
-                                  #:abbreviation nar-uri-abbreviation))))
-              ;; Keep RAW open upon completion so we can later reuse
-              ;; the underlying connection.  Pass the download size so
-              ;; that this procedure won't block reading from RAW.
-              (progress-report-port reporter raw
-                                    #:close? #f
-                                    #:download-size dl-size)))
-           (input pids
-                  ;; NOTE: This 'progress' port of current process will be
-                  ;; closed here, while the child process doing the
-                  ;; reporting will close it upon exit.
-                  (decompressed-port (string->symbol compression)
-                                     progress))
-
-           ;; Compute the actual nar hash as we read it.
-           (algorithm expected (narinfo-hash-algorithm+value narinfo))
-           (hashed get-hash (open-hash-input-port algorithm input)))
-
-      ;; Unpack the Nar at INPUT into DESTINATION.
-      (restore-file hashed destination
-                    #:dump-file (if (and destination-in-store?
-                                         deduplicate?)
-                                    dump-file/deduplicate*
-                                    dump-file))
-      (close-port hashed)
-      (close-port input)
-
-      ;; Wait for the reporter to finish.
-      (every (compose zero? cdr waitpid) pids)
-
-      (values expected
-              (get-hash)))))
 
 (define* (process-substitution/fallback narinfo destination
                                         #:key cache-urls acl
@@ -922,7 +729,6 @@ default value."
         (leave (G_ "~a: unrecognized options~%") opts))))))
 
 ;;; Local Variables:
-;;; eval: (put 'with-timeout 'scheme-indent-function 1)
 ;;; eval: (put 'with-redirected-error-port 'scheme-indent-function 0)
 ;;; End:
 
