@@ -12624,14 +12624,14 @@ regression and information measures are implemented.")
 (define-public r-smoother
   (package
     (name "r-smoother")
-    (version "1.1")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "smoother" version))
        (sha256
         (base32
-         "0nqr1bvlr5bnasqg74zmknjjl4x28kla9h5cxpga3kq5z215pdci"))))
+         "0xw28qv8f5i05ajx32njnql6hql5njqyc47wcq6c75cxiv44ppz8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ttr))
