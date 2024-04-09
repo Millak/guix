@@ -85,8 +85,6 @@
   (;; primary: "7E9F 5BF6 1680 4367 127B  7A87 F9E6 9FB8 5A75 54F1"
    "A420 7B56 C255 109F 2CB3  157E 4990 97AE 5EA8 15D9"
    (name "podiki"))
-  ("CD2D 5EAA A98C CB37 DA91  D6B0 5F58 1664 7F8B E551"
-   (name "raghavgururajan"))
   ("BCA6 89B6 3655 3801 C3C6  2150 197A 5888 235F ACAC"
    (name "rekado"))
   (;; From commit cc51c03ff867d4633505354819c6d88af88bf919 (March 2020).
