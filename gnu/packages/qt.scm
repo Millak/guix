@@ -30,6 +30,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4842,7 +4843,7 @@ color-related widgets.")
                                           "qtscript"
                                           "qtscxml"
                                           "qtsensors-5"
-                                          "qtspeech-5"
+                                          "qtspeech"
                                           "qtsvg"
                                           "qttools"
                                           "qtwebchannel"
