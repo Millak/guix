@@ -1435,24 +1435,41 @@ of a Unix terminal to HTML code.")
         (base32 "0d07fwha2220m8j24h527xl0gnl3svvyaywflgk5292d6g49ach2"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
-       ;; Remove some vendor modules.
+       ;; Remove some available vendor modules.
        ;; TODO: Pack all of them and remove vendor directory completely.
        (snippet
         '(for-each
           delete-file-recursively
-          (list "vendor/github.com/mitchellh/mapstructure"
+          (list "vendor/github.com/fatih/color"
+                "vendor/github.com/mitchellh/mapstructure"
+                "vendor/github.com/gobwas/glob"
+                "vendor/github.com/mitchellh/go-homedir"
                 "vendor/github.com/olekukonko/tablewriter"
                 "vendor/github.com/spf13/afero"
-                "vendor/github.com/urfave/cli")))))
+                "vendor/github.com/urfave/cli"
+                "vendor/github.com/yuin/goldmark"
+                "vendor/golang.org/x/net/html"
+                "vendor/gopkg.in/ini.v1"
+                "vendor/gopkg.in/yaml.v2")))))
     (build-system go-build-system)
     (arguments
      (list #:install-source? #f
            #:import-path "github.com/errata-ai/vale"))
     (native-inputs
-     (list go-github-com-mitchellh-mapstructure
+     (list go-github-com-fatih-color
+           go-github-com-mitchellh-mapstructure
+           go-github-com-gobwas-glob
+           ;; go-github-com-jdkato-prose
+           ;; go-github-com-jdkato-regexp
+           go-github-com-mitchellh-go-homedir
            go-github-com-olekukonko-tablewriter
+           ;; go-github-com-remeh-sizedwaitgroup
            go-github-com-spf13-afero
-           go-github-com-urfave-cli))
+           go-github-com-urfave-cli
+           go-github-com-yuin-goldmark
+           go-golang-org-x-net-html
+           go-gopkg-in-ini-v1
+           go-gopkg-in-yaml-v2))
     (home-page "https://github.com/errata-ai/vale")
     (synopsis "Fully customizable syntax-aware linter that focuses on your style")
     (description
