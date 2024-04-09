@@ -279,13 +279,13 @@ files and provide more explicit control over line endings.")
 (define-public r-broom-helpers
   (package
     (name "r-broom-helpers")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "broom.helpers" version))
        (sha256
-        (base32 "14vaqxv12yrvqllp8552nx68wk2qfjcy1iy7bajkspgdpwsjzhfd"))))
+        (base32 "0gm9k2d73p6bhcmzc43qgy6v27pi036369dldz77hd5h5i95hp7c"))))
     (properties `((upstream-name . "broom.helpers")))
     (build-system r-build-system)
     (propagated-inputs (list r-broom
