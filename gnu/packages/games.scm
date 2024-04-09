@@ -9837,6 +9837,34 @@ certainly not least as a fun, realistic, and challenging desktop flight
 simulator.")
     (license license:gpl2+)))
 
+(define-public jstest-gtk
+  ;; There is no recent tagged release; use the latest commit.
+  (let ((commit "60fe6ebdbc6719945be3f04988667dea569085be")
+        (revision "0"))
+    (package
+      (name "jstest-gtk")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Grumbel/jstest-gtk")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1x5m6xvd1r9dhgzh6hp4vrszczbbxr04v7lyh4wjxxzrj3ahbmcq"))))
+      (build-system cmake-build-system)
+      (arguments (list #:configure-flags #~(list "-DBUILD_TESTS=ON")))
+      (native-inputs (list pkg-config))
+      (inputs (list gtkmm-3 libsigc++-2))
+      (home-page "https://github.com/Grumbel/jstest-gtk/")
+      (synopsis "Simple joystick tester GUI")
+      (description "@command{jstest-gtk} is a simple joystick tester based on
+GTK.  It provides a list of attached joysticks, a way to display which buttons
+and axis are pressed, a way to remap axis and buttons and a way to calibrate
+joysticks.")
+      (license license:gpl3+))))
+
 (define-public jumpnbump
   (package
     (name "jumpnbump")
