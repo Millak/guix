@@ -3834,13 +3834,13 @@ using the multicore functionality of the parallel package.")
              "datatables-extensions/Buttons"))))
     (package
       (name "r-dt")
-      (version "0.32")
+      (version "0.33")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "0nvj2bc441b9h13085fa7q281f86lgx4k0d8lr64xgdpbmbvkl21"))
+                  "1f17gdqjk1aj7vwjvv3363k8lnsvc6ssh4s3gy1prnz33kdxlig1"))
                 (modules '((guix build utils)
                            (ice-9 match)))
                 (snippet
