@@ -1433,23 +1433,33 @@ of a Unix terminal to HTML code.")
              (commit (string-append "v" version))))
        (sha256
         (base32 "0d07fwha2220m8j24h527xl0gnl3svvyaywflgk5292d6g49ach2"))
-       (file-name (git-file-name name version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       ;; Remove some vendor modules.
+       ;; TODO: Pack all of them and remove vendor directory completely.
+       (snippet
+        '(for-each
+          delete-file-recursively
+          (list "vendor/github.com/mitchellh/mapstructure"
+                "vendor/github.com/olekukonko/tablewriter"
+                "vendor/github.com/spf13/afero"
+                "vendor/github.com/urfave/cli")))))
     (build-system go-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:import-path "github.com/errata-ai/vale"))
     (native-inputs
      (list go-github-com-mitchellh-mapstructure
            go-github-com-olekukonko-tablewriter
            go-github-com-spf13-afero
            go-github-com-urfave-cli))
-    (arguments
-     `(#:import-path "github.com/errata-ai/vale"
-       #:install-source? #f))
     (home-page "https://github.com/errata-ai/vale")
     (synopsis "Fully customizable syntax-aware linter that focuses on your style")
     (description
      "Vale is a fully extensible linter that focuses on your own writing style
 by making use of rules in individual YAML files.  It is syntax-aware on markup
-languages such as HTML, Markdown, Asciidoc, and reStructuredText.  The community
-around it also has a list of style guides implemented with Vale in
+languages such as HTML, Markdown, Asciidoc, and reStructuredText.  The
+community around it also has a list of style guides implemented with Vale in
 @url{https://github.com/errata-ai/styles, their styles repo}.")
     (license license:expat)))
 
