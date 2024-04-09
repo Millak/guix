@@ -81,6 +81,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet)
+  #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -1986,12 +1987,31 @@ or by subtracting one shape from the other.")
      (list #:configure-flags
            #~(list "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
                    "-DUSE_EXTERNAL_EXPAT=ON"
+                   ;; Disable "runtime linking" of libraries, i.e. `dlopen`,
+                   ;; force to use libraries at build time.
+                   "-DFONTCONFIG_RUNTIME_LINKING=OFF"
+                   "-DFREETYPE_RUNTIME_LINKING=OFF"
+                   "-DLIBBZIP2_RUNTIME_LINKING=OFF"
+                   "-DOPENAL_RUNTIME_LINKING=OFF"
+                   ;"-DSIMAGE_RUNTIME_LINKING=OFF" -- Not packaged yet.
+                   "-DZLIB_RUNTIME_LINKING=OFF"
+                   "-DGLU_RUNTIME_LINKING=OFF"
+                   ;"-DSPIDERMONKEY_RUNTIME_LINKING=OFF" -- Can't find mozjs.
                    (string-append "-DBOOST_ROOT="
                                   #$(this-package-input "boost")))))
     (native-inputs
      (list doxygen graphviz))
     (inputs
-     (list boost expat freeglut glew))
+     (list boost
+           bzip2
+           expat
+           fontconfig
+           freeglut
+           freetype
+           glew
+           libx11
+           openal
+           zlib))
     (home-page "https://github.com/coin3d/coin")
     (synopsis
      "High-level 3D visualization library with Open Inventor 2.1 API")
