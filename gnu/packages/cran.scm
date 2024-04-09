@@ -31649,19 +31649,20 @@ programming} (OOP) using R Reference Class.")
 (define-public r-proxyc
   (package
     (name "r-proxyc")
-    (version "0.3.4")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "proxyC" version))
        (sha256
         (base32
-         "1skq5cxd0kh2pccfg4h9bis4wbqb6zm04q4iwfa6dqml6hyiv7gk"))))
+         "1a124nzxldc6687kvgkg41dqfbqb7yqdgm9dj5fj8g4bax9qcgg8"))))
     (properties `((upstream-name . "proxyC")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
+    (inputs (list tbb))
     (propagated-inputs
-     (list r-matrix r-rcpp r-rcpparmadillo r-rcppparallel))
+     (list r-matrix r-rcpp r-rcpparmadillo))
     (home-page "https://cran.r-project.org/package=proxyC")
     (synopsis "Compute proximity in large sparse matrices")
     (description
