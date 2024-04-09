@@ -9754,18 +9754,19 @@ programming} (SQP) based solver).")
 (define-public r-hardyweinberg
   (package
     (name "r-hardyweinberg")
-    (version "1.7.7")
+    (version "1.7.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "HardyWeinberg" version))
        (sha256
         (base32
-         "058bfb43i2vjrc2iy3q3izlijw2hh61rl47c9gcf327xlp9x6wnh"))))
+         "1wddy32zljyya37isqb54sqhpp07s2kizjl36i08pj37bbza7yac"))))
     (properties `((upstream-name . "HardyWeinberg")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mice r-nnet r-rcpp r-rsolnp r-shape))
+    (native-inputs (list r-knitr r-rmarkdown))
     (home-page "https://cran.r-project.org/package=HardyWeinberg")
     (synopsis "Statistical tests and graphics for Hardy-Weinberg equilibrium")
     (description
