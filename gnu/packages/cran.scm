@@ -6661,7 +6661,7 @@ PKI infrastructure and perform cryptographic tasks.")
 resampling for assessing the uncertainty in hierarchical cluster analysis.  It
 provides an AU (approximately unbiased) P-value as well as a BP (bootstrap probability)
 value for each cluster in a dendrogram.")
-   (license license:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public r-rcpp
   (package
