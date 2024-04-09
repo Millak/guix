@@ -932,10 +932,8 @@ derivations."
 
 (define (guile-for-grafts)
   "Return the Guile package used to build grafting derivations."
-  ;; Guile 2.2 would not work due to <https://bugs.gnu.org/28211> when
-  ;; grafting packages.
-  (let ((distro (resolve-interface '(gnu packages guile))))
-    (module-ref distro 'guile-2.0)))
+  (let ((distro (resolve-interface '(gnu packages commencement))))
+    (module-ref distro 'guile-final)))
 
 (define* (default-guile-derivation #:optional (system (%current-system)))
   "Return the derivation for SYSTEM of the default Guile package used to run

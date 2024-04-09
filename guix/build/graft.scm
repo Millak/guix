@@ -299,19 +299,6 @@ a list of store file name pairs."
                                (string-append (dirname file) "/" target))))
               matches)))
 
-(define (exit-on-exception proc)
-  "Return a procedure that wraps PROC so that 'primitive-exit' is called when
-an exception is caught."
-  (lambda (arg)
-    (catch #t
-      (lambda ()
-        (proc arg))
-      (lambda (key . args)
-        ;; Since ports are not thread-safe as of Guile 2.0, reopen stderr.
-        (let ((port (fdopen 2 "w0")))
-          (print-exception port #f key args)
-          (primitive-exit 1))))))
-
 (define* (rewrite-directory directory output mapping
                             #:optional (store (%store-directory)))
   "Copy DIRECTORY to OUTPUT, replacing strings according to MAPPING, a list of
@@ -383,13 +370,10 @@ file name pairs."
         (else
          (error "unsupported file type" stat)))))
 
-  ;; Use 'exit-on-exception' to force an exit upon I/O errors, given that
-  ;; 'n-par-for-each' silently swallows exceptions.
-  ;; See <http://bugs.gnu.org/23581>.
-  (n-par-for-each (parallel-job-count)
-                  (exit-on-exception rewrite-leaf)
-                  (find-files directory (const #t)
-                              #:directories? #t))
+  ;; n-par-for-each can lead to segfaults in the grafting code?
+  (for-each rewrite-leaf
+            (find-files directory (const #t)
+                        #:directories? #t))
   (rename-matching-files output mapping))
 
 (define %graft-hooks
