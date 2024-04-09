@@ -1955,17 +1955,17 @@ or by subtracting one shape from the other.")
 (define-public coin3d
   (package
     (name "coin3d")
-    (version "4.0.0")
+    (version "4.0.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/coin3d/coin")
-             (commit (string-append "Coin-" version))
+             (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ayg0hl8wanhadahm5xbghghxw1qjwqbrs3dl3ngnff027hsyf8p"))
+        (base32 "1p59q67zc45pwicknsccvmby09snhz35725wr3xsh2v6kxza76a4"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
