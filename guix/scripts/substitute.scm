@@ -411,63 +411,29 @@ server certificates."
                     (drain-input socket)
                     socket))))))))
 
-(define kind-and-args-exception?
-  (exception-predicate &exception-with-kind-and-args))
-
-(define (call-with-cached-connection uri proc)
-  (let ((port (open-connection-for-uri/cached uri
-                                              #:verify-certificate? #f)))
-    (guard (c ((kind-and-args-exception? c)
-               (let ((key (exception-kind c))
-                     (args (exception-args c)))
-                 ;; If PORT was cached and the server closed the connection in the
-                 ;; meantime, we get EPIPE.  In that case, open a fresh connection
-                 ;; and retry.  We might also get 'bad-response or a similar
-                 ;; exception from (web response) later on, once we've sent the
-                 ;; request, or a ERROR/INVALID-SESSION from GnuTLS.
-                 (if (or (and (eq? key 'system-error)
-                              (= EPIPE (system-error-errno `(,key ,@args))))
-                         (and (eq? key 'gnutls-error)
-                              (memq (first args)
-                                    (list error/invalid-session
-
-                                          ;; "Error in the push function" is
-                                          ;; usually a transient error.
-                                          error/push-error
-                                          error/pull-error
-
-                                          ;; XXX: These two are not properly handled in
-                                          ;; GnuTLS < 3.7.3, in
-                                          ;; 'write_to_session_record_port'; see
-                                          ;; <https://bugs.gnu.org/47867>.
-                                          error/again error/interrupted)))
-                         (memq key '(bad-response bad-header bad-header-component)))
-                     (proc (open-connection-for-uri/cached uri
-                                                           #:verify-certificate? #f
-                                                           #:fresh? #t))
-                     (raise c))))
-              (#t
-               ;; An exception that's not handled here, such as
-               ;; '&http-get-error'.  Re-raise it.
-               (raise c)))
-      (proc port))))
-
-(define-syntax-rule (with-cached-connection uri port exp ...)
-  "Bind PORT with EXP... to a socket connected to URI."
-  (call-with-cached-connection uri (lambda (port) exp ...)))
-
 (define-syntax-rule (catch-system-error exp)
   (catch 'system-error
     (lambda () exp)
     (const #f)))
 
+(define http-response-error?
+  (let ((kind-and-args-exception?
+         (exception-predicate &exception-with-kind-and-args)))
+    (lambda (exception)
+      "Return true if EXCEPTION denotes an error with the http response"
+      (->bool
+       (memq (exception-kind exception)
+             '(bad-response bad-header bad-header-component))))))
+
 (define* (download-nar narinfo destination
                        #:key deduplicate? print-build-trace?
                        (fetch-timeout %fetch-timeout)
-                       fast-decompression?)
+                       fast-decompression?
+                       (open-connection-for-uri guix:open-connection-for-uri))
   "Download the nar prescribed in NARINFO, which is assumed to be authentic
 and authorized, and write it to DESTINATION.  When DEDUPLICATE? is true, and
-if DESTINATION is in the store, deduplicate its files."
+if DESTINATION is in the store, deduplicate its files.  Use
+OPEN-CONNECTION-FOR-URI to open connections."
   (define destination-in-store?
     (string-prefix? (string-append (%store-prefix) "/")
                     destination))
@@ -493,15 +459,26 @@ if DESTINATION is in the store, deduplicate its files."
            (warning (G_ "while fetching ~a: server is somewhat slow~%")
                     (uri->string uri))
            (warning (G_ "try `--no-substitutes' if the problem persists~%")))
-         (with-cached-connection uri port
-           (let ((raw
-                  response
-                  (http-fetch uri #:text? #f
-                              #:port port
-                              #:keep-alive? #t
-                              #:buffered? #f)))
-             (values raw
-                     (response-content-length response))))))
+         (let loop ((port  (open-connection-for-uri uri))
+                    (attempt 0))
+           (guard (c ((or (network-error? c)
+                          (http-response-error? c))
+                      (close-port port)
+
+                      ;; Perform a single retry in the case of an error,
+                      ;; mostly to mimic the behaviour of
+                      ;; with-cached-connection
+                      (if (= attempt 0)
+                          (loop (open-connection-for-uri uri) 1)
+                          (raise c))))
+             (let ((port
+                    response
+                    (http-fetch uri #:text? #f
+                                #:port port
+                                #:keep-alive? #t
+                                #:buffered? #f)))
+               (values port
+                       (response-content-length response)))))))
       (else
        (raise
         (formatted-message
@@ -622,7 +599,9 @@ way to download the nar."
                               #:deduplicate? deduplicate?
                               #:print-build-trace? print-build-trace?
                               #:fast-decompression?
-                              fast-decompression?))
+                              fast-decompression?
+                              #:open-connection-for-uri
+                              open-connection-for-uri/cached))
               (loop rest)))
          (()
           (loop rest)))))))
@@ -673,7 +652,9 @@ PORT."
            (download-nar narinfo destination
                          #:deduplicate? deduplicate?
                          #:print-build-trace? print-build-trace?
-                         #:fast-decompression? fast-decompression?))))
+                         #:fast-decompression? fast-decompression?
+                         #:open-connection-for-uri
+                         open-connection-for-uri/cached))))
     (values narinfo
             expected-hash
             actual-hash)))
@@ -943,8 +924,6 @@ default value."
 ;;; Local Variables:
 ;;; eval: (put 'with-timeout 'scheme-indent-function 1)
 ;;; eval: (put 'with-redirected-error-port 'scheme-indent-function 0)
-;;; eval: (put 'with-cached-connection 'scheme-indent-function 2)
-;;; eval: (put 'call-with-cached-connection 'scheme-indent-function 1)
 ;;; End:
 
 ;;; substitute.scm ends here
