@@ -6619,6 +6619,30 @@ attaching it.  This is a key part of the @code{devtools} package as it allows
 you to rapidly iterate while developing a package.")
     (license license:gpl3)))
 
+(define-public r-pki
+  (package
+    (name "r-pki")
+    (version "0.1-12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "PKI" version))
+       (sha256
+        (base32 "0nidg6l9nrmpyimi502fydy22r247w9i4ngb2xdbxjvfhr17m0xd"))))
+    (properties `((upstream-name . "PKI")))
+    (build-system r-build-system)
+    (inputs (list openssl zlib))
+    (propagated-inputs (list r-base64enc))
+    (native-inputs (list pkg-config))
+    (home-page "http://www.rforge.net/PKI")
+    (synopsis "Public Key Infrastucture for R based on the X.509 standard")
+    (description
+     "This is a package containing Public Key Infrastucture functions such as
+verifying certificates, RSA encryption and signing, which can be used to build
+PKI infrastructure and perform cryptographic tasks.")
+    ;; Either of these licenses.
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-pvclust
   (package
    (name "r-pvclust")
