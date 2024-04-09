@@ -8,6 +8,7 @@
 ;;; Copyright © 2019-2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
@@ -1114,6 +1115,33 @@ for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
 @url{https://web.archive.org/web/20210803201519/http://davekoelle.com/alphanum.html,the
 Alphanum Algorithm} developed by Dave Koelle in Go.")
     (license license:bsd-3)))
+
+(define-public go-github-com-fatih-color
+  (package
+    (name "go-github-com-fatih-color")
+    (version "1.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fatih/color")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15689x103gy9q7g7623rlvhwrw27p079ardapmrrag0sdwrx5bq2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fatih/color"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty))
+    (home-page "https://pkg.go.dev/github.com/fatih/color")
+    (synopsis "Print colored text in Go")
+    (description
+     "This package provides an ANSI color package to output colorized or SGR
+defined output to the standard output.")
+    (license license:expat)))
 
 (define-public go-github-com-gabriel-vasile-mimetype
   (package

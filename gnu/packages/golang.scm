@@ -6140,31 +6140,6 @@ filters for Go.")
 @code{mbox} files.")
     (license license:expat)))
 
-(define-public go-github-com-fatih-color
-  (package
-    (name "go-github-com-fatih-color")
-    (version "1.16.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/fatih/color")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "15689x103gy9q7g7623rlvhwrw27p079ardapmrrag0sdwrx5bq2"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/fatih/color"))
-    (propagated-inputs
-     (list go-github-com-mattn-go-colorable
-           go-github-com-mattn-go-isatty))
-    (synopsis "Print colored text in Go")
-    (description "This package provides an ANSI color package to output
-colorized or SGR defined output to the standard output.")
-    (home-page "https://pkg.go.dev/github.com/fatih/color")
-    (license license:expat)))
-
 (define-public go-github-com-google-go-cmp-cmp
   (package
     (name "go-github-com-google-go-cmp-cmp")
