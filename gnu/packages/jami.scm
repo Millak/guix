@@ -78,8 +78,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20240124.3")
-(define %jami-daemon-commit "205904ed4dd736b8a0ea6c913ecb91d637b79867")
+(define %jami-nightly-version "20240325.0")
+(define %jami-daemon-commit "32f39e65483cb22729eb922d72434013b337f2c9")
 
 (define-public libjami
   (package
@@ -93,7 +93,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0knq84c5f11bgan0076mhi0kpc7l6wwxj41jpssdy0y1lfzgqd8a"))
+                "0kha2v46l5hmycklhyxrs2qybm640nbrk98z1xvicjxyq6bfszh4"))
               (patches (search-patches
                         "libjami-ac-config-files.patch"
                         "jami-disable-integration-tests.patch"))))
@@ -106,25 +106,13 @@
       ;; user scripts too, until more general purpose Scheme bindings are made
       ;; available (see: test/agent/README.md).
       #:configure-flags #~(list "--enable-agent" "--enable-debug")
-      #:make-flags
-      #~(list
-         "V=1"                 ;build verbosely
-         ;; The 'ut_media_player' is known to fail (see:
-         ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/935).
-         "XFAIL_TESTS=ut_media_player")
+      #:make-flags #~(list"V=1")        ;build verbosely
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'change-directory/maybe
             (lambda _
               ;; Allow building from the tarball or a git checkout.
               (false-if-exception (chdir "daemon"))))
-          (add-after 'change-directory/maybe 'extend-scheduler-test-timeout
-            (lambda _
-              ;; The ut_scheduler unit test may fail on slower machines (see:
-              ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/939).
-              (substitute* "test/unitTest/scheduler.cpp"
-                (("std::chrono::seconds\\(3)")
-                 "std::chrono::seconds(30)"))))
           (add-after 'install 'delete-static-libraries
             ;; Remove 100+ MiB of static libraries.  "--disable-static" cannot
             ;; be used as the test suite requires access to private symbols
@@ -239,11 +227,12 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06q4cdizpix12yzjrnhdwqwybskhc58cissffdnf1zw5pbv0mqag"))
+                "08lv8azjd47n56i25d9ax248xmidixpsnwh5kc4qjxib7985bdhs"))
               (patches (search-patches
                         "jami-libjami-headers-search.patch"
-                        "jami-qml-tests-discovery.patch"
+                        "jami-qwindowkit.patch"
                         "jami-skip-tests-requiring-internet.patch"
+                        "jami-tests-qtwebengine-ifdef-to-if.patch"
                         "jami-unbundle-dependencies.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
@@ -252,13 +241,15 @@ QSortFilterProxyModel conveniently exposed for QML.")
       #:qtbase qtbase
       #:configure-flags
       #~(list "-DWITH_DAEMON_SUBMODULE=OFF"
-              "-DENABLE_TESTS=ON"
+              "-DBUILD_TESTING=ON"
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.
               "-DWITH_WEBENGINE=OFF"
               ;; Use libwrap to link directly to libjami instead of
               ;; communicating via D-Bus to jamid, the Jami daemon.
-              "-DENABLE_LIBWRAP=ON")
+              "-DENABLE_LIBWRAP=ON"
+              ;; Ensure FetchContent contribs are looked from the system.
+              "-DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=ALWAYS")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-version-string
@@ -292,8 +283,9 @@ QSortFilterProxyModel conveniently exposed for QML.")
                 (display "Running unit tests...\n")
                 (invoke "tests/unit_tests")
 
-                ;; XXX: The QML test suite fails, exiting with status code 1 (see:
-                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/883).
+                ;; The qml_tests suite is not run, as it currently exits with
+                ;; an unclear status of 1 (see:
+                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1605).
                 ;; (display "Running functional tests...\n")
                 ;; (invoke "tests/qml_tests")
                 ))))))
@@ -301,7 +293,9 @@ QSortFilterProxyModel conveniently exposed for QML.")
      (list googletest
            pkg-config
            python
+           qthttpserver
            qttools
+           qtwebsockets
            vulkan-headers))
     (inputs
      (list ffmpeg-jami
@@ -319,6 +313,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
            qtnetworkauth
            qtpositioning
            qtsvg
+           qwindowkit
            tidy-html                    ;used by src/app/htmlparser.h
            vulkan-loader))
     (home-page "https://jami.net")

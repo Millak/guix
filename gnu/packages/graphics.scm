@@ -74,6 +74,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -461,7 +462,7 @@ applications.")
 (define-public openvdb
   (package
     (name "openvdb")
-    (version "8.2.0")
+    (version "11.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -471,14 +472,14 @@ applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0856697hnwk8xsp29kx8y2p1kliy0bdwfsznxm38v4690vna15rk"))))
+                "0r6q7bl8513ggrvx3n73j1s3f7n5x1rxy5xi471qyrya95gy6c60"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        (list (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib"))))
     (inputs
-     (list boost c-blosc ilmbase tbb zlib))
+     (list boost c-blosc jemalloc tbb zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.openvdb.org/")
@@ -493,14 +494,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.3.5")                   ;3.3.x is the current LTS version
+    (version "3.6.10")                   ;3.6.x is the current LTS version
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "1pwl4lbc00g0bj97rd8l9fnrv3w1gny9ci6mrma3pp2acgs56502"))))
+                "1srwr365y40hhpjmfsg52rphdybvin0ay2r23pknm7b9pkpw0wqs"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -521,6 +522,11 @@ typically encountered in feature film production.")
                 "-DWITH_OPENVDB=ON"
                 "-DWITH_OPENSUBDIV=ON"
                 "-DWITH_PYTHON_INSTALL=OFF"
+                "-DWITH_SYSTEM_BULLET=ON"
+                "-DWITH_SYSTEM_EIGEN3=ON"
+                "-DWITH_SYSTEM_FREETYPE=ON"
+                "-DWITH_SYSTEM_GLOG=ON"
+                "-DWITH_SYSTEM_LZO=ON"
                 (string-append "-DPYTHON_LIBRARY=python" #$python-version)
                 (string-append "-DPYTHON_LIBPATH="
                                (assoc-ref %build-inputs "python")
@@ -536,32 +542,22 @@ typically encountered in feature film production.")
                 (string-append "-DPYTHON_NUMPY_PATH="
                                (assoc-ref %build-inputs "python-numpy")
                                "/lib/python" #$python-version
-                               "/site-packages/")
-                ;; OpenEXR propagates ilmbase, but its include files do not
-                ;; appear in the C_INCLUDE_PATH, so we need to add
-                ;; "$ilmbase/include/OpenEXR/" to the C_INCLUDE_PATH to
-                ;; satisfy the dependency on "half.h" and "Iex.h".
-                (string-append "-DCMAKE_CXX_FLAGS=-I"
-                               (search-input-directory %build-inputs
-                                                       "include/OpenEXR"))))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-broken-import
-            (lambda _
-              (substitute* "release/scripts/addons/io_scene_fbx/json2fbx.py"
-                (("import encode_bin")
-                 "from . import encode_bin")))))))
+                               "/site-packages/")))))
     (inputs
      (list boost
+           bullet
+           eigen
            embree
            ffmpeg-5
            fftw
-           freetype
+           freetype-with-brotli
            glew
+           glog
            gmp                        ;needed for boolean operations on meshes
-           ilmbase
+           imath
            jack-1
            jemalloc
+           libepoxy
            libjpeg-turbo
            libpng
            libsndfile
@@ -569,9 +565,10 @@ typically encountered in feature film production.")
            libx11
            libxi
            libxrender
+           lzo
            openal
            opencolorio
-           openexr-2
+           openexr
            openimageio
            openjpeg
            opensubdiv
@@ -707,7 +704,7 @@ baking tools to produce normal maps.")
 (define-public openshadinglanguage
   (package
     (name "openshadinglanguage")
-    (version "1.11.16.0")
+    (version "1.13.8.0")
     (source
      (origin
        (method git-fetch)
@@ -716,52 +713,46 @@ baking tools to produce normal maps.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x0lc163vl2b57l75bf5zxlr6vm2y1f1izlxdnrw3vsapv3r9k9g"))))
+        (base32 "1ji4bw8z4ylsh0jvir3d40p6xyhr63g588gh3bag7bzsr3flsb02"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DUSE_PARTIO=OFF") ; TODO: not packaged
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'add-ilmbase-include-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; OpenEXR 2 propagates ilmbase, but its include files do not
-             ;; appear in the C_INCLUDE_PATH.
-             (let ((headers (string-append
-                             (assoc-ref inputs "ilmbase")
-                             "/include/OpenEXR")))
-               (setenv "C_INCLUDE_PATH"
-                       (string-append headers ":"
-                                      (or (getenv "C_INCLUDE_PATH") "")))
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-append headers ":"
-                                      (or (getenv "CPLUS_INCLUDE_PATH") ""))))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "ctest" "--exclude-regex"
-                       (string-join
-                        (list
-                         "osl-imageio"       ; OIIO not compiled with freetype
-                         "osl-imageio.opt"   ; OIIO not compiled with freetype
-                         "texture-udim"      ; file does not exist
-                         "texture-udim.opt"  ; file does not exist
-                         "example-deformer"  ; could not find OSLConfig
-                         "python-oslquery")  ; no module oslquery
-                        "|"))))))))
+     (list #:configure-flags
+           #~(list "-DUSE_PARTIO=OFF"   ; TODO: not packaged
+                   (string-append "-DLLVM_BC_GENERATOR="
+                                  #$(this-package-native-input "clang")
+                                  "/bin/clang++"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke
+                      "ctest" "--exclude-regex"
+                      (string-join
+                       (list
+                        "osl-imageio" ; file does not exist
+                        "osl-imageio.opt" ; file does not exist
+                        "osl-imageio.opt.rs_bitcode" ; file does not exist
+                        "texture-udim"    ; file does not exist
+                        "texture-udim.opt" ; file does not exist
+                        "texture-udim.opt.rs_bitcode" ; file does not exist
+                        "example-deformer" ; could not find OSLConfig
+                        "python-oslquery") ; no module oslquery
+                       "|"))))))))
     (native-inputs
      (list bison
-           clang-9
+           clang
            flex
-           llvm-9
+           llvm
            pybind11
            python-wrapper))
     (inputs
      (list boost
            imath
-           openexr-2
+           openexr
            openimageio
            pugixml
-           qtbase-5
+           qtbase
            zlib))
     (home-page "https://github.com/AcademySoftwareFoundation/OpenShadingLanguage")
     (synopsis "Shading language for production GI renderers")
@@ -1311,40 +1302,38 @@ with strong support for multi-part, multi-channel use cases.")
 (define-public openimageio
   (package
     (name "openimageio")
-    (version "2.2.21.0")
+    (version "2.5.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/OpenImageIO/oiio")
-                    (commit (string-append "Release-" version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aicxbshzv1g9d8d08vsj1a9klaycxaifvvp565qjv70wyma2vkr"))))
+                "06x3lqj9qjh5m0zbr5g2g9ii6jk340pgzrhr4fb353y1y2pkx5sw"))))
     (build-system cmake-build-system)
-    ;; FIXME: To run all tests successfully, test image sets from multiple
-    ;; third party sources have to be present.  For details see
-    ;; <https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md>
     (arguments
-     `(#:tests? #f
-       #:configure-flags (list "-DUSE_EXTERNAL_PUGIXML=1")))
+     (list #:tests? #f ; half the tests require online data or use redirection
+           #:configure-flags #~(list "-DUSE_EXTERNAL_PUGIXML=1"
+                                     "-DOIIO_BUILD_TESTS=false")))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("boost" ,boost)
-       ("fmt" ,fmt-8)
-       ("libheif" ,libheif)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("giflib" ,giflib)
-       ("openexr" ,openexr-2)
-       ("ilmbase" ,ilmbase)
-       ("pugixml" ,pugixml)
-       ("python" ,python-wrapper)
-       ("pybind11" ,pybind11)
-       ("robin-map" ,robin-map)
-       ("zlib" ,zlib)))
+     (list boost
+           fmt
+           giflib
+           imath
+           libheif
+           libjpeg-turbo
+           libpng
+           libtiff
+           openexr
+           pugixml
+           pybind11
+           python-wrapper
+           robin-map
+           zlib))
     (synopsis "C++ library for reading and writing images")
     (description
      "OpenImageIO is a library for reading and writing images, and a bunch of
@@ -1881,7 +1870,7 @@ requirements.")
 (define-public opensubdiv
   (package
     (name "opensubdiv")
-    (version "3.4.0")
+    (version "3.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1891,20 +1880,19 @@ requirements.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cippg6aqc5dlya1cmh3908pwssrg52fwgyylnvz5343yrxmgk12"))))
+                "0h9scxiigijzlpv4r0s0nhxlndhv1cmarb2bqgmlwcln1jjvlb4n"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-glew-location
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (setenv "GLEW_LOCATION" (assoc-ref inputs "glew"))
-                      #t))
-                  (add-before 'check 'start-xorg-server
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; The test suite requires a running X server.
-                      (system "Xvfb :1 &")
-                      (setenv "DISPLAY" ":1")
-                      #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-glew-location
+                 (lambda _
+                  (setenv "GLEW_LOCATION" #$(this-package-input "glew"))))
+               (add-before 'check 'start-xorg-server
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; The test suite requires a running X server.
+                   (system "Xvfb :1 &")
+                   (setenv "DISPLAY" ":1"))))))
     (native-inputs
      (list xorg-server-for-tests))
     (inputs

@@ -20,7 +20,9 @@ on-line communication; they can use any name or pseudonym of their
 choice.
 
 @menu
+* Requirements::                Software needed to build and run Guix.
 * Building from Git::           The latest and greatest.
+* Running the Test Suite::      Testing Guix.
 * Running Guix Before It Is Installed::  Hacker tricks.
 * The Perfect Setup::           The right tools.
 * Alternative Setups::          Other possible tools that do the job.
@@ -35,6 +37,103 @@ choice.
 * Writing Documentation::       Improving documentation in GNU Guix.
 * Translating Guix::            Make Guix speak your native language.
 @end menu
+
+@node Requirements
+@section Requirements
+
+This section lists requirements when building Guix from source.  The
+build procedure for Guix is the same as for other GNU software, and is
+not covered here.  Please see the files @file{README} and @file{INSTALL}
+in the Guix source tree for additional details.
+
+@cindex official website
+GNU Guix is available for download from its website at
+@url{https://www.gnu.org/software/guix/}.
+
+GNU Guix depends on the following packages:
+
+@itemize
+@item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,
+version 3.0.3 or later;
+@item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
+0.1.0 or later;
+@item
+@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile
+Preparations, how to install the GnuTLS bindings for Guile,,
+gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to
+@uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS
+until version 3.7.8 included.};
+@item
+@uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0
+or later;
+@item @uref{https://notabug.org/guile-zlib/guile-zlib, Guile-zlib},
+version 0.1.0 or later;
+@item @uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib};
+@item @uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};
+@item
+@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.5.0
+or later;
+@item @uref{https://git-scm.com, Git} (yes, both!);
+@item @uref{https://savannah.nongnu.org/projects/guile-json/, Guile-JSON}
+4.3.0 or later;
+@item @url{https://www.gnu.org/software/make/, GNU Make}.
+@end itemize
+
+The following dependencies are optional:
+
+@itemize
+@item
+@c Note: We need at least 0.13.0 for #:nodelay.
+Support for build offloading (@pxref{Daemon Offload Setup}) and
+@command{guix copy} (@pxref{Invoking guix copy}) depends on
+@uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH},
+version 0.13.0 or later.
+
+@item
+@uref{https://notabug.org/guile-zstd/guile-zstd, Guile-zstd}, for zstd
+compression and decompression in @command{guix publish} and for
+substitutes (@pxref{Invoking guix publish}).
+
+@item
+@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} for
+the @code{crate} importer (@pxref{Invoking guix import}).
+
+@item
+@uref{https://www.nongnu.org/guile-lib/doc/ref/htmlprag/, Guile-Lib} for
+the @code{go} importer (@pxref{Invoking guix import}) and for some of
+the ``updaters'' (@pxref{Invoking guix refresh}).
+
+@item
+When @url{http://www.bzip.org, libbz2} is available,
+@command{guix-daemon} can use it to compress build logs.
+@end itemize
+
+Unless @option{--disable-daemon} was passed to @command{configure}, the
+following packages are also needed:
+
+@itemize
+@item @url{https://gnupg.org/, GNU libgcrypt};
+@item @url{https://sqlite.org, SQLite 3};
+@item @url{https://gcc.gnu.org, GCC's g++}, with support for the
+C++11 standard.
+@end itemize
+
+@cindex state directory
+@cindex localstatedir
+@cindex system configuration directory
+@cindex sysconfdir
+When configuring Guix on a system that already has a Guix installation,
+be sure to specify the same state directory as the existing installation
+using the @option{--localstatedir} option of the @command{configure}
+script (@pxref{Directory Variables, @code{localstatedir},, standards,
+GNU Coding Standards}).  Usually, this @var{localstatedir} option is set
+to the value @file{/var}.  The @command{configure} script protects
+against unintended misconfiguration of @var{localstatedir} so you do not
+inadvertently corrupt your store (@pxref{The Store}).  The configuration
+directory should also be configured by setting the @option{--sysconfdir}
+option to the @file{/etc} value, which is the location used by Guix to
+store for example the access control list of authorized machines and the
+definition of offload machines.
 
 @node Building from Git
 @section Building from Git
@@ -202,6 +301,107 @@ This means that one of the record types that Guix defines (in this
 example, the @code{origin} record) has changed, and all of guix needs
 to be recompiled to take that change into account.  To do so, run
 @command{make clean-go} followed by @command{make}.
+
+Should @command{make} fail with an Automake error message after
+updating, you need to repeat the steps outlined in this section,
+commencing with @command{./bootstrap}.
+
+@node Running the Test Suite
+@section Running the Test Suite
+
+@cindex test suite
+After a successful @command{configure} and @code{make} run, it is a good
+idea to run the test suite.  It can help catch issues with the setup or
+environment, or bugs in Guix itself---and really, reporting test
+failures is a good way to help improve the software.  To run the test
+suite, type:
+
+@example
+make check
+@end example
+
+Test cases can run in parallel: you can use the @code{-j} option of
+GNU@tie{}make to speed things up.  The first run may take a few minutes
+on a recent machine; subsequent runs will be faster because the store
+that is created for test purposes will already have various things in
+cache.
+
+It is also possible to run a subset of the tests by defining the
+@code{TESTS} makefile variable as in this example:
+
+@example
+make check TESTS="tests/store.scm tests/cpio.scm"
+@end example
+
+By default, tests results are displayed at a file level.  In order to
+see the details of every individual test cases, it is possible to define
+the @code{SCM_LOG_DRIVER_FLAGS} makefile variable as in this example:
+
+@example
+make check TESTS="tests/base64.scm" SCM_LOG_DRIVER_FLAGS="--brief=no"
+@end example
+
+The underlying SRFI 64 custom Automake test driver used for the 'check'
+test suite (located at @file{build-aux/test-driver.scm}) also allows
+selecting which test cases to run at a finer level, via its
+@option{--select} and @option{--exclude} options.  Here's an example, to
+run all the test cases from the @file{tests/packages.scm} test file
+whose names start with ``transaction-upgrade-entry'':
+
+@example
+export SCM_LOG_DRIVER_FLAGS="--select=^transaction-upgrade-entry"
+make check TESTS="tests/packages.scm"
+@end example
+
+Those wishing to inspect the results of failed tests directly from the
+command line can add the @option{--errors-only=yes} option to the
+@code{SCM_LOG_DRIVER_FLAGS} makefile variable and set the @code{VERBOSE}
+Automake makefile variable, as in:
+
+@example
+make check SCM_LOG_DRIVER_FLAGS="--brief=no --errors-only=yes" VERBOSE=1
+@end example
+
+The @option{--show-duration=yes} option can be used to print the
+duration of the individual test cases, when used in combination with
+@option{--brief=no}:
+
+@example
+make check SCM_LOG_DRIVER_FLAGS="--brief=no --show-duration=yes"
+@end example
+
+@xref{Parallel Test Harness,,,automake,GNU Automake} for more
+information about the Automake Parallel Test Harness.
+
+Upon failure, please email @email{bug-guix@@gnu.org} and attach the
+@file{test-suite.log} file.  Please specify the Guix version being used
+as well as version numbers of the dependencies (@pxref{Requirements}) in
+your message.
+
+Guix also comes with a whole-system test suite that tests complete
+Guix System instances.  It can only run on systems where
+Guix is already installed, using:
+
+@example
+make check-system
+@end example
+
+@noindent
+or, again, by defining @code{TESTS} to select a subset of tests to run:
+
+@example
+make check-system TESTS="basic mcron"
+@end example
+
+These system tests are defined in the @code{(gnu tests @dots{})}
+modules.  They work by running the operating systems under test with
+lightweight instrumentation in a virtual machine (VM).  They can be
+computationally intensive or rather cheap, depending on whether
+substitutes are available for their dependencies (@pxref{Substitutes}).
+Some of them require a lot of storage space to hold VM images.
+
+Again in case of test failures, please send @email{bug-guix@@gnu.org}
+all the details.
 
 @node Running Guix Before It Is Installed
 @section Running Guix Before It Is Installed

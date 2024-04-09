@@ -180,9 +180,13 @@ be output in text, PostScript, PDF or HTML.")
                (base32
                 "0aa2w4g5057vn1qjp954s2kwxfmy1h7p5yn56fyi7sz9nmaq69gr"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--with-lapack=-lopenblas"
+              "--with-blas=-lopenblas")))
     (home-page "https://mcmc-jags.sourceforge.net/")
     (native-inputs
-     (list gfortran lapack))
+     (list gfortran openblas))
     (synopsis "Gibbs sampler")
     (description "JAGS is Just Another Gibbs Sampler.  It is a program for
 analysis of Bayesian hierarchical models using Markov Chain Monte Carlo (MCMC)
@@ -600,14 +604,14 @@ Hubert, based on Kaufman and Rousseeuw (1990) \"Finding Groups in Data\".")
 (define-public r-codetools
   (package
     (name "r-codetools")
-    (version "0.2-19")
+    (version "0.2-20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "codetools" version))
        (sha256
         (base32
-         "1ardg28x2cvilkgsj6bdvvp5snsy3rj7jbz9bpcdlcvzr1kybdy4"))))
+         "0qx8zrlickl45wzzbydsbx5f1vmzhn71x7amzpfj71qpxisz7riv"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/codetools")
     (synopsis "Code analysis tools for R")
@@ -1064,13 +1068,13 @@ see package vignette.  To quote Rene Magritte, \"Ceci n'est pas un pipe.\"")
 (define-public r-munsell
   (package
     (name "r-munsell")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "munsell" version))
        (sha256
-        (base32 "16g1fzisbpqb15yh3pqf3iia4csppva5dnv1z88x9dg263xskwyh"))))
+        (base32 "19i9jjawlqciw4n4h99a4sm0lbc77la3pqyzjvnwsrh7qjdgv8h3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace))
@@ -2033,13 +2037,13 @@ times.")
 (define-public r-data-table
   (package
     (name "r-data-table")
-    (version "1.15.2")
+    (version "1.15.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "data.table" version))
               (sha256
                (base32
-                "04pfcm3pyl997rpyj5zdmbhi4ndaai81vfgv4whjp8rhqzjk7i6j"))))
+                "0lyb82kl2bn70l9ag5xdr8q7rh4majbimygaynmfqnbdjkznb05b"))))
     (properties `((upstream-name . "data.table")))
     (build-system r-build-system)
     (inputs
@@ -3393,13 +3397,13 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.3.5")
+    (version "2.3.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "1wvfadwcr8iv0z6pddfpvl60dq4p8l68v16p9daa002srgzpwlw1"))))
+                "1wpqr71wckxrh8ih5f01wkqqqnq5s3zaj0m8b40g76pliyjvgcgv"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6056,14 +6060,14 @@ algorithms.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-35.1")
+    (version "1.1-35.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "0nzv1a22pfsf2ryw91h16ic4cb8y8g6wh0gx3msr7gv8dwwi3974"))))
+         "0nvvkvpasna9hy0y3fxd4fy2b2gxzgdga9kmxvli59dlkdy28ipc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot

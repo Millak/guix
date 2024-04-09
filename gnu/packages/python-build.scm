@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -260,6 +260,7 @@ Included are implementations of:
   (package
     (name "python-pip")
     (version "23.1")
+    (replacement python-pip/fixed)
     (source
      (origin
        (method url-fetch)
@@ -276,6 +277,41 @@ Included are implementations of:
      "Pip is a package manager for Python software, that finds packages on the
 Python Package Index (PyPI).")
     (license license:expat)))
+
+(define python-pip/fixed
+  (package
+    (inherit python-pip)
+    (source (origin
+              (inherit (package-source python-pip))
+              (snippet
+               #~(begin
+                   (delete-file "src/pip/_vendor/certifi/cacert.pem")
+                   (delete-file "src/pip/_vendor/certifi/core.py")
+                   (with-output-to-file "src/pip/_vendor/certifi/core.py"
+                     (lambda _
+                       (display "\"\"\"
+certifi.py
+~~~~~~~~~~
+This file is a Guix-specific version of core.py.
+
+This module returns the installation location of SSL_CERT_FILE or
+/etc/ssl/certs/ca-certificates.crt, or its contents.
+\"\"\"
+import os
+
+_CA_CERTS = None
+
+try:
+    _CA_CERTS = os.environ [\"SSL_CERT_FILE\"]
+except:
+    _CA_CERTS = os.path.join(\"/etc\", \"ssl\", \"certs\", \"ca-certificates.crt\")
+
+def where() -> str:
+    return _CA_CERTS
+
+def contents() -> str:
+    with open(where(), \"r\", encoding=\"ascii\") as data:
+        return data.read()")))))))))
 
 (define-public python-setuptools
   (package

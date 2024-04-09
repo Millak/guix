@@ -56,7 +56,7 @@
       (home-page "https://www.gnu.org/software/apl/")
       (inputs
        (list gettext-minimal
-             lapack
+             openblas
              pcre2
              readline
              sqlite))

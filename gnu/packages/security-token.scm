@@ -106,10 +106,13 @@
                 "06bjdswbwcwndsn23rsdhz5a7xqsgb66glqnk9lqzd7qws3l94qk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list (string-append "--enable-usbdropdir=" %output
-                                              "/pcsc/drivers"))
+     (list
+      #:configure-flags
+      #~(list (string-append "--enable-usbdropdir="
+                             #$output
+                             "/pcsc/drivers"))
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'patch-Makefile
            (lambda _
              (substitute* "src/Makefile.in"

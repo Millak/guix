@@ -10528,7 +10528,7 @@ and chess engines.")
     (native-inputs
      (list qttools-5))
     (inputs
-     (list qtbase-5 qtmultimedia-5 qtspeech qtsvg-5 zlib))
+     (list qtbase-5 qtmultimedia-5 qtspeech-5 qtsvg-5 zlib))
     (arguments
      `(#:tests? #f
        #:phases

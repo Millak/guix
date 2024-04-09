@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -202,12 +203,12 @@ shared NFS home directories.")
      (arguments
       (substitute-keyword-arguments (package-arguments dbus)
         ((#:phases phases)
-         `(modify-phases ,phases
-            (add-after 'unpack 'customize-config
-              (lambda _
-                (substitute* "bus/session.conf.in"
-                  (("@SYSCONFDIR_FROM_PKGDATADIR@/dbus-1/session-local.conf")
-                   "/var/run/jami/session-local.conf")))))))))))
+         #~(modify-phases #$phases
+             (add-after 'unpack 'customize-config
+               (lambda _
+                 (substitute* "bus/session.conf.in"
+                   (("@SYSCONFDIR_FROM_PKGDATADIR@/dbus-1/session-local.conf")
+                    "/var/run/jami/session-local.conf")))))))))))
 
 (define-public dbus-1.15.0
   ;; Dbus 1.15.2 has a breaking change.

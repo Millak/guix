@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -21,6 +21,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix modules)
   #:use-module (guix utils)
@@ -149,6 +150,114 @@ ascii art drawings that contain characters that resemble lines like @samp{|}
 @samp{/} @samp{-}), into proper bitmap graphics.")
     (license license:lgpl3)))
 
+(define-public java-flatlaf
+  (package
+    (name "java-flatlaf")
+    (version "3.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/JFormDesigner/FlatLaf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qr7g8s5m89q5k31mnxk18lflz3l2hid4i055mim3b0m4vjs40pi"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each
+                 delete-file
+                 (find-files "flatlaf-core/src/main/resources/com/formdev/flatlaf/natives/"
+                             ".*")))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;XXX requires junit5
+      #:jar-name "flatlaf.jar"
+      #:source-dir '(list "flatlaf-core/src/main/java")
+      #:test-dir '(list "flatlaf-core/src/test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'build-native-code
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((jdk (assoc-ref inputs "jdk"))
+                     (suffix #$(match (%current-system)
+                                 ("i686-linux" "i686")
+                                 ("armhf-linux" "armhf")
+                                 ("aarch64-linux" "aarch64")
+                                 ("x86_64-linux" "x86_64")
+                                 (_ "generic")))
+                     (lib #$(match (%current-system)
+                              ("i686-linux"
+                               "/lib/i386")
+                              ("x86_64-linux"
+                               "/lib/amd64")
+                              ("armhf-linux"
+                               "/lib/arm")
+                              ("aarch64-linux"
+                               "/lib/aarch64")
+                              ("powerpc-linux"
+                               "/lib/ppc")
+                              ;; We need a catch-all, dropping
+                              ;; '-linux' works in most cases.
+                              (_
+                               (string-append
+                                "/lib/"
+                                (string-drop-right
+                                 (%current-system) 6)))))
+                     (filename
+                      (string-append "libflatlaf-linux-" suffix ".so"))
+                     (target-dir
+                      (string-append (getcwd)
+                                     "/flatlaf-core/src/main/resources/com/formdev/flatlaf/natives")))
+                (with-directory-excursion "flatlaf-natives/flatlaf-natives-linux/"
+                  (invoke "gcc" "-shared" "-O3" "-fPIC"
+                          "src/main/cpp/ApiVersion.cpp"
+                          "src/main/cpp/X11WmUtils.cpp"
+                          "-Isrc/main/headers"
+                          "-ljawt"
+                          (string-append "-L" jdk lib)
+                          (string-append "-I" jdk "/include")
+                          (string-append "-I" jdk "/include/linux")
+                          "-o" filename)
+                  (install-file filename target-dir)))))
+          (add-before 'build 'copy-resources
+            (lambda _
+              (copy-recursively "flatlaf-core/src/main/resources"
+                                "build/classes"))))))
+    (inputs (list libx11 libxt))
+    (home-page "https://www.formdev.com/flatlaf/")
+    (synopsis "Flat Look and Feel for Java Swing applications")
+    (description "FlatLaf is a cross-platform Look and Feel for Java Swing
+desktop applications.  It looks almost flat (no shadows or gradients), clean,
+simple and elegant.  FlatLaf comes with Light, Dark, IntelliJ and Darcula
+themes, scales on HiDPI displays and runs on Java 8 or newer.
+
+The look is heavily inspired by Darcula and IntelliJ themes from IntelliJ IDEA
+2019.2+ and uses almost the same colors and icons.")
+    (license license:asl2.0)))
+
+(define-public java-flatlaf-intellij-themes
+  (package
+    (inherit java-flatlaf)
+    (name "java-flatlaf-intellij-themes")
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:jar-name "flatlaf-intellij-themes.jar"
+      #:source-dir '(list "flatlaf-intellij-themes/src/main/java")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'copy-resources
+            (lambda _
+              (copy-recursively "flatlaf-intellij-themes/src/main/resources"
+                                "build/classes"))))))
+    (inputs (list java-flatlaf))
+    (synopsis "FlatLaf addon with popular themes")
+    (description "This addon for FlatLaf bundles many popular third party
+themes from JetBrains Plugins Repository into a JAR and provides Java classes
+to use them.")))
+
 (define-public java-piccolo2d-core
   (package
     (name "java-piccolo2d-core")
@@ -212,7 +321,7 @@ features not found in the core libraries.")))
 (define-public java-marlin-renderer
   (package
     (name "java-marlin-renderer")
-    (version "0.9.4.2")
+    (version "0.9.4.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -224,11 +333,17 @@ features not found in the core libraries.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12vb8fmxf1smnyv6w8i1khahy76v6r29j1qwabbykxff8i9ndxqv"))))
+                "0gcqp9iq0j5n08gdssh8gp0daj3n5zrx0dll1l4ljhbj2b9jm9ym"))))
     (build-system ant-build-system)
     (arguments
-     `(#:jar-name "marlin.jar"
-       #:test-include (list "src/test/java/RunJUnitTest.java")))
+     (list
+      #:jar-name "marlin.jar"
+      #:test-include '(list "src/test/java/RunJUnitTest.java")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'build 'copy-resources
+           (lambda _
+             (copy-recursively "src/main/resources" "build/classes"))))))
     (inputs
      (list java-hamcrest-core java-junit))
     (home-page "https://github.com/bourgesl/marlin-renderer/")

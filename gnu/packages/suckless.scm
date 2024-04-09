@@ -14,8 +14,10 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2022 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 cage <cage-dev@twistfold.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -896,6 +898,38 @@ strings(1) but for pictures.  For a given input file it outputs a
 colormap to stdout.")
     (license license:isc)))
 
+(define-public libgrapheme
+  (package
+    (name "libgrapheme")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dl.suckless.org/libgrapheme/libgrapheme-"
+                           version
+                           ".tar.gz"))
+       (sha256
+        (base32 "099i2jm9c25nkbg5420wr12z0gd189gcw5j1ssjmpmbbwzfvv2x6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #true
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'configure 'post-configure
+                          (lambda _
+                            ;; Remove ldconfing invocation in Makefile, which
+                            ;; is not needed in Guix.
+                            (substitute* "config.mk"
+                              (("ldconfig") "")))))
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))))
+    (home-page "https://libs.suckless.org/libgrapheme/")
+    (synopsis "C99 library for Unicode strings")
+    (description "Libgrapheme is a simple freestanding C99 library providing
+utilities to handle strings according to the Unicode standard.")
+    (license license:isc)))
+
 ;; No new releases were made at github, this repository is more active than
 ;; the one at http://git.suckless.org/libutf/ and it is
 ;; done by the same developer.
@@ -1327,6 +1361,35 @@ environments, where no keyboard is available.")
 It also contains the Plan 9 libbio, libregexp, libfmt and libutf libraries.")
       (license (list license:expat ;modifications
                      license:lpl1.02))))) ;original plan9 code
+
+(define-public xssstate
+  (package
+    (name "xssstate")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dl.suckless.org/tools/xssstate-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "04b03jz38pn5qhddg8a9hh01qqzrrdjvsq09qrxj9sx8lq2gbdn4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; no tests
+      #:make-flags #~(list (string-append "CC="
+                                          #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs (list libxscrnsaver))
+    (home-page "https://tools.suckless.org/x/xssstate/")
+    (synopsis "Simple tool to retrieve the X screensaver state")
+    (description
+     "A utility to retrieve the state of the X screensaver.  These
+states include the idle time, the screensaver state and the length of time
+until the screensaver should be activated.")
+    (license license:x11)))
 
 (define-public 9yacc
   (package

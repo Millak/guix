@@ -33,7 +33,7 @@
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
@@ -9878,7 +9878,7 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
                 ;; This test often fails
                 (("def test_gc") "def skip_test_gc")
                 ;; This test is known to fail on 32-bit systems.
-                ;; /gnu/store/w8y8wm82by1cnp33n5vy976wbrns9jys-stackprof-0.2.26.gem
+                ;; /gnu/store/...-stackprof-0.2.26.gem
                 (("def test_raw") "def skip_test_raw"))))
           (add-before 'check 'build-tests
             (lambda _

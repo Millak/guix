@@ -737,9 +737,7 @@ multipole-accelerated algorithm.")
      (list boost
            libgit2
            qtbase-5
-           ;; TODO: Needs to be renamed to qtserialport-5. when version 6 is
-           ;; packed.
-           qtserialport
+           qtserialport-5
            qtsvg-5
            zlib))
     (home-page "https://fritzing.org")
@@ -1588,7 +1586,7 @@ or an Ethernet connection.")
     (native-inputs
      `(("fortran" ,gfortran)))
     (inputs
-     (list lapack))
+     (list openblas))
     (home-page "https://github.com/stevengj/harminv")
     (synopsis "Harmonic inversion solver")
     (description
@@ -1654,7 +1652,7 @@ for scientific simulations.")
        ("gsl" ,gsl)
        ("guile" ,guile-2.2)
        ("hdf5" ,hdf5)
-       ("lapack" ,lapack)
+       ("openblas" ,openblas)
        ("libctl" ,guile-libctl)
        ("readline" ,readline)
        ("zlib" ,zlib)))
@@ -1696,7 +1694,7 @@ fully-vectorial and three-dimensional methods.")
        ("guile" ,guile-2.2)
        ("harminv" ,harminv)
        ("hdf5" ,hdf5)
-       ("lapack" ,lapack)
+       ("openblas" ,openblas)
        ("libctl" ,guile-libctl)
        ("mpb" ,mpb)
        ("zlib" ,zlib)))
@@ -4229,7 +4227,7 @@ netlists from the drawn schematic, allowing the simulation of the circuit.")
                   "08rqhl6a5a8s67a8yl16944zgcsnnb08xfv4klzyqwlvaqgfp783"))))
       (build-system gnu-build-system)
       (native-inputs (list qttools-5))
-      (inputs (list qtbase-5 qtserialport))
+      (inputs (list qtbase-5 qtserialport-5))
       (arguments
        (list #:tests? #f                      ; no tests.
              #:phases #~(modify-phases %standard-phases

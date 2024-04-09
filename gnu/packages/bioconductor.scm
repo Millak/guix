@@ -10952,13 +10952,13 @@ single-cell RNA-seq.")
 (define-public r-seqarray
   (package
     (name "r-seqarray")
-    (version "1.42.2")
+    (version "1.42.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SeqArray" version))
               (sha256
                (base32
-                "1bwqyvvfwwscznwi1bm4wh2pqf0fmq68g7siwbbw5ypj087ibnnm"))))
+                "1500vwsgdxdaafp2fb0252c0hhpz3lhrniv21nb7xnky7mbr7lk6"))))
     (properties `((upstream-name . "SeqArray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings
@@ -15037,13 +15037,13 @@ standardization of the analyses and the development of best practices.")
 (define-public r-microbiomestat
   (package
     (name "r-microbiomestat")
-    (version "1.1")
+    (version "1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "MicrobiomeStat" version))
               (sha256
                (base32
-                "1j5sar85a1gksc83pc4ypxwb0c7whxglx069zarphrgqfazcr1m4"))))
+                "1kpc68sl63k104xy7r6f3gxan0yx0rs7ksn8ldbq8xla00ddflgq"))))
     (properties `((upstream-name . "MicrobiomeStat")))
     (build-system r-build-system)
     (propagated-inputs (list r-foreach
@@ -15054,7 +15054,6 @@ standardization of the analyses and the development of best practices.")
                              r-matrix
                              r-matrixstats
                              r-modeest
-                             r-phyloseq
                              r-statmod))
     (home-page "https://cran.r-project.org/package=MicrobiomeStat")
     (synopsis "Statistical methods for microbiome compositional data")
@@ -17583,14 +17582,14 @@ Infinium HumanMethylation 450k assay.")
 (define-public r-biocfilecache
   (package
     (name "r-biocfilecache")
-    (version "2.10.1")
+    (version "2.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocFileCache" version))
        (sha256
         (base32
-         "044kh1rfgb608y2v4wzbzddirhw5crj3k6i28wr78qgnzqc89mdm"))))
+         "00gnnc4yypvjnvh1xq4bzqi34j9i9ld1rnjnb2gsxbhaq5nzq31z"))))
     (properties `((upstream-name . "BiocFileCache")))
     (build-system r-build-system)
     (propagated-inputs
@@ -22404,14 +22403,14 @@ relevant, and the minimum expression of the most abundant condition.")
 (define-public r-catalyst
   (package
     (name "r-catalyst")
-    (version "1.26.0")
+    (version "1.26.1")
     (source
       (origin
         (method url-fetch)
         (uri (bioconductor-uri "CATALYST" version))
         (sha256
           (base32
-            "0dfg9ib0imk8bmhycqrspnn8yvfdlchwvx39wgqxi5fb9zrppfz4"))))
+            "1zfb4b88j0ksvsxq8kgrjs0xqlr10yzvr772r8nhl797qzwdag08"))))
     (properties `((upstream-name . "CATALYST")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23975,14 +23974,14 @@ using aCGH or sequencing.")
 (define-public r-bionero
   (package
     (name "r-bionero")
-    (version "1.10.2")
+    (version "1.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNERO" version))
        (sha256
         (base32
-         "1fk48h2v0snsg8y9pi0pav69wa95s8a8gk1rxsvrm7z1bcgi2j51"))))
+         "1vf3kq4lj4alvwzf0wl09lxb0ky6q0x94ajmrnihlj5saliqb73c"))))
     (properties `((upstream-name . "BioNERO")))
     (build-system r-build-system)
     (propagated-inputs
@@ -24470,13 +24469,13 @@ estimates, etc.")
 (define-public r-tcgabiolinks
   (package
     (name "r-tcgabiolinks")
-    (version "2.30.0")
+    (version "2.30.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TCGAbiolinks" version))
        (sha256
-        (base32 "1k8xiv4bmil420176ckfda2r6y0s46dk1cm8dbywav86q28bmzzx"))))
+        (base32 "0br0bgcvxxfy1vclfc8i20b0bsb7rcchwfdx7lkw4f2aqxny8ja8"))))
     (properties `((upstream-name . "TCGAbiolinks")))
     (build-system r-build-system)
     (propagated-inputs

@@ -2020,7 +2020,8 @@ audio/video codec library.")
                    "ffmpeg-jami-rtp_ext_abs_send_time.patch"
                    "ffmpeg-jami-libopusdec-enable-FEC.patch"
                    "ffmpeg-jami-libopusenc-reload-packet-loss-at-encode.patch"
-                   "ffmpeg-jami-screen-sharing-x11-fix.patch"))))))
+                   "ffmpeg-jami-screen-sharing-x11-fix.patch"
+                   "ffmpeg-jami-pipewiregrab-source-filter.patch"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg)
        ((#:configure-flags _ '())

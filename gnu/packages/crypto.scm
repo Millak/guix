@@ -219,7 +219,7 @@ communication, encryption, decryption, signatures, etc.")
 (define-public signify
   (package
     (name "signify")
-    (version "31")
+    (version "32")
     (home-page "https://github.com/aperezdc/signify")
     (source (origin
               (method url-fetch)
@@ -227,7 +227,7 @@ communication, encryption, decryption, signatures, etc.")
                                   "/download/v" version "/signify-" version ".tar.xz"))
               (sha256
                (base32
-                "0x1bipfphnyvf2kl7n9q4gawaglma79368vb8whama6lxsggsm8i"))
+                "1maq4wv7934gql95rr55pj419gnbj8jkrgn1f25jcg97v5zvklbd"))
               (modules '((guix build utils)))
               (snippet '(delete-file-recursively "libbsd"))))
     (build-system gnu-build-system)

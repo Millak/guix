@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -768,6 +769,32 @@ This package is mostly for compatibility and historical interest.")
      "SfArkLib is a C++ library for decompressing SoundFont files compressed
 with the sfArk algorithm.")
     (license license:gpl3+)))
+
+(define-public minizip-ng
+  (package
+    (name "minizip-ng")
+    (version "4.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/zlib-ng/minizip-ng")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lgx4s4aykxn8x3b4m4c4isasd2608bbyfm4lxc2spcc4xqwhzkz"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DMZ_BUILD_TESTS=ON"
+                                     "-DMZ_BUILD_UNIT_TESTS=ON")))
+    (native-inputs (list googletest pkg-config))
+    (inputs (list openssl zlib `(,zstd "lib")))
+    (home-page "https://github.com/zlib-ng/minizip-ng")
+    (synopsis "Zip manipulation library")
+    (description "@code{minizip-ng} is a zip manipulation library written in
+C, forked from the zip manipulation library found in the zlib distribution.")
+    (license license:bsd-3)))
 
 (define-public sfarkxtc
   (let ((commit "13cd6f93725a90d91ec5ea75babf1dbd694ac463")

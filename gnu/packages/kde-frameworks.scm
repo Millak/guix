@@ -103,7 +103,7 @@
 (define-public extra-cmake-modules
   (package
     (name "extra-cmake-modules")
-    (version "5.114.0")
+    (version "6.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -112,7 +112,7 @@
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0z4nqravsfzlsgvkg5rha2d0qxfr3pfncw7z2fxzzqvzj7mfk6im"))))
+                "030dyw4krnq8hcp0dsqb15zxb7x7r8c33lbdgmmia5xpkpqjp693"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; Add test dependency, except on armhf where building it is too
@@ -569,7 +569,7 @@ Internet).")
 (define-public kcolorpicker
   (package
     (name "kcolorpicker")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -579,7 +579,7 @@ Internet).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zg078mkdapsd6vq7qy2vxbfzn6i382ss1a1w0xzvpy148ifaj42"))))
+         "1px40rasvz0r5db9av125q9mlyjz4xdnckg2767i3fndj3ic0vql"))))
     (build-system qt-build-system)
     (propagated-inputs (list qtbase-5))
     (arguments
@@ -1160,9 +1160,17 @@ protocols used in KDE Plasma.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "ctest" "-E"
-                        ;; XXX: maybe is upstream bug
-                        "(kwayland-testWaylandRegistry|\
-kwayland-testPlasmaShell|kwayland-testPlasmaWindowModel)")))))))
+                        (string-append
+                         "("
+                         (string-join
+                          ;; XXX: maybe is upstream bug
+                          '("kwayland-testWaylandRegistry"
+                            "kwayland-testPlasmaShell"
+                            "kwayland-testPlasmaWindowModel"
+                            ;; The 'kwayland-testXdgForeign' may fail on
+                            ;; powerpc64le with a 'Subprocess aborted' error.
+                            "kwayland-testXdgForeign") "|")
+                         ")"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt-style API to interact with the wayland client and server")
     (description "As the names suggest they implement a Client respectively a
@@ -1853,7 +1861,7 @@ by applications to write metadata.")
 (define-public kimageannotator
   (package
     (name "kimageannotator")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -1863,10 +1871,11 @@ by applications to write metadata.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ac0cxbq88zzvkgs5d39xpzk0h7xhl57yswgd760x77py0rl5bqf"))))
+         "1f1y4r5rb971v2g34fgjbr14g0mdms5h66yl5k0p1zf50kr2wnic"))))
     (build-system qt-build-system)
     (arguments
-     (list #:configure-flags #~'("-DBUILD_TESTS=ON")
+     (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
+                                 "-DBUILD_TESTS=ON")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
@@ -1880,8 +1889,6 @@ by applications to write metadata.")
      (list qttools-5 xorg-server-for-tests))
     (inputs
      (list googletest qtsvg-5 kcolorpicker))
-    (propagated-inputs
-     (list qtbase-5))
     (home-page "https://github.com/ksnip/kImageAnnotator")
     (synopsis "Image annotating library")
     (description "This library provides tools to annotate images.")
@@ -1991,7 +1998,7 @@ asynchronous jobs.")
            phonon
            qtdeclarative-5
            qtbase-5
-           qtspeech
+           qtspeech-5
            qtx11extras))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -2033,9 +2040,6 @@ covers feedback and persistent events.")
            qtbase-5))
     (arguments
      (list
-      ;; The `plasma-querytest' test is known to fail when tests are run in parallel:
-      ;; <https://sources.debian.org/src/kpackage/5.107.0-1/debian/changelog/#L92>
-      #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -2062,6 +2066,13 @@ covers feedback and persistent events.")
                  "filePath(\"etc\", QStringLiteral(\"passwd\"))")
                 (("\"/bin/ls\"")
                  "\"/etc/passwd\""))))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The 'plasma-query' test fails non-deterministically, as
+              ;; reported e.g. in <https://bugs.gentoo.org/919151>.
+              (substitute* "autotests/CMakeLists.txt"
+                ((".*querytest.*")
+                 ""))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "HOME" (getcwd)))))))
@@ -3255,7 +3266,7 @@ library.")
            kwidgetsaddons
            kwindowsystem
            qtbase-5
-           qtspeech))
+           qtspeech-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Text editing widgets")
     (description "KTextWidgets provides widgets for displaying and editing text.

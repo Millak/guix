@@ -64,6 +64,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
+;;; Copyright © 2024 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,7 @@
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
@@ -135,6 +137,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -5119,7 +5122,12 @@ Netgear devices.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1y4qmc8i7zg2cqrmz38dxbsj8bb2h7jm1zz23gqcdygkgaymwddw"))))
+                "09prpw20ps6cd8qr63glbcip3jrvnnic0m7j1q02g8hjnw8z50ld"))
+              (snippet
+               ;; The 'mkdate' script generates a new 'versdate.h' header
+               ;; containing the build date.  That makes builds
+               ;; non-reproducible so remove it.
+               #~(delete-file "mkdate"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5160,55 +5168,120 @@ disk utilization, priority, username, state, and exit code.")
      `((release-monitoring-url . "https://www.atoptool.nl/downloadatop.php")))
     (license license:gpl2+)))
 
-;; TODO: Unvendor u-root (pkg: forth, golang, testutil).
-(define fiano
-  (package
-    (name "fiano")
-    (version "5.0.0")
+;; TODO: Pack u-root for: forth, and some tests.
+(define-public fiano
+   (package
+     (name "fiano")
+    ;; The versioning count has been changed since commit <2021-12-01>
+    ;; 1eb599564549691603589219c2be34f966a32ff1.
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/linuxboot/fiano.git")
                     (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "03ihdwwhb7g6bihx141cn0924sjs5ps6q3ps58pk1cg0g0srrr9h"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively "vendor/golang.org")
-                  (delete-file-recursively "vendor/github.com")
-                  #t))))
+                "0s5fx4lhgb68qbx4ql34rcm678qdf0c4xl97bgc8dx9xwwqifza1"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/linuxboot/fiano"
-       #:unpack-path "github.com/linuxboot/fiano"))
-    (native-inputs
-     `())
+     (list
+      #:install-source? #f
+      #:import-path "github.com/linuxboot/fiano"
+      #:unpack-path "github.com/linuxboot/fiano"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace this part when it's implemented in go-build-system.
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (for-each
+               (lambda (cmd)
+                 (invoke "go" "build" "-v" "-x" "-ldflags=-s -w" "-trimpath"
+                         (string-append import-path "/cmds/" cmd)))
+               (list "cbfs"
+                     "create-ffs"
+                     ;; TODO: Not packed yet in guix, long jorney:
+                     ;; - github.com/tjfoc/gmsm
+                     ;;
+                     ;; "fittool"
+                     "fmap"
+                     "fspinfo"
+                     "glzma"
+                     "guid2english"
+                     "microcode"
+                     "utk"))))
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 (lambda (dir)
+                   (invoke "go" "test" "-v"
+                           (string-append import-path dir "/...")))
+                 (list "/pkg/bytes"
+                       ;; TODO: Not packed yet in Guix, long jorney:
+                       ;; - github.com/jedib0t
+                       ;;
+                       ;; "/pkg/amd"
+                       "/pkg/cbfs"
+                       "/pkg/compression"
+                       "/pkg/fmap"
+                       "/pkg/fsp"
+                       "/pkg/guid"
+                       "/pkg/guid2english"
+                       ;; TODO: Not packed yet in Guix, long jorney:
+                       ;; - github.com/tjfoc/gmsm
+                       ;;
+                       ;; "/pkg/intel"
+                       "/pkg/knownguids"
+                       "/pkg/log"
+                       "/pkg/uefi"
+                       "/pkg/unicode"
+                       "/pkg/utk"
+                       "/pkg/visitors"
+                       "/cmds/cbfs"
+                       "/cmds/create-ffs"
+                       ;; TODO: Not packed yet in Guix, long jorney:
+                       ;; - github.com/u-root/u-root
+                       ;;
+                       ;; "/cmds/fmap"
+                       ;; "/cmds/fittool"
+                       "/cmds/fspinfo"
+                       "/cmds/glzma"
+                       "/cmds/guid2english"
+                       "/cmds/microcode"
+                       "/cmds/utk")))))
+          (replace 'install
+            (lambda _
+              (let ((bindir (string-append #$output "/bin")))
+                (for-each
+                 (lambda (cmd)
+                   (install-file cmd bindir))
+                 (list "cbfs"
+                       "create-ffs"
+                       ;; "fittool"
+                       "fmap"
+                       "fspinfo"
+                       "glzma"
+                       "guid2english"
+                       "microcode"
+                       "utk"))))))))
     (inputs
-     `(("go-golang-org-x-text" ,go-golang-org-x-text)
-       ("go-github-com-ulikunitz-xz" ,go-github-com-ulikunitz-xz)))
-    (synopsis "UEFI image editor")
-    (description "This package provides a command-line UEFI image editor.")
+     (list go-github-com-dustin-go-humanize
+           go-github-com-hashicorp-errwrap
+           go-github-com-hashicorp-go-multierror
+           go-github-com-jessevdk-go-flags
+           go-github-com-pierrec-lz4
+           go-github-com-spf13-pflag
+           go-github-com-ulikunitz-xz
+           go-golang-org-x-text))
     (home-page "https://github.com/linuxboot/fiano")
+    (synopsis "UEFI image editor")
+    (description
+     "This package provides a command-line UEFI image editor, including cbfs,
+create-ffs, fmap, fspinfo, glzma, guid2english, microcode and utk CLI
+utilities.")
     (license license:bsd-3)))
-
-(define-public fiano-utk
-  (package
-    (inherit fiano)
-    (name "fiano-utk")
-    (arguments
-     `(#:import-path "github.com/linuxboot/fiano/cmds/utk"
-       #:unpack-path "github.com/linuxboot/fiano"))))
-
-(define-public fiano-fmap
-  (package
-    (inherit fiano)
-    (name "fiano-fmap")
-    (arguments
-     `(#:import-path "github.com/linuxboot/fiano/cmds/fmap"
-       #:unpack-path "github.com/linuxboot/fiano"))))
 
 (define-public novena-eeprom
   (package
@@ -5462,7 +5535,14 @@ it won't take longer to install 15 machines than it would to install just 2.")
                     (man1 (string-append man "/man1"))
                     (man5 (string-append man "/man5"))
                     (man7 (string-append man "/man7"))
-                    (release "target/release")
+                    (release ,(if (%current-target-system)
+                                  (string-append
+                                    "target/"
+                                    (platform-rust-target
+                                      (lookup-platform-by-target
+                                        (%current-target-system)))
+                                    "/release")
+                                  "target/release"))
                     (greetd-bin (string-append release "/greetd"))
                     (agreety-bin (string-append release "/agreety")))
                (install-file greetd-bin sbin)
@@ -5472,8 +5552,10 @@ it won't take longer to install 15 machines than it would to install just 2.")
                  (install-file "greetd.5" man5)
                  (install-file "greetd-ipc.7" man7)
                  (install-file "agreety.1" man1))))))))
+    (inputs
+     (list linux-pam))
     (native-inputs
-     (list linux-pam scdoc))
+     (list scdoc))
     (synopsis "Minimal and flexible login manager daemon")
     (description
      "greetd is a minimal and flexible login manager daemon

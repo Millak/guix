@@ -17,8 +17,8 @@
 @set BASE-URL https://ftp.gnu.org/gnu/guix
 
 @c The official substitute server used by default.
-@set SUBSTITUTE-SERVER-1 ci.guix.gnu.org
-@set SUBSTITUTE-SERVER-2 bordeaux.guix.gnu.org
+@set SUBSTITUTE-SERVER-1 bordeaux.guix.gnu.org
+@set SUBSTITUTE-SERVER-2 ci.guix.gnu.org
 @set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
@@ -60,7 +60,7 @@ Copyright @copyright{} 2018, 2021, 2023 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
-Copyright @copyright{} 2018, 2019, 2020, 2022, 2023 Florian Pelz@*
+Copyright @copyright{} 2018, 2019, 2020, 2022, 2023, 2024 Florian Pelz@*
 Copyright @copyright{} 2018 Laura Lazzati@*
 Copyright @copyright{} 2018 Alex Vong@*
 Copyright @copyright{} 2019 Josh Holland@*
@@ -125,6 +125,7 @@ Copyright @copyright{} 2023 Saku Laesvuori@*
 Copyright @copyright{} 2023 Graham James Addis@*
 Copyright @copyright{} 2023 Tomas Volf@*
 Copyright @copyright{} 2024 Herman Rimm@*
+Copyright @copyright{} 2024 Matthew Trzcinski@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -227,8 +228,6 @@ Introduction
 Installation
 
 * Binary Installation::         Getting Guix running in no time!
-* Requirements::                Software needed to build and run Guix.
-* Running the Test Suite::      Testing Guix.
 * Setting Up the Daemon::       Preparing the build daemon's environment.
 * Invoking guix-daemon::        Running the build daemon.
 * Application Setup::           Application-specific setup.
@@ -358,7 +357,7 @@ Foreign Architectures
 
 System Configuration
 
-* Getting Started with the System:: Your first steps.
+* Getting Started with the System::  Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
@@ -691,20 +690,20 @@ to join!  @xref{Contributing}, for information about how you can help.
 @chapter Installation
 
 @cindex installing Guix
+@cindex foreign distro
+@cindex Guix System
+You can install the package management tool Guix on top of an existing
+GNU/Linux or GNU/Hurd system@footnote{Hurd support is currently
+limited.}, referred to as a @dfn{foreign distro}.  If, instead, you want
+to install the complete, standalone GNU system distribution,
+@dfn{Guix@tie{}System}, @pxref{System Installation}.  This section is
+concerned only with the installation of Guix on a foreign distro.
 
-@quotation Note
-We recommend the use of this
-@uref{https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh,
-shell installer script} to install Guix on top of a running GNU/Linux system,
-thereafter called a @dfn{foreign distro}.@footnote{This section is concerned
-with the installation of the package manager, which can be done on top of a
-running GNU/Linux system.  If, instead, you want to install the complete GNU
-operating system, @pxref{System Installation}.} The script automates the
-download, installation, and initial configuration of Guix.  It should be run
-as the root user.
+@quotation Important
+This section only applies to systems without Guix.  Following it for
+existing Guix installations will overwrite important system files.
 @end quotation
 
-@cindex foreign distro
 @cindex directories related to foreign distro
 When installed on a foreign distro, GNU@tie{}Guix complements the available
 tools without interference.  Its data lives exclusively in two directories,
@@ -714,15 +713,8 @@ such as @file{/etc}, are left untouched.
 Once installed, Guix can be updated by running @command{guix pull}
 (@pxref{Invoking guix pull}).
 
-If you prefer to perform the installation steps manually or want to tweak
-them, you may find the following subsections useful.  They describe the
-software requirements of Guix, as well as how to install it manually and get
-ready to use it.
-
 @menu
 * Binary Installation::         Getting Guix running in no time!
-* Requirements::                Software needed to build and run Guix.
-* Running the Test Suite::      Testing Guix.
 * Setting Up the Daemon::       Preparing the build daemon's environment.
 * Invoking guix-daemon::        Running the build daemon.
 * Application Setup::           Application-specific setup.
@@ -736,210 +728,69 @@ ready to use it.
 @cindex installer script
 This section describes how to install Guix from a self-contained tarball
 providing binaries for Guix and for all its dependencies.  This is often
-quicker than installing from source, which is described in the next
-sections.  Binary installation requires a system using a Hurd or Linux
-kernel; the GNU@tie{}tar and Xz commands must also be available.
+quicker than installing from source, described later (@pxref{Building
+from Git}).
 
 @quotation Important
 This section only applies to systems without Guix.  Following it for
 existing Guix installations will overwrite important system files.
+@end quotation
 
-@c Note duplicated from the ``Installation'' node.
-We recommend the use of this
-@uref{https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh,
-shell installer script}.  The script automates the download, installation, and
-initial configuration steps described below.  It should be run as the root
-user.  As root, you can thus run this:
+Some GNU/Linux distributions, such as Debian, Ubuntu, and openSUSE
+provide Guix through their own package managers.  The version of Guix
+may be older than @value{VERSION} but you can update it afterwards by
+running @samp{guix pull}.
 
-@example
-cd /tmp
-wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
-chmod +x guix-install.sh
-./guix-install.sh
-@end example
-
-If you're running Debian or a derivative such as Ubuntu, you can instead
-install the package (it might be a version older than @value{VERSION}
-but you can update it afterwards by running @samp{guix pull}):
+For Debian or a derivative such as Ubuntu, call:
 
 @example
 sudo apt install guix
 @end example
 
-Likewise on openSUSE:
+Likewise, on openSUSE:
 
 @example
 sudo zypper install guix
 @end example
 
-When you're done, @pxref{Application Setup} for extra configuration you
-might need, and @ref{Getting Started} for your first steps!
-@end quotation
+The Guix project also provides a shell script, @file{guix-install.sh},
+which automates the binary installation process without use of a foreign
+distro package
+manager@footnote{@uref{https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh}}.
+Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget,
+and Xz.
 
-Installing goes along these lines:
+The script guides you through the following:
 
-@enumerate
-@item
-@cindex downloading Guix binary
-Download the binary tarball from
-@indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz},
-where @code{x86_64-linux} can be replaced with @code{i686-linux} for an
-@code{i686} (32-bits) machine already running the kernel Linux, and so on
-(@pxref{GNU Distribution}).
+@itemize
+@item Downloading and extracting the binary tarball
+@item Setting up the build daemon
+@item Making the ‘guix’ command available to non-root users
+@item Configuring substitute servers
+@end itemize
 
-@c The following is somewhat duplicated in ``System Installation''.
-Make sure to download the associated @file{.sig} file and to verify the
-authenticity of the tarball against it, along these lines:
-
-@example
-$ wget @value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz.sig
-$ gpg --verify guix-binary-@value{VERSION}.x86_64-linux.tar.xz.sig
-@end example
-
-If that command fails because you do not have the required public key,
-then run this command to import it:
-
-@example
-$ wget '@value{OPENPGP-SIGNING-KEY-URL}' \
-      -qO - | gpg --import -
-@end example
-
-@noindent
-and rerun the @code{gpg --verify} command.
-
-Take note that a warning like ``This key is not certified with a trusted
-signature!'' is normal.
-
-@c end authentication part
-
-@item
-Now, you need to become the @code{root} user.  Depending on your distribution,
-you may have to run @code{su -} or @code{sudo -i}.  As @code{root}, run:
+As root, run:
 
 @example
 # cd /tmp
-# tar --warning=no-timestamp -xf \
-     /path/to/guix-binary-@value{VERSION}.x86_64-linux.tar.xz
-# mv var/guix /var/ && mv gnu /
+# wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+# chmod +x guix-install.sh
+# ./guix-install.sh
 @end example
 
-This creates @file{/gnu/store} (@pxref{The Store}) and @file{/var/guix}.
-The latter contains a ready-to-use profile for @code{root} (see next
-step).
+@quotation Note
+By default, @file{guix-install.sh} will configure Guix to download
+pre-built package binaries, called @dfn{substitutes}
+(@pxref{Substitutes}), from the project's build farms.  If you choose
+not to permit this, Guix will build @emph{everything} from source,
+making each installation and upgrade very expensive.  @xref{On Trusting
+Binaries} for a discussion of why you may want to build packages from
+source.
 
-Do @emph{not} unpack the tarball on a working Guix system since that
-would overwrite its own essential files.
-
-The @option{--warning=no-timestamp} option makes sure GNU@tie{}tar does
-not emit warnings about ``implausibly old time stamps'' (such
-warnings were triggered by GNU@tie{}tar 1.26 and older; recent
-versions are fine).
-They stem from the fact that all the
-files in the archive have their modification time set to 1 (which
-means January 1st, 1970).  This is done on purpose to make sure the
-archive content is independent of its creation time, thus making it
-reproducible.
-
-@item
-Make the profile available under @file{~root/.config/guix/current}, which is
-where @command{guix pull} will install updates (@pxref{Invoking guix pull}):
-
-@example
-# mkdir -p ~root/.config/guix
-# ln -sf /var/guix/profiles/per-user/root/current-guix \
-         ~root/.config/guix/current
-@end example
-
-Source @file{etc/profile} to augment @env{PATH} and other relevant
-environment variables:
-
-@example
-# GUIX_PROFILE="`echo ~root`/.config/guix/current" ; \
-  source $GUIX_PROFILE/etc/profile
-@end example
-
-@item
-Create the group and user accounts for build users as explained below
-(@pxref{Build Environment Setup}).
-
-@item
-Run the daemon, and set it to automatically start on boot.
-
-If your host distro uses the systemd init system, this can be achieved
-with these commands:
-
-@c Versions of systemd that supported symlinked service files are not
-@c yet widely deployed, so we should suggest that users copy the service
-@c files into place.
-@c
-@c See this thread for more information:
-@c https://lists.gnu.org/archive/html/guix-devel/2017-01/msg01199.html
-
-@example
-# cp ~root/.config/guix/current/lib/systemd/system/gnu-store.mount \
-     ~root/.config/guix/current/lib/systemd/system/guix-daemon.service \
-     /etc/systemd/system/
-# systemctl enable --now gnu-store.mount guix-daemon
-@end example
-
-You may also want to arrange for @command{guix gc} to run periodically:
-
-@example
-# cp ~root/.config/guix/current/lib/systemd/system/guix-gc.service \
-     ~root/.config/guix/current/lib/systemd/system/guix-gc.timer \
-     /etc/systemd/system/
-# systemctl enable --now guix-gc.timer
-@end example
-
-You may want to edit @file{guix-gc.service} to adjust the command line
-options to fit your needs (@pxref{Invoking guix gc}).
-
-If your host distro uses the Upstart init system:
-
-@example
-# initctl reload-configuration
-# cp ~root/.config/guix/current/lib/upstart/system/guix-daemon.conf \
-     /etc/init/
-# start guix-daemon
-@end example
-
-Otherwise, you can still start the daemon manually with:
-
-@example
-# ~root/.config/guix/current/bin/guix-daemon \
-       --build-users-group=guixbuild
-@end example
-
-@item
-Make the @command{guix} command available to other users on the machine,
-for instance with:
-
-@example
-# mkdir -p /usr/local/bin
-# cd /usr/local/bin
-# ln -s /var/guix/profiles/per-user/root/current-guix/bin/guix
-@end example
-
-It is also a good idea to make the Info version of this manual available
-there:
-
-@example
-# mkdir -p /usr/local/share/info
-# cd /usr/local/share/info
-# for i in /var/guix/profiles/per-user/root/current-guix/share/info/* ;
-  do ln -s $i ; done
-@end example
-
-That way, assuming @file{/usr/local/share/info} is in the search path,
-running @command{info guix} will open this manual (@pxref{Other Info
-Directories,,, texinfo, GNU Texinfo}, for more details on changing the
-Info search path).
-
-@item
 @cindex substitutes, authorization thereof
 To use substitutes from @code{@value{SUBSTITUTE-SERVER-1}},
-@code{@value{SUBSTITUTE-SERVER-2}} or a mirror (@pxref{Substitutes}),
-authorize them:
+@code{@value{SUBSTITUTE-SERVER-2}} or a mirror, you must authorize them.
+For example,
 
 @example
 # guix archive --authorize < \
@@ -947,28 +798,13 @@ authorize them:
 # guix archive --authorize < \
      ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub
 @end example
-
-@quotation Note
-If you do not enable substitutes, Guix will end up building
-@emph{everything} from source on your machine, making each installation
-and upgrade very expensive.  @xref{On Trusting Binaries}, for a
-discussion of reasons why one might want do disable substitutes.
 @end quotation
 
-@item
-Each user may need to perform a few additional steps to make their Guix
-environment ready for use, @pxref{Application Setup}.
-@end enumerate
+When you're done installing Guix, @pxref{Application Setup} for extra
+configuration you might need, and @ref{Getting Started} for your first
+steps!
 
-Voilà, the installation is complete!
-
-You can confirm that Guix is working by installing a sample package into
-the root profile:
-
-@example
-# guix install hello
-@end example
-
+@quotation Note
 The binary installation tarball can be (re)produced and verified simply
 by running the following command in the Guix source tree:
 
@@ -985,200 +821,19 @@ guix pack -s @var{system} --localstatedir \
 @end example
 
 @xref{Invoking guix pack}, for more info on this handy tool.
+@end quotation
 
-@node Requirements
-@section Requirements
-
-This section lists requirements when building Guix from source.  The
-build procedure for Guix is the same as for other GNU software, and is
-not covered here.  Please see the files @file{README} and @file{INSTALL}
-in the Guix source tree for additional details.
-
-@cindex official website
-GNU Guix is available for download from its website at
-@url{https://www.gnu.org/software/guix/}.
-
-GNU Guix depends on the following packages:
-
-@itemize
-@item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,
-version 3.0.3 or later;
-@item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
-0.1.0 or later;
-@item
-@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile
-Preparations, how to install the GnuTLS bindings for Guile,,
-gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to
-@uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS
-until version 3.7.8 included.};
-@item
-@uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0
-or later;
-@item @uref{https://notabug.org/guile-zlib/guile-zlib, Guile-zlib},
-version 0.1.0 or later;
-@item @uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib};
-@item @uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};
-@item
-@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.5.0
-or later;
-@item @uref{https://git-scm.com, Git} (yes, both!);
-@item @uref{https://savannah.nongnu.org/projects/guile-json/, Guile-JSON}
-4.3.0 or later;
-@item @url{https://www.gnu.org/software/make/, GNU Make}.
-@end itemize
-
-The following dependencies are optional:
-
-@itemize
-@item
-@c Note: We need at least 0.13.0 for #:nodelay.
-Support for build offloading (@pxref{Daemon Offload Setup}) and
-@command{guix copy} (@pxref{Invoking guix copy}) depends on
-@uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH},
-version 0.13.0 or later.
-
-@item
-@uref{https://notabug.org/guile-zstd/guile-zstd, Guile-zstd}, for zstd
-compression and decompression in @command{guix publish} and for
-substitutes (@pxref{Invoking guix publish}).
-
-@item
-@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} for
-the @code{crate} importer (@pxref{Invoking guix import}).
-
-@item
-@uref{https://www.nongnu.org/guile-lib/doc/ref/htmlprag/, Guile-Lib} for
-the @code{go} importer (@pxref{Invoking guix import}) and for some of
-the ``updaters'' (@pxref{Invoking guix refresh}).
-
-@item
-When @url{http://www.bzip.org, libbz2} is available,
-@command{guix-daemon} can use it to compress build logs.
-@end itemize
-
-Unless @option{--disable-daemon} was passed to @command{configure}, the
-following packages are also needed:
-
-@itemize
-@item @url{https://gnupg.org/, GNU libgcrypt};
-@item @url{https://sqlite.org, SQLite 3};
-@item @url{https://gcc.gnu.org, GCC's g++}, with support for the
-C++11 standard.
-@end itemize
-
-@cindex state directory
-@cindex localstatedir
-@cindex system configuration directory
-@cindex sysconfdir
-When configuring Guix on a system that already has a Guix installation,
-be sure to specify the same state directory as the existing installation
-using the @option{--localstatedir} option of the @command{configure}
-script (@pxref{Directory Variables, @code{localstatedir},, standards,
-GNU Coding Standards}).  Usually, this @var{localstatedir} option is set
-to the value @file{/var}.  The @command{configure} script protects
-against unintended misconfiguration of @var{localstatedir} so you do not
-inadvertently corrupt your store (@pxref{The Store}).  The configuration
-directory should also be configured by setting the @option{--sysconfdir}
-option to the @file{/etc} value, which is the location used by Guix to
-store for example the access control list of authorized machines and the
-definition of offload machines.
-
-@node Running the Test Suite
-@section Running the Test Suite
-
-@cindex test suite
-After a successful @command{configure} and @code{make} run, it is a good
-idea to run the test suite.  It can help catch issues with the setup or
-environment, or bugs in Guix itself---and really, reporting test
-failures is a good way to help improve the software.  To run the test
-suite, type:
+@cindex uninstalling Guix
+@cindex uninstallation, of Guix
+Should you eventually want to uninstall Guix, run the same script with
+the @option{--uninstall} flag:
 
 @example
-make check
+./guix-install.sh --uninstall
 @end example
 
-Test cases can run in parallel: you can use the @code{-j} option of
-GNU@tie{}make to speed things up.  The first run may take a few minutes
-on a recent machine; subsequent runs will be faster because the store
-that is created for test purposes will already have various things in
-cache.
-
-It is also possible to run a subset of the tests by defining the
-@code{TESTS} makefile variable as in this example:
-
-@example
-make check TESTS="tests/store.scm tests/cpio.scm"
-@end example
-
-By default, tests results are displayed at a file level.  In order to
-see the details of every individual test cases, it is possible to define
-the @code{SCM_LOG_DRIVER_FLAGS} makefile variable as in this example:
-
-@example
-make check TESTS="tests/base64.scm" SCM_LOG_DRIVER_FLAGS="--brief=no"
-@end example
-
-The underlying SRFI 64 custom Automake test driver used for the 'check'
-test suite (located at @file{build-aux/test-driver.scm}) also allows
-selecting which test cases to run at a finer level, via its
-@option{--select} and @option{--exclude} options.  Here's an example, to
-run all the test cases from the @file{tests/packages.scm} test file
-whose names start with ``transaction-upgrade-entry'':
-
-@example
-export SCM_LOG_DRIVER_FLAGS="--select=^transaction-upgrade-entry"
-make check TESTS="tests/packages.scm"
-@end example
-
-Those wishing to inspect the results of failed tests directly from the
-command line can add the @option{--errors-only=yes} option to the
-@code{SCM_LOG_DRIVER_FLAGS} makefile variable and set the @code{VERBOSE}
-Automake makefile variable, as in:
-
-@example
-make check SCM_LOG_DRIVER_FLAGS="--brief=no --errors-only=yes" VERBOSE=1
-@end example
-
-The @option{--show-duration=yes} option can be used to print the
-duration of the individual test cases, when used in combination with
-@option{--brief=no}:
-
-@example
-make check SCM_LOG_DRIVER_FLAGS="--brief=no --show-duration=yes"
-@end example
-
-@xref{Parallel Test Harness,,,automake,GNU Automake} for more
-information about the Automake Parallel Test Harness.
-
-Upon failure, please email @email{bug-guix@@gnu.org} and attach the
-@file{test-suite.log} file.  Please specify the Guix version being used
-as well as version numbers of the dependencies (@pxref{Requirements}) in
-your message.
-
-Guix also comes with a whole-system test suite that tests complete
-Guix System instances.  It can only run on systems where
-Guix is already installed, using:
-
-@example
-make check-system
-@end example
-
-@noindent
-or, again, by defining @code{TESTS} to select a subset of tests to run:
-
-@example
-make check-system TESTS="basic mcron"
-@end example
-
-These system tests are defined in the @code{(gnu tests @dots{})}
-modules.  They work by running the operating systems under test with
-lightweight instrumentation in a virtual machine (VM).  They can be
-computationally intensive or rather cheap, depending on whether
-substitutes are available for their dependencies (@pxref{Substitutes}).
-Some of them require a lot of storage space to hold VM images.
-
-Again in case of test failures, please send @email{bug-guix@@gnu.org}
-all the details.
+With @option{--uninstall}, the script irreversibly deletes all the Guix
+files, configuration, and services.
 
 @node Setting Up the Daemon
 @section Setting Up the Daemon
@@ -5514,6 +5169,7 @@ account security concerns and deal with authenticated updates.
 * Specifying Additional Channels::  Extending the package collection.
 * Using a Custom Guix Channel::  Using a customized Guix.
 * Replicating Guix::            Running the @emph{exact same} Guix.
+* Customizing the System-Wide Guix:: Default channels on Guix System.
 * Channel Authentication::      How Guix verifies what it fetches.
 * Channels with Substitutes::   Using channels with available substitutes.
 * Creating a Channel::          How to write your custom channel.
@@ -5670,6 +5326,64 @@ This gives you super powers, allowing you to track the provenance of binary
 artifacts with very fine grain, and to reproduce software environments at
 will---some sort of ``meta reproducibility'' capabilities, if you will.
 @xref{Inferiors}, for another way to take advantage of these super powers.
+
+@node Customizing the System-Wide Guix
+@section Customizing the System-Wide Guix
+
+@cindex system-wide Guix, customization
+@cindex channels, for the default Guix
+If you're running Guix System or building system images with it, maybe
+you will want to customize the system-wide @command{guix} it
+provides---specifically, @file{/run/current-system/profile/bin/guix}.
+For example, you might want to provide additional channels or to pin its
+revision.
+
+This can be done using the @code{guix-for-channels} procedure, which
+returns a package for the given channels, and using it as part of your
+operating system configuration, as in this example:
+
+@lisp
+(use-modules (guix channels))
+
+(define my-channels
+  ;; Channels that should be available to
+  ;; /run/current-system/profile/bin/guix.
+  (append
+   (list (channel
+          (name 'guix-science)
+          (url "https://github.com/guix-science/guix-science")
+          (branch "master")))
+   %default-channels))
+
+(operating-system
+  ;; @dots{}
+  (services
+    ;; Change the package used by 'guix-service-type'.
+    (modify-services %base-services
+      (guix-service-type
+       config => (guix-configuration
+                  (inherit config)
+                  (channels my-channels)
+                  (guix (guix-for-channels my-channels)))))))
+@end lisp
+
+The resulting operating system will have both the @code{guix} and the
+@code{guix-science} channels visible by default.  The @code{channels}
+field of @code{guix-configuration} above further ensures that
+@file{/etc/guix/channels.scm}, which is used by @command{guix pull},
+specifies the same set of channels (@pxref{guix-configuration-channels,
+@code{channels} field of @code{guix-configuration}}).
+
+The @code{(gnu packages package-management)} module exports the
+@code{guix-for-channels} procedure, described below.
+
+@deffn {Procedure} guix-for-channels @var{channels}
+Return a package corresponding to @var{channels}.
+
+The result is a ``regular'' package, which can be used in
+@code{guix-configuration} as shown above or in any other place that
+expects a package.
+@end deffn
 
 @node Channel Authentication
 @section Channel Authentication
@@ -10451,7 +10165,10 @@ field (@pxref{Channels}); alternatively, its source can be a directory
 name, in which case an additional @code{#:commit} argument must be
 supplied to specify the commit being built (a hexadecimal string).
 
-The resulting package is a Guix instance of the given channel, similar
+Optionally, a @code{#:channels} argument specifying additional channels
+can be provided.
+
+The resulting package is a Guix instance of the given channel(s), similar
 to how @command{guix time-machine} would build it.
 @end defvar
 
@@ -12475,9 +12192,10 @@ The resulting file holds references to all the dependencies of @var{exp}
 or a subset thereof.
 @end deffn
 
-@deffn {Procedure} scheme-file name exp [#:splice? #f] [#:set-load-path? #t]
+@deffn {Procedure} scheme-file name exp [#:splice? #f] @
+           [#:guile #f] [#:set-load-path? #t]
 Return an object representing the Scheme file @var{name} that contains
-@var{exp}.
+@var{exp}.  @var{guile} is the Guile package used to produce that file.
 
 This is the declarative counterpart of @code{gexp->file}.
 @end deffn
@@ -17081,7 +16799,7 @@ instantiated.  Then we show how this mechanism can be extended, for
 instance to support new system services.
 
 @menu
-* Getting Started with the System:: Your first steps.
+* Getting Started with the System::  Your first steps.
 * Using the Configuration System::  Customizing your GNU system.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
@@ -17649,6 +17367,7 @@ configuration (@pxref{Using the Configuration System}).
 
 @table @asis
 @item @code{kernel} (default: @code{linux-libre})
+@c footnote duplicated in @pxref{Installation}
 The package object of the operating system kernel to
 use@footnote{Currently only the Linux-libre kernel is fully supported.
 Using GNU@tie{}mach with the GNU@tie{}Hurd is experimental and only
@@ -19731,7 +19450,8 @@ This data type represents the configuration of the Guix build daemon.
 
 @table @asis
 @item @code{guix} (default: @var{guix})
-The Guix package to use.
+The Guix package to use.  @xref{Customizing the System-Wide Guix} to
+learn how to provide a package with a pre-configured set of channels.
 
 @item @code{build-group} (default: @code{"guixbuild"})
 Name of the group for build user accounts.

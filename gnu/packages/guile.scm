@@ -457,7 +457,7 @@ without requiring the source code to be rewritten.")
 (define-public guile-next
   (let ((version "3.0.9")
         (revision "0")
-        (commit "fb1f5e28b1a575247fd16184b1c83b8838b09716"))
+        (commit "db7efa5d204b2e46ce9eb82f417d8c12d394858d"))
     (package
       (inherit guile-3.0)
       (name "guile-next")
@@ -471,7 +471,7 @@ without requiring the source code to be rewritten.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1lcc6sz0f3x253pr4a0fggsfkaxmxxw63cspfm2mjis6h82g6jxm"))))
+                  "1mg7pd0ya7i9swgnb38ay99cjwiw61ni0ypyywjrpv6iyvmx8m8q"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)

@@ -2934,7 +2934,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
 (define-public x-resize
   (package
     (name "x-resize")
-    (version "0.2")
+    (version "0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2943,7 +2943,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10y2p55m5hbrma01kixsppq1a3ld0q1jk8hwx1d1jfgw9vd243j8"))))
+                "0bkzc57p8j7cfpcw36hp7bwn16mfby9p1kgfq1lijfqq7d56ps0x"))))
     (build-system gnu-build-system)
     (arguments
      (list

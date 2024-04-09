@@ -25584,17 +25584,17 @@ Lisp, including:
                (substitute* "src/configuration.lisp"
                  (("\"libblas.so.3gf\"")
                   (string-append "\"" (assoc-ref inputs "lapack")
-                                 "/lib/libblas.so\""))
+                                 "/lib/libopenblas.so\""))
                  (("\"liblapack.so.3gf\"")
                   (string-append "\"" (assoc-ref inputs "lapack")
-                                 "/lib/liblapack.so\""))))))))
+                                 "/lib/libopenblas.so\""))))))))
       (inputs
        `(("anaphora" ,sbcl-anaphora)
          ("alexandria" ,sbcl-alexandria)
          ("cffi" ,sbcl-cffi)
          ("cl-num-utils" ,sbcl-cl-num-utils)
          ("cl-slice" ,sbcl-cl-slice)
-         ("lapack" ,lapack)
+         ("lapack" ,openblas)
          ("let-plus" ,sbcl-let-plus)))
       (native-inputs
        (list sbcl-clunit))

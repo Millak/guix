@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -180,8 +180,8 @@ to SSH server at '~a'")
                                        (get-error session)))))))))))
       (x
        ;; Connection failed or timeout expired.
-       (raise (formatted-message (G_ "SSH connection to '~a' failed: ~a~%")
-                                 host (get-error session)))))))
+       (raise (formatted-message (G_ "SSH connection to '~a' port ~a failed: ~a~%")
+                                 host (or port 22) (get-error session)))))))
 
 (define* (remote-inferior session #:optional become-command)
   "Return a remote inferior for the given SESSION.  If BECOME-COMMAND is

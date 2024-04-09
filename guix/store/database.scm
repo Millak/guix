@@ -40,8 +40,10 @@
             store-database-file
             call-with-database
             with-database
-            path-id
-            sqlite-register
+
+            valid-path-id
+
+            register-valid-path
             register-items
             %epoch
             reset-timestamps
@@ -130,59 +132,28 @@ errors."
 the transaction, otherwise commit the transaction after it finishes.
 RESTARTABLE? may be set to a non-#f value when it is safe to run PROC multiple
 times.  This may reduce contention for the database somewhat."
-  (define (exec sql)
-    (with-statement db sql stmt
-      (sqlite-fold cons '() stmt)))
   ;; We might use begin immediate here so that if we need to retry, we figure
   ;; that out immediately rather than because some SQLITE_BUSY exception gets
   ;; thrown partway through PROC - in which case the part already executed
   ;; (which may contain side-effects!) might have to be executed again for
   ;; every retry.
-  (exec (if restartable? "begin;" "begin immediate;"))
+  (sqlite-exec db (if restartable? "begin;" "begin immediate;"))
   (catch #t
     (lambda ()
       (let-values ((result (proc)))
-        (exec "commit;")
+        (sqlite-exec db "commit;")
         (apply values result)))
     (lambda args
       ;; The roll back may or may not have occurred automatically when the
       ;; error was generated. If it has occurred, this does nothing but signal
       ;; an error. If it hasn't occurred, this needs to be done.
-      (false-if-exception (exec "rollback;"))
+      (false-if-exception (sqlite-exec db "rollback;"))
       (apply throw args))))
-
-(define* (call-with-savepoint db proc
-                              #:optional (savepoint-name "SomeSavepoint"))
-  "Call PROC after creating a savepoint named SAVEPOINT-NAME.  If PROC exits
-abnormally, rollback to that savepoint.  In all cases, remove the savepoint
-prior to returning."
-  (define (exec sql)
-    (with-statement db sql stmt
-      (sqlite-fold cons '() stmt)))
-
-  (dynamic-wind
-    (lambda ()
-      (exec (string-append "SAVEPOINT " savepoint-name ";")))
-    (lambda ()
-      (catch #t
-        proc
-        (lambda args
-          (exec (string-append "ROLLBACK TO " savepoint-name ";"))
-          (apply throw args))))
-    (lambda ()
-      (exec (string-append "RELEASE " savepoint-name ";")))))
 
 (define* (call-with-retrying-transaction db proc #:key restartable?)
   (call-with-SQLITE_BUSY-retrying
    (lambda ()
      (call-with-transaction db proc #:restartable? restartable?))))
-
-(define* (call-with-retrying-savepoint db proc
-                                       #:optional (savepoint-name
-                                                   "SomeSavepoint"))
-  (call-with-SQLITE_BUSY-retrying
-   (lambda ()
-     (call-with-savepoint db proc savepoint-name))))
 
 (define %default-database-file
   ;; Default location of the store database.
@@ -198,48 +169,32 @@ If FILE doesn't exist, create it and initialize it as a new database.  Pass
     ((_ file db exp ...)
      (call-with-database file (lambda (db) exp ...)))))
 
-(define (call-with-statement db sql proc)
-  (let ((stmt (sqlite-prepare db sql #:cache? #t)))
-    (dynamic-wind
-      (const #t)
-      (lambda ()
-        (proc stmt))
-      (lambda ()
-        (sqlite-finalize stmt)))))
-
-(define-syntax-rule (with-statement db sql stmt exp ...)
-  "Run EXP... with STMT bound to a prepared statement corresponding to the sql
-string SQL for DB."
-  (call-with-statement db sql
-                       (lambda (stmt) exp ...)))
+(define (sqlite-step-and-reset statement)
+  (let ((val (sqlite-step statement)))
+    (sqlite-reset statement)
+    val))
 
 (define (last-insert-row-id db)
   ;; XXX: (sqlite3) currently lacks bindings for 'sqlite3_last_insert_rowid'.
   ;; Work around that.
-  (with-statement db "SELECT last_insert_rowid();" stmt
-    (match (sqlite-fold cons '() stmt)
-      ((#(id)) id)
-      (_ #f))))
+  (let ((stmt (sqlite-prepare db
+                              "SELECT last_insert_rowid();"
+                              #:cache? #t)))
+    (vector-ref (sqlite-step-and-reset stmt)
+                0)))
 
-(define path-id-sql
-  "SELECT id FROM ValidPaths WHERE path = :path")
-
-(define* (path-id db path)
-  "If PATH exists in the 'ValidPaths' table, return its numerical
-identifier.  Otherwise, return #f."
-  (with-statement db path-id-sql stmt
+(define (valid-path-id db path)
+  "If PATH exists in the 'ValidPaths' table, return its numerical identifier.
+Otherwise, return #f."
+  (let ((stmt (sqlite-prepare
+               db
+               "
+SELECT id FROM ValidPaths WHERE path = :path"
+               #:cache? #t)))
     (sqlite-bind-arguments stmt #:path path)
-    (match (sqlite-fold cons '() stmt)
-      ((#(id) . _) id)
-      (_ #f))))
-
-(define update-sql
-  "UPDATE ValidPaths SET hash = :hash, registrationTime = :time, deriver =
-:deriver, narSize = :size WHERE id = :id")
-
-(define insert-sql
-  "INSERT INTO ValidPaths (path, hash, registrationTime, deriver, narSize)
-VALUES (:path, :hash, :time, :deriver, :size)")
+    (match (sqlite-step-and-reset stmt)
+      (#(id) id)
+      (#f #f))))
 
 (define-inlinable (assert-integer proc in-range? key number)
   (unless (integer? number)
@@ -251,63 +206,19 @@ VALUES (:path, :hash, :time, :deriver, :size)")
            "Integer ~A out of range: ~S" (list key number)
            (list number))))
 
-(define* (update-or-insert db #:key path deriver hash nar-size time)
-  "The classic update-if-exists and insert-if-doesn't feature that sqlite
-doesn't exactly have... they've got something close, but it involves deleting
-and re-inserting instead of updating, which causes problems with foreign keys,
-of course. Returns the row id of the row that was modified or inserted."
-
-  ;; Make sure NAR-SIZE is valid.
-  (assert-integer "update-or-insert" positive? #:nar-size nar-size)
-  (assert-integer "update-or-insert" (cut >= <> 0) #:time time)
-
-  ;; It's important that querying the path-id and the insert/update operation
-  ;; take place in the same transaction, as otherwise some other
-  ;; process/thread/fiber could register the same path between when we check
-  ;; whether it's already registered and when we register it, resulting in
-  ;; duplicate paths (which, due to a 'unique' constraint, would cause an
-  ;; exception to be thrown). With the default journaling mode this will
-  ;; prevent writes from occurring during that sensitive time, but with WAL
-  ;; mode it will instead arrange to return SQLITE_BUSY when a write occurs
-  ;; between the start of a read transaction and its upgrading to a write
-  ;; transaction (see https://sqlite.org/rescode.html#busy_snapshot).
-  ;; Experimentally, it seems this SQLITE_BUSY will ignore a busy_timeout and
-  ;; immediately return (makes sense, since waiting won't change anything).
-
-  ;; Note that when that kind of SQLITE_BUSY error is returned, it will keep
-  ;; being returned every time we try to upgrade the same outermost
-  ;; transaction to a write transaction.  So when retrying, we have to restart
-  ;; the *outermost* write transaction.  We can't inherently tell whether
-  ;; we're the outermost write transaction, so we leave the retry-handling to
-  ;; the caller.
-  (call-with-savepoint db
-    (lambda ()
-      (let ((id (path-id db path)))
-        (if id
-            (with-statement db update-sql stmt
-              (sqlite-bind-arguments stmt #:id id
-                                     #:deriver deriver
-                                     #:hash hash #:size nar-size #:time time)
-              (sqlite-fold cons '() stmt))
-            (with-statement db insert-sql stmt
-              (sqlite-bind-arguments stmt
-                                     #:path path #:deriver deriver
-                                     #:hash hash #:size nar-size #:time time)
-              (sqlite-fold cons '() stmt)))
-        (last-insert-row-id db)))))
-
-(define add-reference-sql
-  "INSERT OR REPLACE INTO Refs (referrer, reference) VALUES (:referrer, :reference);")
-
 (define (add-references db referrer references)
   "REFERRER is the id of the referring store item, REFERENCES is a list
 ids of items referred to."
-  (with-statement db add-reference-sql stmt
+  (let ((stmt (sqlite-prepare
+               db
+               "
+INSERT OR REPLACE INTO Refs (referrer, reference)
+VALUES (:referrer, :reference)"
+               #:cache? #t)))
     (for-each (lambda (reference)
-                (sqlite-reset stmt)
                 (sqlite-bind-arguments stmt #:referrer referrer
                                        #:reference reference)
-                (sqlite-fold cons '() stmt))
+                (sqlite-step-and-reset stmt))
               references)))
 
 (define (timestamp)
@@ -320,9 +231,9 @@ ids of items referred to."
          (make-time time-utc 0 seconds)
          (current-time time-utc)))))
 
-(define* (sqlite-register db #:key path (references '())
-                          deriver hash nar-size
-                          (time (timestamp)))
+(define* (register-valid-path db #:key path (references '())
+                              deriver hash nar-size
+                              (time (timestamp)))
   "Registers this stuff in DB.  PATH is the store item to register and
 REFERENCES is the list of store items PATH refers to; DERIVER is the '.drv'
 that produced PATH, HASH is the base16-encoded Nix sha256 hash of
@@ -331,15 +242,53 @@ being converted to nar form.  TIME is the registration time to be recorded in
 the database or #f, meaning \"right now\".
 
 Every store item in REFERENCES must already be registered."
-  (let ((id (update-or-insert db #:path path
-                              #:deriver deriver
-                              #:hash hash
-                              #:nar-size nar-size
-                              #:time (time-second time))))
-    ;; Call 'path-id' on each of REFERENCES.  This ensures we get a
-    ;; "non-NULL constraint" failure if one of REFERENCES is unregistered.
-    (add-references db id
-                    (map (cut path-id db <>) references))))
+
+  (define registration-time
+    (time-second time))
+
+  ;; Make sure NAR-SIZE is valid.
+  (assert-integer "register-valid-path" positive? #:nar-size nar-size)
+  (assert-integer "register-valid-path" (cut >= <> 0)
+                  #:time registration-time)
+
+  (define id
+    (let ((existing-id (valid-path-id db path)))
+      (if existing-id
+          (let ((stmt (sqlite-prepare
+                       db
+                       "
+UPDATE ValidPaths
+SET hash = :hash, registrationTime = :time, deriver = :deriver, narSize = :size
+WHERE id = :id"
+                       #:cache? #t)))
+            (sqlite-bind-arguments stmt
+                                   #:id existing-id
+                                   #:deriver deriver
+                                   #:hash hash
+                                   #:size nar-size
+                                   #:time registration-time)
+            (sqlite-step-and-reset stmt)
+            existing-id)
+          (let ((stmt (sqlite-prepare
+                       db
+                       "
+INSERT INTO ValidPaths (path, hash, registrationTime, deriver, narSize)
+VALUES (:path, :hash, :time, :deriver, :size)"
+                       #:cache? #t)))
+            (sqlite-bind-arguments stmt
+                                   #:path path
+                                   #:deriver deriver
+                                   #:hash hash
+                                   #:size nar-size
+                                   #:time registration-time)
+            (sqlite-step-and-reset stmt)
+            (last-insert-row-id db)))))
+
+  ;; Call 'path-id' on each of REFERENCES.  This ensures we get a
+  ;; "non-NULL constraint" failure if one of REFERENCES is unregistered.
+  (add-references db id
+                  (map (cut valid-path-id db <>) references)))
+
 
 
 ;;;
@@ -416,18 +365,18 @@ typically by adding them as temp-roots."
     ;; When TO-REGISTER is already registered, skip it.  This makes a
     ;; significant differences when 'register-closures' is called
     ;; consecutively for overlapping closures such as 'system' and 'bootcfg'.
-    (unless (path-id db to-register)
+    (unless (valid-path-id db to-register)
       (let-values (((hash nar-size) (nar-sha256 real-file-name)))
         (call-with-retrying-transaction db
           (lambda ()
-            (sqlite-register db #:path to-register
-                             #:references (store-info-references item)
-                             #:deriver (store-info-deriver item)
-                             #:hash (string-append
-                                     "sha256:"
-                                     (bytevector->base16-string hash))
-                             #:nar-size nar-size
-                             #:time registration-time))))))
+            (register-valid-path db #:path to-register
+                                 #:references (store-info-references item)
+                                 #:deriver (store-info-deriver item)
+                                 #:hash (string-append
+                                         "sha256:"
+                                         (bytevector->base16-string hash))
+                                 #:nar-size nar-size
+                                 #:time registration-time))))))
 
   (let* ((prefix   (format #f "registering ~a items" (length items)))
          (progress (progress-reporter/bar (length items)

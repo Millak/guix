@@ -17,7 +17,9 @@
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +47,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system go)
   #:use-module (gnu packages)
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
@@ -59,7 +62,10 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages linux)
@@ -95,23 +101,24 @@
               (sha256
                (base32
                 "1r0sbw82cf9dbcj3vgnbd4sc1lklzvijic2z5wgkvs21azcm0yzh"))))
-    (build-system gnu-build-system)
+    (build-system go-build-system)
     (arguments
-     (list #:tests? #false              ;no tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)
-               (replace 'build
-                 (lambda _
-                   (setenv "HOME" "/tmp")
-                   (invoke "bash" "Build/build.sh")))
-               (replace 'install
-                 (lambda _
-                   (let ((bin (string-append #$output "/bin")))
-                     (mkdir-p bin)
-                     (copy-file "act.linux"
-                                (string-append #$output "/bin/act"))))))))
-    (native-inputs (list go))
+     (list
+      #:tests? #f              ;no tests
+      #:install-source? #f
+      #:import-path "github.com/Autodesk/AutomaticComponentToolkit/cmd/act"
+      #:unpack-path "github.com/Autodesk/AutomaticComponentToolkit/"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Golang produces the final binary based on the current directory
+          ;; name if -o options is not provided, utilize this assumption to
+          ;; completely relay on go-build-system.
+          (add-before 'build 'pretend-cmd-act
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (let ((act (string-append "src/" unpack-path "/cmd/act"))
+                    (source (string-append "src/" unpack-path "/Source")))
+                (mkdir-p act)
+                (copy-recursively source act)))))))
     (synopsis "Automatically generate software components")
     (description
      "The Automatic Component Toolkit (@dfn{ACT}) is a code generator that
@@ -379,6 +386,41 @@ cloc contains code from David Wheeler's SLOCCount.  Compared to SLOCCount,
 cloc can handle a greater variety of programming languages.")
     (license license:gpl2+)))
 
+(define-public scc
+  (package
+    (name "scc")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/boyter/scc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rkkfg6jimlc2rkajk6ypd5v0m3zai25ga5idz2pmkmzakv82n21"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/boyter/scc"))
+    (native-inputs
+     (list go-github-com-dbaggerman-cuba
+           go-github-com-json-iterator-go
+           go-github-com-mattn-go-runewidth
+           go-github-com-minio-blake2b-simd
+           go-github-com-spf13-cobra
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/boyter/scc")
+    (synopsis "Fast code counter written in Go")
+    (description
+     "@command{scc} provides a lines-of-code counter similar to tools like
+@command{cloc} and @command{sloccount}.  It aims to be fast as possible while
+supporting @acronym{COCOMO,Constructive Cost Model} calculation and code
+complexity estimation.")
+    (license license:expat)))
+
 (define-public the-silver-searcher
   (package
     (name "the-silver-searcher")
@@ -494,60 +536,6 @@ Universal Ctags improves on traditional ctags because of its multilanguage
 support, its ability for the user to define new languages searched by regular
 expressions, and its ability to generate emacs-style TAGS files.")
     (license license:gpl2+)))
-
-(define-public withershins
-  (package
-    (name "withershins")
-    (version "0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cameronwhite/withershins")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cviqvbbcwljm1zx12j6511hazr3kscwrvcyifrkfi4fpy5z985m"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:out-of-source? #f
-       #:configure-flags
-       ;; XXX A (justified!) misleading-indentation error breaks the build.
-       (list "-DENABLE_WERROR=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after
-          'unpack 'find-libiberty
-          (lambda _
-            (let ((libiberty (assoc-ref %build-inputs "libiberty")))
-              (substitute* "cmake/FindIberty.cmake"
-                (("/usr/include") (string-append libiberty "/include"))
-                (("libiberty.a iberty")
-                 (string-append "NAMES libiberty.a iberty\nPATHS \""
-                                libiberty "/lib" "\"")))
-              #t)))
-         (replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out (assoc-ref outputs "out"))
-                   (include (string-append out "/include"))
-                   (lib (string-append out "/lib")))
-              (mkdir-p include)
-              (install-file "src/withershins.hpp" include)
-              (mkdir-p lib)
-              (install-file "src/libwithershins.a" lib))
-            #t)))))
-    (home-page "https://github.com/cameronwhite/withershins")
-    (inputs
-     (list libiberty binutils ;for libbfd
-           zlib))
-    (synopsis "C++11 library for generating stack traces")
-    (description
-     "Withershins is a simple cross-platform C++11 library for generating
-stack traces.")
-    ;; Sources are released under Expat license, but since BFD is licensed
-    ;; under the GPLv3+ the combined work is GPLv3+ as well.
-    (license license:gpl3+)))
 
 (define-public lcov
   (package

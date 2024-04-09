@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2020, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -252,12 +252,10 @@ upon error."
                       (srfi srfi-1)           ;for lvm-device-mapping
                       (srfi srfi-26)
 
-                      ;; FIXME: The following modules are for
-                      ;; LUKS-DEVICE-MAPPING.  We should instead propagate
-                      ;; this info via gexps.
-                      ((gnu build file-systems)
-                       #:select (find-partition-by-luks-uuid))
-                      (rnrs bytevectors))
+                      ;; Load extra modules needed by the mapped device code.
+                      #$@(append-map (compose mapped-device-kind-modules
+                                              mapped-device-type)
+                                     mapped-devices))
 
          (with-output-to-port (%make-void-port "w")
            (lambda ()

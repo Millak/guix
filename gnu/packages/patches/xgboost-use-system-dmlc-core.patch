@@ -1,13 +1,13 @@
-# This patch was imported from Debian: https://sources.debian.org/src/xgboost/1.5.1-1/debian/patches/cmake-dmlc-core.patch/
+# This patch was imported from Debian: https://sources.debian.org/patches/xgboost/1.7.4-1/cmake-dmlc-core.patch/
 
 Index: xgboost/CMakeLists.txt
 ===================================================================
 --- xgboost.orig/CMakeLists.txt
 +++ xgboost/CMakeLists.txt
-@@ -164,7 +164,9 @@ endif (USE_NCCL)
- 
- # dmlc-core
- msvc_use_static_runtime()
+@@ -205,7 +205,9 @@ msvc_use_static_runtime()
+ if (FORCE_SHARED_CRT)
+   set(DMLC_FORCE_SHARED_CRT ON)
+ endif ()
 -add_subdirectory(${xgboost_SOURCE_DIR}/dmlc-core)
 +add_library(dmlc SHARED IMPORTED)
 +find_library(DMLC_LIBRARY dmlc)
@@ -15,7 +15,7 @@ Index: xgboost/CMakeLists.txt
  
  if (MSVC)
    if (TARGET dmlc_unit_tests)
-@@ -222,7 +224,7 @@ set_target_properties(runxgboost PROPERT
+@@ -267,7 +269,7 @@ set_target_properties(runxgboost PROPERT
  #-- End CLI for xgboost
  
  # Common setup for all targets
@@ -24,7 +24,7 @@ Index: xgboost/CMakeLists.txt
    xgboost_target_properties(${target})
    xgboost_target_link_libraries(${target})
    xgboost_target_defs(${target})
-@@ -273,7 +275,7 @@ install(DIRECTORY ${xgboost_SOURCE_DIR}/
+@@ -318,7 +320,7 @@ install(DIRECTORY ${xgboost_SOURCE_DIR}/
  #
  # https://github.com/dmlc/xgboost/issues/6085
  if (BUILD_STATIC_LIB)

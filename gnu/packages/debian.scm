@@ -148,6 +148,31 @@ contains the archive keys used for that.")
     ;; "The keys in the keyrings don't fall under any copyright."
     (license license:public-domain)))
 
+(define-public pureos-archive-keyring
+  (package
+    (name "pureos-archive-keyring")
+    (version "2021.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://repo.puri.sm/pureos/pool/main/p/pureos-archive-keyring/"
+                    "pureos-archive-keyring_" version ".tar.xz"))
+              (sha256
+               (base32
+                "1a0d084a98bycyhbw531646rbivvlfkdk6ldshl5dy6fvzmbci0d"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("keyrings/pureos-archive-keyring.gpg"
+                         "share/keyrings/")
+                        ("keyrings/pureos-archive-removed-keys.gpg"
+                         "share/keyrings/"))))
+    (home-page "https://source.puri.sm/pureos/core/pureos-archive-keyring")
+    (synopsis "GnuPG archive keys of the Pureos archive")
+    (description "The Pureos distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license (list license:public-domain ;; the keys
+                   license:gpl2+))))     ;; see debian/copyright
+
 (define-public trisquel-keyring
   (package
     (name "trisquel-keyring")
@@ -233,6 +258,7 @@ contains the archive keys used for that.")
            (add-after 'unpack 'patch-source
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let ((debian #$(this-package-input "debian-archive-keyring"))
+                     (pureos #$(this-package-input "pureos-archive-keyring"))
                      (trisquel #$(this-package-input "trisquel-keyring"))
                      (ubuntu #$(this-package-input "ubuntu-keyring")))
                  (substitute* "Makefile"
@@ -246,6 +272,11 @@ contains the archive keys used for that.")
                    (("/usr") debian))
                  (substitute* "scripts/gutsy"
                    (("/usr") ubuntu))
+                 (substitute* "scripts/amber"
+                   (("/usr/share/keyrings/pureos-archive-keyring.gpg")
+                    (string-append
+                     pureos
+                     "/share/keyrings/pureos-archive-keyring.gpg")))
                  (substitute* "scripts/robur"
                    (("/usr/share/keyrings/trisquel-archive-keyring.gpg")
                     (string-append
@@ -258,6 +289,8 @@ contains the archive keys used for that.")
                  (substitute* (find-files "scripts")
                    (("keyring.*(debian-archive-keyring.gpg)"_ keyring)
                     (string-append "keyring " debian "/share/keyrings/" keyring))
+                   (("keyring.*(pureos-archive-keyring.gpg)" _ keyring)
+                    (string-append "keyring " pureos "/share/keyrings/" keyring))
                    (("keyring.*(trisquel-archive-keyring.gpg)" _ keyring)
                     (string-append "keyring " trisquel "/share/keyrings/" keyring))
                    (("keyring.*(ubuntu-archive-keyring.gpg)" _ keyring)
@@ -284,6 +317,7 @@ contains the archive keys used for that.")
          #:tests? #f))  ; no tests
     (inputs
      (list debian-archive-keyring
+           pureos-archive-keyring
            trisquel-keyring
            ubuntu-keyring
            bash-minimal

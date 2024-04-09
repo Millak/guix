@@ -101,6 +101,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
@@ -1229,6 +1230,47 @@ development.")
     (home-page "https://www.gaia-gis.it/fossil/spatialite_gui/index")
     (license license:gpl3+)))
 
+(define-public pdal
+  (package
+    (name "pdal")
+    (version "2.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PDAL/PDAL")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gg5lcshlmn3wwak42xr0b8a8gdr4572d7hrcvxn2291kp2c3096"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" ;; This test hangs.
+                             "pdal_io_stac_reader_test")))))))
+    (native-inputs (list python))
+    (inputs (list gdal
+                  h3
+                  libgeotiff
+                  libunwind
+                  libxml2
+                  nlohmann-json
+                  openssl
+                  proj
+                  utfcpp
+                  xz
+                  `(,zstd "lib")))
+    (home-page "https://pdal.io/")
+    (synopsis "Point Data Abstraction Library")
+    (description "PDAL is a C++ library for translating and manipulating point
+cloud data.  It is very much like the GDAL library which handles raster and
+vector data.")
+    (license license:bsd-3)))
+
 (define-public gdal
   (package
     (name "gdal")
@@ -1911,6 +1953,34 @@ persisted.
 ")
     (license license:expat)))
 
+(define-public libmseed
+  (package
+    (name "libmseed")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/EarthScope/libmseed")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05sk2h19c7ja98s75b7hbn2cwnjc5l6dr59c23fgnaimmad2rfn7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (home-page "https://earthscope.github.io/libmseed/")
+    (synopsis "Library for the miniSEED data format")
+    (description "The miniSEED library provides a framework for manipulation
+of SEED data records, a format for commonly used for seismological time
+series and related data.  The library includes the functionality to read
+and write data records, in addition to reconstructing time series
+from multiple records.")
+    (license license:asl2.0)))
+
 (define-public python-rtree
   (package
     (name "python-rtree")
@@ -2574,7 +2644,7 @@ track your position right from your laptop.")
            qtbase-5
            qtimageformats-5
            qtlocation
-           qtsensors
+           qtsensors-5
            zlib))
     (native-inputs
      (list doxygen
@@ -2609,7 +2679,6 @@ orienteering sport.")
          ("gdal" ,gdal)
          ("geos" ,geos)
          ("glu" ,glu)
-         ("lapack" ,lapack)
          ("libpng" ,libpng)
          ("libtiff" ,libtiff)
          ("mesa" ,mesa)
@@ -2643,6 +2712,11 @@ orienteering sport.")
                              (guix build python-build-system))
          #:phases
          (modify-phases %standard-phases
+           (add-after 'unpack 'fix-lapack
+             (lambda _
+               (substitute* "./configure"
+                 (("-lblas") "-lopenblas")
+                 (("-llapack") "-lopenblas"))))
            (replace 'configure
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let ((shell (search-input-file inputs "/bin/bash")))
@@ -2977,7 +3051,7 @@ growing set of geoscientific methods.")
            qtkeychain
            qtlocation
            qtmultimedia-5
-           qtserialport
+           qtserialport-5
            qtsvg-5
            qwt
            ;; saga

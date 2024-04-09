@@ -773,7 +773,6 @@ FFC is part of the FEniCS Project.")
            boost
            eigen
            hdf5-parallel-openmpi
-           lapack
            libxml2
            openmpi
            python-3
@@ -805,7 +804,7 @@ FFC is part of the FEniCS Project.")
                    (setenv "CATCH_DIR"
                            #$(this-package-input "catch"))
                    (setenv "LAPACK_DIR"
-                           #$(this-package-input "lapack"))
+                           #$(this-package-input "openblas"))
                    (setenv "PETSC_DIR"
                            #$(this-package-input "petsc"))
                    (setenv "SLEPC_DIR"

@@ -4,20 +4,21 @@
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2013.
 # Thiago Jung Bauermann <bauermann@kolabnow.com>, 2021.
 # Camila Flores Granella <cgranell@redhat.com>, 2023.
+# Frank McCay <frank.mccay@outlook.com.br>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.4-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2023-08-30 06:09+0000\n"
-"Last-Translator: Camila Flores Granella <cgranell@redhat.com>\n"
+"PO-Revision-Date: 2024-03-07 11:36+0000\n"
+"Last-Translator: Frank McCay <frank.mccay@outlook.com.br>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/packages/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 5.4\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu/packages/abiword.scm:124
@@ -67,10 +68,12 @@ msgid ""
 "Ispell is an interactive spell-checking tool supporting many\n"
 "European languages."
 msgstr ""
+"Ispell é uma ferramenta interativa de verificação ortográfica que oferece suporte a muitas\n"
+"línguas europeias."
 
 #: gnu/packages/audio.scm:205
 msgid "Embedded Audio Acceleration"
-msgstr ""
+msgstr "Aceleração de áudio incorporada"
 
 #: gnu/packages/audio.scm:206
 msgid ""
@@ -82,50 +85,65 @@ msgid ""
 "hardware and software audio capabilities, reducing implementation effort, and\n"
 "promoting the market for advanced audio."
 msgstr ""
+"OpenSLES é uma plataforma cruzada, livre de royalties,\n"
+"com uma API de áudio acelerada por hardware ajustada para sistemas embarcados. Ele fornece um\n"
+"método padronizado, de alto desempenho e baixa latência para acessar áudio,\n"
+"funcionalidade para desenvolvedores de aplicativos nativos em dispositivos móveis incorporados\n"
+"dispositivos multimídia, permitindo a implantação simples em várias plataformas de\n"
+"recursos de áudio de hardware e software, reduzindo o esforço de implementação e\n"
+"promovendo o mercado de áudio avançado."
 
 #: gnu/packages/audio.scm:241
 msgid "Software Synthesizer"
-msgstr ""
+msgstr "Sintetizador de Software"
 
 #: gnu/packages/audio.scm:242
 msgid ""
 "WildMIDI is a simple software midi player which has a core\n"
 "softsynth library that can be used with other applications."
 msgstr ""
+"WildMIDI é um software midi player simples que possui como núcleo\n"
+"a biblioteca softsynth que pode ser usada com outros aplicativos."
 
 #: gnu/packages/audio.scm:304
 msgid "WebRTC's Audio Processing Library"
-msgstr ""
+msgstr "Biblioteca de processamento de áudio do WebRTC"
 
 #: gnu/packages/audio.scm:305
 msgid ""
 "WebRTC-Audio-Processing library based on Google's\n"
 "implementation of WebRTC."
 msgstr ""
+"Biblioteca WebRTC-Audio-Processing baseada\n"
+"implementação do Google de WebRTC."
 
 #: gnu/packages/audio.scm:324
 msgid "VisualOn AAC Encoder"
-msgstr ""
+msgstr "Codificador VisualOn AAC"
 
 #: gnu/packages/audio.scm:325
 msgid ""
 "VO-AACENC is the VisualOn implementation of Advanced Audio\n"
 "Coding (AAC) encoder."
 msgstr ""
+"VO-AACENC é a implementação VisualOn do Advanced Audio\n"
+"Codificador de codificação (AAC)."
 
 #: gnu/packages/audio.scm:353
 msgid "ALSA interfacing library"
-msgstr ""
+msgstr "Biblioteca de interface ALSA"
 
 #: gnu/packages/audio.scm:354
 msgid ""
 "TinyALSA is a small library to interface with ALSA in the\n"
 "Linux kernel."
 msgstr ""
+"TinyALSA é uma pequena biblioteca para fazer interface com ALSA no\n"
+"Kernel Linux."
 
 #: gnu/packages/audio.scm:380
 msgid "Video game music file playback library"
-msgstr ""
+msgstr "Biblioteca de reprodução de arquivos de música de videogame"
 
 #: gnu/packages/audio.scm:382
 msgid ""
@@ -152,30 +170,56 @@ msgid ""
 "Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro\n"
 "@end table"
 msgstr ""
+"Game-music-emu é uma coleção de emuladores de arquivos de música de videogame que\n"
+"suporta os seguintes formatos e sistemas:\n"
+"@table @code\n"
+"@item AY\n"
+"ZX Spectrum/Asmtrad CPC\n"
+"@item GBS\n"
+"Nintendo Game Boy\n"
+"@item GYM\n"
+"Sega Genesis/Mega Drive\n"
+"@item HES\n"
+"NEC TurboGrafx-16/PC Engine\n"
+"@item KSS\n"
+"MSX Home Computer/other Z80 systems (doesn't support FM sound)\n"
+"@item NSF/NSFE\n"
+"Nintendo NES/Famicom (with VRC 6, Namco 106, and FME-7 sound)\n"
+"@item SAP\n"
+"Atari systems using POKEY sound chip\n"
+"@item SPC\n"
+"Super Nintendo/Super Famicom\n"
+"@item VGM/VGZ\n"
+"Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro\n"
+"@end table"
 
 #: gnu/packages/audio.scm:445
 msgid "Audio tracking library"
-msgstr ""
+msgstr "Biblioteca de rastreamento de áudio"
 
 #: gnu/packages/audio.scm:446
 msgid ""
 "LibOpenMPT is a cross-platform C++ and C module playback\n"
 "library.  It is based on the player code of the Open ModPlug Tracker project."
 msgstr ""
+"LibOpenMPT é uma plataforma cruzada C++ e um módulo C de reprodução\n"
+"na forma de biblioteca. É baseado no código do player do projeto Open ModPlug Tracker."
 
 #: gnu/packages/audio.scm:476
 msgid "Open Fingerprint Architecture"
-msgstr ""
+msgstr "Arquitetura de impressão digital aberta"
 
 #: gnu/packages/audio.scm:477
 msgid ""
 "LibOFA is an audio fingerprint library, created and provided\n"
 "by MusicIP."
 msgstr ""
+"LibOFA é uma biblioteca de impressões digitais de áudio, criada e fornecida\n"
+"pela MusicIP."
 
 #: gnu/packages/audio.scm:501
 msgid "MIDI to WAVE converter library"
-msgstr ""
+msgstr "Biblioteca de conversão de MIDI para WAVE"
 
 #: gnu/packages/audio.scm:502
 msgid ""
@@ -183,16 +227,21 @@ msgid ""
 "Gravis Ultrasound-compatible patch files to generate digital audio data from\n"
 "General MIDI files."
 msgstr ""
+"LibTiMidity é uma biblioteca conversora de MIDI para WAVE que usa\n"
+"arquivos de patch compatíveis com Gravis Ultrasound para gerar dados de áudio digital a partir de\n"
+"arquivos MIDI gerais."
 
 #: gnu/packages/audio.scm:526 gnu/packages/audio.scm:545
 msgid "Adaptive Multi Rate Codec"
-msgstr ""
+msgstr "Codec adaptativo de múltiplas taxas"
 
 #: gnu/packages/audio.scm:527
 msgid ""
 "VO-AMR is a library of VisualOn implementation of\n"
 "Adaptive Multi Rate Narrowband and Wideband (AMR-NB and AMR-WB) speech codec."
 msgstr ""
+"VO-AMR é uma biblioteca de implementação VisualOn de\n"
+"Codec de voz adaptável de banda estreita e banda larga multitaxa (AMR-NB e AMR-WB)."
 
 #: gnu/packages/audio.scm:546
 msgid ""
@@ -200,10 +249,13 @@ msgid ""
 "implementation of Adaptive Multi Rate Narrowband and Wideband\n"
 "(AMR-NB and AMR-WB) speech codec."
 msgstr ""
+"OpenCore-AMR é uma biblioteca do OpenCORE Framework\n"
+"implementação de banda estreita e banda larga adaptativa multitaxa\n"
+"Codec de voz (AMR-NB e AMR-WB)."
 
 #: gnu/packages/audio.scm:577
 msgid "Realtime modular synthesizer and effect processor"
-msgstr ""
+msgstr "Sintetizador modular em tempo real e processador de efeitos"
 
 #: gnu/packages/audio.scm:579
 msgid ""
@@ -213,10 +265,15 @@ msgid ""
 "e.g. of the VCO (Voltage Controlled Oscillator) and VCF (Voltage Controlled\n"
 "Filter) modules follow the convention of 1V / Octave."
 msgstr ""
+"AlsaModularSynth é uma implementação digital de um sistema sintetizador modular.\n"
+"analógico clássico. Ele usa tensões de controle virtuais para controlar o\n"
+"parâmetros dos módulos. As tensões de controle que controlam a frequência\n"
+"por exemplo, dos módulos VCO (Oscilador Controlado por Tensão) e VCF (Oscilador Controlado por filtro)\n"
+"seguem a convenção de 1V/Oitava."
 
 #: gnu/packages/audio.scm:617
 msgid "Library for audio labelling"
-msgstr ""
+msgstr "Biblioteca para rotulagem de áudio"
 
 #: gnu/packages/audio.scm:619
 msgid ""
@@ -225,28 +282,34 @@ msgid ""
 "attacks, performing pitch detection, tapping the beat and producing MIDI\n"
 "streams from live audio."
 msgstr ""
+"aubio é uma ferramenta desenvolvida para a extração de anotações de áudio\n"
+"sinais. Seus recursos incluem segmentar um arquivo de som antes de cada um de seus\n"
+"ataques, realizando detecção de tom, tocando a batida e produzindo MIDI\n"
+"fluxos de áudio ao vivo."
 
 #: gnu/packages/audio.scm:664
 msgid "Audio processing program with an interactive mode"
-msgstr ""
+msgstr "Programa de processamento de áudio com modo interativo"
 
 #: gnu/packages/audio.scm:666
 msgid "dsp is an audio processing program with an interactive mode."
-msgstr ""
+msgstr "dsp é um programa de processamento de áudio com modo interativo."
 
 #: gnu/packages/audio.scm:713
 msgid "C++ library of functions for DSP and Music Informatics purposes"
-msgstr ""
+msgstr "Biblioteca C++ de funções para fins de DSP e informática musical"
 
 #: gnu/packages/audio.scm:715
 msgid ""
 "QM-DSP is a C++ library of functions for DSP and Music Informatics\n"
 "purposes developed at Queen Mary, University of London."
 msgstr ""
+"QM-DSP é uma biblioteca C++ de funções para DSP e Informática Musical\n"
+"propósitos desenvolvidos em Queen Mary, Universidade de Londres."
 
 #: gnu/packages/audio.scm:849
 msgid "Digital audio workstation"
-msgstr ""
+msgstr "Estação de trabalho de áudio digital"
 
 #: gnu/packages/audio.scm:851
 msgid ""
@@ -254,10 +317,13 @@ msgid ""
 "record, edit, mix and master audio and MIDI projects.  It is targeted at audio\n"
 "engineers, musicians, soundtrack editors and composers."
 msgstr ""
+"Ardour é uma estação de trabalho de áudio digital multicanal, permitindo aos usuários\n"
+"gravar, editar, mixar e masterizar projetos de áudio e MIDI. É direcionado para áudio\n"
+"engenheiros, músicos, editores de trilhas sonoras e compositores."
 
 #: gnu/packages/audio.scm:986 gnu/packages/audio.scm:1097
 msgid "Software for recording and editing sounds"
-msgstr ""
+msgstr "Software para gravação e edição de sons"
 
 #: gnu/packages/audio.scm:988
 msgid ""
@@ -265,6 +331,9 @@ msgid ""
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
 "tools."
 msgstr ""
+"Audacity é um editor de áudio multitrilha projetado para gravar, tocar\n"
+"e editar áudio digital. Possui efeitos digitais ferramentas\n"
+"de análise de espectro."
 
 #: gnu/packages/audio.scm:1099
 msgid ""
@@ -272,10 +341,12 @@ msgid ""
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
 "tools."
 msgstr ""
+"Tenacity é um editor de áudio multitrilha projetado para gravação, reprodução\n"
+"e edição de áudio digital. Possui ferramentas de efeitos digitais e análise de espectro."
 
 #: gnu/packages/audio.scm:1154
 msgid "Library to handle various audio file formats"
-msgstr ""
+msgstr "Biblioteca para lidar com vários formatos de arquivos de áudio"
 
 #: gnu/packages/audio.scm:1155
 msgid ""
@@ -287,10 +358,17 @@ msgid ""
 ".snd/.au, BICS, and raw data.  Supported compression formats are currently\n"
 "G.711 mu-law and A-law."
 msgstr ""
+"Esta é uma versão de código aberto da biblioteca de arquivos de áudio da SGI.\n"
+"Ele fornece uma interface de programação uniforme para processamento de dados de áudio\n"
+"e de arquivos de áudio para muitos formatos comuns.\n"
+"\n"
+"Os formatos de arquivo atualmente suportados incluem AIFF/AIFF-C, WAVE e NeXT/Sun\n"
+".snd/.au, BICS e dados brutos. Os formatos de compactação suportados são atualmente\n"
+"G.711 mu-law e A-law."
 
 #: gnu/packages/audio.scm:1195
 msgid "Pitch-correction LADSPA audio plugin"
-msgstr ""
+msgstr "Plugin de áudio LADSPA de correção de tom"
 
 #: gnu/packages/audio.scm:1197
 msgid ""
@@ -298,10 +376,13 @@ msgid ""
 "controls are allowable notes, strength of correction, LFO for vibrato and\n"
 "formant warp."
 msgstr ""
+"Autotalent é um plugin LADSPA para correção de tom em tempo real. Entre seus\n"
+"controles estão notas permitidas, força de correção, LFO para vibrato e\n"
+"formant warp."
 
 #: gnu/packages/audio.scm:1247
 msgid "Tonewheel organ synthesizer"
-msgstr ""
+msgstr "Sintetizador de órgão Tonewheel"
 
 #: gnu/packages/audio.scm:1249
 msgid ""
@@ -311,10 +392,15 @@ msgid ""
 "bass section with five drawbars.  A standalone JACK application and LV2\n"
 "plugins are provided."
 msgstr ""
+"AZR-3 é uma porta do plugin VST gratuito AZR-3. É um órgão tonewheel\n"
+"com drawbars, distorção e alto-falantes giratórios. O órgão possui três\n"
+"seções, duas seções polifônicas com nove lanças cada e uma monofônica\n"
+"seção de baixo com cinco drawbars. Um aplicativo JACK independente e LV2\n"
+"plug-ins são fornecidos."
 
 #: gnu/packages/audio.scm:1285
 msgid "Audio plug-in pack for LV2 and JACK environments"
-msgstr ""
+msgstr "Pacote de plug-ins de áudio para ambientes LV2 e JACK"
 
 #: gnu/packages/audio.scm:1287
 msgid ""

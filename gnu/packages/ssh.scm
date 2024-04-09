@@ -198,18 +198,15 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "9.6p1")
+   (version "9.7p1")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "mirror://openbsd/OpenSSH/portable/"
                           "openssh-" version ".tar.gz"))
-      (patches (search-patches "openssh-trust-guix-store-directory.patch"
-                               ;; Can be removed with next openssh update
-                               ;; https://issues.guix.gnu.org/67948#2
-                               "openssh-gcc-13-ppc64le-fzero-call-used-regs.patch"))
+      (patches (search-patches "openssh-trust-guix-store-directory.patch"))
       (sha256
-       (base32 "0z3pgam8b4z05lvdb78iv06p204qwl7b94a3cnnwba2mfb0120li"))))
+       (base32 "1z9zfw7ndibxwprazlkv1isrh1yplczdin5cziijfanqcvvjc129"))))
    (build-system gnu-build-system)
    (arguments
     (list

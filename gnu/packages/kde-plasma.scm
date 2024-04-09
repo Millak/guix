@@ -793,7 +793,7 @@ PipeWire in Qt projects.")
                   libkscreen
                   libxi
                   plasma-wayland-protocols
-                  qtsensors
+                  qtsensors-5
                   qtbase-5
                   qtx11extras
                   xcb-util))

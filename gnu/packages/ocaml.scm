@@ -8342,9 +8342,14 @@ library FFTW.")
     (properties '((tunable? . #t)))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f)) ; No test target.
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'find-openblas
+                 (lambda* _
+                   (setenv "LACAML_LIBS" "-lopenblas"))))
+           #:tests? #f))                ; No test target.
     (native-inputs
-     (list openblas lapack ocaml-base ocaml-stdio))
+     (list openblas ocaml-base ocaml-stdio))
     (home-page "https://mmottl.github.io/lacaml/")
     (synopsis
      "OCaml-bindings to BLAS and LAPACK")

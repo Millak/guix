@@ -541,6 +541,16 @@ Performance is achieved by using the LLVM JIT compiler.")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:configure-flags #~'("-DLLAMA_BLAS=ON"
+                              "-DLLAMA_BLAS_VENDOR=OpenBLAS"
+
+                              "-DLLAMA_NATIVE=OFF" ;no '-march=native'
+                              "-DLLAMA_FMA=OFF"    ;and no '-mfma', etc.
+                              "-DLLAMA_AVX2=OFF"
+                              "-DLLAMA_AVX512=OFF"
+                              "-DLLAMA_AVX512_VBMI=OFF"
+                              "-DLLAMA_AVX512_VNNI=OFF")
+
         #:modules '((ice-9 textual-ports)
                     (guix build utils)
                     ((guix build python-build-system) #:prefix python:)
@@ -575,8 +585,10 @@ Performance is achieved by using the LLVM JIT compiler.")
               (lambda _
                 (copy-file "bin/main" (string-append #$output "/bin/llama")))))))
       (inputs (list python))
+      (native-inputs (list pkg-config))
       (propagated-inputs
-       (list python-numpy python-pytorch python-sentencepiece))
+       (list python-numpy python-pytorch python-sentencepiece openblas))
+      (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
       (home-page "https://github.com/ggerganov/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
       (description "This package provides a port to Facebook's LLaMA collection
@@ -1255,7 +1267,7 @@ model packaging, deployment and workflow management.")
        ("hdf5" ,hdf5)
        ("atlas" ,atlas)
        ("arpack" ,arpack-ng)
-       ("lapack" ,lapack)
+       ("openblas" ,openblas)
        ("glpk" ,glpk)
        ("libxml2" ,libxml2)
        ("lzo" ,lzo)
@@ -1650,7 +1662,6 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
            libnsl))
     (inputs
      `(("giflib" ,giflib)
-       ("lapack" ,lapack)
        ("libjpeg" ,libjpeg-turbo)
        ("libpng" ,libpng)
        ("libx11" ,libx11)
@@ -2518,7 +2529,6 @@ written in C++.")
           (base32 "16w90za8narkfi590cxj4p7vc1f5sdxc927g5hk6kh4l3mf6iisl"))))
       (inputs
        (list alsa-lib
-             lapack ;compared to base kaldi, replacing `(,gfortran "lib")
              glib
              gstreamer
              jack-2
@@ -2537,7 +2547,6 @@ written in C++.")
             (replace 'configure
               (lambda _
                 (let ((portaudio #$(this-package-input "portaudio"))
-                      (lapack    #$(this-package-input "lapack"))
                       (openfst   #$(this-package-input "openfst"))
                       (openblas  #$(this-package-input "openblas")))
                   #$@(if (target-x86?)
@@ -2571,7 +2580,7 @@ written in C++.")
                      (string-append "OPENBLASROOT=\"" openblas "\""))
                     (("-L\\$OPENBLASLIBDIR -l:libopenblas.a -l:libblas.a -l:liblapack.a -l:libf2c.a")
                      (string-append "-L$OPENBLASLIBDIR -lopenblas "
-                                    "-L" lapack "/lib -lblas -llapack")))
+                                    "-L" openblas "/lib -lopenblas")))
                   (mkdir-p #$output) ; must exist
                   (setenv "CONFIG_SHELL" (which "bash"))
                   (setenv "OPENFST_VER" #$(package-version openfst))
@@ -3501,7 +3510,7 @@ learning libraries.")
 (define-public xgboost
   (package
     (name "xgboost")
-    (version "1.5.2")
+    (version "1.7.6")
     (source
      (origin
        (method git-fetch)
@@ -3511,7 +3520,7 @@ learning libraries.")
        (file-name (git-file-name name version))
        (patches (search-patches "xgboost-use-system-dmlc-core.patch"))
        (sha256
-        (base32 "0qx04y7cz8z7qv6bk9q7d7ba9b7xzj53l83l2x9ykdwhzacc3dn0"))))
+        (base32 "16fbm5y3hn6ccflmbdlmn7krrdq7c0az3mxd8j1d23s9ky8niw05"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DGOOGLE_TEST=ON")))
@@ -3538,40 +3547,7 @@ in a fast and accurate way.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "tests/python"
-             ;; FIXME: CLI tests fail with PermissionError.
-             "--ignore" "tests/python/test_cli.py"
-             "-k"
-             (string-append
-              "not test_cli_regression_demo"
-              ;; These tests use the Boston dataset that has been
-              ;; removed from scipy.
-              " and not test_sklearn_demo"
-              " and not test_sklearn_parallel_demo"
-              " and not test_predict_shape"
-              " and not test_num_parallel_tree"
-              " and not test_boston_housing_regression"
-              " and not test_boston_housing_rf_regression"
-              " and not test_parameter_tuning"
-              " and not test_regression_with_custom_objective"
-              " and not test_RFECV"
-              ;; Pandas incompatibility? Says:
-              ;; '_CalibratedClassifier' object has no attribute
-              ;; 'base_estimator'
-              " and not test_pandas_input"
-              ;; Accuracy problems?
-              " and not test_exact"
-              " and not test_approx"
-              " and not test_hist"
-              ;; The tests below open a network connection.
-              " and not test_model_compatibility"
-              " and not test_get_group"
-              " and not test_cv_no_shuffle"
-              " and not test_cv"
-              " and not test_training"
-              ;; "'['./runexp.sh']' returned non-zero exit status 1"
-              " and not test_cli_binary_classification"))
+      #:tests? #f ; all tests require network access
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
@@ -5160,8 +5136,7 @@ linear algebra routines needed for structured matrices (or operators).")
               (lambda _ (chdir "src")))
             (replace 'configure
               (lambda _
-                (let* ((lapack   #$(this-package-input "lapack"))
-                       (openfst  #$(this-package-input "openfst"))
+                (let* ((openfst  #$(this-package-input "openfst"))
                        (openblas #$(this-package-input "openblas"))
                        (kaldi    #$(this-package-input "kaldi")))
                   (substitute* "./Makefile"
@@ -5171,8 +5146,7 @@ linear algebra routines needed for structured matrices (or operators).")
                      "")
                     (("-lopenblas -llapack -lblas -lf2c")
                      (string-append
-                      "-L" openblas "/lib " "-lopenblas "
-                      "-L" lapack "/lib " "-llapack -lblas "))
+                      "-L" openblas "/lib " "-lopenblas "))
                     (("-lfst -lfstngram")
                      (string-append
                       "-L" openfst "/lib " "-lfst -lfstngram "))
@@ -5194,7 +5168,7 @@ linear algebra routines needed for structured matrices (or operators).")
                   (for-each
                    (lambda (x) (install-file x src))
                    (find-files "." "\\.h$"))))))))
-      (inputs (list kaldi openfst lapack openblas))
+      (inputs (list kaldi openfst openblas))
       (home-page "https://alphacephei.com/vosk")
       (synopsis "Speech recognition toolkit based on @code{kaldi}")
       (description "\

@@ -414,7 +414,6 @@ precision.")
            glpk-4
            gmp
            gsl
-           lapack
            libjpeg-turbo
            libpng
            libsamplerate
@@ -426,6 +425,7 @@ precision.")
            mpfi
            mpfr
            ntl
+           openblas
            pari-gp
            perl
            tcsh))

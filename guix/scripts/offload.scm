@@ -213,9 +213,6 @@ private key from '~a': ~a")
 When MAX-SILENT-TIME is true, it must be a positive integer denoting the
 number of seconds after which the connection times out."
   (let ((private (private-key-from-file* (build-machine-private-key machine)))
-        (public  (public-key-from-file
-                  (string-append (build-machine-private-key machine)
-                                 ".pub")))
         (session (make-session #:user (build-machine-user machine)
                                #:host (build-machine-name machine)
                                #:port (build-machine-port machine)

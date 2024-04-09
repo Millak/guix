@@ -35,7 +35,7 @@
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)
   #:autoload   (guix store database)
-               (sqlite-register store-database-file call-with-database)
+               (register-valid-path store-database-file call-with-database)
   #:autoload   (guix build store-copy) (copy-store-item)
   #:use-module (guix describe)
   #:use-module (guix gexp)
@@ -158,14 +158,15 @@ given INFO, a <path-info> record."
     (copy-store-item item target
                      #:deduplicate? #t)
 
-    (sqlite-register db
-                     #:path item
-                     #:references (path-info-references info)
-                     #:deriver (path-info-deriver info)
-                     #:hash (string-append
-                             "sha256:"
-                             (bytevector->base16-string (path-info-hash info)))
-                     #:nar-size (path-info-nar-size info))))
+    (register-valid-path db
+                         #:path item
+                         #:references (path-info-references info)
+                         #:deriver (path-info-deriver info)
+                         #:hash (string-append
+                                 "sha256:"
+                                 (bytevector->base16-string
+                                  (path-info-hash info)))
+                         #:nar-size (path-info-nar-size info))))
 
 (define* (copy-closure item target
                        #:key (log-port (current-error-port)))

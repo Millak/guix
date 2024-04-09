@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
@@ -629,7 +631,7 @@ calls.")
 (define-public tz
   (package
     (name "tz")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -638,31 +640,29 @@ calls.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nbl13xd95np89sbx8fn0jqrh1iy17hsy70kq31hmcvyns8dljhg"))))
+        (base32 "1zf5w6338y0s0pf0jlpbqzlbxbx39s93z0bmdaa0cxkxs8cz8xij"))))
     (build-system go-build-system)
     (arguments
-     `(#:go ,go-1.17
-       #:import-path "github.com/oz/tz"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key import-path tests? #:allow-other-keys)
-             (when tests?
-               (invoke "go" "test" "-cover" import-path)))))))
+     (list
+      #:go go-1.17
+      #:install-source? #f
+      #:import-path "github.com/oz/tz"))
     (inputs
-     `(("github.com/charmbracelet/bubbletea" ,go-github-com-charmbracelet-bubbletea)
-       ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)))
+     (list go-github-com-charmbracelet-bubbletea
+           go-github-com-muesli-termenv
+           go-github-com-tkuchiki-go-timezone))
     (home-page "https://github.com/oz/tz")
     (synopsis "TUI time zone helper")
     (description
-"@command{tz} helps you schedule things across time zones.  It is an interactive
-TUI program that displays time across a few time zones of your choosing.")
+     "@command{tz} helps you schedule things across time zones.  It is an
+interactive TUI program that displays time across a few time zones of your
+choosing.")
     (license gpl3+)))
 
 (define-public countdown
   (package
     (name "countdown")
-    (version "1.0.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -671,13 +671,13 @@ TUI program that displays time across a few time zones of your choosing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pdaw1krr0bsl4amhwx03v2b02iznvwvqn7af5zp4fkzjaj14cdw"))))
+        (base32 "0snz26dvj8v58fyzd51bcf07b5yp2akcyy26w7b0pnkmlh3lknmk"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/antonmedv/countdown"))
+     (list
+      #:import-path "github.com/antonmedv/countdown"))
     (native-inputs
-     `(("runewidth" ,go-github-com-mattn-go-runewidth)
-       ("termbox" ,go-github.com-nsf-termbox-go)))
+     (list go-github.com-nsf-termbox-go))
     (home-page "https://github.com/antonmedv/countdown")
     (synopsis "Counts to zero with a text user interface")
     (description

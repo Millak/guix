@@ -201,7 +201,7 @@ cards.")
            (list gtk "bin")
            pkg-config))
     (inputs
-     (list blueprint-compiler
+     (list blueprint-compiler-0.4
            glib
            gtk
            gtksourceview
@@ -569,7 +569,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
                 `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS")))))))))
     (native-inputs
      (list `(,glib "bin")
-           blueprint-compiler
+           blueprint-compiler-0.4
            gobject-introspection
            gettext-minimal
            pkg-config))

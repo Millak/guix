@@ -3757,7 +3757,7 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3766,7 +3766,7 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06p9gcnzgynsgfxxa1lk58pq5755px7sn00x2xh21qjnspwld1sy"))))
+                "03ajv1d034z6sjf2xapy8zq1mq2xkz5dqvn51vz2p26ws5axbzrn"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3776,24 +3776,13 @@ communication over HTTP.")
               "-DRESTINIO_DEP_LLHTTP=system"
               "-DRESTINIO_DEP_FMT=system"
               "-DRESTINIO_DEP_EXPECTED_LITE=system"
-              "-DRESTINIO_DEP_CATCH2=system"
-              ;; No support to use a system provided so_5
-              ;; (see:
-              ;; https://github.com/Stiffstream/restinio/issues/207).
-              "-DRESTINIO_WITH_SOBJECTIZER=OFF")
+              "-DRESTINIO_DEP_CATCH2=find"
+              "-DRESTINIO_DEP_SOBJECTIZER=find")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'change-directory
             (lambda _
-              (chdir "dev")))
-          (add-after 'change-directory 'use-system-catch2
-            ;; It's not currently possible to select a system-provided catch2,
-            ;; so patch the build system (see:
-            ;; https://github.com/Stiffstream/restinio/issues/208).
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("add_subdirectory\\(catch2\\)")
-                 "find_package(Catch2 REQUIRED)")))))))
+              (chdir "dev"))))))
     (native-inputs
      (list catch2-3
            expected-lite
@@ -3986,8 +3975,8 @@ A very simple IM client working over the DHT.
 
 (define-public dhtnet
   ;; There is no tag nor release; use the latest available commit.
-  (let ((revision "1")
-        (commit "41848a2c770d7eb0940d731014b81643f85e0d07"))
+  (let ((revision "2")
+        (commit "024c46fb1f14276d4adf15764ed97b733890826e"))
     (package
       (name "dhtnet")
       ;; The base version is taken from the CMakeLists.txt file.
@@ -4000,7 +3989,7 @@ A very simple IM client working over the DHT.
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "18v2pjrxfrd26p2z27s90marx7b593nz1xwi47lnp2ja7lm1pj4m"))))
+                  "191gmfdg22hkmxvzh5i19lr512q4bhgajhlg9mxxgb7jq0842mc6"))))
       (outputs (list "out" "debug"))
       (build-system cmake-build-system)
       (arguments
@@ -4016,11 +4005,10 @@ A very simple IM client working over the DHT.
                   ;; The connectionManager test currently segfaults (see:
                   ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/18).
                   ((".*tests_connectionManager.*") "")
-                  ;; The fileutils test fail, asserting an unexpected returned
-                  ;; value for the removeAll call when the directory to be
-                  ;; removed is missing (see:
-                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/17).
-                  ((".*tests_fileutils.*") "")))))))
+                  ;; The ICE tests fail inside the containerized build
+                  ;; environment, perhaps relying on a name resolver (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/25).
+                  ((".*tests_ice.*") "")))))))
       (native-inputs (list cppunit pkg-config))
       ;; This library depends on the Jami fork of pjproject that adds ICE
       ;; support.
@@ -4551,7 +4539,7 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
@@ -4559,7 +4547,7 @@ network.")
                            "releases/download/v" version "/"
                            "ngtcp2-" version ".tar.xz"))
        (sha256
-        (base32 "16qkik9185ygkr351a7q59l1rv6dzw51j4f7vkzfvzh385kqdqy3"))))
+        (base32 "0jnay7m4zkg6v2zcidswv9xbyjgsvjbhwf8ykqjcw1jwkwxl7ldm"))))
     (build-system gnu-build-system)
     (arguments
      (list

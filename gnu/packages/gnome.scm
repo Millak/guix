@@ -3278,7 +3278,7 @@ the GNOME desktop environment.")
 (define-public blueprint-compiler
   (package
     (name "blueprint-compiler")
-    (version "0.4.0")
+    (version "0.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3288,7 +3288,7 @@ the GNOME desktop environment.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))
+                "15cm2bksmygf8sifryrawxxblvvw27p4w3m42gvp3jlq50a15xm6"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3303,13 +3303,15 @@ the GNOME desktop environment.")
       #~(modify-phases %standard-phases
           (add-after 'wrap 'wrap-python
             (assoc-ref python:%standard-phases 'wrap))
-          (add-after 'wrap-python 'wrap-gi
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out               (assoc-ref outputs "out"))
-                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-                (wrap-program (string-append out "/bin/blueprint-compiler")
-                  `("GI_TYPELIB_PATH" ":" suffix (,gi-typelib-path)))))))))
-    (native-inputs (list gtk python-pygobject python))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (native-inputs (list gtk
+                         libadwaita
+                         python
+                         python-pygobject
+                         xorg-server-for-tests))
     (inputs (list python))
     (synopsis "Template markup language")
     (description
@@ -3317,6 +3319,22 @@ the GNOME desktop environment.")
 compiles to GTKBuilder XML.")
     (home-page "https://gitlab.gnome.org/jwestman/blueprint-compiler")
     (license license:lgpl3+)))
+
+(define-public blueprint-compiler-0.4
+  (package
+    (inherit blueprint-compiler)
+    (name "blueprint-compiler")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))))
 
 (define-public cambalache
   (package
@@ -7784,7 +7802,7 @@ javascript engine and the GObject introspection framework.")
 (define-public gedit
   (package
     (name "gedit")
-    (version "44.1")
+    (version "44.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7792,7 +7810,7 @@ javascript engine and the GObject introspection framework.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1nlgbnagahymb8l41kgz3nwc4p9cj3zx39428z6zik44fa6kfqh4"))))
+                "0j8p7lnf05sbw194babasfhvpd3pp29f17kvzn16ffnh34psn3y9"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -10309,6 +10327,7 @@ playing media, scanning, and much more.")
                             pulseaudio
                             shared-mime-info
                             system-config-printer
+                            xdg-desktop-portal
                             xdg-user-dirs
                             yelp
                             zenity))
@@ -12632,7 +12651,7 @@ non-privileged user.")
 (define-public geary
   (package
     (name "geary")
-    (version "43.0")
+    (version "44.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12641,7 +12660,7 @@ non-privileged user.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05b8c5ljzx1ly7wq8jzpv8psxmsdlz395sr17xwj49nh495nflz5"))))
+                "1cx1jfaxsbkxm8774wf8n7ss2n73bzgk4yi2f9i3ab698ygh0h68"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
@@ -13422,7 +13441,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.17.0")
+    (version "1.34.2")
     (source
      (origin
        (method git-fetch)
@@ -13432,7 +13451,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0snb6vdgb3l2mw0kr0yb4zjpq46w56rpi554vqn5ks6qwywvs58g"))))
+         "044m3z7h1hi2avx4z6qgjzhgn1fkf1iclxhr4j7pb6flbqvwnxhs"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13469,6 +13488,7 @@ profiler via Sysprof, debugging support, and more.")
            python-beautifulsoup4
            python-brotli
            python-cloudscraper
+           python-colorthief
            python-dateparser
            python-emoji
            python-keyring
@@ -13485,7 +13505,8 @@ profiler via Sysprof, debugging support, and more.")
            python-unidecode
            webkitgtk))
     (native-inputs
-     (list desktop-file-utils
+     (list blueprint-compiler
+           desktop-file-utils
            gettext-minimal
            `(,glib "bin")
            gobject-introspection

@@ -203,14 +203,14 @@ designs.")
 (define-public clojure-tools
   (package
     (name "clojure-tools")
-    (version "1.11.1.1200")
+    (version "1.11.1.1413")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.clojure.org/install/clojure-tools-"
                            version
                            ".tar.gz"))
-       (sha256 (base32 "075naxfiddi6jqr6rqiywwy91r188n5m8yfqcxddmds2vm5rrpnv"))
+       (sha256 (base32 "1q0z71ifdxwvyy9gvq8mx8jbygf8cszrlhb3h22walfamnisbhwk"))
        ;; Remove AOT compiled JAR.  The other JAR only contains uncompiled
        ;; Clojure source code.
        (snippet
@@ -249,7 +249,7 @@ designs.")
                  ":"))))))))
     (inputs (list rlwrap
                   clojure
-                  clojure-tools-deps-alpha
+                  clojure-tools-deps
                   java-commons-logging-minimal))
     (home-page "https://clojure.org/releases/tools")
     (synopsis "CLI tools for the Clojure programming language")
@@ -572,7 +572,72 @@ concise, powerful tests.")
 work with command-line arguments.")
     (license license:epl1.0)))
 
+(define-public clojure-tools-deps
+  (package
+    (name "clojure-tools-deps")
+    (version "0.18.1354")
+    (home-page "https://github.com/clojure/tools.deps")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ls5nixhsjjhf3qz8kbyhmks5lw7a25zxl46yrizbw7vba3mzrpl"))))
+    (build-system clojure-build-system)
+    (arguments
+     `(#:source-dirs '("src/main/clojure" "src/main/resources")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()
+       ;; FIXME: Could not initialize class org.eclipse.aether.transport.http.SslSocketFactory
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; FIXME: Currently, the S3 transporter depends on ClojureScript,
+         ;; which is very difficult to package due to dependencies on Java
+         ;; libraries with non-standard build systems. Instead of actually
+         ;; packaging these libraries, we just remove the S3 transporter that
+         ;; depends on them.
+         (add-after 'unpack 'remove-s3-transporter
+           (lambda _
+             (for-each delete-file
+                       (list
+                        (string-append
+                         "src/main/clojure/clojure/"
+                         "tools/deps/util/s3_aws_client.clj")
+                        (string-append
+                         "src/main/clojure/clojure/"
+                         "tools/deps/util/s3_transporter.clj")
+                        (string-append
+                         "src/test/clojure/clojure/"
+                         "tools/deps/util/test_s3_transporter.clj")))
+             (substitute*
+               "src/main/clojure/clojure/tools/deps/util/maven.clj"
+               (("clojure.tools.deps.util.s3-transporter")
+                "")))))))
+    (propagated-inputs (list maven-resolver-api
+                             maven-resolver-spi
+                             maven-resolver-impl
+                             maven-resolver-util
+                             maven-resolver-connector-basic
+                             maven-resolver-provider
+                             maven-core
+                             maven-resolver-transport-http
+                             maven-resolver-transport-file
+                             clojure-tools-gitlibs
+                             clojure-tools-cli
+                             clojure-data-xml))
+    (synopsis "Clojure library supporting clojure-tools")
+    (description "This package provides a functional API for transitive
+dependency graph expansion and the creation of classpaths.")
+    (license license:epl1.0)))
+
 (define-public clojure-tools-deps-alpha
+  ;; this was superseded by clojure-tools-deps
+  ;; https://github.com/clojure/tools.deps.alpha
+  ;; Keeping it to give downstream packages a chance to upgrade
   (package
     (name "clojure-tools-deps-alpha")
     (version "0.14.1212")

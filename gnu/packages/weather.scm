@@ -23,7 +23,8 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages golang-build))
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz))
 
 (define-public wego
   (package

@@ -23,7 +23,7 @@
 
 # If adding a language, update the following variables, and info_TEXINFOS.
 MANUAL_LANGUAGES = de es fr pt_BR ru zh_CN
-COOKBOOK_LANGUAGES = de fr ko sk
+COOKBOOK_LANGUAGES = de fr ko pt_BR sk
 
 # Arg1: A list of languages codes.
 # Arg2: The file name stem.
@@ -42,6 +42,7 @@ info_TEXINFOS = %D%/guix.texi			\
   %D%/guix-cookbook.de.texi			\
   %D%/guix-cookbook.fr.texi			\
   %D%/guix-cookbook.ko.texi			\
+  %D%/guix-cookbook.pt_BR.texi			\
   %D%/guix-cookbook.sk.texi
 
 %C%_guix_TEXINFOS = \
@@ -231,10 +232,9 @@ $(srcdir)/%D%/guix.1: scripts/guix.in $(sub_commands_mans)
 # prerequisite is solely meant to force these docs to be made only after all
 # Guile modules have been compiled.  We also need the guix script to exist.
 $(srcdir)/%D%/guix-%.1: guix/scripts/%.scm $(GOBJECTS) scripts/guix
-	-@case '$?' in \
-	  *$<*) $(AM_V_P) && set -x || echo "  HELP2MAN $@"; \
-	        $(gen_man) --output="$@" "guix $*";; \
-	  *)    : ;; \
+	-@case '$?' in								\
+	  *$<*) $(AM_V_HELP2MAN:@%=%)$(gen_man) --output="$@" "guix $*";;	\
+	  *)    : ;;								\
 	esac
 
 if BUILD_DAEMON

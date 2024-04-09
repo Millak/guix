@@ -64,9 +64,11 @@ its API, and related concepts.
 @c how to join your own translation team and how to report issues with the
 @c translation.
 This manual is also available in French (@pxref{Top,,, guix-cookbook.fr,
-Livre de recettes de GNU Guix}), German (@pxref{Top,,,
-guix-cookbook.de, GNU-Guix-Kochbuch}) and Slovak (@pxref{Top,,,
-guix-cookbook.sk, Receptár GNU Guix}).  If you would like to translate
+Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de,
+GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}),
+Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR,
+Livro de Receitas do GNU Guix}) and Slovak (@pxref{Top,,, guix-cookbook.sk,
+Receptár GNU Guix}).  If you would like to translate
 this document in your native language, consider joining
 @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook,
 Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference
@@ -3803,7 +3805,7 @@ the guest.
 
 @quotation Important
 By default, a single MAC address is used for all guests, unless
-provided.  Failing to provided different MAC addresses to each virtual
+provided.  Failing to provide different MAC addresses to each virtual
 machine making use of the bridge would cause networking issues.
 @end quotation
 

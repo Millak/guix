@@ -8,6 +8,7 @@
 ;;; Copyright © 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -716,6 +717,26 @@ install: libbitshuffle.so
      "This package provides a @code{pathlib}-compatible @code{Zipfile} object
 wrapper.  It provides a backport of the @code{Path} object.")
     (license license:expat)))
+
+(define-public python-zipstream-ng
+  (package
+    (name "python-zipstream-ng")
+    (version "1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zipstream-ng" version))
+       (sha256
+        (base32 "1z4zdqqs2rg3z36khgj96bpggv34av337isfv7yxg32prawj687r"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-pytest-cov))
+    (home-page "https://github.com/pR0Ps/zipstream-ng")
+    (synopsis "Streamable zip file generator")
+    (description
+     "This package provides a modern and easy to use streamable zip file
+generator")
+    (license license:lgpl3)))
 
 (define-public python-zopfli
   (package

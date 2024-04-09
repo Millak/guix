@@ -469,6 +469,7 @@ for example, for recording or replaying web content.")
   (package
     (name "python-certifi")
     (version "2022.6.15")
+    (replacement python-certifi/fixed)
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "certifi" version))
@@ -483,6 +484,41 @@ for example, for recording or replaying web content.")
      "Certifi is a Python library that contains a CA certificate bundle, which
 is used by the Requests library to verify HTTPS requests.")
     (license license:asl2.0)))
+
+(define python-certifi/fixed
+  (package
+    (inherit python-certifi)
+    (source (origin
+              (inherit (package-source python-certifi))
+              (snippet
+               #~(begin
+                   (delete-file "certifi/cacert.pem")
+                   (delete-file "certifi/core.py")
+                   (with-output-to-file "certifi/core.py"
+                     (lambda _
+                       (display "\"\"\"
+certifi.py
+~~~~~~~~~~
+This file is a Guix-specific version of core.py.
+
+This module returns the installation location of SSL_CERT_FILE or
+/etc/ssl/certs/ca-certificates.crt, or its contents.
+\"\"\"
+import os
+
+_CA_CERTS = None
+
+try:
+    _CA_CERTS = os.environ [\"SSL_CERT_FILE\"]
+except:
+    _CA_CERTS = os.path.join(\"/etc\", \"ssl\", \"certs\", \"ca-certificates.crt\")
+
+def where() -> str:
+    return _CA_CERTS
+
+def contents() -> str:
+    with open(where(), \"r\", encoding=\"ascii\") as data:
+        return data.read()")))))))))
 
 (define-public python-cryptography-vectors
   (package

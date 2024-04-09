@@ -323,7 +323,6 @@ rendering of the atmosphere model and examine its properties.
            gsl
            gtkmm-3
            hdf5
-           lapack
            libpng
            libsigc++
            libxml2
@@ -411,7 +410,6 @@ wide set of telescopes.")
            fftwf
            gfortran
            hdf5
-           lapack
            ncurses
            openblas
            python
@@ -1390,7 +1388,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtmultimedia-5
            qtpositioning
            qtscript
-           qtserialport
+           qtserialport-5
            qttranslations
            qtwebengine-5
            qxlsx-qt5

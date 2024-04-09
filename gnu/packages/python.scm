@@ -14,7 +14,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2017 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -96,6 +96,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -424,6 +425,7 @@ data types.")
     (inherit python-2)
     (name "python")
     (version "3.10.7")
+    (replacement python-3.10/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.python.org/ftp/python/"
@@ -982,6 +984,80 @@ data types.")
     (properties '((cpe-name . "python")))
     (license license:psfl)))
 
+(define python-3.10/fixed
+  (package
+    (inherit python-3.10)
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-3.10)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; Also remove the bundled CA certificates.
+            ;; TODO: Rename this phase when merging back into python.
+            (replace 'remove-windows-binaries
+              (lambda _
+                ;; Delete .exe from embedded .whl (zip) files
+                (for-each
+                 (lambda (whl)
+                   (let ((dir "whl-content")
+                         (circa-1980 (* 10 366 24 60 60)))
+                     (mkdir-p dir)
+                     (with-directory-excursion dir
+                       (let ((whl (string-append "../" whl)))
+                         (invoke "unzip" whl)
+                         (for-each delete-file
+                                   (find-files "." "\\.exe$"))
+                         (delete-file whl)
+
+                         ;; Search for cacert.pem, delete it, and rewrite the
+                         ;; file which directs python to look for it.
+                         (let ((cacert (find-files "." "cacert\\.pem")))
+                           (unless (null? cacert)
+                             (let ((certifi (dirname (car cacert))))
+                               (delete-file (string-append certifi "/cacert.pem"))
+                               (delete-file (string-append certifi "/core.py"))
+                               (with-output-to-file (string-append certifi "/core.py")
+                                 (lambda _
+                                   (display "\"\"\"
+certifi.py
+~~~~~~~~~~
+This file is a Guix-specific version of core.py.
+
+This module returns the installation location of SSL_CERT_FILE or
+/etc/ssl/certs/ca-certificates.crt, or its contents.
+\"\"\"
+import os
+
+_CA_CERTS = None
+
+try:
+    _CA_CERTS = os.environ [\"SSL_CERT_FILE\"]
+except:
+    _CA_CERTS = os.path.join(\"/etc\", \"ssl\", \"certs\", \"ca-certificates.crt\")
+
+def where() -> str:
+    return _CA_CERTS
+
+def contents() -> str:
+    with open(where(), \"r\", encoding=\"ascii\") as data:
+        return data.read()"))))))
+
+                         ;; Reset timestamps to prevent them from ending
+                         ;; up in the Zip archive.
+                         (ftw "." (lambda (file stat flag)
+                                    (utime file circa-1980 circa-1980)
+                                    #t))
+                         (apply invoke "zip" "-X" whl
+                                (find-files "." #:directories? #t))))
+                     (delete-file-recursively dir)))
+                 (find-files "Lib/ensurepip" "\\.whl$"))))))))
+    (native-search-paths
+     (list (guix-pythonpath-search-path (package-version python-3.10))
+           $SSL_CERT_FILE
+           ;; Used to locate tzdata by the zoneinfo module introduced in
+           ;; Python 3.9.
+           (search-path-specification
+            (variable "PYTHONTZPATH")
+            (files (list "share/zoneinfo")))))))
 
 ;; Next 3.x version.
 (define-public python-next python-3.12)

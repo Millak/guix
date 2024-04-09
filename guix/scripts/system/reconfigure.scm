@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -106,7 +106,7 @@ atomically, and run OS's activation script."
                   (generation (generation-file-name profile number)))
              (switch-symlinks generation #$os)
              (switch-symlinks profile generation)
-             (setenv "GUIX_NEW_SYSTEM" #$os)
+             (setenv "GUIX_NEW_SYSTEM" generation)
              (primitive-load #$(operating-system-activation-script os))))))))
 
 (define* (switch-to-system eval os #:optional profile)

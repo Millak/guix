@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
@@ -122,6 +123,36 @@
 @end itemize\n")
       (license license:expat))))
 
+(define-public go-github-com-chzyer-test
+  (package
+    (name "go-github-com-chzyer-test")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chzyer/test")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1axdlcnx2qjsn5wsr2pr1m0w0a8k4nk5kkrngh742fgh81vzzy8s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests relating to a in-memory disk fail due to a Segfault see
+      ;; <https://github.com/chzyer/test/issues/4>.
+      #:tests? #f
+      #:import-path "github.com/chzyer/test"))
+    (propagated-inputs
+     (list go-github-com-chzyer-logex))
+    (home-page "https://github.com/chzyer/test")
+    (synopsis "Testing library for Go")
+    ;; Description is not provided, see
+    ;; <https://github.com/chzyer/test/issues/3>.
+    (description
+     "A testing library for Go programs.")
+    (license license:expat)))
+
 (define-public go-github-com-davecgh-go-spew
   (package
     (name "go-github-com-davecgh-go-spew")
@@ -159,6 +190,42 @@ includes offsets, byte values in hex, and ASCII output (only when using Dump
 style).
 @end itemize")
     (license license:isc)))
+
+(define-public go-github-com-felixge-fgprof
+  (package
+    (name "go-github-com-felixge-fgprof")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/felixge/fgprof")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00h4kphvmbcdgad0wmqbaclc4a1pipdb55ay41mwh6cnkdjjvhp0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/felixge/fgprof"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-pprof))
+    (home-page "https://github.com/felixge/fgprof")
+    (synopsis "Sampling profiler for Golang")
+    (description
+     "@code{fgprof} is a sampling Go profiler providing analyze On-CPU as well
+as @url{http://www.brendangregg.com/offcpuanalysis.html, Off-CPU} (e.g. I/O)
+time together.
+
+Go's builtin sampling CPU profiler can only show On-CPU time, but it's better
+than fgprof at that.  Go also includes tracing profilers that can analyze I/O,
+but they can't be combined with the CPU profiler.
+
+fgprof is designed for analyzing applications with mixed I/O and CPU
+workloads.  This kind of profiling is also known as wall-clock profiling.")
+    (license license:expat)))
 
 (define-public go-github-com-frankban-quicktest
   (package
@@ -287,6 +354,57 @@ also update a file with new \"golden\" output that is deemed correct.")
       (description "Gofuzz is a library for populationg Go objects with random
 values for the purpose of fuzz testing.")
       (license license:asl2.0))))
+
+;; XXX: Placing to (gnu package profiling) creates some failing cycles.
+(define-public go-github-com-google-pprof
+  (package
+    (name "go-github-com-google-pprof")
+    (version "0.0.0-20240402174815-29b9bb013b0f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/pprof")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09l37q5dql0q0zj8amlnrynajfvp1vrp846q5vgiwsbwz9b78f18"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/pprof"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; To make this package smaller to use as a library where just
+          ;; source is required.
+          (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-chzyer-readline
+           go-github-com-ianlancetaylor-demangle
+           go-golang-org-x-sys))
+    (home-page "https://github.com/google/pprof")
+    (synopsis "Visualization and analysis of profiling data")
+    (description
+     "@code{pprof} is a tool for visualization and analysis of profiling data.
+
+It reads a collection of profiling samples in profile.proto format and
+generates reports to visualize and help analyze the data.  It can generate
+both text and graphical reports (through the use of the dot visualization
+package).")
+    (license (list
+              ;; For go code: LICENSE
+              license:asl2.0
+              ;; For svgpan: third_party/svgpan/LICENSE
+              ;; original source <https://code.google.com/archive/p/svgpan/>.
+              license:bsd-3
+              ;; For d3flamegraph: third_party/d3flamegraph/D3_LICENSE
+              ;;
+              ;; Bundle of d3-flame-graph and d3-selection JavaScript library
+              ;; (NPM) <https://www.npmjs.com/package/d3-flame-graph> and
+              ;; <https://www.npmjs.com/package/d3-selection>.
+              license:asl2.0 ; for bundle and d3-flame-graph
+              license:isc    ; for d3-selection
+              ))))
 
 (define-public go-github-com-hexops-gotextdiff
   (package
@@ -441,17 +559,17 @@ differently.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1hh6n7q92y0ai8k6rj2yzw6wwxikhyiyk4j92zgvf1zad0gmqqmz"))))
+        (base32 "1hh6n7q92y0ai8k6rj2yzw6wwxikhyiyk4j92zgvf1zad0gmqqmz"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/onsi/ginkgo"))
+     (list
+      #:import-path "github.com/onsi/ginkgo"))
     (propagated-inputs
-     (list go-golang-org-x-sys
-           go-golang-org-x-tools
-           go-github-com-go-task-slim-sprig
+     (list go-github-com-go-task-slim-sprig
            go-github-com-nxadm-tail
-           go-github-com-onsi-gomega))
+           go-github-com-onsi-gomega
+           go-golang-org-x-sys
+           go-golang-org-x-tools))
     (home-page "https://github.com/onsi/ginkgo")
     (synopsis "BDD-style testing framework for Go")
     (description
@@ -459,6 +577,104 @@ differently.")
 builds on top of Go's builtin @code{testing} library and is complemented by the
 Gomega matcher library.")
     (license license:expat)))
+
+(define-public go-github-com-onsi-ginkgo-v2
+  (package
+    (inherit go-github-com-onsi-ginkgo)
+    (name "go-github-com-onsi-ginkgo-v2")
+    (version "2.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/onsi/ginkgo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "089x6pz5563ldbxiwaqvd2g4dqfzlr25dflmas3gfq51ibwzh4vz"))))
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/onsi/ginkgo/v2"))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           ;; go-github-com-google-pprof ; not packed yet in Guix, for profiling
+           go-github-com-onsi-gomega
+           go-github-com-go-task-slim-sprig
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-tools))))
+
+(define-public go-github-com-onsi-gomega
+  (package
+    (name "go-github-com-onsi-gomega")
+    (version "1.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/onsi/gomega")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "092phwk97sk4sv0nbx5pfhqs6x3x1lnrjwyda1m6b6zwrfmq5c6i"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/onsi/gomega"
+           ;; Unless we disable the tests, we have a circular dependency on
+           ;; ginkgo/v2.
+           #:tests? #f))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf-proto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/onsi/gomega")
+    (synopsis "Matcher library for Ginkgo")
+    (description
+     "Gomega is the preferred matcher/assertion library for the Ginkgo test
+framework.")
+    (license license:expat)))
+
+(define-public go-github-com-pkg-profile
+  (package
+    (name "go-github-com-pkg-profile")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pkg/profile")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ifr9gnycjwh7dbvsb5vgs9kzlr548cb4m45zvl8i8lgd3qhppy1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Unit tests failing, see
+      ;; <https://github.com/pkg/profile/issues/68>.
+      #:tests? #f
+      #:import-path "github.com/pkg/profile"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; profile drops a cpu.pprof file inside its source directory
+          ;; after tests which makes it unreproducible so we remove it.
+          (add-after 'check 'delete-test-file
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (delete-file (string-append "src/" import-path
+                                            "/cpu.pprof"))))))))
+    (propagated-inputs
+     (list go-github-com-felixge-fgprof))
+    (home-page "https://github.com/pkg/profile")
+    (synopsis "Simple profiling for Go")
+    (description
+     "Profile provides a simple way to manage runtime/pprof profiling of your
+Go application.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-prashantv-gostub
   (package
@@ -859,6 +1075,20 @@ thoroughly
     (synopsis "Transform an unkeyed struct literal into a keyed one in Go")
     (description "This package turns unkeyed struct literals (@code{T{1, 2,
 3}}) into keyed ones (@code{T{A: 1, B: 2, C: 3}}) in Go.")))
+
+(define-public go-pprof
+  (package
+    (inherit go-github-com-google-pprof)
+    (name "go-pprof")
+    (arguments
+     (list
+      #:install-source? #f
+      #:go go-1.19
+      #:import-path "github.com/google/pprof"))
+    (description
+     (string-append (package-description go-github-com-google-pprof)
+                    "  This package provides an command line interface (CLI)
+tool."))))
 
 (define-public go-staticcheck
   (package

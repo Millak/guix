@@ -5834,7 +5834,7 @@ of nucleic acid binding proteins.")
                          (find-files "../bin" ".*"))
                #t))))))
     (inputs
-     (list gsl lapack openblas perl
+     (list gsl openblas perl
            `(,gfortran "lib")))
     (home-page "https://github.com/DReichLab/EIG")
     (synopsis "Tools for population genetics")
@@ -8673,7 +8673,9 @@ predicts the locations of structural units in the sequences.")
              (substitute* "Makefile"
                (("INSTALLDIR=.*")
                 (string-append
-                 "INSTALLDIR=" (assoc-ref outputs "out") "/bin\n")))
+                 "INSTALLDIR=" (assoc-ref outputs "out") "/bin\n"))
+               (("-llapack -lblas")
+                "-lopenblas"))
              #t))
          (add-before 'install 'make-install-directory
            ;; The install directory is not created during 'make install'.
@@ -8697,7 +8699,6 @@ predicts the locations of structural units in the sequences.")
        ("perl" ,perl)
        ("python" ,python-wrapper)
        ("blast+" ,blast+)
-       ("lapack" ,lapack)
        ("openblas" ,openblas)))
     (native-inputs
      (list which))
@@ -9662,8 +9663,8 @@ accessed/downloaded on demand across HTTP.")
     (arguments
      `(#:tests? #f ;no "check" target
        #:make-flags ,#~(list (string-append "LIB_LAPACK="
-                                            #$(this-package-input "lapack")
-                                            "/lib/liblapack.so")
+                                            #$(this-package-input "openblas")
+                                            "/lib/libopenblas.so")
                              "WITH_LAPACK=1"
                              "FORCE_DYNAMIC=1"
                              ;; disable phoning home
@@ -9678,7 +9679,7 @@ accessed/downloaded on demand across HTTP.")
                                        "/bin/")))
                (install-file "plink" bin)))))))
     (inputs
-     (list zlib lapack))
+     (list zlib openblas))
     (native-inputs
      (list unzip gcc-8))
     (home-page "http://pngu.mgh.harvard.edu/~purcell/plink/")
@@ -9713,7 +9714,7 @@ subsequent visualization, annotation and storage of results.")
      (list
       #:tests? #false ;TEST_EXTRACT_CHR doesn't produce expected files
       #:make-flags
-      #~(list "BLASFLAGS=-llapack -lopenblas"
+      #~(list "BLASFLAGS=-lopenblas"
               "NO_SSE42=1"
               "NO_AVX2=1"
               "STATIC_ZSTD="
@@ -9740,7 +9741,7 @@ subsequent visualization, annotation and storage of results.")
                            (string-append
                             (assoc-ref outputs "out") "/bin")))))))
     (inputs
-     (list lapack openblas zlib `(,zstd "lib")))
+     (list openblas zlib `(,zstd "lib")))
     (native-inputs
      (list diffutils plink python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")

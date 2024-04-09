@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -135,6 +135,7 @@
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gpodder)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
@@ -208,7 +209,7 @@
 (define-public alsa-scarlett-gui
   (package
     (name "alsa-scarlett-gui")
-    (version "0.3.3")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -217,7 +218,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nd764vd7qfy2x8dqapiyh5yrxjimm8b4himhm1qkgpf5hvh734l"))))
+                "1397z3c232n3zpqmpc77lbwv8z5szsbagawl3l7hiizn152hkgpv"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -243,7 +244,7 @@
                                    "/share/glib-2.0/schemas"))))))
           (delete 'configure))))
     (inputs
-     (list alsa-lib glib gtk))
+     (list alsa-lib glib gtk openssl))
     (native-inputs
      (list `(,glib "bin") pkg-config))
     (home-page "https://github.com/geoffreybennett/alsa-scarlett-gui")
@@ -2186,7 +2187,7 @@ your own lessons.")
 (define-public powertabeditor
   (package
     (name "powertabeditor")
-    (version "2.0.0-alpha14")
+    (version "2.0.0-alpha19")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2195,30 +2196,29 @@ your own lessons.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wsvni2aa9h2bpndlic7ckch4n600ahwm56n521y5vxivwjx3jmj"))))
+                "1fbrfw1ky57nms47pcfdrrwpa2jmgc8vgc68sz96wkvs49zzm5d1"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check (lambda _ (invoke "bin/pte_tests")))
-         (add-after 'unpack 'fix-pugixml-detection
-           (lambda _
-             (substitute* "cmake/third_party/pugixml.cmake"
-               (("add_library") "#add_library"))
-             #t)))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "bin/pte_tests")))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("boost" ,boost)
-       ("minizip" ,minizip)
-       ("pugixml" ,pugixml)
-       ("qtbase" ,qtbase-5)
-       ("rapidjson" ,rapidjson)
-       ("rtmidi" ,rtmidi)
-       ("timidity" ,timidity++)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           boost
+           minizip
+           nlohmann-json
+           pugixml
+           qtbase-5
+           qttools-5 ;for Qt5LinguistTools
+           rtmidi
+           timidity++
+           zlib))
     (native-inputs
      (list doctest pkg-config))
-    (home-page "https://github.com/powertab/powertabedito")
+    (home-page "https://github.com/powertab/powertabeditor")
     (synopsis "Guitar tablature editor")
     (description
      "Power Tab Editor 2.0 is the successor to the famous original Power Tab
@@ -3097,6 +3097,39 @@ using a system-independent interface.")
       (description
        "This package provides Python bindings to the PortMidi library.")
       (license license:expat))))
+
+(define-public python-pysmf
+  (let ((commit "8a98a557470301f5a471d07d37f334a5b8892602")
+        (revision "1"))
+    (package
+      (name "python-pysmf")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mididings/pysmf")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ic24k8jr7iwcrj7xaw5b9i22al05rxfpjw39bbjsg7v09kvygcv"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'fix-build-system
+             (lambda _
+               (substitute* "setup.py"
+                 (("from subprocess") "import sys; from subprocess")))))))
+      (inputs (list libsmf glib))
+      (native-inputs (list pkg-config python-cython python-pytest))
+      (home-page "https://github.com/mididings/pysmf")
+      (synopsis "Read and write Standard MIDI files")
+      (description
+       "pysmf is a Python extension module for reading and writing Standard
+MIDI files, based on libsmf.")
+      (license license:bsd-2))))
 
 (define-public frescobaldi
   (package
@@ -4394,6 +4427,69 @@ CSV file in the format created by midicsv may be converted back into a
 standard MIDI file with the csvmidi program.")
     (home-page "https://www.fourmilab.ch/webtools/midicsv/")
     (license license:public-domain)))
+
+(define-public mididings
+  (let ((commit "d98265be8afe7da20a5c7cfd0515f0d5fae5c53a")
+        (revision "1"))
+    (package
+      (name "mididings")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mididings/mididings")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1a8i4yac5jjkq0vh73nwkv0j7vnvfwbzzagam4xdl1gpnc26n5xi"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'build-manpages
+             (lambda _
+               (with-directory-excursion "doc/man"
+                 (for-each (lambda (doc)
+                             (system (format #false
+                                             "scdoc < ~a.scd > ~a.1" doc doc)))
+                           '(livedings mididings send_midi))))))))
+      (inputs
+       (list alsa-lib
+             boost
+             jack-2
+             `(,python "tk")
+             python-dbus
+             python-decorator
+             python-pyinotify
+             python-pyliblo
+             python-pysmf))
+      (native-inputs (list python-pytest pkg-config scdoc))
+      (home-page "https://github.com/mididings/mididings")
+      (synopsis "MIDI router and processor")
+      (description
+       "mididings is a MIDI router/processor based on Python, supporting ALSA
+and JACK MIDI.  Features include:
+
+@itemize
+@item MIDI routing and filtering; filter events depending on their event type,
+  channel, note number, velocity, etc., and freely route them between an
+  arbitrary number of input and output ports.
+@item Modifying and converting MIDI events; transpose notes, apply velocity
+  curves, change controller values and ranges, or convert events to any other
+  MIDI event type. mididings also includes more complex functions like a
+  diatonic harmonizer, floating split points, latched notes, and more.
+@item Seamless switching between patches; set up different \"scenes\", each
+  with its own MIDI routing and processing, and switch between them at any time,
+  even while playing.  Switching scenes does not affect notes already held, and
+  does not result in dropouts or stuck notes!
+@item MIDI event monitoring, running external commands; print MIDI event data
+  to the console to help debugging your patches and configuring your MIDI
+  controllers.  In addition to its MIDI output, mididings can also execute shell
+  commands and send OSC or DBUS messages.
+@end itemize")
+      (license license:gpl2+))))
 
 (define-public gx-guvnor-lv2
   (package
@@ -5727,7 +5823,7 @@ at @code{musicbrainz.org}.")
 (define-public clyrics
   (package
     (name "clyrics")
-    (version "0.13")
+    (version "0.16")
     (source
      (origin
        (method git-fetch)
@@ -5736,7 +5832,7 @@ at @code{musicbrainz.org}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0py31linlbphl18wxj5v00gggvxp9djg466mjncf5wpa147hs8r3"))))
+        (base32 "1izlqnzr1a504djhzk1a5k8dwwrkd5iyjfsfm5x48sb3vjlr1fr3"))))
     (build-system trivial-build-system)
     (inputs
      (list bash ; for the wrapped program
@@ -6723,7 +6819,7 @@ and as an LV2 plugin.")
     ;; distros to make necessary changes to integrate the software into the
     ;; distribution.
     (name "zrythm")
-    (version "1.0.0-beta.4.9.1")
+    (version "1.0.0-beta.4.12.5")
     (source
      (origin
        (method url-fetch)
@@ -6731,49 +6827,46 @@ and as an LV2 plugin.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "0skdb4bpw4v5175yw9wijrc6j36mxjq8i7p8nn9650lipxg6bshd"))))
+         "1kixf8rlim5qvkhcm65rf35mxkxv3hij039jc9rvh710vl2xxm0g"))))
     (build-system meson-build-system)
     (arguments
-     (list #:glib-or-gtk? #t
-           #:configure-flags
-           #~(list "-Dtests=true"
-                   "-Dmanpage=false"    ;fish-completions breaks this
-                   "-Ddseg_font=false"
-                   "-Dextra_optimizations=false" ;machine-specific
-                   "-Dgraphviz=enabled" ;for exporting routing graphs
-                   "-Dguile=enabled"    ;for Guile scripting
-                   "-Djack=enabled"     ;for JACK audio/MIDI backend
-                   "-Drtaudio=enabled"  ;for RtAudio backend (ALSA)
-                   "-Drtmidi=enabled"   ;for RtMidi backend (ALSA sequencer)
-                   "-Dsdl=enabled")     ;for SDL audio backend (which uses ALSA)
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-tests
-                 (lambda _
-                   ;; io_mkdir must be called with a GError value, not plain
-                   ;; NULL, or else the assertion in io_mkdir segfaults.
-                   (substitute* "tests/helpers/zrythm.h"
-                     (("success = io_mkdir \\(tmp_log_dir, NULL\\);" m)
-                      (string-append "err = NULL;
-success = io_mkdir (tmp_log_dir, &err);")))
-
-                   ;; zrythm: fails because curl wants to access the internet.
-                   ;; project: unknown failure XXX
-                   ;; The other tests fail with this error:
-                   ;;     error: attempt to map invalid URI `'
-                   ;; This means that lilv is given an empty LV2 plugin URI.
-                   ;; This is probably because we don't provide all LV2
-                   ;; plugins that are needed for running the tests.
-                   (substitute* "tests/meson.build"
-                     (("foreach name, info : tests")
-                      "\
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      '(list "-Dtests=true"
+             "-Dmanpage=false"             ;fish-completions breaks this
+             "-Ddseg_font=false"
+             "-Dextra_optimizations=false" ;machine-specific
+             "-Dgraphviz=enabled"          ;for exporting routing graphs
+             "-Dguile=enabled"             ;for Guile scripting
+             "-Djack=enabled"              ;for JACK audio/MIDI backend
+             "-Drtaudio=enabled"           ;for RtAudio backend (ALSA)
+             "-Drtmidi=enabled"            ;for RtMidi backend (ALSA sequencer)
+             "-Dsdl=enabled")              ;for SDL audio backend (which uses ALSA)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; zrythm: fails because curl wants to access the internet.
+              ;; project: unknown failure XXX
+              ;; The other tests fail with this error:
+              ;;     error: attempt to map invalid URI `'
+              ;; This means that lilv is given an empty LV2 plugin URI.
+              ;; This is probably because we don't provide all LV2
+              ;; plugins that are needed for running the tests.
+              (substitute* "tests/meson.build"
+                (("foreach name, info : tests")
+                 "\
   disabled_tests = {
-    'zrythm': 0,
-    'project': 0,
-    'audio/midi_track': 0,
-    'integration/recording': 0,
     'actions/mixer_selections_action': 0,
-    'actions/tracklist_selections': 0
+    'actions/tracklist_selections': 0,
+    'dsp/audio_region': 0,
+    'dsp/audio_track': 0,
+    'dsp/midi_track': 0,
+    'dsp/pool': 0,
+    'integration/recording': 0,
+    'project': 0,
+    'zrythm': 0
   }
   enabled_tests = {}
   foreach name, info : tests
@@ -6781,17 +6874,21 @@ success = io_mkdir (tmp_log_dir, &err);")))
       enabled_tests += {name: info}
     endif
   endforeach
-  foreach name, info : enabled_tests"))))
-               (add-before 'build 'disable-guile-auto-compilation
-                 (lambda _
-                   (setenv "GUILE_AUTO_COMPILE" "0")))
-               (add-after 'install 'wrap-program
-                 (lambda _
-                   (wrap-program (string-append #$output "/bin/zrythm")
-                     ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Zrythm to load
-                     ;; its own SVG icons in pure environments.
-                     `("GDK_PIXBUF_MODULE_FILE" =
-                       (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+  foreach name, info : enabled_tests"))
+              ;; Requires internet access
+              (substitute* "data/meson.build"
+                (("if appstream.*\\(\\)")
+                 "if false"))))
+          (add-before 'build 'disable-guile-auto-compilation
+            (lambda _
+              (setenv "GUILE_AUTO_COMPILE" "0")))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/zrythm")
+                ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Zrythm to load
+                ;; its own SVG icons in pure environments.
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
     (inputs
      (list alsa-lib
            boost
@@ -6810,7 +6907,6 @@ success = io_mkdir (tmp_log_dir, &err);")))
            jack-2
            json-glib
            libadwaita
-           libaudec
            (module-ref
             (resolve-interface '(gnu packages debug)) 'libbacktrace)
            libcyaml
@@ -6820,8 +6916,10 @@ success = io_mkdir (tmp_log_dir, &err);")))
            libsndfile
            libyaml
            lilv
+           lsp-dsp-lib
            lv2
            pango
+           pcre
            pipewire
            pulseaudio
            reproc
@@ -6829,6 +6927,7 @@ success = io_mkdir (tmp_log_dir, &err);")))
            rtmidi
            rubberband
            sdl2
+           soxr
            vamp
            xdg-utils
            xxhash

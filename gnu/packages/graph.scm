@@ -195,7 +195,7 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
      (list arpack-ng
            bliss
            glpk
-           lapack
+           ;lapack
            openblas
            plfit
            suitesparse-cxsparse))

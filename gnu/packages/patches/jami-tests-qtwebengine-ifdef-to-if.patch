@@ -1,0 +1,26 @@
+Upstream-status: https://lists.gnu.org/archive/html/jami/2024-03/msg00005.html
+
+Fix macro value checking.
+
+diff --git a/tests/qml/main.cpp b/tests/qml/main.cpp
+index 2fbecebe..8cb3de69 100644
+--- a/tests/qml/main.cpp
++++ b/tests/qml/main.cpp
+@@ -35,7 +35,7 @@
+ #include <QtQuickTest/quicktest.h>
+ #include <QSignalSpy>
+ 
+-#ifdef WITH_WEBENGINE
++#if WITH_WEBENGINE
+ #include <QtWebEngineCore>
+ #include <QtWebEngineQuick>
+ #endif
+@@ -192,7 +192,7 @@ main(int argc, char** argv)
+     // Allow the user to enable fatal warnings for certain tests.
+     Utils::remove_argument(argv, argc, "--failonwarn", [&]() { qputenv("QT_FATAL_WARNINGS", "1"); });
+ 
+-#ifdef WITH_WEBENGINE
++#if WITH_WEBENGINE
+     QtWebEngineQuick::initialize();
+ #endif
+     QTEST_SET_MAIN_SOURCE_PATH

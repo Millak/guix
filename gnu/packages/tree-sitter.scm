@@ -6,7 +6,7 @@
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2023, 2024 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -615,6 +615,15 @@ which will be used as a snippet in origin."
      #:commit commit
      #:license license:expat)))
 
+(define-public tree-sitter-nix
+  (tree-sitter-grammar
+   "nix" "Nix"
+   "0nn3ij8k6wkbf3kcvkyyp0vhfjcksi31wyyfwmsbx66maf2xgaii"
+   "0.0.0"
+   ;; The most recent commit at time of packaging, no tags.
+   #:commit "763168fa916a333a459434f1424b5d30645f015d"
+   #:repository-url "https://github.com/nix-community/tree-sitter-nix"))
+
 (define-public tree-sitter-org
   ;; There are a lot of additions, the last tag was placed a while ago
   (let ((commit "081179c52b3e8175af62b9b91dc099d010c38770")
@@ -665,6 +674,13 @@ which will be used as a snippet in origin."
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
 
+(define-public tree-sitter-latex
+  (tree-sitter-grammar
+   "latex" "LaTeX"
+   "0lc42x604f04x3kkp88vyqa5dx90wqyisiwl7nn861lyxl6phjnf"
+   "0.3.0"
+   #:repository-url "https://github.com/latex-lsp/tree-sitter-latex"))
+
 (define-public tree-sitter-lua
   (tree-sitter-grammar
    "lua" "Lua"
@@ -677,3 +693,11 @@ which will be used as a snippet in origin."
    "scala" "Scala"
    "0hs6gmkq5cx9qrmgfz1mh0c34flwffc0k2mhwf13laawswnywfkz"
    "0.20.2"))
+
+(define-public tree-sitter-tlaplus
+  (tree-sitter-grammar
+   "tlaplus" "TLA+"
+   "1k60dnzafj6m9c2d4xnwiz3d7yw3bg3iwx7c1anhwr76iyxdci3w"
+   "1.0.8"
+   ;; Version 1.2.1 is most recent, but requires tree-sitter >0.21.0
+   #:repository-url "https://github.com/tlaplus-community/tree-sitter-tlaplus"))

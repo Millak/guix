@@ -92,15 +92,12 @@ generation of the system profile."
               (length (system-generations marionette))
               (1+ (length generations-prior)))
 
-            (test-assert "script activated the new generation"
-              (and (eqv? 'symlink
-                         (marionette-eval
-                          '(stat:type (lstat "/run/current-system"))
-                          marionette))
-                   (string= #$os
-                            (marionette-eval
-                             '(readlink "/run/current-system")
-                             marionette))))
+            (test-equal "script activated the new generation"
+              (string-append "/var/guix/profiles/system-"
+                             (number->string (+ 1 (length generations-prior)))
+                             "-link")
+              (marionette-eval '(readlink "/run/current-system")
+                               marionette))
 
             (test-assert "script activated user accounts"
               (marionette-eval

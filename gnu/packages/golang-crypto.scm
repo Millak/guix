@@ -592,17 +592,11 @@ Stealing encryption and decryption methods.")
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/libp2p/go-libp2p-peer"))
-      (native-inputs
+      (propagated-inputs
        (list go-github-com-btcsuite-btcd-btcec
              go-github-com-gogo-protobuf
-             go-github-com-gxed-hashland-keccakpg
              go-github-com-libp2p-go-libp2p-crypto
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-mr-tron-base58
-             go-github-com-multiformats-go-multihash
-             go-github-com-spaolacci-murmur3
-             go-golang-org-x-crypto))
+             go-github-com-multiformats-go-multihash))
       (home-page "https://github.com/libp2p/go-libp2p-peer")
       (synopsis "PKI based identities for use in go-libp2p")
       (description "PKI based identities for use in @command{go-libp2p}.")
@@ -812,7 +806,7 @@ Architecture Processors\" by J. Guilford et al.")
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/multiformats/go-multihash"))
-      (native-inputs
+      (propagated-inputs
        (list go-github-com-mr-tron-base58
              go-github-com-gxed-hashland-keccakpg
              go-github-com-minio-blake2b-simd

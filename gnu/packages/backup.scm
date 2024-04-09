@@ -41,31 +41,31 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages backup)
-  #:use-module (guix gexp)
-  #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix gexp)
-  #:use-module (guix git-download)
-  #:use-module (guix download)
-  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages autotools)
-  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
-  #:use-module (gnu packages digest)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages ftp)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -259,6 +259,7 @@ backups (called chunks) to allow easy burning to CD/DVD.")
 (define-public libarchive
   (package
     (name "libarchive")
+    (replacement libarchive/fixed)
     (version "3.6.1")
     (source
      (origin
@@ -346,6 +347,25 @@ archive.  In particular, note that there is currently no built-in support for
 random access nor for in-place modification.  This package provides the
 @command{bsdcat}, @command{bsdcpio} and @command{bsdtar} commands.")
     (license license:bsd-2)))
+
+(define-public libarchive/fixed
+ (hidden-package
+  (package
+    (inherit libarchive)
+    (version "3.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://libarchive.org/downloads/libarchive-"
+                                 version ".tar.xz")
+                  (string-append "https://github.com/libarchive/libarchive"
+                                 "/releases/download/v" version "/libarchive-"
+                                 version ".tar.xz")))
+       (patches (search-patches "libarchive-remove-potential-backdoor.patch"))
+       (sha256
+        (base32
+         "1rj8q5v26lxxr8x4b4nqbrj7p06qvl91hb8cdxi3xx3qp771lhas")))))))
+
 
 (define-public rdup
   (package

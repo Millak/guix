@@ -537,13 +537,13 @@ labels on the node can also be achieved.")
 (define-public r-collapse
   (package
     (name "r-collapse")
-    (version "2.0.11")
+    (version "2.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collapse" version))
        (sha256
-        (base32 "0aaqzipgnln6mcwgahlnvg0dhq82xnzrfn95mv4ywgpczaicwg3s"))))
+        (base32 "0dplfsj4lqafw0zkrqhph9sk22qpkm5i753pgwf9w9cq5d17f537"))))
     (properties `((upstream-name . "collapse")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
@@ -4453,13 +4453,13 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "0jaajfr1hr6bzb1vz2nw2csl2l09kbq619vsq5yrlchcarpjv1fb"))))
+                "1cpi2yr66g0nwd5ybz6254ivggvxql0bas2hwpakrcw1161jvs9k"))))
     (properties `((upstream-name . "httr2")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5084,14 +5084,14 @@ expression estimates for all genes.")
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.6.2")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "0gjnb1ar6n3qg37ljy5yai0pd219zhm0n186jdzhsfwma5498ifh"))
+         "181cfmdvi64j978q8x69bl7wxwpjpx54a52sh4xng0pk3a2djd91"))
        (snippet
         '(for-each delete-file
                    '("inst/components/dist/components.min.js"
@@ -5133,6 +5133,7 @@ expression estimates for all genes.")
     (propagated-inputs
      (list r-base64enc
            r-cachem
+           r-fastmap
            r-htmltools
            r-jquerylib
            r-jsonlite
@@ -7696,14 +7697,16 @@ provides an interactive R manager and worker environment.")
 (define-public r-rmumps
   (package
     (name "r-rmumps")
-    (version "5.2.1-28")
+    (version "5.2.1-29")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rmumps" version))
        (sha256
-        (base32 "1cq7zrq730lj1z5xirzk5fvvlvdq101ppg47n0z7c0v17rvs80n6"))))
-    (properties `((upstream-name . "rmumps")))
+        (base32 "1sxx5kyp331dmiyqd4l5m3mdcmlpm1vbdm6cd3kgvnz8ympphlwr"))))
+    (properties
+     `((upstream-name . "rmumps")
+       (updater-extra-inputs . ("zlib"))))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs (list r-rcpp))
@@ -9706,18 +9709,18 @@ programming} (SQP) based solver).")
 (define-public r-hardyweinberg
   (package
     (name "r-hardyweinberg")
-    (version "1.7.5")
+    (version "1.7.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "HardyWeinberg" version))
        (sha256
         (base32
-         "0b3szw090dsc3bkas2kvx787ww2i6zzg2qmdyivmqc8amx5arn6g"))))
+         "058bfb43i2vjrc2iy3q3izlijw2hh61rl47c9gcf327xlp9x6wnh"))))
     (properties `((upstream-name . "HardyWeinberg")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mice r-nnet r-rcpp r-rsolnp))
+     (list r-mice r-nnet r-rcpp r-rsolnp r-shape))
     (home-page "https://cran.r-project.org/package=HardyWeinberg")
     (synopsis "Statistical tests and graphics for Hardy-Weinberg equilibrium")
     (description
@@ -17506,14 +17509,14 @@ results using @code{ggplot2}.")
 (define-public r-effectsize
   (package
     (name "r-effectsize")
-    (version "0.8.6")
+    (version "0.8.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "effectsize" version))
        (sha256
         (base32
-         "0gdk6f2713k2vhv7qa6dgxl6kgc6r6yb12hb27k4bbibj5njvvni"))))
+         "07lfa0pvqhanjyyx9hs6gdqw1zyi1y21k539jgvgnrvixfilfkb2"))))
     (properties `((upstream-name . "effectsize")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17678,17 +17681,24 @@ repositories.")
 (define-public r-gh
   (package
     (name "r-gh")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gh" version))
        (sha256
         (base32
-         "0wcbnnws472v1i6q012pbdxjpsd4clj6a2cscf73g6s2336rzik8"))))
+         "1bwj8a2lfansyfx7fiwx2nv8yzhg1fi9ja1n6fk7dbzf64m3zgbn"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli r-gitcreds r-httr2 r-ini r-jsonlite r-rlang))
+     (list r-cli
+           r-gitcreds
+           r-glue
+           r-httr2
+           r-ini
+           r-jsonlite
+           r-lifecycle
+           r-rlang))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/r-lib/gh#readme")
@@ -18847,14 +18857,14 @@ features (e.g. local modes).")
 (define-public r-arm
   (package
     (name "r-arm")
-    (version "1.13-1")
+    (version "1.14-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arm" version))
        (sha256
         (base32
-         "0dz9dnsky77da2mc198dr3600kz9vk75z1iihjarnsdrq68a4bf0"))))
+         "1g8732naydqyv5pq1fkyb1i6qddv62jdmn2ys5lbdvx2zq5cnns2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
@@ -21582,14 +21592,14 @@ model with finite state space using the Aalen-Johansen estimator.")
 (define-public r-epi
   (package
     (name "r-epi")
-    (version "2.47.1")
+    (version "2.48")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Epi" version))
        (sha256
         (base32
-         "1a4h6hfpwcy3lb49y949h86vr4sdnjfbqqnr4jgc45mc64fhafp1"))))
+         "06965d2x47hb1c7dbqyhhywgr7k9xdcms1v08m2cx52qg6cdkiyp"))))
     (properties `((upstream-name . "Epi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21826,14 +21836,14 @@ the local machine to, say, distributed processing on a remote compute cluster.")
 (define-public r-future-apply
   (package
     (name "r-future-apply")
-    (version "1.11.1")
+    (version "1.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "future.apply" version))
        (sha256
         (base32
-         "0zf22vip8w50pywc47xjghca9wkvcsvvfaa2yfaydwwzc3ss3bh2"))))
+         "11qkv2r8ml1i95j5ra191ij5w1dvllgvr9ld5xnq43ayzaq3b9pl"))))
     (properties `((upstream-name . "future.apply")))
     (build-system r-build-system)
     (arguments
@@ -24857,13 +24867,13 @@ that fills this gap.")
 (define-public r-eulerr
   (package
     (name "r-eulerr")
-    (version "7.0.1")
+    (version "7.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "eulerr" version))
               (sha256
                (base32
-                "1c8yf94ga4h6rf89fyajxfsaq5z6dx1z2840371vxj7kwj9slg3c"))))
+                "0aw4l338nymrmna7q01vxn2cc7wyzz3lhf1bwazy55qa4hmww3af"))))
     (properties `((upstream-name . "eulerr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -34574,14 +34584,14 @@ simple interface for all functions.")
 (define-public r-iml
   (package
     (name "r-iml")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iml" version))
        (sha256
         (base32
-         "0fi37lv9czaxcc123f6r57607shqhs83ks96n2n0b93dl1qs0j52"))))
+         "1sjv0cj50iivjlb2hri401z78rmidxxh6q5akscd42k98jyw2r30"))))
     (properties `((upstream-name . "iml")))
     (build-system r-build-system)
     (propagated-inputs
@@ -34592,7 +34602,6 @@ simple interface for all functions.")
            r-future-apply
            r-ggplot2
            r-metrics
-           r-prediction
            r-r6))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/christophM/iml")
@@ -36733,14 +36742,14 @@ package also provides functions to visualize the observed data and the MLE.")
 (define-public r-metafor
   (package
     (name "r-metafor")
-    (version "4.4-0")
+    (version "4.6-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "metafor" version))
        (sha256
         (base32
-         "1m4762fn4zbjpnx9vxyy9gvzyzn3avxnqpzmbj45w8241g3s1b32"))))
+         "0rl6w4j1fqvr7vn0dbzmir28xbi2wdn9m3lrxwjvvf47pp1lqd07"))))
     (properties `((upstream-name . "metafor")))
     (build-system r-build-system)
     (propagated-inputs
@@ -38383,14 +38392,14 @@ in same length matches).")
 (define-public r-textshape
   (package
     (name "r-textshape")
-    (version "1.7.3")
+    (version "1.7.5")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "textshape" version))
         (sha256
           (base32
-            "0k9injxykgj2qprc7dygd7gafvcbh3r9x84qzaa1al21pk0dz7ds"))))
+            "1g193dg4rhw8a1iwkyqsswlj95h9irm9xziclwc1mhd3jm5wyify"))))
     (properties `((upstream-name . "textshape")))
     (build-system r-build-system)
     (propagated-inputs

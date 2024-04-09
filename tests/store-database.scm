@@ -87,23 +87,22 @@
    (lambda (db-file port)
      (delete-file db-file)
      (with-database db-file db
-       (sqlite-register db
-                        #:path "/gnu/foo"
-                        #:references '()
-                        #:deriver "/gnu/foo.drv"
-                        #:hash (string-append "sha256:" (make-string 64 #\e))
-                        #:nar-size 1234)
-       (sqlite-register db
-                        #:path "/gnu/bar"
-                        #:references '("/gnu/foo")
-                        #:deriver "/gnu/bar.drv"
-                        #:hash (string-append "sha256:" (make-string 64 #\a))
-                        #:nar-size 4321)
-       (let ((path-id (@@ (guix store database) path-id)))
-         (list (path-id db "/gnu/foo")
-               (path-id db "/gnu/bar")))))))
+       (register-valid-path db
+                            #:path "/gnu/foo"
+                            #:references '()
+                            #:deriver "/gnu/foo.drv"
+                            #:hash (string-append "sha256:" (make-string 64 #\e))
+                            #:nar-size 1234)
+       (register-valid-path db
+                            #:path "/gnu/bar"
+                            #:references '("/gnu/foo")
+                            #:deriver "/gnu/bar.drv"
+                            #:hash (string-append "sha256:" (make-string 64 #\a))
+                            #:nar-size 4321)
+       (list (valid-path-id db "/gnu/foo")
+             (valid-path-id db "/gnu/bar"))))))
 
-(test-assert "sqlite-register with unregistered references"
+(test-assert "register-valid-path with unregistered references"
   ;; Make sure we get a "NOT NULL constraint failed: Refs.reference" error
   ;; when we try to add references that are not registered yet.  Better safe
   ;; than sorry.
@@ -113,17 +112,17 @@
      (catch 'sqlite-error
        (lambda ()
          (with-database db-file db
-           (sqlite-register db #:path "/gnu/foo"
-                            #:references '("/gnu/bar")
-                            #:deriver "/gnu/foo.drv"
-                            #:hash (string-append "sha256:" (make-string 64 #\e))
-                            #:nar-size 1234))
+           (register-valid-path db #:path "/gnu/foo"
+                                #:references '("/gnu/bar")
+                                #:deriver "/gnu/foo.drv"
+                                #:hash (string-append "sha256:" (make-string 64 #\e))
+                                #:nar-size 1234))
          #f)
        (lambda args
          (pk 'welcome-exception! args)
          #t)))))
 
-(test-equal "sqlite-register with incorrect size"
+(test-equal "register-valid-path with incorrect size"
   'out-of-range
   (call-with-temporary-output-file
    (lambda (db-file port)
@@ -131,11 +130,11 @@
      (catch #t
        (lambda ()
          (with-database db-file db
-           (sqlite-register db #:path "/gnu/foo"
-                            #:references '("/gnu/bar")
-                            #:deriver "/gnu/foo.drv"
-                            #:hash (string-append "sha256:" (make-string 64 #\e))
-                            #:nar-size -1234))
+           (register-valid-path db #:path "/gnu/foo"
+                                #:references '("/gnu/bar")
+                                #:deriver "/gnu/foo.drv"
+                                #:hash (string-append "sha256:" (make-string 64 #\e))
+                                #:nar-size -1234))
          #f)
        (lambda (key . _)
          key)))))

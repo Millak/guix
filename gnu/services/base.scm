@@ -1790,13 +1790,14 @@ archive' public keys, with GUIX."
         ;; If MACHINES-FILE already exists, move it out of the way.
         ;; Create a backup if it's a regular file: it's likely that the
         ;; user manually updated it.
-        (if (file-exists? machines-file)
-            (if (and (symbolic-link? machines-file)
-                     (store-file-name? (readlink machines-file)))
-                (delete-file machines-file)
-                (rename-file machines-file
-                             (string-append machines-file ".bak")))
-            (mkdir-p (dirname machines-file)))
+        (let ((stat (false-if-exception (lstat machines-file))))
+          (if stat
+              (if (and (eq? 'symlink (stat:type stat))
+                       (store-file-name? (readlink machines-file)))
+                  (delete-file machines-file)
+                  (rename-file machines-file
+                               (string-append machines-file ".bak")))
+              (mkdir-p (dirname machines-file))))
 
         ;; Installed the declared machines file.
         (symlink #+(scheme-file "machines.scm"

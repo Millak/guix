@@ -410,6 +410,7 @@ interface for the Music Player Daemon.")
            gsettings-desktop-schemas
            gobject-introspection
            adwaita-icon-theme
+           gvfs
            python-pygobject))
     (synopsis "Elegant client for the Music Player Daemon")
     (description "Sonata is an elegant graphical client for the Music Player
