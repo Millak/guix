@@ -85,7 +85,6 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages slang)
-  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xorg))
 

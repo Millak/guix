@@ -353,28 +353,6 @@ structs in the Go programming language.")
     (home-page "https://github.com/d4l3k/messagediff")
     (license expat)))
 
-(define-public go-github-com-gobwas-glob
-  (package
-    (name "go-github-com-gobwas-glob")
-    (version "0.2.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/gobwas/glob")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0jxk1x806zn5x86342s72dq2qy64ksb3zrvrlgir2avjhwb18n6z"))))
-    (build-system go-build-system)
-    (arguments
-      `(#:import-path "github.com/gobwas/glob"))
-    (synopsis "Go globbing library")
-    (description "This package provides a Go implementation of globs.")
-    (home-page "https://github.com/gobwas/glob")
-    (license expat)))
-
-
 (define-public go-github-com-golang-groupcache-lru
   (let ((commit "869f871628b6baa9cfbc11732cdf6546b17c1298")
         (revision "2"))

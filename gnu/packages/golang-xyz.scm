@@ -1202,6 +1202,30 @@ interfaces to back that API.  Packages in the Go ecosystem can depend on it,
 while callers can implement logging with whatever backend is appropriate.")
     (license license:asl2.0)))
 
+(define-public go-github-com-gobwas-glob
+  (package
+    (name "go-github-com-gobwas-glob")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gobwas/glob")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0jxk1x806zn5x86342s72dq2qy64ksb3zrvrlgir2avjhwb18n6z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gobwas/glob"))
+    (home-page "https://github.com/gobwas/glob")
+    (synopsis "Go globbing library")
+    (description
+     "This package provides a Go implementation of globs.")
+    (license license:expat)))
+
 (define-public go-github-com-hashicorp-errwrap
   (package
     (name "go-github-com-hashicorp-errwrap")
