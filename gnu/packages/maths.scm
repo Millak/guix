@@ -9724,6 +9724,7 @@ computation is supported via MPI.")
        (sha256
         (base32
          "08nyfli3x7gd396ffd1a8zn9fj3gm6a8yw0ggm547c09sp2rgvl7"))
+       (patches (search-patches "scilab-better-compiler-detection.patch"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -9884,7 +9885,11 @@ computation is supported via MPI.")
             (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
               (lambda _
                 (with-directory-excursion "modules/dynamic_link/src/scripts"
-                  ((assoc-ref %standard-phases 'bootstrap)))))
+                  ((assoc-ref %standard-phases 'bootstrap))
+                  (substitute* "compilerDetection.sh"
+                    (("PATHTOCONFIGURE=.*")
+                     "PATHTOCONFIGURE=${BASH_SOURCE[0]%/*}/\n")
+                    (("PROGNAME.*") "\n")))))
             (add-before 'build 'pre-build
               (lambda* (#:key inputs #:allow-other-keys)
                 ;; Fix core.start.

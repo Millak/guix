@@ -1,0 +1,36 @@
+From fada18edd8905f3321fd1719b1c0a46c66d214af Mon Sep 17 00:00:00 2001
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Wed, 27 Mar 2024 06:29:25 +0100
+Subject: [PATCH] scilab: Better debugging in compilerDetection.sh.
+
+---
+ .../dynamic_link/src/scripts/compilerDetection.sh    | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/scilab/modules/dynamic_link/src/scripts/compilerDetection.sh b/scilab/modules/dynamic_link/src/scripts/compilerDetection.sh
+index 0a22a695555..ead86eb58ac 100755
+--- a/scilab/modules/dynamic_link/src/scripts/compilerDetection.sh
++++ b/scilab/modules/dynamic_link/src/scripts/compilerDetection.sh
+@@ -18,10 +18,16 @@ if test -x "$(which gcc 2>/dev/null)"; then
+ fi
+ 
+ # Relaunch configure if files are missing
+-if test ! -s Makefile.orig -o ! -s libtool; then 
++if test ! -s Makefile.orig -o ! -s libtool; then
+     echo "Detection of C/C++/Fortran Compilers"
+     ./configure --disable-static --disable-dependency-tracking "$@"
+-    mv Makefile Makefile.orig
+-else 
++    configure_exit_status=$?
++    if [ $configure_exit_status -ne 0 ]; then
++        cat config.log
++        exit $configure_exit_status
++    else
++        mv Makefile Makefile.orig
++    fi
++else
+     echo "Detection of compilers already done"
+ fi
+-- 
+2.41.0
+
