@@ -99,6 +99,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages suckless)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
@@ -951,21 +952,21 @@ with a terminal interface, for Gemini also a GUI is available.")
 (define-public telescope
   (package
     (name "telescope")
-    (version "0.8.1")
+    (version "0.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
                            version "/telescope-" version ".tar.gz"))
        (sha256
-        (base32 "1fblm3mjddhjmcj1c065n9440n72ld037bdjdlyk1fpwd240m1pa"))))
+        (base32 "1xbwdm3xcahwl6sjqx6f8hhx7nyzyygkjsnxglwxazp8zlmchqy9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
     (native-inputs
      (list gettext-minimal pkg-config))
     (inputs
-     (list libevent libressl ncurses))
+     (list libgrapheme libressl ncurses))
     (home-page "https://telescope.omarpolo.com/")
     (synopsis "Gemini client with a terminal interface")
     (description "Telescope is a w3m-like browser for Gemini.")
