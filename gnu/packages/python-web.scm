@@ -1379,13 +1379,13 @@ HTTP servers, RESTful APIs, and web services.")
 (define-public parfive
   (package
     (name "parfive")
-    (version "2.0.2")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "parfive" version))
               (sha256
                (base32
-                "0pf8rzfwxpkn84xzb4v8m1fy3k7kjlh8f9ln4y5xqlnbqpwi30lh"))))
+                "13nw2y7wjzj6w049av6ff4d0zxgbhkrgck0xyh676c114hcv8v6d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
