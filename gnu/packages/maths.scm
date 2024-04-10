@@ -9724,7 +9724,8 @@ computation is supported via MPI.")
        (sha256
         (base32
          "08nyfli3x7gd396ffd1a8zn9fj3gm6a8yw0ggm547c09sp2rgvl7"))
-       (patches (search-patches "scilab-better-compiler-detection.patch"))
+       (patches (search-patches "scilab-better-compiler-detection.patch"
+                                "scilab-tbx_build_help.patch"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet

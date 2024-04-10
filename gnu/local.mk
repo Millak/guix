@@ -2051,6 +2051,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/scalapack-gcc-10-compilation.patch	\
   %D%/packages/patches/scheme48-tests.patch			\
   %D%/packages/patches/scilab-better-compiler-detection.patch	\
+  %D%/packages/patches/scilab-tbx_build_help.patch		\
   %D%/packages/patches/scons-test-environment.patch		\
   %D%/packages/patches/screen-hurd-path-max.patch		\
   %D%/packages/patches/scsh-nonstring-search-path.patch	\
