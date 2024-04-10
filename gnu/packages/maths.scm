@@ -9768,9 +9768,9 @@ computation is supported via MPI.")
                "compile"
                "config.guess"
                "config.sub"
-               "ltmain.sh"
                "depcomp"
                "install-sh"
+               "ltmain.sh"
                "missing"))
             (delete-file-recursively "modules/dynamic_link/src/scripts/m4")
             (for-each delete-file
@@ -9794,6 +9794,7 @@ computation is supported via MPI.")
     (inputs (list `(,pcre "bin")
                   `(,pcre "out")
                   arpack-ng
+                  bash-minimal
                   curl
                   fftw
                   gettext-minimal
@@ -9851,10 +9852,8 @@ computation is supported via MPI.")
             (add-after 'unpack 'set-version
               (lambda _
                 (substitute* "modules/core/includes/version.h.in"
-                  (("scilab-branch-main")  ; version
-                   (string-append
-                    "scilab-"
-                    #$(version-major+minor (package-version this-package)))))))
+                  (("branch-[a-z0-9\\.]*")  ; version
+                   #$(version-major+minor (package-version this-package))))))
             (add-after 'unpack 'restrain-to-scilab-cli
               (lambda _
                 ;; Install only scilab-cli.desktop
@@ -9888,10 +9887,6 @@ computation is supported via MPI.")
                   ((assoc-ref %standard-phases 'bootstrap)))))
             (add-before 'build 'pre-build
               (lambda* (#:key inputs #:allow-other-keys)
-                ;; Fix scilab script.
-                (substitute* "bin/scilab"
-                  (("/bin/ls")
-                   (search-input-file inputs "bin/ls")))
                 ;; Fix core.start.
                 (substitute* "modules/core/etc/core.start"
                   (("'SCI/modules")
