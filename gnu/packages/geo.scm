@@ -105,6 +105,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pcre)
@@ -1387,6 +1388,42 @@ utilities for data translation and processing.")
     (description
       "The Python Shapefile Library (PyShp) reads and writes ESRI Shapefiles.")
     (license license:expat)))
+
+(define-public python-verde
+  (package
+    (name "python-verde")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "verde" version))
+       (sha256
+        (base32 "1hnh91dsk2dxfbk7p2hv3hajaa396139pd6apabgdrp5b7s54k97"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests below fetch data remotely.
+     (list #:test-flags #~(list "-k" (string-append
+                                      "not test_minimal_integration_2d_gps"
+                                      " and not test_datasets_locate"
+                                      " and not test_fetch_texas_wind"
+                                      " and not test_fetch_baja_bathymetry"
+                                      " and not test_fetch_rio_magnetic"
+                                      " and not test_fetch_california_gps"))))
+    (native-inputs (list python-cartopy python-distributed))
+    (propagated-inputs (list python-dask
+                             python-numpy
+                             python-pandas
+                             python-pooch
+                             python-scikit-learn
+                             python-scipy
+                             python-xarray))
+    (home-page "https://github.com/fatiando/verde")
+    (synopsis "Processing and gridding spatial data, machine-learning style")
+    (description
+     "Verde is a Python library for processing spatial data (topography, point
+clouds, bathymetry, geophysics surveys, etc) and interpolating them on a 2D
+surface (i.e., gridding) with a hint of machine learning.")
+    (license license:bsd-3)))
 
 (define-public python-cartopy
   (package
