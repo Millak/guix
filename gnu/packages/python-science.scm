@@ -460,7 +460,7 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.22.0")
+    (version "0.23.2")
     (source
      (origin
        (method git-fetch)
@@ -469,7 +469,7 @@ logic, also known as grey logic.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10fzyq2w1ldvfkmj374l375yrx33xrlw39xc9kmk8fxfi77jpykd"))))
+        (base32 "1bc8i57sjk44vd9k1ilr6fpvfq1zbq9yfi22lz22k26mzrlisym3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
