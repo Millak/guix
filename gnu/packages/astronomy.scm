@@ -4727,13 +4727,13 @@ specification.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf-astropy" version))
        (sha256
-        (base32 "0cxwknkjkgiavwmsz3vzk88c3spdi1cj4kwp62hgj92g2mh5k0zh"))))
+        (base32 "1ipjpjiirycj2npicbp39ka7db61vx45j8dm2iis71g5l1rzkblp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
