@@ -183,45 +183,45 @@ such as mate-panel and xfce4-panel.")
      `(#:tests? #f ; see http://lists.gnu.org/archive/html/bug-guix/2013-06/msg00085.html
        #:glib-or-gtk? #t
        #:configure-flags
-       (list "-Dtests=disabled")
+       ,#~(list "-Dtests=disabled")
        ,@(if (%current-target-system)
-             `(#:phases
-               (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-cross-compilation
-                   (lambda _
-                     ;; XXX: Let meson-build-system customize the property
-                     (substitute* "meson.build"
-                       (("'ipc_rmid_deferred_release', 'auto'")
-                        ;; see https://github.com/NixOS/nixpkgs/blob/df51f2293e935e85f6a2e69bcf89a40cb31bbc3d/pkgs/development/libraries/cairo/default.nix#L65
-                        ;; XXX: check it on hurd.
-                        "'ipc_rmid_deferred_release', 'true'"))))))
+             (list
+              #:phases
+              #~(modify-phases %standard-phases
+                  (add-after 'unpack 'fix-cross-compilation
+                    (lambda _
+                      ;; XXX: Let meson-build-system customize the property
+                      (substitute* "meson.build"
+                        (("'ipc_rmid_deferred_release', 'auto'")
+                         ;; see https://github.com/NixOS/nixpkgs/blob/df51f2293e935e85f6a2e69bcf89a40cb31bbc3d/pkgs/development/libraries/cairo/default.nix#L65
+                         ;; XXX: check it on hurd.
+                         "'ipc_rmid_deferred_release', 'true'"))))))
              '())))
     (native-inputs
-     `(,@(if (target-hurd?)
-             '()
-             `(("gobject-introspection" ,gobject-introspection)))
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (append (list pkg-config
+                   python-wrapper)
+             (if (target-hurd?)
+                 '()
+                 (list gobject-introspection))))
     (inputs
-     `(("bash-minimal" ,bash-minimal)   ;for glib-or-gtk-wrap
-       ,@(if (target-hurd?)
-             '()
-             `(("drm" ,libdrm)))
-       ("ghostscript" ,ghostscript)
-       ("libspectre" ,libspectre)
-       ,@(if (target-hurd?)
-             '()
-             `(("poppler" ,poppler)))))
+     (append
+      (list bash-minimal                ;for glib-or-gtk-wrap
+            ghostscript
+            libspectre)
+      (if (target-hurd?)
+          '()
+          (list libdrm
+                poppler))))
     (propagated-inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("glib" ,glib)
-       ("libpng" ,libpng)
-       ("pixman" ,pixman)
-       ("x11" ,libx11)
-       ("xcb" ,libxcb)
-       ("xext" ,libxext)
-       ("xrender" ,libxrender)))
+     (list fontconfig
+           freetype
+           glib
+           libpng
+           pixman
+           libx11
+           libxcb
+           libxext
+           libxrender))
     (synopsis "Multi-platform 2D graphics library")
     (description "Cairo is a 2D graphics library with support for multiple output
 devices.  Currently supported output targets include the X Window System (via
