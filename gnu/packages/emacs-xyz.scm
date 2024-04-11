@@ -5445,6 +5445,27 @@ a single buffer.")
 Lisp developers who want to write macros with convenience.")
     (license license:gpl3+)))
 
+(define-public emacs-noman
+  (package
+    (name "emacs-noman")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andykuszyk/noman.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04hvh816a0dvakgn22lxzw8qjmvc8grb5nhg1b5w99j5606ljqcl"))))
+    (build-system emacs-build-system)
+    (synopsis "Emacs package for browsing CLI command docs without man pages")
+    (description
+     "Noman is an Emacs package that parses command line help from flags like
+@code{--help}, and presents it in an easy-to-navigate Emacs buffer.")
+    (home-page "https://github.com/andykuszyk/noman.el")
+    (license license:gpl3+)))
+
 (define-public emacs-tablist
   (package
     (name "emacs-tablist")
