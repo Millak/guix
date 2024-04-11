@@ -4458,8 +4458,8 @@ void mc64ad_dist (int *a, int *b, int *c, int *d, int *e, double *f, int *g,
                                "-DTPL_LAPACK_LIBRARIES=-lopenblas"
                                (string-append "-DTPL_PARMETIS_LIBRARIES="
                                               (string-join
-                                               '("ptscotchparmetis" "ptscotch" "ptscotcherr"
-                                                 "scotchmetis" "scotch" "scotcherr")
+                                               '("ptscotchparmetisv3" "ptscotcherr"
+                                                 "scotchmetisv3" "scotcherr")
                                                ";"))
                                (string-append "-DTPL_PARMETIS_INCLUDE_DIRS="
                                               (assoc-ref %build-inputs "parmetis")
