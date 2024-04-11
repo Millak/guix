@@ -2093,6 +2093,7 @@ GnuPG-based password manager like @code{pass}.")
            perl
            python
            python-sphinx
+           python-pyyaml
            texinfo
            which))
     (synopsis "Documentation for the kernel Linux-Libre")
