@@ -6888,19 +6888,35 @@ Java package that provides routines for various statistical distributions.")
                              (((string-append "^\\(ert-deftest " test-name ".*")
                                all)
                               (string-append all "(skip-unless nil)\n"))
-                             ...)))))
+                             ...))))
+                       (disable-etests  ;different test syntax
+                        (syntax-rules ()
+                          ((_ file ())
+                           (syntax-error "test names list must not be empty"))
+                          ((_ file (test-name ...))
+                           (emacs-batch-edit-file file
+                             '(progn
+                               (mapc (lambda (test)
+                                       (goto-char (point-min))
+                                       (search-forward
+                                        (format "etest-deftest %s " test))
+                                       (beginning-of-line)
+                                       (kill-sexp))
+                                     (list test-name ...))
+                               (basic-save-buffer)))))))
                     (disable-tests (list "test/ess-test-inf.el"
                                          "test/ess-test-r.el")
                                    ("ess--derive-connection-path"
                                     "ess-eval-line-test"
                                     "ess-eval-region-test"
                                     "ess-mock-remote-process"
-                                    "ess-r-eval-sink-freeze-test"
-                                    "ess-r-eval-ns-env-roxy-tracebug-test"
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
                                     "ess-set-working-directory-test"
-                                    "ess-test-r-startup-directory")))))
+                                    "ess-test-r-startup-directory"))
+                    (disable-etests "test/ess-test-r-eval.el"
+                                    ("ess-r-eval-ns-env-roxy-tracebug-test"
+                                     "ess-r-eval-sink-freeze-test")))))
               (replace 'check
                 (lambda* (#:key tests? #:allow-other-keys)
                   (when tests? (invoke "make" "test"))))))))
