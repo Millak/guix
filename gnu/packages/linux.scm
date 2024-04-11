@@ -541,7 +541,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
 
-(define-public linux-libre-6.6-version "6.6.25")
+(define-public linux-libre-6.6-version "6.6.26")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
@@ -551,7 +551,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "17hq5pirvxaq1yscb204950xlakrd4r4mknjqayh1rzj4rzngzyq")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "0i0zvqlj02rm6wpbidji0rn9559vrpfc1b8gbfjk70lhhyz11llr")))
+        (hash (base32 "1nan0h95dkqpb55jr5mxfi8yks09fd518im3vblbi4zvyi4v8m5g")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
