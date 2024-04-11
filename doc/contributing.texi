@@ -126,23 +126,6 @@ following packages are also needed:
 C++11 standard.
 @end itemize
 
-@cindex state directory
-@cindex localstatedir
-@cindex system configuration directory
-@cindex sysconfdir
-When configuring Guix on a system that already has a Guix installation,
-be sure to specify the same state directory as the existing installation
-using the @option{--localstatedir} option of the @command{configure}
-script (@pxref{Directory Variables, @code{localstatedir},, standards,
-GNU Coding Standards}).  Usually, this @var{localstatedir} option is set
-to the value @file{/var}.  The @command{configure} script protects
-against unintended misconfiguration of @var{localstatedir} so you do not
-inadvertently corrupt your store (@pxref{The Store}).  The configuration
-directory should also be configured by setting the @option{--sysconfdir}
-option to the @file{/etc} value, which is the location used by Guix to
-store for example the access control list of authorized machines and the
-definition of offload machines.
-
 @node Building from Git
 @section Building from Git
 
@@ -245,6 +228,10 @@ export ACLOCAL_PATH=/usr/share/aclocal
 @xref{Macro Search Path,,, automake, The GNU Automake Manual}, for
 more information.
 
+@cindex state directory
+@cindex localstatedir
+@cindex system configuration directory
+@cindex sysconfdir
 Then, run:
 
 @example
@@ -258,6 +245,19 @@ normal @code{sysconfdir} value.  Note that you will probably not run
 @command{make install} at the end (you don't have to) but it's still
 important to pass the right @code{localstatedir} and @code{sysconfdir}
 values, which get recorded in the @code{(guix config)} Guile module.
+
+When configuring Guix on a system that already has a Guix installation,
+be sure to specify the same state directory as the existing installation
+using the @option{--localstatedir} option of the @command{configure}
+script (@pxref{Directory Variables, @code{localstatedir},, standards,
+GNU Coding Standards}).  Usually, this @var{localstatedir} option is set
+to the value @file{/var}.  The @command{configure} script protects
+against unintended misconfiguration of @var{localstatedir} so you do not
+inadvertently corrupt your store (@pxref{The Store}).  The configuration
+directory should also be configured by setting the @option{--sysconfdir}
+option to the @file{/etc} value, which is the location used by Guix to
+store for example the access control list of authorized machines and the
+definition of offload machines.
 
 Finally, you can build Guix and, if you feel so inclined, run the tests
 (@pxref{Running the Test Suite}):
