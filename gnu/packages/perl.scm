@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5552,6 +5553,25 @@ both) around an existing subroutine.  Unlike other modules that
 provide this capacity (e.g., Hook::PreAndPost and Hook::WrapSub),
 Hook::LexWrap implements wrappers in such a way that the standard
 caller function works correctly within the wrapped subroutine.")
+    (license license:perl-license)))
+
+(define-public perl-image-size
+  (package
+    (name "perl-image-size")
+    (version "3.300")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/R/RJ/RJRAY/Image-Size-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0sq2kwdph55h4adx50fmy86brjkkv8grsw33xrhf1k9icpwb3jak"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (home-page "https://metacpan.org/release/Image-Size")
+    (synopsis "Extract height/width from images")
+    (description "This package provides a simple Perl library to extract
+height/width from images.")
     (license license:perl-license)))
 
 (define-public perl-importer
