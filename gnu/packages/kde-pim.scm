@@ -382,6 +382,58 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
 
+(define-public akonadi-import-wizard
+  (package
+    (name "akonadi-import-wizard")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/akonadi-import-wizard-" version
+                           ".tar.xz"))
+       (sha256
+        (base32 "0dj7cvxnvld2h9nbg6v0bn3p81fx73dgj6kbpginavci52kgk240"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list akonadi
+           akonadi-contacts
+           akonadi-mime
+           grantlee
+           grantleetheme
+           karchive
+           kauth
+           kconfig
+           kcontacts
+           kcrash
+           kdbusaddons
+           kidentitymanagement
+           kimap
+           kio
+           kitemmodels
+           kmailcommon
+           kmailimporter
+           kmailtransport
+           kmessagelib
+           kmime
+           kpimcommon
+           kpimtextedit
+           ktextaddons
+           ktextwidgets
+           kwallet
+           libkdepim
+           libkleo
+           qtkeychain
+           qtwebengine-5))
+    (home-page "https://invent.kde.org/pim/akonadi-import-wizard")
+    (synopsis "Assistant to import external PIM data into Akonadi")
+    (description "Akonadi Data import Wizard is an assistant to import external
+PIM data into Akonadi for use in KDE PIM applications.")
+    (license
+     (list license:gpl2+ license:lgpl2.0+))))
+
 (define-public itinerary
   (package
     (name "itinerary")
