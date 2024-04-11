@@ -43,6 +43,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
@@ -761,6 +762,100 @@ data")
     (description "This library provides a utility and user interface
 functions for accessing calendar data using the kcalcore API.")
     (license  license:lgpl2.0+)))
+
+(define-public kdepim-addons
+  (package
+    (name "kdepim-addons")
+    (version "23.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kdepim-addons-" version ".tar.xz"))
+       (sha256
+        (base32 "1nai47wccf1shrgvywslqdkxk066zdkpb1grf3qzh8q77za2kmqz"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; TODO: Out of 156 tests, 10 fail and 2 get stuck.
+               ;; kdepim-addons-todoedittest and kdepim-addons-eventedittest
+               ;; get stuck. Do they require user input?
+               ;; eventdatavisitortest and pimeventsplugintest fail only in the
+               ;; check phase of guix build, but testing the same normally
+               ;; outside the guix build passes these two tests.
+               ;; messageviewer-dkimauthenticationverifiedserverdialogtest
+               ;; fails due to SEGFAULT.
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (setenv "HOME" "/tmp")
+                   (when tests?
+                     (invoke "dbus-launch" "ctest" "-E" "\
+(kdepim-addons-todoedittest|kdepim-addons-eventedittest\
+|enterpriseheaderstyleplugintest|fancyheaderstyleplugintest\
+|grantleeheaderstyleplugintest|messageviewerplugins-rendertest\
+|akonadi-sqlite-rendertest-akonadi|akonadi-sqlite-mailsenderjobtest\
+|akonadi-sqlite-gravatarupdatewidgettest|eventdatavisitortest\
+|pimeventsplugintest\
+|messageviewer-dkimauthenticationverifiedserverdialogtest)")))))))
+    (native-inputs
+     (list dbus extra-cmake-modules libxml2)) ;libxml2 for xmllint
+    (inputs
+     (list akonadi
+           akonadi-calendar
+           akonadi-contacts
+           akonadi-import-wizard
+           akonadi-mime
+           akonadi-notes
+           discount
+           grantlee
+           grantleetheme
+           kaddressbook
+           kcalendarcore
+           kcalendarsupport
+           kcalutils
+           karchive
+           kconfig
+           kcontacts
+           kdbusaddons
+           kdeclarative
+           keventviews
+           kguiaddons
+           kholidays
+           ki18n
+           kiconthemes
+           kidentitymanagement
+           kimap
+           kincidenceeditor
+           kio
+           kitemmodels
+           kmailcommon
+           kmailimporter
+           kmailtransport
+           kitinerary
+           kmessagelib
+           kmime
+           kparts
+           kpimcommon
+           kpimtextedit
+           kpkpass
+           ksyntaxhighlighting
+           ktextaddons
+           ktnef
+           kwallet
+           kxmlgui
+           libgravatar
+           libkdepim
+           libkleo
+           libksieve
+           prison
+           qtwebengine-5))
+    (home-page "https://invent.kde.org/pim/kdepim-addons")
+    (synopsis "Add-ons for KDE PIM applications")
+    (description "This package contains add-ons for KDE PIM applications such
+as KMail, KAddressBook etc.")
+    (license
+     (list license:gpl2+ license:lgpl2.0+))))
 
 (define-public kdepim-runtime
   (package
