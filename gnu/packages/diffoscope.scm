@@ -139,6 +139,11 @@
             (lambda _
               ;; This requires /sbin to be in $PATH.
               (delete-file "tests/test_tools.py")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Increase verbosity of tests and provide a summary
+               (invoke "pytest" "-vv" "-r" "sxX"))))
           (add-after 'install 'install-man-page
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
