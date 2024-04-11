@@ -12,6 +12,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,15 +45,21 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
+  #:use-module (gnu packages perl-compression)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages web))
+  #:use-module (gnu packages tex)
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages xml))
 
 (define-public hoedown
   (package
@@ -125,6 +132,114 @@ you to write using an easy-to-read, easy-to-write plain text format, then
 convert it to structurally valid XHTML (or HTML).")
     (license (license:non-copyleft "file://License.text"
                                    "See License.text in the distribution."))))
+
+(define-public latexml
+  (package
+    (name "latexml")
+    (version "0.8.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/brucemiller/LaTeXML")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+         (base32
+           "0lppm66fxadsbn73xh0nfqdi4y6d9j6xph1slvlp6ynrfbnn5p6s"))))
+    (build-system perl-build-system)
+    (arguments
+     (let ((wraplibs
+             (list "perl-archive-zip"
+                   "perl-common-sense"
+                   "perl-db-file"
+                   "perl-encode-locale"
+                   "perl-file-which"
+                   "perl-getopt-long"
+                   "perl-http-date"
+                   "perl-http-message"
+                   "perl-image-magick"
+                   "perl-image-size"
+                   "perl-io-string"
+                   "perl-json-xs"
+                   "perl-libwww"
+                   "perl-mime-base64"
+                   "perl-parse-recdescent"
+                   "perl-pod-parser"
+                   "perl-text-unidecode"
+                   "perl-time-hires"
+                   "perl-try-tiny"
+                   "perl-types-serialiser"
+                   "perl-uri"
+                   "perl-xml-libxml"
+                   "perl-xml-libxslt"
+                   "perl-xml-sax-base")))
+       (list
+        ;; some tests skip due to missing dependencies
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'find-itself
+              ;; Fix run-time 'Can't locate [].pm in @INC' failure and remove
+              ;; need for extensive set of propagated inputs
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (with-directory-excursion (string-append #$output "/bin")
+                    (for-each
+                     (lambda* (program)
+                       (wrap-program program
+                         `("PERL5LIB" ":" prefix
+                           (,(string-append #$output "/lib/perl5/site_perl")
+                            ,#$@(map (lambda (in)
+                                       (file-append
+                                        (this-package-input in) "/lib/perl5/site_perl"))
+                                     wraplibs)))))
+                     (find-files "." ".*")))))))))
+    (inputs
+     (list bash-minimal
+           libxml2
+           libxslt
+           perl
+           perl-archive-zip
+           perl-common-sense
+           perl-db-file
+           perl-encode-locale
+           perl-file-which
+           perl-getopt-long
+           perl-http-date
+           perl-http-message
+           perl-image-magick
+           perl-image-size
+           perl-io-string
+           perl-json-xs
+           perl-libwww
+           perl-mime-base64
+           perl-parse-recdescent
+           perl-pod-parser
+           perl-text-unidecode
+           perl-time-hires
+           perl-try-tiny
+           perl-types-serialiser
+           perl-uri
+           perl-xml-libxml
+           perl-xml-libxslt
+           perl-xml-sax-base))
+    (native-inputs
+     (list texlive-bin
+           perl-test-more-utf8
+           perl-extutils-manifest
+           perl-data-dumper
+           perl-ipc-run3
+           perl-file-temp))
+    (home-page "https://math.nist.gov/~BMiller/LaTeXML/")
+    (synopsis "LaTeX to XML, HTML, MathML, epub and Jats converter")
+    (description "This package provides a LaTeX converter, with the following goals:
+@itemize
+@item Faithful emulation of TEX’s behaviour;
+@item Easily extensible;
+@item Lossless, preserving both semantic and presentation cues;
+@item Use an abstract LATEX-like, extensible, document type;
+@item Infer the semantics of mathematical content
+@end itemize")
+    (license license:cc0)))
 
 (define-public lowdown
   (package
