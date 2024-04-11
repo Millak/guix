@@ -41,6 +41,14 @@ choice.
 @node Requirements
 @section Requirements
 
+You can easily hack on Guix itself using Guix and Git, which we use for
+version control (@pxref{Building from Git}).
+
+But when packaging Guix for foreign distros or when bootstrapping on
+systems without Guix, and if you decide to not just trust and install
+our readily made binary (@pxref{Binary Installation}), you can download
+a release version of our reproducible source tarball and read on.
+
 This section lists requirements when building Guix from source.  The
 build procedure for Guix is the same as for other GNU software, and is
 not covered here.  Please see the files @file{README} and @file{INSTALL}
