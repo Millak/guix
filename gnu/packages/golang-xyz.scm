@@ -2654,6 +2654,33 @@ comparison library, to Go.  Both a library and a command-line tool are
 included in this package.")
     (license license:expat)))
 
+(define-public go-github-com-pbnjay-memory
+  (let ((commit "974d429e7ae40c89e7dcd41cfcc22a0bfbe42510")
+        (revision "1"))
+    (package
+      (name "go-github-com-pbnjay-memory")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pbnjay/memory")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0kazg5psdn90pqadrzma5chdwh0l2by9z31sspr47gx93fhjmkkq"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/pbnjay/memory"))
+      (home-page "https://github.com/gedex/inflector")
+      (synopsis "Go library to report total system memory")
+      (description
+       "@code{memory} provides a single method reporting total physical system
+memory accessible to the kernel.  It does not account for memory used by other
+processes.")
+      (license license:bsd-3))))
+
 (define-public go-github-com-pierrec-cmdflag
   (package
     (name "go-github-com-pierrec-cmdflag")
