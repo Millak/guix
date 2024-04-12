@@ -3263,6 +3263,39 @@ CPU quota.")
 object dependencies graph during the process startup.")
     (license license:expat)))
 
+(define-public go-go-uber-org-fx
+  (package
+    (name "go-go-uber-org-fx")
+    (version "1.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://pkg.go.dev/go.uber.org/fx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16pbqmkij02zw6xa4660k905y0r0rc50vyqhg41i2411r68jrdnn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "go.uber.org/fx"))
+    (native-inputs
+     (list go-github-com-stretchr-testify-next))
+    (propagated-inputs
+     (list go-go-uber-org-dig
+           go-go-uber-org-goleak
+           go-go-uber-org-multierr
+           go-go-uber-org-zap
+           go-golang-org-x-sys))
+    (home-page "https://go.uber.org/fx")
+    (synopsis "Dependency injection based application framework for Golang")
+    (description
+     "Package @code{fx} is a framework that makes it easy to build
+applications out of reusable, composable modules.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-multierr
   (package
     (name "go-go-uber-org-multierr")
