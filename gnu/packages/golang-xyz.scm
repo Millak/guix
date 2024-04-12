@@ -3328,7 +3328,7 @@ object dependencies graph during the process startup.")
            go-go-uber-org-atomic
            go-go-uber-org-multierr
            go-gopkg-in-yaml-v2))
-    (home-page "https://go.uber.org/zap")
+    (home-page "https://pkg.go.dev/go.uber.org/zap")
     (synopsis "Logging library for Go")
     (description
      "This package provides a library for fast, structured, leveled logging in
