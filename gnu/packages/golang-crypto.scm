@@ -497,6 +497,39 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
       #:go go-1.18
       #:import-path "github.com/golang-jwt/jwt/v5"))))
 
+;; It's not public for purpose, as it contains a lot of golang modules which
+;; may be inherited from the single source, but the package itself does not
+;; have to be installed directly or linked to other packages..
+(define go-github-com-gxed-hashland
+  (package
+    (name "go-github-com-gxed-hashland")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gxed/hashland")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b921dh9i6zw7y8jfzwvrmdbhnwid12a5z1zjawslfq2vvsajwmm"))))
+    (build-system go-build-system)
+    ;; Source-only package.
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/gxed/hashland"
+      #:phases
+      #~(modify-phases %standard-phases (delete 'build))))
+    (home-page "https://github.com/gxed/hashland")
+    (synopsis "Collection of hash functions")
+    (description
+     "This package provides a source of Hashland - a collection of hash
+functions and functionality to test them.  It aggregates various Golang
+libraries.")
+    (license license:expat)))
+
+;; TODO: Inherit from the go-github-com-gxed-hashland
 (define-public go-github-com-gxed-hashland-keccakpg
   (let ((commit "d9f6b97f8db22dd1e090fd0bbbe98f09cc7dd0a8")
         (revision "0"))
