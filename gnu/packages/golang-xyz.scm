@@ -3210,6 +3210,33 @@ similar string with weeks or days too.")
 CPU quota.")
     (license license:expat)))
 
+(define-public go-go-uber-org-dig
+  (package
+    (name "go-go-uber-org-dig")
+    (version "1.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/dig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "020dak2r0yykk6fkfwad2wbz73pjbbdkdamn0ir7xf2irxsmjakm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "go.uber.org/dig"))
+    (native-inputs
+     (list go-github-com-stretchr-testify-next))
+    (home-page "https://pkg.go.dev/go.uber.org/dig")
+    (synopsis "Reflection based dependency injection toolkit for Golang")
+    (description
+     "Package @code{dig} provides a functionality to implement resolving
+object dependencies graph during the process startup.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-zap
   (package
     (name "go-go-uber-org-zap")
