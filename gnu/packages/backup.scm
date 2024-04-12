@@ -1076,30 +1076,29 @@ precious backup space.
                 "1nvmxc9x0mlks6yfn66fmwn50k5q83ip4g9vvb0kndzd7hwcyacy"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/restic/rest-server/cmd/rest-server"
-       #:unpack-path "github.com/restic/rest-server"
-       #:install-source? #f ;all we need is the binary
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys . args)
-                      (when tests?
-                        ;; Unit tests seems to break with Guix' non-standard TMPDIR.
-                        (setenv "TMPDIR" "/tmp")
-                        (apply (assoc-ref %standard-phases
-                                          'check) args))))
-                  (add-after 'install 'rename-binary
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (with-directory-excursion (assoc-ref outputs "out")
-                        ;; "rest-server" is a bit too generic.
-                        (rename-file "bin/rest-server"
-                                     "bin/restic-rest-server")))))))
-    (propagated-inputs (list go-golang-org-x-crypto
-                             go-github-com-spf13-cobra
-                             go-github-com-prometheus-client-golang
-                             go-github-com-miolini-datacounter
-                             go-github-com-minio-sha256-simd
-                             go-github-com-gorilla-handlers
-                             go-github-com-coreos-go-systemd-activation))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/restic/rest-server/cmd/rest-server"
+      #:unpack-path "github.com/restic/rest-server"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Unit tests seems to break with Guix' non-standard TMPDIR.
+          (add-before 'check 'set-tmpdir
+            (lambda _
+              (setenv "TMPDIR" "/tmp")))
+          (add-after 'install 'rename-binary
+            (lambda _
+              (with-directory-excursion #$output
+                ;; "rest-server" is a bit too generic.
+                (rename-file "bin/rest-server"
+                             "bin/restic-rest-server")))))))
+    (native-inputs (list go-github-com-coreos-go-systemd-activation
+                         go-github-com-gorilla-handlers
+                         go-github-com-minio-sha256-simd
+                         go-github-com-miolini-datacounter
+                         go-github-com-prometheus-client-golang
+                         go-github-com-spf13-cobra
+                         go-golang-org-x-crypto))
     (home-page "https://github.com/restic/rest-server")
     (synopsis "Restic REST server")
     (description
