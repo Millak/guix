@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1001,6 +1002,33 @@ custom assertions to be used alongside native Go testing.")
         (base32 "13mb07dxhcy9ydqbracnrpfj682g6sazjpm56yrlbn2jc1yfy44c"))))
     (arguments
      (list #:import-path "github.com/go-playground/assert/v2"))))
+
+(define-public go-go-uber-org-goleak
+  (package
+    (name "go-go-uber-org-goleak")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/goleak")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1lpqw7ygffak8qki9i4vw8b99l25l8jrw8iwcplqsclk6fzkl24p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.uber.org/goleak"))
+    (native-inputs
+     (list go-github-com-stretchr-testify-next))
+    (home-page "https://go.uber.org/goleak")
+    (synopsis "Goroutine leak detector")
+    (description
+     "Go package to verify that there are no unexpected goroutines running at
+the end of a test.")
+    (license license:expat)))
 
 (define-public go-honnef-co-go-tools
   (package
