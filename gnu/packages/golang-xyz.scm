@@ -3263,6 +3263,32 @@ CPU quota.")
 object dependencies graph during the process startup.")
     (license license:expat)))
 
+(define-public go-go-uber-org-multierr
+  (package
+    (name "go-go-uber-org-multierr")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/multierr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "162941s8f6a9x2w04qm4qa3zz0zylwag9149hywrj9ibp2nzcsqz"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "go.uber.org/multierr"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-uber-org-atomic))
+    (home-page "https://go.uber.org/multierr")
+    (synopsis "Error combination for Go")
+    (description
+     "@code{multierr} allows combining one or more Go errors together.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-zap
   (package
     (name "go-go-uber-org-zap")
