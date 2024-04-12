@@ -748,6 +748,21 @@ Features include:
       (propagated-inputs
        (list go-gopkg-in-yaml-v3)))))
 
+(define-public go-github-com-stretchr-testify-next
+  (package
+    (inherit go-github-com-stretchr-testify)
+    (name "go-github-com-stretchr-testify")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stretchr/testify")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12cnhk96h8b3ddlb7jfvwwavzc0j1c2iva92pszl9rv6r571ckzg"))))))
+
 (define-public go-github-com-tdewolff-test
   (package
     (name "go-github-com-tdewolff-test")
