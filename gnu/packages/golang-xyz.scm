@@ -2655,8 +2655,8 @@ included in this package.")
     (license license:expat)))
 
 (define-public go-github-com-pbnjay-memory
-  (let ((commit "974d429e7ae40c89e7dcd41cfcc22a0bfbe42510")
-        (revision "1"))
+  (let ((commit "7b4eea64cf580186c0eceb10dc94ba3a098af46c")
+        (revision "2"))
     (package
       (name "go-github-com-pbnjay-memory")
       (version (git-version "0.0.0" revision commit))
@@ -2668,7 +2668,7 @@ included in this package.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0kazg5psdn90pqadrzma5chdwh0l2by9z31sspr47gx93fhjmkkq"))))
+          (base32 "107w8pd1aasdrk35hh9pbdh9z11s9s79nglz6rqfnf6bhgb8b3s0"))))
       (build-system go-build-system)
       (arguments
        (list
