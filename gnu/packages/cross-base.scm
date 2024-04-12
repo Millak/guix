@@ -250,7 +250,9 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
          ;; Patch by Qualcomm needed to build the ath9k-htc firmware.
          (search-patches "ath9k-htc-firmware-gcc.patch"))
         ((target-mingw? target)
-         (append (search-patches "gcc-4.9.3-mingw-gthr-default.patch")
+         (append (if (not (version>=? (package-version xgcc) "13.0"))
+                     (search-patches "gcc-4.9.3-mingw-gthr-default.patch")
+                     '())
                  (if (version>=? (package-version xgcc) "7.0")
                      (search-patches "gcc-7-cross-mingw.patch")
                      '())))
