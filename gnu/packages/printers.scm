@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages printers)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
@@ -83,24 +84,18 @@ simply relay a TCP connection to USB do not work.")
         (base32 "0dp9cssyik63yvkk35s51v94a873x751iqg93qzd8dpqkmz5z8gn"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (substitute* "Robocut.pro"
-                          (("/usr/")
-                           (string-append out "/")))
-
-                        (invoke "qmake"
-                                (string-append "PREFIX=" out))
-                        #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (substitute* "Robocut.pro"
+                (("/usr/") (string-append #$output "/")))
+              (invoke "qmake" (string-append "PREFIX=" #$output)))))))
     (inputs
-     `(("libusb" ,libusb)
-       ("qt" ,qtbase-5)
-       ("qtsvg-5" ,qtsvg-5)))
+     (list libusb qtbase-5 qtsvg-5))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qmake" ,qtbase-5)))
+     (list pkg-config qtbase-5))
     (synopsis "Graphical program to drive plotting cutters")
     (description
      "Robocut is a simple graphical program that allows you to cut graphics
