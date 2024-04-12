@@ -277,7 +277,7 @@ written in Go.")
        (snippet '(for-each delete-file-recursively
                            ;; TODO: unbundle the rest as well
                            '("vendor/github.com/alecthomas"
-                             "vendor/github.com/benbjohnson/clock"
+                             "vendor/github.com/benbjohnson"
                              "vendor/github.com/beorn7/perks"
                              "vendor/github.com/blang"
                              "vendor/github.com/cespare"
@@ -294,6 +294,7 @@ written in Go.")
                              "vendor/github.com/golang/snappy"
                              "vendor/github.com/google/uuid"
                              "vendor/github.com/gorilla"
+                             "vendor/github.com/hashicorp"
                              ;; These should be fine, they are part of
                              ;; the IPFS project
                              ;; "vendor/github.com/ipfs"
@@ -305,7 +306,9 @@ written in Go.")
                              "vendor/github.com/minio"
                              "vendor/github.com/mitchellh"
                              "vendor/github.com/mr-tron"
+                             "vendor/github.com/multiformats/go-multihash"
                              "vendor/github.com/opentracing"
+                             "vendor/github.com/pbnjay"
                              "vendor/github.com/pkg"
                              "vendor/github.com/pmezard"
                              "vendor/github.com/prometheus/client_golang"
@@ -315,12 +318,10 @@ written in Go.")
                              "vendor/github.com/spaolacci"
                              "vendor/github.com/stretchr"
                              "vendor/github.com/syndtr"
-                             "vendor/golang.org/x"
-                             "vendor/gopkg.in/yaml.v2"
-                             "vendor/gopkg.in/yaml.v3"
-                             "vendor/go.uber.org/atomic"
-                             "vendor/go.uber.org/multierr"
-                             "vendor/go.uber.org/zap"
+                             "vendor/github.com/whyrusleeping/go-sysinfo"
+                             "vendor/go.uber.org"
+                             "vendor/golang.org"
+                             "vendor/gopkg.in"
                              "vendor/lukechampine.com")))))
     (build-system go-build-system)
     (arguments
@@ -343,7 +344,6 @@ written in Go.")
                                   #~(string-append #$output "/bin/ipfs"))
                             "commands" "completion" "bash")))))))))
     (inputs (list go-github-com-alecthomas-units
-                  go-github-com-benbjohnson-clock
                   go-github-com-blang-semver-v4
                   go-github-com-cespare-xxhash
                   go-github-com-cheekybits-genny
@@ -358,6 +358,9 @@ written in Go.")
                   go-github-com-google-uuid
                   go-github-com-gorilla-mux
                   go-github-com-gorilla-websocket
+                  go-github-com-hashicorp-go-multierror
+                  go-github-com-hashicorp-golang-lru
+                  go-github-com-hashicorp-golang-lru-v2
                   go-github-com-jackpal-go-nat-pmp
                   go-github-com-klauspost-compress
                   go-github-com-klauspost-cpuid
@@ -370,7 +373,9 @@ written in Go.")
                   go-github-com-minio-sha256-simd
                   go-github-com-mitchellh-go-homedir
                   go-github-com-mr-tron-base58
+                  go-github-com-multiformats-go-multihash-0.2.3
                   go-github-com-opentracing-opentracing-go
+                  go-github-com-pbnjay-memory
                   go-github-com-pkg-errors
                   go-github-com-pmezard-go-difflib
                   go-github-com-prometheus-client-golang
@@ -380,7 +385,9 @@ written in Go.")
                   go-github-com-spaolacci-murmur3
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb
-                  go-go-uber-org-atomic
+                  go-github-com-whyrusleeping-go-sysinfo
+                  go-go-uber-org-dig
+                  go-go-uber-org-fx
                   go-go-uber-org-multierr
                   go-go-uber-org-zap
                   go-golang-org-x-crypto
@@ -395,6 +402,7 @@ written in Go.")
                   go-golang-org-x-text
                   go-golang-org-x-tools
                   go-golang-org-x-xerrors
+                  go-gopkg-in-square-go-jose-v2
                   go-gopkg-in-yaml-v2
                   go-gopkg-in-yaml-v3
                   go-lukechampine-com-blake3))
