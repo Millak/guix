@@ -5268,7 +5268,6 @@ disk utilization, priority, username, state, and exit code.")
                        "utk"))))))))
     (inputs
      (list go-github-com-dustin-go-humanize
-           go-github-com-hashicorp-errwrap
            go-github-com-hashicorp-go-multierror
            go-github-com-jessevdk-go-flags
            go-github-com-pierrec-lz4

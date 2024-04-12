@@ -1327,7 +1327,7 @@ methods on @code{hclog.Logger} are used correctly.")
        (sha256
         (base32 "0l4s41skdpifndn9s8y6s9vzgghdzg4z8z0lld9qjr28888wzp00"))))
     (build-system go-build-system)
-    (inputs (list go-github-com-hashicorp-errwrap))
+    (propagated-inputs (list go-github-com-hashicorp-errwrap))
     (arguments
      (list
       #:import-path "github.com/hashicorp/go-multierror"))
