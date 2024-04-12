@@ -62,8 +62,6 @@
     (arguments
      (list
       #:tests? #f
-      #:modules '((guix build gnu-build-system)
-                  (guix build utils))
       #:phases #~(modify-phases %standard-phases
                    (delete 'configure)
                    (replace 'check
