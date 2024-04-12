@@ -3304,14 +3304,27 @@ object dependencies graph during the process startup.")
         (base32 "0lzbbs87fvixzbyv4wpl3s70vm2m0jz2jgdvrviiksc2al451qgs"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "go.uber.org/zap"
-       #:tests? #f)) ; TODO: Fix tests
+     (list
+      #:go go-1.19
+      #:import-path "go.uber.org/zap"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Remove test files requiring to download all dependencies for the
+          ;; current Go module and reports their module paths and locations on
+          ;; disk.
+          (add-after 'unpack 'remove-test-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file
+               (string-append "src/" import-path
+                              "/stacktrace_ext_test.go")))))))
     (native-inputs
-     (list go-github-com-stretchr-testify
+     (list go-github-com-stretchr-testify-next
+           go-go-uber-org-goleak
            go-golang-org-x-lint
            go-honnef-co-go-tools))
     (propagated-inputs
-     (list go-github-com-pkg-errors
+     (list go-github-com-benbjohnson-clock
+           go-github-com-pkg-errors
            go-go-uber-org-atomic
            go-go-uber-org-multierr
            go-gopkg-in-yaml-v2))
