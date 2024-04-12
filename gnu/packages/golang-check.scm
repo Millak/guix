@@ -1023,7 +1023,7 @@ custom assertions to be used alongside native Go testing.")
       #:import-path "go.uber.org/goleak"))
     (native-inputs
      (list go-github-com-stretchr-testify-next))
-    (home-page "https://go.uber.org/goleak")
+    (home-page "https://pkg.go.dev/go.uber.org/goleak")
     (synopsis "Goroutine leak detector")
     (description
      "Go package to verify that there are no unexpected goroutines running at
