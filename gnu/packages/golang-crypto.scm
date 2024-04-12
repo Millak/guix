@@ -555,6 +555,20 @@ libraries.")
 hash algorithm.  See http://keccak.noekeon.org.")
       (license license:expat))))
 
+(define-public go-github-com-gxed-hashland-murmur3
+  (package
+    (inherit go-github-com-gxed-hashland)
+    (name "go-github-com-gxed-hashland-murmur3")
+    (arguments
+     (list
+      #:import-path "github.com/gxed/hashland/murmur3"
+      #:unpack-path "github.com/gxed/hashland"))
+    (synopsis "Golang implementation of MurmurHash3 algorithm")
+    (description
+     "This package provides a native Go implementation of
+@url{https://en.wikipedia.org/wiki/MurmurHash, Austin Appleby's third
+MurmurHash} revision (aka MurmurHash3).")))
+
 (define-public go-github-com-jcmturner-aescts-v2
   (package
     (name "go-github-com-jcmturner-aescts-v2")
