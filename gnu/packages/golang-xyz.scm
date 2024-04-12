@@ -1417,6 +1417,51 @@ a collection of versions properly, handles prerelease/beta versions, can
 increment versions.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-golang-lru
+  (package
+    (name "go-github-com-hashicorp-golang-lru")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/golang-lru")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13q3mdlr4hb2cxa5k4ccpz1gg4swrmkxm7h3brq3xsawidpbjbyb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/golang-lru"))
+    (home-page "https://github.com/hashicorp/golang-lru")
+    (synopsis "Golang LRU cache")
+    (description
+     "@code{lru} is a package which implements a fixed-size thread safe
+@acronym{Least recently used,LRU} cache.  It is based on the cache in
+Groupcache.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-golang-lru-v2
+  (package
+    (inherit go-github-com-hashicorp-golang-lru)
+    (name "go-github-com-hashicorp-golang-lru-v2")
+    (version "2.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/golang-lru")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lb2ylv2bz6lsqhn6c2hsafjjcx0hsdbah6arhb778g3xbkpgvf3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.18
+      #:import-path "github.com/hashicorp/golang-lru/v2"))))
+
 (define-public go-github-com-hashicorp-hcl
   (package
     (name "go-github-com-hashicorp-hcl")
