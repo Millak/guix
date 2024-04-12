@@ -3283,7 +3283,7 @@ object dependencies graph during the process startup.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-go-uber-org-atomic))
-    (home-page "https://go.uber.org/multierr")
+    (home-page "https://pkg.go.dev/go.uber.org/multierr")
     (synopsis "Error combination for Go")
     (description
      "@code{multierr} allows combining one or more Go errors together.")
