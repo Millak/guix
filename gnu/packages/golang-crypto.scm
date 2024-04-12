@@ -836,32 +836,33 @@ Architecture Processors\" by J. Guilford et al.")
     (license license:asl2.0)))
 
 (define-public go-github-com-multiformats-go-multihash
-    (package
-      (name "go-github-com-multiformats-go-multihash")
-      (version "0.0.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/multiformats/go-multihash")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1aw4ra22g3l98bk7c3h1n968vi5a3gk528g4byj3xig76r0r731n"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/multiformats/go-multihash"))
-      (propagated-inputs
-       (list go-github-com-gxed-hashland-keccakpg
-             go-github-com-gxed-hashland-murmur3
-             go-github-com-minio-blake2b-simd
-             go-github-com-minio-sha256-simd
-             go-github-com-mr-tron-base58
-             go-golang-org-x-crypto))
-      (home-page "https://github.com/multiformats/go-multihash")
-      (synopsis "Multihash implementation in Go")
-      (description "Multihash implementation in Go.")
-      (license license:expat)))
+  (package
+    (name "go-github-com-multiformats-go-multihash")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/multiformats/go-multihash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aw4ra22g3l98bk7c3h1n968vi5a3gk528g4byj3xig76r0r731n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/multiformats/go-multihash"))
+    (propagated-inputs
+     (list go-github-com-gxed-hashland-keccakpg
+           go-github-com-gxed-hashland-murmur3
+           go-github-com-minio-blake2b-simd
+           go-github-com-minio-sha256-simd
+           go-github-com-mr-tron-base58
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/multiformats/go-multihash")
+    (synopsis "Multihash implementation in Go")
+    (description "Multihash implementation in Go.")
+    (license license:expat)))
 
 (define-public go-github-com-operatorfoundation-ed25519
   (let ((commit "b22b4bd3ddef042eec45f3ee135cd40281fde2b4")
