@@ -743,6 +743,11 @@ provide Guix through their own package managers.  The version of Guix
 may be older than @value{VERSION} but you can update it afterwards by
 running @samp{guix pull}.
 
+We advise system administrators who install Guix, both from the
+installation script or @i{via} the native package manager of their
+foreign distribution, to also regularly read and follow security
+notices, as shown by @command{guix pull}.
+
 For Debian or a derivative such as Ubuntu, call:
 
 @example
