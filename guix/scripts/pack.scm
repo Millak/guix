@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
@@ -1066,10 +1066,11 @@ please email '~a'~%")
                           #:optional
                           (output* "out")
                           (compiler (c-compiler))
-                          #:key proot?)
+                          #:key proot? (fakechroot? proot?))
   "Return the OUTPUT of PACKAGE with its binaries wrapped such that they are
 relocatable.  When PROOT? is true, include PRoot in the result and use it as a
-last resort for relocation."
+last resort for relocation.  When FAKECHROOT? is true, include
+libfakechroot.so and related ld.so machinery as a fallback."
   (define runner
     (local-file (search-auxiliary-file "run-in-namespace.c")))
 
@@ -1161,43 +1162,44 @@ last resort for relocation."
           (define (elf-loader-compile-flags program)
             ;; Return the cpp flags defining macros for the ld.so/fakechroot
             ;; wrapper of PROGRAM.
+            #$(if fakechroot?
+                  ;; TODO: Handle scripts by wrapping their interpreter.
+                  #~(if (elf-file? program)
+                        (let* ((bv      (call-with-input-file program
+                                          get-bytevector-all))
+                               (elf     (parse-elf bv))
+                               (interp  (elf-interpreter elf))
+                               (gconv   (and interp
+                                             (string-append (dirname interp)
+                                                            "/gconv"))))
+                          (if interp
+                              (list (string-append "-DPROGRAM_INTERPRETER=\""
+                                                   interp "\"")
+                                    (string-append "-DFAKECHROOT_LIBRARY=\""
+                                                   #$(fakechroot-library) "\"")
 
-            ;; TODO: Handle scripts by wrapping their interpreter.
-            (if (elf-file? program)
-                (let* ((bv      (call-with-input-file program
-                                  get-bytevector-all))
-                       (elf     (parse-elf bv))
-                       (interp  (elf-interpreter elf))
-                       (gconv   (and interp
-                                     (string-append (dirname interp)
-                                                    "/gconv"))))
-                  (if interp
-                      (list (string-append "-DPROGRAM_INTERPRETER=\""
-                                           interp "\"")
-                            (string-append "-DFAKECHROOT_LIBRARY=\""
-                                           #$(fakechroot-library) "\"")
+                                    (string-append "-DLOADER_AUDIT_MODULE=\""
+                                                   #$(audit-module) "\"")
 
-                            (string-append "-DLOADER_AUDIT_MODULE=\""
-                                           #$(audit-module) "\"")
-
-                            ;; XXX: Normally (runpath #$(audit-module)) is
-                            ;; enough.  However, to work around
-                            ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=26634>
-                            ;; (glibc <= 2.32), pass the whole search path of
-                            ;; PROGRAM, which presumably is a superset of that
-                            ;; of the audit module.
-                            (string-append "-DLOADER_AUDIT_RUNPATH={ "
-                                           (string-join
-                                            (map object->string
-                                                 (runpath program))
-                                            ", " 'suffix)
-                                           "NULL }")
-                            (if gconv
-                                (string-append "-DGCONV_DIRECTORY=\""
-                                               gconv "\"")
-                                "-UGCONV_DIRECTORY"))
-                      '()))
-                '()))
+                                    ;; XXX: Normally (runpath #$(audit-module)) is
+                                    ;; enough.  However, to work around
+                                    ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=26634>
+                                    ;; (glibc <= 2.32), pass the whole search path of
+                                    ;; PROGRAM, which presumably is a superset of that
+                                    ;; of the audit module.
+                                    (string-append "-DLOADER_AUDIT_RUNPATH={ "
+                                                   (string-join
+                                                    (map object->string
+                                                         (runpath program))
+                                                    ", " 'suffix)
+                                                   "NULL }")
+                                    (if gconv
+                                        (string-append "-DGCONV_DIRECTORY=\""
+                                                       gconv "\"")
+                                        "-UGCONV_DIRECTORY"))
+                              '()))
+                        '())
+                  #~'()))
 
           (define (build-wrapper program)
             ;; Build a user-namespace wrapper for PROGRAM.
