@@ -2548,7 +2548,7 @@ This builds a new system @dfn{generation} with the latest packages and
 services.
 
 Now, @pxref{Getting Started with the System}, and
-join us on @code{#guix} on the Libera Chat IRC network or on
+join us on @code{#guix} on the Libera.Chat IRC network or on
 @email{guix-devel@@gnu.org} to share your experience!
 
 
