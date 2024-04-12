@@ -675,13 +675,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.2.7")
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "06j1v4bw9jkjh6m29ns5sigmp0cslcf0cyy8rrqij11w72ijhgzn"))
+        (base32 "1aplj54x6hcyg3mnzscnwi07npy7nrws2246ss25ax6bsaq257fk"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -723,18 +723,10 @@ detection, and lossless compression.")
                 (setenv "BORG_OPENSSL_PREFIX" openssl)
                 (setenv "BORG_LIBLZ4_PREFIX" lz4)
                 (setenv "BORG_LIBXXHASH_PREFIX" xxhash)
-                (setenv "BORG_LIBZSTD_PREFIX" zstd)
-                (setenv "PYTHON_EGG_CACHE" "/tmp")
-                ;; The test 'test_return_codes[python]' fails when
-                ;; HOME=/homeless-shelter.
-                (setenv "HOME" "/tmp"))))
-          ;; The tests need to be run after Borg is installed.
-          (delete 'check)
-          (add-after 'install 'check
+                (setenv "BORG_LIBZSTD_PREFIX" zstd))))
+          (replace 'check
             (lambda* (#:key inputs outputs tests? #:allow-other-keys)
               (when tests?
-                ;; Make the installed package available for the test suite.
-                (add-installed-pythonpath inputs outputs)
                 ;; The tests should be run in an empty directory.
                 (mkdir-p "tests")
                 (with-directory-excursion "tests"
@@ -749,7 +741,6 @@ detection, and lossless compression.")
                            "and not test_access_acl "
                            "and not test_default_acl "
                            "and not test_get_item_uid_gid "
-                           "and not test_non_ascii_acl "
                            "and not test_create_content_from_command "
                            "and not test_create_content_from_command_with_failed_command "
                            "and not test_create_stdin "
