@@ -3204,7 +3204,7 @@ similar string with weeks or days too.")
       #:import-path "go.uber.org/atomic"))
     (native-inputs
      (list go-github-com-stretchr-testify go-github-com-davecgh-go-spew))
-    (home-page "https://go.uber.org/atomic")
+    (home-page "https://pkg.go.dev/go.uber.org/atomic")
     (synopsis "Wrapper types for sync/atomic")
     (description
      "This package provides simple wrappers for primitive types to enforce
