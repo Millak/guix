@@ -289,6 +289,13 @@ plotting and graphing library.  If you want to make graphs that look like you
 went to university in the 1990s, this is the library for you.")
     (license license:gpl3+)))
 
+(define-public guile2.2-charting
+  (package
+    (inherit guile-charting)
+    (name "guile2.2-charting")
+    (inputs (list guile-2.2))
+    (propagated-inputs (list guile2.2-cairo))))
+
 (define-public plotutils
   (package
     (name "plotutils")
@@ -355,13 +362,6 @@ for exporting 2D vector graphics in many file formats.  It also has support
 for 2D vector graphics animations.  The package also contains command-line
 programs for plotting scientific data.")
     (license license:gpl2+)))
-
-(define-public guile2.2-charting
-  (package
-    (inherit guile-charting)
-    (name "guile2.2-charting")
-    (inputs (list guile-2.2))
-    (propagated-inputs (list guile2.2-cairo))))
 
 (define-public ploticus
   (package
