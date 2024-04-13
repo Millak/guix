@@ -61,6 +61,157 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xorg))
 
+(define-public asymptote
+  (package
+    (name "asymptote")
+    (version "2.89")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/asymptote/"
+                           version "/asymptote-" version ".src.tgz"))
+       (sha256
+        (base32 "0nvzlnabxjn74ybv3jns9vsr33prlvlg3i20hskz31agxss64kpn"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled RapidJSON.
+        #~(begin
+            (delete-file-recursively "LspCpp/third_party/rapidjson")))))
+    (build-system gnu-build-system)
+    ;; Note: The 'asy' binary retains a reference to docdir for use with its
+    ;; "help" command in interactive mode, so adding a "doc" output is not
+    ;; currently useful.
+    (native-inputs
+     (list autoconf
+           automake
+           bison
+           boost
+           cmake
+           emacs-minimal
+           flex
+           ghostscript                  ;for tests
+           perl
+           pkg-config
+           rapidjson
+           texinfo                      ;for generating documentation
+           (texlive-updmap.cfg
+            (list texlive-epsf
+                  texlive-etoolbox
+                  texlive-hypdoc
+                  texlive-infwarerr
+                  texlive-kvdefinekeys
+                  texlive-kvoptions
+                  texlive-media9
+                  texlive-ocgx2
+                  texlive-parskip
+                  texlive-pdftexcmds
+                  texlive-texinfo))))
+    (inputs
+     (list bash-minimal
+           eigen
+           fftw
+           freeglut
+           glew
+           glm
+           gsl
+           libgc
+           libtirpc
+           python
+           python-cson
+           python-numpy
+           python-pyqt
+           readline
+           zlib))
+    (arguments
+     (list
+      #:modules '((guix build emacs-utils)
+                  (guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build emacs-utils))
+      #:configure-flags
+      #~(list (string-append "--enable-gc=" #$(this-package-input "libgc"))
+              (string-append "--with-latex=" #$output "/share/texmf/tex/latex")
+              (string-append "--with-context="
+                             #$output
+                             "/share/texmf/tex/context/third"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-tirpc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "configure.ac")
+                (("/usr/include/tirpc")
+                 (search-input-directory inputs "include/tirpc")))))
+          (add-after 'unpack 'unbundle-rapidjson
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "Makefile.in")
+                (("\\$\\(CMAKE\\)" all)
+                 (string-append all " -DUSE_SYSTEM_RAPIDJSON=ON")))))
+          (add-after 'unpack 'fix-includes
+            (lambda _
+              (substitute* (find-files "." "\\.in$")
+                (("#include <primitives.h>") "#include \"primitives.h\""))
+              (substitute* (find-files "prc" "\\.h$")
+                (("#include \"config.h\"") "#include \"../config.h\""))
+              (substitute* "prc/oPRCFile.h"
+                (("#include \"xstream.h\"") "#include \"../xstream.h\""))
+              (substitute* "v3dfile.h"
+                (("#include <prc/oPRCFile.h>") "#include \"prc/oPRCFile.h\""))
+              (substitute* "LspCpp/src/lsp/ParentProcessWatcher.cpp"
+                (("#include <boost/process.hpp>" all)
+                 (string-append "#include <algorithm>\n" all)))))
+          (replace 'bootstrap
+            (lambda _
+              (invoke "autoreconf" "-vfi")))
+          (add-after 'unpack 'move-info-location
+            ;; Build process installs info file in the unusual
+            ;; "%out/share/info/asymptote/" location.  Move it to
+            ;; "%out/share/info/" so it appears in the top-level directory.
+            (lambda _
+              (substitute* "doc/png/Makefile.in"
+                (("(\\$\\(infodir\\))/asymptote" _ infodir) infodir))
+              (substitute* "doc/asymptote.texi"
+                (("asymptote/asymptote") "asymptote"))))
+          (add-before 'build 'patch-pdf-viewer
+            (lambda _
+              ;; Default to a free pdf viewer.
+              (substitute* "settings.cc"
+                (("defaultPDFViewer=\"acroread\"")
+                 "defaultPDFViewer=\"gv\""))))
+          (add-before 'check 'set-HOME
+            ;; Some tests require write access to $HOME, otherwise leading to
+            ;; "failed to create directory /homeless-shelter/.asy" error.
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'install-Emacs-data
+            (lambda _
+              ;; Install related Emacs libraries into an appropriate location.
+              (let ((lisp-dir
+                     (string-append #$output "/share/emacs/site-lisp")))
+                (for-each (cut install-file <> lisp-dir)
+                          (find-files "." "\\.el$"))
+                (emacs-generate-autoloads #$name lisp-dir))))
+          (add-after 'install-Emacs-data 'wrap-python-script
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Make sure 'xasy' runs with the correct PYTHONPATH.
+              (let ((path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program
+                    (string-append #$output "/share/asymptote/GUI/xasy.py")
+                  `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
+    (home-page "https://asymptote.sourceforge.io")
+    (synopsis "Script-based vector graphics language")
+    (description
+     "Asymptote is a powerful descriptive vector graphics language for
+technical drawing, inspired by MetaPost but with an improved C++-like syntax.
+Asymptote provides for figures the same high-quality level of typesetting that
+LaTeX does for scientific text.")
+    ;; Most source files do not contain license statements, but the README
+    ;; contains: "All source files in the Asymptote project, unless explicitly
+    ;; noted otherwise, are released under version 3 (or later) of the GNU
+    ;; Lesser General Public License"
+    (license license:lgpl3+)))
+
 (define-public plotutils
   (package
     (name "plotutils")
@@ -272,157 +423,6 @@ just-in-time graph generation, handles date and time data nicely, and has
 basic statistical capabilities.  It allows significant user control over
 colors, styles, options and details.")
     (license license:gpl2+)))
-
-(define-public asymptote
-  (package
-    (name "asymptote")
-    (version "2.89")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/asymptote/"
-                           version "/asymptote-" version ".src.tgz"))
-       (sha256
-        (base32 "0nvzlnabxjn74ybv3jns9vsr33prlvlg3i20hskz31agxss64kpn"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove bundled RapidJSON.
-        #~(begin
-            (delete-file-recursively "LspCpp/third_party/rapidjson")))))
-    (build-system gnu-build-system)
-    ;; Note: The 'asy' binary retains a reference to docdir for use with its
-    ;; "help" command in interactive mode, so adding a "doc" output is not
-    ;; currently useful.
-    (native-inputs
-     (list autoconf
-           automake
-           bison
-           boost
-           cmake
-           emacs-minimal
-           flex
-           ghostscript                  ;for tests
-           perl
-           pkg-config
-           rapidjson
-           texinfo                      ;for generating documentation
-           (texlive-updmap.cfg
-            (list texlive-epsf
-                  texlive-etoolbox
-                  texlive-hypdoc
-                  texlive-infwarerr
-                  texlive-kvdefinekeys
-                  texlive-kvoptions
-                  texlive-media9
-                  texlive-ocgx2
-                  texlive-parskip
-                  texlive-pdftexcmds
-                  texlive-texinfo))))
-    (inputs
-     (list bash-minimal
-           eigen
-           fftw
-           freeglut
-           glew
-           glm
-           gsl
-           libgc
-           libtirpc
-           python
-           python-cson
-           python-numpy
-           python-pyqt
-           readline
-           zlib))
-    (arguments
-     (list
-      #:modules '((guix build emacs-utils)
-                  (guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-26))
-      #:imported-modules `(,@%gnu-build-system-modules
-                           (guix build emacs-utils))
-      #:configure-flags
-      #~(list (string-append "--enable-gc=" #$(this-package-input "libgc"))
-              (string-append "--with-latex=" #$output "/share/texmf/tex/latex")
-              (string-append "--with-context="
-                             #$output
-                             "/share/texmf/tex/context/third"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'locate-tirpc
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* (list "configure.ac")
-                (("/usr/include/tirpc")
-                 (search-input-directory inputs "include/tirpc")))))
-          (add-after 'unpack 'unbundle-rapidjson
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* (list "Makefile.in")
-                (("\\$\\(CMAKE\\)" all)
-                 (string-append all " -DUSE_SYSTEM_RAPIDJSON=ON")))))
-          (add-after 'unpack 'fix-includes
-            (lambda _
-              (substitute* (find-files "." "\\.in$")
-                (("#include <primitives.h>") "#include \"primitives.h\""))
-              (substitute* (find-files "prc" "\\.h$")
-                (("#include \"config.h\"") "#include \"../config.h\""))
-              (substitute* "prc/oPRCFile.h"
-                (("#include \"xstream.h\"") "#include \"../xstream.h\""))
-              (substitute* "v3dfile.h"
-                (("#include <prc/oPRCFile.h>") "#include \"prc/oPRCFile.h\""))
-              (substitute* "LspCpp/src/lsp/ParentProcessWatcher.cpp"
-                (("#include <boost/process.hpp>" all)
-                 (string-append "#include <algorithm>\n" all)))))
-          (replace 'bootstrap
-            (lambda _
-              (invoke "autoreconf" "-vfi")))
-          (add-after 'unpack 'move-info-location
-            ;; Build process installs info file in the unusual
-            ;; "%out/share/info/asymptote/" location.  Move it to
-            ;; "%out/share/info/" so it appears in the top-level directory.
-            (lambda _
-              (substitute* "doc/png/Makefile.in"
-                (("(\\$\\(infodir\\))/asymptote" _ infodir) infodir))
-              (substitute* "doc/asymptote.texi"
-                (("asymptote/asymptote") "asymptote"))))
-          (add-before 'build 'patch-pdf-viewer
-            (lambda _
-              ;; Default to a free pdf viewer.
-              (substitute* "settings.cc"
-                (("defaultPDFViewer=\"acroread\"")
-                 "defaultPDFViewer=\"gv\""))))
-          (add-before 'check 'set-HOME
-            ;; Some tests require write access to $HOME, otherwise leading to
-            ;; "failed to create directory /homeless-shelter/.asy" error.
-            (lambda _
-              (setenv "HOME" "/tmp")))
-          (add-after 'install 'install-Emacs-data
-            (lambda _
-              ;; Install related Emacs libraries into an appropriate location.
-              (let ((lisp-dir
-                     (string-append #$output "/share/emacs/site-lisp")))
-                (for-each (cut install-file <> lisp-dir)
-                          (find-files "." "\\.el$"))
-                (emacs-generate-autoloads #$name lisp-dir))))
-          (add-after 'install-Emacs-data 'wrap-python-script
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              ;; Make sure 'xasy' runs with the correct PYTHONPATH.
-              (let ((path (getenv "GUIX_PYTHONPATH")))
-                (wrap-program
-                    (string-append #$output "/share/asymptote/GUI/xasy.py")
-                  `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
-    (home-page "https://asymptote.sourceforge.io")
-    (synopsis "Script-based vector graphics language")
-    (description
-     "Asymptote is a powerful descriptive vector graphics language for
-technical drawing, inspired by MetaPost but with an improved C++-like syntax.
-Asymptote provides for figures the same high-quality level of typesetting that
-LaTeX does for scientific text.")
-    ;; Most source files do not contain license statements, but the README
-    ;; contains: "All source files in the Asymptote project, unless explicitly
-    ;; noted otherwise, are released under version 3 (or later) of the GNU
-    ;; Lesser General Public License"
-    (license license:lgpl3+)))
 
 (define-public ruby-unicode-plot
   (package
