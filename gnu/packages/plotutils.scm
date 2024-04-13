@@ -296,6 +296,67 @@ went to university in the 1990s, this is the library for you.")
     (inputs (list guile-2.2))
     (propagated-inputs (list guile2.2-cairo))))
 
+(define-public ploticus
+  (package
+    (name "ploticus")
+    (version "2.42")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/ploticus/ploticus/"
+                                  version "/ploticus242_src.tar.gz"))
+              (sha256
+               (base32
+                "1c70cvfvgjh83hj1x21130wb9qfr2rc0x47cxy9kl805yjwy8a9z"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Install binaries in the right place.
+               '(begin
+                  (substitute* "src/Makefile"
+                    (("INSTALLBIN =.*$")
+                     (string-append "INSTALLBIN = $(out)/bin")))
+                  #t))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure (lambda _ (chdir "src")))
+         (add-before 'install 'make-target-directories
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out")))
+                         (mkdir-p (string-append out "/bin"))
+                         #t)))
+         (add-after 'install 'install-prefabs
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (dir (string-append out
+                                                 "/share/ploticus/prefabs"))
+                             (bin (string-append out "/bin")))
+                        (mkdir-p dir)
+
+                        ;; Install "prefabs".
+                        (for-each (lambda (file)
+                                    (let ((target
+                                           (string-append dir "/"
+                                                          (basename file))))
+                                      (copy-file file target)))
+                                  (find-files "../prefabs" "."))
+
+                        ;; Allow them to be found.
+                        (wrap-program (string-append bin "/pl")
+                          `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
+    (inputs
+     (list libpng libx11 zlib))
+    (home-page "https://ploticus.sourceforge.net/")
+    (synopsis "Command-line tool for producing plots and charts")
+    (description
+     "Ploticus is a non-interactive software package for producing plots,
+charts, and graphics from data.  Ploticus is good for automated or
+just-in-time graph generation, handles date and time data nicely, and has
+basic statistical capabilities.  It allows significant user control over
+colors, styles, options and details.")
+    (license license:gpl2+)))
+
 (define-public plotutils
   (package
     (name "plotutils")
@@ -361,67 +422,6 @@ It includes the C library @code{libplot} and the C++ @code{libplotter} library
 for exporting 2D vector graphics in many file formats.  It also has support
 for 2D vector graphics animations.  The package also contains command-line
 programs for plotting scientific data.")
-    (license license:gpl2+)))
-
-(define-public ploticus
-  (package
-    (name "ploticus")
-    (version "2.42")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/ploticus/ploticus/"
-                                  version "/ploticus242_src.tar.gz"))
-              (sha256
-               (base32
-                "1c70cvfvgjh83hj1x21130wb9qfr2rc0x47cxy9kl805yjwy8a9z"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Install binaries in the right place.
-               '(begin
-                  (substitute* "src/Makefile"
-                    (("INSTALLBIN =.*$")
-                     (string-append "INSTALLBIN = $(out)/bin")))
-                  #t))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure (lambda _ (chdir "src")))
-         (add-before 'install 'make-target-directories
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let ((out (assoc-ref outputs "out")))
-                         (mkdir-p (string-append out "/bin"))
-                         #t)))
-         (add-after 'install 'install-prefabs
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (dir (string-append out
-                                                 "/share/ploticus/prefabs"))
-                             (bin (string-append out "/bin")))
-                        (mkdir-p dir)
-
-                        ;; Install "prefabs".
-                        (for-each (lambda (file)
-                                    (let ((target
-                                           (string-append dir "/"
-                                                          (basename file))))
-                                      (copy-file file target)))
-                                  (find-files "../prefabs" "."))
-
-                        ;; Allow them to be found.
-                        (wrap-program (string-append bin "/pl")
-                          `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
-    (inputs
-     (list libpng libx11 zlib))
-    (home-page "https://ploticus.sourceforge.net/")
-    (synopsis "Command-line tool for producing plots and charts")
-    (description
-     "Ploticus is a non-interactive software package for producing plots,
-charts, and graphics from data.  Ploticus is good for automated or
-just-in-time graph generation, handles date and time data nicely, and has
-basic statistical capabilities.  It allows significant user control over
-colors, styles, options and details.")
     (license license:gpl2+)))
 
 (define-public ruby-unicode-plot
