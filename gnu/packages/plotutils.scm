@@ -438,6 +438,9 @@ programs for plotting scientific data.")
                                 (substitute* "CMakeLists.txt"
                                   (("add_subdirectory\\(www\\)") ""))))))
     (build-system cmake-build-system)
+    ;; TODO: Review all available options and bindings to enable them or split
+    ;; in dedicated packages, see Debian's package for inspirations:
+    ;; <https://salsa.debian.org/science-team/plplot>.
     (arguments
      (list
       #:configure-flags
@@ -449,19 +452,22 @@ programs for plotting scientific data.")
     (home-page "http://plplot.org/") ;no HTTPS
     (synopsis "Scientific plotting library with Unicode support")
     (description
-     "PLplot is a software package for creating scientific plots.
-The PLplot core library can be used to create:
+     "PLplot is a software package for creating scientific plots which core
+library can be used to create standard x-y plots, semi-log plots, log-log
+plots, contour plots, 3D surface plots, mesh plots, bar charts and pie charts.
+Multiple graphs (of the same or different sizes) may be placed on a single
+page, and multiple pages are allowed for those device formats that support
+them.
 
-@itemize
-@item standard x-y plots
-@item semi-log plots
-@item log-log plots
-@item contour plots
-@item 3D surface plots
-@item mesh plots
-@item bar charts
-@item pie charts
-@end itemize")
+PLplot has support for plot symbols and text specified by the user in the
+UTF-8 encoding of Unicode.  This means for our many Unicode-aware devices that
+plot symbols and text are only limited by the collection of glyphs normally
+available via installed system fonts.  Furthermore, a large subset of our
+Unicode-aware devices also support complex text layout (CTL) languages such as
+Arabic, Hebrew, and Indic and Indic-derived CTL scripts such as Devanagari,
+Thai, Lao, and Tibetan.  Thus, for these PLplot devices essentially any
+language that is supported by Unicode and installed system fonts can be used
+to label plots.")
     (license (list license:lgpl2.0
                    license:gpl2+ ;octave bindings
                    license:bsd-2 ;docbook docs
