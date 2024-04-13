@@ -310,41 +310,35 @@ went to university in the 1990s, this is the library for you.")
               (modules '((guix build utils)))
               (snippet
                ;; Install binaries in the right place.
-               '(begin
-                  (substitute* "src/Makefile"
-                    (("INSTALLBIN =.*$")
-                     (string-append "INSTALLBIN = $(out)/bin")))
-                  #t))))
+               #~(begin
+                   (substitute* "src/Makefile"
+                     (("INSTALLBIN =.*$")
+                      (string-append "INSTALLBIN = $(out)/bin")))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure (lambda _ (chdir "src")))
-         (add-before 'install 'make-target-directories
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let ((out (assoc-ref outputs "out")))
-                         (mkdir-p (string-append out "/bin"))
-                         #t)))
-         (add-after 'install 'install-prefabs
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (dir (string-append out
-                                                 "/share/ploticus/prefabs"))
-                             (bin (string-append out "/bin")))
-                        (mkdir-p dir)
-
-                        ;; Install "prefabs".
-                        (for-each (lambda (file)
-                                    (let ((target
-                                           (string-append dir "/"
-                                                          (basename file))))
-                                      (copy-file file target)))
-                                  (find-files "../prefabs" "."))
-
-                        ;; Allow them to be found.
-                        (wrap-program (string-append bin "/pl")
-                          `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure (lambda _ (chdir "src")))
+          (add-before 'install 'make-target-directories
+            (lambda _
+              (mkdir-p (string-append #$output "/bin"))))
+          (add-after 'install 'install-prefabs
+            (lambda _
+              (let* ((out #$output)
+                     (dir (string-append out "/share/ploticus/prefabs"))
+                     (bin (string-append out "/bin")))
+                (mkdir-p dir)
+                ;; Install "prefabs".
+                (for-each
+                 (lambda (file)
+                   (let ((target (string-append dir "/" (basename file))))
+                     (copy-file file target)))
+                 (find-files "../prefabs" "."))
+                ;; Allow them to be found.
+                (wrap-program (string-append bin "/pl")
+                  `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
     (inputs
      (list libpng libx11 zlib))
     (home-page "https://ploticus.sourceforge.net/")
