@@ -212,6 +212,35 @@ LaTeX does for scientific text.")
     ;; Lesser General Public License"
     (license license:lgpl3+)))
 
+(define-public guile-charting
+  ;; This commit fixes a few things, including Guile 3 support, not available
+  ;; in the latest release.
+  (let ((commit "75f755b691a9f712f3b956657d01805d6a8a1b98")
+        (revision "1"))
+    (package
+      (name "guile-charting")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/wingo/guile-charting")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "03049g7wnpyfi0r36ij4a46kc9l45jbanx02iklkjwav2n6jqnnk"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf automake texinfo pkg-config))
+      (inputs (list guile-3.0))
+      (propagated-inputs (list guile-cairo))
+      (home-page "https://wingolog.org/projects/guile-charting/")
+      (synopsis "Create charts and graphs in Guile")
+      (description
+       "Guile-Charting is a Guile Scheme library to create bar charts and graphs
+using the Cairo drawing library.")
+      (license license:lgpl2.1+))))
+
 (define-public plotutils
   (package
     (name "plotutils")
@@ -326,35 +355,6 @@ programs for plotting scientific data.")
 plotting and graphing library.  If you want to make graphs that look like you
 went to university in the 1990s, this is the library for you.")
     (license license:gpl3+)))
-
-(define-public guile-charting
-  ;; This commit fixes a few things, including Guile 3 support, not available
-  ;; in the latest release.
-  (let ((commit "75f755b691a9f712f3b956657d01805d6a8a1b98")
-        (revision "1"))
-    (package
-      (name "guile-charting")
-      (version (git-version "0.2.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/wingo/guile-charting")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "03049g7wnpyfi0r36ij4a46kc9l45jbanx02iklkjwav2n6jqnnk"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list autoconf automake texinfo pkg-config))
-      (inputs (list guile-3.0))
-      (propagated-inputs (list guile-cairo))
-      (home-page "https://wingolog.org/projects/guile-charting/")
-      (synopsis "Create charts and graphs in Guile")
-      (description
-       "Guile-Charting is a Guile Scheme library to create bar charts and graphs
-using the Cairo drawing library.")
-      (license license:lgpl2.1+))))
 
 (define-public guile2.2-charting
   (package
