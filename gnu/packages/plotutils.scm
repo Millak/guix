@@ -241,6 +241,54 @@ LaTeX does for scientific text.")
 using the Cairo drawing library.")
       (license license:lgpl2.1+))))
 
+(define-public guile-plotutils
+  (package
+    (name "guile-plotutils")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (list (string-append "https://lonelycactus.com/tarball/"
+                                        "guile_plotutils-" version ".tar.gz")
+                         (string-append
+                          "https://github.com/spk121/guile-plotutils/releases/download/v"
+                          version "/guile_plotutils-" version
+                          ".tar.gz")))
+              (sha256
+               (base32
+                "0r245z75cdzgzi57fpz84mnyrjq44793zzaaxxrszyxm1d06hc6r"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:imported-modules ((guix build guile-build-system)
+                           ,@%gnu-build-system-modules)
+       #:modules (((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  (guix build gnu-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'set-library-file-name
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (version (target-guile-effective-version)))
+               ;; First install libguile-plotutils.so.
+               (invoke "make" "install-guileextensionLTLIBRARIES")
+
+               ;; Then change source files to refer to it.
+               (substitute* '("module/plotutils/graph.scm"
+                              "module/plotutils/plot.scm")
+                 (("\"libguile-plotutils\"")
+                  (string-append "\"" out "/lib/guile/" version
+                                 "/extensions/libguile-plotutils\"")))))))))
+    (native-inputs (list pkg-config texinfo))
+    (inputs (list plotutils guile-3.0 zlib))
+    (home-page "https://lonelycactus.com/guile-plotutils.html")
+    (synopsis "Guile bindings to the GNU Plotutils plotting libraries")
+    (description
+     "Guile-Plotutils is a Guile binding to the venerable GNU Plotutils
+plotting and graphing library.  If you want to make graphs that look like you
+went to university in the 1990s, this is the library for you.")
+    (license license:gpl3+)))
+
 (define-public plotutils
   (package
     (name "plotutils")
@@ -307,54 +355,6 @@ for exporting 2D vector graphics in many file formats.  It also has support
 for 2D vector graphics animations.  The package also contains command-line
 programs for plotting scientific data.")
     (license license:gpl2+)))
-
-(define-public guile-plotutils
-  (package
-    (name "guile-plotutils")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (list (string-append "https://lonelycactus.com/tarball/"
-                                        "guile_plotutils-" version ".tar.gz")
-                         (string-append
-                          "https://github.com/spk121/guile-plotutils/releases/download/v"
-                          version "/guile_plotutils-" version
-                          ".tar.gz")))
-              (sha256
-               (base32
-                "0r245z75cdzgzi57fpz84mnyrjq44793zzaaxxrszyxm1d06hc6r"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:imported-modules ((guix build guile-build-system)
-                           ,@%gnu-build-system-modules)
-       #:modules (((guix build guile-build-system)
-                   #:select (target-guile-effective-version))
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'set-library-file-name
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (version (target-guile-effective-version)))
-               ;; First install libguile-plotutils.so.
-               (invoke "make" "install-guileextensionLTLIBRARIES")
-
-               ;; Then change source files to refer to it.
-               (substitute* '("module/plotutils/graph.scm"
-                              "module/plotutils/plot.scm")
-                 (("\"libguile-plotutils\"")
-                  (string-append "\"" out "/lib/guile/" version
-                                 "/extensions/libguile-plotutils\"")))))))))
-    (native-inputs (list pkg-config texinfo))
-    (inputs (list plotutils guile-3.0 zlib))
-    (home-page "https://lonelycactus.com/guile-plotutils.html")
-    (synopsis "Guile bindings to the GNU Plotutils plotting libraries")
-    (description
-     "Guile-Plotutils is a Guile binding to the venerable GNU Plotutils
-plotting and graphing library.  If you want to make graphs that look like you
-went to university in the 1990s, this is the library for you.")
-    (license license:gpl3+)))
 
 (define-public guile2.2-charting
   (package
