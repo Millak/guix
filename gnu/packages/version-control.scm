@@ -2596,16 +2596,15 @@ execution of any hook written in any language before every commit.")
 (define-public mercurial
   (package
     (name "mercurial")
-    (version "6.2.2")
+    (version "6.7.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://www.mercurial-scm.org/"
                                  "release/mercurial-" version ".tar.gz"))
-             (patches (search-patches "mercurial-hg-extension-path.patch"
-                                      "mercurial-openssl-compat.patch"))
+             (patches (search-patches "mercurial-hg-extension-path.patch"))
              (sha256
               (base32
-               "1pr00hdk3l9095fhq6302fgj0wmbqhqs93y4r457ba4pyjjrvyly"))
+               "01nqvp3cvidlz9z5vm05vpq81r6x10jwwfcaz0gw9anz0l60f8hw"))
              (modules '((guix build utils)))
              (snippet
               '(substitute* (find-files "tests" "\\.(t|sh)$")
