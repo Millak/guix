@@ -356,34 +356,34 @@ colors, styles, options and details.")
     (name "plotutils")
     (version "2.6")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/plotutils/plotutils-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "1arkyizn5wbgvbh53aziv3s6lmd3wm9lqzkhxb3hijlp1y124hjg"))
-             (modules '((guix build utils)))
-             (snippet
-              ;; Force the use of libXaw7 instead of libXaw.  When not doing
-              ;; that, libplot.la ends up containing just "-lXaw" (without
-              ;; "-L/path/to/Xaw"), due to the fact that there is no
-              ;; libXaw.la, which forces us to propagate libXaw.
-              '(begin
-                 (substitute* "configure"
-                   (("-lXaw")
-                    "-lXaw7"))
-                 ;; Use the `png_jmpbuf' accessor, as recommended since libpng
-                 ;; 1.4.0 (see:
-                 ;; http://www.libpng.org/pub/png/src/libpng-1.2.x-to-1.4.x-summary.txt).
-                 (substitute* "libplot/z_write.c"
-                   (("png_ptr->jmpbuf")
-                    "png_jmpbuf (png_ptr)"))
-                 #t))
-             (patches
-              ;; The test suite fails on some architectures such as i686 (see:
-              ;; https://lists.gnu.org/archive/html/bug-plotutils/2016-04/msg00002.html).
-              ;; The following Debian patch works around it.
-              (search-patches "plotutils-spline-test.patch"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/plotutils/plotutils-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1arkyizn5wbgvbh53aziv3s6lmd3wm9lqzkhxb3hijlp1y124hjg"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Force the use of libXaw7 instead of libXaw.  When not doing
+               ;; that, libplot.la ends up containing just "-lXaw" (without
+               ;; "-L/path/to/Xaw"), due to the fact that there is no
+               ;; libXaw.la, which forces us to propagate libXaw.
+               '(begin
+                  (substitute* "configure"
+                    (("-lXaw")
+                     "-lXaw7"))
+                  ;; Use the `png_jmpbuf' accessor, as recommended since libpng
+                  ;; 1.4.0 (see:
+                  ;; http://www.libpng.org/pub/png/src/libpng-1.2.x-to-1.4.x-summary.txt).
+                  (substitute* "libplot/z_write.c"
+                    (("png_ptr->jmpbuf")
+                     "png_jmpbuf (png_ptr)"))
+                  #t))
+              (patches
+               ;; The test suite fails on some architectures such as i686 (see:
+               ;; https://lists.gnu.org/archive/html/bug-plotutils/2016-04/msg00002.html).
+               ;; The following Debian patch works around it.
+               (search-patches "plotutils-spline-test.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
