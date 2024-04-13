@@ -474,3 +474,8 @@ and @command{uplot} (shorthand) are provided, and supports chart types
 of barplot, histogram, lineplot, scatter, density, boxplot, and count.")
     (home-page "https://github.com/red-data-tools/YouPlot")
     (license license:expat)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above in alphabetic order.
+;;;
