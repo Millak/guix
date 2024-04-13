@@ -301,7 +301,7 @@ GiB).")
 (define-public meld
   (package
     (name "meld")
-    (version "3.22.1")
+    (version "3.22.2")
     (source
      (origin
        (method url-fetch)
@@ -309,7 +309,7 @@ GiB).")
                            (version-major+minor version)
                            "/meld-" version ".tar.xz"))
        (sha256
-        (base32 "0dk8j27jlqhxcjrkc8pa3rl7fz7pfwvrbyrhfsx1ld6lvcrbvlvd"))))
+        (base32 "1vqn4glv32dxrzm5hxj64ac5q9ffr1bhf7ks6wxia6ydzc9sg826"))))
     (build-system meson-build-system)
     (native-inputs
      (list desktop-file-utils
