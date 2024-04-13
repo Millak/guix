@@ -481,7 +481,8 @@ one-indexed line numbers."
 (define-syntax define-public*
   (lambda (s)
     "Like 'define-public' but set 'current-definition-location' for the
-lexical scope of its body."
+lexical scope of its body.  (This also disables notification of \"module
+observers\", but this is unlikely to affect anyone.)"
     (define location
       (match (syntax-source s)
         (#f #f)
@@ -498,10 +499,21 @@ lexical scope of its body."
 
     (syntax-case s ()
       ((_ prototype body ...)
-       #`(define-public prototype
-           (syntax-parameterize ((current-definition-location
-                                  (lambda (s) #,location)))
-             body ...))))))
+       (with-syntax ((name (syntax-case #'prototype ()
+                             ((id _ ...) #'id)
+                             (id #'id))))
+         #`(begin
+             (define prototype
+               (syntax-parameterize ((current-definition-location
+                                      (lambda (s) #,location)))
+                 body ...))
+
+             ;; Note: Use 'module-export!' directly to avoid emitting a
+             ;; 'call-with-deferred-observers' call for each 'define-public*'
+             ;; instance, which is not only pointless but also contributes to
+             ;; code bloat and to load-time overhead in package modules.
+             (eval-when (expand load eval)
+               (module-export! (current-module) '(name)))))))))
 
 (define-syntax validate-texinfo
   (let ((validate? (getenv "GUIX_UNINSTALLED")))
