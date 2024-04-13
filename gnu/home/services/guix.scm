@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Reily Siegel <mail@reilysiegel.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,12 @@
   #:use-module (srfi srfi-1)
   #:export (home-channels-service-type))
 
+(define (extend-channel-list initial new)
+  (delete-duplicates
+   (append initial new)
+   (lambda (channel1 channel2)
+     (eq? (channel-name channel1) (channel-name channel2)))))
+
 (define (channels-xdg-files channels)
   `(("guix/channels.scm"
      ,(plain-file
@@ -37,7 +44,7 @@
    (name 'home-channels)
    (default-value %default-channels)
    (compose concatenate)
-   (extend append)
+   (extend extend-channel-list)
    (extensions
     (list (service-extension home-xdg-configuration-files-service-type
                              channels-xdg-files)))
