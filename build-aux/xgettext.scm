@@ -5,7 +5,10 @@ srcdir=$build_aux/..
 exec guile --no-auto-compile -L $srcdir -C $srcdir -e main -s "$0" "$@"
 !#
 
+;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;;
+;;; This file is part of GNU Guix.
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify it
 ;;; under the terms of the GNU General Public License as published by
