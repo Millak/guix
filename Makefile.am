@@ -725,6 +725,7 @@ EXTRA_DIST +=						\
   build-aux/convert-xref.scm				\
   build-aux/generate-authors.scm			\
   build-aux/git-version-gen				\
+  build-aux/mdate-from-git.scm				\
   build-aux/test-driver.scm				\
   build-aux/update-NEWS.scm				\
   build-aux/update-guix-package.scm			\

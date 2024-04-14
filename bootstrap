@@ -24,4 +24,10 @@ for lang in ${langs}; do
     fi
 done
 
-exec autoreconf -vfi
+autoreconf -vfi
+
+# Replace Automake's build-aux/mdate-sh with build-aux/mdate-from-git, our
+# own, reproducible version.
+chmod +w build-aux/mdate-sh
+rm -f build-aux/mdate-sh
+ln -s mdate-from-git.scm build-aux/mdate-sh
