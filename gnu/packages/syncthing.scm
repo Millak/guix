@@ -353,11 +353,11 @@ structs in the Go programming language.")
     (home-page "https://github.com/d4l3k/messagediff")
     (license expat)))
 
-(define-public go-github-com-golang-groupcache-lru
+(define-public go-github-com-golang-groupcache
   (let ((commit "869f871628b6baa9cfbc11732cdf6546b17c1298")
         (revision "2"))
     (package
-      (name "go-github-com-golang-groupcache-lru")
+      (name "go-github-com-golang-groupcache")
       (version (git-version "0.0.0" revision commit))
       (source (origin
                 (method git-fetch)
@@ -370,8 +370,9 @@ structs in the Go programming language.")
                   "0r4nk8129bvx50qb4xzjaay39b2h6k7cbdqqzdlanmc82ygczsbw"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "github.com/golang/groupcache/lru"
-         #:unpack-path "github.com/golang/groupcache"))
+       `(#:import-path "github.com/golang/groupcache"))
+      (propagated-inputs
+       (list go-github-com-golang-protobuf-proto))
       (synopsis "Groupcache is a caching and cache-filling library")
       (description "Groupcache is a caching and cache-filling library, intended
 as a replacement for memcached in many cases.  It provides a data loading

@@ -353,7 +353,7 @@ written in Go.")
                   go-github-com-francoispqt-gojay
                   go-github-com-fsnotify-fsnotify
                   go-github-com-gogo-protobuf
-                  go-github-com-golang-groupcache-lru
+                  go-github-com-golang-groupcache
                   go-github-com-golang-snappy
                   go-github-com-google-uuid
                   go-github-com-gorilla-mux
