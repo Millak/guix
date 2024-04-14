@@ -19,6 +19,7 @@
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 # Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
+# Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -1315,8 +1316,8 @@ AM_V_HELP2MAN_0 = @echo "  HELP2MAN" $@;
 
 AM_V_PO4A = $(AM_V_PO4A_$(V))
 AM_V_PO4A_ = $(AM_V_PO4A_$(AM_DEFAULT_VERBOSITY))
-AM_V_PO4A_0 = @echo "  PO4A" $@;
+AM_V_PO4A_0 = @echo "  PO4A    " $@;
 
 AM_V_POXREF = $(AM_V_POXREF_$(V))
 AM_V_POXREF_ = $(AM_V_POXREF_$(AM_DEFAULT_VERBOSITY))
-AM_V_POXREF_0 = @echo "  POXREF" $@;
+AM_V_POXREF_0 = @echo "  POXREF  " $@;
