@@ -39,6 +39,7 @@
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2492,67 +2493,43 @@ analysis and AC analysis.  The engine is designed to do true mixed-mode
 simulation.")
     (license license:gpl3+)))
 
-(define-public radare2-for-cutter
-  (package
-    (inherit radare2)
-    (name "radare2")
-    (version "5.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/radareorg/radare2")
-                    (commit version)))
-              (sha256
-               (base32
-                "0aa7c27kd0l55fy5qfvxqmakp4pz6240v3hn84095qmqkzcbs420"))
-              (file-name (git-file-name name version))))))
-
 (define-public cutter
   (package
     (name "cutter")
-    (version "1.12.0")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rizinorg/cutter")
-             (commit (string-append "v" version))))
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "rizin"))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ljj3j3apbbw628n2nyrxpbnclixx20bqjxm0xwggqzz9vywsar0"))))
-    (build-system gnu-build-system)
+        (base32 "0d10g1wpw8p8hcxvw5q7ymfdxyrp4xqs6a49lf3gdgnmcpb248ad"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (radare2 (assoc-ref inputs "radare2")))
-               ;; Fix pkg-config detection ./src/lib_radare2.pri:PREFIX=/usr/lib
-               ;; override `qmake PREFIX=`.
-               (substitute* "./src/lib_radare2.pri"
-                 (("PREFIX") "R2PREFIX")
-                 (("R2PREFIX=/usr") (string-append "R2PREFIX=" radare2)))
-               (invoke "qmake"
-                       (string-append "PREFIX=" out)
-                       "./src/Cutter.pro")))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list qtbase-5
-           qtsvg-5
-           openssl
-           ;; Depends on radare2 4.5.1 officially, builds and works fine with
-           ;; radare2 5.0.0 but fails to build with radare2 5.1.1.
-           radare2-for-cutter))
+     (list
+      #:configure-flags #~(list "-DCUTTER_USE_BUNDLED_RIZIN=OFF")
+      #:tests? #f)) ;no tests
+    (native-inputs (list pkgconf))
+    (inputs (list libzip
+                  openssl
+                  qtsvg-5
+                  qttools-5
+                  rizin
+                  zlib))
     (home-page "https://cutter.re")
-    (synopsis "GUI for radare2 reverse engineering framework")
-    (description "Cutter is a GUI for radare2 reverse engineering framework.
-Its goal is making an advanced andcustomizable reverse-engineering platform
-while keeping the user experience at mind.  Cutter is created by reverse
-engineers for reverse engineers.")
-    (license (list license:cc-by-sa3.0  ;the "Iconic" icon set
-                   license:gpl3+))))    ;everything else
+    (synopsis "Software reverse engineering platform")
+    (description
+     "Cutter is a reverse engineering platform powered by @code{rizin}.  It
+aims to be an advanced and customizable reverse engineering platform while
+keeping the user experience in mind.  Cutter is created by reverse engineers
+for reverse engineers.")
+    (license (list license:cc-by-sa3.0 ;the "Iconic" icon set
+                   license:gpl3+))))   ;everything else
 
 (define-public lib3mf
   (package
