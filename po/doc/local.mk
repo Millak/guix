@@ -40,11 +40,6 @@ EXTRA_DIST = \
   $(DOC_PO_FILES) \
   $(DOC_COOKBOOK_PO_FILES)
 
-POT_OPTIONS = \
-	--package-name "guix manual" --package-version "$(VERSION)" 	\
-	--copyright-holder "the authors of Guix (msgids)" 		\
-	--msgid-bugs-address "bug-guix@gnu.org"
-
 %D%/%.pot: $(srcdir)/doc/%.texi
 	$(AM_V_PO4A)$(PO4A) --no-translations -M UTF-8			\
 	    --package-version "$(VERSION)"				\

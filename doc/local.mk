@@ -7,6 +7,7 @@
 # Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 # Copyright © 2019 Timothy Sample <samplet@ngyro.com>
 # Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -89,10 +90,6 @@ BUILT_SOURCES        += $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
 EXTRA_DIST           += $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
 MAINTAINERCLEANFILES  = $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
 
-PO4A_PARAMS := -M UTF-8 -L UTF-8 #master and localized encoding
-PO4A_PARAMS += -k 0 # produce an output even if the translation is not complete
-PO4A_PARAMS += -f texinfo # texinfo format
-
 # When a change to guix.texi occurs, it is not translated immediately.
 # Because @pxref and @xref commands are references to sections by name, they
 # should be translated. If a modification adds a reference to a section, this
@@ -104,20 +101,39 @@ $(top_srcdir)/pre-inst-env $(GUILE) --no-auto-compile	\
   $@.tmp $<
 endef
 
+# If /dev/null is used for this POT file path, a warning will be issued
+# because the path extension is not 'pot'.
+dummy_pot = $(shell mktemp --suffix=.pot)
+
 $(srcdir)/%D%/guix.%.texi: po/doc/guix-manual.%.po $(srcdir)/%D%/contributing.%.texi guix/build/po.go
-	-$(AM_V_PO4A)$(PO4A_TRANSLATE) $(PO4A_PARAMS) -m "%D%/guix.texi" -p "$<" -l "$@.tmp"
+	-$(AM_V_PO4A)$(PO4A) --no-update			\
+	    --variable localized="$@.tmp"			\
+	    --variable master="%D%/guix.texi"			\
+	    --variable po="$<"					\
+	    --variable pot=$(dummy_pot)			\
+	    po/doc/po4a.cfg
 	-sed -i "s|guix\.info|$$(basename "$@" | sed 's|texi$$|info|')|" "$@.tmp"
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
 $(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po guix/build/po.go
-	-$(AM_V_PO4A)$(PO4A_TRANSLATE) $(PO4A_PARAMS) -m "%D%/guix-cookbook.texi" -p "$<" -l "$@.tmp"
+	-$(AM_V_PO4A)$(PO4A) --no-update			\
+	    --variable localized="$@.tmp"			\
+	    --variable master="%D%/guix-cookbook.texi"		\
+	    --variable po="$<"					\
+	    --variable pot=$(dummy_pot)			\
+	    po/doc/po4a.cfg
 	-sed -i "s|guix-cookbook\.info|$$(basename "$@" | sed 's|texi$$|info|')|" "$@.tmp"
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
 $(srcdir)/%D%/contributing.%.texi: po/doc/guix-manual.%.po guix/build/po.go
-	-$(AM_V_PO4A)$(PO4A_TRANSLATE) $(PO4A_PARAMS) -m "%D%/contributing.texi" -p "$<" -l "$@.tmp"
+	-$(AM_V_PO4A)$(PO4A) --no-update			\
+	    --variable localized="$@.tmp"			\
+	    --variable master="%D%/contributing.texi"		\
+	    --variable po="$<"					\
+	    --variable pot=$(dummy_pot)			\
+	    po/doc/po4a.cfg
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
