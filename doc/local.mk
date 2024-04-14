@@ -260,32 +260,6 @@ endif
 
 # Reproducible tarball
 
-# Generate 'version.texi' reproducibly using metadata from Git rather than
-# using metadata from the filesystem.  This is expected to generate warnings:
-#
-#   Makefile:7376: warning: overriding recipe for target 'doc/stamp-vti'
-#   Makefile:5098: warning: ignoring old recipe for target 'doc/stamp-vti'
-$(srcdir)/doc/stamp-vti: $(srcdir)/doc/guix.texi $(top_srcdir)/configure
-	$$(AM_V_GEN)set -e;						\
-	export LANG=C LANGUAGE=C LC_ALL=C LC_TIME=C; 			\
-	export TZ=UTC0;							\
-	timestamp=$$(git log --pretty=format:%ct -n1 -- $< 2>/dev/null	\
-		|| echo $(SOURCE_DATE_EPOCH))				\
-	dmy=$$(date --date="@$$timestamp" "+%-d %B %Y");		\
-	my=$$(date --date="@$$timestamp" "+%B %Y");			\
-	{ echo "@set UPDATED $$dmy";					\
-	  echo "@set UPDATED-MONTH $$my";				\
-	  echo "@set EDITION $(VERSION)";				\
-	  echo "@set VERSION $(VERSION)"; } > $@-t;			\
-	mv $@-t $@;							\
-	cp $@ $(srcdir)/doc/version.texi
-
-i:=0
-$(eval $(call version.texi-from-git,vti,doc/guix.texi,))
-$(foreach lang, $(MANUAL_LANGUAGES),							\
-  $(eval i=$(shell echo $$(($(i)+1))))							\
-  $(eval $(call version.texi-from-git,$(i),po/doc/guix-manual.$(lang).po,-$(lang))))
-
 DIST_CONFIGURE_FLAGS =				\
   --localstatedir=/var				\
   --sysconfdir=/etc
