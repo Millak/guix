@@ -3201,6 +3201,14 @@ similar string with weeks or days too.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: Disable failing tests on non-x86-64 architecture, see
+      ;; <https://github.com/uber-go/atomic/issues/164>.
+      ;;
+      ;; go.uber.org/atomic/uintptr_test.go:72:30: cannot convert
+      ;; math.MaxUint64 (untyped int constant 18446744073709551615) to type
+      ;; uintptr
+      #:tests? (and (not (%current-target-system))
+                    (target-x86-64?))
       #:import-path "go.uber.org/atomic"))
     (native-inputs
      (list go-github-com-stretchr-testify go-github-com-davecgh-go-spew))
