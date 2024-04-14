@@ -553,6 +553,8 @@ metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
 
+;; This project looks like domain or abandoned, see
+;; <https://github.com/francoispqt/gojay/issues/150>.
 (define-public go-github-com-francoispqt-gojay
   (package
     (name "go-github-com-francoispqt-gojay")
@@ -568,14 +570,20 @@ application's http.Handlers.")
         (base32 "1ix95qdyajfmxhf9y52vjrih63f181pjs4v5as8905s4d5vmkd06"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/francoispqt/gojay"))
+     (list
+      ;; XXX: Disable failing tests on non-x86-64 architecture, see
+      ;; <https://github.com/francoispqt/gojay/issues/173>.
+      #:tests? (and (not (%current-target-system))
+                    (target-x86-64?))
+      #:import-path "github.com/francoispqt/gojay"))
     (native-inputs
      (list go-github-com-stretchr-testify))
-    (synopsis "JSON encoder/decoder with powerful stream API for Golang")
-    (description "GoJay is a performant JSON encoder/decoder for Golang.  It has
-a simple API and doesn't use reflection.  It relies on small interfaces to
-decode/encode structures and slices.")
     (home-page "https://github.com/francoispqt/gojay")
+    (synopsis "JSON encoder/decoder with powerful stream API for Golang")
+    (description
+     "GoJay is a performant JSON encoder/decoder for Golang.  It has a simple
+API and doesn't use reflection.  It relies on small interfaces to
+decode/encode structures and slices.")
     (license license:expat)))
 
 ;; TODO: This repository has been archived by the owner on Aug 30, 2023. It is
