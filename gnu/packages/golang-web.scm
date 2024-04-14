@@ -709,8 +709,8 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
     (license license:expat)))
 
 (define-public go-github-com-golang-groupcache
-  (let ((commit "869f871628b6baa9cfbc11732cdf6546b17c1298")
-        (revision "2"))
+  (let ((commit "41bb18bfe9da5321badc438f91158cd790a33aa3")
+        (revision "3"))
     (package
       (name "go-github-com-golang-groupcache")
       (version (git-version "0.0.0" revision commit))
@@ -722,7 +722,7 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0r4nk8129bvx50qb4xzjaay39b2h6k7cbdqqzdlanmc82ygczsbw"))))
+          (base32 "07amgr8ji4mnq91qbsw2jlcmw6hqiwdf4kzfdrj8c4b05w4knszc"))))
       (build-system go-build-system)
       (arguments
        (list #:import-path "github.com/golang/groupcache"))
