@@ -264,8 +264,8 @@ dnl Manual pages.
 AM_MISSING_PROG([HELP2MAN], [help2man])
 
 dnl Documentation translation.
+AM_MISSING_PROG([PO4A], [po4a])
 AM_MISSING_PROG([PO4A_TRANSLATE], [po4a-translate])
-AM_MISSING_PROG([PO4A_UPDATEPO], [po4a-updatepo])
 
 AC_MSG_CHECKING([if building from git])
 if test -e .git; then
