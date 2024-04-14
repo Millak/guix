@@ -3271,7 +3271,7 @@ object dependencies graph during the process startup.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://pkg.go.dev/go.uber.org/fx")
+             (url "https://github.com/uber-go/fx")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
