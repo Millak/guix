@@ -2,6 +2,7 @@
 ;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -317,9 +318,15 @@ DOMAIN, a gettext domain."
           (define (translate-tmp-texi po source output)
             "Translate Texinfo file SOURCE using messages from PO, and write
 the result to OUTPUT."
-            (invoke #+(file-append po4a-minimal "/bin/po4a-translate")
-              "-M" "UTF-8" "-L" "UTF-8" "-k" "0" "-f" "texinfo"
-              "-m" source "-p" po "-l" output))
+            (invoke #+(file-append po4a-minimal "/bin/po4a")
+              "--no-update"
+              "--variable" (string-append "localized=" output)
+              "--variable" (string-append "master=" source)
+              "--variable" (string-append "po=" po)
+              "--variable" (string-append "pot=" (string-append (tmpnam) ".pot"))
+              (string-append "--srcdir=" #$source)
+              "--destdir=."
+              #+(file-append documentation-po "/po4a.cfg")))
 
           (define (canonicalize-whitespace str)
             ;; Change whitespace (newlines, etc.) in STR to #\space.
