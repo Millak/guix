@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2017, 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
@@ -10,7 +11,6 @@
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
-;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -707,6 +707,35 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
     (description
      "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
+
+(define-public go-github-com-golang-groupcache
+  (let ((commit "869f871628b6baa9cfbc11732cdf6546b17c1298")
+        (revision "2"))
+    (package
+      (name "go-github-com-golang-groupcache")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/golang/groupcache")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0r4nk8129bvx50qb4xzjaay39b2h6k7cbdqqzdlanmc82ygczsbw"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/golang/groupcache"))
+      (propagated-inputs
+       (list go-github-com-golang-protobuf-proto))
+      (home-page "https://github.com/golang/groupcache")
+      (synopsis "Groupcache is a caching and cache-filling library")
+      (description
+       "Groupcache is a caching and cache-filling library, intended
+as a replacement for memcached in many cases.  It provides a data loading
+mechanism with caching and de-duplication that works across a set of peer
+processes.")
+      (license license:asl2.0))))
 
 (define-public go-github-com-google-go-github
   (package
