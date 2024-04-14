@@ -3289,7 +3289,7 @@ object dependencies graph during the process startup.")
            go-go-uber-org-multierr
            go-go-uber-org-zap
            go-golang-org-x-sys))
-    (home-page "https://go.uber.org/fx")
+    (home-page "https://pkg.go.dev/go.uber.org/fx")
     (synopsis "Dependency injection based application framework for Golang")
     (description
      "Package @code{fx} is a framework that makes it easy to build
