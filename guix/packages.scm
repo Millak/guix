@@ -438,16 +438,26 @@ from forcing GEXP-PROMISE."
          inputs)
         (else (map add-input-label inputs))))
 
+(define (add-input-labels . inputs)
+  "Add labels to all of INPUTS."
+  (map add-input-label inputs))
+
 (define-syntax sanitize-inputs
   ;; This is written as a macro rather than as a 'define-inlinable' procedure
   ;; because as of Guile 3.0.9, peval can handle (null? '()) but not
   ;; (null? (list x y z)); that residual 'null?' test contributes to code
   ;; bloat.
-  (syntax-rules (quote)
+  (syntax-rules (quote list)
     "Sanitize INPUTS by turning it into a list of name/package tuples if it's
 not already the case."
     ((_ '()) '())
-    ((_ inputs) (maybe-add-input-labels inputs))))
+    ((_ (list args ...))
+     ;; As of 3.0.9, (list ...) is open-coded, which can lead to a long list
+     ;; of instructions.  To reduce code bloat in package modules where input
+     ;; fields may create such lists, move list allocation to the callee.
+     (add-input-labels args ...))
+    ((_ inputs)
+     (maybe-add-input-labels inputs))))
 
 (define-syntax current-location-vector
   (lambda (s)
