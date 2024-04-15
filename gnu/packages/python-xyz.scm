@@ -17229,7 +17229,7 @@ libmagic.")))
              python-pytest-xdist
              python-trio
              python-untangle))
-      (inputs (list coreutils gdb procps))
+      (inputs (list coreutils gdb/pinned procps))
       (home-page "https://github.com/fabioz/PyDev.Debugger/")
       (synopsis "Python debugger")
       (description "PyDev.Debugger is a capable Python debugger used in PyDev
