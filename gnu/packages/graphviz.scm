@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,11 +41,13 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
@@ -58,6 +61,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:))
@@ -273,42 +277,72 @@ Graphviz and LaTeX.")
 (define-public xdot
   (package
     (name "xdot")
-    (version "1.1")
+    (version "1.3")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "xdot" version))
-      (sha256
-       (base32
-        "0cr4rh7dz4dfzyxrk5pzhm0d15gkrgkfp3i5lw178xy81pc56p71"))))
+       ;; PyPI tarball is missing some test files.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jrfonseca/xdot.py/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00j147183yf6wp1rnlp26vvsnsz5v56qgffdpd2ijkpvphvyyiyi"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; We wrap xdot, so that we don't propagate gtk+ and graphviz
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (string-append (assoc-ref outputs "out") "/bin/xdot")
-               `("GI_TYPELIB_PATH" ":" prefix
-                 (,(string-append
-                    (assoc-ref inputs "gtk+") "/lib/girepository-1.0"
-                    ":" (assoc-ref inputs "pango") "/lib/girepository-1.0"
-                    ":" (assoc-ref inputs "gdk-pixbuf") "/lib/girepository-1.0"
-                    ":" (assoc-ref inputs "at-spi2-core") "/lib/girepository-1.0"
-                    ":" (assoc-ref inputs "harfbuzz") "/lib/girepository-1.0")))
-               `("PATH" ":" prefix
-                 (,(dirname (search-input-file inputs "bin/dot"))))))))))
-    (inputs
-     (list at-spi2-core
-           (librsvg-for-system)
-           harfbuzz
-           graphviz
-           gtk+
-           python-pycairo
-           python-pygobject))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'start-xserver
+                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                       (let ((Xvfb (search-input-file (or native-inputs inputs)
+                                                      "/bin/Xvfb")))
+                         (system (format #f "~a :1 -screen 0 640x480x24 &"
+                                         Xvfb))
+                         (setenv "DISPLAY" ":1"))))
+                   (add-before 'check 'set-test-environment
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (let ((lib (search-input-file inputs
+                                                     "lib/libvulkan.so.1")))
+                         (setenv "XDG_RUNTIME_DIR"
+                                 (getcwd))
+                         (setenv "LIBGL_ALWAYS_SOFTWARE" "1")
+                         (format (current-error-port) "~a~%"
+                                 (assoc-ref inputs "gtk+"))
+                         (setenv "LD_LIBRARY_PATH"
+                                 (dirname lib)))))
+                   ;; We wrap xdot, so that we don't propagate gtk+ and graphviz
+                   (add-after 'install 'wrap
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out"))
+                             (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                             (python-path (getenv "GUIX_PYTHONPATH")))
+                         (wrap-program (string-append out "/bin/xdot")
+                           `("GI_TYPELIB_PATH" ":" prefix
+                             (,gi-typelib-path))
+                           `("GUIX_PYTHONPATH" ":" prefix
+                             (,python-path))))))
+                   (replace 'check
+                     (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                       (when tests?
+                         (add-installed-pythonpath inputs outputs)
+                         (invoke "python" "test.py")))))))
+    (native-inputs (list gobject-introspection xorg-server-for-tests))
+    (inputs (list at-spi2-core
+                  bash-minimal
+                  (librsvg-for-system)
+                  mesa
+                  mesa-opencl
+                  harfbuzz
+                  graphviz
+                  gtk+
+                  python-numpy
+                  python-pycairo
+                  python-pygobject
+                  vulkan-loader))
     (home-page "https://pypi.org/project/xdot/")
     (synopsis "Interactive viewer for graphviz dot files")
-    (description "Xdot is an interactive viewer for graphs written in
+    (description
+     "Xdot is an interactive viewer for graphs written in
 @code{graphviz}’s dot language.  Internally, it uses the xdot output format as
 an intermediate format, and @code{gtk} and @code{cairo} for rendering.  Xdot
 can be used either as a standalone application, or as a Python library.")
