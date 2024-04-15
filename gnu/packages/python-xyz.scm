@@ -1528,6 +1528,25 @@ template")
 variables into the markdown template")
     (license license:expat)))
 
+(define-public python-docstring-to-markdown
+  (package
+    (name "python-docstring-to-markdown")
+    (version "0.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "docstring-to-markdown" version))
+       (sha256
+        (base32 "0gdpabnyl1kyy0cjrnph6xl4fyhgim50a1amsaqq3hahki6i2ip1"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python-lsp/docstring-to-markdown")
+    (synopsis "On the fly conversion of Python docstrings to markdown")
+    (description
+     "This module can convert Python docstrings to Markdown.
+It can recognise reStructuredText inside docstrings and convert multiple of its
+features to Markdown. It also includes initial support for Google-formatted docstrings.")
+    (license license:lgpl2.1+)))
+
 (define-public python-mysql-connector-python
   (package
     (name "python-mysql-connector-python")
